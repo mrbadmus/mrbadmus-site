@@ -4754,6 +4754,16 @@ function MRB_CATCH_UPS(classId, weeks, wi){
   if(!list.length||!L||!L.catchUpsForWeek){return [];}
   return L.catchUpsForWeek(list, weeks||[], wi||0);}
 
+/* ⊕ Unit C — the weekly challenges set in the selected week, bucketed by the
+   same week-bar rule as a catch-up (`catchUpsForWeek` is generic over
+   `weekIdx`). DEFENSIVE for the same reason: an older payload or a fixture
+   without the key means "none". */
+function MRB_CHALLENGES(classId, weeks, wi){
+  var d=window.__MRB_DATA__, L=window.MrBadmusTeacherLive;
+  var list=(d&&d.CHALLENGES&&d.CHALLENGES[classId])||[];
+  if(!list.length||!L||!L.catchUpsForWeek){return [];}
+  return L.catchUpsForWeek(list, weeks||[], wi||0);}
+
 /* ⊕ CATCH-UP — one pupil's own, for the student screen. [] when the pupil is
    unknown or the key is absent. */
 function MRB_STUDENT_CATCH_UPS(classId, studentId){

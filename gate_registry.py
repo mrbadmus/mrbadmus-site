@@ -3021,6 +3021,83 @@ GATES = [
              "silently untag every classic card. A new or changed bank "
              "question turns this red until its scope is re-tagged "
              "(`python3 tools/kp_classify.py --scope <ref> --force`)."),
+
+    # ── ⊕ Unit C, 21 Oct 2026 · the weekly challenge, set as homework ─────
+    dict(name="weekly_challenge_unit",
+         cmd=["python3", "weekly_challenge_unit.py"],
+         speed="fast",
+         watches=["weekly_challenge_unit.py", "tools/set_work_challenge_test.js",
+                  "tools/student_challenge_rows_test.js",
+                  "tools/teacher_challenge_cards_test.js",
+                  "shared/set-work.js", "shared/student-live.js",
+                  "shared/teacher-live.js"],
+         why="Unit C — a teacher can set THIS WEEK's weekly challenge on a "
+             "class. Three pure suites over the real files: the sheet "
+             "(`openChallenge`: drawn only once /ready says true, the exact "
+             "POST body, Undo is a DELETE, the error words, the closing "
+             "instant in BST and in GMT), the pupil class page's rows "
+             "(`weeklyChallengeRows`: open until due_at or played, then "
+             "closed — never missed, late or marked; no questions) and the "
+             "teacher class page's card and week bucketing."),
+
+    dict(name="weekly_challenge_seam_drive",
+         cmd=["python3", "weekly_challenge_seam_drive.py"],
+         speed="slow",
+         watches=["weekly_challenge_seam_drive.py", "flashcard_request_shape_drive.py",
+                  "ks3_browser.py", "shared/teacher-data.js", "shared/student-data.js",
+                  "shared/class-entry.js"],
+         why="Unit C — the data layers' handling of a `quiz_type = "
+             "'weekly_challenge'` row, against a recording stub. Teacher: "
+             "out of `pack.assignments` (so no figure, grid column, digest "
+             "line or 'not handed in' can count it), in `pack.challenges`, "
+             "out of `assignment_count`, and no extra request. Pupil: a card "
+             "of kind 'weekly_challenge', the ordinary set still 'mcq_set'."),
+
+    dict(name="weekly_challenge_class_drive",
+         cmd=["python3", "weekly_challenge_class_drive.py"],
+         speed="slow",
+         watches=["weekly_challenge_class_drive.py", "ks3_browser.py",
+                  "student_rulings.py", "build_student_port.py",
+                  "shared/student-runtime.js", "shared/student-live.js",
+                  "mrbadmus_site/student/class-fixture.html"],
+         why="Unit C — the weekly-challenge row on the PUPIL class page, "
+             "rendered by the real ported template: three rows are added to "
+             "Design's fixture at run time and every number the page already "
+             "drew (Handed in, On time, Avg score, the Marked tab) is "
+             "asserted UNCHANGED; the rows read PLAYED / CLOSED / a due "
+             "date and never MISSED, MARKED, late or a question count; the "
+             "open row's one button is 'Play the challenge' and goes to "
+             "/weekly-challenge.html?subject=physics."),
+
+    dict(name="weekly_challenge_teacher_drive",
+         cmd=["python3", "weekly_challenge_teacher_drive.py"],
+         speed="slow",
+         watches=["weekly_challenge_teacher_drive.py", "ks3_browser.py",
+                  "teacher_rulings.py", "build_teacher_port.py",
+                  "shared/student-runtime.js", "shared/teacher-live.js",
+                  "teacher_fixtures/class-detail-fixture.html"],
+         why="Unit C — the weekly-challenge card on the TEACHER class page: "
+             "'Weekly challenge: Physics', when it closes, no Remind / Edit / "
+             "Worksheet / Set again / count; every other line of the page is "
+             "identical with and without it; Remove arms on the first press "
+             "and sends DELETE /api/teacher/set-work/<id> on the second."),
+
+    dict(name="weekly_challenge_page_drive",
+         cmd=["python3", "weekly_challenge_page_drive.py"],
+         speed="slow",
+         watches=["weekly_challenge_page_drive.py", "flashcard_request_shape_drive.py",
+                  "ks3_browser.py", "weekly-challenge.html", "shared/set-work.js",
+                  "shared/set-work.css", "shared/teacher-data.js",
+                  "shared/teacher-guard.js", "shared/class-entry.js"],
+         why="Unit C — weekly-challenge.html and the teacher's sheet in a "
+             "real browser over a stubbed world: ?subject= preselects exactly "
+             "as a tap does (a finished subject still reads 'Already "
+             "completed'); with /ready false, or for a pupil, NOTHING staff-"
+             "side is drawn or even downloaded; with /ready true a teacher "
+             "gets one 'Set as homework' per subject, the sheet lists their "
+             "KS4 classes (KS3 left out), Set sends the exact POST body, the "
+             "row reads Set + Undo, Undo sends DELETE; at 390 and 1280, "
+             "light and dark."),
 ]
 
 

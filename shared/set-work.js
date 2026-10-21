@@ -3,6 +3,7 @@
    place, mounted on <body> where the compiled runtime cannot reach it.
 
    Surface:  window.MRBSetWork.open({classId})   .close()
+             window.MRBSetWork.openChallenge({subject})   (Unit C, section 17c)
 
    ── WHY IT IS NOT A COMPILED COMPONENT ────────────────────────────────
 
@@ -5628,12 +5629,376 @@
   }
 
   /* ═════════════════════════════════════════════════════════════════════
+     17c. THE WEEKLY CHALLENGE, SET AS HOMEWORK (Unit C, 21 Oct 2026)
+
+     `openChallenge({subject})` — a teacher puts THIS WEEK's challenge for one
+     science on a class's work list. Nothing is composed and nothing is
+     chosen: the challenge is the same 15 questions every pupil on the track
+     plays at /weekly-challenge.html, so the whole job is "which classes".
+
+     ⚠️ A SECOND, SMALL SHEET — NOT A MODE OF THE FIRST. The Set work sheet's
+     state (`S`) is a question-set builder with steps, scopes and a worksheet
+     download; none of it applies here, and threading a fourth type through it
+     would put the live homework path at risk for a one-tap action. This
+     reuses the shell's CLASSES (`sw-overlay`, `sw-sheet`, `sw-head`,
+     `sw-row`) and owns its own overlay on <body>, a sibling of the mount host
+     for the reason in the header, and patches rows in place.
+
+     ⚠️ EVERYTHING IS RE-DERIVED SERVER-SIDE. The class list drawn here is the
+     teacher's own KS4 classes; the backend decides whether each is theirs
+     (403), whether it is GCSE (400 challenge_is_gcse) and whether a
+     separate-science class may be set this science (400 wrong_subject). The
+     `/Bi` `/Ch` `/Ph` reading below only DISABLES a row early, with its
+     reason; it never grants anything.
+
+     ⚠️ INVISIBLE UNTIL READY. `attachChallenge` draws nothing at all unless
+     `GET /api/teacher/set-work/challenge/ready` says `{ready:true}`.
+     ═════════════════════════════════════════════════════════════════════ */
+
+  var CH_SUBJECTS = ["biology", "chemistry", "physics"];
+  var CH_SAY = {
+    open: "Set as homework",
+    title: function (name) { return "Set this week’s " + name + " challenge"; },
+    dueLine: function (when) { return "Due when it closes, " + when; },
+    set: "Set",
+    setDone: "Set",
+    already: "Already set",
+    undo: "Undo",
+    setting: "Setting…",
+    undoing: "Undoing…",
+    close: "Close",
+    loading: "Loading",
+    noClasses: "No GCSE classes this year",
+    loadFailed: "Couldn’t load your classes",
+    retry: "Try again",
+    only: function (name) { return name + " only"; },
+    errSet: "Couldn’t set it. Try again.",
+    errUndo: "Couldn’t undo. Try again.",
+    errAuth: "Sign in again",
+    errNotYours: "Not your class",
+    errGcse: "GCSE classes only",
+    errNotReady: "Not available yet",
+    errWrong: "Wrong science for this class"
+  };
+  var CH_SEP = { bi: "biology", ch: "chemistry", ph: "physics" };
+  var WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  var CH = null;           // the challenge sheet's DOM + state, once built
+
+  function chCap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+  /* When THIS week's challenge closes: the next Friday 10:15 London. The
+     backend stamps the same instant as `due_at`; this is only the line shown
+     before a first tap, so it is computed the same way (a London wall clock,
+     converted with the DST-safe helper above) and replaced by the server's
+     own `due_at` the moment one comes back. */
+  function challengeClosesAt(nowMs) {
+    var now = (nowMs == null) ? Date.now() : nowMs;
+    for (var d = 0; d < 8; d++) {
+      var p = londonPartsAt(now);
+      var day = new Date(Date.UTC(p.y, p.m - 1, p.d) + d * DAY_MS);
+      if (day.getUTCDay() !== 5) { continue; }
+      var iso = londonToUtcIso(pad4(day.getUTCFullYear()) + "-" + pad2(day.getUTCMonth() + 1) +
+                               "-" + pad2(day.getUTCDate()), "10:15");
+      if (iso && Date.parse(iso) > now) { return iso; }
+    }
+    return null;
+  }
+
+  /* "Fri 23 Oct, 10:15" */
+  function chWhen(iso) {
+    var ms = Date.parse(iso);
+    if (isNaN(ms)) { return ""; }
+    var p = londonPartsAt(ms);
+    var wd = WEEKDAYS[new Date(Date.UTC(p.y, p.m - 1, p.d)).getUTCDay()];
+    return wd + " " + p.d + " " + MONTHS[p.m - 1] + ", " + pad2(p.H) + ":" + pad2(p.M);
+  }
+
+  function chClient(c) {
+    if (c) { return c; }
+    var g = window.MrBadmusTeacherGuard;
+    return (g && g.getClient) ? g.getClient() : null;
+  }
+
+  function chRequest(client, method, path, payload) {
+    var sb = chClient(client);
+    if (!sb) { return Promise.reject(new Error("set-work: no data layer")); }
+    return sb.auth.getSession().then(function (r) {
+      var t = r && r.data && r.data.session && r.data.session.access_token;
+      if (!t) { throw new Error("set-work: not signed in"); }
+      var init = { method: method, headers: { Authorization: "Bearer " + t } };
+      if (payload !== undefined) {
+        init.headers["Content-Type"] = "application/json";
+        init.body = JSON.stringify(payload);
+      }
+      return fetch(apiBase() + path, init);
+    }).then(function (res) {
+      return res.json().then(
+        function (d) { return { status: res.status, body: d, ok: res.ok }; },
+        function () { return { status: res.status, body: null, ok: res.ok }; }
+      );
+    });
+  }
+
+  function challengeReady(client) {
+    return chRequest(client, "GET", "/api/teacher/set-work/challenge/ready").then(
+      function (r) { return !!(r.ok && r.body && r.body.ready === true); },
+      function () { return false; }
+    );
+  }
+
+  function chBuild() {
+    if (CH) { return; }
+    CH = { session: 0, subject: "", client: null, rows: [], opener: null, closesIso: null };
+    var overlay = el("div", "sw-overlay");
+    overlay.hidden = true;
+    overlay.setAttribute("data-sw", "challenge-overlay");
+    var sheet = el("div", "sw-sheet");
+    sheet.setAttribute("role", "dialog");
+    sheet.setAttribute("aria-modal", "true");
+    sheet.tabIndex = -1;
+    sheet.setAttribute("data-sw", "challenge-sheet");
+    var head = el("div", "sw-head");
+    var close = btn("sw-btn", CH_SAY.close);
+    close.setAttribute("data-sw", "challenge-close");
+    var title = el("div", "sw-step sw-ch-title");
+    title.setAttribute("data-sw", "challenge-title");
+    head.appendChild(close);
+    head.appendChild(title);
+    var body = el("div", "sw-body");
+    var due = el("div", "sw-row-tag sw-ch-due");
+    due.setAttribute("data-sw", "challenge-due");
+    var list = el("div", "sw-tree sw-classes");
+    list.setAttribute("data-sw", "challenge-list");
+    var note = el("div", "sw-row-tag sw-ch-note");
+    note.setAttribute("data-sw", "challenge-note");
+    note.hidden = true;
+    var retry = btn("sw-btn", CH_SAY.retry);
+    retry.setAttribute("data-sw", "challenge-retry");
+    retry.hidden = true;
+    body.appendChild(due);
+    body.appendChild(list);
+    body.appendChild(note);
+    body.appendChild(retry);
+    sheet.appendChild(head);
+    sheet.appendChild(body);
+    overlay.appendChild(sheet);
+    document.body.appendChild(overlay);
+    CH.overlay = overlay; CH.sheet = sheet; CH.title = title; CH.due = due;
+    CH.list = list; CH.note = note; CH.retry = retry;
+    close.addEventListener("click", closeChallenge);
+    overlay.addEventListener("click", function (e) { if (e.target === overlay) { closeChallenge(); } });
+    overlay.addEventListener("keydown", function (e) {
+      if (e && e.key === "Escape") { closeChallenge(); }
+    });
+    retry.addEventListener("click", function () { chLoadClasses(); });
+  }
+
+  function closeChallenge() {
+    if (!CH || CH.overlay.hidden) { return; }
+    CH.session += 1;
+    CH.overlay.hidden = true;
+    var o = CH.opener;
+    CH.opener = null;
+    if (o && o.focus) { try { o.focus({ preventScroll: true }); } catch (e) { /* gone */ } }
+  }
+
+  /* One row is patched in place by `chPaint`; nothing ever rebuilds the list
+     under a thumb (the header's rule). */
+  function chPaint(r) {
+    var st = r.state;
+    r.node.setAttribute("aria-disabled", st === "disabled" ? "true" : "false");
+    r.node.setAttribute("data-sw-state", st);
+    var tag = "";
+    if (st === "disabled") { tag = r.reason; }
+    else if (st === "set") { tag = CH_SAY.setDone; }
+    else if (st === "already") { tag = CH_SAY.already; }
+    else if (st === "error") { tag = r.err; }
+    r.tag.textContent = tag;
+    r.tag.hidden = !tag;
+    var showUndo = st === "set" || st === "already" || st === "undoing";
+    r.set.hidden = showUndo || st === "disabled";
+    r.undo.hidden = !showUndo;
+    r.set.disabled = st === "setting";
+    r.undo.disabled = st === "undoing";
+    r.set.textContent = st === "setting" ? CH_SAY.setting : CH_SAY.set;
+    r.undo.textContent = st === "undoing" ? CH_SAY.undoing : CH_SAY.undo;
+  }
+
+  function chErrWords(res) {
+    var code = (res.body && res.body.error) || "";
+    if (res.status === 401) { return CH_SAY.errAuth; }
+    if (res.status === 403) { return CH_SAY.errNotYours; }
+    if (code === "challenge_is_gcse") { return CH_SAY.errGcse; }
+    if (code === "wrong_subject") { return CH_SAY.errWrong; }
+    if (res.status === 503 || code === "not_ready") { return CH_SAY.errNotReady; }
+    return CH_SAY.errSet;
+  }
+
+  function chSet(r) {
+    var mine = CH.session;
+    r.state = "setting"; chPaint(r);
+    chRequest(CH.client, "POST", "/api/teacher/set-work/challenge",
+              { class_ids: [r.id], subject: CH.subject }).then(function (res) {
+      if (!CH || mine !== CH.session) { return; }
+      var a = res.ok && res.body && res.body.assignments && res.body.assignments[0];
+      if (!a) { r.state = "error"; r.err = chErrWords(res); chPaint(r); return; }
+      r.assignmentId = a.id;
+      r.state = a.already_set ? "already" : "set";
+      if (a.due_at) { CH.closesIso = a.due_at; CH.due.textContent = CH_SAY.dueLine(chWhen(a.due_at)); }
+      chPaint(r);
+    }, function () {
+      if (!CH || mine !== CH.session) { return; }
+      r.state = "error"; r.err = CH_SAY.errSet; chPaint(r);
+    });
+  }
+
+  function chUndo(r) {
+    var mine = CH.session;
+    var wasState = r.wasState || "set";
+    r.state = "undoing"; chPaint(r);
+    chRequest(CH.client, "DELETE", "/api/teacher/set-work/" + encodeURIComponent(r.assignmentId))
+      .then(function (res) {
+        if (!CH || mine !== CH.session) { return; }
+        if (res.ok) { r.assignmentId = null; r.state = "idle"; chPaint(r); return; }
+        r.state = wasState; chPaint(r);
+        r.tag.textContent = CH_SAY.errUndo; r.tag.hidden = false;
+      }, function () {
+        if (!CH || mine !== CH.session) { return; }
+        r.state = wasState; chPaint(r);
+        r.tag.textContent = CH_SAY.errUndo; r.tag.hidden = false;
+      });
+  }
+
+  function chDrawClasses(classes) {
+    CH.list.textContent = "";
+    CH.rows = [];
+    var ks4 = classes.filter(function (c) {
+      return c && c.id && (c.key_stage == null || String(c.key_stage).toUpperCase() === "KS4");
+    }).sort(function (a, b) {
+      return String(a.name || "").localeCompare(String(b.name || ""), "en", { numeric: true });
+    });
+    CH.note.hidden = !!ks4.length;
+    CH.note.textContent = ks4.length ? "" : CH_SAY.noClasses;
+    ks4.forEach(function (c) {
+      var name = String(c.name || "");
+      var m = /\/(Bi|Ch|Ph)\d/i.exec(name);
+      var sep = m ? CH_SEP[m[1].toLowerCase()] : "";
+      var node = el("div", "sw-row sw-ch-row");
+      node.setAttribute("data-sw", "challenge-class");
+      node.setAttribute("data-sw-ref", String(c.id));
+      var main = el("span", "sw-row-main");
+      main.appendChild(el("span", "sw-row-name", name));
+      var tag = el("span", "sw-row-tag");
+      tag.hidden = true;
+      main.appendChild(tag);
+      var setB = btn("sw-btn sw-btn-primary sw-ch-act", CH_SAY.set);
+      setB.setAttribute("data-sw", "challenge-set");
+      var undoB = btn("sw-btn sw-ch-act", CH_SAY.undo);
+      undoB.setAttribute("data-sw", "challenge-undo");
+      undoB.hidden = true;
+      node.appendChild(main); node.appendChild(setB); node.appendChild(undoB);
+      CH.list.appendChild(node);
+      var r = { id: String(c.id), node: node, tag: tag, set: setB, undo: undoB,
+                state: "idle", err: "", reason: "", assignmentId: null };
+      if (sep && sep !== CH.subject) {
+        r.state = "disabled"; r.reason = CH_SAY.only(chCap(sep));
+      }
+      setB.addEventListener("click", function () { if (r.state === "idle" || r.state === "error") { chSet(r); } });
+      undoB.addEventListener("click", function () {
+        if (r.state === "set" || r.state === "already") { r.wasState = r.state; chUndo(r); }
+      });
+      CH.rows.push(r);
+      chPaint(r);
+    });
+  }
+
+  function chLoadClasses() {
+    var mine = CH.session;
+    CH.retry.hidden = true;
+    CH.note.hidden = false;
+    CH.note.textContent = CH_SAY.loading;
+    var src = CH.preset;
+    var p;
+    if (src && src.length) { p = Promise.resolve(src); }
+    else {
+      var TD = window.MrBadmusTeacherData;
+      p = (TD && TD.loadTeacherClasses)
+        ? Promise.resolve(TD.loadTeacherClasses(null, { metrics: false }))
+        : Promise.reject(new Error("set-work: no class list"));
+    }
+    p.then(function (rows) {
+      if (!CH || mine !== CH.session) { return; }
+      chDrawClasses(rows || []);
+    }, function () {
+      if (!CH || mine !== CH.session) { return; }
+      CH.list.textContent = "";
+      CH.rows = [];
+      CH.note.hidden = false;
+      CH.note.textContent = CH_SAY.loadFailed;
+      CH.retry.hidden = false;
+    });
+  }
+
+  function openChallenge(opts) {
+    var o = opts || {};
+    var subject = String(o.subject || "").toLowerCase();
+    if (CH_SUBJECTS.indexOf(subject) < 0) { return false; }
+    chBuild();
+    CH.session += 1;
+    CH.subject = subject;
+    CH.client = o.client || null;
+    CH.preset = o.classes || null;
+    CH.opener = (document.activeElement && document.activeElement !== document.body)
+      ? document.activeElement : null;
+    CH.title.textContent = CH_SAY.title(chCap(subject));
+    CH.closesIso = challengeClosesAt();
+    CH.due.textContent = CH.closesIso ? CH_SAY.dueLine(chWhen(CH.closesIso)) : "";
+    CH.list.textContent = "";
+    CH.rows = [];
+    CH.overlay.hidden = false;
+    CH.overlay.setAttribute("data-sw-subject", subject);
+    CH.sheet.focus({ preventScroll: true });
+    chLoadClasses();
+    return true;
+  }
+
+  /* The page's side of the seam. Draws NOTHING unless the backend says the
+     feature is ready; resolves true only when it drew. `hosts` maps a
+     subject to the element that gets its "Set as homework" button. */
+  function attachChallenge(o) {
+    var opts = o || {};
+    /* `ready: true` -- the caller has already asked, and only loaded this file
+       because the answer was yes (weekly-challenge.html). Anything else asks. */
+    return (opts.ready === true ? Promise.resolve(true) : challengeReady(opts.client)).then(function (ok) {
+      if (!ok) { return false; }
+      CH_SUBJECTS.forEach(function (s) {
+        var host = opts.hosts && opts.hosts[s];
+        if (!host) { return; }
+        var b = btn(opts.buttonClass || "sw-ch-open", CH_SAY.open);
+        b.setAttribute("data-sw", "challenge-open");
+        b.setAttribute("data-sw-subject", s);
+        b.addEventListener("click", function (e) {
+          if (e && e.stopPropagation) { e.stopPropagation(); }
+          openChallenge({ subject: s, client: opts.client, classes: opts.classes });
+        });
+        host.appendChild(b);
+      });
+      return true;
+    });
+  }
+
+  /* ═════════════════════════════════════════════════════════════════════
      18. SURFACE
      ═════════════════════════════════════════════════════════════════════ */
 
   window.MRBSetWork = {
     open: open,
     edit: edit,
+    /* ⊕ Unit C — this week's weekly challenge, set as homework. */
+    openChallenge: openChallenge,
+    attachChallenge: attachChallenge,
+    challengeReady: challengeReady,
+    challengeClosesAt: challengeClosesAt,
     close: close,
     /* ⊕ MRB-342 — the worksheet, for callers that are not the sheet.
        `download` takes a composed body; `downloadAssignment` takes a row

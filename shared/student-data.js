@@ -696,7 +696,16 @@ window.MrBadmusStudentData = (function () {
        feature existed. Only once a real flashcard row exists does this fire
        ONE follow-up read, scoped to those ids alone, for the one field this
        page actually reads off it (`flashcard_mode`). */
-    function kindOf(a) { return a.quiz_type === 'flashcards' ? 'flashcards' : 'mcq_set'; }
+    /* ⊕ Unit C (21 Oct 2026) — a teacher can put THIS WEEK's weekly challenge
+       on the list; it is an `assignments` row with `quiz_type =
+       'weekly_challenge'`, no questions and no submissions. It is a third
+       kind so every reader that tests `kind === 'flashcards'` or assumes a
+       question set can tell it apart; shared/student-live.js takes these
+       rows OUT of the question-set maths and draws them as a link. */
+    function kindOf(a) {
+      return a.quiz_type === 'flashcards' ? 'flashcards'
+        : (a.quiz_type === 'weekly_challenge' ? 'weekly_challenge' : 'mcq_set');
+    }
     const flashcardIds = assignments.filter(function (a) { return kindOf(a) === 'flashcards'; })
                                      .map(function (a) { return a.id; });
     const flashcardExtra = new Map();

@@ -1967,6 +1967,44 @@
     });
   }
 
+  /* ═════════════════════════════════════════════════════════════════════
+     WEEKLY CHALLENGES — ⊕ Unit C (21 Oct 2026)
+
+     A teacher-set weekly challenge is taken out of `pack.assignments` at
+     the same load seam as a catch-up (`isChallenge` in teacher-data.js), so
+     `buildPapers`, `buildMatrix`, `buildRoster`, `buildGrid`, the digest and
+     every insight cannot count it: it is never a marking-grid column, never
+     "not handed in", never offered Remind / Edit / Worksheet / Set again.
+     `pack.challenges` is the separate list and this is the only code that
+     reads it: a title, a deadline, and the week it was set in (the SAME
+     `assignPaperWeeks` rule homework uses).
+
+     NO "N of M played". This page reads `assignments` directly and the
+     teacher cannot read `weekly_scores`; the count exists only in the
+     backend's `week_work[].challenge`, which a class page does not call
+     (its route also composes the week's work on first read). Hiding the
+     number is chosen over inventing one. */
+  function buildChallenges(pack, weeks, viewing, now) {
+    var list = (pack && pack.challenges) || [];
+    if (!list.length) { return []; }
+    var items = list.map(function (a) {
+      return { academic_week: a.academic_week, due_at: a.due_at,
+               release_at: a.release_at, kind: "mcq_set", _a: a };
+    });
+    assignPaperWeeks(items, weeks, viewing, now);
+    return items.map(function (it) {
+      var a = it._a;
+      var d = a.due_at ? asDate(a.due_at) : null;
+      return {
+        id: a.id,
+        title: String(a.title || "Weekly challenge"),
+        weekIdx: it.weekIdx,
+        dueAt: a.due_at || null,
+        due: d ? dowDayMonthLdn(d) : ""
+      };
+    });
+  }
+
   /* One pupil's own catch-ups, newest first — the student screen's list.
      A catch-up set for somebody else never appears here: it is matched on
      the pupil's id, not on the class. */
@@ -2899,7 +2937,8 @@
       assignment_count: papers.length
     };
     return { entry: entry, mx: mx, roster: roster, papers: papers,
-             catchUps: buildCatchUps(pack, yearWeeks, viewing, now) };
+             catchUps: buildCatchUps(pack, yearWeeks, viewing, now),
+             challenges: buildChallenges(pack, yearWeeks, viewing, now) };
   }
 
   /* MRB-325 ruling 5 — a school_admin opening a class they do not
@@ -2996,6 +3035,7 @@
     c.ROSTER[classId] = built.roster;
     c.WEEKS[classId] = yearWeeks;
     (c.CATCHUPS = c.CATCHUPS || {})[classId] = built.catchUps;
+    (c.CHALLENGES = c.CHALLENGES || {})[classId] = built.challenges;
     c.CLASSES.push(built.entry);
     return true;
   }
@@ -3256,7 +3296,7 @@
 
     // `now` is taken ONCE, above, before the aggregate is asked — the
     // database is sent the same instant this page reasons with.
-    var CLASSES = [], MATRIX = {}, ROSTER = {}, PAPERS = {}, WEEKS = {}, CATCHUPS = {};
+    var CLASSES = [], MATRIX = {}, ROSTER = {}, PAPERS = {}, WEEKS = {}, CATCHUPS = {}, CHALLENGES = {};
 
     /* ⊕ MRB-306 — ONE WEEK LIST FOR THE WHOLE PAGE, keyed per class because
        that is the shape `weeks()` reads (`MRB_PICK('WEEKS', k.id)`). The
@@ -3317,6 +3357,7 @@
       ROSTER[c.id] = built.roster;
       WEEKS[c.id] = yearWeeks;
       CATCHUPS[c.id] = built.catchUps;
+      CHALLENGES[c.id] = built.challenges;
       CLASSES.push(built.entry);
     });
 
@@ -3379,6 +3420,7 @@
       PAPERS: PAPERS,
       WEEKS: WEEKS,
       CATCHUPS: CATCHUPS,
+      CHALLENGES: CHALLENGES,
       GRID: {}
     };
     return cache;
@@ -4222,6 +4264,7 @@
       PAPERS: c.PAPERS,
       WEEKS: c.WEEKS,
       CATCHUPS: c.CATCHUPS || {},
+      CHALLENGES: c.CHALLENGES || {},
       GRID: c.GRID,
       FEED: FEED,
       /* ⊕ MRB-306 Phase 2b — `{ <submission_id>: comment }` for the
@@ -4683,6 +4726,7 @@
     // mismatch between the two functions.
     weekScope: weekScope,
     catchUpsForWeek: catchUpsForWeek,
+    buildChallenges: buildChallenges,
     catchUpsForPupil: catchUpsForPupil,
     buildCatchUps: buildCatchUps,
     buildWeeks: buildWeeks,

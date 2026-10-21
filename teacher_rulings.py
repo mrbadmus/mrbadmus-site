@@ -14539,3 +14539,89 @@ RETEXT_AT[266] = ("No one flagged — the class is keeping up.",
     "the \"Keep an eye on\" card's empty-state line — not started, an open "
     "released set, closed sets only, or no released set at all each read "
     "their own sentence instead of one literal true only in the last case.")
+
+
+# ══════════════════════════════════════════════════════════════════════════
+# ⊕ UNIT C (21 Oct 2026) — THE WEEKLY CHALLENGE ON THE CLASS PAGE
+# ══════════════════════════════════════════════════════════════════════════
+#
+# A teacher can set this week's weekly challenge on a class (the sheet in
+# shared/set-work.js, `openChallenge`). It is an `assignments` row with no
+# questions and no submissions, so it is homework in NO figure: teacher-data.js
+# takes it out of `pack.assignments` at the load seam (`isChallenge`), and
+# `pack.challenges` is the separate list this card reads — the same shape and
+# the same reason as the Catch-up card above it.
+#
+# ONE card per challenge set in the week in view, after the "no work" empty
+# state and before the Students table: the title ("Weekly challenge: Physics"),
+# when it closes, and a Remove that arms on the first press and performs on the
+# second (the row's own Delete idiom, the same `delArm` key and the same
+# `MRB_DELETE_SET_WORK` — the backend lets the owner delete it).
+#
+# ⚠️ NO "N of M played", and that is a choice. This page reads `assignments`
+# directly; the number exists only in the backend's `week_work[].challenge`,
+# on a route that also composes the week on first read. A hidden count is
+# honest; a guessed one is not.
+#
+# ⚠️ NOT GATED ON `klass.hasWork`: a class whose only set this week is the
+# challenge has "no work set" in the class sense, and the challenge must still
+# be reachable (to remove it).
+LOGIC = LOGIC + ((
+    "      hasCatchUps: MRB_CATCH_UPS(k.id, kWeeks, wi).length > 0,\n",
+    "      hasCatchUps: MRB_CATCH_UPS(k.id, kWeeks, wi).length > 0,\n"
+    "      /* ⊕ Unit C — the weekly challenges set in the week in view. */\n"
+    "      challenges: MRB_CHALLENGES(k.id, kWeeks, wi).map((c) => ({\n"
+    "        id: c.id, title: c.title,\n"
+    "        dueLine: c.due ? 'Closes ' + c.due : '',\n"
+    "        removeLabel: s.delArm === c.id ? 'Remove? Press again' : 'Remove',\n"
+    "        remove: (e) => {\n"
+    "          e.stopPropagation();\n"
+    "          if (s.delArm !== c.id) { this.setState({ delArm: c.id }); return; }\n"
+    "          this.setState({ delArm: '' });\n"
+    "          MRB_DELETE_SET_WORK(c.id).then((r) => {\n"
+    "            if (!r.ok) { this.ping(MRB_DELETE_SET_WORK_WHY(r.error)); return; }\n"
+    "            this.ping(c.title + ' \\u00b7 Removed');\n"
+    "            if (typeof window.MRB_SET_WORK_DONE === 'function') {\n"
+    "              window.MRB_SET_WORK_DONE({ title: c.title, deleted: true });\n"
+    "            }\n"
+    "          });\n"
+    "        }\n"
+    "      })),\n"
+    "      hasChallenges: MRB_CHALLENGES(k.id, kWeeks, wi).length > 0,\n",
+    "Unit C — `challenges` / `hasChallenges` for the weekly-challenge "
+    "card (INSERT_AT[(208, 277)]), off `MRB_CHALLENGES`.",
+),)
+
+INSERT_AT[(208, 277)] = ({
+    "t": "if", "e": "hasChallenges",
+    "c": [{
+        "t": "for", "e": "challenges", "as": "ch",
+        "c": [{
+            "t": "div",
+            "a": {"data-mrb-added": "challenge-card",
+                  "style": "display:flex;align-items:center;justify-content:space-between;"
+                           "gap:12px;padding:20px;margin-top:16px;"
+                           "background:var(--st-paper);"
+                           "border:1px solid var(--st-rule-soft);border-radius:12px"},
+            "c": [
+                {"t": "div", "a": {"style": "min-width:0"}, "c": [
+                    {"t": "div",
+                     "a": {"data-mrb-cell": "challenge-title",
+                           "style": "font:600 21px/1.3 var(--st-ui);color:var(--st-ink);"
+                                    "text-wrap:pretty"},
+                     "c": [{"t": "#", "v": {"parts": [{"e": "ch.title"}]}}]},
+                    {"t": "div",
+                     "a": {"style": "margin-top:6px;font:500 13px/1.2 var(--st-mono);"
+                                    "letter-spacing:.16em;text-transform:uppercase;"
+                                    "color:var(--st-caption)"},
+                     "c": [{"t": "#", "v": {"parts": [{"e": "ch.dueLine"}]}}]},
+                ]},
+                {"t": "button",
+                 "a": {"type": "button", "data-mrb-added": "challenge-remove",
+                       "style": _ROW_ACT.replace("padding:0", "padding:12px 0")},
+                 "hov": "color:var(--st-ink)",
+                 "on": "ch.remove",
+                 "c": [{"t": "#", "v": {"parts": [{"e": "ch.removeLabel"}]}}]},
+            ]}]}]},
+    "the week's Weekly challenge cards, one per challenge set in the week in "
+    "view: its title, when it closes, and a two-press Remove (Unit C).")

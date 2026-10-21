@@ -1033,7 +1033,10 @@ class Component extends DCLogic {
     const dash = '\u2014';
     const pad = (n) => (n < 10 ? '0' + n : String(n));
     const pc = (a, b) => (b ? Math.round((a / b) * 100) + '%' : '0%');
-    const all = fresh ? [] : this.work;
+    /* ⊕ Unit C — weekly-challenge rows are held out of every sum. */
+    const allWork = fresh ? [] : this.work;
+    const wcRows = allWork.filter((w) => w.wc);
+    const all = allWork.filter((w) => !w.wc);
 
     const marked = all.filter((w) => w.status === 'marked');
     const handed = all.filter((w) => w.status === 'marked' || w.status === 'pending');
@@ -1108,10 +1111,11 @@ class Component extends DCLogic {
         selected: st.week === n ? 'selected' : false
       })));
     const inWk = st.week != null ? all.filter((w) => w.week === st.week) : all;
+    const wcWk = st.week != null ? wcRows.filter((w) => w.week === st.week) : wcRows;
     const tabDefs = [
       /* ⊕ Sharpen C6 (P3) — counts follow the week select. */
-      { id: 'all', label: 'All', n: inWk.length },
-      { id: 'todo', label: 'To do', n: inWk.filter((w) => w.status === 'open' || w.status === 'missed').length },
+      { id: 'all', label: 'All', n: inWk.length + wcWk.length },
+      { id: 'todo', label: 'To do', n: inWk.concat(wcWk).filter((w) => w.status === 'open' || w.status === 'missed').length },
       { id: 'marked', label: 'Marked', n: inWk.filter((w) => w.status === 'marked').length }
     ];
     const tabs = tabDefs.map((t) => ({
@@ -1120,7 +1124,7 @@ class Component extends DCLogic {
       color: st.tab === t.id ? 'var(--st-ink)' : 'var(--st-caption)'
     }));
 
-    let list = all;
+    let list = wcRows.concat(all);
     if (st.tab === 'todo') list = list.filter((w) => w.status === 'open' || w.status === 'missed');
     if (st.tab === 'marked') list = list.filter((w) => w.status === 'marked');
     if (st.week != null) list = list.filter((w) => w.week === st.week);
@@ -1137,8 +1141,8 @@ class Component extends DCLogic {
          (`scoreLabel`, below) already says '\u00B7 late' at every
          width — including narrow. Saying it here too meant a
          narrow pupil read it twice on the same row. */
-      const longWord = w.status === 'open' ? MRB_DATA('dueWordLong') : w.status === 'pending' ? 'WITH ' + MRB_DATA('teacherName').toUpperCase() : w.status === 'missed' ? 'MISSED' : 'MARKED';
-      const shortWord = w.status === 'open' ? MRB_DATA('dueWordShort') : w.status === 'pending' ? 'SENT' : w.status === 'missed' ? 'MISSED' : ('MARKED' + (w.late ? ' \u00B7 late' : ''));
+      const longWord = w.status === 'open' ? MRB_DATA('dueWordLong') : w.status === 'pending' ? 'WITH ' + MRB_DATA('teacherName').toUpperCase() : w.status === 'missed' ? 'MISSED' : w.wc ? (w.played ? 'PLAYED' : 'CLOSED') : 'MARKED';
+      const shortWord = w.status === 'open' ? MRB_DATA('dueWordShort') : w.status === 'pending' ? 'SENT' : w.status === 'missed' ? 'MISSED' : w.wc ? (w.played ? 'PLAYED' : 'CLOSED') : ('MARKED' + (w.late ? ' \u00B7 late' : ''));
       /* ⊕ RULED by Mide 22 Sep 2026 — first-week fixes. */
       const qTotal = w.qtotal != null ? w.qtotal : (w.items ? w.items.length : 0);
       const qDone = Math.min(qTotal, w.answered != null ? w.answered : (w.items ? w.items.length : 0));
@@ -1175,7 +1179,7 @@ scoreText: w.fc ? '' : (w.rawMax != null ? (w.rawScore + ' / ' + w.rawMax) : (w.
         showWord: !showScore && wide, word: wide ? longWord : shortWord,
         /* ⊕ RULED by Mide 22 Sep 2026 — first-week fixes:
            Done is bright and unmistakable. See SET_ATTR 166. */
-        wordColor: w.status === 'open' ? 'var(--ks3-accent-text)' : w.status === 'missed' ? 'var(--err)' : isMarked ? 'var(--pg-ok-text)' : 'var(--st-caption)',
+        wordColor: w.status === 'open' ? 'var(--ks3-accent-text)' : w.status === 'missed' ? 'var(--err)' : (isMarked || (w.wc && w.played)) ? 'var(--pg-ok-text)' : 'var(--st-caption)',
         /* ⊕ RULED 23 Aug 2026 — the hint word is not a control and
            read as one. Design already drops it below 720px, where
            the note says the caret carries the affordance alone;
@@ -1196,7 +1200,7 @@ scoreText: w.fc ? '' : (w.rawMax != null ? (w.rawScore + ' / ' + w.rawMax) : (w.
            F2: the marked row's footnote is gone. It explained
            the marking machinery under a child's marks and said
            nothing about their work. The OPEN row's note stays. */
-        footNote: w.status === 'open' ? 'COUNTS TOWARDS WEEK ' + MRB_DATA('weekNumber') : '',
+        footNote: (w.status === 'open' && !w.wc) ? 'COUNTS TOWARDS WEEK ' + MRB_DATA('weekNumber') : '',
         /* F1: asking for more time is not a thing this page
            offers any more, and a missed deadline does not take
            the work away. Open and missed both say
@@ -1205,8 +1209,8 @@ scoreText: w.fc ? '' : (w.rawMax != null ? (w.rawScore + ' / ' + w.rawMax) : (w.
         /* ⊕ RULED 25 Sep 2026 (stream H) — P9. See the section
            header above this tuple. */
         /* ⊕ Sharpen C5 — a completed set's ONE button. */
-        primaryLabel: w.retake ? 'Retake it' : w.reopen ? w.reopen : isMarked ? (w.fc ? 'Give it another go' : 'Open the lesson') : w.status === 'pending' ? 'See what you sent' : (w.catchUp ? 'Open the lesson' : qDone > 0 ? 'Continue' : 'Complete homework'),
-        primary: (w.reopenHref && !w.retake)
+        primaryLabel: w.wc ? (w.status === 'open' ? 'Play the challenge' : 'Open the challenge') : w.retake ? 'Retake it' : w.reopen ? w.reopen : isMarked ? (w.fc ? 'Give it another go' : 'Open the lesson') : w.status === 'pending' ? 'See what you sent' : (w.catchUp ? 'Open the lesson' : qDone > 0 ? 'Continue' : 'Complete homework'),
+        primary: w.wc ? () => { window.location.href = w.assignmentHref; } : (w.reopenHref && !w.retake)
           ? () => { window.location.href = w.reopenHref; }
           : (w.status === 'open' || w.status === 'missed' || w.retake)
           ? (w.assignmentHref
@@ -1574,7 +1578,7 @@ scoreText: w.fc ? '' : (w.rawMax != null ? (w.rawScore + ' / ' + w.rawMax) : (w.
       clearWeek: this.clearWeek, resetFilters: this.resetFilters,
       canReset: st.week != null || st.tab !== 'all',
       noRows: rows.length === 0,
-      emptyNote: (fresh || !all.length) ? 'No work set in this class yet' : 'Nothing under this filter',
+      emptyNote: (fresh || (!all.length && !wcRows.length)) ? 'No work set in this class yet' : 'Nothing under this filter',
 
       benchTasks: benchTasks,
       /* ⊕ RULED 25 Sep 2026 (stream K) — TEST 18. See the section
@@ -1726,8 +1730,8 @@ window.__MRB_MOUNT__ = function () {
   });
 };
 </script>
-<script>window.__MRB_ASSET_V__={"account.js":"7230a8eb","brand/brand.css":"9c818614","brand/brand.js":"a4ee216b","brand/mrbadmus-favicon.svg":"414f7a61","brand/mrbadmus-icon-light-512.png":"cffd3cc4","catch-up-sheet.js":"33c2fbc1","class-entry.js":"8c087f18","config.js":"bb268b6f","figures-ks3.js":"efe2cfd6","figures-ks4.js":"a2fa6f5f","flashcard-homework.js":"fd716ee7","flashcard-keyboard.js":"4a245645","flashcard-library.css":"7c4a483f","flashcard-library.js":"08bd8d3f","formulae.js":"e4bfb091","ks3-lesson-urls.js":"98cd0930","ks4-lesson-urls.js":"07963eee","rum.js":"66210c21","shoutouts.js":"23393220","student-bell.js":"26753434","student-data.js":"acfac7ea","student-guard.js":"042d8aca","theme.js":"f04be205","topbar.css":"d857b6c3","topbar.js":"83f9708c","wrapped.css":"ae26c56e","wrapped.js":"a31d709c"};</script>
-<script src="/shared/student-live.js?v=810fc9e7"></script>
+<script>window.__MRB_ASSET_V__={"account.js":"7230a8eb","brand/brand.css":"9c818614","brand/brand.js":"a4ee216b","brand/mrbadmus-favicon.svg":"414f7a61","brand/mrbadmus-icon-light-512.png":"cffd3cc4","catch-up-sheet.js":"33c2fbc1","class-entry.js":"8c087f18","config.js":"bb268b6f","figures-ks3.js":"efe2cfd6","figures-ks4.js":"a2fa6f5f","flashcard-homework.js":"fd716ee7","flashcard-keyboard.js":"4a245645","flashcard-library.css":"7c4a483f","flashcard-library.js":"08bd8d3f","formulae.js":"e4bfb091","ks3-lesson-urls.js":"98cd0930","ks4-lesson-urls.js":"07963eee","rum.js":"66210c21","shoutouts.js":"23393220","student-bell.js":"26753434","student-data.js":"7c977f8d","student-guard.js":"042d8aca","theme.js":"f04be205","topbar.css":"d857b6c3","topbar.js":"83f9708c","wrapped.css":"ae26c56e","wrapped.js":"a31d709c"};</script>
+<script src="/shared/student-live.js?v=2eceaa98"></script>
 <script src="/shared/wrapped.js?v=a31d709c" data-wrapped="pupil"></script>
 <script src="/shared/topbar.js?v=83f9708c" defer></script>
 </body>

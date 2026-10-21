@@ -836,3 +836,22 @@ html[data-theme="dark"] .sw-toast { color: #16120D; }
 .sw-overlay[data-sw-type="catchup"] .sw-nocu { display: none !important; }
 .sw-tree[hidden], .sw-row[hidden] { display: none !important; }
 [data-sw="lesson-search"] { margin-top: 12px; }
+
+/* ── ⊕ Unit C (21 Oct 2026) — the weekly challenge sheet ─────────────────
+   Reuses the shell above; these are only the differences. A challenge row is
+   a div with its own buttons, not one big button, so it takes no pointer
+   cursor and no pressed look. The title is a sentence, not the mono step
+   word, so it is allowed to wrap and loses the tracking. */
+.sw-ch-row { cursor: default; }
+.sw-ch-act[hidden], .sw-ch-row .sw-row-tag[hidden], .sw-btn[hidden] { display: none; }
+.sw-ch-title {
+  text-align: left;
+  letter-spacing: 0;
+  text-transform: none;
+  white-space: normal;
+  font: 600 16.5px/1.25 var(--st-ui);
+  color: var(--st-ink);
+}
+.sw-ch-due { margin: 0 0 14px; }
+.sw-ch-note { margin-top: 12px; }
+.sw-ch-row[data-sw-state="error"] .sw-row-tag { color: var(--danger, #B3261E); }

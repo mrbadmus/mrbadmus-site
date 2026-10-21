@@ -58,6 +58,14 @@
     .subject-card .sc-name { font-family: var(--font-serif); font-optical-sizing: auto; font-weight: 600; font-size: 1rem; }
     .subject-card .sc-done { font-size: 0.75rem; color: var(--muted); margin-top: 6px; }
     .subject-card .sc-done.completed { color: var(--biology); }
+    /* Unit C — staff only, drawn by shared/set-work.js once the feature is ready. */
+    .subject-card .sc-hw {
+      display: block; margin: 12px auto 0; padding: 8px 14px; border-radius: 10px; cursor: pointer;
+      font: inherit; font-size: 0.85rem; font-weight: 600; color: var(--text); background: var(--sunken);
+      border: 1px solid var(--border-strong);
+    }
+    .subject-card .sc-hw:hover { border-color: var(--accent); }
+    @media (max-width: 600px) { .subject-card .sc-hw { margin: 0 0 0 auto; flex: none; } }
 
     .profile-track {
       display: inline-block; margin: 0 auto 20px; padding: 7px 18px;
@@ -337,6 +345,7 @@
   var timerInterval = null;
   var startTime = null;
   var completedChallenges = {};
+  var staffViewer = false;
 
   fetch(RENDER_URL + '/api/health').catch(function(){});
 
@@ -413,6 +422,7 @@
         // bounce into the GCSE profile wizard). Keyed on key_stage so incomplete
         // GCSE students still get routed to finish their profile, not this.
         var isStaff = ['teacher', 'hod', 'admin'].indexOf(profileRes.data.role) !== -1;
+        staffViewer = isStaff;
         if (!isStaff && profileRes.data.key_stage === 'KS3') {
           document.getElementById('loading').style.display = 'none';
           document.getElementById('ks3-message').style.display = 'block';
@@ -449,11 +459,77 @@
       }
     } catch(e) { console.error('Status fetch error:', e); }
 
+    // Unit C — the class page's weekly-challenge row links here with
+    // ?subject=physics. It selects exactly what a tap on that card selects
+    // (so a finished subject still reads "Already completed"); anything
+    // else in the query is ignored.
+    try {
+      var wantSubject = new URLSearchParams(window.location.search).get('subject');
+      if (['biology', 'chemistry', 'physics'].indexOf(wantSubject) !== -1) {
+        pickSubject(wantSubject, document.getElementById('sc-' + wantSubject));
+      }
+    } catch (e) { /* no query: the picker starts empty, as it always did */ }
+
     document.getElementById('loading').style.display = 'none';
     document.getElementById('picker').style.display = 'block';
     updateCountdown();
+    if (staffViewer) { offerSetAsHomework(); }
   }
   init();
+
+  // Unit C — "Set as homework", staff only, and only once the backend says the
+  // feature is ready. Until then nothing about it is on the page: the heavy
+  // teacher stack (set-work.js and the teacher design tokens) is not even
+  // downloaded for a pupil, and is not downloaded for a teacher either while
+  // /ready is false. The stack's URLs live in the inert <template> at the foot
+  // of the page so the build stamps them like any other asset.
+  function offerSetAsHomework() {
+    // init() starts at parse time and can finish before the parser has reached
+    // the <template> at the foot of the page.
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', offerSetAsHomework, { once: true });
+      return;
+    }
+    var tpl = document.getElementById('staff-assets');
+    if (!tpl || !tpl.content) return;
+    var tags = tpl.content.querySelectorAll('link[href], script[src]');
+    var items = [];
+    for (var i = 0; i < tags.length; i++) {
+      items.push({ css: tags[i].tagName === 'LINK', url: tags[i].getAttribute(tags[i].tagName === 'LINK' ? 'href' : 'src') });
+    }
+    // /ready is asked with a plain fetch first: no stack loads while it is false.
+    fetch(RENDER_URL + '/api/teacher/set-work/challenge/ready', {
+      headers: { 'Authorization': 'Bearer ' + session.access_token }
+    }).then(function (r) { return r.ok ? r.json() : { ready: false }; })
+      .then(function (d) {
+        if (!d || d.ready !== true) return;
+        items.filter(function (x) { return x.css; }).forEach(function (x) {
+          var l = document.createElement('link'); l.rel = 'stylesheet'; l.href = x.url;
+          document.head.appendChild(l);
+        });
+        return items.filter(function (x) { return !x.css; }).reduce(function (chain, x) {
+          return chain.then(function () {
+            return new Promise(function (res, rej) {
+              var s = document.createElement('script'); s.src = x.url; s.onload = res; s.onerror = rej;
+              document.body.appendChild(s);
+            });
+          });
+        }, Promise.resolve()).then(function () {
+          if (!window.MRBSetWork || !window.MRBSetWork.attachChallenge) return;
+          return window.MRBSetWork.attachChallenge({
+            ready: true,   // asked above, before the stack was downloaded
+            client: sb,
+            buttonClass: 'sc-hw',
+            hosts: {
+              biology: document.getElementById('sc-biology'),
+              chemistry: document.getElementById('sc-chemistry'),
+              physics: document.getElementById('sc-physics')
+            }
+          });
+        });
+      })
+      .catch(function () { /* staff control stays absent; the page is unaffected */ });
+  }
 
   // Generation can legitimately take ~30-60s on a cold track, plus Render
   // cold start. Beyond this we stop waiting rather than spin forever.
@@ -726,5 +802,12 @@
     document.getElementById('results-breakdown').innerHTML = html;
   }
 </script>
+<template id="staff-assets">
+  <link rel="stylesheet" href="/shared/teacher-ds.css?v=4c461633"/>
+  <link rel="stylesheet" href="/shared/set-work.css?v=c41ff568"/>
+  <script src="/shared/teacher-guard.js?v=207daf14"></script>
+  <script src="/shared/teacher-data.js?v=107e2c3a"></script>
+  <script src="/shared/set-work.js?v=0bbb3e12"></script>
+</template>
 </body>
 </html>

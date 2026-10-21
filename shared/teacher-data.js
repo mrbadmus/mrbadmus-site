@@ -283,6 +283,18 @@ window.MrBadmusTeacherData = (function () {
   function isCatchUp(row) {
     return !!row && Array.isArray(row.recipient_ids) && row.recipient_ids.length > 0;
   }
+  /* ⊕ Unit C (21 Oct 2026) — a teacher-set WEEKLY CHALLENGE is an
+     `assignments` row (`quiz_type = 'weekly_challenge'`) with no questions and
+     no submissions: pupils play it at /weekly-challenge.html and the score
+     lands in `weekly_scores`. It is homework in NO figure — not an
+     assignment count, not a completion denominator, not a marking column, not
+     a "not handed in". Every assignments read in this file takes them out at
+     the seam with this one predicate (loadClassMatrices keeps them apart in
+     `pack.challenges`, for the class page's own card). `quiz_type` exists on
+     production, so naming it in a select cannot 42703. */
+  function isChallenge(row) {
+    return !!row && row.quiz_type === 'weekly_challenge';
+  }
   function catchUpApplies(row, pupilId) {
     return !row || !row.recipient_ids || row.recipient_ids.indexOf(pupilId) > -1;
   }
@@ -413,7 +425,7 @@ window.MrBadmusTeacherData = (function () {
           .is('deleted_at', null),
         withRecipientIds(function (riCols) {
           return sb.from('assignments')
-            .select('id' + riCols)
+            .select('id, quiz_type' + riCols)
             .eq('class_id', classId)
             .is('deleted_at', null);
         }),
@@ -425,7 +437,7 @@ window.MrBadmusTeacherData = (function () {
       const student_count = studentsRes.count || 0;
       /* ⊕ Catch-up — split out at the seam: not a class assignment. */
       const assignmentIds = (assignmentsRes.data || [])
-        .filter(function (r) { return !isCatchUp(r); })
+        .filter(function (r) { return !isCatchUp(r) && !isChallenge(r); }) // ⊕ Unit C
         .map(function (r) { return r.id; });
       const assignment_count = assignmentIds.length;
 
@@ -1119,7 +1131,7 @@ window.MrBadmusTeacherData = (function () {
       withRecipientIds(function (riCols) {
         return sb.from('assignments')
           .select(
-            'id, title, due_at, release_at, source, set_by, subject_id' + riCols + ', ' +
+            'id, title, due_at, release_at, source, set_by, subject_id, quiz_type' + riCols + ', ' +
             'subject:subject_id ( id, name )'
           )
           .eq('class_id', classId)
@@ -1181,7 +1193,7 @@ window.MrBadmusTeacherData = (function () {
     });
 
     /* ⊕ Catch-up — split out at the seam; nothing below sees one. */
-    const assignments = (q3.data || []).filter(function (a) { return !isCatchUp(a); });
+    const assignments = (q3.data || []).filter(function (a) { return !isCatchUp(a) && !isChallenge(a); }); // ⊕ Unit C
     const assignmentIds = assignments.map(function (a) { return a.id; });
 
     // ── Stage B — Q4: submissions (only if there are assignments) ────
@@ -1491,7 +1503,7 @@ window.MrBadmusTeacherData = (function () {
       withRecipientIds(function (riCols) {
         return sb.from('assignments')
           .select(
-            'id, title, due_at, release_at, source, set_by, subject_id' + riCols + ', ' +
+            'id, title, due_at, release_at, source, set_by, subject_id, quiz_type' + riCols + ', ' +
             'subject:subject_id ( id, name )'
           )
           .eq('class_id', classId)
@@ -1589,7 +1601,7 @@ window.MrBadmusTeacherData = (function () {
     const klass = teacherRows[0].class;
     /* ⊕ Catch-up — this pupil's own catch-ups stay (labelled in the history,
        left out of the stats); one set for somebody else is not theirs. */
-    const assignments = (q3.data || []).filter(function (a) { return catchUpApplies(a, studentId); });
+    const assignments = (q3.data || []).filter(function (a) { return catchUpApplies(a, studentId) && !isChallenge(a); }); // ⊕ Unit C
     const assignmentIds = assignments.map(function (a) { return a.id; });
 
     // ── Stage B — Q5: this student's submissions (skip round-trip if
@@ -2121,7 +2133,7 @@ window.MrBadmusTeacherData = (function () {
     }
 
     // ── Stage A — three parallel reads, each chunked over the id list ──
-    let links, memberRows, assignmentRows, catchUpRows = [];
+    let links, memberRows, assignmentRows, catchUpRows = [], challengeRows = [];
     try {
       const [a, b, c] = await Promise.all([
         inChunks(ids, async function (chunk) {
@@ -2254,6 +2266,13 @@ window.MrBadmusTeacherData = (function () {
          `teacher_class_rollup_v2`'s `AND a.recipient_ids IS NULL`. */
       catchUpRows = assignmentRows.filter(isCatchUp);
       assignmentRows = assignmentRows.filter(function (r) { return !isCatchUp(r); });
+      /* ⊕ Unit C — AND THE SAME SEAM FOR THE WEEKLY CHALLENGE. Out of
+         `assignmentRows` here, so Stage B, the flashcard reads, the matrix,
+         the roster, the grid, the digest and every insight start from a list
+         that cannot hold one. Kept whole in `challengeRows`, drawn only by the
+         class page's own card (`pack.challenges`). */
+      challengeRows = assignmentRows.filter(isChallenge);
+      assignmentRows = assignmentRows.filter(function (r) { return !isChallenge(r); });
     } catch (err) {
       const stage = err && err.__stage ? err.__stage : 'class_teachers';
       const e = new Error('[teacher-data] ' + stage + ' query failed: ' + (err && err.message));
@@ -2672,6 +2691,20 @@ window.MrBadmusTeacherData = (function () {
       });
     });
 
+    /* ⊕ Unit C — per class, the weekly-challenge rows: a title and a deadline.
+       No count of who has played: this loader reads `assignments` directly and
+       `weekly_scores` is not the teacher's to read, so the number lives only
+       in the backend's `week_work`; an invented number is worse than none. */
+    const challengesByClass = new Map();
+    challengeRows.forEach(function (a) {
+      if (!challengesByClass.has(a.class_id)) challengesByClass.set(a.class_id, []);
+      challengesByClass.get(a.class_id).push({
+        id: a.id, title: a.title, due_at: a.due_at, release_at: a.release_at,
+        created_at: a.created_at, academic_week: a.academic_week,
+        subject: a.set_subject || null,
+      });
+    });
+
     const out = {};
     byClassId.forEach(function (entry, id) {
       const klass = entry.klass;
@@ -2696,6 +2729,8 @@ window.MrBadmusTeacherData = (function () {
         submissions: submissionsByClass.get(id) || [],
         // ⊕ Catch-up — kept apart from both lists above, on purpose.
         catch_ups: catchUpsByClass.get(id) || [],
+        // ⊕ Unit C — the weekly-challenge rows, kept apart from `assignments`.
+        challenges: challengesByClass.get(id) || [],
         // ⊕ MRB-351 landing — per-pupil MAX(flashcard_sessions.last_seen_at),
         // scoped to this class's own released flashcard assignments. `{}`
         // for a class with no flashcard work (the common case today);
@@ -3976,6 +4011,7 @@ window.MrBadmusTeacherData = (function () {
     loadClassMatrices,
     // ⊕ Catch-up — the one definition, for every teacher-side reader.
     isCatchUp,
+    isChallenge,
     catchUpApplies,
     // ⊕ MRB-348 WS-2 — the server-side aggregate behind the summary screens.
     loadClassSummaries,

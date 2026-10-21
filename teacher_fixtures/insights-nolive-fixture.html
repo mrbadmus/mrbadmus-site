@@ -627,6 +627,16 @@ function MRB_CATCH_UPS(classId, weeks, wi){
   if(!list.length||!L||!L.catchUpsForWeek){return [];}
   return L.catchUpsForWeek(list, weeks||[], wi||0);}
 
+/* ⊕ Unit C — the weekly challenges set in the selected week, bucketed by the
+   same week-bar rule as a catch-up (`catchUpsForWeek` is generic over
+   `weekIdx`). DEFENSIVE for the same reason: an older payload or a fixture
+   without the key means "none". */
+function MRB_CHALLENGES(classId, weeks, wi){
+  var d=window.__MRB_DATA__, L=window.MrBadmusTeacherLive;
+  var list=(d&&d.CHALLENGES&&d.CHALLENGES[classId])||[];
+  if(!list.length||!L||!L.catchUpsForWeek){return [];}
+  return L.catchUpsForWeek(list, weeks||[], wi||0);}
+
 /* ⊕ CATCH-UP — one pupil's own, for the student screen. [] when the pupil is
    unknown or the key is absent. */
 function MRB_STUDENT_CATCH_UPS(classId, studentId){
@@ -2881,6 +2891,25 @@ class Component extends DCLogic {
          homework figure. */
       catchUps: MRB_CATCH_UPS(k.id, kWeeks, wi),
       hasCatchUps: MRB_CATCH_UPS(k.id, kWeeks, wi).length > 0,
+      /* ⊕ Unit C — the weekly challenges set in the week in view. */
+      challenges: MRB_CHALLENGES(k.id, kWeeks, wi).map((c) => ({
+        id: c.id, title: c.title,
+        dueLine: c.due ? 'Closes ' + c.due : '',
+        removeLabel: s.delArm === c.id ? 'Remove? Press again' : 'Remove',
+        remove: (e) => {
+          e.stopPropagation();
+          if (s.delArm !== c.id) { this.setState({ delArm: c.id }); return; }
+          this.setState({ delArm: '' });
+          MRB_DELETE_SET_WORK(c.id).then((r) => {
+            if (!r.ok) { this.ping(MRB_DELETE_SET_WORK_WHY(r.error)); return; }
+            this.ping(c.title + ' \u00b7 Removed');
+            if (typeof window.MRB_SET_WORK_DONE === 'function') {
+              window.MRB_SET_WORK_DONE({ title: c.title, deleted: true });
+            }
+          });
+        }
+      })),
+      hasChallenges: MRB_CHALLENGES(k.id, kWeeks, wi).length > 0,
       /* ⊕ CATCH-UP — the student screen's own list: THIS pupil's, matched on
          the pupil's id. One set for somebody else is never theirs. */
       studentCatchUps: MRB_STUDENT_CATCH_UPS(k.id, this.state.studentId),
@@ -3458,7 +3487,7 @@ window.__MRB_MOUNT__ = function () {
   }));
 };
 </script>
-<script>window.__MRB_ASSET_V__={"account.js":"7230a8eb","brand/brand.css":"9c818614","brand/brand.js":"a4ee216b","brand/mrbadmus-favicon.svg":"414f7a61","brand/mrbadmus-icon-light-512.png":"cffd3cc4","breakdown.css":"87c6fa1b","breakdown.js":"0bea6ba7","class-csv-upload.js":"513ee889","class-entry.js":"8c087f18","config.js":"bb268b6f","figures-ks3.js":"efe2cfd6","figures-ks4.js":"a2fa6f5f","flashcard-breakdown.js":"baf47828","flashcard-decks.css":"3da3c46d","flashcard-decks.js":"2610cf68","formulae.js":"e4bfb091","rum.js":"66210c21","set-work.css":"f09e8a40","set-work.js":"2c701b45","shoutouts.js":"23393220","teacher-admin-nav.js":"d48cc15e","teacher-data.js":"076d479b","teacher-guard.js":"207daf14","teacher-live.js":"d38dde53","teacher-picker.js":"8f2365b7","teacher-topbar.css":"e4a3d0a7","teacher-topbar.js":"70c076e1","theme.js":"f04be205","wrapped.css":"ae26c56e","wrapped.js":"a31d709c"};</script>
+<script>window.__MRB_ASSET_V__={"account.js":"7230a8eb","brand/brand.css":"9c818614","brand/brand.js":"a4ee216b","brand/mrbadmus-favicon.svg":"414f7a61","brand/mrbadmus-icon-light-512.png":"cffd3cc4","breakdown.css":"87c6fa1b","breakdown.js":"0bea6ba7","class-csv-upload.js":"513ee889","class-entry.js":"8c087f18","config.js":"bb268b6f","figures-ks3.js":"efe2cfd6","figures-ks4.js":"a2fa6f5f","flashcard-breakdown.js":"baf47828","flashcard-decks.css":"3da3c46d","flashcard-decks.js":"2610cf68","formulae.js":"e4bfb091","rum.js":"66210c21","set-work.css":"c41ff568","set-work.js":"0bbb3e12","shoutouts.js":"23393220","teacher-admin-nav.js":"d48cc15e","teacher-data.js":"107e2c3a","teacher-guard.js":"207daf14","teacher-live.js":"977ceff1","teacher-picker.js":"8f2365b7","teacher-topbar.css":"e4a3d0a7","teacher-topbar.js":"70c076e1","theme.js":"f04be205","wrapped.css":"ae26c56e","wrapped.js":"a31d709c"};</script>
 <script src="/shared/teacher-admin-nav.js?v=d48cc15e"></script>
 <link rel="stylesheet" href="/shared/teacher-topbar.css?v=e4a3d0a7">
 <script src="/shared/teacher-topbar.js?v=70c076e1"></script>

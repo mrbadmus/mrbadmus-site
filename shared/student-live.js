@@ -676,6 +676,56 @@
     return days + " days left";
   }
 
+  /* ⊕ Unit C (21 Oct 2026) — the class page's rows for teacher-set WEEKLY
+     CHALLENGES. A pure function of its inputs so it can be pinned without a
+     browser (tools/student_challenge_rows_test.js); also the reason it is
+     declared here, hoisted, and handed to the test through
+     `window.__MRB_WC_ROWS__` below.
+
+     `cards` are the pupil's own `assignments` rows of kind `weekly_challenge`
+     (RLS-filtered, so already released and already this class's). `weekWork`
+     is the backend's list, optional: its `challenge.done` is the only place
+     that knows a pupil has played (`weekly_scores`). Returns rows in the shape
+     `work` rows take, plus `wc: true`. */
+  function weeklyChallengeRows(cards, weekWork, ctx) {
+    var info = {};
+    (Array.isArray(weekWork) ? weekWork : []).forEach(function (w) {
+      if (w && w.challenge) { info[w.id] = w.challenge; }
+    });
+    function subjectOf(c) {
+      var i = info[c.id];
+      var s = String((i && i.subject) || c.subject_name ||
+                     (/:\s*(\w+)\s*$/.exec(c.title || "") || [])[1] || "").toLowerCase();
+      return (s === "biology" || s === "chemistry" || s === "physics") ? s : "";
+    }
+    return (cards || []).map(function (c) {
+      var played = !!(info[c.id] && info[c.id].done);
+      var subj = subjectOf(c);
+      var isOpen = !played && !(c.due_at && Date.parse(c.due_at) < ctx.serverNow);
+      return {
+        id: c.id,
+        wc: true,
+        week: (ctx.weeks[c.id] != null) ? ctx.weeks[c.id]
+          : ((ctx.currentWeek != null) ? ctx.currentWeek : ctx.weekOf(c)),
+        title: c.title || "",
+        brief: "",
+        status: isOpen ? "open" : "closed",
+        played: played,
+        /* The deadline, in every state: it is the one fact the expanded panel
+           has that the row's own word (PLAYED / CLOSED) does not say, and an
+           empty panel under a played row reads as broken. */
+        detail: c.due_at ? ctx.fmtDue(c.due_at) : "",
+        lessons: [],
+        lessonHref: "",
+        /* Every state links to the same page; it says "Already completed" to
+           a pupil who has played and takes a new one into the quiz. */
+        assignmentHref: "/weekly-challenge.html" + (subj ? "?subject=" + subj : ""),
+        noClose: true
+      };
+    });
+  }
+  window.__MRB_WC_ROWS__ = weeklyChallengeRows;
+
   function fmtDue(iso) {
     if (!iso) { return "NO DEADLINE SET"; }
     return "DUE " + fmtDay(iso) + ", " + fmtTime(iso);
@@ -3455,8 +3505,18 @@
       return Math.max(1, Math.min(39, wk));
     }
 
-    var cards = detail.assignmentsDueNow
+    var allCards = detail.assignmentsDueNow
       .concat(detail.assignmentsComingUp, detail.assignmentsDone);
+    /* ⊕ Unit C (21 Oct 2026) — THE WEEKLY CHALLENGE IS NOT A QUESTION SET.
+       A teacher-set `weekly_challenge` row has no questions and is never
+       handed in (the pupil plays it at /weekly-challenge.html and the score
+       lands in `weekly_scores`). It is taken out of `cards` HERE, once, so
+       nothing downstream can count it: not the bench pick, not "N questions",
+       not the answered/qtotal bar, not the reopen button, not the Handed-in /
+       On-time / Avg tiles, not the flashcard bench, not the reminder filter.
+       It comes back as a plain row, appended after `work` is built. */
+    var challengeCards = allCards.filter(function (c) { return c && c.kind === "weekly_challenge"; });
+    var cards = allCards.filter(function (c) { return !(c && c.kind === "weekly_challenge"); });
     /* ⊕ Stage B — kept under its own name: `cards` is re-declared (the
        flashcard deck, `rankDeck()`) further down this same function. */
     var assignmentCards = cards;
@@ -3589,6 +3649,10 @@
       cards.forEach(function (c) { byId[c.id] = c; });
       var open = current.week_work.filter(function (w) {
         if (!w || w.source !== "teacher") { return false; }
+        /* ⊕ Unit C — the weekly challenge is never the bench's homework (it
+           is also absent from `cards`, so the lookup below would drop it;
+           this says so on the row itself). */
+        if (w.challenge) { return false; }
         /* ⊕ MRB-336, 8 Sep 2026 — THE WEEK RE-CHECK IS GONE, AND ITS REMOVAL
            IS THE FIX RATHER THAN A TIDY-UP.
 
@@ -3899,6 +3963,28 @@
       if (c.is_submitted && c.due_at && !c.on_time) { row.late = true; }
       return row;
     });
+
+    /* ── ⊕ Unit C — THE WEEKLY CHALLENGE ROWS ──────────────────────────────
+       "Weekly challenge: Physics", linking to the challenge page with the
+       subject preselected. Three states and no others:
+
+         open    — before `due_at` (the Friday the challenge closes) and not
+                   played. Counts in the To do tab; a pupil has something to do.
+         closed  — played (`done`) or past `due_at`. Never "missed" or "late":
+                   there is nothing to hand in late. The word on the row is
+                   PLAYED or CLOSED. Neither is a to-do, neither is "marked",
+                   so no tile (Handed in, On time, Avg score) can see them —
+                   the class view's `all` excludes `wc` rows from those sums
+                   (student_rulings.py, "weekly challenge").
+
+       `done` comes from the backend's `week_work[].challenge.done` — the one
+       place that knows (`weekly_scores`). A row absent from `week_work` (an
+       older week) has no `done` to read, so once its week has gone it is just
+       CLOSED; the page does not guess that someone played. */
+    weeklyChallengeRows(challengeCards, current && current.week_work, {
+      weeks: weeks, currentWeek: current ? current.week : null,
+      weekOf: weekOf, serverNow: serverNow, fmtDue: fmtDue
+    }).forEach(function (row) { work.push(row); });
 
     /* ── ⊕ RULED 22 Aug 2026 — P4. IS THIS WEEK'S WORK DONE? ─────────────
        The bench shows THIS WEEK'S assignment, so its state is that one card's

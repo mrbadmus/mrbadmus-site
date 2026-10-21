@@ -7585,3 +7585,74 @@ LOGIC["assignment"].append((
     "      });\n"
     "    });",
 ))
+
+
+# ══════════════════════════════════════════════════════════════════════════
+# ⊕ UNIT C (21 Oct 2026) — THE WEEKLY CHALLENGE ON THE CLASS PAGE
+# ══════════════════════════════════════════════════════════════════════════
+#
+# A teacher can put this week's weekly challenge on a class's list. The row
+# arrives from shared/student-live.js as `{wc: true, status: 'open'|'closed',
+# played, assignmentHref}`. It is not a question set and is never handed in:
+#
+#   · `all` (what every tile, the week strip and the week select count) is
+#     the work WITHOUT those rows, so Handed in / On time / Avg score and the
+#     "N MARKED" caption cannot see them. The rows are held in `wcRows` and
+#     added back only where a pupil READS the list: the rows themselves and
+#     the All / To do counts. 'closed' is neither To do nor Marked.
+#   · the word on the row is the date while open, PLAYED once played (green),
+#     CLOSED once the week is out. Never MISSED, never MARKED.
+#   · one button, straight to /weekly-challenge.html?subject=…; no footnote
+#     ("counts towards week N" is a claim about a question set).
+LOGIC["class view"].extend([
+    (
+        "    const all = fresh ? [] : this.work;\n",
+        "    /* ⊕ Unit C — weekly-challenge rows are held out of every sum. */\n"
+        "    const allWork = fresh ? [] : this.work;\n"
+        "    const wcRows = allWork.filter((w) => w.wc);\n"
+        "    const all = allWork.filter((w) => !w.wc);\n",
+    ),
+    (
+        "    const inWk = st.week != null ? all.filter((w) => w.week === st.week) : all;\n",
+        "    const inWk = st.week != null ? all.filter((w) => w.week === st.week) : all;\n"
+        "    const wcWk = st.week != null ? wcRows.filter((w) => w.week === st.week) : wcRows;\n",
+    ),
+    (
+        "      { id: 'all', label: 'All', n: inWk.length },\n"
+        "      { id: 'todo', label: 'To do', n: inWk.filter((w) => w.status === 'open' || w.status === 'missed').length },\n",
+        "      { id: 'all', label: 'All', n: inWk.length + wcWk.length },\n"
+        "      { id: 'todo', label: 'To do', n: inWk.concat(wcWk).filter((w) => w.status === 'open' || w.status === 'missed').length },\n",
+    ),
+    (
+        "    let list = all;\n",
+        "    let list = wcRows.concat(all);\n",
+    ),
+    (
+        "w.status === 'missed' ? 'MISSED' : 'MARKED';",
+        "w.status === 'missed' ? 'MISSED' : w.wc ? (w.played ? 'PLAYED' : 'CLOSED') : 'MARKED';",
+    ),
+    (
+        "w.status === 'missed' ? 'MISSED' : ('MARKED' + (w.late ? ' \\u00B7 late' : ''));",
+        "w.status === 'missed' ? 'MISSED' : w.wc ? (w.played ? 'PLAYED' : 'CLOSED') : ('MARKED' + (w.late ? ' \\u00B7 late' : ''));",
+    ),
+    (
+        "isMarked ? 'var(--pg-ok-text)' : 'var(--st-caption)',",
+        "(isMarked || (w.wc && w.played)) ? 'var(--pg-ok-text)' : 'var(--st-caption)',",
+    ),
+    (
+        "        footNote: w.status === 'open' ? 'COUNTS",
+        "        footNote: (w.status === 'open' && !w.wc) ? 'COUNTS",
+    ),
+    (
+        "        primaryLabel: w.retake ? 'Retake it' :",
+        "        primaryLabel: w.wc ? (w.status === 'open' ? 'Play the challenge' : 'Open the challenge') : w.retake ? 'Retake it' :",
+    ),
+    (
+        "        primary: (w.reopenHref && !w.retake)\n",
+        "        primary: w.wc ? () => { window.location.href = w.assignmentHref; } : (w.reopenHref && !w.retake)\n",
+    ),
+    (
+        "      emptyNote: (fresh || !all.length) ?",
+        "      emptyNote: (fresh || (!all.length && !wcRows.length)) ?",
+    ),
+])
