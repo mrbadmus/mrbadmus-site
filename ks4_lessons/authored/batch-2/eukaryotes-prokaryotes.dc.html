@@ -388,7 +388,7 @@ class Component extends DCLogic {
       eqLine: ready && K.src(slug).equations ? K.src(slug).equations[0] : '',
       cfExamples: ready && F.length >= 2 ? [
         { tab: 'Nothing to convert', head: F[0].question, next: 'Next: an answer that has to end in µm.',
-          steps: withNote(K.cfifa(F[0], 'Nothing to convert: both lengths are in mm.'), 4, 'In standard form: ×1 × 10⁴.') },
+          steps: withNote(K.cfifa(F[0], 'Nothing to convert: both lengths are in mm.'), 4, 'In standard form: 1 × 10⁴.') },
         { tab: 'Answer in µm', head: F[1].question, next: 'Next: one that needs converting before you start.',
           steps: withNote(K.cfifa(F[1], 'Nothing to convert before substituting: the image size is in mm.'), 3, 'The question asks for µm, so the conversion comes after the division here.') },
         { tab: 'Convert first', head: 'A bacterium 2 µm long is shown 12 mm long in a photograph. Calculate the magnification.', next: 'Now yours, below.',
