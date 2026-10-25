@@ -79,6 +79,7 @@
   var S = {
     view: VIEWS.indexOf(qs.get('view')) >= 0 ? qs.get('view') : 'home',
     childId: qs.get('child') || null,
+    childGiven: !!qs.get('child'),
     open: qs.get('open') || null,
     kid: qs.get('kid') || 'all',
     subj: SUBJECTS.indexOf(qs.get('subj')) >= 0 ? qs.get('subj') : '',
@@ -99,7 +100,7 @@
       if (st.subj) { x.subj = st.subj; }
       if (st.sort !== 'newest') { x.sort = st.sort; }
     }
-    if (st.open) { x.open = st.open; if (st.view === 'home' && st.childId) { x.child = st.childId; } }
+    if (st.open) { x.open = st.open; if (st.childId && st.childGiven) { x.child = st.childId; } }
     return C.href('/consumer/family.html', x);
   }
   function push(changes, opts) {
@@ -118,6 +119,7 @@
     var q = new URLSearchParams(window.location.search);
     S.view = VIEWS.indexOf(q.get('view')) >= 0 ? q.get('view') : 'home';
     S.childId = q.get('child') || S.childId;
+    S.childGiven = !!q.get('child');
     S.open = q.get('open') || null;
     S.kid = q.get('kid') || 'all';
     S.subj = SUBJECTS.indexOf(q.get('subj')) >= 0 ? q.get('subj') : '';
@@ -131,8 +133,23 @@
   }
 
   /* ── loads ──────────────────────────────────────────────────────────── */
-  function loadFamily() {
-    return C.api('/api/consumer/family', { token: ctx.token }).then(function (d) {
+  /* One request per path per page load: a second caller shares the first
+     one's answer (or its in-flight promise). `fresh` asks again — after a
+     write the page has to see what changed. */
+  var got = {};
+  function get(path, fresh) {
+    if (fresh || !got[path]) {
+      got[path] = C.api(path, { token: ctx.token }).catch(function (e) { delete got[path]; throw e; });
+    }
+    return got[path];
+  }
+  /* A rate-limited request (429) is said plainly, never as a code. */
+  function failLine(e) {
+    if (e && e.status === 429) { return ['Too many requests just now.', 'Try again in a minute.']; }
+    return [e && e.message, 'Refresh in a moment. If it keeps happening, email support@mrbadmus.com.'];
+  }
+  function loadFamily(fresh) {
+    return get('/api/consumer/family', fresh).then(function (d) {
       d = d || {};
       S.fam = d.family || {};
       S.sub = d.subscription || null;
@@ -145,16 +162,18 @@
     });
   }
   function loadHome() {
-    return C.api('/api/consumer/family/home', { token: ctx.token })
+    return get('/api/consumer/family/home')
       .then(function (d) { S.home = d || {}; })
       .catch(function (e) { S.home = { error: e }; });
   }
-  function loadActivity(cid) {
-    if (S.act[cid]) { return Promise.resolve(S.act[cid]); }
+  var actWait = {};
+  function loadActivity(cid, fresh) {
+    if (!fresh && actWait[cid]) { return actWait[cid]; }
     S.act[cid] = { loading: true };
-    return C.api('/api/consumer/children/' + encodeURIComponent(cid) + '/activity', { token: ctx.token })
+    actWait[cid] = get('/api/consumer/children/' + encodeURIComponent(cid) + '/activity', fresh)
       .then(function (d) { S.act[cid] = d || {}; return S.act[cid]; })
-      .catch(function (e) { S.act[cid] = { error: e }; return S.act[cid]; });
+      .catch(function (e) { S.act[cid] = { error: e }; delete actWait[cid]; return S.act[cid]; });
+    return actWait[cid];
   }
   function pastKey() { return [S.kid, S.sort, S.subj].join('|'); }
   function loadPast() {
@@ -164,7 +183,7 @@
     var q = '?sort=' + encodeURIComponent(S.sort) + (S.subj ? '&subject=' + encodeURIComponent(S.subj) : '');
     var path = S.kid === 'all' ? '/api/consumer/family/past-work'
       : '/api/consumer/children/' + encodeURIComponent(S.kid) + '/past-work';
-    return C.api(path + q, { token: ctx.token })
+    return get(path + q)
       .then(function (d) { S.past[key] = { weeks: (d && d.weeks) || [] }; })
       .catch(function () {
         /* No /past-work on this backend yet: the same weeks, from each
@@ -369,7 +388,8 @@
     var s = m.score;
     if (s) {
       var parts = [];
-      if (s.marked_available > 0) { parts.push(s.marked_scored + '/' + s.marked_available + ' marked'); }
+      /* "0 of 2 marks", not "0/2 marked" — which read as nothing marked. */
+      if (s.marked_available > 0) { parts.push(s.marked_scored + ' of ' + PS.plural(s.marked_available, 'mark')); }
       if (s.unmarked) { parts.push(PS.plural(s.unmarked, 'answer') + ' not marked'); }
       if (parts.length) { bits.push(parts.join(' · ')); }
     }
@@ -757,27 +777,56 @@
     return null;
   }
   var panelFor = null;
+  function inActivity(cid, id) {
+    var A = S.act[cid];
+    var list = (A && A.work_items) || [];
+    for (var i = 0; i < list.length; i++) { if (String(list[i].id) === String(id)) { return list[i]; } }
+    return null;
+  }
+  /* Which child owns work item `id`, and the item with its answers. The URL
+     names the child when the page made the link (child=); a hand-made or
+     older link may not, so every child's activity is asked, never just the
+     first child's. */
+  function resolveOpen(id) {
+    var cid = S.childGiven ? S.childId : null;
+    var row = findItem(id, cid);
+    if (!cid && row && row.child && row.child.id) { cid = row.child.id; }
+    if (!cid && row && S.view === 'past' && S.kid !== 'all') { cid = S.kid; }
+    if (cid) {
+      return loadActivity(cid).then(function () {
+        return { cid: cid, item: inActivity(cid, id) || row };
+      });
+    }
+    return Promise.all(S.kids.map(function (k) { return loadActivity(k.id); })).then(function () {
+      for (var i = 0; i < S.kids.length; i++) {
+        var hit = inActivity(S.kids[i].id, id);
+        if (hit) { return { cid: S.kids[i].id, item: hit }; }
+      }
+      return { cid: null, item: row };
+    });
+  }
   function openFromUrl() {
     if (!S.open) { if (panelFor) { panelFor = null; PS.closePanel(true); } return; }
     if (panelFor === S.open) { return; }
-    var cid = S.view === 'child' || S.view === 'home' ? S.childId : null;
-    var it = findItem(S.open, cid);
-    var show = function (item, childId) {
-      if (!item) { return; }
-      /* The past list may carry an item without its answers: they come from
-         that child's activity, by the item's id. */
-      if (!Array.isArray(item.answers) && PS.isTracked(item) && childId) {
-        loadActivity(childId).then(function () { show(findItem(item.id, childId) || Object.assign({ answers: [] }, item), null); });
-        return;
+    var want = S.open;
+    panelFor = want;
+    resolveOpen(want).then(function (r) {
+      if (S.open !== want) { return; }
+      if (!r.item) { panelFor = null; return; }
+      if (r.cid && (!S.childGiven || String(S.childId) !== String(r.cid))) {
+        S.childId = r.cid; S.childGiven = true;
+        history.replaceState(history.state, '', url());
+        if (S.view === 'child') { render(); }
       }
-      var who = (kidById(childId || (item.child && item.child.id) || S.childId) || {}).first_name || 'They';
-      panelFor = S.open;
+      /* A past-work row carries no answers; an untracked one has none to
+         carry. Either way the panel shows exactly what is saved. */
+      var item = Array.isArray(r.item.answers) ? r.item : Object.assign({ answers: [] }, r.item);
+      var who = (kidById(r.cid || (r.item.child && r.item.child.id)) || {}).first_name || 'They';
       PS.openPanel(item, who, function () {
         panelFor = null;
         if (history.state && history.state.psOpen) { history.back(); } else { replace({ open: null }); }
       });
-    };
-    show(it, (it && it.child && it.child.id) || cid);
+    });
   }
   function scrollToAnchor(id) {
     var el = document.getElementById(id);
@@ -797,10 +846,10 @@
     var openEl = t.closest('[data-open]');
     if (openEl && !openEl.disabled && openEl.getAttribute('data-open')) {
       ev.preventDefault();
-      var cid = openEl.getAttribute('data-cid') || openEl.getAttribute('data-go-child') || S.childId;
-      if (openEl.getAttribute('data-go-child') && S.view === 'home') {
-        S.childId = cid; S.view = 'child';
-      } else if (cid) { S.childId = S.view === 'past' ? S.childId : cid; }
+      var cid = openEl.getAttribute('data-cid') || openEl.getAttribute('data-go-child') || '';
+      if (openEl.getAttribute('data-go-child') && S.view === 'home') { S.view = 'child'; }
+      if (cid && cid !== 'all') { S.childId = cid; S.childGiven = true; }
+      else if (S.view !== 'child') { S.childGiven = false; }
       S.open = openEl.getAttribute('data-open');
       S.depth += 1;
       history.pushState({ psDepth: S.depth, psOpen: true }, '', url());
@@ -845,7 +894,7 @@
     var want = !k.paused;
     C.setBusy(el, true, '…');
     C.api('/api/consumer/children/' + encodeURIComponent(k.id) + '/pause', { method: 'POST', token: ctx.token, body: { paused: want } })
-      .then(function () { return loadFamily(); })
+      .then(function () { return loadFamily(true); })
       .then(function () {
         render();
         msg(want ? (k.first_name + '’s plan is paused. Nothing new will be set until you start it again.')
@@ -857,7 +906,7 @@
     var k = kidById(S.childId), id = el.getAttribute('data-id');
     C.setBusy(el, true, '…');
     C.api('/api/consumer/children/' + encodeURIComponent(k.id) + '/work/' + encodeURIComponent(id), { method: 'DELETE', token: ctx.token })
-      .then(function () { delete S.act[k.id]; return Promise.all([loadFamily(), loadActivity(k.id)]); })
+      .then(function () { return Promise.all([loadFamily(true), loadActivity(k.id, true)]); })
       .then(function () { render(); msg('Taken off their week.'); })
       .catch(function (e) {
         C.setBusy(el, false);
@@ -886,8 +935,8 @@
       .catch(function (e) {
         if (e && e.code === 'no_family') { return window.location.replace(C.href('/consumer/signup.html')); }
         if (C.isSignedOut(e)) { return C.signedOutPanel(document.getElementById('c-main'), '/parents/sign-in.html'); }
-        C.fail(document.getElementById('c-main'), e.message,
-               'Refresh in a moment. If it keeps happening, email support@mrbadmus.com.');
+        var fl = failLine(e);
+        C.fail(document.getElementById('c-main'), fl[0], fl[1]);
       });
   } });
 })();

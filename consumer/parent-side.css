@@ -72,7 +72,15 @@ body.ps-body { margin: 0; padding: 0; background: #FBF3E6; }
   border-bottom: 1px solid var(--ks3-rule); }
 .ps-head-in { max-width: 1360px; margin: 0 auto; display: flex; align-items: center; gap: 8px;
   min-height: 60px; padding: 0 20px; box-sizing: border-box; }
-.ps-head .mrb-brand { color: var(--ks3-ink); text-decoration: none; }
+.ps-head .mrb-brand { color: var(--ks3-ink); text-decoration: none; display: inline-flex; align-items: center; min-height: 44px; }
+/* Hit areas: the lockup link is 44px tall and each theme option 34×32 at
+   desktop (theme.js draws 30×28 there); the look is unchanged. Phones and
+   touch screens already get theme.js's own 44×44. */
+@media (min-width: 601px) and (pointer: fine) {
+  .ps-head .mrb-theme label { width: 34px; height: 32px; }
+}
+.ps-kid-root .c-head-theme { margin-left: auto; }
+@media (max-width: 599px) { .ps-kid-root .ps-head-title { display: none; } }
 .ps-nav { margin-left: 28px; display: flex; align-items: center; gap: 4px; }
 .ps-nav a { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 14px;
   border-radius: 10px; color: var(--ks3-ink-muted); font-weight: 600; font-size: 15px;
@@ -147,7 +155,9 @@ body.ps-body { margin: 0; padding: 0; background: #FBF3E6; }
 .ps-root .ps-banner a, .ps-banner button { border: 0; background: none; padding: 0; font-weight: 700;
   color: inherit; text-decoration: underline; text-underline-offset: 3px; white-space: nowrap; }
 .ps-avatar { display: grid; place-items: center; flex: none; width: 44px; height: 44px; border-radius: 13px;
-  background: var(--ks3-accent); color: #221E1B; font-family: var(--ks3-font-display); font-weight: 700;
+  /* #16120E, not Design's #221E1B: that measured 4.49:1 on the light
+     accent (the dashboard's own avatar fix, overview.html .dk-avatar). */
+  background: var(--ks3-accent); color: #16120E; font-family: var(--ks3-font-display); font-weight: 700;
   font-size: 20px; }
 .ps-link-btn { border: 0; background: none; padding: 0; font-weight: 700; font-size: 14px;
   color: var(--ks3-accent-text); text-decoration: none; }

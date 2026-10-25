@@ -549,6 +549,10 @@ def prescript(state="trialing", kids=2, checkout="ok", deletion=None, messages=N
     {}) answers them from parent_side_fixture.py. Opt-in, because the
     payloads are large and no older drive reads them."""
     fam = json.loads(json.dumps(family(state, kids, deletion)))
+    if ps and ps.get("reverse"):
+        # ⊕ parent-side: the second child first, so a link that names no
+        # child can be proved to find a work item that is NOT the first's.
+        fam["children"].reverse()
     if next_title is not None:
         fam["children"][0]["work"][1]["title"] = next_title
     if days_left != "fixture":

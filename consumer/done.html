@@ -32,6 +32,7 @@
 <div class="rd ps-root ps-kid-root" data-mode="ks3" id="ps-root">
   <header class="ps-head">
     <div class="ps-head-in">
+      <span id="ps-brand"></span>
       <a class="ps-back-link" id="ps-back" href="/consumer/today.html">
         <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>Today</a>
       <span class="ps-head-title">Everything you’ve done</span>
@@ -152,13 +153,16 @@
   });
 
   C.boot({ requireSession: true, signInPath: C.childLoginUrl, run: function (ctx) {
+    document.getElementById('ps-brand').innerHTML = C.brandLockup('/consumer/today.html');
     document.getElementById('ps-back').href = C.href('/consumer/today.html');
     render();
     return C.api('/api/consumer/child/activity', { token: ctx.token })
       .then(function (d) { S.data = d || { work_items: [] }; render(); syncPanel(); })
       .catch(function (e) {
         if (C.isSignedOut(e)) { return C.signedOutPanel(document.getElementById('c-main'), C.childLoginUrl); }
-        C.fail(document.getElementById('c-main'), 'We couldn’t load your work just now.', 'Try again in a minute.');
+        C.fail(document.getElementById('c-main'),
+          e && e.status === 429 ? 'Too many requests just now.' : 'We couldn’t load your work just now.',
+          'Try again in a minute.');
       });
   } });
 })();

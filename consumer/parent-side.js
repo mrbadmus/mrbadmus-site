@@ -186,8 +186,13 @@
   }
   /* {done, chip, dim} for any item, against `today` (a civil date). Work
      OPENS on its day (B2C unit 7, ruling 1) — nothing is "due". */
+  /* Done: the activity's `status`, or — on a past-work row, which carries
+     no status because every row there IS done — a done_at / done_day. */
+  function isDone(it) {
+    return !!it && !it.removed && (it.status === 'done' || (!it.status && !!(it.done_at || it.done_day)));
+  }
   function itemState(it, today) {
-    if (it.status === 'done') { return { done: true, chip: doneChip(it), dim: false }; }
+    if (isDone(it)) { return { done: true, chip: doneChip(it), dim: false }; }
     var d = String(it.scheduled_for || '').slice(0, 10);
     if (d && today && d < today) { return { done: false, dim: true, chip: { cls: 'notdone', glyph: 'dash', word: 'Not done' } }; }
     if (d && d === today) { return { done: false, dim: false, chip: { cls: 'today', glyph: 'dot', word: 'Today' } }; }
@@ -360,14 +365,14 @@
        week of the day each was done (London). */
     var by = {}, order = [];
     (items || []).forEach(function (it) {
-      if (it.status !== 'done' || it.removed) { return; }
+      if (!isDone(it)) { return; }
       if (subject && it.subject !== subject) { return; }
       var ws = mondayOf(itemDate(it)) || String(it.week_start || '').slice(0, 10);
       if (!by[ws]) { by[ws] = []; order.push(ws); }
       by[ws].push(it);
     });
     var groups = order.map(function (ws) {
-      var its = by[ws].slice().sort(function (a, b) { return String(b.done_at || '').localeCompare(String(a.done_at || '')); });
+      var its = by[ws].slice().sort(itemOrder(sort));
       var s = 0, a = 0, un = 0;
       its.forEach(function (it) {
         var sm = it.summary || {};
@@ -377,6 +382,27 @@
                score: { marked_scored: s, marked_available: a, unmarked: un, fraction: a > 0 ? s / a : null } };
     });
     return sortGroups(groups, sort);
+  }
+  /* Items inside a week: newest done first, or by their own marked
+     fraction for highest/lowest (nothing marked last) — the backend's
+     buildPastWork rule. */
+  function itemFrac(it) {
+    var s = (it && it.summary) || {};
+    var a = Number(s.marks_available) || 0;
+    return a > 0 ? (Number(s.marks_scored) || 0) / a : null;
+  }
+  function itemOrder(sort) {
+    var byDone = function (a, b) { return String(b.done_at || '').localeCompare(String(a.done_at || '')); };
+    if (sort === 'oldest') { return function (a, b) { return byDone(b, a); }; }
+    if (sort !== 'highest' && sort !== 'lowest') { return byDone; }
+    var dir = sort === 'lowest' ? -1 : 1;
+    return function (a, b) {
+      var fa = itemFrac(a), fb = itemFrac(b);
+      if (fa == null && fb == null) { return byDone(a, b); }
+      if (fa == null) { return 1; }
+      if (fb == null) { return -1; }
+      return (dir * (fb - fa)) || byDone(a, b);
+    };
   }
   function frac(g) { return g && g.score && g.score.fraction != null ? g.score.fraction : null; }
   function sortGroups(groups, sort) {
@@ -406,7 +432,7 @@
     glyph: glyph, weekLabel: weekLabel, dayShort: dayShort, dateShort: dateShort, dayOf: dayOf,
     fmtSecs: fmtSecs, kindLabel: kindLabel, subjKey: subjKey, subjHtml: subjHtml, plural: plural,
     markState: markState, verdict: verdict, chip: chip, itemScore: itemScore, itemTime: itemTime,
-    itemState: itemState, itemDate: itemDate, mondayOf: mondayOf, doneChip: doneChip, isTracked: isTracked,
+    itemState: itemState, itemDate: itemDate, mondayOf: mondayOf, isDone: isDone, doneChip: doneChip, isTracked: isTracked,
     panelHtml: panelHtml, openPanel: openPanel, closePanel: closePanel,
     groupWeeks: groupWeeks, sortGroups: sortGroups, weekSummary: weekSummary
   };

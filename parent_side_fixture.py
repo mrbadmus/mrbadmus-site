@@ -357,7 +357,9 @@ def past_work(child_ids=("kid-ada",), names=None, sort="newest", subject=""):
             x["score"] = {"marked_scored": sm["marks_scored"], "marked_available": sm["marks_available"],
                           "marked": sm["answered"] - sm["unmarked"], "unmarked": sm["unmarked"],
                           "fraction": (sm["marks_scored"] / sm["marks_available"]) if sm["marks_available"] else None}
-            x["status"] = "done"
+            # No `status`: the real past-work rows carry none (every row IS
+            # done) — the blind run's #1 defect hid behind a fixture that
+            # sent one.
             x["child"] = {"id": cid, "first_name": names.get(cid, cid)}
             weeks.setdefault(_monday(day), []).append(x)
     groups = []

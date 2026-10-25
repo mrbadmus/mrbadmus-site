@@ -81,7 +81,7 @@ def home(d):
                   "function(e){return e.className.replace('ps-day','').trim();})")
     check(states == ["is-done", "is-done", "is-today", "is-set", "", "", "is-set"],
           "the Mon–Sun strip follows the API's day states", states)
-    check("Exam question: Changes of state · 3/6 marked" in t, "most recent: title and marked score")
+    check("Exam question: Changes of state · 3 of 6 marks" in t, "most recent: title and marks (never '0/2 marked')")
     check("1 piece from earlier this week not done." in d.text(".ps-kid"),
           "Ada's card: her first attention line (overdue)")
     check("Wrong 2 times over 2 weeks: Why does the temperature stay the same while ice melts? (and 1 more)"
@@ -206,11 +206,44 @@ def past(d):
     heads = d.js("[].map.call(document.querySelectorAll('.ps-week-h h2'),function(e){return e.textContent;})")
     exp = ["Week of " + g["label"] for g in psf.past_work(("kid-ada", "kid-ben"), sort="lowest")["weeks"]]
     check(heads == exp, "lowest score first: weeks in the API's order", heads)
+    rows = d.js("document.querySelectorAll('.ps-weeks .ps-row').length")
+    dis = d.js("document.querySelectorAll('.ps-weeks .ps-row[disabled]').length")
+    chips = d.js("[].map.call(document.querySelectorAll('.ps-weeks .ps-row .ps-chip'),function(e){return e.textContent.trim();})")
+    allrows = [i for g in psf.past_work(("kid-ada", "kid-ben"), sort="lowest")["weeks"] for i in g["items"]]
+    check(rows == len(allrows) and dis == 0,
+          "every past-work row (no `status`, as the API sends it) is done and openable", (rows, dis))
+    check("Not done" not in chips and sorted(chips) == sorted(expected_chip(dict(i, status="done")) for i in allrows),
+          "past-work chips are the scores / honest states, never 'Not done'", chips)
+    d.click(".ps-weeks .ps-row[data-open='ada-w3']")
+    d.wait("!!document.querySelector('.ps-panel .ps-q')")
+    check("Level 2" in d.text(".ps-panel"), "All children: a past row opens with every question")
+    d.js("document.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape',bubbles:true}))")
+    d.wait("!document.querySelector('.ps-panel')")
     d.click("[data-act=subj][data-v=Chemistry]")
     d.wait("document.querySelector('[data-v=Chemistry]').getAttribute('aria-pressed')==='true'&&"
            "document.querySelectorAll('.ps-weeks .ps-row').length>0")
     subs = d.js("[].map.call(document.querySelectorAll('.ps-weeks .ps-row-sub'),function(e){return e.textContent;})")
     check(subs and all("Chemistry" in s for s in subs), "subject filter: only Chemistry", subs)
+    d.click(".ps-weeks .ps-row[data-open]")
+    d.wait("!!document.querySelector('.ps-panel .ps-q')")
+    check(True, "under a subject filter a row still opens with its questions")
+    d.open("consumer/family.html?view=past&kid=kid-ada", width=1440, state="trialing", kids=2, **PS)
+    d.wait("document.querySelectorAll('.ps-weeks .ps-row').length>0")
+    check(d.js("document.querySelectorAll('.ps-weeks .ps-row[disabled]').length") == 0, "per-child tab: rows openable")
+    d.click(".ps-weeks .ps-row[data-open='ada-w2']")
+    d.wait("document.querySelectorAll('.ps-panel .ps-q').length>0")
+    check(d.js("document.querySelectorAll('.ps-panel .ps-q').length") == 8, "per-child tab: every question")
+    check(d.js("new URLSearchParams(location.search).get('child')") == "kid-ada",
+          "an opened past row's link names its child")
+    print("\n── open= for a child who is not the first ──")
+    d.open("consumer/family.html?view=past&open=ada-w3", width=1440, state="trialing", kids=2, ps={"reverse": True})
+    d.wait("!!document.querySelector('.ps-panel .ps-q')", timeout=8000)
+    check("Level 2" in d.text(".ps-panel") and "Ada answered" in d.text(".ps-panel"),
+          "open= with no child finds the SECOND child's item, with its answers", d.text(".ps-panel")[:120])
+    check(d.js("new URLSearchParams(location.search).get('child')") == "kid-ada", "…and the URL now names her")
+    d.open("consumer/family.html?open=ada-w1", width=1440, state="trialing", kids=2, ps={"reverse": True})
+    d.wait("document.querySelectorAll('.ps-panel .ps-q').length>0", timeout=8000)
+    check(d.js("document.querySelectorAll('.ps-panel .ps-q').length") == 5, "home ?open= for the second child too")
     d.open("consumer/family.html?view=past", width=1440, state="trialing", kids=2, ps={"pastMissing": True})
     d.wait("document.querySelectorAll('.ps-week-h h2').length>0")
     heads2 = d.js("[].map.call(document.querySelectorAll('.ps-week-h h2'),function(e){return e.textContent;})")
@@ -234,6 +267,15 @@ def kid(d):
     d.click(".ps-wcard[data-open='ada-w3']")
     d.wait("!!document.querySelector('.ps-panel')")
     check("You answered" in d.text(".ps-panel"), "the child's panel says You")
+    check(d.js("!!document.querySelector('.ps-head .mrb-brand')"), "the child's page wears the lockup")
+    d.open("consumer/done.html?sort=highest", width=1440, state="trialing", kids=2, who="child", **PS)
+    d.wait("document.querySelectorAll('.ps-wcard').length>0")
+    faces = d.js("(function(){var s=document.querySelector('.ps-wgrid');return [].map.call(s.querySelectorAll('.ps-wscore'),"
+                 "function(e){return e.textContent.trim();});})()")
+    fr = [eval(f) if "/" in f else None for f in faces]
+    nums = [x for x in fr if x is not None]
+    check(nums == sorted(nums, reverse=True) and fr[:len(nums)] == nums,
+          "Best scores first orders items inside a week by score, unmarked last", faces)
     no_sideways(d, "done 1440")
     d.open("consumer/done.html", width=390, state="trialing", kids=2, who="child", **PS)
     d.wait("document.querySelectorAll('.ps-wcard').length>0")
