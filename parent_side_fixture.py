@@ -57,7 +57,7 @@ def mcq(item, kp, q, said, correct, ok, at, attempt=1, secs=None, qid=None):
         "marks_scored": 1 if ok else 0, "marks_available": 1,
         "points_hit": None, "points_total": None, "feedback": None,
         "mark_level": None, "mark_next_step": None, "marked_by": "key",
-        "mark_state": "scored", "unmarked_reason": None, "attempt_no": attempt,
+        "marking_state": "scored", "unmarked_reason": None, "attempt_no": attempt,
         "time_spent_seconds": secs, "answered_at": at,
     }
 
@@ -85,7 +85,7 @@ def written(item, kp, q, said, correct, got, of, at, level=None, nxt=None, feedb
         "mark_level": None if unmarked else level,
         "mark_next_step": None if unmarked else nxt,
         "marked_by": marked_by, "unmarked_reason": reason if unmarked else None,
-        "mark_state": ("self_checked" if reason == "self_checked" else "unmarked") if unmarked else "scored",
+        "marking_state": ("self_checked" if reason == "self_checked" else "unmarked") if unmarked else "scored",
         "attempt_no": 1, "time_spent_seconds": secs, "answered_at": at,
     }
 
@@ -183,7 +183,7 @@ def ada_items():
                   "breaking away from each other. When it is all water the temperature goes up again.",
                   "Energy is transferred to the ice; it is used to break the bonds between particles, "
                   "not to raise their kinetic energy, so the temperature stays at 0 °C until all is melted.",
-                  3, 6, "2026-09-30T07:40:00Z", level="Level 2",
+                  3, 6, "2026-09-30T07:40:00Z", level=2,
                   nxt="To reach Level 3: say the energy breaks the bonds between particles rather than "
                       "speeding them up.",
                   feedback="A clear idea that the energy does something other than heat the ice. Name the "
@@ -222,7 +222,7 @@ def ada_items():
                    "Both have a nucleus, cytoplasm and membrane and mitochondria. Plant cells also have a "
                    "cell wall, chloroplasts and a permanent vacuole, animal cells do not.",
                    "Shared: nucleus, cytoplasm, membrane, mitochondria, ribosomes. Plant only: cellulose wall, "
-                   "chloroplasts, permanent vacuole.", 5, 6, "2026-09-24T17:05:00Z", level="Level 3",
+                   "chloroplasts, permanent vacuole.", 5, 6, "2026-09-24T17:05:00Z", level=3,
                    feedback="Level 3: every structure named and sorted correctly. Ribosomes would complete it.",
                    secs=410)]
     u1 = "ada-u1"
@@ -244,7 +244,11 @@ def ada_items():
 
 def topics():
     def t(key, subject, status, marked, unmarked, right, wrong, partial, questions, seen):
+        lesson = {"cells": "Cells and organisation", "org": "Cells and organisation",
+                  "mag": "Cells and organisation", "diff": "Diffusion",
+                  "part": "Changes of state", "melt": "Changes of state"}[key]
         return {"id": KP[key][0], "label": KP[key][1], "subject": subject, "key_stage": "KS3",
+                "lesson": {"slug": lesson.lower().replace(" ", "-"), "name": lesson},
                 "status": status,
                 "basis": {"answers": marked + unmarked, "marked": marked, "unmarked": unmarked,
                           "right": right, "wrong": wrong, "partial": partial, "questions": questions},
@@ -391,8 +395,9 @@ def family_home(kids):
                                    "2026-10-02", "2026-10-03", "2026-10-04"]):
                 days.append({"date": d, "weekday": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"][i],
                              "state": states[i]})
-            att = [{"kind": "keeps_wrong", "topic": "Why does the temperature stay the same while ice melts?",
-                    "wrong_count": 2, "weeks": 2}]
+            att = [{"kind": "overdue", "due_count": 1},
+                   {"kind": "keeps_wrong", "topic": "Why does the temperature stay the same while ice melts?",
+                    "wrong_count": 2, "weeks": 2, "more": 1}]
             ch = {"id": cid, "first_name": k["first_name"], "year_group": k["year_group"], "key_stage": "KS3",
                   "username": k["username"], "last_active_at": "2026-09-30T07:50:00Z",
                   "days_inactive": 0, "never_logged_in": False,

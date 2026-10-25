@@ -52,7 +52,8 @@ body.ps-body { margin: 0; padding: 0; background: #FBF3E6; }
     --pv-no:#FF8F80;--pv-no-tint:#4A221E;--pv-paper:#342D28;--pv-rule-soft:#4D443B;--on-accent-text:#221E1B;
     color-scheme: dark;
   }
-  html[data-theme="dark"] .ps-root a { color: var(--ks3-accent-text); }
+  /* (0,1,2): beats the light `.ps-root a`, loses to every classed link. */
+  html[data-theme="dark"] :where(.ps-root) a { color: var(--ks3-accent-text); }
 }
 .ps-root a { color: #A93411; text-decoration: none; }
 .ps-root a:hover { text-decoration: underline; }
@@ -284,9 +285,11 @@ body.ps-body { margin: 0; padding: 0; background: #FBF3E6; }
   .ps-row-go { display: none; }
 }
 .ps-subj { font-weight: 600; }
-.ps-s-biology { color: var(--ks3-biology); }
-.ps-s-chemistry { color: var(--ks3-chemistry); }
-.ps-s-physics { color: var(--ks3-physics); }
+/* Subject WORDS take the text tones (the --ks3-biology/-chemistry/-physics
+   fills are 3.3–3.6:1 on the light card); the dots keep the fills. */
+.ps-s-biology { color: var(--ks3-ok-text); }
+.ps-s-chemistry { color: var(--ks3-accent-text); }
+.ps-s-physics { color: var(--ks3-blue-text); }
 .ps-dot { display: inline-block; width: 8px; height: 8px; border-radius: 99px; margin-right: 8px; vertical-align: middle; }
 .ps-d-biology { background: var(--ks3-biology); }
 .ps-d-chemistry { background: var(--ks3-chemistry); }
@@ -307,6 +310,8 @@ body.ps-body { margin: 0; padding: 0; background: #FBF3E6; }
 .ps-tgroup ul { margin: 0; padding: 8px 8px 10px; list-style: none; display: flex; flex-direction: column; }
 .ps-tgroup li { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 2px 10px; align-items: baseline; padding: 8px; }
 .ps-tgroup li .ps-mono { margin-left: auto; font-size: 12px; color: var(--ks3-ink-muted); text-align: right; }
+.ps-tgroup li.ps-tlesson { padding: 10px 8px 0; font-family: var(--ks3-font-mono); font-size: 11px; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--ks3-ink-muted); }
 .ps-tgroup li.is-none { font-size: 14px; color: var(--ks3-ink-muted); }
 
 .ps-wrongs { margin-top: 12px; display: grid; grid-template-columns: 1fr; gap: 14px; }

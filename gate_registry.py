@@ -2567,7 +2567,7 @@ GATES = [
                   "triple/foundation/chemistry/bonding/nanoparticles.html",
                   # ⊕ B2C repair, 3 Oct 2026 — the signed-in family pages,
                   # measured offline through consumer_dash_fixture.py.
-                  "consumer_dash_fixture.py", "consumer/overview.html",
+                  "consumer_dash_fixture.py", "parent_side_fixture.py", "consumer/overview.html",
                   "consumer/account.html", "consumer/consumer.css",
                   "consumer/consumer-common.js", "shared/config.js",
                   "shared/brand/brand.css", "shared/brand/brand.js",
@@ -2693,6 +2693,30 @@ GATES = [
              "--skip-timeout "
              "drops the one 26-second hanging-checkout wait; run without it "
              "to prove the timeout itself."),
+
+    # ── ⊕ 25 Oct 2026 · the parent-side rebuild ──────────────────────────
+    dict(name="parent_side_drive",
+         cmd=["python3", "parent_side_drive.py"],
+         speed="slow",
+         watches=["parent_side_drive.py", "parent_side_fixture.py", "consumer_dash_fixture.py",
+                  "consumer_dash_drive.py", "ks3_browser.py",
+                  "consumer/family.html", "consumer/done.html", "consumer/today.html",
+                  "consumer/parent-side.css", "consumer/parent-side.js",
+                  "consumer/consumer-common.js", "consumer/consumer.css",
+                  "shared/config.js", "shared/account.js", "shared/theme.js",
+                  "shared/ks3-theme.css", "shared/brand/**"],
+         why="Parent-side rebuild (docs/b2c/parent-side-plan.md), driven OFFLINE "
+             "on consumer_dash_fixture + parent_side_fixture: every number on "
+             "Home, a child and Past work is the API's; the work panel shows "
+             "every question, never calls an unmarked answer Right, says "
+             "Self-checked, shows a 6-mark answer's AQA level, a time only "
+             "where measured, and 'This activity isn't tracked yet.' for an "
+             "item that saves no answers; sort, subject filter and the "
+             "no-/past-work fallback agree with the API's order; Back returns "
+             "where the parent came from; nothing scrolls sideways at 390 or "
+             "1920; the panel is full screen below 700px; the desktop child "
+             "Today has two columns. Contrast for the same screens is "
+             "contrast_audit's 'parent-side/' entries."),
 
     # ── ⊕ 16 Oct 2026 · the theme control lives in the header ───────────
     dict(name="theme_placement_drive",
@@ -3128,6 +3152,12 @@ EXCLUDED = {
         "spells either one. Asserts nothing; `test_isolation` is the gate that "
         "proves no script names production, and every gate whose script "
         "imports this watches it.",
+    "parent_side_fixture.py":
+        "Import-only fixture (parent-side rebuild, 25 Oct 2026): the API "
+        "contract's parent-side payloads (family/home, activity with topics "
+        "and keeps_wrong, past-work, child/activity) that consumer_dash_fixture "
+        "serves when a caller passes `ps=`. No entry point; its callers "
+        "(parent_side_drive, contrast_audit) are gates and both watch it.",
     "consumer_dash_fixture.py":
         "Import-only fixture (B2C repair, 3 Oct 2026): the offline signed-in "
         "parent that contrast_audit.py and consumer_dash_drive.py load "

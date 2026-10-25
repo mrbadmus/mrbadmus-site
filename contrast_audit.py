@@ -820,6 +820,30 @@ for _lbl, _path, _who, _sel, _then in (
           wait=0.5, widths=[1280, 390])
 
 
+# ── ⊕ Parent-side rebuild (25 Oct 2026) — consumer/family.html and
+# consumer/done.html, every screen, on the offline fixture with the
+# parent-side payloads (consumer_dash_fixture `ps=`). The work panel is
+# measured OPEN (it is where the marking-state chips live). Both themes,
+# 1440 and 390 even under --quick: the panel is a side sheet on one and full
+# screen on the other, and the tab bar exists only on the phone.
+for _lbl, _path, _who, _sel, _then in (
+    ("parent-side/home", "consumer/family.html", "parent", ".ps-kid", ""),
+    ("parent-side/child", "consumer/family.html?view=child&child=kid-ada", "parent", "#week .ps-row", ""),
+    ("parent-side/child, work panel open", "consumer/family.html?view=child&child=kid-ada&open=ada-w1",
+     "parent", ".ps-panel .ps-q", ""),
+    ("parent-side/child, never logged in", "consumer/family.html?view=child&child=kid-ben", "parent", "#week", ""),
+    ("parent-side/past work", "consumer/family.html?view=past", "parent", ".ps-weeks .ps-row", ""),
+    ("parent-side/past work, 6-mark panel open", "consumer/family.html?view=past&open=ada-w3",
+     "parent", ".ps-panel .ps-q", ""),
+    ("parent-side/everything you've done", "consumer/done.html", "child", ".ps-wcard", ""),
+    ("parent-side/everything you've done, panel open", "consumer/done.html?open=ada-w8", "child",
+     ".ps-panel .ps-q", ""),
+):
+    _page(_lbl, _path, prescript=_cdf.prescript(state="trialing", kids=2, who=_who, ps={}),
+          setup=_ready(_sel)[:-len("return true;})()")] + _then + "return true;})()",
+          wait=0.5, widths=[1440, 390])
+
+
 # ══════════════════════════════════════════════════════════════════════════
 # INTERACTION STATES (theme-run audit, 27 Sep 2026) — "the contrast gate
 # missed all of these because it measures pages at rest." Every page above

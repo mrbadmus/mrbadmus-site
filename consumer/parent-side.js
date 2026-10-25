@@ -238,8 +238,12 @@
     if (last.correct_answer) {
       body += '<span class="k">Correct answer</span><span class="v">' + esc(last.correct_answer) + '</span>';
     }
-    if (last.mark_level) {
-      body += '<span class="k">AQA level</span><span class="v"><strong>' + esc(last.mark_level) + '</strong></span>';
+    if (last.mark_level != null && last.mark_level !== '') {
+      /* The backend sends the AQA level as a number (0–3); older rows may
+         carry the words. Either reads "Level 2". */
+      var lv = typeof last.mark_level === 'number' || /^\d+$/.test(String(last.mark_level))
+        ? 'Level ' + last.mark_level : String(last.mark_level);
+      body += '<span class="k">AQA level</span><span class="v"><strong>' + esc(lv) + '</strong></span>';
     }
     if (last.mark_next_step) {
       body += '<span class="k">Next step</span><span class="v">' + esc(last.mark_next_step) + '</span>';
