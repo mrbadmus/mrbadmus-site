@@ -106,7 +106,7 @@
     // from class-entry. This is the picker, used until/unless that is known.
     pupil:     { href: '/student/classes.html',        label: 'My classes',   title: 'Your classes' },
     staff:     { href: '/teacher/today.html',          label: 'My classes',   title: 'Your classes' },
-    parent:    { href: '/consumer/overview.html',      label: 'My dashboard', title: 'Your family dashboard' },
+    parent:    { href: '/consumer/family.html',        label: 'My dashboard', title: 'Your family dashboard' },
     child:     { href: '/consumer/today.html',         label: 'Today',        title: 'Your Today page' },
     org_staff: { href: '/org/index.html',              label: 'My dashboard', title: 'Your organisation' },
     operator:  { href: '/consumer/admin-accounts.html', label: 'My dashboard', title: 'Operator console' }
