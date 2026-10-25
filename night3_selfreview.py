@@ -121,12 +121,9 @@ def flag_off_sweep(base, shots):
             # the API / Supabase / CDN assertion below is untouched.
             KIT_ICONS = ("/shared/brand/mrbadmus-favicon.svg",
                          "/shared/brand/mrbadmus-icon-light-512.png")
-            # overview.html hands a bare visit to family.html (parent side
-            # rebuild): that hop's own document is part of "itself".
-            hop = "/consumer/family.html" if path == "/consumer/overview.html" else None
             def own(u):
                 bare = u.split("?", 1)[0]
-                return (bare.startswith(base + path) or (hop and bare.startswith(base + hop)) or (bare.startswith(base) and (bare.endswith(".css") or bare.endswith(".js")
+                return (bare.startswith(base + path) or (bare.startswith(base) and (bare.endswith(".css") or bare.endswith(".js")
                         or "/shared/fonts/" in bare or bare.endswith("favicon.ico")
                         or bare[len(base):] in KIT_ICONS)))
             foreign = [u for u in reqs if not own(u)]

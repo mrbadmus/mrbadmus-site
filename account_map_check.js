@@ -113,7 +113,7 @@ job('describe: homes, labels, doors, profile routes, kind labels', function () {
   var want = {
     pupil:     ['/student/classes.html',        'My classes',   '/auth.html',             '/profile-setup.html',  'Pupil'],
     staff:     ['/teacher/today.html',          'My classes',   '/auth.html',             '/teacher-profile.html','Teacher'],
-    parent:    ['/consumer/overview.html',      'My dashboard', '/parents/sign-in.html',  '/consumer/account.html','Parent'],
+    parent:    ['/consumer/family.html',        'My dashboard', '/parents/sign-in.html',  '/consumer/account.html','Parent'],
     child:     ['/consumer/today.html',         'Today',        '/go/',                   null,                   'Pupil'],
     org_staff: ['/org/index.html',              'My dashboard', '/org/sign-in.html',      null,                   'Organisation'],
     operator:  ['/consumer/admin-accounts.html','My dashboard', '/auth.html',             null,                   'Operator']
@@ -150,7 +150,7 @@ job('afterAuthTarget', function () {
   var T = A.afterAuthTarget, d = A.describe;
   function acct(kind, extra) { var a = d(kind); for (var k in extra) a[k] = extra[k]; return a; }
   assert.strictEqual(T(acct('child'), '/x.html'), '/consumer/today.html', 'child ignores return');
-  assert.strictEqual(T(acct('parent'), '/x.html'), '/consumer/overview.html', '9 Oct parent fix kept; return ignored');
+  assert.strictEqual(T(acct('parent'), '/x.html'), '/consumer/family.html', '9 Oct parent fix kept; return ignored');
   assert.strictEqual(T(acct('org_staff'), '/index.html'), '/org/index.html');
   assert.strictEqual(T(acct('staff'), '/index.html'), '/teacher/today.html', 'staff default = Today');
   assert.strictEqual(T(acct('staff'), '/teacher/classes.html'), '/teacher/classes.html', 'staff honours an explicit return');
@@ -266,7 +266,7 @@ job('resolve: no profile row = a new pupil who needs the wizard', function () {
 });
 job('resolve: the one home button — by kind; a classless pupil has none', function () {
   return resolveWith({ profile: P.parent }).then(function (a) {
-    assert.deepStrictEqual(a.homeButton, { href: '/consumer/overview.html', label: 'My dashboard' });
+    assert.deepStrictEqual(a.homeButton, { href: '/consumer/family.html', label: 'My dashboard' });
     return resolveWith({ profile: P.teacher, schoolKind: 'school' });
   }).then(function (a) {
     assert.deepStrictEqual(a.homeButton, { href: '/teacher/today.html', label: 'My classes' });
@@ -317,7 +317,7 @@ job('guardAudience: school staff and the operator stay on a teacher page', funct
 job('guardAudience: a parent on a pupil page goes to the family dashboard (never /index.html)', function () {
   return guard('pupil', { profile: P.parent, pathname: '/student/class.html' }, { profile: P.parent }).then(function (ok) {
     assert.strictEqual(ok, false);
-    assert.deepStrictEqual(calls.filter(function (c) { return c[0] === 'replace'; }), [['replace', '/consumer/overview.html']]);
+    assert.deepStrictEqual(calls.filter(function (c) { return c[0] === 'replace'; }), [['replace', '/consumer/family.html']]);
   });
 });
 job('guardAudience: consumer turns away a pupil to their class, lets a parent, child and operator stay', function () {
@@ -343,7 +343,7 @@ job('guardAudience: fail-open (signed out, failed read, unknown audience, alread
     return guard('nonsense', { profile: P.parent }, { profile: P.parent });
   }).then(function (ok) {
     assert.strictEqual(ok, true);
-    return guard('pupil', { profile: P.parent, pathname: '/consumer/overview.html' }, { profile: P.parent });
+    return guard('pupil', { profile: P.parent, pathname: '/consumer/family.html' }, { profile: P.parent });
   }).then(function (ok) { assert.strictEqual(ok, true, 'never redirect to the page you are on'); });
 });
 job('guardAudience: ?env / ?api survive the bounce', function () {
