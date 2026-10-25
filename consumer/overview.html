@@ -413,6 +413,10 @@
   </div>
 </div>
 
+<script>/* Parent side rebuild: the parent home and child page are family.html. */
+(function(){var q=new URLSearchParams(location.search),v=q.get('view');
+if(!v||v==='overview'||v==='child'){q.delete('view');if(v==='child'&&q.get('child'))q.set('view','child');else q.delete('child');
+var s=q.toString();location.replace('/consumer/family.html'+(s?'?'+s:''));}})();</script>
 <script src="/shared/config.js?v=bb268b6f"></script>
 <!-- Front door (12 Oct 2026): the one map; consumer-common asks it whether a school pupil has wandered in. -->
 <script src="/shared/account.js?v=7230a8eb"></script>
@@ -625,6 +629,12 @@
     S.workKind = 'practice'; S.topic = null; S.tp = {}; S.due = 0; S.note = '';
   }
   function go(view, extra) {
+    /* Parent side rebuild (25 Oct 2026): Home and the child page live on
+       family.html now; this page keeps chat, Set work, answers and manage. */
+    if (view === 'overview' || view === 'child') {
+      var cid = (extra && extra.child) || S.childId;
+      return window.location.assign(C.href('/consumer/family.html', view === 'child' && cid ? { view: 'child', child: cid } : {}));
+    }
     if (view === 'setwork' && S.view !== 'setwork') { resetSetWork(); }
     S.view = view;
     S.answerId = null;
