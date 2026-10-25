@@ -631,7 +631,7 @@ var s=q.toString();location.replace('/consumer/family.html'+(s?'?'+s:''));}})();
   function go(view, extra) {
     /* Parent side rebuild (25 Oct 2026): Home and the child page live on
        family.html now; this page keeps chat, Set work, answers and manage. */
-    if (view === 'overview' || view === 'child') {
+    if ((view === 'overview' || view === 'child') && !(extra && extra.stay)) {
       var cid = (extra && extra.child) || S.childId;
       return window.location.assign(C.href('/consumer/family.html', view === 'child' && cid ? { view: 'child', child: cid } : {}));
     }
@@ -2325,7 +2325,7 @@ var s=q.toString();location.replace('/consumer/family.html'+(s?'?'+s:''));}})();
         S.edit = null;
         return loadFamily();
       }).then(function () {
-        go('overview');
+        go('overview', { stay: true });
         msg(k.first_name + ' has been removed.', 'ok');
       }).catch(function (e) { C.setBusy(el, false); msg(e.message, 'error'); });
     }
