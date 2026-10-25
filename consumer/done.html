@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<script>(function(){var p='light';try{p=localStorage.getItem('mrb-theme')||'light'}catch(e){}if(p!=='dark'&&p!=='system')p='light';var d=p==='dark'||(p==='system'&&!!window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches),r=document.documentElement;r.setAttribute('data-theme',d?'dark':'light');r.setAttribute('data-theme-pref',p);r.style.colorScheme=d?'dark':'light'})()</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="theme-color" content="#FBF3E6"/>
+  <title>Everything you’ve done — MrBadmus</title>
+  <!--mrb:brand-head--><link rel="icon" type="image/svg+xml" href="/shared/brand/mrbadmus-favicon.svg?v=414f7a61"><link rel="apple-touch-icon" href="/shared/brand/mrbadmus-icon-light-512.png?v=cffd3cc4"><link rel="stylesheet" href="/shared/brand/brand.css?v=9c818614"><!--/mrb:brand-head-->
+  <script src="/shared/brand/brand.js?v=a4ee216b"></script>
+  <link rel="preload" href="/shared/fonts/bricolage-grotesque-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="preload" href="/shared/fonts/instrument-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="stylesheet" href="/shared/tokens.css?v=b111271e"/>
+  <link rel="stylesheet" href="/shared/ks3.css?v=fbc85f27"/>
+  <link rel="stylesheet" href="/shared/ks3-theme.css?v=a2df0340"/>
+  <link rel="stylesheet" href="/consumer/consumer.css?v=5d8a38a0"/>
+  <link rel="stylesheet" href="/consumer/parent-side.css?v=1"/>
+  <style>
+  /* consumer/done.html — the child's "Everything you've done", from
+     Design's `Parent Side.dc.html` (kidpast screen), 25 Oct 2026. Every
+     finished piece, grouped by week; open one to see every answer. Data:
+     GET /api/consumer/child/activity (the signed-in child's own, nobody
+     else's). `display:none` on body is the flag gate — not touched. */
+  body.ps-body { padding: 0; }
+  .ps-kid-root .ps-head-in { max-width: none; padding: 12px 20px; }
+  .ps-wcard { border: 2px solid var(--ks3-ink); cursor: pointer; }
+  .ps-wcard:hover { background: var(--ks3-band); }
+  </style>
+</head>
+<body class="ps-body">
+
+<div class="rd ps-root ps-kid-root" data-mode="ks3" id="ps-root">
+  <header class="ps-head">
+    <div class="ps-head-in">
+      <a class="ps-back-link" id="ps-back" href="/consumer/today.html">
+        <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>Today</a>
+      <span class="ps-head-title">Everything you’ve done</span>
+      <span class="mrb-theme-slot c-head-theme" data-mrb-theme="compact"></span>
+    </div>
+  </header>
+  <main class="ps-kid-main" id="c-main"></main>
+</div>
+
+<script src="/shared/config.js?v=bb268b6f"></script>
+<script src="/shared/account.js?v=7230a8eb"></script>
+<script src="/consumer/consumer-common.js?v=355a3cd0"></script>
+<script src="/consumer/parent-side.js?v=1"></script>
+<script>
+(function () {
+  var C = window.MrBadmusConsumer;
+  var PS = window.MrBadmusParentSide;
+  var esc = C.escapeHtml;
+  var SORTS = ['newest', 'oldest', 'highest', 'lowest'];
+  var SUBJECTS = ['Biology', 'Chemistry', 'Physics'];
+  var qs = new URLSearchParams(window.location.search);
+  var S = {
+    data: null,
+    subj: SUBJECTS.indexOf(qs.get('subj')) >= 0 ? qs.get('subj') : '',
+    sort: SORTS.indexOf(qs.get('sort')) >= 0 ? qs.get('sort') : 'newest',
+    open: qs.get('open') || null
+  };
+
+  function url() {
+    var x = {};
+    if (S.subj) { x.subj = S.subj; }
+    if (S.sort !== 'newest') { x.sort = S.sort; }
+    if (S.open) { x.open = S.open; }
+    return C.href('/consumer/done.html', x);
+  }
+  window.addEventListener('popstate', function () {
+    var q = new URLSearchParams(window.location.search);
+    S.subj = SUBJECTS.indexOf(q.get('subj')) >= 0 ? q.get('subj') : '';
+    S.sort = SORTS.indexOf(q.get('sort')) >= 0 ? q.get('sort') : 'newest';
+    S.open = q.get('open') || null;
+    render();
+    syncPanel();
+  });
+
+  function items() { return (S.data && S.data.work_items) || []; }
+  function card(it) {
+    var v = PS.doneChip(it);
+    var sc = PS.itemScore(it);
+    var face = sc.avail > 0 ? esc(sc.text) : PS.glyph(v.glyph, 22);
+    var date = PS.itemDate(it);
+    return '<button type="button" class="ps-wcard" data-open="' + esc(it.id) + '">' +
+      '<span class="ps-wscore" aria-hidden="true">' + face + '</span>' +
+      '<span style="flex:1;min-width:0"><span class="ps-wtitle">' + esc(it.title || PS.kindLabel(it.kind)) + '</span>' +
+      '<span class="ps-wsub">' + esc(PS.kindLabel(it.kind)) + (it.subject ? ' · ' + PS.subjHtml(it.subject) : '') +
+        ' · ' + esc(PS.dateShort(date)) + (sc.avail > 0 ? '' : ' · ' + esc(v.word)) + '</span>' +
+      '<span class="ps-sr">' + esc(sc.line || v.word) + '</span></span></button>';
+  }
+  function render() {
+    var host = document.getElementById('c-main');
+    if (!S.data) { host.innerHTML = '<p style="color:var(--ks3-ink-muted)">Loading…</p>'; return; }
+    var all = items().filter(function (i) { return i.status === 'done' && !i.removed; });
+    var groups = PS.groupWeeks(items(), S.sort, S.subj);
+    var chips = [{ v: '', l: 'All subjects' }].concat(SUBJECTS.map(function (s) { return { v: s, l: s }; }));
+    var html = '<h1 class="ps-kid-h1">' + (all.length ? esc(PS.plural(all.length, 'thing')) + ' done.' : 'Nothing finished yet.') + '</h1>';
+    if (all.length) {
+      html += '<div class="ps-filters"><div class="ps-fchips" role="group" aria-label="Subject">' +
+        chips.map(function (c) {
+          return '<button type="button" class="ps-fchip" aria-pressed="' + (S.subj === c.v) + '" data-subj="' + esc(c.v) + '">' +
+            (c.v ? '<span class="ps-dot ps-d-' + PS.subjKey(c.v) + '" aria-hidden="true"></span>' : '') + esc(c.l) + '</button>';
+        }).join('') + '</div><label class="ps-sort">Sort <select id="ps-sort">' +
+        [['newest', 'Newest first'], ['oldest', 'Oldest first'], ['highest', 'Best scores first'], ['lowest', 'Lowest scores first']]
+          .map(function (o) { return '<option value="' + o[0] + '"' + (S.sort === o[0] ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') +
+        '</select></label></div>';
+    }
+    if (!groups.length) {
+      html += '<div class="ps-dashed" style="margin-top:20px;border:2px dashed var(--ks3-rule-strong)">' +
+        '<p style="margin:0;font-family:var(--ks3-font-display);font-weight:800;font-size:22px">' +
+          (S.subj && all.length ? 'No ' + esc(S.subj) + ' yet' : 'Nothing here yet') + '</p>' +
+        (all.length ? '' : '<p style="margin:6px 0 0;font-size:16px;color:var(--ks3-ink-body)">Finish a lesson or practice and it shows up here.</p>') +
+        '</div>';
+    } else {
+      html += '<div style="margin-top:22px;display:flex;flex-direction:column;gap:24px">' + groups.map(function (g) {
+        var n = g.items.length;
+        return '<section><h2 class="ps-kid-week-h">Week of ' + esc(g.label) + ' <span>· you did ' + esc(PS.plural(n, 'thing')) + '</span></h2>' +
+          '<div class="ps-wgrid">' + g.items.map(card).join('') + '</div></section>';
+      }).join('') + '</div>';
+    }
+    host.innerHTML = html;
+  }
+  var panelFor = null;
+  function syncPanel() {
+    if (!S.open) { if (panelFor) { panelFor = null; PS.closePanel(true); } return; }
+    if (panelFor === S.open) { return; }
+    var it = items().filter(function (i) { return String(i.id) === String(S.open); })[0];
+    if (!it) { return; }
+    panelFor = S.open;
+    PS.openPanel(it, 'You', function () {
+      panelFor = null;
+      if (history.state && history.state.psOpen) { history.back(); }
+      else { S.open = null; history.replaceState(null, '', url()); }
+    });
+  }
+
+  var root = document.getElementById('ps-root');
+  root.addEventListener('click', function (ev) {
+    var o = ev.target.closest('[data-open]');
+    if (o) {
+      S.open = o.getAttribute('data-open');
+      history.pushState({ psOpen: true }, '', url());
+      syncPanel();
+      return;
+    }
+    var s = ev.target.closest('[data-subj]');
+    if (s) { S.subj = s.getAttribute('data-subj'); history.replaceState(null, '', url()); render(); }
+  });
+  root.addEventListener('change', function (ev) {
+    if (ev.target && ev.target.id === 'ps-sort') { S.sort = ev.target.value; history.replaceState(null, '', url()); render(); }
+  });
+
+  C.boot({ requireSession: true, signInPath: C.childLoginUrl, run: function (ctx) {
+    document.getElementById('ps-back').href = C.href('/consumer/today.html');
+    render();
+    return C.api('/api/consumer/child/activity', { token: ctx.token })
+      .then(function (d) { S.data = d || { work_items: [] }; render(); syncPanel(); })
+      .catch(function (e) {
+        if (C.isSignedOut(e)) { return C.signedOutPanel(document.getElementById('c-main'), C.childLoginUrl); }
+        C.fail(document.getElementById('c-main'), 'We couldn’t load your work just now.', 'Try again in a minute.');
+      });
+  } });
+})();
+</script>
+<script src="/shared/theme.js?v=f04be205" defer></script>
+</body>
+</html>

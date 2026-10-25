@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<script>(function(){var p='light';try{p=localStorage.getItem('mrb-theme')||'light'}catch(e){}if(p!=='dark'&&p!=='system')p='light';var d=p==='dark'||(p==='system'&&!!window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches),r=document.documentElement;r.setAttribute('data-theme',d?'dark':'light');r.setAttribute('data-theme-pref',p);r.style.colorScheme=d?'dark':'light'})()</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="theme-color" content="#FBF3E6"/>
+  <title>Your family — MrBadmus</title>
+  <!-- One mark: favicon, app icon and brand.css come from brand.py (this
+       region is rewritten on every build by brand.stamp_brand); brand.js
+       hands the header its lockup. -->
+  <!--mrb:brand-head--><link rel="icon" type="image/svg+xml" href="/shared/brand/mrbadmus-favicon.svg?v=414f7a61"><link rel="apple-touch-icon" href="/shared/brand/mrbadmus-icon-light-512.png?v=cffd3cc4"><link rel="stylesheet" href="/shared/brand/brand.css?v=9c818614"><!--/mrb:brand-head-->
+  <script src="/shared/brand/brand.js?v=a4ee216b"></script>
+  <link rel="preload" href="/shared/fonts/bricolage-grotesque-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="preload" href="/shared/fonts/instrument-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="stylesheet" href="/shared/tokens.css?v=b111271e"/>
+  <link rel="stylesheet" href="/shared/ks3.css?v=fbc85f27"/>
+  <link rel="stylesheet" href="/shared/ks3-theme.css?v=a2df0340"/>
+  <link rel="stylesheet" href="/consumer/consumer.css?v=5d8a38a0"/>
+  <link rel="stylesheet" href="/consumer/parent-side.css?v=1"/>
+  <style>
+  /* consumer/family.html — the parent side, rebuilt from Design's
+     `Parent Side.dc.html` (25 Oct 2026). Home · a child · Past work, one
+     page, the URL carrying the position (?view=…&child=…&open=…) so Back
+     returns to where the parent was and a screen is linkable. Styles live
+     in parent-side.css; consumer.css's padded scaffold body is undone here.
+     `display:none` on body is NOT touched — it is the flag gate. */
+  body.ps-body { padding: 0; }
+  .ps-head .c-signout-btn { border-width: 1px; border-color: var(--ks3-rule-strong); border-radius: 12px; background: none; }
+  </style>
+</head>
+<body class="ps-body">
+
+<div class="rd ps-root" data-mode="ks3" id="ps-root">
+  <header class="ps-head">
+    <div class="ps-head-in">
+      <span id="ps-brand"></span>
+      <nav class="ps-nav" id="ps-nav" aria-label="Main"></nav>
+      <span class="ps-spacer"></span>
+      <span class="mrb-theme-slot c-head-theme" data-mrb-theme="compact"></span>
+      <span id="ps-signout" style="display:inline-flex"></span>
+      <a class="ps-acct" id="ps-acct" href="/consumer/account.html" aria-label="Account" title="Account"></a>
+    </div>
+  </header>
+  <main class="ps-main" id="c-main"></main>
+  <nav class="ps-tabbar" id="ps-tabbar" aria-label="Main"></nav>
+</div>
+
+<script src="/shared/config.js?v=bb268b6f"></script>
+<script src="/shared/account.js?v=7230a8eb"></script>
+<script src="/consumer/consumer-common.js?v=355a3cd0"></script>
+<script src="/consumer/parent-side.js?v=1"></script>
+<script>
+/* ═══════════════════════════════════════════════════════════════════════
+   The parent side. Every number below is read from the API:
+     GET /api/consumer/family                 billing, children, unread
+     GET /api/consumer/family/home            this week, most recent, attention
+     GET /api/consumer/children/:id/activity  work items + every answer,
+                                              topics, keeps_wrong, tutor
+     GET /api/consumer/children/:id/past-work and /family/past-work
+   A route that is not there yet (404) or not ready (503) is worked round
+   from /family and /activity — never filled with an invented value.
+
+   Set work, messages and a child's settings stay where they are built
+   (consumer/overview.html ?view=setwork|chat|manage); this page links to
+   them. Pause and removing a parent-set item are done here, through the
+   same routes the dashboard uses.
+   ═══════════════════════════════════════════════════════════════════════ */
+(function () {
+  var C = window.MrBadmusConsumer;
+  var PS = window.MrBadmusParentSide;
+  var esc = C.escapeHtml;
+  var G = PS.glyph;
+
+  var qs = new URLSearchParams(window.location.search);
+  var VIEWS = ['home', 'child', 'past'];
+  var SORTS = ['newest', 'oldest', 'highest', 'lowest'];
+  var SUBJECTS = ['Biology', 'Chemistry', 'Physics'];
+  var S = {
+    view: VIEWS.indexOf(qs.get('view')) >= 0 ? qs.get('view') : 'home',
+    childId: qs.get('child') || null,
+    open: qs.get('open') || null,
+    kid: qs.get('kid') || 'all',
+    subj: SUBJECTS.indexOf(qs.get('subj')) >= 0 ? qs.get('subj') : '',
+    sort: SORTS.indexOf(qs.get('sort')) >= 0 ? qs.get('sort') : 'newest',
+    fam: null, kids: [], billing: {}, parent: {}, writable: false, deletion: null,
+    home: null, act: {}, past: {}, depth: (history.state && history.state.psDepth) || 0
+  };
+  var ctx = null;
+
+  /* ── URL = position ─────────────────────────────────────────────────── */
+  function url(st) {
+    st = st || S;
+    var x = {};
+    if (st.view !== 'home') { x.view = st.view; }
+    if (st.view === 'child' && st.childId) { x.child = st.childId; }
+    if (st.view === 'past') {
+      if (st.kid && st.kid !== 'all') { x.kid = st.kid; }
+      if (st.subj) { x.subj = st.subj; }
+      if (st.sort !== 'newest') { x.sort = st.sort; }
+    }
+    if (st.open) { x.open = st.open; if (st.view === 'home' && st.childId) { x.child = st.childId; } }
+    return C.href('/consumer/family.html', x);
+  }
+  function push(changes, opts) {
+    Object.keys(changes).forEach(function (k) { S[k] = changes[k]; });
+    S.depth += 1;
+    history.pushState({ psDepth: S.depth }, '', url());
+    if (!(opts && opts.keepScroll)) { window.scrollTo(0, 0); }
+    route();
+  }
+  function replace(changes) {
+    Object.keys(changes).forEach(function (k) { S[k] = changes[k]; });
+    history.replaceState({ psDepth: S.depth }, '', url());
+    route();
+  }
+  window.addEventListener('popstate', function (e) {
+    var q = new URLSearchParams(window.location.search);
+    S.view = VIEWS.indexOf(q.get('view')) >= 0 ? q.get('view') : 'home';
+    S.childId = q.get('child') || S.childId;
+    S.open = q.get('open') || null;
+    S.kid = q.get('kid') || 'all';
+    S.subj = SUBJECTS.indexOf(q.get('subj')) >= 0 ? q.get('subj') : '';
+    S.sort = SORTS.indexOf(q.get('sort')) >= 0 ? q.get('sort') : 'newest';
+    S.depth = (e.state && e.state.psDepth) || 0;
+    route();
+  });
+  /* "Back": where the parent came from inside this page, else Home. */
+  function back() {
+    if (S.depth > 0) { history.back(); } else { push({ view: 'home', open: null }); }
+  }
+
+  /* ── loads ──────────────────────────────────────────────────────────── */
+  function loadFamily() {
+    return C.api('/api/consumer/family', { token: ctx.token }).then(function (d) {
+      d = d || {};
+      S.fam = d.family || {};
+      S.sub = d.subscription || null;
+      S.parent = d.parent || {};
+      S.billing = d.billing || {};
+      S.kids = d.children || [];
+      S.deletion = d.deletion || null;
+      S.writable = C.guard(S.billing.access != null ? S.billing.access : S.billing, 'parent').writable;
+      if (!S.childId && S.kids.length) { S.childId = S.kids[0].id; }
+    });
+  }
+  function loadHome() {
+    return C.api('/api/consumer/family/home', { token: ctx.token })
+      .then(function (d) { S.home = d || {}; })
+      .catch(function (e) { S.home = { error: e }; });
+  }
+  function loadActivity(cid) {
+    if (S.act[cid]) { return Promise.resolve(S.act[cid]); }
+    S.act[cid] = { loading: true };
+    return C.api('/api/consumer/children/' + encodeURIComponent(cid) + '/activity', { token: ctx.token })
+      .then(function (d) { S.act[cid] = d || {}; return S.act[cid]; })
+      .catch(function (e) { S.act[cid] = { error: e }; return S.act[cid]; });
+  }
+  function pastKey() { return [S.kid, S.sort, S.subj].join('|'); }
+  function loadPast() {
+    var key = pastKey();
+    if (S.past[key]) { return Promise.resolve(S.past[key]); }
+    S.past[key] = { loading: true };
+    var q = '?sort=' + encodeURIComponent(S.sort) + (S.subj ? '&subject=' + encodeURIComponent(S.subj) : '');
+    var path = S.kid === 'all' ? '/api/consumer/family/past-work'
+      : '/api/consumer/children/' + encodeURIComponent(S.kid) + '/past-work';
+    return C.api(path + q, { token: ctx.token })
+      .then(function (d) { S.past[key] = { weeks: (d && d.weeks) || [] }; })
+      .catch(function () {
+        /* No /past-work on this backend yet: the same weeks, from each
+           child's activity, grouped and sorted by the same rule. */
+        var ids = S.kid === 'all' ? S.kids.map(function (k) { return k.id; }) : [S.kid];
+        return Promise.all(ids.map(loadActivity)).then(function (acts) {
+          var items = [];
+          acts.forEach(function (a, i) {
+            (a && a.work_items || []).forEach(function (it) {
+              var x = Object.assign({}, it);
+              x.child = { id: ids[i], first_name: (kidById(ids[i]) || {}).first_name };
+              items.push(x);
+            });
+          });
+          S.past[key] = { weeks: PS.groupWeeks(items, S.sort, S.subj), local: true };
+        });
+      });
+  }
+
+  function kidById(id) {
+    for (var i = 0; i < S.kids.length; i++) { if (String(S.kids[i].id) === String(id)) { return S.kids[i]; } }
+    return null;
+  }
+  function homeChild(id) {
+    var h = S.home && !S.home.error && Array.isArray(S.home.children) ? S.home.children : null;
+    if (h) { for (var i = 0; i < h.length; i++) { if (String(h[i].id) === String(id)) { return h[i]; } } }
+    return homeFromFamily(kidById(id));
+  }
+  /* /family/home's shape built from /family, for a backend without the new
+     route: the Monday-first strip, done/total, last active, never signed in.
+     Nothing it does not hold (most recent, repeated wrongs) is guessed. */
+  function homeFromFamily(k) {
+    if (!k) { return null; }
+    var strip = k.week_strip || null;
+    var work = Array.isArray(k.work) ? k.work : [];
+    var today = todayYmd();
+    var days = [];
+    if (strip && Array.isArray(strip.dates)) {
+      strip.dates.forEach(function (d, i) {
+        var its = work.filter(function (w) { return String(w.scheduled_for || '').slice(0, 10) === d; });
+        var st = 'none';
+        if ((strip.done || [])[i] === 1) { st = 'done'; }
+        else if (its.length) { st = d < today ? 'missed' : (d === today ? 'due_today' : 'set'); }
+        days.push({ date: d, state: st });
+      });
+    }
+    var la = k.lastActive || k.last_active_at || null;
+    var idle = la ? C.ymdDiff(C.londonYMD(la), today) : null;
+    var att = [];
+    if (k.status === 'never') { att.push({ kind: 'never_logged_in' }); }
+    else if (idle != null && idle >= 5) { att.push({ kind: 'inactive', days: idle }); }
+    return {
+      id: k.id, first_name: k.first_name, year_group: k.year_group, username: k.username,
+      last_active_at: la, days_inactive: idle, never_logged_in: k.status === 'never',
+      week: { week_start: strip ? strip.from : null, done: work.filter(function (w) { return w.done; }).length,
+              total: work.length, days: days },
+      most_recent: null, attention: att
+    };
+  }
+  function todayYmd() {
+    if (S.home && S.home.today) { return S.home.today; }
+    var k = S.kids[0];
+    if (k && k.week_strip && Array.isArray(k.week_strip.dates) && k.week_strip.today != null) {
+      return k.week_strip.dates[k.week_strip.today] || C.londonYMD();
+    }
+    return C.londonYMD();
+  }
+  function longCivil(ymd) {
+    var c = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(ymd || ''));
+    if (!c) { return C.longDate(); }
+    var d = new Date(Date.UTC(+c[1], +c[2] - 1, +c[3]));
+    return ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][d.getUTCDay()] + ' ' +
+      d.getUTCDate() + ' ' + PS.weekLabel(ymd).replace(/^\d+ /, '');
+  }
+
+  /* ── the shell ──────────────────────────────────────────────────────── */
+  var ICON = {
+    home: '<path d="M4 11l8-7 8 7v9H4z"/>',
+    past: '<path d="M4 6h16M4 12h16M4 18h10"/>',
+    chat: '<path d="M4 5h16v11H9l-5 4z"/>',
+    user: '<circle cx="12" cy="8" r="4"/><path d="M4 20c1.5-4 4.5-6 8-6s6.5 2 8 6"/>'
+  };
+  function icon(k) {
+    return '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" ' +
+      'stroke-linecap="round" stroke-linejoin="round">' + ICON[k] + '</svg>';
+  }
+  function unreadTotal() { return S.kids.reduce(function (n, k) { return n + (Number(k.unread) || 0); }, 0); }
+  function messagesHref() {
+    /* The family's messages are one thread per child, on the dashboard's
+       chat screen; it opens on the child in view, else the first with
+       something unread, else the first child. */
+    var c = (S.view === 'child' && kidById(S.childId)) ||
+      S.kids.filter(function (k) { return k.unread; })[0] || S.kids[0];
+    return C.href('/consumer/overview.html', c ? { child: c.id, view: 'chat' } : { view: 'chat' });
+  }
+  function renderShell() {
+    document.getElementById('ps-brand').innerHTML = C.brandLockup('/consumer/family.html');
+    var u = unreadTotal();
+    var items = [
+      ['home', 'Home', C.href('/consumer/family.html'), S.view === 'home' || S.view === 'child', 'nav-home'],
+      ['past', 'Past work', C.href('/consumer/family.html', { view: 'past' }), S.view === 'past', 'nav-past'],
+      ['chat', 'Messages', messagesHref(), false, ''],
+      ['user', 'Account', C.href('/consumer/account.html'), false, '']
+    ];
+    function link(it, withIcon) {
+      return '<a href="' + esc(it[2]) + '"' + (it[3] ? ' aria-current="page"' : '') +
+        (it[4] ? ' data-nav="' + it[4] + '"' : '') + '>' + (withIcon ? icon(it[0]) : '') +
+        '<span>' + esc(it[1]) + '</span>' +
+        (it[0] === 'chat' && u ? '<span class="ps-badge"><span class="ps-sr">, </span>' + u + '<span class="ps-sr"> unread</span></span>' : '') +
+        '</a>';
+    }
+    document.getElementById('ps-nav').innerHTML = items.map(function (it) { return link(it, false); }).join('');
+    document.getElementById('ps-tabbar').innerHTML = items.map(function (it) { return link(it, true); }).join('');
+    var a = document.getElementById('ps-acct');
+    a.href = C.href('/consumer/account.html');
+    a.textContent = (S.parent.name || 'Y').charAt(0);
+  }
+  var signoutMounted = false;
+  function mountSignout() {
+    if (signoutMounted || !ctx) { return; }
+    signoutMounted = true;
+    C.signOutControl(document.getElementById('ps-signout'), {
+      sb: ctx.sb, redirectTo: '/', switchAccount: true,
+      note: 'You’ll sign in again with your email or Google.' });
+  }
+
+  /* One line for the account's state, with its one action. A family that
+     cannot write sees why; nothing is greyed out without a reason. */
+  function bannerHtml() {
+    var b = S.billing, st = String(b.state || '').toLowerCase(), access = String(b.access || '').toLowerCase();
+    var acct = esc(C.href('/consumer/account.html'));
+    if (S.deletion) {
+      var del = C.dayMonth(S.deletion.execute_after);
+      return banner('<strong>Account closing.</strong> Your children can’t sign in.' +
+        (del ? ' Everything is deleted on ' + esc(del) + '.' : ''), '<a href="' + acct + '">Undo</a>', true);
+    }
+    if (st === 'pending') { return banner('Setting up your free week…', ''); }
+    if (access === 'locked' || st === 'locked') {
+      return banner('Your subscription has ended. New work and messages are off.', '<a href="' + acct + '">Restart</a>');
+    }
+    if (st === 'past_due') {
+      var retry = C.dayMonth(b.retry_at);
+      var grace = C.dayMonth(C.plusDaysISO(S.sub && S.sub.current_period_end, 7));
+      var full = access === 'full';
+      return banner('<strong>Payment didn’t go through.</strong>' + (retry ? ' We try again on ' + esc(retry) + '.' : '') +
+        (full ? (grace ? ' Work carries on until ' + esc(grace) + ' while you update the card.' : '')
+              : ' New work, marking and messages are paused until the payment goes through.'),
+        '<a href="' + acct + '">Fix card</a>', true);
+    }
+    if (st === 'cancelled') {
+      var ae = C.dayMonth(b.access_end);
+      return banner(access === 'full'
+        ? '<strong>Cancelled.</strong> ' + (ae ? 'Everything works until ' + esc(ae) + '. ' : '') + 'Reports stay downloadable after that.'
+        : '<strong>Cancelled.</strong> You can read everything' + (ae ? ' until ' + esc(ae) : '') + ', but new work and messages are paused.',
+        '<a href="' + acct + '">Resume</a>');
+    }
+    if (!S.writable && (access === 'none' || access === 'read_only')) {
+      var g = C.guard(b, 'parent');
+      return banner('<strong>' + esc(g.title) + '.</strong> ' + esc(g.message), '<a href="' + acct + '">Account</a>');
+    }
+    return '';
+  }
+  function banner(text, action, alert) {
+    return '<div class="ps-banner' + (alert ? ' is-alert' : '') + '" role="status"><span>' + text + '</span>' + action + '</div>';
+  }
+
+  /* ── Home ───────────────────────────────────────────────────────────── */
+  function daysHtml(days) {
+    var L = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
+    var map = { done: ['is-done', 'tick', 'Done'], missed: ['is-missed', 'cross', 'Not done'],
+                due_today: ['is-today', 'dot', 'Today'], set: ['is-set', '', 'Set'], ahead: ['is-set', '', 'Set'],
+                none: ['', '', 'Nothing set'] };
+    return '<div class="ps-days">' + (days || []).map(function (d, i) {
+      var m = map[d.state] || map.none;
+      var lab = PS.dayShort(d.date) + ' ' + PS.dateShort(d.date) + ': ' + m[2];
+      return '<div class="ps-day ' + m[0] + '" title="' + esc(lab) + '">' +
+        '<div class="ps-day-box">' + (m[1] ? G(m[1]) : '') + '<span class="ps-sr">' + esc(lab) + '</span></div>' +
+        '<div class="ps-day-l" aria-hidden="true">' + (d.weekday ? esc(String(d.weekday).slice(0, 2)) : L[i]) + '</div></div>';
+    }).join('') + '</div>';
+  }
+  function attentionText(a) {
+    if (a.kind === 'keeps_wrong') {
+      return 'Wrong ' + a.wrong_count + ' times' + (a.weeks > 1 ? ' over ' + a.weeks + ' weeks' : '') +
+        (a.topic ? ': ' + a.topic : '');
+    }
+    if (a.kind === 'inactive') {
+      return 'Nothing done for ' + a.days + ' days.' + (a.due_count ? ' ' + PS.plural(a.due_count, 'piece') + ' still to do this week.' : '');
+    }
+    if (a.kind === 'never_logged_in') { return 'Hasn’t logged in yet.'; }
+    if (a.kind === 'overdue') { return PS.plural(a.due_count, 'piece') + ' from earlier this week not done.'; }
+    return '';
+  }
+  function attentionAnchor(a) {
+    return a.kind === 'keeps_wrong' ? 'wrong' : 'week';
+  }
+  function childHref(id, extra) {
+    return C.href('/consumer/family.html', Object.assign({ view: 'child', child: id }, extra || {}));
+  }
+  function recentLine(m) {
+    if (!m) { return ''; }
+    var bits = [m.title || PS.kindLabel(m.kind)];
+    var s = m.score;
+    if (s) {
+      var parts = [];
+      if (s.marked_available > 0) { parts.push(s.marked_scored + '/' + s.marked_available + ' marked'); }
+      if (s.unmarked) { parts.push(PS.plural(s.unmarked, 'answer') + ' not marked'); }
+      if (parts.length) { bits.push(parts.join(' · ')); }
+    }
+    return bits.join(' · ');
+  }
+  function viewHome() {
+    var hour = C.londonHour();
+    var name = (S.home && S.home.parent && S.home.parent.first_name) || S.parent.name || '';
+    var greet = (hour < 5 ? 'Hello' : hour < 12 ? 'Morning' : hour < 18 ? 'Afternoon' : 'Evening') + (name ? ', ' + name : '') + '.';
+    var kids = S.kids.map(function (k) { return { k: k, h: homeChild(k.id) }; });
+    var sum = '';
+    if (kids.length > 1) {
+      var done = 0, total = 0;
+      kids.forEach(function (x) { if (x.h && x.h.week) { done += Number(x.h.week.done) || 0; total += Number(x.h.week.total) || 0; } });
+      sum = done + ' of ' + total + ' pieces done this week across ' + kids.length + ' children';
+    }
+    var cards = kids.map(function (x) {
+      var k = x.k, h = x.h || {};
+      var meta = ['Year ' + k.year_group, Number(k.year_group) >= 10 ? 'GCSE' : 'KS3'];
+      var la = h.last_active_at ? C.whenLabel(h.last_active_at) : null;
+      if (la && !h.never_logged_in) { meta.push('last active ' + la); }
+      var head = '<a class="ps-kid-head" href="' + esc(childHref(k.id)) + '" data-go-child="' + esc(k.id) + '">' +
+        '<span class="ps-avatar" aria-hidden="true">' + esc((k.first_name || '?').charAt(0)) + '</span>' +
+        '<span style="flex:1;min-width:0"><span class="ps-kid-name">' + esc(k.first_name) + '</span>' +
+        '<span class="ps-kid-meta">' + esc(meta.join(' · ')) + '</span></span>' +
+        '<span class="ps-row-go">' + G('go', 20) + '</span></a>';
+      var wk = h.week || { done: 0, total: 0, days: [] };
+      if (h.never_logged_in && !Number(wk.done)) {
+        return '<article class="ps-card ps-kid">' + head + '<div class="ps-kid-none"><strong>Nothing done yet.</strong> ' +
+          esc(k.first_name) + ' hasn’t logged in.' +
+          (k.username ? '<span class="ps-mono">Username ' + esc(k.username) + ' · mrbadmus.com/go</span>' : '') + '</div></article>';
+      }
+      var att = (h.attention || [])[0];
+      var body = '<div class="ps-kid-body"><div>' +
+        '<div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px">' +
+          '<span class="ps-eyebrow">This week</span>' +
+          '<span style="font-size:14px;color:var(--ks3-ink-body);white-space:nowrap"><strong class="ps-mono" style="font-weight:500;color:var(--ks3-ink)">' +
+            esc(String(wk.done)) + '</strong> of ' + esc(String(wk.total)) + ' done</span></div>' +
+        daysHtml(wk.days) + '</div>';
+      if (h.most_recent) {
+        body += '<a class="ps-recent" href="' + esc(childHref(k.id, { open: h.most_recent.work_item_id })) + '" ' +
+          'data-go-child="' + esc(k.id) + '" data-open="' + esc(h.most_recent.work_item_id || '') + '">' +
+          '<span class="ps-eyebrow" style="display:block">Most recent</span>' + esc(recentLine(h.most_recent)) + '</a>';
+      }
+      if (att && att.kind !== 'never_logged_in') {
+        body += '<a class="ps-attn" href="' + esc(childHref(k.id)) + '#' + attentionAnchor(att) + '" data-go-child="' + esc(k.id) +
+          '" data-anchor="' + attentionAnchor(att) + '">' + G('warn', 18) +
+          '<span style="flex:1;min-width:0"><span class="ps-eyebrow" style="display:block;color:inherit">Needs attention</span>' +
+          esc(attentionText(att)) + '</span></a>';
+      }
+      body += '</div>';
+      return '<article class="ps-card ps-kid">' + head + body + '</article>';
+    }).join('');
+
+    var all = (S.home && !S.home.error && Array.isArray(S.home.attention_all)) ? S.home.attention_all
+      : kids.reduce(function (out, x) {
+          return out.concat(((x.h && x.h.attention) || []).map(function (a) {
+            return Object.assign({ child: { id: x.k.id, first_name: x.k.first_name } }, a);
+          }));
+        }, []);
+    var attn = '<section class="ps-card"><p class="ps-eyebrow">Needs attention</p>' +
+      (all.length ? '<ul class="ps-attn-list">' + all.map(function (a) {
+        var c = a.child || {};
+        return '<li><a class="ps-attn-row" href="' + esc(childHref(c.id)) + '#' + attentionAnchor(a) + '" data-go-child="' + esc(c.id) +
+          '" data-anchor="' + attentionAnchor(a) + '"><span class="ps-avatar" aria-hidden="true">' + esc((c.first_name || '?').charAt(0)) + '</span>' +
+          '<span style="flex:1;min-width:0"><strong>' + esc(c.first_name || '') + '</strong> · ' + esc(attentionText(a)) + '</span></a></li>';
+      }).join('') + '</ul>' : '<p style="margin:10px 0 0;font-size:15px;color:var(--ks3-ink-body)">Nothing this week.</p>') +
+      '</section>';
+    var u = unreadTotal();
+    var plan = planLine();
+    var quiet = '<section style="padding:18px 20px;border:1px solid var(--ks3-rule);border-radius:16px">' +
+      '<p class="ps-eyebrow">' + esc(plan.eyebrow) + '</p>' +
+      (plan.line ? '<p style="margin:8px 0 0;font-size:15px;line-height:1.45;color:var(--ks3-ink-body)">' + esc(plan.line) + '</p>' : '') +
+      '<div class="ps-links">' +
+        '<a class="ps-link-btn" href="' + esc(C.href('/consumer/account.html')) + '">Plan and billing</a>' +
+        '<a class="ps-link-btn" href="' + esc(messagesHref()) + '">Messages' + (u ? ' · ' + u + ' new' : '') + '</a>' +
+        (S.deletion ? '' : '<a class="ps-link-btn" href="' + esc(C.href('/consumer/signup.html', { step: 'child' })) + '">Add a child</a>') +
+      '</div></section>';
+
+    return '<div class="ps-home-top"><div><p class="ps-kicker">' + esc(longCivil(S.home && S.home.today)) + '</p>' +
+        '<h1 class="ps-h1">' + esc(greet) + '</h1></div>' +
+        (sum ? '<p class="ps-home-sum">' + esc(sum) + '</p>' : '') + '</div>' +
+      '<div class="ps-home-grid"><div class="ps-kids' + (kids.length === 1 ? ' is-one' : '') + '">' +
+        (cards || '<div class="ps-dashed"><p style="margin:0;font-size:16px">No children on this account yet.</p>' +
+          '<p style="margin:10px 0 0"><a class="ps-btn is-ink" href="' + esc(C.href('/consumer/signup.html', { step: 'child' })) + '">Add a child</a></p></div>') +
+      '</div><aside class="ps-aside">' + attn + quiet + '</aside></div>';
+  }
+  /* The plan, from billing — a fact line for a running plan, nothing
+     during the free week (Mide, 15 Oct 2026: no free-week box). */
+  function planLine() {
+    var hp = S.home && !S.home.error ? S.home.plan : null;
+    var b = hp ? { state: hp.state, interval: hp.interval, annual_total_pence: hp.annual_pence,
+                   monthly_total_pence: hp.monthly_pence, next_payment_at: hp.next_payment } : (S.billing || {});
+    var st = String(b.state || '').toLowerCase();
+    if (st === 'active' && !(hp && hp.cancel_at_period_end)) {
+      var year = b.interval === 'year';
+      var amt = year ? b.annual_total_pence : b.monthly_total_pence;
+      var next = C.dayMonth(b.next_payment_at);
+      return { eyebrow: year ? 'Annual plan' : 'Monthly plan',
+               line: (amt != null ? C.money(amt) + (year ? ' a year' : ' a month') : '') +
+                     (next ? (amt != null ? ' · ' : '') + 'next payment ' + next : '') };
+    }
+    return { eyebrow: 'Account', line: '' };
+  }
+
+  /* ── a child ────────────────────────────────────────────────────────── */
+  function thisWeek(k, h) {
+    return (h && h.week && h.week.week_start) || (k.week_strip && k.week_strip.from) ||
+      C.ymdPlusDays(todayYmd(), -((C.ymdWeekday(todayYmd()) + 6) % 7));
+  }
+  function rowHtml(it, today, opts) {
+    opts = opts || {};
+    var st = PS.itemState(it, today);
+    var t = st.done ? PS.itemTime(it) : null;
+    var sc = st.done ? PS.itemScore(it) : null;
+    var sub = esc(PS.kindLabel(it.kind)) + (it.subject ? ' · ' + PS.subjHtml(it.subject) : '') +
+      (opts.past && sc && sc.questions ? ' · ' + esc(PS.plural(sc.questions, 'question')) : '') +
+      (t ? ' · ' + esc(t) : '') +
+      (opts.who ? ' · ' + esc(opts.who) : '');
+    var day = opts.past ? PS.dateShort(PS.itemDate(it)) : PS.dayShort(String(it.scheduled_for || '').slice(0, 10));
+    var open = st.done && !it.removed;
+    return '<button type="button" class="ps-row' + (opts.past ? ' is-past' : '') + (st.dim ? ' is-dim' : '') + '"' +
+      (open ? ' data-open="' + esc(it.id) + '"' + (opts.cid ? ' data-cid="' + esc(opts.cid) + '"' : '') : ' disabled') + '>' +
+      '<span class="ps-row-day">' + esc(day) + '</span>' +
+      '<span style="min-width:0"><span class="ps-row-title">' + esc(it.title || PS.kindLabel(it.kind)) + '</span>' +
+        '<span class="ps-row-sub">' + sub + '</span></span>' +
+      PS.chip(st.chip) +
+      '<span class="ps-row-go">' + G('go', 18) + '</span></button>';
+  }
+  function viewChild() {
+    var k = kidById(S.childId);
+    if (!k) { return '<div class="ps-dashed">That child isn’t on this account.</div>'; }
+    var h = homeChild(k.id) || {};
+    var A = S.act[k.id];
+    var today = todayYmd();
+    var ws = thisWeek(k, h);
+    var acts = '<div class="ps-acts ps-noprint">' +
+      '<a class="ps-btn" href="' + esc(C.href('/consumer/overview.html', { child: k.id, view: 'chat' })) + '">Message' +
+        (k.unread ? ' <span class="ps-badge">' + k.unread + '<span class="ps-sr"> unread</span></span>' : '') + '</a>' +
+      (S.writable && !S.deletion ? '<a class="ps-btn" href="' + esc(C.href('/consumer/overview.html', { child: k.id, view: 'setwork' })) + '">Set work</a>' : '') +
+      '<a class="ps-btn" href="' + esc(C.href('/consumer/report.html', { child: k.id })) + '">Termly report</a>' +
+      '<a class="ps-btn" href="' + esc(C.href('/consumer/overview.html', { child: k.id, view: 'manage' })) + '">Edit details</a>' +
+      '</div>';
+    var top = '<div class="ps-child-top">' +
+      '<button type="button" class="ps-iconbtn ps-noprint" data-act="back" aria-label="Back">' + G('back', 20) + '</button>' +
+      '<span class="ps-avatar" aria-hidden="true">' + esc((k.first_name || '?').charAt(0)) + '</span>' +
+      '<div style="flex:1;min-width:160px"><h1 class="ps-h1" style="margin:0;line-height:1">' + esc(k.first_name) + '</h1>' +
+        '<p style="margin:4px 0 0;font-size:14px;color:var(--ks3-ink-muted)">' + esc(C.childLine(k, { username: true })) + '</p></div>' +
+      acts + '</div>' +
+      (k.paused ? '<div class="ps-paused"><span><strong>Paused.</strong> Nothing new is set.</span>' +
+        '<button type="button" class="ps-btn is-ink" data-act="pause">Resume</button></div>' : '') +
+      '<div class="ps-msg" id="ps-msg" role="status"></div>';
+
+    if (!A || A.loading) {
+      return top + '<p style="margin-top:24px;color:var(--ks3-ink-muted)">Loading…</p>';
+    }
+    var items = [], topics = null, repeats = null, tutor = [];
+    if (A.error) {
+      items = (Array.isArray(k.work) ? k.work : []).map(function (w) {
+        return { id: w.id, kind: w.kind || 'lesson', title: w.title, scheduled_for: w.scheduled_for, status: w.done ? 'done' : 'set',
+                 tracked: false, summary: {}, answers: [], week_start: ws };
+      });
+    } else {
+      var we = C.ymdPlusDays(ws, 6);
+      items = (A.work_items || []).filter(function (it) {
+        var d = String(it.scheduled_for || '').slice(0, 10);
+        return !it.removed && d >= ws && d <= we;
+      }).sort(function (a, b) { return String(a.scheduled_for || '').localeCompare(String(b.scheduled_for || '')); });
+      topics = Array.isArray(A.topics) ? A.topics : null;
+      repeats = Array.isArray(A.keeps_wrong) ? A.keeps_wrong : null;
+      tutor = Array.isArray(A.tutor_questions) ? A.tutor_questions : [];
+    }
+    var byParent = {};
+    (Array.isArray(k.work) ? k.work : []).forEach(function (w) { if (w.byParent && !w.done) { byParent[w.id] = true; } });
+    var doneN = items.filter(function (i) { return i.status === 'done'; }).length;
+
+    var idle = h.days_inactive != null && h.days_inactive >= 5
+      ? '<div class="ps-status" role="status" style="margin-top:12px">' + G('warn', 18) + '<span>Nothing done for ' + h.days_inactive +
+        ' days.' + (h.last_active_at ? ' Last active ' + esc(C.whenLabel(h.last_active_at)) + '.' : '') + '</span></div>' : '';
+    var neverAtt = (h.attention || []).filter(function (a) { return a.kind === 'never_logged_in'; })[0];
+    var never = h.never_logged_in && !doneN
+      ? '<section class="ps-dashed"><p style="margin:0;font-family:var(--ks3-font-display);font-weight:700;font-size:22px;letter-spacing:-.02em">Nothing done yet</p>' +
+        '<p style="margin:8px 0 0;font-size:16px;color:var(--ks3-ink-body)">' + esc(k.first_name) + ' hasn’t logged in.' +
+          (neverAtt && neverAtt.set_count ? ' ' + esc(PS.plural(neverAtt.set_count, 'piece')) + ' set' +
+            (neverAtt.first_due ? '; the first opens ' + esc(PS.dayShort(neverAtt.first_due) + ' ' + PS.dateShort(neverAtt.first_due)) : '') + '.' : '') + '</p>' +
+        (k.username ? '<p class="ps-mono" style="margin:12px 0 0;font-size:14px">Username ' + esc(k.username) + ' · mrbadmus.com/go</p>' : '') + '</section>' : '';
+    var week = '<section id="week"><div class="ps-sec-head"><h2 class="ps-h2">This week</h2>' +
+        '<span class="ps-sec-note">Week of ' + esc((h.week && h.week.week_start === ws && h.week.label) || PS.weekLabel(ws)) + (items.length ? ' · ' + doneN + ' of ' + items.length + ' done' : '') + '</span></div>' +
+      idle +
+      (items.length ? '<ul class="ps-list">' + items.map(function (it) {
+        var rm = byParent[it.id] && it.status !== 'done'
+          ? '<button type="button" class="ps-btn ps-rm" data-act="remove-work" data-id="' + esc(it.id) + '" aria-label="Remove ' + esc(it.title || '') + ' from the week">Remove</button>' : '';
+        return '<li>' + rowHtml(it, today, { cid: k.id }) + rm + '</li>';
+      }).join('') + '</ul>'
+        : '<p style="margin:12px 0 0;font-size:15px;color:var(--ks3-ink-body)">Nothing set for this week.</p>') +
+      (A.error ? '<p class="ps-foot">Answers can’t be shown just now. Try again in a minute.</p>'
+               : (items.length ? '<p class="ps-foot">Time is shown only where it was measured.</p>' : '')) +
+      (k.paused ? '' : '<button type="button" class="ps-quiet" data-act="pause">Pause work for ' + esc(k.first_name) + '</button>') +
+      '</section>';
+
+    var tp = '';
+    if (topics && topics.length) {
+      var defs = [
+        ['secure', 'Secure', 'Right on the two most recent attempts, different questions, at least a week apart.', 'tick'],
+        ['shaky', 'Shaky', 'A mix of right and wrong recently.', 'tilde'],
+        ['not_yet', 'Not yet', 'The most recent attempt was wrong, or it has never been right.', 'dot']];
+      tp = '<section id="topics"><div class="ps-sec-head"><h2 class="ps-h2">Topic picture</h2>' +
+        '<span class="ps-sec-note">' + PS.plural(topics.length, 'topic') + ' met so far</span></div><div class="ps-topics">' +
+        defs.map(function (d) {
+          var ts = topics.filter(function (t) { return t.status === d[0]; });
+          return '<div class="ps-card ps-tgroup"><div class="ps-tgroup-h ps-tg-' + d[0] + '">' + G(d[3]) + '<span>' + d[1] + '</span>' +
+            '<span class="ps-mono">' + ts.length + '</span></div><p class="ps-tgroup-def">' + d[2] + '</p><ul>' +
+            (ts.length ? ts.map(function (t) {
+              var b = t.basis || {};
+              var mk = Number(b.marked) || 0, un = Number(b.unmarked) || 0;
+              var basis = mk ? ('based on ' + PS.plural(mk, 'answer') + (un ? ' · ' + un + ' not marked' : ''))
+                             : (PS.plural(un, 'answer') + ', not marked');
+              return '<li><span style="font-size:15px;line-height:1.3"><span class="ps-dot ps-d-' + PS.subjKey(t.subject) + '" aria-hidden="true"></span>' +
+                esc(t.label || 'Unnamed topic') + (t.subject ? '<span class="ps-sr"> (' + esc(t.subject) + ')</span>' : '') + '</span>' +
+                '<span class="ps-mono">' + esc(basis) + '</span></li>';
+            }).join('') : '<li class="is-none">None yet.</li>') + '</ul></div>';
+        }).join('') + '</div></section>';
+    }
+
+    var rp = '';
+    if (repeats) {
+      var titleOf = {};
+      (A.work_items || []).forEach(function (it) { titleOf[it.id] = PS.kindLabel(it.kind) + ' · ' + (it.title || ''); });
+      rp = '<section id="wrong"><h2 class="ps-h2">Keeps getting wrong</h2>' +
+        (repeats.length ? '<div class="ps-wrongs">' + repeats.map(function (r) {
+          return '<article class="ps-card ps-wrong"><div class="ps-wrong-h"><p class="ps-eyebrow">' + (r.kind === 'question' ? 'Question' : 'Topic') +
+            (r.subject ? ' · ' + PS.subjHtml(r.subject) : '') + '</p>' +
+            '<p class="ps-wrong-t">' + esc(r.label || '') + '</p>' +
+            '<p class="ps-wrong-n">Wrong ' + r.wrong_count + ' times' + (r.weeks_span > 1 ? ', over ' + r.weeks_span + ' weeks' : '') + '</p></div>' +
+            '<ol>' + (r.answers || []).map(function (a) {
+              var q = r.kind === 'question' ? (titleOf[a.work_item_id] || '') : (a.question_text || '');
+              return '<li><span class="ps-mono">' + esc(PS.dateShort(PS.dayOf(a.answered_at))) + '</span><span>' +
+                (q ? '<span class="q">' + esc(q) + '</span>' : '') +
+                '<span class="said"><strong>Said:</strong> <span>' + esc(a.answer == null ? 'No answer given' : a.answer) + '</span></span>' +
+                (a.correct_answer ? '<span class="ans"><strong>Answer:</strong> ' + esc(a.correct_answer) + '</span>' : '') +
+                '</span></li>';
+            }).join('') + '</ol></article>';
+        }).join('') + '</div>' : '<p style="margin:10px 0 0;font-size:15px;color:var(--ks3-ink-body)">Nothing wrong twice yet.</p>') +
+        '</section>';
+    }
+
+    var groups = [], gk = {};
+    tutor.slice().sort(function (a, b) { return String(b.asked_at).localeCompare(String(a.asked_at)); }).forEach(function (t) {
+      var day = PS.dayOf(t.asked_at) || '';
+      var key = (t.page_title || t.lesson_slug || '') + '|' + day;
+      if (!gk[key]) { gk[key] = { lesson: t.page_title || 'Tutor', day: day, items: [] }; groups.push(gk[key]); }
+      gk[key].items.push(t);
+    });
+    groups.forEach(function (g) { g.items.sort(function (a, b) { return String(a.asked_at).localeCompare(String(b.asked_at)); }); });
+    var tq = '<section id="tutor"><h2 class="ps-h2">Tutor questions</h2>' +
+      (groups.length ? '<div style="margin-top:12px;display:flex;flex-direction:column;gap:12px">' + groups.map(function (g) {
+        return '<section class="ps-card ps-tutor"><p class="ps-tutor-h"><strong>' + esc(g.lesson) + '</strong> · ' +
+          esc(PS.dayShort(g.day) + ' ' + PS.dateShort(g.day)) + '</p><div class="ps-tutor-b">' +
+          g.items.map(function (t) {
+            return '<div class="ps-tutor-row"><div><span class="ps-eyebrow">' + esc(k.first_name) + ' asked · ' + esc(C.fmtTime(t.asked_at)) + '</span>' +
+                (t.question_html != null ? t.question_html : esc(t.question || '')) + '</div>' +
+              '<div class="ps-reply"><span class="ps-eyebrow">Reply</span>' +
+                (t.reply_html ? t.reply_html : '<span class="ps-muted">The reply wasn’t saved.</span>') + '</div></div>';
+          }).join('') + '</div></section>';
+      }).join('') + '</div>' : '<p style="margin:10px 0 0;font-size:15px;color:var(--ks3-ink-body)">' + esc(k.first_name) + ' hasn’t asked the tutor anything yet.</p>') +
+      '</section>';
+
+    var tutorN = tutor.length;
+    var jumps = [['week', 'This week', items.length]];
+    if (tp) { jumps.push(['topics', 'Topic picture', topics.length]); }
+    if (rp) { jumps.push(['wrong', 'Keeps getting wrong', repeats.length]); }
+    jumps.push(['tutor', 'Tutor questions', tutorN]);
+    var pastHref = C.href('/consumer/family.html', { view: 'past', kid: k.id });
+    var jump = '<nav class="ps-jump ps-noprint" aria-label="On this page">' + jumps.map(function (j) {
+      return '<a href="#' + j[0] + '" data-anchor="' + j[0] + '"><span>' + j[1] + '</span><span class="ps-mono">' + j[2] + '</span></a>';
+    }).join('') + '<a class="ps-jump-past" href="' + esc(pastHref) + '" data-nav="past-kid" data-kid="' + esc(k.id) + '">All past work</a></nav>';
+
+    return top + '<div class="ps-child-grid">' + jump + '<div class="ps-sections">' + never + week + tp + rp + tq + '</div></div>';
+  }
+
+  /* ── Past work ──────────────────────────────────────────────────────── */
+  function viewPast() {
+    var tabs = '';
+    if (S.kids.length > 1) {
+      var opts = [{ id: 'all', name: 'All children' }].concat(S.kids.map(function (k) { return { id: k.id, name: k.first_name }; }));
+      tabs = '<div class="ps-tabs" role="tablist" aria-label="Child">' + opts.map(function (o) {
+        var on = String(S.kid) === String(o.id);
+        return '<button type="button" role="tab" aria-selected="' + on + '" data-act="kid" data-id="' + esc(o.id) + '">' + esc(o.name) + '</button>';
+      }).join('') + '</div>';
+    }
+    var chips = [{ v: '', l: 'All subjects' }].concat(SUBJECTS.map(function (s) { return { v: s, l: s }; }));
+    var filters = '<div class="ps-filters ps-noprint"><div class="ps-fchips" role="group" aria-label="Subject">' +
+      chips.map(function (c) {
+        return '<button type="button" class="ps-fchip" aria-pressed="' + (S.subj === c.v) + '" data-act="subj" data-v="' + esc(c.v) + '">' +
+          (c.v ? '<span class="ps-dot ps-d-' + PS.subjKey(c.v) + '" aria-hidden="true"></span>' : '') + esc(c.l) + '</button>';
+      }).join('') + '</div>' +
+      '<label class="ps-sort">Sort <select data-act-change="sort">' +
+        [['newest', 'Newest week first'], ['oldest', 'Oldest week first'], ['highest', 'Highest score first'], ['lowest', 'Lowest score first']]
+          .map(function (o) { return '<option value="' + o[0] + '"' + (S.sort === o[0] ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') +
+      '</select></label></div>';
+    var P = S.past[pastKey()];
+    var body;
+    if (!P || P.loading) {
+      body = '<p style="margin-top:20px;color:var(--ks3-ink-muted)">Loading…</p>';
+    } else if (!P.weeks.length) {
+      var who = S.kid === 'all' ? null : kidById(S.kid);
+      body = '<div class="ps-dashed" style="margin-top:20px"><p style="margin:0;font-family:var(--ks3-font-display);font-weight:700;font-size:20px;letter-spacing:-.02em">' +
+        (S.subj ? 'No ' + esc(S.subj) + ' work yet' : 'Nothing completed yet') + '</p>' +
+        (!S.subj && who ? '<p style="margin:6px 0 0;font-size:15px;color:var(--ks3-ink-body)">' + esc(who.first_name) + ' hasn’t finished anything yet.</p>' : '') +
+        '</div>';
+    } else {
+      var today = todayYmd();
+      body = '<div class="ps-weeks">' + P.weeks.map(function (g) {
+        return '<section><div class="ps-week-h"><h2>Week of ' + esc(g.label || PS.weekLabel(g.week_start)) + '</h2>' +
+          '<span>' + esc(PS.weekSummary(g)) + '</span></div><ul class="ps-list" style="margin-top:0">' +
+          (g.items || []).map(function (it) {
+            var c = it.child || {};
+            return '<li>' + rowHtml(it, today, { past: true, cid: c.id || S.kid,
+              who: S.kid === 'all' && S.kids.length > 1 ? c.first_name : null }) + '</li>';
+          }).join('') + '</ul></section>';
+      }).join('') + '</div>';
+    }
+    return '<div style="display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap">' +
+      '<h1 class="ps-h1" style="margin:0">Past work</h1>' + tabs + '</div>' + filters + body;
+  }
+
+  /* ── render + route ─────────────────────────────────────────────────── */
+  function render() {
+    renderShell();
+    var html = bannerHtml();
+    if (S.view === 'child') { html += viewChild(); }
+    else if (S.view === 'past') { html += viewPast(); }
+    else { html += viewHome(); }
+    document.getElementById('c-main').innerHTML = html;
+    var t = { home: 'Your family', child: (kidById(S.childId) || {}).first_name || 'Your family', past: 'Past work' }[S.view];
+    document.title = t + ' — MrBadmus';
+  }
+  function route() {
+    render();
+    var need = [];
+    if (S.view === 'child' && S.childId) { need.push(loadActivity(S.childId)); }
+    if (S.view === 'past') { need.push(loadPast()); }
+    if (S.open && S.view === 'home' && S.childId) { need.push(loadActivity(S.childId)); }
+    Promise.all(need).then(function () {
+      render();
+      if (location.hash) { scrollToAnchor(location.hash.slice(1)); }
+      openFromUrl();
+    });
+  }
+  function findItem(id, cid) {
+    var src = [];
+    if (cid && S.act[cid] && S.act[cid].work_items) { src.push(S.act[cid].work_items); }
+    Object.keys(S.past).forEach(function (k) {
+      var P = S.past[k];
+      (P && P.weeks || []).forEach(function (g) { src.push(g.items || []); });
+    });
+    for (var i = 0; i < src.length; i++) {
+      for (var j = 0; j < src[i].length; j++) { if (String(src[i][j].id) === String(id)) { return src[i][j]; } }
+    }
+    return null;
+  }
+  var panelFor = null;
+  function openFromUrl() {
+    if (!S.open) { if (panelFor) { panelFor = null; PS.closePanel(true); } return; }
+    if (panelFor === S.open) { return; }
+    var cid = S.view === 'child' || S.view === 'home' ? S.childId : null;
+    var it = findItem(S.open, cid);
+    var show = function (item, childId) {
+      if (!item) { return; }
+      /* The past list may carry an item without its answers: they come from
+         that child's activity, by the item's id. */
+      if (!Array.isArray(item.answers) && PS.isTracked(item) && childId) {
+        loadActivity(childId).then(function () { show(findItem(item.id, childId) || Object.assign({ answers: [] }, item), null); });
+        return;
+      }
+      var who = (kidById(childId || (item.child && item.child.id) || S.childId) || {}).first_name || 'They';
+      panelFor = S.open;
+      PS.openPanel(item, who, function () {
+        panelFor = null;
+        if (history.state && history.state.psOpen) { history.back(); } else { replace({ open: null }); }
+      });
+    };
+    show(it, (it && it.child && it.child.id) || cid);
+  }
+  function scrollToAnchor(id) {
+    var el = document.getElementById(id);
+    if (el) { window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 76 }); }
+  }
+
+  /* ── actions ────────────────────────────────────────────────────────── */
+  function msg(text, kind) {
+    var el = document.getElementById('ps-msg');
+    if (!el) { return; }
+    el.textContent = text || '';
+    el.className = 'ps-msg' + (kind === 'error' ? ' is-error' : '');
+  }
+  document.getElementById('ps-root').addEventListener('click', function (ev) {
+    var t = ev.target.closest ? ev.target : null;
+    if (!t) { return; }
+    var openEl = t.closest('[data-open]');
+    if (openEl && !openEl.disabled && openEl.getAttribute('data-open')) {
+      ev.preventDefault();
+      var cid = openEl.getAttribute('data-cid') || openEl.getAttribute('data-go-child') || S.childId;
+      if (openEl.getAttribute('data-go-child') && S.view === 'home') {
+        S.childId = cid; S.view = 'child';
+      } else if (cid) { S.childId = S.view === 'past' ? S.childId : cid; }
+      S.open = openEl.getAttribute('data-open');
+      S.depth += 1;
+      history.pushState({ psDepth: S.depth, psOpen: true }, '', url());
+      if (S.view === 'child') { loadActivity(S.childId).then(function () { render(); openFromUrl(); }); render(); }
+      else { openFromUrl(); }
+      return;
+    }
+    var nav = t.closest('[data-nav], [data-go-child], [data-anchor]');
+    if (nav && !ev.metaKey && !ev.ctrlKey && !ev.shiftKey && ev.button === 0) {
+      var n = nav.getAttribute('data-nav');
+      if (n === 'nav-home') { ev.preventDefault(); push({ view: 'home', open: null }); return; }
+      if (n === 'nav-past') { ev.preventDefault(); push({ view: 'past', open: null, kid: 'all' }); return; }
+      if (n === 'past-kid') { ev.preventDefault(); push({ view: 'past', open: null, kid: nav.getAttribute('data-kid') }); return; }
+      var gc = nav.getAttribute('data-go-child');
+      var anchor = nav.getAttribute('data-anchor');
+      if (gc) {
+        ev.preventDefault();
+        S.view = 'child'; S.childId = gc; S.open = null; S.depth += 1;
+        history.pushState({ psDepth: S.depth }, '', url() + (anchor ? '#' + anchor : ''));
+        window.scrollTo(0, 0);
+        route();
+        return;
+      }
+      if (anchor) { ev.preventDefault(); scrollToAnchor(anchor); history.replaceState(history.state, '', url() + '#' + anchor); return; }
+    }
+    var actEl = t.closest('[data-act]');
+    if (!actEl) { return; }
+    var act = actEl.getAttribute('data-act');
+    if (act === 'back') { ev.preventDefault(); back(); }
+    else if (act === 'kid') { replace({ kid: actEl.getAttribute('data-id') }); }
+    else if (act === 'subj') { replace({ subj: actEl.getAttribute('data-v') }); }
+    else if (act === 'pause') { pause(actEl); }
+    else if (act === 'remove-work') { removeWork(actEl); }
+  });
+  document.getElementById('ps-root').addEventListener('change', function (ev) {
+    var t = ev.target;
+    if (t && t.getAttribute('data-act-change') === 'sort') { replace({ sort: t.value }); }
+  });
+  function pause(el) {
+    var k = kidById(S.childId);
+    if (!k) { return; }
+    var want = !k.paused;
+    C.setBusy(el, true, '…');
+    C.api('/api/consumer/children/' + encodeURIComponent(k.id) + '/pause', { method: 'POST', token: ctx.token, body: { paused: want } })
+      .then(function () { return loadFamily(); })
+      .then(function () {
+        render();
+        msg(want ? (k.first_name + '’s plan is paused. Nothing new will be set until you start it again.')
+                 : (k.first_name + '’s plan is running again.'));
+      })
+      .catch(function (e) { C.setBusy(el, false); msg(e.message, 'error'); });
+  }
+  function removeWork(el) {
+    var k = kidById(S.childId), id = el.getAttribute('data-id');
+    C.setBusy(el, true, '…');
+    C.api('/api/consumer/children/' + encodeURIComponent(k.id) + '/work/' + encodeURIComponent(id), { method: 'DELETE', token: ctx.token })
+      .then(function () { delete S.act[k.id]; return Promise.all([loadFamily(), loadActivity(k.id)]); })
+      .then(function () { render(); msg('Taken off their week.'); })
+      .catch(function (e) {
+        C.setBusy(el, false);
+        msg(e.code === 'not_removable' ? 'That one is already done, so it stays on the record.' : e.message, 'error');
+      });
+  }
+
+  /* ── boot ───────────────────────────────────────────────────────────── */
+  function signupMidway() {
+    var b = S.billing || {}, st = String(b.state || '').toLowerCase();
+    if (st !== 'none' || b.can_checkout === false) { return false; }
+    if (b.trial_end || b.canceled_at) { return false; }
+    if ((S.fam && S.fam.kind === 'organisation') || S.deletion) { return false; }
+    return true;
+  }
+  C.boot({ requireSession: true, run: function (context) {
+    ctx = context;
+    if (S.open) { history.replaceState({ psDepth: S.depth }, '', url()); }
+    mountSignout();
+    return Promise.all([loadFamily(), loadHome()])
+      .then(function () {
+        C.markParent(ctx.session);
+        if (signupMidway()) { return window.location.replace(C.href('/consumer/signup.html')); }
+        route();
+      })
+      .catch(function (e) {
+        if (e && e.code === 'no_family') { return window.location.replace(C.href('/consumer/signup.html')); }
+        if (C.isSignedOut(e)) { return C.signedOutPanel(document.getElementById('c-main'), '/parents/sign-in.html'); }
+        C.fail(document.getElementById('c-main'), e.message,
+               'Refresh in a moment. If it keeps happening, email support@mrbadmus.com.');
+      });
+  } });
+})();
+</script>
+<script src="/shared/theme.js?v=f04be205" defer></script>
+</body>
+</html>

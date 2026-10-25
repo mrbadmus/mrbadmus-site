@@ -372,6 +372,31 @@ _JS = r"""
     }
 
     if (path === '/api/consumer/family' && method === 'GET') { return reply(200, F.family); }
+    // ⊕ Parent-side rebuild (25 Oct 2026) — the contract's five reads
+    // (parent_side_fixture.py). Past work is answered from payloads built
+    // for every sort × subject, so the stub never re-implements the rule.
+    if (F.ps) {
+      var qy = new URLSearchParams(u.split('?')[1] || '');
+      var pwKey = function (who) {
+        return who + '|' + (qy.get('sort') || 'newest') + '|' + (qy.get('subject') || '');
+      };
+      if (path === '/api/consumer/family/home') {
+        if (F.ps.homeMissing) { return reply(404, { error: 'not_found' }); }
+        return reply(200, F.ps.home);
+      }
+      if (path === '/api/consumer/family/past-work') {
+        if (F.ps.pastMissing) { return reply(404, { error: 'not_found' }); }
+        return reply(200, F.ps.past[pwKey('family')]);
+      }
+      var mPast = /^\/api\/consumer\/children\/([^/]+)\/past-work$/.exec(path);
+      if (mPast) {
+        if (F.ps.pastMissing) { return reply(404, { error: 'not_found' }); }
+        return reply(200, F.ps.past[pwKey(mPast[1])] || { weeks: [] });
+      }
+      var mAct = /^\/api\/consumer\/children\/([^/]+)\/activity$/.exec(path);
+      if (mAct) { return reply(200, F.ps.activity[mAct[1]] || F.ps.activity['kid-ben']); }
+      if (path === '/api/consumer/child/activity') { return reply(200, F.ps.childActivity); }
+    }
     // ⊕ B2C unit 6 — the child's pages, the parent's report, the org dashboard.
     if (path === '/api/consumer/child/today') { return reply(200, F.childToday); }
     if (path === '/api/consumer/child/session') { return reply(200, { ok: true, first_name: 'Ada' }); }
@@ -471,10 +496,33 @@ _JS = r"""
 """
 
 
+def _ps(fam, opts):
+    """⊕ Parent-side rebuild: the five contract reads, for the children in
+    `fam`. `opts` (dict) may set homeMissing / pastMissing to answer 404, as
+    a backend without the new routes would."""
+    import parent_side_fixture as psf
+    opts = opts or {}
+    kids = fam["children"]
+    ids = [k["id"] for k in kids]
+    names = {k["id"]: k["first_name"] for k in kids}
+    past = {}
+    for sort in ("newest", "oldest", "highest", "lowest"):
+        for subj in ("", "Biology", "Chemistry", "Physics"):
+            past["family|%s|%s" % (sort, subj)] = psf.past_work(tuple(ids), names, sort, subj)
+            for cid in ids:
+                past["%s|%s|%s" % (cid, sort, subj)] = psf.past_work((cid,), names, sort, subj)
+    act = {k["id"]: psf.activity(k["id"], k["first_name"], k["year_group"]) for k in kids}
+    act.setdefault("kid-ben", psf.activity("kid-ben", "Ben", 10))
+    child = psf.activity("kid-ada", "Ada", 8, child_view=True)
+    return {"home": psf.family_home(kids), "past": past, "activity": act,
+            "childActivity": child, "homeMissing": bool(opts.get("homeMissing")),
+            "pastMissing": bool(opts.get("pastMissing"))}
+
+
 def prescript(state="trialing", kids=2, checkout="ok", deletion=None, messages=None,
               fail=None, signed_in=True, draft=None, taken=None, existing=False,
               password_ok=False, unconfirmed=False, who="parent", next_title=None,
-              days_left="fixture"):
+              days_left="fixture", ps=None):
     """`fail`: regexes over the request path that answer 500 — for proving a
     page's failure line, not for anything a gate measures.
 
@@ -494,7 +542,12 @@ def prescript(state="trialing", kids=2, checkout="ok", deletion=None, messages=N
 
     ⊕ 15 Oct 2026: `next_title` renames the first child's first unfinished
     row (the dashboard's "Next:" line); `days_left` overrides the trial's
-    count (None = the backend sent no count)."""
+    count (None = the backend sent no count).
+
+    ⊕ 25 Oct 2026 (parent-side rebuild): `ps` — None (default) leaves the
+    five new parent-side reads unanswered, exactly as before; a dict (even
+    {}) answers them from parent_side_fixture.py. Opt-in, because the
+    payloads are large and no older drive reads them."""
     fam = json.loads(json.dumps(family(state, kids, deletion)))
     if next_title is not None:
         fam["children"][0]["work"][1]["title"] = next_title
@@ -506,5 +559,5 @@ def prescript(state="trialing", kids=2, checkout="ok", deletion=None, messages=N
           "draft": draft, "taken": taken or [], "existing": existing,
           "passwordOk": password_ok, "unconfirmed": unconfirmed, "who": who,
           "childToday": CHILD_TODAY, "childExam": CHILD_EXAM, "report": PARENT_REPORT,
-          "org": org_payload()}
+          "org": org_payload(), "ps": (_ps(fam, ps) if ps is not None else None)}
     return _JS.replace("__FIXTURE__", json.dumps(fx))
