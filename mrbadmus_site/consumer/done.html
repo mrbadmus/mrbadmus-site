@@ -14,7 +14,7 @@
   <link rel="stylesheet" href="/shared/ks3.css?v=fbc85f27"/>
   <link rel="stylesheet" href="/shared/ks3-theme.css?v=a2df0340"/>
   <link rel="stylesheet" href="/consumer/consumer.css?v=5d8a38a0"/>
-  <link rel="stylesheet" href="/consumer/parent-side.css?v=f4429e4a"/>
+  <link rel="stylesheet" href="/consumer/parent-side.css?v=551ec03a"/>
   <style>
   /* consumer/done.html — the child's "Everything you've done", from
      Design's `Parent Side.dc.html` (kidpast screen), 25 Oct 2026. Every
@@ -32,6 +32,7 @@
 <div class="rd ps-root ps-kid-root" data-mode="ks3" id="ps-root">
   <header class="ps-head">
     <div class="ps-head-in">
+      <span id="ps-brand"></span>
       <a class="ps-back-link" id="ps-back" href="/consumer/today.html">
         <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>Today</a>
       <span class="ps-head-title">Everything you’ve done</span>
@@ -44,7 +45,7 @@
 <script src="/shared/config.js?v=bb268b6f"></script>
 <script src="/shared/account.js?v=d97ebd6b"></script>
 <script src="/consumer/consumer-common.js?v=355a3cd0"></script>
-<script src="/consumer/parent-side.js?v=a63aece0"></script>
+<script src="/consumer/parent-side.js?v=87963ef3"></script>
 <script>
 (function () {
   var C = window.MrBadmusConsumer;
@@ -152,13 +153,16 @@
   });
 
   C.boot({ requireSession: true, signInPath: C.childLoginUrl, run: function (ctx) {
+    document.getElementById('ps-brand').innerHTML = C.brandLockup('/consumer/today.html');
     document.getElementById('ps-back').href = C.href('/consumer/today.html');
     render();
     return C.api('/api/consumer/child/activity', { token: ctx.token })
       .then(function (d) { S.data = d || { work_items: [] }; render(); syncPanel(); })
       .catch(function (e) {
         if (C.isSignedOut(e)) { return C.signedOutPanel(document.getElementById('c-main'), C.childLoginUrl); }
-        C.fail(document.getElementById('c-main'), 'We couldn’t load your work just now.', 'Try again in a minute.');
+        C.fail(document.getElementById('c-main'),
+          e && e.status === 429 ? 'Too many requests just now.' : 'We couldn’t load your work just now.',
+          'Try again in a minute.');
       });
   } });
 })();
