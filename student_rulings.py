@@ -3295,7 +3295,7 @@ LOGIC = {
         # RULED: the header keeps it (Design placed it beside the panel's own
         # title, where it reads as the title's count); the stat row loses its
         # ANSWERED cell and keeps RIGHT and TIME. The divider maths moves from
-        # Design's fixed `i < 2` to `i < a.length - 1`, so the last remaining
+        # Design's fixed `i < 2` to `i < all.length - 1`, so the last remaining
         # cell still has no rule after it.
         #
         # ⚠️ THE SAME PAGE SERVES SCHOOL PUPILS AND FAMILY CHILDREN, so this
@@ -3317,7 +3317,7 @@ LOGIC = {
             "      railStats: [\n"
             "        { label: 'RIGHT', value: pad(nRight), color: 'var(--st-ink)' },\n"
             "        { label: 'TIME', value: this.mmss(st.elapsed), color: st.paused ? 'var(--st-muted)' : 'var(--st-ink)' }\n"
-            "      ].map((s, i, a) => Object.assign(s, { edge: i < a.length - 1 ? '1px solid var(--st-rule-fact)' : 'none', pl: i ? '13px' : '0' })),",
+            "      ].map((s, i, all) => Object.assign(s, { edge: i < all.length - 1 ? '1px solid var(--st-rule-fact)' : 'none', pl: i ? '13px' : '0' })),",
         ),
     ],
 }
