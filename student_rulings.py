@@ -3280,6 +3280,45 @@ LOGIC = {
             "      };\n"
             "    };\n",
         ),
+        # ══════════════════════════════════════════════════════════════════
+        # ⊕ B2C small fixes, 25 Oct 2026 — "ANSWERED 01 / 04" WAS SAID TWICE.
+        # ══════════════════════════════════════════════════════════════════
+        #
+        # Mide's standing rule (CLAUDE.md, 28 Sep 2026): "If a number is shown
+        # once, it is not shown again in another form." The desktop rail
+        # (node 266, `rail: desk && onQ`, i.e. >= 1024px) printed the answered
+        # count in its header — `answeredText`, "ANSWERED 01 / 04", node 271,
+        # beside "All 4 questions" — and then again as the first of its three
+        # stats underneath — `railStats[0]`, "ANSWERED 01/04". One fact, two
+        # forms, eighty pixels apart.
+        #
+        # RULED: the header keeps it (Design placed it beside the panel's own
+        # title, where it reads as the title's count); the stat row loses its
+        # ANSWERED cell and keeps RIGHT and TIME. The divider maths moves from
+        # Design's fixed `i < 2` to `i < a.length - 1`, so the last remaining
+        # cell still has no rule after it.
+        #
+        # ⚠️ THE SAME PAGE SERVES SCHOOL PUPILS AND FAMILY CHILDREN, so this
+        # is a change for both — intended: the text was redundant for anyone.
+        # Phones (< 1024px) never drew the rail and are unchanged; the phone
+        # strip and sheet carry no "ANSWERED" line at all.
+        #
+        # Registered in `student_behaviour.RULED_DIVERGENCE` ("the rail's
+        # ANSWERED stat") — the behaviour drives run at 1460px, where the rail
+        # is drawn.
+        (
+            "      railStats: [\n"
+            "        { label: 'ANSWERED', value: pad(nDone) + '/' + pad(total), color: 'var(--st-ink)' },\n"
+            "        { label: 'RIGHT', value: pad(nRight), color: 'var(--st-ink)' },\n"
+            "        { label: 'TIME', value: this.mmss(st.elapsed), color: st.paused ? 'var(--st-muted)' : 'var(--st-ink)' }\n"
+            "      ].map((s, i) => Object.assign(s, { edge: i < 2 ? '1px solid var(--st-rule-fact)' : 'none', pl: i ? '13px' : '0' })),",
+            "      /* ⊕ B2C small fixes, 25 Oct 2026 — the answered count is in the\n"
+            "         rail's header (`answeredText`); it is not said again here. */\n"
+            "      railStats: [\n"
+            "        { label: 'RIGHT', value: pad(nRight), color: 'var(--st-ink)' },\n"
+            "        { label: 'TIME', value: this.mmss(st.elapsed), color: st.paused ? 'var(--st-muted)' : 'var(--st-ink)' }\n"
+            "      ].map((s, i, a) => Object.assign(s, { edge: i < a.length - 1 ? '1px solid var(--st-rule-fact)' : 'none', pl: i ? '13px' : '0' })),",
+        ),
     ],
 }
 
