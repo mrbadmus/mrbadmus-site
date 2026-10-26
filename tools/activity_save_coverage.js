@@ -129,6 +129,8 @@ for (const p of pages) {
       const answer = r.kind === "pick" || r.kind === "gate" || r.kind === "multi";
       res.groups.push({ g: g.e + (g.inner ? "[" + oi + "]." + g.inner : ""), e: g.e, kind: r.kind, why: r.why || null,
         id: answer ? RA.slotId(r, oi) : null, graded: !!r.graded,
+        labels: answer ? (r.options || []).filter((o) => o.k !== r.check).map((o) => o.label) : [],
+        right: answer && r.right ? (r.options || []).filter((o) => r.right.indexOf(o.k) >= 0).map((o) => o.label) : [],
         by: r.byFlag ? "flag" : r.byWords ? "words" : r.byTally ? "tally" : r.byAlert ? "style" : r.prediction ? "prediction" : (r.graded ? "key" : null) });
     }
   }
