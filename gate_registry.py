@@ -1591,6 +1591,29 @@ GATES = [
              "one in 32,768 runs). The hook is absent in production, where the "
              "order is Math.random()."),
 
+    dict(name="rail_label_drive",
+         cmd=["python3", "rail_label_drive.py"],
+         speed="slow",
+         watches=["rail_label_drive.py", "ks3_browser.py", "ks4_rulings.py",
+                  "build_ks4.py", "build_ks3.py", "shared/ks3.js",
+                  "shared/ks3.css", "shared/ks4-runtime.js",
+                  "mrbadmus_site/shared/**",
+                  "mrbadmus_site/combined/foundation/biology/ecology/carbon-cycle.html",
+                  "mrbadmus_site/ks3/biology/cells-and-organisation/using-a-microscope.html"],
+         needs="mrbadmus_site/ks4.html",
+         why="the sticky progress strip names the section being read (KS3 "
+             "wireRail's [data-rail-label], KS4 ks4-lib observe() via "
+             "ks4_rulings R23). On a KS3 and a KS4 lesson at 390 and 1280 it "
+             "asserts: the first section at the top, the section at the "
+             "reading line at every one of 31 scroll stops (never moving "
+             "backwards), the LAST section at the foot of the page, the first "
+             "again after scrolling back up, and a move back to the earlier "
+             "section within a second when content grows above the line with "
+             "no scroll event at all. Before the fix the foot of the page "
+             "named one or two sections early, KS4 kept the last section at "
+             "the top, and a layout change left the label stale. Every "
+             "request off 127.0.0.1 is blocked."),
+
     dict(name="ks4_chrome_drive",
          cmd=["python3", "ks4_chrome_drive.py"],
          speed="slow",
