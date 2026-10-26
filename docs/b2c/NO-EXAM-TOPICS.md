@@ -227,3 +227,23 @@ Exam availability is a TOPIC property (the picker's `u.exam` is per unit); a sub
 ## How to regenerate
 
 Dump the scheme with `ks4_seed_sow.build_block()` for every `BLOCKS` entry, then call `require('<backend>/consumer/work.js').examTopicsAvailable(rows, schemeBySubject, fits)` per cohort with `fits` = the `examFitsFor` rule (a row's non-null tier/pathway must equal the child's). The script used is not kept in the repo; it is 40 lines and reads nothing but the files named above.
+
+## Where the site offers an exam question, and what `u.exam === false` does there
+
+`u.exam` exists on one route only — the parent's `GET /api/consumer/children/:id/picker` — so it can only gate the parent's Set work sheet. Checked 26 Oct 2026:
+
+| Entry point | Reads `u.exam`? | Behaviour on a topic with none |
+|---|---|---|
+| `consumer/overview.html` Set work sheet (parent) | yes (`examAvailable()`, ~line 1684) | "An exam question" stays **offered** in *What kind*; every topic stays in the picker; the Set button is disabled and reads "No exam question on <topic> yet". Held, not hidden. |
+| `consumer/topic-picker.js` | no (topic list only; knows nothing of kinds) | n/a — draws whatever `units` it is given |
+| `consumer/today.html` "Exam questions" quick card (child) | no — and needs not | opens the child's own list (`/child/exam-questions`), which only contains questions that exist |
+| Today's Friday exam item (child) | no — and needs not | the backend only writes it when `pickExamQuestion` found one |
+
+So the only gap is in `consumer/overview.html`, which another session owns; it is left untouched. The minimal change there:
+
+1. In `mountTopic()`, while `S.workKind === 'exam'`, hand the picker only the units that can set one:
+   `units: S.workKind === 'exam' ? S.picker.filter(function (u) { return u.exam !== false; }) : S.picker`
+   (`null` = not known, still offered). Re-mount on `pick-kind` (it already re-renders and calls `mountTopic()`).
+   ⚠️ A unit missing from `units` is drawn greyed with the topic picker's "not in this year" reason, which would be a false reason; so either add a `topic-picker.js` option (e.g. `hide: function (unit) {…}`) that drops such units from `visible()`, or filter `model.topics` after `build()`. The option is the cleaner of the two.
+2. On switching to "An exam question" with a chosen topic whose unit has `exam === false`, clear `S.topic`/`S.tp` (ruling 7 keeps a topic only when the question can come from it), so the hidden topic is not silently still chosen.
+3. When `S.examAny === false` and every unit is `exam === false`, drop the "An exam question" card from `WORK_KINDS` for this child rather than offering a kind that can never be set.
