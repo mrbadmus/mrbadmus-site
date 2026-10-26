@@ -1717,7 +1717,7 @@ def make_pathway_topic_page(pathway, tier, subject, topic):
     <div class="section-title">🤖 Ask MrBadmus</div>
     <div class="card ask-card">
       <p class="ask-lede">Stuck on {topic['title']}? Ask me anything!</p>
-      <p class="ask-sub">I'll use FIFA for calculations and flag Higher/Triple content clearly.</p>
+      <p class="ask-sub">I'll use CFIFA for calculations and flag Higher/Triple content clearly.</p>
       <button data-open-chat class="btn-primary">💬 Ask MrBadmus</button>
     </div>
   </div>
@@ -1962,7 +1962,7 @@ def make_fifa_example(subject, topic):
     key = (subject, topic["id"])
     ex = examples.get(key)
     if not ex:
-        return f'<div class="card"><p style="color:var(--muted);">Ask MrBadmus below for a worked FIFA example on {topic["title"]}!</p></div>'
+        return f'<div class="card"><p style="color:var(--muted);">Ask MrBadmus below for a worked CFIFA example on {topic["title"]}!</p></div>'
 
     steps_html = ""
     for letter, text in ex["steps"]:
@@ -4038,7 +4038,7 @@ def make_new_subtopic_page(st, color):
   <div class="section-title">🤖 Ask MrBadmus</div>
   <div class="card" style="text-align:center;padding:32px;">
     <p style="font-size:1.1rem;margin-bottom:8px;font-weight:700;">Stuck? Just ask! 💬</p>
-    <p style="color:var(--muted);font-size:0.9rem;margin-bottom:20px;">I'll use FIFA for all calculations and flag Higher Tier and Triple content clearly.</p>
+    <p style="color:var(--muted);font-size:0.9rem;margin-bottom:20px;">I'll use CFIFA for all calculations and flag Higher Tier and Triple content clearly.</p>
     <button data-open-chat style="background:{color};color:#0F0F1A;border:none;padding:14px 32px;border-radius:50px;font-size:1rem;font-weight:800;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;">💬 Ask MrBadmus</button>
   </div>
 </div>"""
@@ -4588,7 +4588,7 @@ def make_pathway_subtopic_page(st, color, subject, pathway, tier, all_subtopics_
   <div class="section-title">🤖 Ask MrBadmus</div>
   <div class="card ask-card">
     <p class="ask-lede">Stuck? Just ask! 💬</p>
-    <p class="ask-sub">I'll use FIFA for calculations and flag Higher/Triple content clearly.</p>
+    <p class="ask-sub">I'll use CFIFA for calculations and flag Higher/Triple content clearly.</p>
     <button data-open-chat class="btn-primary">💬 Ask MrBadmus</button>
   </div>
 </div>"""
@@ -5070,7 +5070,7 @@ try {{
   <div class="rd-sec-kicker">Stuck · Ask MrBadmus</div>
   <div class="card ask-card">
     <p class="ask-lede">Ask about anything on this page.</p>
-    <p class="ask-sub">FIFA for calculations; Higher (⭐) and Triple (🔬) content flagged clearly.</p>
+    <p class="ask-sub">CFIFA for calculations; Higher (⭐) and Triple (🔬) content flagged clearly.</p>
     <button data-open-chat class="btn-primary">💬 Ask MrBadmus</button>
   </div>
 </div>"""
@@ -5334,7 +5334,7 @@ def make_pathway_topic_page_with_subtopics(pathway, tier, subject, topic, subtop
       <div class="k4-dark">
         <div class="k4-kicker k4-kicker-ondark">Stuck on something</div>
         <p class="k4-dark-title">Ask about {topic['title']}</p>
-        <p>Calculations get worked through with FIFA, and anything Higher or Triple is flagged before you learn it by mistake.</p>
+        <p>Calculations get worked through with CFIFA, and anything Higher or Triple is flagged before you learn it by mistake.</p>
         <button type="button" data-open-chat class="k4-cta">Ask MrBadmus {K4_ARROW}</button>
       </div>
 {rp_panel}

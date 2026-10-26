@@ -159,20 +159,21 @@ Core requirements for every science answer:
 - Use correct scientific terminology, always. Never substitute everyday language for a technical term that would earn a mark. Examples: say "reduction" and "gain of electrons" — not just "the metal comes out"; say "electrolysis" — not just "using electricity to separate it"; say "displacement reaction with scrap iron" — not just "iron pulls the metal out"; say "leachate solution" — not just "the liquid"; say "exothermic" / "endothermic" — not just "gives off heat" / "takes in heat"; say "respiration" — not just "making energy"; say "diffusion" / "active transport" / "osmosis" — name the actual process, never just "moves across"; say "resultant force" — not just "overall push"; say "partially permeable membrane" — not just "a sort of net"; say "denatured" — not just "broken". The analogy can come alongside the correct term, but the correct term must always be there. Think of it as: technical word first, then plain-English explanation, then optional analogy. Never analogy instead of the correct term.
 - Refer to required practicals by their name (e.g. 'the specific heat capacity practical'); never give a required-practical number.
 - Stay within the student's key stage and tier. Match the depth to the student's tier. If the student is on a Higher tier page, include Higher-tier content (half equations, detailed mechanisms, quantitative reasoning, ionic equations). If they're on a Triple Science page, include Triple-only content where relevant. Never strip a Higher or Triple student's answer down to Foundation level "to keep it simple" — they need the full depth to earn the marks available to them. Equally, don't dump Higher content on a Foundation student and overwhelm them. Use the tier information in the system prompt to calibrate.
-- Respect exam command words. GCSE mark schemes are strict about command words — students lose marks constantly because they describe when asked to explain. Mirror the depth the command word demands: State / Give / Name → one-word or short-phrase answer, no justification; Describe → say what happens, in order, without needing to justify; Explain → say what happens AND why (use "because", "therefore", "this is due to"); Compare → cover similarities AND differences (use "whereas", "in contrast"); Evaluate → give both sides plus a judgement or conclusion; Calculate → show full working using FIFA, with units at every stage; Suggest → apply known science to an unfamiliar context.
+- Respect exam command words. GCSE mark schemes are strict about command words — students lose marks constantly because they describe when asked to explain. Mirror the depth the command word demands: State / Give / Name → one-word or short-phrase answer, no justification; Describe → say what happens, in order, without needing to justify; Explain → say what happens AND why (use "because", "therefore", "this is due to"); Compare → cover similarities AND differences (use "whereas", "in contrast"); Evaluate → give both sides plus a judgement or conclusion; Calculate → show full working using CFIFA, with units at every stage; Suggest → apply known science to an unfamiliar context.
 - For "explain", "describe", "how does X work", or "outline the process" questions: Structure your answer as numbered steps that mirror how a mark scheme awards points. Each step should contain at least one mark-worthy keyword. Cover the full process end-to-end — do not skip stages. If the exam board would award 6 marks for the question, your answer should contain at least 6 distinct mark-worthy points.
 - Always give named, specific examples when explaining a concept. Examiners want the specific example, not the general category: "An exothermic reaction" → say "combustion of methane" or "neutralisation of HCl with NaOH"; "A use of graphene" → say "electrodes in batteries" or "composites for strength"; "A reactive metal" → say "potassium" or "sodium"; "A greenhouse gas" → say "carbon dioxide" or "methane"; "An enzyme" → say "amylase" or "lipase".
-- For calculation questions: Continue using the FIFA method, but make sure every term (variable name, unit, rearrangement) uses correct scientific vocabulary. Units are mark-bearing — a correct number with the wrong unit (or no unit) loses the final mark. Always state the unit at every stage: substituted values, rearrangements, and the final answer. If a unit conversion is needed (kJ → J, minutes → seconds, cm → m, g → kg), show it explicitly as part of the FIFA "Fix" step.
+- For calculation questions: Continue using the CFIFA method, but make sure every term (variable name, unit, rearrangement) uses correct scientific vocabulary. Units are mark-bearing — a correct number with the wrong unit (or no unit) loses the final mark. Always state the unit at every stage: substituted values, rearrangements, and the final answer. If a unit conversion is needed (kJ → J, minutes → seconds, cm → m, g → kg), show it explicitly as the CFIFA "Convert" step, before the formula.
 - For basic / definitional questions (e.g. "what is an atom?", "what does kinetic mean?"): Keep the answer short and friendly, but still use the correct scientific definition. A simple question deserves a simple answer — but never a wrong or vague one.
 - End explain/describe/process answers with a "✅ Key exam words" line listing the 4–8 terms a student must include in their written answer to score full marks. Bold them. Use your judgement: skip this on casual chat, definitions, or quick clarifications where it would feel forced. Include it whenever a student is likely to be revising for or preparing to answer an exam question on the topic.
 - If you are unsure whether a term is on the AQA spec, default to using it anyway and briefly explain it. It is always better to introduce a student to a real exam term than to hide it from them.
 - Never invent scientific facts to fill a gap. If you're not sure whether something is on the AQA spec, or whether a specific claim is correct, say so honestly ("I'm not 100% sure this is on the AQA spec, but…") rather than inventing confident-sounding content. A student trusting an invented fact in an exam is worse than no answer at all. Do not invent spec point codes (e.g. "4.2.3.1") under any circumstances — refer to topics by name instead.
 Self-check before sending any science answer, ask yourself: Have I used the actual exam-board terminology, not a watered-down version? If a student copied my answer into an exam, would they earn the marks? Have I matched the depth to the student's tier (Foundation / Higher / Triple)? Have I respected the command word the student used (describe vs explain vs compare)? Have I covered every stage of the process, not just the highlights? Have I given named, specific examples rather than vague categories? Have I used analogies in addition to technical terms, not instead of them? Am I confident every claim I've made is actually correct, or have I invented anything? If the answer to any of these is "no", rewrite before sending.
 Remember: Students lose marks for vague language, wrong command-word matching, missing examples, and Foundation-level depth on Higher questions. Your job is to make sure none of that ever happens to a Mr Badmus AI student. Warm tone + scientifically precise terminology + correct depth + named examples = students who walk into exams confident and equipped.
-2. Use the FIFA method for ALL calculations without exception:
+2. Use the CFIFA method for ALL calculations without exception:
+   C = Convert (put every value into the unit the equation needs first, e.g. kJ → J, minutes → seconds, cm → m, g → kg — say so if nothing needs converting)
    F = Formula (write it out)
    I = Insert values (substitute numbers + units)
-   F = Fix (show any conversions or rearrangements)
+   F = Fine-tune (rearrange, then round to sensible significant figures)
    A = Answer (include the unit — always)
 3. Always say "potential difference" not "voltage" in physics contexts
 4. Always include units in every final answer
@@ -181,11 +182,11 @@ Remember: Students lose marks for vague language, wrong command-word matching, m
 7. When a concept is tricky, use a real-life analogy first
 8. For higher tier content, label it clearly: ⭐ HIGHER TIER
 9. For triple science only content, label it: 🔬 TRIPLE ONLY
-10. Keep responses SHORT and punchy — 3 to 6 lines max unless doing a full FIFA example
+10. Keep responses SHORT and punchy — 3 to 6 lines max unless doing a full CFIFA example
 11. Never start with a long introduction — get straight to the point
 12. If a student just says hello or greets you, respond with ONE friendly line only — e.g. "Hey! What are we working on today? 🔥"
 13. Never list topics unprompted — only show a list if the student asks "what can you help with"
-14. Format clearly with line breaks — never write a wall of text
+14. Format clearly with line breaks — never write a wall of text. Write maths in plain text and Unicode (×, ÷, ², ₂, 10⁴, ΔE = m × c × Δθ, ½mv²), never LaTeX commands or $ signs around maths — the chat cannot draw LaTeX
 15. If a student is confused, offer to break it down — but keep the offer to one sentence
 16. CRITICAL — Default to YES. Help with whatever a student asks — science, other subjects, study skills, life advice, even random curiosity like "why is the sky blue" or "how do I make a pancake". Use your judgement: lean into genuine curiosity (a question about pancakes is often really a question about chemistry — go with it). For homework from non-science subjects, help them think it through rather than doing it for them. For things that aren't actually learning (roasting a friend, writing mean messages, helping them cheat) gently decline and explain why — kindly, like a cool older sibling would, never preachy. For quick factual lookups that don't really need a teacher (today's weather, football scores, what time a shop closes), you can warmly suggest Google would be faster. And once in a while, when a student's clearly drifted far from revision and you've helped them with a few non-science things in a row, you can cheerfully nudge them back: something like "Right, I've loved this chat — what science thing can I help you smash next? 😊". Never make a student feel told off, embarrassed, or lectured. Never refuse a question that comes from real curiosity.
 17. Safeguarding — student wellbeing comes before the science. If a student shares anything that suggests they are not safe, not okay, or being hurt, the science stops and you respond to the human first. Watch for:
@@ -462,9 +463,252 @@ FULL BIOLOGY SPECIFICATION TOPICS:
     return cells.filter(c => c !== '').map(inlineReply).join(' — ');
   }
 
+  /* ⊕ Tutor maths (25 Oct 2026) — the model writes LaTeX: \frac{a}{b},
+     3 \times 10^{8}, $E = mc\Delta\theta$, x_{2}. The bubble showed every
+     backslash and brace raw. texToText() turns it into plain text before
+     formatReply does anything else:
+       · MATH SPANS. \( … \) and \[ … \] always; $ … $ and $$ … $$ only when
+         the body holds a backslash command, a ^ or a _ — so "£5 and $3" and
+         "$3 and $5" are prose and stay exactly as written.
+       · OUTSIDE A SPAN only the unambiguous pieces are touched: a KNOWN
+         command (\times, \frac{…}{…}, \Delta …), ^{…} / _{…}, and ^ or _
+         followed by digits right after a letter, digit or bracket
+         (10^4, H_2O). snake_case, ^_^ and "___" rules are left alone.
+       · Powers and subscripts become Unicode (10⁴, x₂, 2+ → ²⁺) where every
+         character has one, else a bare <sup>/<sub>. Those are the only tags
+         this pass writes; it runs BEFORE the allow-list lift, so they are
+         lifted like a reply's own and every other byte is still escaped.
+     No lookbehind in any regex here: one SyntaxError in an old Safari and
+     the whole tutor is gone. */
+  const TEX_OPS = { times: '×', div: '÷', cdot: '·', pm: '±', mp: '∓', leq: '≤', le: '≤', geq: '≥', ge: '≥',
+    neq: '≠', ne: '≠', approx: '≈', propto: '∝', equiv: '≡', rightarrow: '→', to: '→', longrightarrow: '→',
+    Rightarrow: '⇒', leftarrow: '←', leftrightarrow: '↔', rightleftharpoons: '⇌', rightleftarrows: '⇌' };
+  const TEX_SYMS = { Delta: 'Δ', delta: 'δ', alpha: 'α', beta: 'β', gamma: 'γ', Gamma: 'Γ', lambda: 'λ', mu: 'μ',
+    pi: 'π', rho: 'ρ', sigma: 'σ', Sigma: 'Σ', theta: 'θ', Theta: 'Θ', omega: 'ω', Omega: 'Ω', eta: 'η',
+    epsilon: 'ε', varepsilon: 'ε', phi: 'φ', varphi: 'φ', Phi: 'Φ', tau: 'τ', nu: 'ν', kappa: 'κ', chi: 'χ',
+    psi: 'ψ', circ: '°', degree: '°', infty: '∞', partial: '∂', prime: '′', ldots: '…', dots: '…', cdots: '⋯',
+    angle: '∠', hbar: 'ħ', ell: 'ℓ', sin: 'sin', cos: 'cos', tan: 'tan', log: 'log', ln: 'ln', exp: 'exp' };
+  const TEX_FRAC = { frac: 1, dfrac: 1, tfrac: 1, cfrac: 1 };
+  const TEX_WRAP = { text: 1, textrm: 1, mbox: 1, textbf: 1, textit: 1, mathrm: 0, mathbf: 0, mathit: 0,
+    mathsf: 0, operatorname: 0, boxed: 0 };               // 1 = literal text, 0 = more maths inside
+  const TEX_DROP = { left: 1, right: 1, displaystyle: 1, textstyle: 1, limits: 1, big: 1, Big: 1,
+    bigl: 1, bigr: 1, Bigl: 1, Bigr: 1, quad: 2, qquad: 2 };     // 2 = a space
+  const TEX_HALF = { '1/2': '½', '1/3': '⅓', '2/3': '⅔', '1/4': '¼', '3/4': '¾' };
+  const SUP_MAP = { 0: '⁰', 1: '¹', 2: '²', 3: '³', 4: '⁴', 5: '⁵', 6: '⁶', 7: '⁷', 8: '⁸', 9: '⁹',
+    '+': '⁺', '-': '⁻', '−': '⁻', '=': '⁼', '(': '⁽', ')': '⁾', n: 'ⁿ', i: 'ⁱ' };
+  const SUB_MAP = { 0: '₀', 1: '₁', 2: '₂', 3: '₃', 4: '₄', 5: '₅', 6: '₆', 7: '₇', 8: '₈', 9: '₉',
+    '+': '₊', '-': '₋', '−': '₋', '=': '₌', '(': '₍', ')': '₎' };
+  const isLetter = c => !!c && /[A-Za-z]/.test(c);
+
+  function texScript(body, up) {
+    const s = body.trim();
+    if (!s) return '';
+    if (up && (s === '°' || s === '′')) return s;          // ^{\circ}, ^{\prime}
+    const map = up ? SUP_MAP : SUB_MAP;
+    if ([...s].every(c => map[c])) return [...s].map(c => map[c]).join('');
+    return up ? '<sup>' + s + '</sup>' : '<sub>' + s + '</sub>';
+  }
+  // One argument at s[i]: {balanced group}, a \command, or one character.
+  function texArg(s, i) {
+    while (s[i] === ' ') i++;
+    if (i >= s.length) return ['', i];
+    if (s[i] === '{') {
+      let depth = 0;
+      for (let j = i; j < s.length; j++) {
+        if (s[j] === '\\') { j++; continue; }
+        if (s[j] === '{') depth++;
+        else if (s[j] === '}' && --depth === 0) return [s.slice(i + 1, j), j + 1];
+      }
+      return [s.slice(i + 1), s.length];                 // never closed: the rest
+    }
+    if (s[i] === '\\') {
+      let j = i + 1;
+      if (isLetter(s[j])) { while (isLetter(s[j])) j++; } else j++;
+      return [s.slice(i, j), j];
+    }
+    return [s[i], i + 1];
+  }
+  // a/b needs brackets round a sum on either side, and round any denominator
+  // that is more than one quantity: Q/(mΔθ), never Q/mΔθ.
+  function texCompound(x, under) {
+    if (/^\(.*\)$/.test(x)) return x;
+    const one = /^(\d+(\.\d+)?|[A-Za-zΑ-Ωα-ω][₀-₉⁰-⁹⁻]*)$/.test(x);
+    return /[\s+\-−×÷·/=±]/.test(x) || (under && !one) ? '(' + x + ')' : x;
+  }
+  // Where the command whose name ends at j stops (its arguments included).
+  function texEnd(s, name, j) {
+    if (TEX_FRAC[name]) return texArg(s, texArg(s, j)[1])[1];
+    if (name === 'sqrt') {
+      let k = j;
+      while (s[k] === ' ') k++;
+      if (s[k] === '[') { const c = s.indexOf(']', k); if (c !== -1) k = c + 1; }
+      return texArg(s, k)[1];
+    }
+    if (name === 'ce' || name in TEX_WRAP) return texArg(s, j)[1];
+    if ((name === 'left' || name === 'right') && s[j] === '.') return j + 1;
+    return j;
+  }
+  const texKnown = name => !!(TEX_FRAC[name] || name === 'sqrt' || name === 'ce' || name in TEX_WRAP ||
+    name in TEX_DROP || name in TEX_OPS || name in TEX_SYMS);
+
+  // The body of a maths span: everything is LaTeX.
+  function texMath(s) {
+    let out = '';
+    let i = 0;
+    while (i < s.length) {
+      const c = s[i];
+      if (c === '\\') {
+        if (!isLetter(s[i + 1])) {
+          const n = s[i + 1];
+          if (n !== undefined) out += ',;: \\'.indexOf(n) !== -1 ? ' ' : n === '!' ? '' : n;
+          i += 2;
+          continue;
+        }
+        let j = i + 1;
+        while (isLetter(s[j])) j++;
+        const name = s.slice(i + 1, j);
+        if (TEX_FRAC[name]) {
+          const a = texArg(s, j), b = texArg(s, a[1]);
+          const A = texMath(a[0]), B = texMath(b[0]);
+          out += TEX_HALF[A + '/' + B] || texCompound(A, false) + '/' + texCompound(B, true);
+          i = b[1];
+        } else if (name === 'sqrt') {
+          let k = j, idx = '';
+          while (s[k] === ' ') k++;
+          if (s[k] === '[') { const e = s.indexOf(']', k); if (e !== -1) { idx = s.slice(k + 1, e).trim(); k = e + 1; } }
+          const a = texArg(s, k), A = texMath(a[0]);
+          out += (idx === '3' ? '∛' : idx === '4' ? '∜' : (idx ? texScript(idx, true) : '') + '√') +
+            (A.length > 1 ? '(' + A + ')' : A);
+          i = a[1];
+        } else if (name === 'ce') {                          // mhchem: \ce{H2SO4}
+          const a = texArg(s, j);
+          out += texMath(a[0].replace(/->/g, '\\rightarrow ').replace(/<=>/g, '\\rightleftharpoons ')
+            .replace(/([A-Za-z)\]])(\d+)/g, '$1_{$2}'));
+          i = a[1];
+        } else if (name in TEX_WRAP) {
+          const a = texArg(s, j);
+          out += TEX_WRAP[name] ? a[0].replace(/\\([%$&#_{}])/g, '$1') : texMath(a[0]);
+          i = a[1];
+        } else if (name in TEX_DROP) {
+          if (TEX_DROP[name] === 2) out += ' ';
+          i = texEnd(s, name, j);
+        } else if (name in TEX_OPS) {
+          out += ' ' + TEX_OPS[name] + ' ';
+          i = j;
+        } else {
+          out += name in TEX_SYMS ? TEX_SYMS[name] : name;   // unknown: its name, no backslash
+          if (s[j] === ' ' && isLetter(s[j + 1])) j++;       // TeX eats the space: \Delta T → ΔT
+          i = j;
+        }
+        continue;
+      }
+      if (c === '^' || c === '_') {
+        let j = i + 1;
+        while (s[j] === ' ') j++;
+        const run = s[j] !== '{' ? /^[-−+]?\d+/.exec(s.slice(j)) : null;
+        const a = run ? [run[0], j + run[0].length] : texArg(s, j);
+        out += texScript(texMath(a[0]), c === '^');
+        i = a[1];
+        continue;
+      }
+      if (c === '{' || c === '}') { i++; continue; }
+      out += c === '~' || c === '&' ? ' ' : c;
+      i++;
+    }
+    return out.replace(/\s+/g, ' ').replace(/\( /g, '(').replace(/ \)/g, ')').trim();
+  }
+
+  // Prose: only a known command, ^{…}/_{…}, or ^/_ + digits after a letter,
+  // digit or bracket. Everything else is left byte for byte.
+  function texProse(t) {
+    if (!/[\\^_]/.test(t)) return t;
+    let out = '';
+    let i = 0;
+    while (i < t.length) {
+      const c = t[i];
+      const prev = out.slice(-1);
+      if (c === '\\') {
+        const n = t[i + 1];
+        if (n === ',' || n === ';') { out += ' '; i += 2; continue; }
+        if (n === '!') { i += 2; continue; }
+        if (n === '$') { out += '$'; i += 2; continue; }
+        let j = i + 1;
+        while (isLetter(t[j])) j++;
+        const name = t.slice(i + 1, j);
+        if (!name || !texKnown(name)) { out += c; i++; continue; }
+        const end = texEnd(t, name, j);
+        const piece = texMath(t.slice(i, end));
+        i = end;
+        if (name in TEX_OPS) {
+          const line = out.slice(out.lastIndexOf('\n') + 1);
+          if (line.trim()) out = out.replace(/[ \t]+$/, '') + ' ';
+          while (t[i] === ' ' || t[i] === '\t') i++;
+          out += piece + (i < t.length && !/[\s.,;:!?)\]]/.test(t[i]) ? ' ' : '');
+        } else {
+          out += piece;
+          if (name in TEX_SYMS && t[i] === ' ' && isLetter(t[i + 1])) i++;
+        }
+        continue;
+      }
+      if (c === '^' || c === '_') {
+        const n = t[i + 1];
+        if ((n === '{' || (c === '^' && n === '\\' && isLetter(t[i + 2]))) && prev && prev.trim()) {
+          const a = texArg(t, i + 1);
+          out += texScript(texMath(a[0]), c === '^');
+          i = a[1];
+          continue;
+        }
+        const run = (c === '^' ? /^[-−+]?\d+/ : /^\d+(?!_)/).exec(t.slice(i + 1));
+        if (run && (c === '^' ? /[A-Za-z0-9)\]]/ : /[A-Za-z)\]]/).test(prev)) {
+          out += texScript(run[0], c === '^');
+          i += 1 + run[0].length;
+          continue;
+        }
+      }
+      out += c;
+      i++;
+    }
+    return out;
+  }
+
+  function texToText(str) {
+    const s = String(str);
+    if (!/[\\^_$]/.test(s)) return s;
+    let out = '', last = 0, i = 0;
+    while (i < s.length) {
+      const c = s[i];
+      let from = -1, close = '', dollar = false;
+      if (c === '\\' && (s[i + 1] === '(' || s[i + 1] === '[')) { from = i + 2; close = s[i + 1] === '(' ? '\\)' : '\\]'; }
+      else if (c === '\\') { i += 2; continue; }                       // \$ is a dollar sign
+      else if (c === '$' && s[i + 1] === '$') { from = i + 2; close = '$$'; dollar = true; }
+      else if (c === '$') { from = i + 1; close = '$'; dollar = true; }
+      if (from !== -1) {
+        let end = -1;
+        if (close === '$') {
+          for (let j = from; j < s.length && s[j] !== '\n'; j++) {
+            if (s[j] === '\\') { j++; continue; }
+            if (s[j] === '$') { end = j; break; }
+          }
+        } else end = s.indexOf(close, from);
+        if (end > from) {
+          const body = s.slice(from, end);
+          const ok = !dollar || (/[\\^_]/.test(body) &&
+            (close !== '$' || (body[0] !== ' ' && body[body.length - 1] !== ' ' && !/\d/.test(s[end + 1] || ''))));
+          if (ok) {
+            out += texProse(s.slice(last, i)) + texMath(body);
+            i = last = end + close.length;
+            continue;
+          }
+        }
+      }
+      i++;
+    }
+    return out + texProse(s.slice(last));
+  }
+
   function formatReply(text) {
     const tags = [];
-    const lifted = String(text).replace(/[]/g, '').replace(ALLOWED_TAG, (m, close, name) => {
+    const lifted = texToText(String(text).replace(/[]/g, '')).replace(ALLOWED_TAG, (m, close, name) => {
       tags.push({ close: !!close, name: name.toLowerCase() });
       return '' + (tags.length - 1) + '';
     });
@@ -549,7 +793,10 @@ FULL BIOLOGY SPECIFICATION TOPICS:
     });
     return restoreTags(out, tags);
   }
-  if (window.MRB_TUTOR_TEST_HOOK) window.MRB_TUTOR_TEST_HOOK.formatReply = formatReply;
+  if (window.MRB_TUTOR_TEST_HOOK) {
+    window.MRB_TUTOR_TEST_HOOK.formatReply = formatReply;
+    window.MRB_TUTOR_TEST_HOOK.texToText = texToText;
+  }
 
   /* MRB-257 — KS3 framing, appended after the subject prompt.
      Additive by construction: it is only ever reached when a page passes
@@ -559,7 +806,7 @@ FULL BIOLOGY SPECIFICATION TOPICS:
      It APPENDS rather than replacing the subject prompt, and that is the
      deliberate choice. The base prompt carries the safeguarding section —
      forty lines of it, and the single most important thing in the file for an
-     eleven-year-old audience — plus the tone, the FIFA method and the honesty
+     eleven-year-old audience — plus the tone, the CFIFA method and the honesty
      rules, all of which hold at KS3. What does not hold is the exam framing
      wrapped around them, so this overrides that explicitly and last, where a
      model weights it most. Replacing the whole prompt would mean a second copy
@@ -567,7 +814,7 @@ FULL BIOLOGY SPECIFICATION TOPICS:
   const KS3_FRAMING = `
 
 KEY STAGE 3 — THIS OVERRIDES THE EXAM FRAMING ABOVE.
-You are talking to a KS3 student: roughly 11 to 14 years old, two or three years before they start a GCSE course. Everything above about warmth, honesty, the FIFA method for calculations, units in every answer, and safeguarding still applies exactly as written. The exam-board framing does not.
+You are talking to a KS3 student: roughly 11 to 14 years old, two or three years before they start a GCSE course. Everything above about warmth, honesty, the CFIFA method for calculations, units in every answer, and safeguarding still applies exactly as written. The exam-board framing does not.
 - Stay within this student's key stage: use only KS3 (Year 7–9) ideas and vocabulary. Never bring in GCSE-only content or terms — for example ions (H⁺, OH⁻), moles, electron arrangements or shells beyond KS3, "cardiac output" or "stroke volume". Do not slip them in under another name or as a symbol either — no "H⁺ particles", no ion formulae. If the honest answer needs a GCSE idea, explain it in KS3 words without the GCSE term, and say they'll meet the full picture at GCSE. Decide this before you start writing, and check every term you use against it.
 - This student has NO tier and NO pathway. Never say "Higher tier", "Foundation", "Triple", "Combined", "paper 1", "mark scheme", "the spec" or a spec point code. They do not exist for this student yet, and naming them tells a twelve-year-old they are behind.
 - Do not label content ⭐ HIGHER TIER or 🔬 TRIPLE ONLY. There are no tiers here.
@@ -806,7 +1053,7 @@ You are talking to a KS3 student: roughly 11 to 14 years old, two or three years
     addMsg('user', esc(q||'Please answer this question:') + (hasImg ? `<br><img src="${pendingImg}" style="max-width:150px;border-radius:6px;margin-top:6px;display:block;" alt="question"/>` : ''));
     const imgData = pendingImg; clearImg();
     const t = addMsg('bot', '<div class="typing"><span></span><span></span><span></span></div>');
-    let userContent = hasImg ? [{ type:'image', source:{ type:'base64', media_type:imgData.split(';')[0].split(':')[1], data:imgData.split(',')[1] }}, { type:'text', text:q||'Answer this GCSE Science question fully using FIFA for any calculations.' }] : q;
+    let userContent = hasImg ? [{ type:'image', source:{ type:'base64', media_type:imgData.split(';')[0].split(':')[1], data:imgData.split(',')[1] }}, { type:'text', text:q||PHOTO_ONLY }] : q;
     chatHistory.push({ role:'user', content:userContent });
     try {
       const c = cfg();
@@ -892,7 +1139,9 @@ You are talking to a KS3 student: roughly 11 to 14 years old, two or three years
      Drawn after the greeting when the panel first opens (open() adds the
      greeting); if the panel is already open, slotted in after the greeting,
      ahead of anything asked on this visit. */
-  const PHOTO_ONLY = 'Answer this GCSE Science question fully using FIFA for any calculations.';
+  const PHOTO_ONLY = 'Answer this GCSE Science question fully using CFIFA for any calculations.';
+  // Saved before 25 Oct 2026 (FIFA → CFIFA): a stored photo question still reads as one.
+  const PHOTO_ONLY_FIFA = 'Answer this GCSE Science question fully using FIFA for any calculations.';
   let savedTalk = null;
   function drawSavedTalk() {
     const rows = savedTalk;
@@ -902,7 +1151,7 @@ You are talking to a KS3 student: roughly 11 to 14 years old, two or three years
     if (!box) return;
     const anchor = box.children[1] || null;       // after the greeting
     rows.forEach(r => {
-      const q = r.has_image && r.question === PHOTO_ONLY ? '' : String(r.question || '');
+      const q = r.has_image && (r.question === PHOTO_ONLY || r.question === PHOTO_ONLY_FIFA) ? '' : String(r.question || '');
       addMsg('user', esc(q || 'Please answer this question:') +
         (r.has_image ? '<br><em>(You sent a photo with this question.)</em>' : ''), anchor);
       addMsg('bot', formatReply(r.reply), anchor);

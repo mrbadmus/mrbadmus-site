@@ -168,6 +168,51 @@ check("a --- rule is still a rule, not a separator", f("a | b\n---\nc"), 'a | b<
 check("script and attributes in a cell are text", f("| Metal | Note |\n|---|---|\n| <script>x</script> | <b onclick=1>y</b> |"),
       "<strong>Metal — Note</strong><ul><li>&lt;script&gt;x&lt;/script&gt; — &lt;b onclick=1&gt;y</li></ul>");
 
+// ── Tutor maths (25 Oct 2026): LaTeX in a reply is plain text ───────────
+// texToText() runs on the raw reply before the allow-list lift. Each case
+// is the model's LaTeX (before) and what the bubble draws (after).
+check("standard form, bare", f("The speed of light is 3 \\times 10^{8} m/s"),
+      "The speed of light is 3 × 10⁸ m/s");
+check("standard form in $…$", f("$3 \\times 10^{8}$ m/s"), "3 × 10⁸ m/s");
+check("negative power, \\, and \\text", f("Area $= 2.5 \\times 10^{-3}\\,\\text{m}^2$"),
+      "Area = 2.5 × 10⁻³ m²");
+check("bare 10^4 and 1 \\times 10^{4}", f("1 \\times 10^{4} is 10^4"), "1 × 10⁴ is 10⁴");
+check("\\( \\frac \\) with compound parts", f("\\( \\frac{\\Delta E}{m \\times \\Delta T} \\)"),
+      "ΔE/(m × ΔT)");
+check("\\[ \\] display maths, product denominator bracketed", f("\\[ c = \\frac{Q}{m\\Delta\\theta} \\]"),
+      "c = Q/(mΔθ)");
+check("simple \\frac is a/b", f("$\\rho = \\frac{m}{V}$"), "ρ = m/V");
+check("\\frac{1}{2} is ½, a letter subscript is <sub>", f("$E_k = \\frac{1}{2} m v^2$"), "E<sub>k</sub> = ½ m v²");
+check("\\left \\right dropped, sum bracketed", f("$$\\left( \\frac{a+b}{c} \\right)$$"), "((a+b)/c)");
+check("operators", f("mass \\div volume, a \\leq b \\geq c \\pm 1, \\cdot, \\(a \\rightarrow b\\)"),
+      "mass ÷ volume, a ≤ b ≥ c ± 1, ·, a → b");
+check("\\sqrt", f("$v = \\sqrt{2gh}$ and \\sqrt{x}"), "v = √(2gh) and √x");
+check("degrees", f("$25^{\\circ}\\text{C}$"), "25°C");
+check("subscripts: x_{2}, H_2O, \\ce", f("x_{2}, H_2O and \\ce{2H2 + O2 -> 2H2O}"),
+      "x₂, H₂O and 2H₂ + O₂ → 2H₂O");
+check("ion charges", f("Fe^{3+} and $\\text{SO}_4^{2-}$"), "Fe³⁺ and SO₄²⁻");
+check("letters fall back to <sub>", f("$v_{max}$"), "v<sub>max</sub>");
+check("maths inside bold and a list", f("- **$v^2 = u^2 + 2as$**"),
+      "<ul><li><strong>v² = u² + 2as</strong></li></ul>");
+// Left exactly as written.
+check("prices are prose: £5 and $3", f("£5 and $3"), "£5 and $3");
+check("two prices are not a maths span", f("It was $3 and now $5"), "It was $3 and now $5");
+check("\\$ is a dollar", f("cost \\$5"), "cost $5");
+check("snake_case, ^_^ and ___ untouched", f("snake_case ^_^\n___\nend"),
+      'snake_case ^_^<hr class="chat-rule">end');
+check("chemical formula with <sub> renders", f("H<sub>2</sub>O and CO<sub>2</sub>"),
+      "H<sub>2</sub>O and CO<sub>2</sub>");
+check("Unicode CO₂ untouched", f("CO₂ + H₂O → C₆H₁₂O₆"), "CO₂ + H₂O → C₆H₁₂O₆");
+check("<sub> and LaTeX in one reply", f("CO<sub>2</sub> is 4.4 \\times 10^{-2} kg"),
+      "CO<sub>2</sub> is 4.4 × 10⁻² kg");
+// Escape-safe: nothing inside a power or a \text becomes markup.
+check("a script in a power is text", f("x^{<script>alert(1)</script>}"),
+      "x<sup>&lt;script&gt;alert(1)&lt;/script&gt;</sup>");
+check("a tag in \\text is text", f("$\\text{<img src=x onerror=alert(1)>}$"),
+      "&lt;img src=x onerror=alert(1)&gt;");
+check("texToText leaves plain prose byte for byte", win.MRB_TUTOR_TEST_HOOK.texToText("Hi! 5 > 3 & £2"),
+      "Hi! 5 > 3 & £2");
+
 // No reply, however hostile, may produce an attribute or a tag outside the list
 // other than the ones formatReply writes itself.
 const OWN = /^<(\/?(sub|sup|b|strong|em|i|br|p|ul|ol|li|code|blockquote)|hr class="chat-rule"|blockquote class="chat-quote"|ol start="\d+")>$/;
@@ -182,6 +227,17 @@ for (let n = 0; n < 2000; n++) {
   for (const tag of html.match(/<[^>]*>/g) || []) if (!OWN.test(tag)) { fuzzBad++; if (fuzzBad < 4) console.log("  FAIL  fuzz", JSON.stringify(s), tag); }
 }
 check("fuzz: 2000 hostile replies emit only formatReply's own tags", fuzzBad, 0);
+// The same, with the maths pass's own inputs mixed in (25 Oct 2026).
+const hostileTex = hostile.concat(["^{<b onclick=1>}", "$\\text{<script>}$", "_{<", "\\frac{<i}{onclick=1>}",
+  "\\(<sub \\)>", "10^{4", "x^{<sub>}", "$\\sqrt{<svg onload=1>}$", "\\ce{<b style=x>}", "$<b$>"]);
+let texBad = 0;
+for (let n = 0; n < 2000; n++) {
+  let s = "";
+  for (let k = 0; k < 6; k++) s += hostileTex[(n * 7 + k * 13) % hostileTex.length] + (k % 2 ? "\n- " : " ^{**x**} ");
+  const html = f(s);
+  for (const tag of html.match(/<[^>]*>/g) || []) if (!OWN.test(tag)) { texBad++; if (texBad < 4) console.log("  FAIL  fuzz", JSON.stringify(s), tag); }
+}
+check("fuzz: 2000 hostile replies with LaTeX emit only formatReply's own tags", texBad, 0);
 
 // shared/tutor-panel.css is a scoped second copy of styles.css's chat rules
 // (KS4 lesson pages do not load styles.css). Every chat selector styles.css
