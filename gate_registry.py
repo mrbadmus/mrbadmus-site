@@ -1614,6 +1614,23 @@ GATES = [
              "the top, and a layout change left the label stale. Every "
              "request off 127.0.0.1 is blocked."),
 
+    dict(name="exam_note_drive",
+         cmd=["python3", "exam_note_drive.py"],
+         speed="slow",
+         watches=["exam_note_drive.py", "ks3_browser.py", "consumer/exam.html",
+                  "consumer/consumer-common.js",
+                  "mrbadmus_site/consumer/exam.html",
+                  "mrbadmus_site/consumer/consumer-common.js"],
+         needs="mrbadmus_site/consumer/exam.html",
+         why="the exam result accounts for every scheme point exactly once: "
+             "the backend's note ends with a 'Point N: got it / not yet' line "
+             "per point and the page's tick list says the same, so the list "
+             "is the one account and the note keeps the marker's own words. "
+             "On the built page with boot/api stubbed (no session, no "
+             "network) at 390 and 1280: a stored answer (scheme + hits), a "
+             "fresh mark carrying points[], and a question with no scheme "
+             "(no list, so the note keeps its account whole)."),
+
     dict(name="ks4_chrome_drive",
          cmd=["python3", "ks4_chrome_drive.py"],
          speed="slow",
