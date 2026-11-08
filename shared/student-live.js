@@ -775,6 +775,19 @@
         && c.isChildSession(JSON.parse(window.localStorage.getItem(c.AUTH_STORAGE_KEY) || "null")));
     } catch (e) { return false; }
   }
+  /* ⊕ B2C small fixes (25 Oct 2026) — A HANDED-IN PRACTICE IS FINISHED.
+     "Change my answer" (Sharpen C5) is a school pupil's way back into their
+     teacher's homework after it is marked, and stays exactly as it was for
+     them. A family/organisation child only ever reaches this page through a
+     work item of kind `practice` (backend consumer/work.js `hrefForItem`:
+     practice → /student/assignment.html?assignment=…; exam, unit check and
+     lesson go elsewhere), and the assignment row carries nothing else that
+     says so — so the child session IS the test, the same one `classHref`
+     and `className` already branch on. Both the page's `canRevise` and the
+     sink's (which stamps `revise: true` on an answer) read this, so a
+     completed practice opens read-only and never asks the server to
+     revise. */
+  function practiceOnly() { return isChildHere(); }
   function childHomeHref() {
     var c = window.MrBadmusConfig || {};
     var q = new URLSearchParams(window.location.search);
@@ -2518,7 +2531,8 @@
     var subDone = !!(progress && progress.submission &&
                      progress.submission.status === "complete");
     var canRevise = !!(progress &&
-      Object.prototype.hasOwnProperty.call(progress, "revised"));
+      Object.prototype.hasOwnProperty.call(progress, "revised")) &&
+      !practiceOnly();
     var serverOpt = {};
     ((progress || {}).answers || []).forEach(function (a) {
       var li = LETTERS.indexOf(a.selected_option_letter || "");
@@ -6442,7 +6456,8 @@
          back to it — instead of only the wrong ones, so a pupil sees every
          question, their answer and the right answer. */
       canRevise: !!(progress &&
-        Object.prototype.hasOwnProperty.call(progress, "revised")),
+        Object.prototype.hasOwnProperty.call(progress, "revised")) &&
+        !practiceOnly(),
       doneAll: true,
       doneListTitle: "Your answers"
     };

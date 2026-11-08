@@ -916,6 +916,15 @@ RULED_DIVERGENCE = {
          r"(?<=QUESTION \d\d OF \d\d) · (?:USING A MICROSCOPE"
          r"|ANIMAL AND PLANT CELLS|LIFE PROCESSES AND CELLS"
          r"|SPECIALISED CELLS)"),
+        # ⊕ B2C small fixes (25 Oct 2026) — student_rulings LOGIC
+        # 'assignment', "ANSWERED 01 / 04 WAS SAID TWICE". The desktop rail's
+        # header already reads "ANSWERED 00 / 15" (spaces round the slash,
+        # kept); the first stat under it said the same count again as
+        # "ANSWERED 00/15" (no spaces), and that cell is gone. The pattern
+        # is the stat's no-space form only, so the header is still compared
+        # byte for byte.
+        ("the rail's ANSWERED stat (B2C small fixes)",
+         r"ANSWERED \d\d/\d\d "),
     ],
 }
 

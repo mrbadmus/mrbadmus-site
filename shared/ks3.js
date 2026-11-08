@@ -37853,17 +37853,44 @@
        saw "Mastery ladder" on the bar while scrolled back to the top. Now:
        the last stage whose top is above the line, or the first stage when
        none is (the top of the page). */
+    /* ⊕ B2C small fixes (26 Oct 2026) — THE LABEL NAMED THE WRONG SECTION.
+       Three causes, all fixed here and driven by rail_label_drive.py:
+         1. It was recomputed on scroll and resize ONLY. Answering a question,
+            opening feedback, restoring saved work or a late font moves every
+            section below it without a scroll event, so the label kept naming
+            whatever had been at the line before the page grew. Every repaint
+            now recomputes it (`refresh`), and a ResizeObserver on <body>
+            catches the layout changes that come with no event at all.
+         2. The pick was "the LAST stage in list order whose top is above the
+            line", which is only the nearest one if the list order is the
+            page order. It is now the stage whose top is the GREATEST at or
+            above the line — chosen by position, not by index.
+         3. At the foot of the page the last stages can never reach a line
+            fixed half-way down, so the label stopped one or two short of the
+            end. Over the last half-screen of scroll the line slides down to
+            the bottom edge, so the end of the page names the last section on
+            it. Everywhere else the line is where it was (50%, Design's band). */
     function currentStage() {
-      var line = (window.innerHeight || document.documentElement.clientHeight || 0) * 0.5;
-      var at = 0;
+      var doc = document.documentElement;
+      var vh = window.innerHeight || doc.clientHeight || 0;
+      var y = window.pageYOffset || doc.scrollTop || 0;
+      var left = Math.max(0, (doc.scrollHeight - vh) - y);
+      var line = vh * 0.5;
+      if (left < vh * 0.5) { line += vh * 0.5 - left; }
+      var at = -1, atTop = -Infinity, first = -1, firstTop = Infinity;
       for (var k = 0; k < stages.length; k++) {
         var sec = sectionFor(k);
         if (!sec) { continue; }
         var r = sec.getBoundingClientRect();
         if (!r.width && !r.height) { continue; }       // not rendered
-        if (r.top <= line) { at = k; }
+        if (r.top < firstTop) { first = k; firstTop = r.top; }
+        if (r.top <= line && r.top >= atTop) { at = k; atTop = r.top; }
       }
-      return at;
+      return at >= 0 ? at : (first >= 0 ? first : 0);
+    }
+    function refresh() {
+      active = currentStage();
+      paint();
     }
     var queued = false;
     function onScroll() {
@@ -37871,24 +37898,25 @@
       queued = true;
       (window.requestAnimationFrame || window.setTimeout)(function () {
         queued = false;
-        active = currentStage();
-        paint();
+        refresh();
       });
     }
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll);
+    if (window.ResizeObserver && document.body) {
+      new ResizeObserver(onScroll).observe(document.body);
+    }
 
     // Completion is recomputed after anything the student does. Cheap, and it
     // cannot go stale the way a set of per-component callbacks can.
     each(["click", "change", "input"], function (evt) {
-      document.addEventListener(evt, function () { window.setTimeout(paint, 0); }, true);
+      document.addEventListener(evt, function () { window.setTimeout(refresh, 0); }, true);
     });
     // ⊕ B2C polish — and the moment a component SAYS it progressed (the
     // ladder on every answer and tick, markStage on every stage change),
     // with no click needed.
-    document.addEventListener("ks3:progress", function () { paint(); });
-    active = currentStage();
-    paint();
+    document.addEventListener("ks3:progress", function () { refresh(); });
+    refresh();
   }
 
   /* ── the sticky height, measured rather than guessed (⊕ MRB-229 comment 2)

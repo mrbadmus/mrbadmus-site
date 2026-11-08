@@ -1143,3 +1143,76 @@ R22_TO = ("    // \u2295 R22: `sopts` is q.opts with each option's STORED text p
 def apply_r22_stored_text(text):
     _require(text, R22_FROM, "ks4-lib.js", "R22")
     return text.replace(R22_FROM, R22_TO, 1)
+
+
+# R23 — the progress strip's label names the section on screen (B2C small fixes, 26 Oct 2026).
+# Design's observe() moved `active` only when a section ENTERED its band (rootMargin -40%/-55%, a line ~45%
+# down). Nothing entered while the band sat on the hero, a gap or the page foot, so the label kept the last
+# section seen: back at the top it still named "Practice", and the last short sections at the foot of a page
+# never reached the band at all. It also never re-read after a layout change (an answer, a reveal, a restored
+# answer). Same defect and same fix as shared/ks3.js wireRail (rail_label_drive.py drives both): `active` is
+# COMPUTED from where the sections are — the one whose top is the greatest at or above the line, by position —
+# on every scroll, resize and body resize; over the last half-screen of scroll the line slides to the bottom
+# edge so the end of the page names the last section. Same return contract: an object with disconnect().
+R23_OBSERVE_FROM = (
+    "  function observe(cmp, list) {\n"
+    "    if (!('IntersectionObserver' in window)) return null;\n"
+    "    var io = new IntersectionObserver(function (entries) {\n"
+    "      entries.forEach(function (e) {\n"
+    "        if (!e.isIntersecting) return;\n"
+    "        var i = list.findIndex(function (r) { return r.id === e.target.id; });\n"
+    "        if (i >= 0) cmp.setState({ active: i });\n"
+    "      });\n"
+    "    }, { rootMargin: '-40% 0px -55% 0px' });\n"
+    "    var tries = 0;\n"
+    "    (function hook() {\n"
+    "      var found = 0;\n"
+    "      list.forEach(function (r) { var el = document.getElementById(r.id); if (el) { io.observe(el); found++; } });\n"
+    "      if (found < list.length && tries++ < 40) setTimeout(hook, 150);\n"
+    "    })();\n"
+    "    return io;\n"
+    "  }\n")
+R23_OBSERVE_TO = (
+    "  // ⊕ R23 (ks4_rulings.py): the current section is computed from positions, not from band entries.\n"
+    "  function observe(cmp, list) {\n"
+    "    var off = false, queued = false, ro = null, tries = 0;\n"
+    "    function pick() {\n"
+    "      var doc = document.documentElement, vh = window.innerHeight || doc.clientHeight || 0;\n"
+    "      var left = Math.max(0, (doc.scrollHeight - vh) - (window.pageYOffset || doc.scrollTop || 0));\n"
+    "      var line = vh * 0.45; if (left < vh * 0.55) line += vh * 0.55 - left;\n"
+    "      var at = -1, atTop = -Infinity, first = -1, firstTop = Infinity, found = 0;\n"
+    "      list.forEach(function (r, k) {\n"
+    "        var el = document.getElementById(r.id); if (!el) return; found++;\n"
+    "        var b = el.getBoundingClientRect(); if (!b.width && !b.height) return;\n"
+    "        if (b.top < firstTop) { first = k; firstTop = b.top; }\n"
+    "        if (b.top <= line && b.top >= atTop) { at = k; atTop = b.top; }\n"
+    "      });\n"
+    "      return { i: at >= 0 ? at : first, found: found };\n"
+    "    }\n"
+    "    function update() {\n"
+    "      queued = false; if (off) return;\n"
+    "      var p = pick();\n"
+    "      if (p.i >= 0 && (cmp.state || {}).active !== p.i) cmp.setState({ active: p.i });\n"
+    "      return p;\n"
+    "    }\n"
+    "    function soon() { if (!queued && !off) { queued = true; (window.requestAnimationFrame || setTimeout)(update); } }\n"
+    "    window.addEventListener('scroll', soon, { passive: true });\n"
+    "    window.addEventListener('resize', soon);\n"
+    "    function later() { setTimeout(soon, 0); }\n"
+    "    document.addEventListener('click', later, true);\n"
+    "    if (window.ResizeObserver && document.body) { ro = new ResizeObserver(soon); ro.observe(document.body); }\n"
+    "    (function hook() {\n"
+    "      var p = update();\n"
+    "      if (p && p.found < list.length && tries++ < 40) setTimeout(hook, 150);\n"
+    "    })();\n"
+    "    return { disconnect: function () {\n"
+    "      off = true; window.removeEventListener('scroll', soon); window.removeEventListener('resize', soon);\n"
+    "      document.removeEventListener('click', later, true);\n"
+    "      if (ro) ro.disconnect();\n"
+    "    } };\n"
+    "  }\n")
+
+
+def apply_r23_rail_observe(text):
+    _require(text, R23_OBSERVE_FROM, "ks4-lib.js", "R23")
+    return text.replace(R23_OBSERVE_FROM, R23_OBSERVE_TO, 1)
