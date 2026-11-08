@@ -226,6 +226,9 @@ STAMPED_DEPS = ("config.js", "account.js", "class-entry.js", "student-guard.js",
                 "student-data.js", "rum.js", "student-bell.js",
                 "shoutouts.js", "figures-ks3.js", "figures-ks4.js",
                 "theme.js",
+                # ⊕ 8 Nov 2026 — Ask the tutor, a child session's practice page
+                # only: student-live.js injects the script, it injects the rest.
+                "ask-tutor.js", "ask-tutor.css", "mrbadmus.v2.js",
                 # ⊕ MRB-351 — injected by student-live.js like the rest.
                 "formulae.js", "flashcard-homework.js",
                 # ⊕ PUPIL FLOW — the answer box above the phone keyboard.

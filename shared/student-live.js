@@ -6115,6 +6115,18 @@
 
     var a = current.assignment;
 
+    /* ⊕ 8 Nov 2026 — "Ask the tutor" beside a practice question: a family or
+       organisation CHILD's page only (isChildHere), loaded here rather than
+       tagged into the template, so a school pupil's page never holds it. */
+    if (isChildHere()) {
+      window.__MRB_PRACTICE__ = {
+        keyStage: klass.key_stage,
+        subject: typeof a.subject === "string" ? a.subject.toLowerCase() : "",
+        title: a.topic || a.title || ""
+      };
+      loadScript("/shared/ask-tutor.js").catch(function () { /* the question still works */ });
+    }
+
     /* ⊕ Sharpen C6 — "See your answers" on a set the server cannot serve
        (a different assignment came back, or one with no questions) says
        there is no such work, rather than falling through to this week's. */
