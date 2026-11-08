@@ -109,6 +109,18 @@ for (const p of pages) {
   let vals;
   try { vals = RA.valsAt(L, init); } catch (e) { res.error = "render: " + e.message; continue; }
   res.levels = levelWrites(M.template, vals);
+  // ⊕ 8 Nov 2026: a lesson's own typed or selected answers. The option-group
+  // classifier never sees these; they are listed so that they get counted.
+  res.fields = [];
+  (function walk(x) {
+    if (!x || typeof x !== "object") return;
+    if (Array.isArray(x)) return x.forEach(walk);
+    if (x.t === "child") return;
+    if ((x.t === "input" || x.t === "select" || x.t === "textarea") && x.onch) {
+      res.fields.push({ on: x.onch, tag: x.t, type: (x.a && typeof x.a.type === "string") ? x.a.type : (x.t === "input" ? "text" : x.t) });
+    }
+    (x.c || []).forEach(walk);
+  })(M.template.roots);
   const scal = Object.keys(init).filter((k) => typeof init[k] === "number" && k !== "active");
   for (const g of RA.groupsOf(M.template)) {
     const ois = g.inner ? [...new Set(RA.itemsOf(g, vals).map((x) => x.oi))] : [null];

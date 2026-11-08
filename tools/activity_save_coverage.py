@@ -20,6 +20,13 @@ and reports, for every answerable activity, whether the capture handles it.
         capture is present, or (before it) when ROOT_SPECS names the group.
         Plus every Ks4Write marked by LEVELS (the child picks a level): handled
         when the capture saves the pick (`levelTicks`).
+        ⊕ 8 Nov 2026: what that classifier cannot see, which used to go uncounted
+        and made its zeros overstate: a lesson's typed and selected answers, and
+        the groups it calls "part of a form", "no single place" and "a list of
+        picks". Each is SAVED when ROOT_FORMS (`<ks4-root-forms>`) names it in
+        `covers`, an EXPLORATION when tools/ks4_root_explorations.json names it
+        with a reason (a slider counts without being named), and otherwise NOT
+        SAVED. `--before` counts them as the code stood before ROOT_FORMS.
 
 Usage:
   python3 tools/activity_save_coverage.py [--classifier FILE] [--json OUT] [--md]
@@ -63,7 +70,25 @@ def capture_tables(js):
         'generic_root': '/* <ks4-root-acts>' in js and 'rootActClick' in js,
         'level_ticks': 'function levelTicks' in js,
         'commit_no_reveal': 'commitNoReveal' in js,
+        'forms': root_forms(js),
     }
+
+
+def root_forms(js):
+    """{slug: set of handlers and groups its forms answer for}, from the table's own text."""
+    a, b = js.find('/* <ks4-root-forms> */'), js.find('/* </ks4-root-forms> */')
+    out = collections.defaultdict(set)
+    if a < 0 or b < 0:
+        return out
+    cur = None
+    for line in js[a:b].split('\n'):
+        m = re.match(r"\s{8}'([a-z0-9-]+)':", line)
+        if m:
+            cur = m.group(1)
+        if cur:
+            for names in re.findall(r"covers: \[([^\]]*)\]", line):
+                out[cur].update(re.findall(r"'([^']+)'", names))
+    return out
 
 
 class Blocks(HTMLParser):
@@ -183,10 +208,14 @@ def main():
     ap.add_argument('--classifier', help='the <ks4-root-acts> text to use instead of shared/mrbadmus.v2.js')
     ap.add_argument('--json', help='write every row here')
     ap.add_argument('--md', action='store_true', help='print a Markdown report')
+    ap.add_argument('--before', action='store_true', help='count the unseen classes as the code stood before ROOT_FORMS')
     args = ap.parse_args()
 
     js = open(os.path.join(REPO, 'shared', 'mrbadmus.v2.js'), encoding='utf-8').read()
     tables = capture_tables(js)
+    if args.before:
+        tables['forms'] = collections.defaultdict(set)
+    explored = json.load(open(os.path.join(REPO, 'tools', 'ks4_root_explorations.json'), encoding='utf-8'))
     shapes = json.load(open(os.path.join(REPO, 'tools', 'ks3_instrument_shapes.json'), encoding='utf-8'))['kinds']
 
     lessons3, c3, rows3 = ks3(tables, shapes)
@@ -196,6 +225,20 @@ def main():
     by_lesson = collections.defaultdict(lambda: {'answer_groups': set(), 'uncaptured': set(), 'levels': 0, 'level_uncaptured': 0, 'explore': collections.Counter(), 'routes': 0})
     kinds4 = collections.Counter()
     errors4 = []
+    # What the option-group classifier cannot see: {(class, verdict): {slug: set(names)}}.
+    UNSEEN = ('part of a form another button commits', 'no single place the choice is kept', 'a list of picks (choose several)')
+    unseen = collections.defaultdict(lambda: collections.defaultdict(set))
+    unread = set()       # root groups the classifier calls not-an-answer that nobody has read
+    def place(cls, slug, name, read):
+        if name in tables['forms'].get(slug, ()):
+            v = 'saved + restored'
+        elif name in explored.get(slug, {}):
+            v = 'exploring (read, reason in the doc)'
+        elif read:
+            v = read
+        else:
+            v = 'NOT saved'
+        unseen[(cls, v)][slug].add(name)
     for page, r in d4.items():
         L = by_lesson[r['slug']]
         if r.get('error'):
@@ -203,6 +246,11 @@ def main():
             continue
         L['routes'] += 1
         L['levels'] += r['levels']
+        for fld in r.get('fields', []):
+            if fld['type'] == 'range':
+                place('slider', r['slug'], fld['on'], 'exploring (a slider: nothing asks for a value)')
+            else:
+                place('typed or selected', r['slug'], fld['on'], None)
         if not tables['level_ticks']:
             L['level_uncaptured'] += r['levels']
         for g in r['groups']:
@@ -213,9 +261,12 @@ def main():
                 if not handled:
                     L['uncaptured'].add(key)
                 kinds4[('answer', g['kind'], g['by'] or 'unjudged', handled)] += 1
+            elif g['why'] in UNSEEN or g['e'] in tables['forms'].get(r['slug'], ()) or g['e'] in explored.get(r['slug'], {}):
+                place(g['why'] or g['kind'], r['slug'], g['e'], None)
             else:
                 L['explore'][g['why'] or g['kind']] += 1
                 kinds4[('not an answer', g['kind'], g['why'], False)] += 1
+                unread.add((r['slug'], g['e']))
 
     ks4_with_answers = [s for s, L in by_lesson.items() if L['answer_groups']]
     ks4_uncaptured = sorted(s for s, L in by_lesson.items() if L['uncaptured'])
@@ -238,7 +289,8 @@ def main():
                 'root_answer_groups': sum(len(L['answer_groups']) for L in by_lesson.values()),
                 'root_answer_groups_uncaptured': sum(len(L['uncaptured']) for L in by_lesson.values()),
                 'level_pick_lessons': len(level_lessons), 'level_pick_instances_all_routes': level_instances,
-                'level_pick_instances_uncaptured': level_uncaptured, 'errors': errors4},
+                'level_pick_instances_uncaptured': level_uncaptured, 'errors': errors4,
+                'unseen': {'%s | %s' % k: {s2: sorted(n) for s2, n in v.items()} for k, v in unseen.items()}},
     }
     if args.json:
         with open(args.json, 'w', encoding='utf-8') as f:
@@ -265,6 +317,15 @@ def main():
           (summary['ks4']['root_answer_groups'], summary['ks4']['root_answer_groups_uncaptured']))
     print('KS4 level picks (Ks4Write marked by levels): **%d** instances over all routes in **%d** lessons; not saved: **%d**.\n'
           % (level_instances, len(level_lessons), level_uncaptured))
+    print('### KS4: what the option-group classifier cannot see\n')
+    print('| class | outcome | lessons | controls (distinct, per lesson) |')
+    print('|---|---|---|---|')
+    for (cls, v), by in sorted(unseen.items()):
+        print('| %s | %s | %d | %d |' % (cls, v, len(by), sum(len(n) for n in by.values())))
+    open_l = sorted({s2 for (cls, v), by in unseen.items() if v == 'NOT saved' for s2 in by})
+    print('\nLessons with a control here NOT saved: **%d**%s.\n' % (len(open_l), (' (' + ', '.join(open_l) + ')') if open_l and len(open_l) < 12 else ''))
+    print('Root groups read in their lesson (saved, or a named exploration): **%d**. Not read: **%d**%s.\n'
+          % (sum(len(n) for by in unseen.values() for n in by.values()), len(unread), (' (' + ', '.join('%s/%s' % u for u in sorted(unread)) + ')') if unread and len(unread) < 15 else ''))
     if errors4:
         print('Pages the KS4 sandbox could not load: %d (%s)\n' % (len(errors4), '; '.join('%s: %s' % e for e in errors4[:5])))
 

@@ -1172,7 +1172,9 @@ You are talking to a KS3 student: roughly 11 to 14 years old, two or three years
     if (chatInited) drawSavedTalk();
   }
 
-  return { init, open, close, ask, restoreTalk, childAuth };
+  /* ⊕ 8 Nov 2026 — formatReply and the built prompt, for "Ask the tutor" on a
+     practice question (shared/ask-tutor.js), which has no chat panel of its own. */
+  return { init, open, close, ask, restoreTalk, childAuth, formatReply, systemPrompt: () => systemPrompt };
 })();
 
 /* ── MOBILE NAV HAMBURGER ── */
@@ -1468,6 +1470,8 @@ try {
     if (!session || !session.access_token || !c.isChildSession(session)) { return; }
 
     var path = window.location.pathname || '';
+    // ⊕ 8 Nov 2026: a practice page loads this file for its tutor only.
+    if (/^\/student\//.test(path)) { return; }
     var pathSlug = (path.split('/').pop() || '').replace(/\.html?$/i, '');
     var CAP_S = 30 * 60;
 
@@ -2119,6 +2123,460 @@ try {
                is_correct: right == null ? null : pick.getAttribute('data-opt') === right,
                self_checked: right == null });
       };
+      /* ── ⊕ 25 Oct 2026 (Mide's item 1): the rest of the KS3 instruments ──
+         266 instrument blocks were handled by nothing above. Each kind was
+         read in its shared/ks3.js wire function (tools/ks3_instrument_
+         shapes.json): 158 have nothing to answer — reading-only panels and
+         explorations (sliders, tabs, run buttons) — and are left alone. The
+         108 that take an answer are named here, by kind, in four shapes:
+           u — a choice taken at once: `opt` the commit control, its unit the
+               nearest `unit` ancestor, or the pressed `tab` (the unit is the
+               tab on screen), or the whole block. `commit` (optional) is a
+               separate button that sends the pressed `opt`.
+           c — several parts committed together by `check`: each `part`'s
+               pressed choice is one answer (or, `whole`, one answer for all).
+           t — typed or selected inputs committed by `check`: one written
+               answer, self-checked (nothing on these pages marks them).
+           o — an order built by pressing steps (`step`), committed when the
+               last one is placed.
+           l — a live puzzle with no Check (⊕ 8 Nov 2026): `read` says what a
+               press left, `back` puts it back.
+         Ids are the adapter-A scheme, `<slug>#<activity>-<n>`. `right` reads
+         the page's OWN verdict a tick after the page has handled the press
+         (an attribute, a class, a revealed word) and returns {ok, good}; a
+         kind whose page never judges is sent self-checked, with the text the
+         press revealed as `explanation`. Restore presses the same controls
+         again, then the Check. */
+      /* <ks3-specs> */
+      var gateOpt = function (b) {
+        var a = b.attributes || [];
+        for (var i = 0; i < a.length; i += 1) { if (/^data-[a-z0-9]+-gopt$/.test(a[i].name)) { return true; } }
+        return !!(b.closest && b.closest('[data-benchgate]') && b.classList.contains('ks3-option'));
+      };
+      var G = function () { return { t: 'u', opt: gateOpt }; };
+      var attr = function (el, n) { return el ? el.getAttribute(n) : null; };
+      var shownIn = function (root, sel) {
+        var out = null;
+        Array.prototype.forEach.call(root.querySelectorAll(sel), function (el) { if (!out && !el.closest('[hidden]') && el.getClientRects().length) { out = el; } });
+        return out;
+      };
+      var byWord = function (word, opts) {
+        var w = String(word || '').replace(/[.\s]+$/, '').trim().toLowerCase();
+        for (var i = 0; i < opts.length; i += 1) { if (optLabel(opts[i]).replace(/[.\s]+$/, '').trim().toLowerCase() === w) { return opts[i]; } }
+        return null;
+      };
+      var KS3_SPECS = {
+        // Commit-before-explore gates (a prediction; nothing judges it).
+        'ks3-abench-block': G(), 'ks3-alt-block': G(), 'ks3-bal-block': G(), 'ks3-bill-block': G(), 'ks3-btally-block': G(),
+        'ks3-calor-block': G(), 'ks3-clamp-block': G(), 'ks3-cloop-block': G(), 'ks3-counter-block': G(), 'ks3-cundt-block': G(),
+        'ks3-cut-block': G(), 'ks3-dipc-block': G(), 'ks3-dlane-block': G(), 'ks3-dprobe-block': G(), 'ks3-echo-block': G(),
+        'ks3-fall-block': G(), 'ks3-fgauge-block': G(), 'ks3-fgrid-block': G(), 'ks3-ftank-block': G(), 'ks3-grun-block': G(),
+        'ks3-hb-block': G(), 'ks3-joint-block': G(), 'ks3-junc-block': G(), 'ks3-lever-block': G(), 'ks3-lgate-block': G(),
+        'ks3-lrace-block': G(), 'ks3-lrange-block': G(), 'ks3-mcoil-block': G(), 'ks3-mrange-block': G(), 'ks3-mtbench-block': G(),
+        'ks3-muscle-block': G(), 'ks3-parr-block': G(), 'ks3-pbench-block': G(), 'ks3-pinh-block': G(), 'ks3-plever-block': G(),
+        'ks3-prism-block': G(), 'ks3-rbench-block': G(), 'ks3-rblock-block': G(), 'ks3-rframe-block': G(), 'ks3-rsurf-block': G(),
+        'ks3-rtank-block': G(), 'ks3-sbench-block': G(), 'ks3-scope-block': G(), 'ks3-slane-block': G(), 'ks3-slink-block': G(),
+        'ks3-solen-block': G(), 'ks3-span-block': G(), 'ks3-spbench-block': G(), 'ks3-splot-block': G(), 'ks3-tgap-block': G(),
+        'ks3-tpair-block': G(), 'ks3-vtap-block': G(), 'ks3-walk-block': G(), 'ks3-xfer-block': G(), 'ks3-sand-block-shell': G(),
+        // Predictions with their own controls (one per block; re-asked runs are new attempts).
+        'ks3-bbench-block': { t: 'u', opt: '[data-bbench-predict] .ks3-option' },
+        'ks3-burner-block': { t: 'u', opt: '[data-burner-predict] .ks3-option' },
+        'ks3-cryst-block': { t: 'u', opt: '[data-cryst-gate-opts] .ks3-option' },
+        'ks3-trough-block': { t: 'u', opt: '[data-trough-opt]' },
+        'ks3-still-block': { t: 'u', opt: '[data-still-predict] .ks3-option', unit: '[data-still-predict]' },
+        'ks3-tempb-block': { t: 'u', opt: '[data-tempb-predict]', unit: '[data-tempb-card]' },
+        // The bench must have run before a verdict counts: the page forgets one made before it.
+        'ks3-mpb-block': { t: 'u', opt: '[data-mpb-verdict-btn]', first: '[data-mpb-run]' },
+        // Choices the page judges, read from its markup.
+        'ks3-gap-block': { t: 'u', opt: '[data-gap] .ks3-option',
+          right: function (b, u, sec) {
+            var want = attr(sec.querySelector('[data-gap]'), 'data-empty-choice');
+            if (want == null) { return null; }
+            return { ok: attr(b, 'data-i') === want, good: sec.querySelector('[data-gap] .ks3-option[data-i="' + want + '"]') };
+          } },
+        'ks3-chroma-block': { t: 'u', opt: '[data-chroma-pen]',
+          right: function (b, u, sec) {
+            var cfg = null;
+            try { cfg = JSON.parse(attr(sec.querySelector('[data-chroma]'), 'data-cfg') || 'null'); } catch (e) { cfg = null; }
+            if (!cfg || cfg.match == null) { return null; }
+            return { ok: attr(b, 'data-chroma-pen') === String(cfg.match), good: sec.querySelector('[data-chroma-pen="' + cfg.match + '"]') };
+          } },
+        'ks3-rsort-block': { t: 'u', opt: '[data-rsort-btn]', unit: '[data-rsort-item]',
+          right: function (b, u) {
+            var rn = attr(u, 'data-renew');
+            if (rn == null) { return null; }
+            var want = rn === '1' ? 'renew' : 'finite';
+            return { ok: attr(b, 'data-rsort-btn') === want, good: u.querySelector('[data-rsort-btn="' + want + '"]') };
+          } },
+        'ks3-predict-block': { t: 'u', opt: '.ks3-predict-btn', unit: '.ks3-predict',
+          right: function (b, u) {
+            var a = attr(u, 'data-answer');
+            return a == null ? null : { ok: attr(b, 'data-i') === a, good: u.querySelector('.ks3-predict-btn[data-i="' + a + '"]') };
+          } },
+        'ks3-pwsort-block': { t: 'u', opt: '[data-pwsort-btn]', unit: '[data-pwsort-item]',
+          right: function (b, u) {
+            var p = attr(u, 'data-ispower');
+            if (p == null) { return null; }
+            var want = p === '1' ? 'power' : 'energy';
+            return { ok: attr(b, 'data-pwsort-btn') === want, good: u.querySelector('[data-pwsort-btn="' + want + '"]') };
+          } },
+        'ks3-sortcards-block': { t: 'u', opt: '.ks3-sortcards-opt', unit: '.ks3-sortcards-card',
+          right: function (b, u) {
+            var a = attr(u, 'data-answer');
+            return a == null ? null : { ok: attr(b, 'data-choice') === a, good: u.querySelector('.ks3-sortcards-opt[data-choice="' + a + '"]') };
+          } },
+        'ks3-ebench-block': { t: 'u', opt: '.ks3-ebench-btn', unit: '.ks3-ebench-case',
+          right: function (b, u) {
+            var a = attr(u, 'data-ok');
+            return a == null ? null : { ok: attr(b, 'data-call') === a, good: u.querySelector('.ks3-ebench-btn[data-call="' + a + '"]') };
+          } },
+        'ks3-jobsort-block': { t: 'u', opt: '.ks3-jobsort-opt', unit: '.ks3-jobsort-item',
+          right: function (b, u) {
+            var w = u.querySelector('.ks3-jobsort-answer');
+            var good = w ? byWord(txt(w), u.querySelectorAll('.ks3-jobsort-opt')) : null;
+            return good ? { ok: good === b, good: good } : null;
+          } },
+        'ks3-vcards-block': { t: 'u', opt: '.ks3-vcard-opt', unit: '.ks3-vcard',
+          right: function (b, u) {
+            var w = u.querySelector('.ks3-vcard-answer');
+            var good = w ? byWord(txt(w), u.querySelectorAll('.ks3-vcard-opt')) : null;
+            return good ? { ok: good === b, good: good } : null;
+          } },
+        'ks3-budget-block': { t: 'u', opt: '.ks3-verdict-btn', unit: '.ks3-sample' },
+        'ks3-amgrid-block': { t: 'u', opt: '[data-amgrid-predict]', tab: '[data-amgrid-cell]' },
+        'ks3-catb-block': { t: 'u', opt: '[data-catb-predict]', tab: '[data-catb-tab]' },
+        'ks3-phbench-block': { t: 'u', opt: '[data-phbench-guess]', tab: '[data-phbench-tab]' },
+        'ks3-fsort-block': { t: 'u', opt: '.ks3-fsort-label', tab: '[data-fsort-tab]',
+          right: function (b, u, sec, tab) {
+            var d = tab && sec.querySelector('[data-fsort-data="' + attr(tab, 'data-fsort-tab') + '"]');
+            var a = attr(d, 'data-answer');
+            return a == null ? null : { ok: attr(b, 'data-fsort-label') === a, good: sec.querySelector('.ks3-fsort-label[data-fsort-label="' + a + '"]') };
+          } },
+        'ks3-xroute-block': { t: 'u', opt: '[data-xroute-method]', tab: '[data-xroute-ore]',
+          right: function (b, u, sec, tab) {
+            var out = tab && sec.querySelector('[data-xroute-out="' + attr(tab, 'data-xroute-ore') + ':' + attr(b, 'data-xroute-method') + '"]');
+            var w = attr(out, 'data-works');
+            return w == null ? null : { ok: w === '1', good: null };
+          } },
+        'ks3-specb-block': { t: 'u', opt: '[data-specb-mat]', tab: '[data-specb-jbtn]',
+          right: function (b, u, sec, tab) {
+            var job = tab && tab.closest('[data-specb-job]');
+            var out = job && sec.querySelector('[data-specb-out="' + attr(job, 'data-specb-job') + ':' + attr(b, 'data-specb-mat') + '"]');
+            var f = attr(out, 'data-fit');
+            return f == null ? null : { ok: f === '1', good: null };
+          } },
+        'ks3-ccheck-block': { t: 'u', opt: '.ks3-ccheck-fault', tab: '[data-pick]', commit: '[data-ccheck-open]',
+          right: function (b, u, sec, tab) {
+            var v = tab && sec.querySelector('.ks3-ccheck-verdict[data-verdict="' + attr(tab, 'data-pick') + '"]');
+            var a = attr(v, 'data-answer');
+            return a == null ? null : { ok: attr(b, 'data-fault') === a, good: sec.querySelector('.ks3-ccheck-fault[data-fault="' + a + '"]') };
+          } },
+        // Several parts, one Check.
+        'ks3-gas-block': { t: 'c', check: '[data-gas-open]', part: '.ks3-gas-row', opt: '.ks3-gas-choice',
+          right: function (p) { var v = attr(p, 'data-verdict'); return v === 'right' ? true : v === 'wrong' ? false : null; } },
+        'ks3-plate-block': { t: 'c', check: '[data-plate-open]', part: '.ks3-plate-row', opt: '.ks3-plate-band',
+          right: function (p) { var v = attr(p, 'data-state'); return v === 'hit' ? true : v === 'miss' ? false : null; } },
+        'ks3-hard': { t: 'c', check: '[data-hard-reveal]', part: '.ks3-hardrow', opt: '.ks3-rung-chip',
+          right: function (p) { var v = attr(p, 'data-right'); return v === '1' ? true : v === '0' ? false : null; } },
+        'ks3-settles': { t: 'c', check: '[data-settle-reveal]', part: '.ks3-feature', opt: '.ks3-settle-choice', scope: '.ks3-case-panel',
+          right: function (p, c) { var s = attr(p, 'data-settles'); return s == null || !c ? null : (attr(c, 'data-pick') === 'yes') === (s === '1'); } },
+        'ks3-pairs': { t: 'c', check: '[data-pair-reveal]', part: '.ks3-pairrow', opt: '.ks3-pair-chip',
+          right: function (p, c) {
+            var w = p.querySelector('.ks3-pairrow-word');
+            var good = w ? byWord(txt(w), p.querySelectorAll('.ks3-pair-chip')) : null;
+            return good && c ? good === c : null;
+          } },
+        'ks3-critique': { t: 'c', check: '[data-steps-reveal]', part: '.ks3-step', opt: '.ks3-step-btn', toggle: true,
+          right: function (p, c) { var f = attr(p, 'data-fault'); return f == null ? null : !!c === (f === '1'); } },
+        'ks3-saudit-block': { t: 'c', whole: true, check: '[data-saudit-check]', part: '.ks3-saudit-chip', opt: '.ks3-saudit-chip', toggle: true, tab: '[data-saudit-sc]',
+          right: function (p, c, sec) { var v = shownIn(sec, '[data-saudit-vlabel]'); return v ? /balanced/i.test(txt(v)) && !/not/i.test(txt(v)) : null; } },
+        'ks3-eqb-block': { t: 'c', whole: true, check: '[data-eqb-check]', part: '[data-eqb-row]', opt: '[data-eqb-place]', tab: '[data-eqb-tab]',
+          right: function (p, c, sec) {
+            var br = shownIn(sec, '[data-eqb-branch]');
+            return br ? attr(br, 'data-eqb-branch') === 'perfect' : null;
+          } },
+        'ks3-fit-block': { t: 'c', whole: true, check: '[data-fit-run]', part: '.ks3-fit-part', opt: '.ks3-fit-part', toggle: true, tab: '.ks3-fit-tab',
+          right: function (p, c, sec) { var b = sec.querySelector('[data-fit-badge]'); var s = attr(b, 'data-state'); return s ? s === 'works' : null; } },
+        'ks3-jwalk-block': { t: 'c', whole: true, check: '[data-jwalk-send]', part: '[data-jwalk-seg]', opt: '[data-jwalk-mode]',
+          right: function (p, c, sec) {
+            var tg = attr(sec.querySelector('[data-jwalk]'), 'data-target');
+            if (!tg) { return null; }
+            var mine = Array.prototype.map.call(sec.querySelectorAll('[data-jwalk-seg]'), function (s) { return attr(s.querySelector('[data-jwalk-mode][aria-pressed="true"]'), 'data-jwalk-mode') || ''; });
+            return mine.join('|') === tg;
+          } },
+        // Typed or selected, then shown: one written answer, self-checked.
+        'ks3-construct-block': { t: 't', check: '[data-construct-check]', inputs: '[data-fifa-input]' },
+        'ks3-lstep-block': { t: 't', check: '[data-lstep-open]', inputs: '[data-lstep-ans], [data-lstep-unit]', opt: '.ks3-lstep-opt' },
+        'ks3-pick-block': { t: 't', check: '[data-pick-open]', inputs: '[data-pick-ans], [data-pick-unit]', opt: '.ks3-pick-opt' },
+        'ks3-rwrite-block': { t: 't', check: '[data-rwrite-show]', inputs: '[data-rwrite-field]' },
+        // ⊕ 8 Nov 2026 — a live puzzle, no Check: the page judges on every press.
+        // `read` is what the press left (null: nothing to send yet), `back` puts it back.
+        'ks3-dh-block': { t: 'l', press: '.ks3-dh-opt',
+          read: function (sec) {
+            var lines = [], mine = {};
+            Array.prototype.forEach.call(sec.querySelectorAll('.ks3-dh-dial'), function (d) {
+              var on = d.querySelector('.ks3-dh-opt[aria-pressed="true"]');
+              if (!on) { return; }
+              mine[attr(on, 'data-dh-dial')] = attr(on, 'data-dh-opt');
+              lines.push(txt(d.querySelector('.ks3-dh-dialname')) + ': ' + optLabel(on));
+            });
+            var want = null;
+            try { want = JSON.parse(attr(sec.querySelector('[data-dh]'), 'data-target') || 'null'); } catch (e) { want = null; }
+            var ok = null;
+            if (want) { ok = Object.keys(want).every(function (k) { return mine[k] === want[k]; }); }
+            return { n: 1, answer: lines.join('\n'), ok: ok };
+          },
+          back: function (sec, n, r) {
+            String(r.answer == null ? '' : r.answer).split('\n').forEach(function (ln) {
+              var ix = ln.lastIndexOf(': '), name = ln.slice(0, ix), label = ln.slice(ix + 2);
+              Array.prototype.forEach.call(sec.querySelectorAll('.ks3-dh-dial'), function (d) {
+                if (ix < 0 || !same(txt(d.querySelector('.ks3-dh-dialname')), name)) { return; }
+                Array.prototype.forEach.call(d.querySelectorAll('.ks3-dh-opt'), function (o) {
+                  if (same(optLabel(o), label) && o.getAttribute('aria-pressed') !== 'true') { o.click(); }
+                });
+              });
+            });
+          } },
+        // Sent when an equation balances (each press on the way is not an answer):
+        // right when it is the page's own target, a whole multiple left unjudged,
+        // as the page says "balanced" and gives it no tick.
+        'ks3-cbal-block': { t: 'l', press: '[data-cbal-for]',
+          read: function (sec, b) {
+            var eq = b.closest('[data-cbal-eq]');
+            var panel = eq && eq.querySelector('[data-cbal-balanced]');
+            if (!panel || panel.hidden) { return null; }
+            var id = attr(eq, 'data-cbal-eq'), tick = sec.querySelector('[data-cbal-tick="' + id + '"]');
+            var eqs = Array.prototype.slice.call(sec.querySelectorAll('[data-cbal-eq]'));
+            var tab = sec.querySelector('[data-cbal-tab="' + id + '"]');
+            var cs = Array.prototype.map.call(eq.querySelectorAll('[data-cbal-coeff]'), function (c) { return txt(c); });
+            var multiple = eq.querySelector('[data-cbal-note="multiple"]');
+            return { n: eqs.indexOf(eq) + 1, answer: cs.join(', '),
+                     ask: tab && tab.firstChild ? String(tab.firstChild.nodeValue || '').trim() : '',
+                     ok: multiple && !multiple.hidden ? null : !!(tick && !tick.hidden) };
+          },
+          back: function (sec, n, r) {
+            var eq = sec.querySelectorAll('[data-cbal-eq]')[n - 1];
+            if (!eq) { return; }
+            var tab = sec.querySelector('[data-cbal-tab="' + attr(eq, 'data-cbal-eq') + '"]');
+            if (tab && tab.getAttribute('aria-pressed') !== 'true') { tab.click(); }
+            String(r.answer == null ? '' : r.answer).split(', ').forEach(function (v, i) {
+              var el = eq.querySelector('[data-cbal-coeff="' + i + '"]'), want = parseInt(v, 10);
+              if (!el || isNaN(want)) { return; }
+              for (var guard = 0; guard < 12 && parseInt(txt(el), 10) !== want; guard += 1) {
+                var up = parseInt(txt(el), 10) < want;
+                var btn = eq.querySelector('[data-cbal-for="' + i + '"][data-cbal-delta="' + (up ? '1' : '-1') + '"]');
+                if (!btn || btn.getAttribute('aria-disabled') === 'true') { return; }
+                btn.click();
+              }
+            });
+          } },
+        // An order built step by step.
+        'ks3-morder-block': { t: 'o', step: '[data-morder-step]', clear: '[data-morder-clear]',
+          done: function (sec) { return shownIn(sec, '[data-morder-answer]'); },
+          right: function (sec) { return shownIn(sec, '[data-morder-verdict="right"]') ? true : shownIn(sec, '[data-morder-verdict="wrong"]') ? false : null; } }
+      };
+      /* </ks3-specs> */
+      window.MrBadmusAnswerCapture.ks3Specs = KS3_SPECS;   // read by activity_save_drive.py --sweep
+      var specOf = function (sec) { var k = kindOf(sec, KS3_SPECS); return k ? KS3_SPECS[k] : null; };
+      var matches = function (el, sel) { return typeof sel === 'function' ? sel(el) : !!(el.matches && el.matches(sel)); };
+      var allIn = function (root, sel) {
+        return Array.prototype.filter.call(root.querySelectorAll(typeof sel === 'function' ? 'button' : sel), function (b) { return matches(b, sel); });
+      };
+      var pressedTab = function (sec, sp) {
+        var tabs = sec.querySelectorAll(sp.tab), on = null, n = 0;
+        for (var i = 0; i < tabs.length; i += 1) { if (tabs[i].getAttribute('aria-pressed') === 'true' || tabs[i].getAttribute('aria-selected') === 'true') { on = tabs[i]; n = i + 1; } }
+        return { el: on, n: n };
+      };
+      // The words on screen in a box (no buttons), for "what the press revealed".
+      var linesOf = function (root) {
+        var out = [];
+        Array.prototype.forEach.call(root.querySelectorAll('p, li, h3, h4, strong, dd, td'), function (el) {
+          if (el.closest('button') || !onScreen(el)) { return; }
+          var t2 = txt(el);
+          if (t2 && out.indexOf(t2) < 0) { out.push(t2); }
+        });
+        return out;
+      };
+      var askOf = function (sec, unitEl, btn) {
+        var head = '', hs = sec.querySelectorAll('h2, h3');
+        for (var i = 0; i < hs.length; i += 1) { if (onScreen(hs[i]) && !hs[i].closest('button')) { head = txt(hs[i]); break; } }
+        var commit = null, cs = sec.querySelectorAll('.ks3-commit');
+        for (var j = 0; j < cs.length; j += 1) { if (onScreen(cs[j]) && cs[j].compareDocumentPosition(btn) & 4) { commit = cs[j]; } }
+        var own = unitEl ? linesOf(unitEl).filter(function (l) { return l !== head; }).slice(0, 2).join(' ') : '';
+        var parts = [head, commit ? txt(commit) : '', own].filter(Boolean);
+        return parts.filter(function (x, k) { return parts.indexOf(x) === k; }).join(' — ');
+      };
+      var specSent = {};                       // question_id → the answer last sent
+      var specU = function (sp, t, sec, slug) {
+        var act = sec.getAttribute('data-activity') || 'block';
+        var btn = null, viaCommit = false;
+        if (sp.commit) {
+          var cb = t.closest(sp.commit);
+          if (cb && sec.contains(cb)) { viaCommit = true; btn = cb; }
+        }
+        if (!btn) {
+          for (var el = t; el && el !== sec; el = el.parentNode) { if (el.tagName === 'BUTTON' && matches(el, sp.opt)) { btn = el; break; } }
+        }
+        if (!btn || btn.disabled) { return; }
+        if (sp.commit && !viaCommit) { return; }          // the option alone is not the answer: its Check is
+        var unitEl = null, n = 1, tab = null;
+        if (sp.tab) { var pt = pressedTab(sec, sp); tab = pt.el; n = pt.n || 1; }
+        else if (sp.unit) {
+          unitEl = (viaCommit ? null : btn.closest(sp.unit));
+          if (!unitEl || !sec.contains(unitEl)) { return; }
+          n = Array.prototype.indexOf.call(sec.querySelectorAll(sp.unit), unitEl) + 1;
+        }
+        var opt = viaCommit ? (function () {
+          var on = allIn(sec, sp.opt).filter(function (o) { return o.getAttribute('aria-pressed') === 'true'; });
+          return on[on.length - 1] || null;
+        })() : btn;
+        if (!opt) { return; }
+        if (!viaCommit && opt.getAttribute('aria-pressed') === 'true') { return; }   // already the choice: nothing new
+        var id = slug + '#' + act + '-' + n;
+        var scope = unitEl || sec;
+        var before = linesOf(scope), ask = askOf(sec, unitEl, opt);
+        later(function () {
+          // The page took it: the option is now the pressed one (or a judged
+          // control with no pressed state at all changed what is shown).
+          var pressed = opt.getAttribute('aria-pressed');
+          var after = linesOf(scope);
+          if (pressed === 'false' && !viaCommit) { return; }
+          if (pressed == null && after.join('\n') === before.join('\n')) { return; }
+          var shown = after.filter(function (l) { return before.indexOf(l) < 0; }).join(' ');
+          var v = sp.right ? sp.right(opt, unitEl, sec, tab) : null;
+          var d = { __block: scope, key_stage: 'KS3', lesson_slug: slug, question_id: id, rung: null, kind: 'choice',
+                    question_text: ask, answer: optLabel(opt), explanation: shown || null };
+          if (v && typeof v.ok === 'boolean') {
+            d.is_correct = v.ok;
+            d.correct_answer = v.good ? optLabel(v.good) : (v.ok ? optLabel(opt) : null);
+          } else { d.is_correct = null; d.correct_answer = null; d.self_checked = true; }
+          specSent[id] = d.answer;
+          post(d);
+        });
+      };
+      // A part's own words, without its buttons' labels.
+      var partWords = function (el) {
+        var out = [];
+        (function walk(n) {
+          for (var c = n.firstChild; c; c = c.nextSibling) {
+            if (c.nodeType === 3) { out.push(c.nodeValue); }
+            else if (c.nodeType === 1 && c.tagName !== 'BUTTON' && !c.hasAttribute('hidden') && c.tagName.toLowerCase() !== 'svg') { walk(c); }
+          }
+        })(el);
+        return out.join(' ').replace(/\s+/g, ' ').trim();
+      };
+      var partChoice = function (sp, part) {
+        if (sp.toggle) { var tb = part.matches(sp.opt) ? part : part.querySelector(sp.opt); return tb && tb.getAttribute('aria-pressed') === 'true' ? tb : null; }
+        var on = Array.prototype.filter.call(part.querySelectorAll(sp.opt), function (o) { return o.getAttribute('aria-pressed') === 'true'; });
+        return on[on.length - 1] || null;
+      };
+      var specC = function (sp, t, sec, slug) {
+        var chk = t.closest(sp.check);
+        if (!chk || !sec.contains(chk) || chk.disabled) { return; }
+        var act = sec.getAttribute('data-activity') || 'block';
+        var box = (sp.scope && chk.closest(sp.scope)) || sec;
+        var tn = 0;
+        if (sp.tab) { tn = pressedTab(sec, sp).n; }
+        var allParts = Array.prototype.slice.call(sec.querySelectorAll(sp.part));
+        var parts = Array.prototype.filter.call(box.querySelectorAll(sp.part), function (p) { return !sp.tab || onScreen(p) || p.closest('[hidden]') === null; });
+        var picked = parts.map(function (p) {
+          var c = partChoice(sp, p);
+          var label = sp.toggle ? (c ? optLabel(sp.opt && p.matches(sp.opt) ? p : c) : null) : (c ? optLabel(c) : null);
+          return { p: p, c: c, n: allParts.indexOf(p) + 1, label: label, words: linesOf(p).join(' ') || optLabel(p) };
+        });
+        var ask = askOf(sec, null, chk);
+        later(function () {
+          if (sp.whole) {
+            var chosen = picked.filter(function (x) { return x.c; });
+            var answer = chosen.map(function (x) { return sp.toggle ? x.label : (partWords(x.p) ? partWords(x.p) + ': ' : '') + x.label; }).join('\n');
+            var id = slug + '#' + act + '-' + (tn || 1);
+            var ok = sp.right ? sp.right(null, null, sec) : null;
+            var d = { key_stage: 'KS3', lesson_slug: slug, question_id: id, rung: null, kind: 'choice', question_text: ask,
+                      answer: answer, correct_answer: null, is_correct: typeof ok === 'boolean' ? ok : null };
+            if (typeof ok !== 'boolean') { d.self_checked = true; }
+            post(d);
+            return;
+          }
+          var batch = [];
+          picked.forEach(function (x) {
+            if (!sp.toggle && !x.c) { return; }
+            var id = slug + '#' + act + '-' + x.n;
+            var label = sp.toggle ? (x.c ? 'Flagged' : 'Not flagged') : x.label;
+            if (specSent[id] === label) { return; }               // unchanged since it was last sent
+            specSent[id] = label;
+            var ok = sp.right ? sp.right(x.p, x.c, sec) : null;
+            var d = { key_stage: 'KS3', lesson_slug: slug, question_id: id, rung: null, kind: 'choice',
+                      question_text: ask + (x.words ? ' — ' + x.words : ''), answer: label, correct_answer: null,
+                      is_correct: typeof ok === 'boolean' ? ok : null };
+            if (typeof ok !== 'boolean') { d.self_checked = true; }
+            batch.push(d);
+          });
+          postAll(batch);
+        });
+      };
+      var specT = function (sp, t, sec, slug) {
+        var chk = t.closest(sp.check);
+        if (!chk || !sec.contains(chk) || chk.disabled) { return; }
+        var act = sec.getAttribute('data-activity') || 'block';
+        var lines = [];
+        if (sp.opt) {
+          Array.prototype.forEach.call(sec.querySelectorAll(sp.opt), function (o) { if (o.getAttribute('aria-pressed') === 'true') { lines.push(optLabel(o)); } });
+        }
+        Array.prototype.forEach.call(sec.querySelectorAll(sp.inputs), function (inp) {
+          var l = inp.id ? sec.querySelector('label[for="' + inp.id + '"]') : null;
+          var v = inp.tagName === 'SELECT' ? (inp.options[inp.selectedIndex] ? txt(inp.options[inp.selectedIndex]) : '') : String(inp.value || '').trim();
+          lines.push((l ? txt(l) + ': ' : '') + v);
+        });
+        var ask = askOf(sec, null, chk), before = linesOf(sec);
+        later(function () {
+          var after = linesOf(sec);
+          if (after.join('\n') === before.join('\n') && !chk.disabled) { return; }   // the page refused (not ready)
+          post({ __block: sec, key_stage: 'KS3', lesson_slug: slug, question_id: slug + '#' + act + '-1', rung: null, kind: 'written',
+                 question_text: ask, answer: lines.join('\n'), correct_answer: null, is_correct: null, self_checked: true,
+                 explanation: after.filter(function (l) { return before.indexOf(l) < 0; }).join(' ') || null });
+        });
+      };
+      var specO = function (sp, t, sec, slug) {
+        var st = t.closest(sp.step);
+        if (!st || !sec.contains(st) || st.disabled) { return; }
+        var act = sec.getAttribute('data-activity') || 'block', ask = askOf(sec, null, st);
+        later(function () {
+          if (!sp.done(sec)) { return; }
+          var steps = Array.prototype.slice.call(sec.querySelectorAll(sp.step));
+          var badge = function (s) { var b = s.querySelector('[data-morder-badge]'); var n = parseInt(b ? txt(b) : '', 10); return isNaN(n) ? 99 : n; };
+          steps.sort(function (a, b) { return badge(a) - badge(b); });
+          var ok = sp.right(sec);
+          var d = { __block: sec, key_stage: 'KS3', lesson_slug: slug, question_id: slug + '#' + act + '-1', rung: null, kind: 'order',
+                    question_text: ask, answer: steps.map(function (s) { return optLabel(s).replace(/^\d+\s*/, ''); }).join('\n'),
+                    correct_answer: null, is_correct: typeof ok === 'boolean' ? ok : null };
+          if (typeof ok !== 'boolean') { d.self_checked = true; }
+          post(d);
+        });
+      };
+      var specL = function (sp, t, sec, slug) {
+        var b = t.closest(sp.press);
+        if (!b || !sec.contains(b) || b.disabled || b.getAttribute('aria-disabled') === 'true' || b.getAttribute('aria-pressed') === 'true') { return; }
+        var act = sec.getAttribute('data-activity') || 'block', ask = askOf(sec, null, b);
+        later(function () {
+          var v = sp.read(sec, b);
+          if (!v) { return; }
+          var id = slug + '#' + act + '-' + v.n;
+          if (specSent[id] === v.answer) { return; }
+          specSent[id] = v.answer;
+          var d = { __block: sec, key_stage: 'KS3', lesson_slug: slug, question_id: id, rung: null, kind: 'choice',
+                    question_text: ask + (v.ask ? ' — ' + v.ask : ''), answer: v.answer, correct_answer: null,
+                    is_correct: typeof v.ok === 'boolean' ? v.ok : null };
+          if (typeof v.ok !== 'boolean') { d.self_checked = true; }
+          post(d);
+        });
+      };
+      var specCapture = function (sp, t, sec, slug) {
+        if (sp.t === 'u') { specU(sp, t, sec, slug); }
+        else if (sp.t === 'c') { specC(sp, t, sec, slug); }
+        else if (sp.t === 't') { specT(sp, t, sec, slug); }
+        else if (sp.t === 'o') { specO(sp, t, sec, slug); }
+        else if (sp.t === 'l') { specL(sp, t, sec, slug); }
+      };
       document.addEventListener('click', function (e) {
         try {
           var t = e.target;
@@ -2127,6 +2585,8 @@ try {
           // Round 4: question-shaped instruments (adapters A and B5C above).
           var bsec = t.closest('[data-instrument]');
           if (bsec && !bsec.hasAttribute('data-keyedblock')) {
+            var sp0 = specOf(bsec);
+            if (sp0) { specCapture(sp0, t, bsec, slug); return; }
             if (kindOf(bsec, KIND_B5C)) {
               var b5 = t.closest('[data-b5c-check]');
               if (b5 && !b5.disabled) { answerB5C(b5, bsec, slug); }
@@ -2182,6 +2642,13 @@ try {
                      kind: 'choice', question_text: promptOf(sec), answer: optLabel(opt),
                      correct_answer: null, explanation: txt(sec.querySelector('[data-reveal]')) || null,
                      is_correct: null, self_checked: true });
+            } else if (!sec.hasAttribute('data-instrument')) {
+              // ⊕ 25 Oct 2026 (commitNoReveal): a "commit first" choice with
+              // nothing revealed on the block itself (a practical's first
+              // question). Every changed pick, self-checked.
+              post({ __block: sec, key_stage: 'KS3', lesson_slug: slug, question_id: slug + '#' + act, rung: null,
+                     kind: 'choice', question_text: promptOf(sec), answer: optLabel(opt),
+                     correct_answer: null, is_correct: null, self_checked: true });
             }
             return;
           }
@@ -2261,6 +2728,95 @@ try {
          throughout, so none of it is sent again. Ids are read the way the
          capture above WRITES them (slug#start, slug#<activity>,
          slug#<activity>-<n>). */
+      /* Saved work for the <ks3-specs> kinds: the same controls pressed
+         again, in the unit (or on the tab) the id numbers, then the Check. */
+      var specPend = [];
+      var specBack = function (sp, sec, n, r) {
+        var click = function (b) { if (b && !b.disabled) { b.click(); } };
+        var press = function (list, label) {
+          for (var i = 0; i < list.length; i += 1) {
+            if (same(optLabel(list[i]), label)) { if (list[i].getAttribute('aria-pressed') !== 'true') { click(list[i]); } return list[i]; }
+          }
+          return null;
+        };
+        if (sp.t === 'l') { sp.back(sec, n, r); return; }
+        var lines = String(r.answer == null ? '' : r.answer).split('\n');
+        if (sp.tab) {
+          var tabs = sec.querySelectorAll(sp.tab);
+          if (tabs[n - 1] && tabs[n - 1].getAttribute('aria-pressed') !== 'true') { click(tabs[n - 1]); }
+        }
+        if (sp.t === 'u') {
+          var scope = sp.unit ? sec.querySelectorAll(sp.unit)[n - 1] : sec;
+          if (!scope) { return; }
+          if (sp.first) { click(sec.querySelector(sp.first)); }
+          var hit = press(allIn(scope, sp.opt), r.answer);
+          if (hit && sp.commit) { click(sec.querySelector(sp.commit)); }
+          return;
+        }
+        if (sp.t === 'c') {
+          if (sp.whole) {
+            var parts = Array.prototype.filter.call(sec.querySelectorAll(sp.part), function (p) { return p.closest('[hidden]') === null; });
+            if (sp.toggle) {
+              var j = 0;
+              parts.forEach(function (p) {
+                var tb = p.matches(sp.opt) ? p : p.querySelector(sp.opt);
+                if (!tb) { return; }
+                var want = j < lines.length && same(optLabel(tb), lines[j]);
+                if (want) { j += 1; }
+                if ((tb.getAttribute('aria-pressed') === 'true') !== want) { click(tb); }
+              });
+            } else {
+              lines.forEach(function (ln) {
+                var ix = ln.lastIndexOf(': '), words = ix >= 0 ? ln.slice(0, ix) : '', label = ix >= 0 ? ln.slice(ix + 2) : ln;
+                for (var k = 0; k < parts.length; k += 1) {
+                  if (!words || same(partWords(parts[k]), words)) { if (press(parts[k].querySelectorAll(sp.opt), label)) { return; } }
+                }
+              });
+            }
+            click(sec.querySelector(sp.check));
+            return;
+          }
+          var part = sec.querySelectorAll(sp.part)[n - 1];
+          if (!part) { return; }
+          if (sp.toggle) {
+            var tb2 = part.matches(sp.opt) ? part : part.querySelector(sp.opt);
+            if (tb2 && (tb2.getAttribute('aria-pressed') === 'true') !== (r.answer === 'Flagged')) { click(tb2); }
+          } else { press(part.querySelectorAll(sp.opt), r.answer); }
+          var box = (sp.scope && part.closest(sp.scope)) || sec, chk = box.querySelector(sp.check);
+          if (chk && specPend.indexOf(chk) < 0) { specPend.push(chk); }
+          return;
+        }
+        if (sp.t === 't') {
+          var optLabels = sp.opt ? Array.prototype.map.call(sec.querySelectorAll(sp.opt), function (o) { return optLabel(o); }) : [];
+          var rest = [];
+          lines.forEach(function (ln) {
+            if (sp.opt && optLabels.some(function (l) { return same(l, ln); })) { press(sec.querySelectorAll(sp.opt), ln); }
+            else { rest.push(ln); }
+          });
+          var ins = sec.querySelectorAll(sp.inputs);
+          if (ins.length === 1 && !sp.opt) { rest = [rest.join('\n')]; }
+          Array.prototype.forEach.call(ins, function (inp, k) {
+            var l = inp.id ? sec.querySelector('label[for="' + inp.id + '"]') : null, v = rest[k] == null ? '' : rest[k];
+            var lt = l ? txt(l) + ': ' : '';
+            if (lt && v.indexOf(lt) === 0) { v = v.slice(lt.length); }
+            if (inp.tagName === 'SELECT') {
+              for (var q = 0; q < inp.options.length; q += 1) { if (same(txt(inp.options[q]), v)) { inp.selectedIndex = q; } }
+            } else { inp.value = v; }
+            try { inp.dispatchEvent(new Event('input', { bubbles: true })); inp.dispatchEvent(new Event('change', { bubbles: true })); } catch (e) { /* old browser */ }
+          });
+          click(sec.querySelector(sp.check));
+          return;
+        }
+        if (sp.t === 'o') {
+          var steps = Array.prototype.slice.call(sec.querySelectorAll(sp.step));
+          if (steps.some(function (s2) { return s2.disabled; })) { click(sec.querySelector(sp.clear)); }
+          lines.forEach(function (ln) {
+            for (var k = 0; k < steps.length; k += 1) {
+              if (!steps[k].disabled && same(optLabel(steps[k]).replace(/^\d+\s*/, ''), ln)) { click(steps[k]); return; }
+            }
+          });
+        }
+      };
       replay.push(function (rows) {
         var slug = ks3Slug();
         var acts = {};
@@ -2293,6 +2849,8 @@ try {
           if (!m || !acts[m[1]]) { return; }
           sec = acts[m[1]];
           var n = parseInt(m[2], 10);
+          var spr = specOf(sec);
+          if (spr) { specBack(spr, sec, n, r); return; }
           if (r.answer_kind === 'written') {
             // "Your turn": the five lines, typed back, then checked.
             var pre = null, bs = sec.querySelectorAll('button');
@@ -2353,6 +2911,8 @@ try {
           if (id.indexOf(slug + '#') !== 0 || /#(recall|apply|explain|produce)$/.test(id)) { return; }
           try { one(id.slice(slug.length + 1), r); } catch (e) { /* one block never stops the rest */ }
         });
+        // The Checks of the part-by-part blocks, once all their parts are back.
+        specPend.splice(0).forEach(function (c) { try { if (c && !c.disabled) { c.click(); } } catch (e) { /* never breaks a page */ } });
       });
       return;
     }
@@ -2607,6 +3167,19 @@ try {
                rung: rung || null, criteria: null, marks: null, correct_answer: null, is_correct: null };
     }
 
+    /* ⊕ 25 Oct 2026: how many practice-set questions THIS block offers. The
+       batch blocks cap their set at five (`slice(0, 5)` in their own render);
+       the pilot block offers every question, four at a time behind "Show 4
+       more" — so a fixed five lost the pilot's sixth to eighth answers. The
+       block's own progress line ("N of M answered") says M. */
+    function quizLimit(api) {
+      var all = ((api.logic.props || {}).questions || []).filter(Boolean).length;
+      try {
+        var m = /\bof (\d+) answered/.exec(String((api.logic.renderVals() || {}).progress || ''));
+        if (m) { return Math.min(all, parseInt(m[1], 10)); }
+      } catch (e) { /* fall back to the block's whole set */ }
+      return all;
+    }
     var HANDLERS = {
       Ks4Guess: function (api, s, prev) {
         if (!rootLevel(api) || prev.pick != null || s.pick == null) { return; }
@@ -2655,7 +3228,7 @@ try {
       Ks4QuizBank: function (api, s, prev) {
         if (!rootLevel(api)) { return; }
         var p = api.logic.props || {};
-        var all = (p.questions || []).filter(Boolean).slice(0, 5);
+        var all = (p.questions || []).filter(Boolean).slice(0, quizLimit(api));
         var was = prev.picks || {};
         Object.keys(s.picks || {}).forEach(function (i) {
           if (was[i] !== undefined) { return; }
@@ -2917,10 +3490,24 @@ try {
       });
       return out;
     }
+    /* ⊕ 25 Oct 2026 (Mide's item 1): a Ks4Write marked by LEVELS — the child
+       picks the level their own answer reaches (standalone, a ladder's rung 4,
+       a practice write item). The pick is their self-marking, like the
+       ticks on a points-marked write, and is kept the same way: `self_ticks`
+       on that answer's own row, holding the ONE level picked, counted from 1
+       in the order the page lists the levels (top level first). It never
+       touches the mark. Before this, the pick lived only on the page. */
+    function levelTicks(api) {
+      var st = api.logic.state || {};
+      if (!st.open || typeof st.level !== 'number') { return; }
+      var qid = writeQid(api);
+      if (qid) { sendTicks(qid, [st.level + 1]); }
+    }
     function tickTap(api) {
       var st = api.logic.state || {}, p = api.logic.props || {};
       if (api.comp === 'Ks4Write') {
-        if (!st.open || (p.levels && p.levels.length)) { return; }
+        if (p.levels && p.levels.length) { levelTicks(api); return; }
+        if (!st.open) { return; }
         var qid = writeQid(api);
         if (qid) { sendTicks(qid, boolList(st.ticks)); }
       } else if (api.comp === 'Ks4Cfifa' && rootLevel(api)) {
@@ -2933,6 +3520,392 @@ try {
         sendTicks(pilotId(pathSlug, 'steps-' + nth(api)), stepsTicks(p, st.ticks));
       }
     }
+
+    /* <ks4-root-acts> — the lesson's OWN activities on a rebuilt KS4 page.
+       Pure analysis of a lesson's root instance (its logic, its compiled
+       template, its render values). It never changes the lesson: every
+       probe runs the lesson's own handlers against a COPY of its state with
+       setState, forceUpdate and the timers stood in for, synchronously, and
+       puts everything back before returning. Shared, byte for byte, with
+       tools/activity_save_coverage.py (which evaluates this text in Node), so
+       the coverage report and the page classify a group the same way. */
+    var KS4RootActs = (function () {
+      function noopFn() { return 0; }
+      function look(expr, scope) {
+        var c = scope, ps = String(expr).split('.');
+        for (var i = 0; i < ps.length; i += 1) { if (c == null) { return undefined; } c = c[ps[i]]; }
+        return c;
+      }
+      function clone(v) { try { return v === undefined ? undefined : JSON.parse(JSON.stringify(v)); } catch (e) { return null; } }
+      function isArr(v) { return Object.prototype.toString.call(v) === '[object Array]'; }
+      function isObj(v) { return v !== null && typeof v === 'object' && !isArr(v); }
+      function prim(v) { return v === null || v === undefined || typeof v === 'number' || typeof v === 'string' || typeof v === 'boolean'; }
+      // A root option group: a top-level `sc-for` (never inside a shared
+      // block) whose item holds a control with an onClick. A nested group
+      // (a for of items, each with a for of options) is one group per item.
+      function groupsOf(template) {
+        var out = [];
+        function firstOn(n) {
+          var hit = null;
+          (function w(x) {
+            if (hit || !x || typeof x !== 'object') { return; }
+            if (isArr(x)) { x.forEach(w); return; }
+            if (x.t === 'child') { return; }
+            if (x.on) { hit = x; return; }
+            (x.c || []).forEach(w);
+          })(n);
+          return hit;
+        }
+        function innerFor(n) {
+          var hit = null;
+          (function w(x) {
+            if (hit || !x || typeof x !== 'object') { return; }
+            if (isArr(x)) { x.forEach(w); return; }
+            if (x.t === 'child') { return; }
+            if (x.t === 'for') { if (firstOn(x.c)) { hit = x; } return; }
+            (x.c || []).forEach(w);
+          })(n);
+          return hit;
+        }
+        function labelOf(n, as) {
+          var hit = null;
+          (function w(x) {
+            if (hit || !x || typeof x !== 'object') { return; }
+            if (isArr(x)) { x.forEach(w); return; }
+            if (x.t === 'child') { return; }
+            if (x.t === '#' && x.v && x.v.parts) {
+              for (var i = 0; i < x.v.parts.length; i += 1) {
+                var p = x.v.parts[i];
+                if (p && p.e && p.e.indexOf(as + '.') === 0) { hit = p.e.slice(as.length + 1); return; }
+              }
+            }
+            (x.c || []).forEach(w);
+          })(n);
+          return hit;
+        }
+        (function walk(n) {
+          if (!n || typeof n !== 'object') { return; }
+          if (isArr(n)) { n.forEach(walk); return; }
+          if (n.t === 'child') { return; }
+          if (n.t === 'for') {
+            var b = firstOn(n.c);
+            if (b) {
+              var inner = innerFor(n.c), g;
+              if (inner && inner.e.indexOf(n.as + '.') === 0) {
+                var ib = firstOn(inner.c);
+                g = { e: n.e, as: n.as, inner: inner.e.slice(n.as.length + 1), ias: inner.as, on: ib.on, tpl: ib.i, label: labelOf(inner.c, inner.as) };
+              } else {
+                g = { e: n.e, as: n.as, inner: null, ias: n.as, on: b.on, tpl: b.i, label: labelOf(n.c, n.as) };
+              }
+              g.field = g.on.indexOf(g.ias + '.') === 0 ? g.on.slice(g.ias.length + 1) : null;
+              out.push(g);
+              return;
+            }
+          }
+          (n.c || []).forEach(walk);
+        })(template && template.roots);
+        return out;
+      }
+      // The options of a group at the lesson's current render values, flat,
+      // in DOM order: [{oi, k, item}] (oi null for a flat group).
+      function itemsOf(g, vals) {
+        var top = look(g.e, vals), out = [];
+        if (!isArr(top)) { return out; }
+        top.forEach(function (it, oi) {
+          if (g.inner) {
+            var list = look(g.inner, it);
+            if (isArr(list)) { list.forEach(function (x, k) { out.push({ oi: oi, k: k, item: x }); }); }
+          } else { out.push({ oi: null, k: oi, item: it }); }
+        });
+        return out;
+      }
+      function labelText(g, item) {
+        var v = g.label ? look(g.label, item) : null;
+        if (v == null && item) { v = item.label != null ? item.label : (item.text != null ? item.text : item.name); }
+        return v == null ? null : String(v).replace(/\s+/g, ' ').trim();
+      }
+      // Run fn with the lesson's state set to `state` (a copy), setState
+      // recording instead of drawing, and no timer able to start. Returns
+      // the merged patch the handler asked for (null when it threw).
+      function withStubs(L, state, fn) {
+        var w = typeof window !== 'undefined' ? window : {};
+        var keep = { st: L.state, ss: Object.prototype.hasOwnProperty.call(L, 'setState') ? L.setState : undefined,
+                     fu: Object.prototype.hasOwnProperty.call(L, 'forceUpdate') ? L.forceUpdate : undefined,
+                     to: w.setTimeout, si: w.setInterval, ra: w.requestAnimationFrame };
+        L.state = state;
+        w.setTimeout = noopFn; w.setInterval = noopFn; w.requestAnimationFrame = noopFn;
+        L.forceUpdate = function () {};
+        try { return fn(); } finally {
+          L.state = keep.st;
+          if (keep.ss === undefined) { delete L.setState; } else { L.setState = keep.ss; }
+          if (keep.fu === undefined) { delete L.forceUpdate; } else { L.forceUpdate = keep.fu; }
+          w.setTimeout = keep.to; w.setInterval = keep.si; w.requestAnimationFrame = keep.ra;
+        }
+      }
+      function valsAt(L, state) {
+        return withStubs(L, clone(state) || {}, function () { L.setState = function () {}; return L.renderVals() || {}; });
+      }
+      function patchOf(L, state, getFn) {
+        var work = clone(state) || {};
+        return withStubs(L, work, function () {
+          var patch = {}, any = false;
+          L.setState = function (u) {
+            var nx = typeof u === 'function' ? u(clone(work), L.props) : u;
+            if (nx && typeof nx === 'object') {
+              for (var k in nx) { if (Object.prototype.hasOwnProperty.call(nx, k)) { patch[k] = clone(nx[k]); work[k] = clone(nx[k]); any = true; } }
+            }
+          };
+          try {
+            var fn = getFn(L.renderVals() || {});
+            if (typeof fn !== 'function') { return null; }
+            fn.call(null, { target: { value: '' }, preventDefault: function () {}, stopPropagation: function () {} });
+          } catch (e) { return null; }
+          return any ? patch : {};
+        });
+      }
+      // The leaf writes a patch makes against `state`: [{path, before, after,
+      // append?}]. A top-level list that grows by one is an append (a "seen"
+      // list); anything deeper is followed to its leaves (four levels).
+      function writes(patch, state) {
+        var out = [];
+        function leaves(a, b, path, d) {
+          if (JSON.stringify(a) === JSON.stringify(b)) { return; }
+          if (d === 1 && isArr(a) && isArr(b) && a.length === b.length + 1 && JSON.stringify(a.slice(0, b.length)) === JSON.stringify(b)) {
+            out.push({ path: path, before: b, after: a, append: a[a.length - 1] }); return;
+          }
+          if (d === 1 && isArr(a) && b == null) { out.push({ path: path, before: b, after: a, append: a.length === 1 ? a[0] : undefined }); return; }
+          if (d >= 4 || prim(a) || !(isObj(b) || isArr(b) || b == null)) { out.push({ path: path, before: b, after: a }); return; }
+          var keys = {};
+          Object.keys(a || {}).forEach(function (x) { keys[x] = 1; });
+          Object.keys(b || {}).forEach(function (x) { keys[x] = 1; });
+          Object.keys(keys).forEach(function (k) { leaves(a ? a[k] : undefined, b ? b[k] : undefined, path.concat([k]), d + 1); });
+        }
+        Object.keys(patch || {}).forEach(function (k) { leaves(patch[k], state ? state[k] : undefined, [k], 1); });
+        return out;
+      }
+      function pathKey(p) { return p.join('\u0001'); }
+      function at(state, p) { var v = state; for (var i = 0; i < p.length; i += 1) { if (v == null) { return undefined; } v = v[p[i]]; } return v; }
+      function msgLike(w) {
+        var last = String(w.path[w.path.length - 1]);
+        if (/^(wrong|miss|missed|err|error)$/i.test(last) && w.after != null && w.after !== false) { return true; }
+        return typeof w.after === 'string' && w.after.trim().length > 0 && (/msg|wrong|err|note|why|hint/i.test(last) || w.after.trim().split(/\s+/).length >= 3);
+      }
+      function alerts(v) {
+        var n = 0, seen = [];
+        (function w(x, d) {
+          if (d > 9 || x == null) { return; }
+          if (typeof x === 'string') { var m = x.match(/ks3-alert/g); if (m) { n += m.length; } return; }
+          if (typeof x !== 'object' || x.__mrbFig) { return; }
+          if (seen.indexOf(x) >= 0) { return; }
+          seen.push(x);
+          for (var k in x) { if (Object.prototype.hasOwnProperty.call(x, k)) { w(x[k], d + 1); } }
+        })(v, 0);
+        return n;
+      }
+      function apply(state, patch) {
+        var s = clone(state) || {};
+        Object.keys(patch || {}).forEach(function (k) { s[k] = clone(patch[k]); });
+        return s;
+      }
+      function probe(L, g, state, oi) {
+        var flat = itemsOf(g, valsAt(L, state)).filter(function (x) { return x.oi === oi; });
+        return flat.map(function (x) {
+          var p = g.field ? patchOf(L, state, function (v) {
+            var f = itemsOf(g, v).filter(function (y) { return y.oi === oi && y.k === x.k; })[0];
+            return f ? look(g.field, f.item) : null;
+          }) : null;
+          return { k: x.k, label: labelText(g, x.item), patch: p, item: x.item, ws: p ? writes(p, state) : [] };
+        });
+      }
+      /* Classify ONE group (one outer item of a nested group) at `state`:
+           {kind:'pick', slot:[path], options:[{k,label,patch,value}], right:[k…]|null, graded}
+           {kind:'gate', slot:[key], step:<before>, options…, right:[k…]}
+           {kind:'multi', slot:[key], check:k, options…}
+           {kind:'explore', why:'…'}   {kind:'none'}
+         `init` is the lesson's state as it was first drawn: a slot whose
+         first value was a number or a string is a selector (a tab, a dial),
+         never an answer. */
+      function classify(L, g, state, init, oi) {
+        var vals = valsAt(L, state);
+        var flat = itemsOf(g, vals).filter(function (x) { return x.oi === oi; });
+        if (!flat.length) { return { kind: 'none', why: 'no options' }; }
+        var opts = probe(L, g, state, oi);
+        var live = opts.filter(function (o) { return o.ws.length; });
+        if (!live.length) { return { kind: 'none', why: 'no option changes the lesson here' }; }
+        if (opts.some(function (o) { return o.item && typeof o.item.correct === 'boolean'; })) {
+          var cslot = commonSlot(live);
+          if (cslot) { return finish({ kind: 'pick', slot: cslot, options: opts, right: opts.filter(function (o) { return o.item && o.item.correct === true; }).map(function (o) { return o.k; }), graded: true }, state, init); }
+        }
+        // A multi-select with its own Check: toggles add/remove an index in
+        // one array, and one option (the Check) sets a flag true.
+        var togg = live.filter(function (o) { return o.ws.length && o.ws.every(function (w) { return isArr(w.after) || typeof w.after === 'boolean'; }) && o.ws.some(function (w) { return isArr(w.after); }); });
+        var chk = live.filter(function (o) { return o.ws.every(function (w) { return typeof w.after === 'boolean'; }) && o.ws.some(function (w) { return w.after === true; }); });
+        if (togg.length >= 2 && chk.length === 1 && togg.indexOf(chk[0]) < 0) {
+          var mk = togg[0].ws.filter(function (w) { return isArr(w.after); })[0].path[0];
+          if (togg.every(function (o) { return o.ws.some(function (w) { return w.path[0] === mk; }); })) {
+            return { kind: 'multi', slot: [mk], check: chk[0].k, options: opts };
+          }
+        }
+        // A gate: one option moves the lesson on (a number goes up), the
+        // others say why not (a message).
+        var msgs = live.filter(function (o) { return o.ws.some(msgLike); });
+        if (msgs.length && msgs.length < live.length) {
+          var go = live.filter(function (o) { return msgs.indexOf(o) < 0; });
+          var adv = null;
+          go.forEach(function (o) {
+            // A stepper's key may start unset (`s[key] || 0` in the lesson): that is step 0.
+            o.ws.forEach(function (w) { if (w.path.length === 1 && typeof w.after === 'number' && (typeof w.before === 'number' || w.before == null) && w.after > (w.before || 0)) { adv = adv || w.path[0]; } });
+          });
+          if (adv) { return { kind: 'gate', slot: [adv], step: state[adv] || 0, options: opts, right: go.map(function (o) { return o.k; }), graded: true }; }
+          var gslot = commonSlot(go);
+          if (gslot) { return finish({ kind: 'pick', slot: gslot, options: opts, right: go.map(function (o) { return o.k; }), graded: true, msg: true }, state, init); }
+        }
+        // Explorations: a card or tab that only records it was seen.
+        if (live.every(function (o) { return o.ws.every(function (w) { return w.append !== undefined || (isArr(w.after) && !prim(w.before)) || (w.path.length === 1 && isArr(w.after)); }); })) {
+          return { kind: 'explore', why: 'opens a card or marks it seen' };
+        }
+        var slot = commonSlot(live);
+        if (!slot) { return { kind: 'explore', why: 'no single place the choice is kept' }; }
+        // A list of choices (tap several), not one answer: after one pick, the
+        // next pick lands in the NEXT place of the same list.
+        if (slot.length > 1 && /^\d+$/.test(String(slot[slot.length - 1])) && live.length > 1 && live[0].patch) {
+          var after1 = probe(L, g, apply(state, live[0].patch), oi).filter(function (o) { return o.k === live[1].k; })[0];
+          var w1 = after1 && after1.ws.filter(function (w) { return pathKey(w.path.slice(0, -1)) === pathKey(slot.slice(0, -1)); })[0];
+          if (w1 && pathKey(w1.path) !== pathKey(slot)) { return { kind: 'explore', why: 'a list of picks (choose several)' }; }
+        }
+        // A tab that also lists what has been seen: the slot plus list writes only.
+        if (live.every(function (o) { return o.ws.every(function (w) { return pathKey(w.path) === pathKey(slot) || isArr(w.after); }); }) &&
+            live.some(function (o) { return o.ws.length > 1; })) {
+          return { kind: 'explore', why: 'a tab that records which ones were seen' };
+        }
+        var r = finish({ kind: 'pick', slot: slot, options: opts, right: null, graded: false }, state, init);
+        if (r.kind === 'pick') { okFlag(L, g, r, state, oi); }
+        return r;
+      }
+      // The lesson's own verdict flag: a true/false the choice sets, true for
+      // the right option(s) only (`bqOk` in the batch lessons' pick()). Asked
+      // again with the flag cleared when an earlier right answer holds it.
+      function okFlag(L, g, r, state, oi) {
+        function flags(os) {
+          var f = {};
+          os.forEach(function (o) {
+            o.ws.forEach(function (w) { if (typeof w.after === 'boolean') { var pk = pathKey(w.path); (f[pk] = f[pk] || {})[o.k] = w.after; } });
+          });
+          return f;
+        }
+        function pickRight(f, os) {
+          for (var B in f) {
+            if (!Object.prototype.hasOwnProperty.call(f, B)) { continue; }
+            var yes = os.filter(function (o) { return f[B][o.k] === true; });
+            if (yes.length && yes.length < os.length) { return yes.map(function (o) { return o.k; }); }
+          }
+          return null;
+        }
+        var live = r.options.filter(function (o) { return o.ws.length; });
+        var f = flags(live), got = pickRight(f, live);
+        if (!got) {
+          var st2 = clone(state) || {}, any = false;
+          for (var B in f) {
+            if (!Object.prototype.hasOwnProperty.call(f, B)) { continue; }
+            var bp = B.split('\u0001'), par = st2;
+            for (var q = 0; q < bp.length - 1 && par; q += 1) { par = par[bp[q]]; }
+            if (par && par[bp[bp.length - 1]] === true) { par[bp[bp.length - 1]] = false; any = true; }
+          }
+          if (any) {
+            var again = probe(L, g, st2, oi).filter(function (o) { return o.ws.length; });
+            got = pickRight(flags(again), again);
+          }
+        }
+        if (got) { r.right = got; r.graded = true; r.byFlag = true; }
+      }
+      // The one leaf every live option writes, each a different value.
+      function commonSlot(live) {
+        if (!live.length) { return null; }
+        var cand = live[0].ws.map(function (w) { return w.path; });
+        for (var i = 0; i < cand.length; i += 1) {
+          var key = pathKey(cand[i]), vals2 = [], ok = true;
+          for (var j = 0; j < live.length && ok; j += 1) {
+            var hit = live[j].ws.filter(function (w) { return pathKey(w.path) === key; })[0];
+            if (!hit || !prim(hit.after) || hit.after === null || typeof hit.after === 'boolean') { ok = false; break; }
+            vals2.push(JSON.stringify(hit.after));
+          }
+          if (ok && (live.length < 2 || vals2.filter(function (v, x) { return vals2.indexOf(v) === x; }).length === vals2.length)) { return cand[i]; }
+        }
+        return null;
+      }
+      function finish(r, state, init) {
+        r.options.forEach(function (o) { var w = o.ws.filter(function (x) { return pathKey(x.path) === pathKey(r.slot); })[0]; o.value = w ? w.after : undefined; });
+        var first = at(init, r.slot);
+        if (r.slot.length === 1 && (typeof first === 'number' || typeof first === 'string')) {
+          return { kind: 'explore', why: 'a selector: it starts on an option already chosen' };
+        }
+        return r;
+      }
+      // Every piece of text a render shows (styles and figures left out).
+      function texts(v) {
+        var out = {}, seen = [];
+        (function w(x, d, k) {
+          if (d > 9 || x == null) { return; }
+          if (typeof x === 'string') { if (!/style|svg|fig|href|src|class/i.test(k || '')) { out[x.replace(/\s+/g, ' ').trim()] = 1; } return; }
+          if (typeof x !== 'object' || x.__mrbFig || seen.indexOf(x) >= 0) { return; }
+          seen.push(x);
+          for (var key in x) { if (Object.prototype.hasOwnProperty.call(x, key)) { w(x[key], d + 1, key); } }
+        })(v, 0, '');
+        return out;
+      }
+      var YES = /^(yes|right|correct|exactly|that'?s (it|right)|well done|spot on)\b/i;
+      var TALLY = /(\d+) of (\d+) (right|correct|matched)/i;
+      /* Right/wrong for a pick the lesson's code does not flag, from what the
+         lesson DRAWS after each option, compared across the options:
+           · words — the line that appears opens "Yes." for some options only;
+           · a tally — "N of M right" goes up for some options only;
+           · style — an alert-styled verdict for some options only.
+         None of these differ: the lesson does not judge the choice. Then a
+         choice that changes no words at all is part of a form another button
+         commits (not an answer on its own); a prediction is kept, unjudged
+         (self-checked); anything else is an exploration. */
+      function judge(L, g, r, state) {
+        if (r.kind !== 'pick' || r.graded) { return r; }
+        var base = texts(valsAt(L, state));
+        var per = r.options.map(function (o) {
+          if (!o.patch) { return null; }
+          var v = valsAt(L, apply(state, o.patch)), t = texts(v), added = [];
+          for (var k in t) { if (!base[k]) { added.push(k); } }
+          var m = null;
+          for (var k2 in t) { var mm = TALLY.exec(k2); if (mm) { m = Math.max(m === null ? -1 : m, Number(mm[1])); } }
+          return { added: added, yes: added.some(function (x) { return YES.test(x); }), tally: m, alerts: alerts(v) };
+        });
+        var real = per.filter(Boolean);
+        if (real.length < 2) { return r; }
+        function choose(test) { return r.options.filter(function (o, i) { return per[i] && test(per[i]); }).map(function (o) { return o.k; }); }
+        var yes = choose(function (p) { return p.yes; });
+        if (yes.length && yes.length < real.length) { r.right = yes; r.graded = true; r.byWords = true; return r; }
+        var tl = real.map(function (p) { return p.tally; }).filter(function (n) { return n !== null; });
+        if (tl.length === real.length && Math.max.apply(null, tl) !== Math.min.apply(null, tl)) {
+          var top = Math.max.apply(null, tl);
+          r.right = choose(function (p) { return p.tally === top; }); r.graded = true; r.byTally = true; return r;
+        }
+        var al = real.map(function (p) { return p.alerts; });
+        var lo = Math.min.apply(null, al);
+        if (lo !== Math.max.apply(null, al)) { r.right = choose(function (p) { return p.alerts === lo; }); r.graded = true; r.byAlert = true; return r; }
+        if (/pred|guess|estim|^est$|bet|vote/i.test(String(r.slot[0]))) { r.prediction = true; return r; }
+        if (real.every(function (p) { return !p.added.length; })) { return { kind: 'explore', why: 'part of a form another button commits' }; }
+        return { kind: 'explore', why: 'shows a result for any choice; nothing is judged' };
+      }
+      function analyse(L, g, state, init, oi) { return judge(L, g, classify(L, g, state, init, oi), state); }
+      // The ledger id of an answer in a slot: the state key, and for a map
+      // or list the entry (a number counted from 1). Lower case, server
+      // shape (^[a-z0-9:#._-]{1,200}$).
+      function slotId(r, oi) {
+        var s = r.kind === 'gate' ? [r.slot[0], typeof r.step === 'number' ? r.step : 0] : r.slot;
+        var parts = [s[0]];
+        for (var i = 1; i < s.length; i += 1) { parts.push(/^\d+$/.test(String(s[i])) ? String(Number(s[i]) + 1) : String(s[i])); }
+        return parts.join('-').toLowerCase().replace(/[^a-z0-9:#._-]+/g, '-');
+      }
+      return { groupsOf: groupsOf, itemsOf: itemsOf, classify: classify, judge: judge, analyse: analyse, probe: probe, slotId: slotId,
+               valsAt: valsAt, patchOf: patchOf, writes: writes, labelText: labelText, apply: apply, clone: clone, at: at, look: look };
+    })();
+    /* </ks4-root-acts> */
 
     /* ── Saved work follow-up: a lesson's OWN one-off activities ──
        Some rebuilt lessons ask questions in their own code rather than in a
@@ -2994,11 +3967,1092 @@ try {
       });
     }
 
+    /* ── ⊕ 8 Nov 2026 (Mide: every answer a family child gives anywhere saves
+       and restores): the lesson activities KS4RootActs cannot see. ──
+       That classifier reads ROOT OPTION GROUPS only. It never sees a typed or
+       selected answer, a form whose options a separate button commits, a list
+       of picks, or a builder of steppers. Each of these was read in its
+       lesson, and the lesson is named here by what it does, the way ROOT_SPECS
+       names one above. `covers` is the handlers and groups a form answers for:
+       tools/activity_save_coverage.py reads it, so a new lesson with a typed
+       answer shows up there as NOT saved until it is named here or in
+       tools/ks4_root_explorations.json.
+
+       A form:
+         fire(s, was, x)  the rows the move from state `was` to `s` commits:
+                          {e: entry (or null), a: the answer as text, ok: true,
+                           false, or null when the lesson does not judge it,
+                           q: the question, kind}.
+         back(r, e, st, x)  the saved row put back: returns a state patch, or
+                          presses the lesson's own handlers through `x`.
+       Everything is read at the lesson's commit (its Check, its reveal, its
+       run finishing), never per keystroke. A typed answer the lesson judges
+       goes as `numeric`, because the server sends `written` to the marker and
+       discards the page's verdict. Read only until restore: `x.press` runs the
+       lesson's handler on a COPY of its state and applies what it asked for,
+       `x.fast` does the same on the lesson's own reduced-motion path so a run
+       lands at its end without animating. */
+    /* <ks4-root-forms> */
+    var lastRootPress = null;                  // the words on the root control last pressed
+    var ROOT_FORMS = (function () {
+      function put(o, k, v) { var c = Object.assign({}, o || {}); c[k] = v; return c; }
+      function find(list, text, key) {
+        for (var i = 0; i < (list || []).length; i += 1) { if (list[i] && same(list[i][key || 'label'], text)) { return i; } }
+        return -1;
+      }
+      function rose(s, w, k) { return !!s[k] && !w[k]; }
+      function after(text) { var t = String(text == null ? '' : text); var i = t.lastIndexOf(': '); return i < 0 ? t : t.slice(i + 2); }
+      // One pick per step, committed when the lesson marks that step done.
+      function stepPick(o) {
+        return { id: o.id || o.pick, covers: o.covers,
+          fire: function (s, w, x) {
+            var out = [];
+            Object.keys(s[o.done] || {}).forEach(function (k) {
+              if (!s[o.done][k] || (w[o.done] || {})[k] || (s[o.pick] || {})[k] === undefined) { return; }
+              var at = {}; at[o.step] = +k;
+              var v = x.vals(at), it = (v[o.opts] || [])[s[o.pick][k]];
+              out.push({ e: +k + 1, a: it ? it.label : null, ok: o.yes.test(String(v[o.word] || '')), q: String(v[o.ask] || '') });
+            });
+            return out;
+          },
+          back: function (r, e, st, x) {
+            var k = +e - 1, at = {}; at[o.step] = k;
+            var i = find(x.vals(at)[o.opts], r.answer);
+            if (i < 0) { return null; }
+            var p = {}; p[o.step] = k; p[o.pick] = put(st[o.pick], k, i);
+            x.set(p);
+            if (o.run) { x.fast(o.run); }
+            var d = {}; d[o.done] = put(x.L.state[o.done], k, true);
+            return Object.assign(d, o.also || {});
+          } };
+      }
+      // A typed value and the flag its Check raises.
+      function typed(o) {
+        return { id: o.id || o.key, covers: o.covers,
+          fire: function (s, w, x) {
+            if (!rose(s, w, o.flag)) { return null; }
+            return [{ e: null, a: s[o.key], ok: o.yes.test(String(x.vals()[o.word] || '')), q: o.q, kind: 'numeric' }];
+          },
+          back: function (r, e, st, x) {
+            if (o.before) { o.before(x); }
+            var p = {}; p[o.key] = String(r.answer == null ? '' : r.answer); p[o.flag] = true;
+            return p;
+          } };
+      }
+      // A reading the child took on a bench: own[key] = seconds, null = over the limit.
+      function readings(o) {
+        return { id: 'own', covers: [],
+          fire: function (s, w) {
+            var out = [];
+            Object.keys(s.own || {}).forEach(function (k) {
+              if ((w.own || {})[k] === s.own[k] && Object.prototype.hasOwnProperty.call(w.own || {}, k)) { return; }
+              out.push({ e: k, a: s.own[k] === null ? 'Over 600 s' : s.own[k] + ' s', ok: null, q: o.q(k), kind: 'numeric' });
+            });
+            return out;
+          },
+          back: function (r, e, st) {
+            var n = /^Over/.test(String(r.answer)) ? null : parseInt(r.answer, 10);
+            return o.put(e, n, st);
+          } };
+      }
+      var labelOfPressed = function (list) { var on = (list || []).filter(function (o) { return o && o.pressed; }); return on.length ? on[on.length - 1].label : null; };
+      return {
+        'decomposition': [
+          readings({ q: function (k) { return 'Your time for the pink to go at ' + k + ' °C'; },
+            put: function (e, n, st) { var p = { own: put(st.own, e, n), run: put(st.run, e, true) }; if (String(st.temp) === String(e)) { p.simT = n === null ? 600 : n; } return p; } }),
+          typed({ key: 'rate', flag: 'rateChecked', word: 'rateWord', yes: /^Correct/, q: 'Work out the rate at 40 °C, in s⁻¹', covers: ['onRate'] })
+        ],
+        'enzymes': [
+          readings({ q: function (k) { return 'Your time for the starch to go at pH ' + k; },
+            put: function (e, n, st) {
+              var end = n ? n / 30 : 0, total = end ? Math.min(20, end + 2) : 20;
+              var p = { own: put(st.own, e, n), runs: put(st.runs, e, { end: end, total: total }) };
+              if (String(st.ph) === String(e)) { p.shown = total; }
+              return p;
+            } }),
+          { id: 'anom', covers: ['onAnom'],
+            fire: function (s, w, x) {
+              if (s.anom === w.anom || s.anom === '') { return null; }
+              var v = x.vals(), i = (v.anomOpts || []).map(function (o) { return String(o.value); }).indexOf(String(s.anom));
+              return [{ e: null, a: i >= 0 ? v.anomOpts[i].label : s.anom, ok: /^Yes/.test(String(v.anomWord || '')), q: 'Which result is the anomaly?' }];
+            },
+            back: function (r, e, st, x) {
+              var o = x.vals().anomOpts || [], i = find(o, r.answer);
+              return i >= 0 ? { anom: o[i].value } : null;
+            } },
+          typed({ key: 'mean', flag: 'meanChecked', word: 'meanWord', yes: /^Correct/, q: 'Work out the mean time at pH 6', covers: ['onMean'] })
+        ],
+        'states-of-matter': (function () {
+          var lab = function (x) { if (!x.vals().labDone) { x.fast('onRun'); } };
+          return [
+            { id: 'anom', covers: ['onAnom'],
+              fire: function (s, w, x) {
+                if (s.anom === w.anom || s.anom === '') { return null; }
+                var v = x.vals(), i = (v.timeOpts || []).map(function (o) { return String(o.value); }).indexOf(String(s.anom));
+                return [{ e: null, a: i >= 0 ? v.timeOpts[i].label : s.anom, ok: /^Yes/.test(String(v.anomWord || '')), q: 'Which reading is the anomaly?' }];
+              },
+              back: function (r, e, st, x) {
+                lab(x);
+                var o = x.vals().timeOpts || [], i = find(o, r.answer);
+                return i >= 0 ? { anom: o[i].value } : null;
+              } },
+            typed({ key: 'mp', flag: 'mpChecked', word: 'mpWord', yes: /^That agrees/, q: 'What is the melting point, in °C?', covers: ['onMp'], before: lab })
+          ];
+        })(),
+        'ionic-compounds': [
+          { id: 'lenspick', covers: ['lensOpts'],
+            fire: function (s, w) {
+              if (s.lensPick === w.lensPick || s.lensPick === null) { return null; }
+              return [{ e: null, a: String(s.lensPick), ok: s.lensPick === 6, q: 'In a real salt crystal, how many chloride ions sit right next to one sodium ion?' }];
+            },
+            back: function (r) { return { lensPick: parseInt(r.answer, 10) }; } },
+          { id: 'dxval', covers: ['onDx'],
+            fire: function (s, w, x) {
+              if (!rose(s, w, 'dxChecked')) { return null; }
+              var v = x.vals(), tab = (v.dxTabs || [])[s.dx];
+              return [{ e: s.dx + 1, a: s.dxVal[s.dx], ok: /^That matches/.test(String(v.dxWord || '')), kind: 'numeric',
+                        q: 'Write the formula' + (tab ? ' — ' + String(tab.label).replace(/ · done$/, '') : '') }];
+            },
+            back: function (r, e, st, x) {
+              var k = +e - 1, a = (st.dxVal || []).slice(); a[k] = String(r.answer == null ? '' : r.answer);
+              x.set({ dx: k, dxVal: a });
+              x.press('onDxCheck');
+              return null;
+            } }
+        ],
+        'ionic-bonding': [
+          { id: 'wa', covers: ['wOptions'],
+            fire: function (s, w, x) {
+              var out = [];
+              (s.wa || []).forEach(function (list, wi) {
+                var old = (w.wa || [])[wi] || [];
+                for (var j = old.length; j < list.length; j += 1) {
+                  var was = Object.assign({}, w, { w: wi }); var wj = (w.wa || []).map(function (a) { return a.slice(); }); wj[wi] = list.slice(0, j); was.wa = wj;
+                  var v = KS4RootActs.valsAt(x.L, was), o = (v.wOptions || [])[list[j]];
+                  // The lesson's own line for this step: its log says "Yes." or "Not this."
+                  var log = (x.vals({ w: wi }).wLog || [])[j];
+                  out.push({ e: (wi + 1) + '-' + (j + 1), a: o ? o.label : null, ok: !!log && log.word === 'Yes.', q: String(v.wPrompt || '') });
+                }
+              });
+              return out;
+            },
+            back: function (r, e, st, x) {
+              var wi = parseInt(e, 10) - 1;
+              x.set({ w: wi });
+              var i = find(x.vals().wOptions, r.answer);
+              if (i >= 0) { x.press(function (v) { return v.wOptions[i].onClick; }); }
+              return null;
+            } },
+          { id: 'draw', covers: ['onMq', 'onXq'],
+            fire: function (s, w, x) {
+              if (!rose(s, w, 'dChecked')) { return null; }
+              var v = x.vals();
+              return [{ e: s.dp + 1, a: 'Electrons moved: ' + s.moved + '\n' + v.dMetalLabel + ': ' + s.mq + '\n' + v.dNonLabel + ': ' + s.xq,
+                        ok: (v.dLines || []).every(function (l) { return /right\.$/.test(String(l.word)); }), q: 'Draw the transfer and give each ion its charge' }];
+            },
+            back: function (r, e, st, x) {
+              var l = String(r.answer || '').split('\n');
+              x.set({ dp: +e - 1, moved: parseInt(after(l[0]), 10) || 0, mq: after(l[1]), xq: after(l[2]) });
+              x.press('onDCheck');
+              return null;
+            } },
+          { id: 'formula', covers: ['onAddM', 'onAddX'],
+            fire: function (s, w, x) {
+              var v = x.vals();
+              if (!/^Formula:/.test(String(v.fDone || '')) || !(s.fm || s.fx) || (w.f === s.f && w.fm === s.fm && w.fx === s.fx)) { return null; }
+              return [{ e: s.f + 1, a: String(v.fTally || (s.fm + ', ' + s.fx)).replace(/\s+/g, ' '), ok: true, q: String(v.fTitle || '') }];
+            },
+            back: function (r, e) {
+              var k = +e - 1, n = String(r.answer || '').match(/\d+(?= ×)/g) || [], dn = [];
+              for (var i = 0; i < k; i += 1) { dn.push(i); }
+              return { f: k, fm: parseInt(n[0], 10) || 0, fx: parseInt(n[1], 10) || 0, fDone: dn };
+            } }
+        ],
+        'carbon-cycle': [
+          { id: 'labels', covers: ['r.onChange'], sent: {},
+            fire: function (s, w, x) {
+              if (!rose(s, w, 'lChecked')) { return null; }
+              var sent = this.sent, out = [];
+              (x.vals().lRows || []).forEach(function (row) {
+                if (!row.value || sent[row.letter] === row.value) { return; }
+                sent[row.letter] = row.value;
+                out.push({ e: row.letter, a: row.value, ok: !row.hasWhy, q: String(row.aria || '') });
+              });
+              return out;
+            },
+            back: function (r, e, st, x) {
+              x.set({ labels: put(st.labels, String(e).toUpperCase(), String(r.answer == null ? '' : r.answer)) });
+              x.press('onLCheck');
+              return null;
+            } }
+        ],
+        'relative-formula-mass': [
+          { id: 'pan', covers: ['panOpts', 'onPanL', 'onPanR'],
+            fire: function (s, w, x) {
+              var out = [];
+              Object.keys(s.pd || {}).forEach(function (k) {
+                if (!s.pd[k] || (w.pd || {})[k]) { return; }
+                var v = x.vals({ pi: +k }), o = (v.panOpts || [])[s.pp[k]], pv = s.pv[k] || {};
+                out.push({ e: +k + 1, a: 'Prediction: ' + (o ? o.label : '') + '\nReactants: ' + pv.l + '\nProducts: ' + pv.r,
+                           ok: /^Both totals right/.test(String(v.panVerdict || '')), q: 'Predict, then total each side', kind: 'numeric' });
+              });
+              return out;
+            },
+            back: function (r, e, st, x) {
+              var k = +e - 1, l = String(r.answer || '').split('\n');
+              var i = find(x.vals({ pi: k }).panOpts, after(l[0]));
+              if (i < 0) { return null; }
+              return { pi: k, pp: put(st.pp, k, i), pv: put(st.pv, k, { l: after(l[1]), r: after(l[2]) }), pd: put(st.pd, k, true) };
+            } }
+        ],
+        'specific-latent-heat': [
+          stepPick({ pick: 'picks', done: 'done', step: 'stage', opts: 'stageOpts', word: 'verdictWord', yes: /^Yes/, ask: 'ledgerTitle', also: { prog: 1 }, covers: ['stageOpts'] }),
+          { id: 'ans', covers: ['logSteps'],
+            fire: function (s, w, x) {
+              var out = [], v = x.vals();
+              Object.keys(s.ans || {}).forEach(function (k) {
+                if ((w.ans || {})[k] === s.ans[k]) { return; }
+                var q = (v.logSteps || [])[k], o = q && q.opts[s.ans[k]];
+                out.push({ e: +k + 1, a: o ? o.label : null, ok: !!q && q.fbWord === 'Yes.', q: q ? String(q.prompt || '') : '' });
+              });
+              return out;
+            },
+            back: function (r, e, st, x) {
+              var k = +e - 1;
+              x.set({ logDone: true, logP: 1 });
+              var q = (x.vals().logSteps || [])[k], j = q ? find(q.opts, r.answer) : -1;
+              if (j >= 0) { x.press(function (v) { return v.logSteps[k].opts[j].onClick; }); }
+              return null;
+            } },
+          { id: 'ltext', covers: ['onLText', 'lUnits'],
+            fire: function (s, w, x) {
+              if (s.lCode === null || (s.lTries === w.lTries && s.lCode === w.lCode)) { return null; }
+              var u = (x.vals().lUnits || [])[s.lUnit];
+              return [{ e: null, a: s.lText + '\n' + (u ? u.label : ''), ok: s.lCode === 'ok', q: 'Calculate the specific latent heat, with its unit', kind: 'numeric' }];
+            },
+            back: function (r, e, st, x) {
+              var l = String(r.answer || '').split('\n');
+              x.set({ logDone: true, logP: 1, lText: l[0] });
+              var i = find(x.vals().lUnits, l[1]);
+              if (i >= 0) { x.set({ lUnit: i }); }
+              x.press('onLCheck');
+              return null;
+            } }
+        ],
+        'temperature-changes-shc': [
+          { id: 'order', covers: ['raceCards', 'raceSlots'],
+            fire: function (s, w, x) {
+              if (!rose(s, w, 'raceDone')) { return null; }
+              var v = x.vals(), c = v.raceCards || [];
+              return [{ e: null, a: (s.order || []).map(function (i) { return c[i] ? c[i].text : ''; }).join('\n'), ok: v.raceVerdictWord === 'Right order.', q: 'Put the four samples in the order they reach the temperature', kind: 'order' }];
+            },
+            back: function (r, e, st, x) {
+              var c = x.vals().raceCards || [], o = String(r.answer || '').split('\n').map(function (t) { return find(c, t, 'text'); });
+              return o.indexOf(-1) >= 0 ? null : { order: o, raceDone: true, raceP: 1 };
+            } },
+          { id: 'offpick', covers: ['offOpts'],
+            fire: function (s, w, x) {
+              if (s.offPick === w.offPick || s.offPick === null) { return null; }
+              var o = (x.vals().offOpts || [])[s.offPick];
+              return [{ e: null, a: o ? o.label : null, ok: s.offPick === 1, q: 'The heater has switched off. Which temperature do you record as the final one?' }];
+            },
+            back: function (r, e, st, x) {
+              if (x.L.state.phase === 'ready') { x.fast('onRun'); }
+              var i = find(x.vals().offOpts, r.answer);
+              if (i >= 0) { x.fast(function (v) { return v.offOpts[i].onClick; }); }
+              return null;
+            } },
+          { id: 'ctext', covers: ['onCText'],
+            fire: function (s, w) {
+              if (s.cCode === null || (s.cTries === w.cTries && s.cCode === w.cCode)) { return null; }
+              return [{ e: null, a: s.cText, ok: s.cCode === 'ok', q: 'Calculate the specific heat capacity', kind: 'numeric' }];
+            },
+            back: function (r, e, st, x) {
+              x.set({ cText: String(r.answer == null ? '' : r.answer) });
+              x.press('onCCheck');
+              return null;
+            } }
+        ],
+        'properties-small-molecules': [
+          { id: 'gate', covers: ['gateOpts'],
+            fire: function (s, w, x) {
+              if (s.gate === w.gate || s.gate === null) { return null; }
+              var v = x.vals(), o = (v.gateOpts || [])[s.gate];
+              return [{ e: null, a: o ? o.label : null, ok: v.gateWord === 'Yes.', q: 'What separates when it melts or boils?' }];
+            },
+            back: function (r, e, st, x) {
+              var i = find(x.vals().gateOpts, r.answer);
+              if (i >= 0) { x.press(function (v) { return v.gateOpts[i].onClick; }); }
+              return null;
+            } },
+          { id: 'rank', covers: ['rankPool', 'rankSlots'],
+            fire: function (s, w, x) {
+              if (!rose(s, w, 'rankChecked')) { return null; }
+              var v = x.vals();
+              return [{ e: null, a: (v.rankSlots || []).map(function (o) { return o.label; }).join('\n'), ok: s.rankOk === true, q: 'Tap them in order from the lowest boiling point to the highest.', kind: 'order' }];
+            },
+            back: function (r, e, st, x) {
+              x.set({ order: [], rankChecked: false });
+              String(r.answer || '').split('\n').forEach(function (t) {
+                var i = find(x.vals().rankPool, t);
+                if (i >= 0) { x.press(function (v) { return v.rankPool[i].onClick; }); }
+              });
+              x.press('onRankCheck');
+              return null;
+            } }
+        ],
+        'thermal-conductivity': [
+          { id: 'tries', covers: ['changes', 'predictions'],
+            fire: function (s, w) {
+              if (!(s.tries > w.tries) || !s.pred || w.pend === null) { return null; }
+              return [{ e: s.tries + '-' + (w.pend + 1), a: s.pred.pick, ok: s.pred.pick === s.pred.result, q: 'Change from ' + s.pred.from + ' to ' + s.pred.to + '. The house will cool:' }];
+            },
+            back: function (r, e, st, x) {
+              var n = parseInt(String(e).split('-')[1], 10) - 1;
+              x.press(function (v) { return v.changes[n].onClick; });
+              var i = find(x.vals().predictions, r.answer);
+              if (i >= 0) { x.press(function (v) { return v.predictions[i].onClick; }); }
+              return null;
+            } }
+        ],
+        'blood': [
+          { id: 'cell', covers: ['choices', 'targets'],
+            fire: function (s, w) {
+              var said = lastRootPress && lastRootPress.text, moved = s.stage !== w.stage && w.sel === s.sel;
+              if (!moved && (s.wrong === null || s.wrong === w.wrong)) { return null; }
+              return [{ e: (s.sel + 1) + '-' + w.stage, a: said, ok: moved, q: w.stage === 'name' ? 'Name this cell' : 'What is its job?' }];
+            },
+            back: function (r, e, st, x) {
+              x.set({ sel: parseInt(e, 10) - 1 });
+              var i = find(x.vals().choices, r.answer, 'text');
+              if (i >= 0) { x.press(function (v) { return v.choices[i].onClick; }); }
+              return null;
+            } }
+        ],
+        'types-of-em-waves': [
+          { id: 'placed', covers: ['tray', 'slots'],
+            fire: function (s, w, x) {
+              if (!rose(s, w, 'p1')) { return null; }
+              var v = x.vals();
+              return [{ e: null, a: (s.placed || []).join('\n'), ok: !(v.p1Notes || []).length, q: 'Tap the seven groups in order, longest wavelength first.', kind: 'order' }];
+            },
+            back: function (r, e, st, x) {
+              var ids = String(r.answer || '').split('\n');
+              x.set({ placed: ids });
+              x.press('onP1');
+              return null;
+            } }
+        ],
+        // ⊕ 8 Nov 2026: the child's own runs, and the concordant titres they chose.
+        'titrations': [
+          { id: 'gate', covers: ['gateOpts'],
+            fire: function (s, w, x) {
+              if (s.gate === w.gate || s.gate === null) { return null; }
+              var o = (x.vals().gateOpts || [])[s.gate];
+              return [{ e: null, a: o ? o.label : null, ok: null, q: 'The rough run goes in 1 cm³ or more at a time. Compared with the careful runs, its titre will be…' }];
+            },
+            back: function (r, e, st, x) {
+              var i = find(x.vals().gateOpts, r.answer);
+              if (i >= 0) { x.press(function (v) { return v.gateOpts[i].onClick; }); }
+              return null;
+            } },
+          { id: 'rows', covers: [],
+            fire: function (s, w, x) {
+              if ((s.rows || []).length <= (w.rows || []).length) { return null; }
+              var n = s.rows.length - 1, b = (x.vals().rowBtns || [])[n], row = s.rows[n];
+              return [{ e: row.run + 1, a: b ? b.label + ': ' + b.sum : String(row.titre), ok: null, q: 'Record the final reading', kind: 'numeric' }];
+            },
+            back: function (r, e, st, x) {
+              var run = +e - 1, m = /= ([\d.]+) cm/.exec(String(r.answer || ''));
+              if (!m) { return null; }
+              var t = Math.round(parseFloat(m[1]) * 100);
+              x.set({ rows: (st.rows || []).filter(function (y) { return y.run !== run; }), run: run, added: t, shown: t, live: true, pick: null });
+              x.press('onRecord');
+              return null;
+            } },
+          { id: 'concord', covers: ['rowBtns'],
+            fire: function (s, w, x) {
+              if (!s.pick || w.pick) { return null; }
+              var on = (x.vals().rowBtns || []).filter(function (b) { return b.pressed; }).map(function (b) { return b.label; });
+              return [{ e: null, a: on.join('\n'), ok: s.pick.ok === true, q: 'Choose the concordant titres' }];
+            },
+            back: function (r, e, st, x) {
+              x.set({ sel: {}, pick: null });
+              String(r.answer || '').split('\n').forEach(function (t) {
+                var i = find(x.vals().rowBtns, t);
+                if (i >= 0) { x.press(function (v) { return v.rowBtns[i].onClick; }); }
+              });
+              x.press('onPickCheck');
+              return null;
+            } }
+        ],
+        'energy-resources': [
+          { id: 'placed', covers: ['zones'],
+            fire: function (s, w) {
+              if (s.tried === null || s.tried === w.tried || s.card !== w.card) { return null; }
+              return [{ e: s.card + 1, a: lastRootPress && lastRootPress.text, ok: !!s.flip, q: 'Place the card on the grid' }];
+            },
+            back: function (r, e, st, x) {
+              x.set({ card: +e - 1, tried: null, flip: false });
+              var i = find(x.vals().zones, r.answer);
+              if (i >= 0) { x.press(function (v) { return v.zones[i].onClick; }); }
+              return null;
+            } }
+        ],
+        'factors-affecting-food-security': [
+          { id: 'picks', covers: ['threatBtns'],
+            fire: function (s, w, x) {
+              var k = s.hi, was = (w.picks || [])[k];
+              if ((s.picks || [])[k] === undefined || (s.picks || [])[k] === null || (s.picks || [])[k] === was) { return null; }
+              var said = lastRootPress && lastRootPress.text, v = x.vals();
+              return [{ e: k + 1, a: said, ok: /^Yes/.test(String(v.headReply || '')), q: 'File the headline under the threat it shows' }];
+            },
+            back: function (r, e, st, x) {
+              x.set({ hi: +e - 1 });
+              var i = find(x.vals().threatBtns, r.answer);
+              if (i >= 0) { x.press(function (v) { return v.threatBtns[i].onClick; }); }
+              return null;
+            } }
+        ],
+        'principles-of-organisation': [
+          { id: 'picks', covers: ['levelBtns'],
+            fire: function (s, w, x) {
+              var k = s.ei, a = (s.picks || [])[k];
+              if (a === undefined || a === null || a === (w.picks || [])[k]) { return null; }
+              return [{ e: k + 1, a: lastRootPress && lastRootPress.text, ok: /^Yes\./.test(String(x.vals().exReply || '')), q: 'Which level of organisation is it?' }];
+            },
+            back: function (r, e, st, x) {
+              x.set({ ei: +e - 1 });
+              var i = find(x.vals().levelBtns, r.answer);
+              if (i >= 0) { x.press(function (v) { return v.levelBtns[i].onClick; }); }
+              return null;
+            } }
+        ],
+        'extraction-of-metals': [
+          { id: 'pick', covers: ['methods'],
+            fire: function (s, w, x) {
+              if (s.pick === null || s.pick === w.pick) { return null; }
+              var v = x.vals();
+              return [{ e: s.metal + 1, a: lastRootPress && lastRootPress.text, ok: !/^Check where/.test(String(v.chooseNote || '')), q: String(v.chooseQ || '') }];
+            },
+            back: function (r, e, st, x) {
+              x.set({ metal: +e - 1, pick: null });
+              var i = find(x.vals().methods, r.answer);
+              if (i >= 0) { x.press(function (v) { return v.methods[i].onClick; }); }
+              return null;
+            } }
+        ],
+        'viral-diseases': [
+          { id: 'clue', covers: ['clueBtns'],
+            fire: function (s, w, x) {
+              if (s.pick === null || s.pick === w.pick) { return null; }
+              var v = x.vals();
+              return [{ e: s.ci + 1, a: lastRootPress && lastRootPress.text, ok: /^Yes/.test(String(v.clueNote || '')), q: 'Which disease? ' + String(v.clueCount || '') }];
+            },
+            back: function (r, e, st, x) {
+              x.set({ ci: +e - 1, pick: null });
+              var i = find(x.vals().clueBtns, r.answer);
+              if (i >= 0) { x.press(function (v) { return v.clueBtns[i].onClick; }); }
+              return null;
+            } }
+        ],
+        'meiosis': [
+          { id: 'gate', covers: ['stepBtns'],
+            fire: function (s, w) {
+              var said = lastRootPress && lastRootPress.text;
+              if (!said || /^(Next step|Start again)$/.test(said)) { return null; }
+              var wrong = s.gateMsg && s.gateMsg !== w.gateMsg, right = s.step > w.step;
+              if (!wrong && !right) { return null; }
+              return [{ e: w.step + 1, a: said, ok: !!right, q: 'Predict what happens next' }];
+            },
+            back: function (r, e, st, x) {
+              x.set({ step: +e - 1, gateMsg: '' });
+              var i = find(x.vals().stepBtns, r.answer);
+              if (i >= 0) { x.press(function (v) { return v.stepBtns[i].onClick; }); }
+              return null;
+            } }
+        ],
+        'microscopy': [
+          { id: 'gate', covers: ['gateOpts'],
+            fire: function (s, w, x) {
+              var out = [], v = x.vals(), said = lastRootPress && lastRootPress.text;
+              (s.gate || []).forEach(function (g, i) {
+                if (g === null || g === (w.gate || [])[i]) { return; }
+                out.push({ e: i + 1, a: said, ok: v.gateWord === 'Yes.', q: String(x.vals({ pending: i }).gatePrompt || '') });
+              });
+              return out;
+            },
+            back: function (r, e, st, x) {
+              var k = +e - 1;
+              x.set({ pending: k });
+              var i = find(x.vals().gateOpts, r.answer);
+              if (i >= 0) { x.press(function (v) { return v.gateOpts[i].onClick; }); } else { x.set({ pending: null }); }
+              return null;
+            } }
+        ],
+        'sound-waves-hearing': [
+          { id: 'tpred', covers: ['pTones'],
+            fire: function (s, w, x) {
+              var out = [];
+              Object.keys(s.pShown || {}).forEach(function (k) {
+                if (!s.pShown[k] || (w.pShown || {})[k]) { return; }
+                var v = x.vals({ pStage: +k });
+                (v.pTones || []).forEach(function (t, i) {
+                  var on = (t.opts || []).filter(function (o) { return o.pressed; })[0];
+                  if (on) { out.push({ e: k + '-' + (i + 1), a: on.label, ok: null, q: 'Can you hear a tone of ' + t.label + '?' }); }
+                });
+              });
+              return out;
+            },
+            back: function (r, e, st, x) {
+              var n = String(e).split('-'), i = +n[1] - 1;
+              x.set({ pStage: +n[0] });
+              var t = (x.vals().pTones || [])[i], j = t ? find(t.opts, r.answer) : -1;
+              if (j >= 0) { x.press(function (v) { return v.pTones[i].opts[j].onClick; }); }
+              x.press('onPReveal');
+              return null;
+            } }
+        ],
+        'polymers': [
+          { id: 'appick', covers: ['apOpts'],
+            fire: function (s, w, x) {
+              if (s.apPick === w.apPick || s.apPick === null) { return null; }
+              var v = x.vals(), o = (v.apOpts || [])[s.apPick];
+              return [{ e: null, a: o ? o.label : null, ok: /as you said/.test(String(v.apWord || '')), q: 'Eight ethene molecules (48 atoms) join into one chain. How many atoms are lost?' }];
+            },
+            back: function (r, e, st, x) {
+              var i = find(x.vals().apOpts, r.answer);
+              if (i >= 0) { x.press(function (v) { return v.apOpts[i].onClick; }); }
+              return null;
+            } }
+        ],
+        'chemical-bonds': [
+          { id: 'pair', covers: ['cells', 'predictButtons'],
+            fire: function (s, w, x) {
+              if (s.pred === null || s.pred === w.pred) { return null; }
+              var v = x.vals(), on = (v.cells || []).filter(function (c) { return c.pressed; }).map(function (c) { return c.sym; });
+              return [{ e: on.join('-'), a: lastRootPress && lastRootPress.text, ok: !/alert/.test(String(v.verdictStyle || '')), q: 'What kind of bond forms between ' + on.join(' and ') + '?' }];
+            },
+            back: function (r, e, st, x) {
+              x.press('onNewPair');
+              String(e).split('-').forEach(function (sym) {
+                var cs = x.vals().cells || [], i = -1;
+                cs.forEach(function (c, n) { if (String(c.sym).toLowerCase() === sym) { i = n; } });
+                if (i >= 0) { x.press(function (v) { return v.cells[i].onClick; }); }
+              });
+              var p = find(x.vals().predictButtons, r.answer);
+              if (p >= 0) { x.fast(function (v) { return v.predictButtons[p].onClick; }); }
+              return null;
+            } }
+        ],
+        'changes-in-energy': [stepPick({ pick: 'picks', done: 'revealed', step: 'round', opts: 'roundOpts', word: 'verdictWord', yes: /as you said/, ask: 'roundAsk', also: { anim: 1 }, covers: ['roundOpts'] })],
+        'power': [stepPick({ pick: 'picks', done: 'revealed', step: 'round', opts: 'roundOpts', word: 'verdictWord', yes: /^Yes/, ask: 'roundAsk', covers: ['roundOpts'] })],
+        'internal-energy': [stepPick({ pick: 'picks', done: 'done', step: 'stage', opts: 'stageOpts', word: 'verdictWord', yes: /^Yes/, ask: 'stageTitle', also: { prog: 1 }, covers: ['stageOpts'] })],
+        'particle-motion-pressure': (function () {
+          // covers: ['p3Opts', 'p4Opts']
+          var one = function (n) {
+            var pk = n + 'Pick', dn = n + 'Done', op = n + 'Opts', run = 'on' + n.toUpperCase() + 'Run';
+            return { id: n, covers: [op],
+              fire: function (s, w, x) {
+                if (!rose(s, w, dn)) { return null; }
+                var v = x.vals(), o = (v[op] || [])[s[pk]];
+                return [{ e: null, a: o ? o.label : null, ok: /^Yes/.test(String(v[n + 'VerdictWord'] || '')), q: 'Commit, then run the piston' }];
+              },
+              back: function (r, e, st, x) {
+                var i = find(x.vals()[op], r.answer);
+                if (i < 0) { return null; }
+                var p = {}; p[pk] = i; x.set(p);
+                x.fast(run);
+                var d = {}; d[dn] = true;
+                return d;
+              } };
+          };
+          return [stepPick({ id: 'bpick', pick: 'bPick', done: 'bDone', step: 'b', opts: 'bOpts', word: 'bVerdictWord', yes: /^Yes/, ask: 'bAsk', run: 'onBRun', covers: ['bOpts'] }), one('p3'), one('p4')];
+        })(),
+        'greenhouse-gases': [
+          { id: 'rep', covers: ['repQs'], sent: {},
+            fire: function (s, w, x) {
+              if (!rose(s, w, 'repChecked')) { return null; }
+              var sent = this.sent, out = [];
+              (x.vals().repQs || []).forEach(function (q, i) {
+                var a = labelOfPressed(q.options);
+                if (a == null || sent[i] === a) { return; }
+                sent[i] = a;
+                out.push({ e: i + 1, a: a, ok: !q.hasWhy, q: q.label });
+              });
+              return out;
+            },
+            back: function (r, e, st, x) {
+              var k = +e - 1, q = (x.vals().repQs || [])[k], i = q ? find(q.options, r.answer) : -1;
+              if (i < 0) { return null; }
+              x.press(function (v) { return v.repQs[k].options[i].onClick; });
+              x.press('onRepCheck');
+              return null;
+            } }
+        ],
+        'metal-hydroxides': (function () {
+          var P1 = { blue: 'Blue precipitate', green: 'Green precipitate', brown: 'Brown precipitate', white: 'White precipitate', none: 'No precipitate' };
+          var P2 = { dissolves: 'It dissolves', stays: 'It stays' };
+          var pressAsk = function (x, label) {
+            var i = find(x.vals().askOptions, label);
+            if (i >= 0) { x.fast(function (v) { return v.askOptions[i].onClick; }); }
+            return i >= 0;
+          };
+          var rec = function (x, k, o) { var r = {}; r[k] = Object.assign({}, x.L.state.rec[k] || {}, o); x.set({ rec: Object.assign({}, x.L.state.rec, r) }); };
+          return [
+            { id: 'rec', covers: ['askOptions'],
+              fire: function (s, w, x) {
+                var out = [];
+                Object.keys(s.rec || {}).forEach(function (k) {
+                  var r = s.rec[k] || {}, was = (w.rec || {})[k] || {}, v = x.vals({ cur: k });
+                  var good = !/alert/.test(String(v.verdictStyle || ''));
+                  if (r.s1 === 'done' && was.s1 !== 'done' && r.p1) { out.push({ e: k + '-p1', a: P1[r.p1], ok: good, q: String(v.askPrompt || 'A few drops of sodium hydroxide go in. What forms?') }); }
+                  if (r.s2 === 'done' && was.s2 !== 'done' && r.p2) { out.push({ e: k + '-p2', a: P2[r.p2], ok: good, q: 'Now add sodium hydroxide until it is in excess. What happens to the precipitate?' }); }
+                  if (r.last && r.last !== was.last) {
+                    out.push({ e: k + '-id', a: labelOfPressed(v.askOptions), ok: r.idOk === true, q: String(v.askPrompt || ('Which metal ion is in tube ' + k + '?')) });
+                  }
+                });
+                return out;
+              },
+              back: function (r, e, st, x) {
+                var ix = String(e).lastIndexOf('-'), low = String(e).slice(0, ix), kind = String(e).slice(ix + 1);
+                // The id lower-cased the tube's letter; the state's own key is found again.
+                var k = low;
+                ['W', 'X', 'Y', 'Z'].forEach(function (t) { if (t.toLowerCase() === low) { k = t; } });
+                x.set({ cur: k });
+                if (kind === 'id') {
+                  rec(x, k, { s1: 'done' });
+                  if (pressAsk(x, r.answer) && r.is_correct === true && !(x.L.state.rec[k] || {}).idOk) {
+                    rec(x, k, { s2: 'done' });
+                    pressAsk(x, r.answer);
+                  }
+                } else { pressAsk(x, r.answer); }
+                return null;
+              } },
+            { id: 'forge', covers: ['forgeItems'],
+              fire: function (s, w, x) {
+                var out = [], v = x.vals();
+                (v.forgeItems || []).forEach(function (f, n) {
+                  var key = String(((f.parts || [])[0] || {}).id || '').replace(/^mh-|-\d+$/g, '');
+                  var st = (s.forge || {})[key], was = (w.forge || {})[key];
+                  if (!st || !st.checked || (was && was.checked)) { return; }
+                  out.push({ e: n + 1, a: f.parts.map(function (p) { return p.label + ': ' + labelOfPressed(p.options); }).join('\n'), ok: st.ok === true, q: String(f.head || '') });
+                });
+                return out;
+              },
+              back: function (r, e, st, x) {
+                var n = +e - 1, lines = String(r.answer || '').split('\n');
+                lines.forEach(function (ln, pi) {
+                  var f = (x.vals().forgeItems || [])[n], p = f && f.parts[pi], i = p ? find(p.options, after(ln)) : -1;
+                  if (i >= 0) { x.press(function (v) { return v.forgeItems[n].parts[pi].options[i].onClick; }); }
+                });
+                x.press(function (v) { return (v.forgeItems[n] || {}).onCheck; });
+                return null;
+              } },
+            { id: 'ion', covers: ['ionParts'],
+              fire: function (s, w, x) {
+                if (!(s.ion || {}).checked || (w.ion || {}).checked) { return null; }
+                var v = x.vals();
+                return [{ e: null, a: (v.ionParts || []).map(function (p) { return p.label + ': ' + labelOfPressed(p.options); }).join('\n'), ok: s.ion.ok === true, q: 'Build the ionic equation' }];
+              },
+              back: function (r, e, st, x) {
+                String(r.answer || '').split('\n').forEach(function (ln, pi) {
+                  var p = (x.vals().ionParts || [])[pi], i = p ? find(p.options, after(ln)) : -1;
+                  if (i >= 0) { x.press(function (v) { return v.ionParts[pi].options[i].onClick; }); }
+                });
+                x.press('onIonCheck');
+                return null;
+              } }
+          ];
+        })(),
+        'atmospheric-pollutants': [
+          { id: 'products', covers: ['products'],
+            fire: function (s, w, x) {
+              if (!rose(s, w, 'checked')) { return null; }
+              var v = x.vals(), a = (v.products || []).filter(function (p) { return p.pressed; }).map(function (p) { return p.label; });
+              return [{ e: s.ci + 1, a: a.join('\n'), ok: v.verdictWord === 'Exactly right.', q: 'Which products form? ' + String(v.caseText || '') }];
+            },
+            back: function (r, e, st, x) {
+              x.set({ ci: +e - 1, picks: {}, checked: false });
+              String(r.answer || '').split('\n').forEach(function (t) {
+                var i = find(x.vals().products, t);
+                if (i >= 0) { x.press(function (v) { return v.products[i].onClick; }); }
+              });
+              x.press('onCheck');
+              return null;
+            } }
+        ],
+        'atoms-elements-compounds': [
+          { id: 'bv', covers: ['balTerms'],
+            fire: function (s, w, x) {
+              var out = [];
+              Object.keys(s.bv || {}).forEach(function (k) {
+                if ((w.bv || {})[k] === s.bv[k] && JSON.stringify((w.bc || {})[k]) === JSON.stringify((s.bc || {})[k])) { return; }
+                var c = (s.bc || {})[k], v = x.vals({ bi: +k });
+                if (!c) { c = (v.balTerms || []).filter(function (t) { return t.isSpecies; }).map(function () { return 1; }); }
+                out.push({ e: +k + 1, a: c.join(', '), ok: s.bv[k] === 'ok' ? true : (s.bv[k] === 'no' ? false : null), q: 'Balance the equation: ' + (v.balTerms || []).map(function (t) { return t.isSign ? t.sign : t.formula; }).join(' ') });
+              });
+              return out;
+            },
+            back: function (r, e, st, x) {
+              var k = +e - 1, c = String(r.answer || '').split(', ').map(function (n) { return parseInt(n, 10); });
+              x.set({ bi: k, bc: put(st.bc, k, c) });
+              x.press('onBalCheck');
+              return null;
+            } }
+        ],
+        'carbonates-halides-sulfates': [
+          { id: 'spec', covers: ['specItems'],
+            fire: function (s, w, x) {
+              var out = [], v = x.vals();
+              (v.specItems || []).forEach(function (it, i) {
+                var st = (s.spec || {})[i], was = (w.spec || {})[i];
+                if (!st || !st.checked || (was && was.checked)) { return; }
+                out.push({ e: i + 1, a: (it.chips || []).filter(function (c) { return c.pressed; }).map(function (c) { return c.label; }).join('\n'), ok: st.ok === true, q: 'Mark the spectator ions: ' + String(it.full || '') });
+              });
+              return out;
+            },
+            back: function (r, e, st, x) {
+              var n = +e - 1, want = String(r.answer || '').split('\n');
+              var item = function () { return (x.vals().specItems || [])[n]; };
+              if (!item()) { return null; }
+              item().chips.forEach(function (c, k) {
+                if (!!c.pressed !== want.some(function (t) { return same(t, c.label); })) { x.press(function (v) { return v.specItems[n].chips[k].onClick; }); }
+              });
+              x.press(function (v) { return v.specItems[n].onCheck; });
+              return null;
+            } }
+        ],
+        'covalent-bonding': [
+          { id: 'orders', covers: ['bBonds'],
+            fire: function (s, w, x) {
+              if (!rose(s, w, 'bChecked')) { return null; }
+              var v = x.vals();
+              return [{ e: s.m + 1, a: (v.bBonds || []).map(function (b) { return b.label + ': ' + b.value; }).join('\n'), ok: v.bWord === 'Every shell is full.', q: 'Choose how many pairs each bond shares.' }];
+            },
+            back: function (r, e, st, x) {
+              x.set({ m: +e - 1 });
+              String(r.answer || '').split('\n').forEach(function (ln, i) {
+                var want = parseInt(after(ln), 10);
+                var cur = function () { return parseInt(((x.vals().bBonds || [])[i] || {}).value, 10); };
+                for (var g = 0; g < 4 && cur() < want; g += 1) { x.press(function (v) { return v.bBonds[i].onMore; }); }
+              });
+              x.press('onBCheck');
+              return null;
+            } }
+        ],
+        'metals-non-metals': [
+          { id: 'verdict', covers: ['verdicts'],
+            fire: function (s, w, x) {
+              var out = [];
+              (s.verdict || []).forEach(function (val, i) {
+                if (val === null || val === (w.verdict || [])[i]) { return; }
+                var v = x.vals({ samp: i });
+                out.push({ e: i + 1, a: val ? 'Metal' : 'Non-metal', ok: !/^L/.test(String(v.verdictNote || '')), q: 'This sample is a metal or a non-metal? ' + String(v.sampleLook || '') });
+              });
+              return out;
+            },
+            back: function (r, e, st) {
+              var a = (st.verdict || []).slice(); a[+e - 1] = r.answer === 'Metal';
+              return { verdict: a, samp: +e - 1 };
+            } }
+        ],
+        'reactivity-series': [
+          { id: 'pred', covers: ['predicts'],
+            fire: function (s, w, x) {
+              if (s.pred === null || s.pred === w.pred) { return null; }
+              var v = x.vals(), st = (v.strips || [])[s.strip], so = (v.sols || [])[s.sol];
+              return [{ e: (s.strip + 1) + '-' + (s.sol + 1), a: s.pred ? 'Reacts' : 'No reaction', ok: /^Right/.test(String(v.swapNote || '')), q: 'Will it react? ' + (st ? st.label : '') + ' in ' + (so ? so.label : '') }];
+            },
+            back: function (r, e, st) {
+              var n = String(e).split('-');
+              return { strip: +n[0] - 1, sol: +n[1] - 1, pred: r.answer === 'Reacts', swaps: (st.swaps || 0) + 1 };
+            } }
+        ],
+        'red-shift-big-bang': [
+          { id: 'order', covers: ['links'],
+            fire: function (s, w) {
+              var said = lastRootPress && lastRootPress.text, grew = (s.order || []).length > (w.order || []).length;
+              if (!grew && (s.wrongTap === null || s.wrongTap === w.wrongTap)) { return null; }
+              return [{ e: (w.order || []).length + 1, a: said, ok: grew, q: 'Tap the four links in order.', kind: 'choice' }];
+            },
+            back: function (r, e, st, x) {
+              var L = x.vals().links || [], i = -1;
+              L.forEach(function (l, n) { if (i < 0 && String(r.answer || '').indexOf(String(l.text)) >= 0) { i = n; } });
+              if (i >= 0) { x.press(function (v) { return v.links[i].onClick; }); }
+              return null;
+            } }
+        ],
+        'stellar-evolution': [
+          { id: 'step', covers: ['nextBtns'],
+            fire: function (s, w) {
+              var m = s.mass, a = (s.step || {})[m], b = (w.step || {})[m];
+              if (!(a > b) || m !== w.mass) { return null; }
+              return [{ e: m + '-' + a, a: lastRootPress && lastRootPress.text, ok: s.last === 'ok', q: 'What comes next?' }];
+            },
+            back: function (r, e, st, x) {
+              x.set({ mass: String(e).split('-')[0] });
+              var i = find(x.vals().nextBtns, r.answer);
+              if (i >= 0) { x.press(function (v) { return v.nextBtns[i].onClick; }); }
+              return null;
+            } }
+        ],
+        'structure-of-atom': [
+          { id: 'built', covers: ['counters'],
+            fire: function (s, w) {
+              if (!rose(s, w, 'built')) { return null; }
+              return [{ e: null, a: 'Protons ' + s.p + ', Neutrons ' + s.n + ', Electrons ' + s.e, ok: true, q: 'Make a neutral atom with 6 protons.' }];
+            },
+            back: function (r) {
+              var n = String(r.answer || '').match(/\d+/g) || [];
+              return n.length === 3 ? { p: +n[0], n: +n[1], e: +n[2], built: true } : null;
+            } }
+        ],
+        'cell-specialisation': [
+          { id: 'compared', covers: ['featBtns'],
+            fire: function (s, w, x) {
+              var out = [];
+              Object.keys(s.compared || {}).forEach(function (k) {
+                if (!s.compared[k] || (w.compared || {})[k]) { return; }
+                var v = x.vals();
+                out.push({ e: s.job + 1, a: (v.featBtns || []).filter(function (f) { return f.pressed; }).map(function (f) { return f.label; }).join('\n'), ok: null, q: String(v.compareLead || 'Which features does this cell have?') });
+              });
+              return out;
+            },
+            back: function (r, e, st, x) {
+              x.set({ job: +e - 1 });
+              String(r.answer || '').split('\n').forEach(function (t) {
+                var i = find(x.vals().featBtns, t);
+                if (i >= 0) { x.press(function (v) { return v.featBtns[i].onClick; }); }
+              });
+              x.press('onCompare');
+              return null;
+            } }
+        ]
+      };
+    })();
+    /* </ks4-root-forms> */
+    /* A Reveal or a Check that is not an answer: the picks behind it are saved
+       (KS4RootActs). Nothing is sent for the press, so on restore the verdict
+       is drawn wherever the lesson's own handler accepts the saved picks. A
+       child who picked and had not yet pressed sees the verdict too. */
+    var ROOT_REVEALS = {
+      'conservation-of-mass': [{ press: 'onW3Check' }],
+      'series-parallel-circuits': [{ map: 'preds', step: 'step', press: 'onReveal' }],
+      'waves-detection-exploration': [{ map: 'qPred', step: 'qStage', press: 'onQReveal' }, { map: 'uPred', step: 'uStage', press: 'onUReveal' }],
+      'sound-waves-hearing': [{ map: 'pPred', step: 'pStage', press: 'onPReveal' }]
+    };
+    function revealsBack() {
+      var list = ROOT_REVEALS[pathSlug];
+      var host = document.getElementById('ks4-mount');
+      var api = host && host.__mrbKs4;
+      if (!list || !api || !api.logic) { return; }
+      var L = api.logic, x = formX(L);
+      list.forEach(function (o) {
+        if (!o.map) { x.press(o.press); return; }
+        var keys = Object.keys(L.state[o.map] || {}).map(Number).sort(function (a, b) { return a - b; });
+        if (!keys.length) { return; }
+        var top = Math.max(keys[keys.length - 1], L.state[o.step] || 0);
+        keys.forEach(function (k) {
+          var at = {}; at[o.step] = k; x.set(at);
+          x.press(o.press);
+        });
+        var end = {}; end[o.step] = top; x.set(end);
+      });
+    }
+    var formPrev = null;
+    // The form a row's id belongs to (the longest stem that fits), or null.
+    function formOf(rest) {
+      var f = null;
+      (ROOT_FORMS[pathSlug] || []).forEach(function (c) { if ((rest === c.id || rest.indexOf(c.id + '-') === 0) && (!f || c.id.length > f.id.length)) { f = c; } });
+      return f;
+    }
+    function formX(L) {
+      var A = KS4RootActs;
+      var x = {
+        L: L,
+        vals: function (at) { return A.valsAt(L, Object.assign(A.clone(L.state) || {}, at || {})); },
+        set: function (p) { L.setState(p); },
+        press: function (get) {
+          var p = A.patchOf(L, L.state, typeof get === 'string' ? function (v) { return v[get]; } : get);
+          if (p && Object.keys(p).length) { L.setState(p); }
+          return p;
+        },
+        fast: function (get) {
+          var had = Object.prototype.hasOwnProperty.call(L, 'reduced'), keep = L.reduced;
+          L.reduced = typeof keep === 'function' ? function () { return true; } : true;
+          try { return x.press(get); } finally { if (had) { L.reduced = keep; } else { delete L.reduced; } }
+        }
+      };
+      return x;
+    }
+    function formTap(api) {
+      var forms = ROOT_FORMS[pathSlug];
+      if (!forms) { return; }
+      var L = api.logic, s = KS4RootActs.clone(L.state), w = formPrev;
+      formPrev = s;
+      if (!w) { return; }
+      var x = formX(L);
+      forms.forEach(function (f) {
+        var rows = null;
+        try { rows = f.fire(s, w, x); } catch (e) { return; }
+        (rows || []).forEach(function (r) {
+          if (r.a == null || r.a === '') { return; }
+          var d = base(f.id + (r.e == null ? '' : '-' + String(r.e).toLowerCase().replace(/[^a-z0-9._-]+/g, '-')));
+          d.__block = api.host; d.kind = r.kind || 'choice'; d.question_text = r.q || ''; d.answer = String(r.a);
+          if (typeof r.ok === 'boolean') { d.is_correct = r.ok; } else { d.self_checked = true; }
+          post(d);
+        });
+      });
+    }
+
+    /* ── ⊕ 25 Oct 2026 (Mide's item 1): EVERY lesson's own activities ──
+       ROOT_SPECS above names one lesson by hand. This does the same for every
+       rebuilt lesson, from the lesson's own code: a press on a ROOT control
+       (one of the lesson's own option groups, never a shared block's) is
+       analysed by KS4RootActs against the state the lesson had a moment
+       before, and if it is an answer — one place in the state, a different
+       value per option, empty to start with — it is sent like any other:
+       `ks4:<slug>:<route>#<state key>[-<entry>]`, the option's own label, and
+       right/wrong where the lesson itself decides it (its flag, its "Yes.",
+       its tally, its alert-styled verdict). A prediction nothing judges is
+       sent self-checked. Explorations (tabs, cards, selectors) send nothing.
+       Read only: the probe runs the lesson's handlers on a COPY of its state
+       and never draws; the real press goes ahead exactly as before. The
+       groups ROOT_SPECS already names are left to it, so its ids stand. */
+    var ROOT_SPEC_OPTS = {};
+    (ROOT_SPECS[pathSlug] || []).forEach(function (sp) { ROOT_SPEC_OPTS[sp.opts] = 1; });
+    (ROOT_FORMS[pathSlug] || []).forEach(function (f) { (f.covers || []).forEach(function (c) { ROOT_SPEC_OPTS[c] = 1; }); });
+    var rootActs = null;
+    function rootActsOf() {
+      if (rootActs) { return rootActs; }
+      var host = document.getElementById('ks4-mount');
+      var api = host && host.__mrbKs4;
+      if (!api || !api.logic || !api.template || api.comp !== undefined) { return null; }
+      rootActs = {
+        api: api,
+        // The state as the lesson first drew it: a slot that started on a
+        // value is a selector, never an answer.
+        init: KS4RootActs.clone(api.logic.state),
+        groups: KS4RootActs.groupsOf(api.template).filter(function (g) { return !ROOT_SPEC_OPTS[g.e]; })
+      };
+      return rootActs;
+    }
+    try { rootActsOf(); } catch (e) { /* the page has no rebuilt lesson */ }
+    function rootOwned(el, host) {
+      for (var up = el.parentNode; up; up = up.parentNode) { if (up.__mrbKs4) { return up === host; } }
+      return false;
+    }
+    // Words of an element that are not inside one of its buttons.
+    function ownWords(el) {
+      var out = [];
+      (function walk(n) {
+        for (var c = n.firstChild; c; c = c.nextSibling) {
+          if (c.nodeType === 3) { out.push(c.nodeValue); }
+          else if (c.nodeType === 1 && c.tagName !== 'BUTTON' && !c.hasAttribute('hidden') && c.tagName !== 'svg' && c.tagName !== 'SVG') { walk(c); }
+        }
+      })(el);
+      return out.join(' ').replace(/\s+/g, ' ').trim();
+    }
+    /* The question AS SHOWN, read before the press: the section's heading
+       above the control, the last line above it (its "commit" line where it
+       has one), and the item's own words where the options sit in a row of
+       their own. */
+    function rootAsk(btn, host) {
+      var sec = btn.closest('section') || host;
+      if (!host.contains(sec)) { sec = host; }
+      var seen = function (el) { return !el.closest('[hidden]') && !!(el.getClientRects && el.getClientRects().length); };
+      var above = function (el) { return !!(el.compareDocumentPosition(btn) & 4) && !el.contains(btn); };
+      var head = '', line = '', near = '';
+      Array.prototype.forEach.call(sec.querySelectorAll('h2, h3'), function (h) { if (seen(h) && above(h) && !h.closest('button')) { head = txt(h); } });
+      Array.prototype.forEach.call(sec.querySelectorAll('p'), function (p) {
+        if (seen(p) && above(p) && !p.closest('button') && !p.querySelector('button') && !/eyebrow/.test(p.className || '')) { line = txt(p); }
+      });
+      for (var up = btn.parentElement; up && up !== sec && up !== host; up = up.parentElement) {
+        var w = ownWords(up);
+        if (w) { near = w.length > 300 ? w.slice(0, 300) : w; break; }
+      }
+      var parts = [];
+      [head, line, near].forEach(function (x) {
+        if (x && !parts.some(function (y) { return y.indexOf(x) >= 0 || x.indexOf(y) >= 0; })) { parts.push(x); }
+      });
+      return parts.join(' — ');
+    }
+    function rootAnswer(R, g, pre, me, ask, hit) {
+      var A = KS4RootActs, L = R.api.logic;
+      var r = A.analyse(L, g, pre, R.init, me.oi);
+      if (r.kind !== 'pick' && r.kind !== 'gate' && r.kind !== 'multi') { return; }
+      var o = null;
+      r.options.forEach(function (x) { if (x.k === me.k) { o = x; } });
+      if (!o || !o.ws || !o.ws.length) { return; }          // this press changes nothing: not a new answer
+      // The lesson took it: its state now holds what this option writes.
+      var took = o.ws.every(function (w) { return JSON.stringify(A.at(L.state, w.path)) === JSON.stringify(w.after); });
+      if (!took) { return; }
+      if (r.kind === 'multi' && me.k !== r.check) { return; }  // a toggle: the Check is the answer
+      var labelOf = function (k) { var l = null; r.options.forEach(function (x) { if (x.k === k) { l = x.label; } }); return l; };
+      var d = base(A.slotId(r, me.oi));
+      d.__block = hit; d.kind = 'choice'; d.question_text = ask;
+      if (r.kind === 'multi') {
+        var sel = A.at(pre, r.slot);
+        d.answer = (Array.isArray(sel) ? sel : []).map(labelOf).filter(Boolean).join('\n');
+        // The lesson's own flag, asked with every earlier "ok" cleared.
+        var st2 = A.clone(pre) || {};
+        Object.keys(st2).forEach(function (k) { if (st2[k] === true && /ok$/i.test(k)) { st2[k] = false; } });
+        var chk = A.probe(L, g, st2, me.oi).filter(function (x) { return x.k === r.check; })[0];
+        var okw = chk && chk.ws.filter(function (w) { return typeof w.after === 'boolean' && /ok$/i.test(String(w.path[w.path.length - 1])); })[0];
+        if (okw) { d.is_correct = okw.after; } else { d.self_checked = true; }
+      } else {
+        d.answer = o.label;
+        if (r.graded && r.right && r.right.length) {
+          d.correct_answer = labelOf(r.right[0]);
+          d.is_correct = r.right.indexOf(me.k) >= 0;
+        } else { d.self_checked = true; }
+      }
+      post(d);
+    }
+    document.addEventListener('click', function rootActClick(e) {
+      try {
+        var R = rootActsOf();
+        if (!R) { return; }
+        var host = R.api.host, t = e.target;
+        if (!t || !t.closest || !host.contains(t)) { return; }
+        var hit = null;
+        for (var el = t; el && el !== host; el = el.parentNode) {
+          if (el.__mrbKs4) { return; }                     // inside a shared block: its own capture
+          if (!hit && el.__mrbClickBound) { hit = el; }
+        }
+        if (hit) { lastRootPress = { text: txt(hit) }; }
+        if (!R.groups.length) { return; }
+        if (!hit || hit.disabled || hit.getAttribute('aria-disabled') === 'true') { return; }
+        var tpl = parseInt(hit.getAttribute('data-dc-tpl'), 10), g = null;
+        R.groups.forEach(function (x) { if (x.tpl === tpl) { g = x; } });
+        if (!g) { return; }
+        var A = KS4RootActs, L = R.api.logic, pre = A.clone(L.state);
+        var flat = A.itemsOf(g, A.valsAt(L, pre));
+        var mine = Array.prototype.filter.call(host.querySelectorAll('[data-dc-tpl="' + tpl + '"]'), function (x) { return rootOwned(x, host); });
+        var me = null;
+        if (mine.length === flat.length) { me = flat[mine.indexOf(hit)] || null; }
+        else {
+          var said = txt(hit);
+          var by = flat.filter(function (f) { var l = A.labelText(g, f.item); return l && said.indexOf(l) >= 0; });
+          if (by.length === 1) { me = by[0]; }
+        }
+        if (!me) { return; }
+        var ask = rootAsk(hit, host);
+        // After the lesson has handled the press (and drawn), off the click.
+        setTimeout(function () { try { rootAnswer(R, g, pre, me, ask, hit); } catch (err) { /* never breaks a lesson */ } }, 30);
+      } catch (err) { /* capture never breaks a lesson */ }
+    }, true);
+
     window.MrBadmusKS4Tap = function (api) {
       if (!api || !api.logic || !prevOf) { return; }
       // ⊕ Saved work follow-up: the lesson's own one-off activities (the
       // page's root instance) and the child's own ticks.
-      if (api.comp === undefined) { try { rootTap(api); } catch (e) { /* never breaks a lesson */ } return; }
+      if (api.comp === undefined) {
+        try { rootTap(api); } catch (e) { /* never breaks a lesson */ }
+        try { formTap(api); } catch (e) { /* never breaks a lesson */ }
+        return;
+      }
       try { tickTap(api); } catch (e) { /* never breaks a lesson */ }
       var h = HANDLERS[api.comp];
       if (!h) { return; }
@@ -3069,6 +5123,18 @@ try {
       if (!w || !w.logic || !r) { return null; }
       var ws = w.logic.state || {};
       if (ws.open || String(ws.text || '').trim()) { return null; }
+      // ⊕ 25 Oct 2026: a level-marked write gets its level back (levelTicks);
+      // the tally is then the top of that level, as it was on the page.
+      var lvs = (w.logic.props || {}).levels || [];
+      if (lvs.length) {
+        var lv = Array.isArray(r.self_ticks) && r.self_ticks.length ? r.self_ticks[0] - 1 : null;
+        if (!(lv >= 0 && lv < lvs.length)) { lv = null; }
+        w.logic.setState({ text: String(r.answer || ''), open: true, level: lv, reported: true });
+        var awl = lv !== null ? Math.min(marks, (lvs[lv] && lvs[lv].max) || 0) : (r.marks_scored == null ? 0 : r.marks_scored);
+        var wpl = w.logic.props || {};
+        if (notify && lv !== null && typeof wpl.onMark === 'function') { wpl.onMark({ awarded: awl, marks: marks, set: true }); }
+        return awl;
+      }
       var ticks = ticksBack(r, (points || []).length);
       var n = ticks.filter(Boolean).length;
       w.logic.setState({ text: String(r.answer || ''), open: true, ticks: ticks, reported: true });
@@ -3099,6 +5165,103 @@ try {
         try { putBack(api); } catch (e) { /* one block never stops the rest */ }
       });
       try { rootBack(); } catch (e) { /* the lesson's own activities never stop the rest */ }
+      try { rootActsBack(); } catch (e) { /* the lesson's own activities never stop the rest */ }
+      try { formsBack(); } catch (e) { /* the lesson's own activities never stop the rest */ }
+      try { revealsBack(); } catch (e) { /* the lesson's own activities never stop the rest */ }
+      /* ⊕ 8 Nov 2026: the forms, typed answers and builders (ROOT_FORMS), each
+         row oldest first, so a changed answer ends on the latest. */
+      function formsBack() {
+        var forms = ROOT_FORMS[pathSlug];
+        var host = document.getElementById('ks4-mount');
+        var api = host && host.__mrbKs4;
+        if (!forms || !api || !api.logic) { return; }
+        var L = api.logic, x = formX(L), prefix = pilotId(pathSlug, '');
+        (rows || []).forEach(function (r) {
+          var id = String((r && r.question_id) || '');
+          if (id.indexOf(prefix) !== 0) { return; }
+          var rest = id.slice(prefix.length), f = formOf(rest);
+          if (!f) { return; }
+          try {
+            var p = f.back(r, rest === f.id ? null : rest.slice(f.id.length + 1), L.state, x);
+            if (p) { L.setState(p); }
+          } catch (e) { /* one answer never stops the rest */ }
+        });
+      }
+      /* ⊕ 25 Oct 2026: every other lesson's own activities (rootActClick).
+         Each saved row, oldest first, is matched to the group whose answer
+         slot it names — on the lesson's state as it is now, else with the
+         step the id numbers (a "structure 4 of 7" style stepper) — and the
+         option with the saved label is applied through the lesson's own
+         handler, run against a copy of its state: exactly the change the
+         press made, flags and tallies included. The step the child last
+         answered on is put back on screen. */
+      function rootActsBack() {
+        var R = rootActsOf();
+        if (!R || !R.groups.length) { return; }
+        var A = KS4RootActs, L = R.api.logic, prefix = pilotId(pathSlug, '');
+        var mine = (rows || []).filter(function (r) { return r && r.answer_kind === 'choice' && String(r.question_id || '').indexOf(prefix) === 0 && !formOf(String(r.question_id).slice(prefix.length)); });
+        if (!mine.length) { return; }
+        var keyOf = function (k) { return String(k).toLowerCase().replace(/[^a-z0-9:#._-]+/g, '-'); };
+        // The state keys each group's options write, learnt once.
+        var keys = R.groups.map(function (g) {
+          var out = {}, st = A.clone(L.state), vals = A.valsAt(L, st);
+          var ois = g.inner ? A.itemsOf(g, vals).map(function (x) { return x.oi; }) : [null];
+          ois.filter(function (v, i) { return ois.indexOf(v) === i; }).forEach(function (oi) {
+            A.probe(L, g, st, oi).forEach(function (o) { (o.ws || []).forEach(function (w) { out[keyOf(w.path[0])] = 1; }); });
+          });
+          return out;
+        });
+        var scal = Object.keys(L.state || {}).filter(function (k) { return typeof L.state[k] === 'number' && k !== 'active'; });
+        var lastStep = null;
+        mine.forEach(function (row) {
+          var rest = String(row.question_id).slice(prefix.length);
+          var nums = (rest.match(/\d+/g) || []).map(Number);
+          var found = null;
+          var tryAt = function (state, ctxKey) {
+            for (var gi = 0; gi < R.groups.length && !found; gi += 1) {
+              var g = R.groups[gi], kk = keys[gi], hit = false;
+              for (var k in kk) { if (Object.prototype.hasOwnProperty.call(kk, k) && rest.indexOf(k) === 0) { hit = true; } }
+              if (!hit && Object.keys(kk).length) { continue; }
+              var ois = g.inner ? A.itemsOf(g, A.valsAt(L, state)).map(function (x) { return x.oi; }) : [null];
+              ois = ois.filter(function (v, i) { return ois.indexOf(v) === i; });
+              for (var j = 0; j < ois.length && !found; j += 1) {
+                var r = A.classify(L, g, state, R.init, ois[j]);
+                if ((r.kind === 'pick' || r.kind === 'gate' || r.kind === 'multi') && A.slotId(r, ois[j]) === rest) {
+                  found = { g: g, oi: ois[j], r: r, state: state, ctx: ctxKey };
+                }
+              }
+            }
+            return !!found;
+          };
+          if (!tryAt(A.clone(L.state), null)) {
+            for (var si = 0; si < scal.length && !found; si += 1) {
+              for (var ni = 0; ni < nums.length && !found; ni += 1) {
+                var st = A.clone(L.state);
+                if (st[scal[si]] === nums[ni] - 1) { continue; }
+                st[scal[si]] = nums[ni] - 1;
+                tryAt(st, scal[si]);
+              }
+            }
+          }
+          if (!found) { return; }
+          var r = found.r, patch = null;
+          if (r.kind === 'multi') {
+            if (found.r.slot.length !== 1) { return; }
+            var want = String(row.answer || '').split('\n');
+            var sel = r.options.filter(function (o) { return o.k !== r.check && want.some(function (w) { return same(w, o.label); }); }).map(function (o) { return o.k; });
+            var p1 = {}; p1[r.slot[0]] = sel;
+            var chk = A.probe(L, found.g, A.apply(found.state, p1), found.oi).filter(function (o) { return o.k === r.check; })[0];
+            patch = Object.assign(p1, (chk && chk.patch) || {});
+          } else {
+            var o = r.options.filter(function (x) { return same(x.label, row.answer); })[0];
+            if (!o || !o.patch || !o.ws.length) { return; }
+            patch = o.patch;
+          }
+          L.setState(patch);
+          if (found.ctx && !Object.prototype.hasOwnProperty.call(patch, found.ctx)) { lastStep = { k: found.ctx, v: found.state[found.ctx] }; }
+        });
+        if (lastStep) { var back = {}; back[lastStep.k] = lastStep.v; L.setState(back); }
+      }
       /* The lesson's own one-off activities (ROOT_SPECS): each saved choice
          back in the lesson's root state, and the item on screen moved to
          where the child would naturally carry on — the first item after the
@@ -3146,14 +5309,19 @@ try {
             return;
           case 'Ks4QuizBank': {
             if (!rootLevel(api)) { return; }
-            var picks = Object.assign({}, st.picks || {}), any = false;
-            (p.questions || []).filter(Boolean).slice(0, 5).forEach(function (q, k) {
+            var picks = Object.assign({}, st.picks || {}), any = false, top = -1;
+            (p.questions || []).filter(Boolean).slice(0, quizLimit(api)).forEach(function (q, k) {
               var qr = quiz[quizKey(q.prompt)];
               if (!qr || picks[k] !== undefined) { return; }
               var j = idxOf(q.options, qr.answer);
-              if (j >= 0) { picks[k] = j; any = true; }
+              if (j >= 0) { picks[k] = j; any = true; top = Math.max(top, k); }
             });
-            if (any) { L.setState({ picks: picks }); }
+            // ⊕ 25 Oct 2026 (item 5): a question answered beyond the ones the
+            // block shows at first (the pilot's "Show 4 more") stays OPEN, not
+            // folded away behind the button.
+            var qp = { picks: picks };
+            if (typeof st.shown === 'number' && top + 1 > st.shown) { qp.shown = top + 1; }
+            if (any) { L.setState(qp); }
             return;
           }
           case 'Ks4Write':
@@ -3195,7 +5363,16 @@ try {
               gotC = true;
             });
             if (gotC) {
-              L.setState({ q: qs });
+              /* ⊕ 25 Oct 2026 (item 5): "Your turn" reopens on the question the
+                 child was on — the first one they have not checked yet, else
+                 the one they checked last — never always on Question 1. */
+              var nQ = (p.questions || []).length, firstOpen = -1, cfAt = '', lastQ = 0;
+              for (var qn = 0; qn < nQ; qn += 1) {
+                if (!(qs[qn] && qs[qn].open) && firstOpen < 0) { firstOpen = qn; }
+                var lr = lastOf(rowsOf('cfifa-' + kc + '-' + (qn + 1)));
+                if (lr && String(lr.answered_at || '') >= cfAt) { cfAt = String(lr.answered_at || ''); lastQ = qn; }
+              }
+              L.setState({ q: qs, qEx: firstOpen >= 0 ? firstOpen : lastQ });
               var open = (p.questions || []).filter(function (o, n) { return qs[n] && qs[n].open; }).length;
               tell(p.onOpen, open, (p.questions || []).length);
             }
@@ -3390,10 +5567,36 @@ try {
           }, function () { finish(null); });
       } catch (e) { finish(null); }
     });
-    // The page has wired itself once DOMContentLoaded's own listeners have run.
+    /* The page has wired itself once DOMContentLoaded's own listeners have run.
+       ⊕ 8 Nov 2026: two races, both lost whenever the read beat the page. This
+       file is `defer`, so it runs with readyState ALREADY 'interactive' but
+       BEFORE the deferred scripts after it — a KS3 page's ks3.js wires its
+       buttons as it executes — so only DOMContentLoaded (or `load`, if this
+       file was ever added late) says they have all run; replaying sooner
+       pressed buttons nothing was listening to. And a rebuilt KS4 lesson
+       mounts with `libReady: false` and no blocks: its timer flips the flag
+       some 40ms later and the NEXT draw creates them. schedule() runs its
+       callback straight after that draw. Until then there is nothing to put
+       an answer back into. */
     var wired = new Promise(function (resolve) {
-      var go = function () { setTimeout(resolve, 0); };
-      if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', go); } else { go(); }
+      var fired = false;
+      var go = function () { if (!fired) { fired = true; setTimeout(resolve, 0); } };
+      if (document.readyState === 'complete') { go(); return; }
+      document.addEventListener('DOMContentLoaded', go);
+      window.addEventListener('load', go);
+    }).then(function () {
+      return new Promise(function (resolve) {
+        var host = document.getElementById('ks4-mount');
+        var api = host && host.__mrbKs4;
+        var st = api && api.logic && api.logic.state;
+        if (!st || !('libReady' in st) || typeof api.schedule !== 'function') { resolve(); return; }
+        var t0 = Date.now();
+        (function wait() {
+          if (st.libReady === true) { api.schedule(resolve); return; }
+          if (Date.now() - t0 > 8000) { resolve(); return; }     // never hold the page longer
+          setTimeout(wait, 30);
+        })();
+      });
     });
 
     Promise.all([read, wired]).then(function (v) {

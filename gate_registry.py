@@ -1677,6 +1677,29 @@ GATES = [
 
     # ── ⊕ MRB-282 · THE FOUR THAT WERE OUTSIDE THE REGISTRY ────────────
 
+    dict(name="activity_save_drive",
+         cmd=["python3", "activity_save_drive.py"],
+         speed="slow",
+         watches=["activity_save_drive.py", "ks3_browser.py", "shared/mrbadmus.v2.js", "shared/config.js",
+                  "shared/ks3.js", "shared/ks4-runtime.js", "shared/ks4-lib.js",
+                  "ks3/**", "combined/**", "triple/**", "build_ks3.py", "build_ks4.py",
+                  "ks4_lessons/**", "ks3_art/**"],
+         needs="activity_save_drive.py",
+         why="Mide's item 1 (25 Oct 2026): every lesson activity a family "
+             "child does is SAVED and comes back on another device, and a "
+             "school pupil's page is untouched. Drives the built pages in "
+             "headless Chrome against an in-process fake backend that keeps "
+             "rows the way child_answers does and replays them through "
+             "/api/consumer/child/saved: one case per capture shape (a KS4 "
+             "lesson's own flag-, word- and gate-judged picks and predictions, "
+             "a level pick, \"Your turn\" reopening on the question the child "
+             "was on, the practice set keeping an answered Q5 open, and the "
+             "KS3 gate, unit, tab, parts, whole, typed, order and no-reveal "
+             "shapes). Device B is a fresh profile and must POST nothing while "
+             "restoring. A school pupil's session must install nothing, post "
+             "nothing, and leave the DOM byte-identical to the previous "
+             "capture code's after the same presses. Every body is also run "
+             "through the backend's own validateAnswerBody (MRB_BACKEND_DIR)."),
     dict(name="gate_coverage",
          cmd=["python3", "gate_registry.py", "--check"],
          speed="fast",

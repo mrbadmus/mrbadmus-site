@@ -1,0 +1,417 @@
+{
+ "_about": "KS4 root controls that were READ in their lesson and are not answers: nothing asks for a value, so there is nothing to save. Each entry names the reason. Read by tools/activity_save_coverage.py; a control named neither here nor in ROOT_FORMS (shared/mrbadmus.v2.js) counts as NOT saved. Sliders (type=range) are counted as explorations without being listed.",
+ "abiotic-biotic-factors": {
+  "aCards": "Cards that open when tapped (\"Tap each\"), recording which were opened. Nothing is asked.",
+  "bCards": "Cards that open when tapped (\"Tap each\"), recording which were opened. Nothing is asked."
+ },
+ "adaptations": {
+  "tCards": "Cards that open when tapped (\"Tap each\"), recording which were opened. Nothing is asked.",
+  "anBtns": "Chooses what is on the bench or on screen; it starts already chosen. Any choice is fine, nothing is asked."
+ },
+ "advantages-sexual-asexual": {
+  "envBtns": "Chooses what is on the bench or on screen; it starts already chosen. Any choice is fine, nothing is asked.",
+  "advCards": "Cards that open when tapped (\"Tap each\"), recording which were opened. Nothing is asked.",
+  "orgBtns": "Switches what is on screen and records which were seen. Nothing is asked."
+ },
+ "aerobic-respiration": {
+  "inBtns": "Sends a raw material into the model. Nothing is asked.",
+  "useCards": "Cards that open when tapped (\"Tap each\"), recording which were opened. Nothing is asked.",
+  "symCards": "Cards that open when tapped (\"Tap each\"), recording which were opened. Nothing is asked."
+ },
+ "amounts-in-equations": {
+  "rBtns": "Chooses how much magnesium to react and shows the result. Any choice is fine, nothing is asked."
+ },
+ "anaerobic-respiration": {
+  "colBtns": "Switches what is on screen and records which were seen. Nothing is asked.",
+  "ferBtns": "Switches what is on screen and records which were seen. Nothing is asked."
+ },
+ "animal-plant-cells": {
+  "partBtns": "Switches what is on screen and records which were seen. Nothing is asked."
+ },
+ "antibiotics-painkillers": {
+  "illBtns": "Chooses what is on the bench or on screen; it starts already chosen. Any choice is fine, nothing is asked.",
+  "medBtns": "Chooses a medicine for the chosen illness and shows the result. Nothing is asked.",
+  "slowCards": "Cards that open when tapped (\"Tap each\"), recording which were opened. Nothing is asked."
+ },
+ "atom-economy": {
+  "stripTabs": "Chooses what is on the bench or on screen; it starts already chosen. Any choice is fine, nothing is asked.",
+  "brineTabs": "Chooses what is on the bench or on screen; it starts already chosen. Any choice is fine, nothing is asked."
+ },
+ "atoms-elements-compounds": {
+  "balTabs": "Chooses what is on the bench or on screen; it starts already chosen. Any choice is fine, nothing is asked."
+ },
+ "bacterial-diseases": {
+  "disBtns": "Switches what is on screen and records which were seen. Nothing is asked.",
+  "resBtns": "Switches what is on screen and records which were seen. Nothing is asked."
+ },
+ "blood-glucose-diabetes": {
+  "modeBtns": "Chooses what is on the bench or on screen; it starts already chosen. Any choice is fine, nothing is asked.",
+  "stepBtns": "Steps through a sequence. Nothing is asked.",
+  "lowBtns": "Steps through a sequence. Nothing is asked.",
+  "curveBtns": "Switches what is on screen and records which were seen. Nothing is asked.",
+  "typeCards": "Cards that open when tapped (\"Tap each\"), recording which were opened. Nothing is asked."
+ },
+ "cancer": {
+  "risks": "Cards that open when tapped (\"Tap each\"), recording which were opened. Nothing is asked."
+ },
+ "carbonates-halides-sulfates": {
+  "sampleTabs": "Chooses what is on the bench or on screen; it starts already chosen. Any choice is fine, nothing is asked.",
+  "tests": "Runs a test and shows the result. The answers are the catOptions and nameOptions groups, which are saved."
+ },
+ "cell-specialisation": {
+  "diffCards": "Cards that open when tapped (\"Tap each\"), recording which were opened. Nothing is asked.",
+  "jobBtns": "Chooses what is on the bench or on screen; it starts already chosen. Any choice is fine, nothing is asked."
+ },
+ "chemical-measurements": {
+  "wCards": "Cards that open when tapped (\"Tap each\"), recording which were opened. Nothing is asked."
+ },
+ "communicable-diseases-defence": {
+  "spreadBtns": "Switches what is on screen and records which were seen. Nothing is asked.",
+  "wayBtns": "Switches what is on screen and records which were seen. Nothing is asked.",
+  "wbcBtns": "Switches what is on screen and records which were seen. Nothing is asked."
+ },
+ "concentration-of-solutions": {
+  "massTabs": "Chooses what is on the bench or on screen; it starts already chosen. Any choice is fine, nothing is asked.",
+  "volTabs": "Chooses what is on the bench or on screen; it starts already chosen. Any choice is fine, nothing is asked."
+ },
+ "conservation-of-mass": {
+  "flaskTabs": "Chooses what is on the bench or on screen; it starts already chosen. Any choice is fine, nothing is asked."
+ },
+ "contraception-fertility": {
+  "mBtns": "Switches what is on screen and records which were seen. Nothing is asked.",
+  "needBtns": "Switches what is on screen and records which were seen. Nothing is asked.",
+  "ivfBtns": "Steps through a sequence. Nothing is asked.",
+  "evCards": "Cards that open when tapped (\"Tap each\"), recording which were opened. Nothing is asked."
+ },
+ "coronary-heart-disease": {
+  "patientTabs": "Chooses what is on the bench or on screen; it starts already chosen. Any choice is fine, nothing is asked."
+ },
+ "covalent-bonding": {
+  "bTabs": "Chooses what is on the bench or on screen; it starts already chosen. Any choice is fine, nothing is asked."
+ },
+ "culturing-microorganisms": {
+  "asepCards": "Cards that open when tapped (\"Tap each\"), recording which were opened. Nothing is asked.",
+  "discBtns": "Switches what is on screen and records which were seen. Nothing is asked."
+ },
+ "decomposition": {
+  "tTabs": "Chooses what is on the bench or on screen; it starts already chosen. Any choice is fine, nothing is asked."
+ },
+ "defects-of-the-eye": {
+  "defBtns": "Switches what is on screen and records which were seen. Nothing is asked.",
+  "lensBtns": "Tries a lens on the model. Nothing is asked.",
+  "fixCards": "Cards that open when tapped (\"Tap each\"), recording which were opened. Nothing is asked."
+ },
+ "deforestation": {
+  "fBtns": "Switches the picture between forest standing and cleared.",
+  "rCards": "Cards that open when tapped (\"Tap each\"), recording which were opened. Nothing is asked.",
+  "wCards": "Cards that open when tapped (\"Tap each\"), recording which were opened. Nothing is asked."
+ },
+ "development-atomic-model": {
+  "steps": "Switches what is on screen and records which were seen. Nothing is asked."
+ },
+ "digestive-system": {
+  "testCards": "Runs a food test and shows its result. No prediction is asked.",
+  "organBtns": "Switches what is on screen and records which were seen. Nothing is asked.",
+  "foodBtns": "Chooses what is on the bench or on screen; it starts already chosen. Any choice is fine, nothing is asked."
+ },
+ "dna-genome": {
+  "lvBtns": "Switches what is on screen and records which were seen. Nothing is asked.",
+  "whyCards": "Cards that open when tapped (\"Tap each\"), recording which were opened. Nothing is asked."
+ },
+ "drug-discovery-development": {
+  "srcCards": "Cards that open when tapped (\"Tap each\"), recording which were opened. Nothing is asked.",
+  "gateBtns": "Switches what is on screen and records which were seen. Nothing is asked."
+ },
+ "ecosystems": {
+  "wBtns": "Switches between views of the food web and records which were seen."
+ },
+ "efficiency": {
+  "presets": "Sets the slider to a preset device. The slider is the exploration."
+ },
+ "electrolysis-molten": {
+  "cBtns": "Chooses what is on the bench or on screen; it starts already chosen. Any choice is fine, nothing is asked."
+ },
+ "electrolysis-principles": {
+  "tCards": "Cards that open when tapped (\"Tap each\"), recording which were opened. Nothing is asked."
+ },
+ "electronic-structure": {
+  "elBtns": "Chooses what is on the bench or on screen; it starts already chosen. Any choice is fine, nothing is asked."
+ },
+ "endocrine-system": {
+  "glBtns": "Switches what is on screen and records which were seen. Nothing is asked.",
+  "hiCards": "Cards that open when tapped (\"Tap each\"), recording which were opened. Nothing is asked.",
+  "fbBtns": "Switches what is on screen and records which were seen. Nothing is asked.",
+  "raceBtns": "Sends a signal down the model to compare. Nothing is asked."
+ },
+ "energy-resources": {
+  "cards": "Chooses what is on the bench or on screen; it starts already chosen. Any choice is fine, nothing is asked.",
+  "years": "Switches what is on screen and records which were seen. Nothing is asked."
+ },
+ "environmental-change": {
+  "yBtns": "Switches between the 1980 and 2020 surveys.",
+  "cCards": "Cards that open when tapped (\"Tap each\"), recording which were opened. Nothing is asked."
+ },
+ "enzymes": {
+  "phTabs": "Chooses what is on the bench or on screen; it starts already chosen. Any choice is fine, nothing is asked.",
+  "wells": "A tap on a spotting tile drop. The reading it records is saved as own-<pH>."
+ },
+ "extraction-of-metals": {
+  "metals": "Chooses what is on the bench or on screen; it starts already chosen. Any choice is fine, nothing is asked.",
+  "eqTabs": "Chooses what is on the bench or on screen; it starts already chosen. Any choice is fine, nothing is asked."
+ },
+ "factors-affecting-food-security": {
+  "parts": "Cards that open when tapped (\"Tap each\"), recording which were opened. Nothing is asked."
+ },
+ "farming-techniques": {
+  "cBtns": "Switches between indoor shed and free range.",
+  "mCards": "Cards that open when tapped (\"Tap each\"), recording which were opened. Nothing is asked.",
+  "eCards": "Cards that open when tapped (\"Tap each\"), recording which were opened. Nothing is asked."
+ },
+ "food-chains-webs": {
+  "wBtns": "Switches between views of the food web."
+ },
+ "fungal-protist-diseases": {
+  "spotBtns": "Switches what is on screen and records which were seen. Nothing is asked.",
+  "cycBtns": "Switches what is on screen and records which were seen. Nothing is asked."
+ },
+ "giant-covalent-structures": {
+  "sTabs": "Chooses what is on the bench or on screen; it starts already chosen. Any choice is fine, nothing is asked."
+ },
+ "greenhouse-gases": {
+  "bTabs": "Switches the radiation bench view. The prediction beside it is a separate saved group."
+ },
+ "group-0": {
+  "atoms": "Switches what is on screen and records which were seen. Nothing is asked."
+ },
+ "group-1": {
+  "metals": "Chooses what is on the bench or on screen; it starts already chosen. Any choice is fine, nothing is asked.",
+  "airCards": "Cards that open when tapped (\"Tap each\"), recording which were opened. Nothing is asked."
+ },
+ "health-disease": {
+  "links": "Cards that open when tapped (\"Tap each\"), recording which were opened. Nothing is asked.",
+  "risks": "Cards that open when tapped (\"Tap each\"), recording which were opened. Nothing is asked."
+ },
+ "homeostasis": {
+  "condCards": "Cards that open when tapped (\"Tap each\"), recording which were opened. Nothing is asked.",
+  "stepBtns": "Steps through a sequence. Nothing is asked.",
+  "breakBtns": "Breaks a part of the loop to see what happens. Nothing is asked."
+ },
+ "human-reproduction-hormones": {
+  "pubCards": "Cards that open when tapped (\"Tap each\"), recording which were opened. Nothing is asked.",
+  "stBtns": "Switches what is on screen and records which were seen. Nothing is asked.",
+  "horBtns": "Switches what is on screen and records which were seen. Nothing is asked."
+ },
+ "ionic-bonding": {
+  "wTabs": "Chooses what is on the bench or on screen; it starts already chosen. Any choice is fine, nothing is asked.",
+  "dTabs": "Chooses what is on the bench or on screen; it starts already chosen. Any choice is fine, nothing is asked."
+ },
+ "ionic-compounds": {
+  "lensTabs": "Switches what is on screen and records which were seen. Nothing is asked.",
+  "dxTabs": "Chooses what is on the bench or on screen; it starts already chosen. Any choice is fine, nothing is asked."
+ },
+ "land-use": {
+  "uses": "Toggles a land use on the map. Nothing is asked."
+ },
+ "lenses": {
+  "lensTabs": "Chooses what is on the bench or on screen; it starts already chosen. Any choice is fine, nothing is asked."
+ },
+ "maintaining-biodiversity": {
+  "hBtns": "Switches between with and without hedgerows.",
+  "pCards": "Cards that open when tapped (\"Tap each\"), recording which were opened. Nothing is asked."
+ },
+ "mass-changes-reactions": {
+  "pCards": "Cards that open when tapped (\"Tap each\"), recording which were opened. Nothing is asked."
+ },
+ "meiosis": {
+  "halfBtns": "Switches what is on screen and records which were seen. Nothing is asked.",
+  "factCards": "Cards that open when tapped (\"Tap each\"), recording which were opened. Nothing is asked."
+ },
+ "metabolism": {
+  "rxBtns": "Switches what is on screen and records which were seen. Nothing is asked."
+ },
+ "metal-hydroxides": {
+  "tubeTabs": "Chooses what is on the bench or on screen; it starts already chosen. Any choice is fine, nothing is asked.",
+  "actions": "Bench actions such as \"Add a few drops\". The commitment and identification are saved."
+ },
+ "metallic-bonding": {
+  "tools": "Chooses what is on the bench or on screen; it starts already chosen. Any choice is fine, nothing is asked."
+ },
+ "metals-non-metals": {
+  "elButtons": "Picks any element to look at it. Nothing is asked.",
+  "tests": "Runs a test on a sample and shows the result. The answer is the Metal / Non-metal verdict, which is saved.",
+  "samples": "Chooses what is on the bench or on screen; it starts already chosen. Any choice is fine, nothing is asked."
+ },
+ "microscopy": {
+  "fieldTabs": "Moves to another field of view. The counts typed there are saved through their own group.",
+  "objTabs": "Changes the objective. The question it raises is gateOpts, which is saved."
+ },
+ "monoclonal-antibodies": {
+  "cellBtns": "Switches what is on screen and records which were seen. Nothing is asked.",
+  "makeBtns": "Switches what is on screen and records which were seen. Nothing is asked.",
+  "useCards": "Cards that open when tapped (\"Tap each\"), recording which were opened. Nothing is asked."
+ },
+ "nanoparticles": {
+  "sideTabs": "Switches what is on screen and records which were seen. Nothing is asked."
+ },
+ "nervous-system": {
+  "neurCards": "Cards that open when tapped (\"Tap each\"), recording which were opened. Nothing is asked.",
+  "cutBtns": "Switches what is on screen and records which were seen. Nothing is asked.",
+  "synBtns": "Steps through a sequence. Nothing is asked."
+ },
+ "photosynthesis": {
+  "inBtns": "Sends a raw material into the model. Nothing is asked.",
+  "symCards": "Cards that open when tapped (\"Tap each\"), recording which were opened. Nothing is asked."
+ },
+ "plant-disease-detection-defence": {
+  "defCards": "Cards that open when tapped (\"Tap each\"), recording which were opened. Nothing is asked."
+ },
+ "plant-tissues": {
+  "layers": "Switches what is on screen and records which were seen. Nothing is asked."
+ },
+ "population-competition": {
+  "yBtns": "Switches between survey years.",
+  "cCards": "Cards that open when tapped (\"Tap each\"), recording which were opened. Nothing is asked.",
+  "lCards": "Cards that open when tapped (\"Tap each\"), recording which were opened. Nothing is asked."
+ },
+ "potable-water": {
+  "rpSteps": "Runs a step of the practical and shows the result. No prediction is asked.",
+  "freshSteps": "Cards that open when tapped (\"Tap each\"), recording which were opened. Nothing is asked.",
+  "samples": "Chooses what is on the bench or on screen; it starts already chosen. Any choice is fine, nothing is asked."
+ },
+ "properties-ionic-compounds": {
+  "forms": "Chooses what is on the bench or on screen; it starts already chosen. Any choice is fine, nothing is asked."
+ },
+ "properties-small-molecules": {
+  "molTabs": "Chooses what is on the bench or on screen; it starts already chosen. Any choice is fine, nothing is asked."
+ },
+ "radioactive-decay": {
+  "sources": "Chooses what is on the bench or on screen; it starts already chosen. Any choice is fine, nothing is asked.",
+  "absorbers": "Chooses what is on the bench or on screen; it starts already chosen. Any choice is fine, nothing is asked."
+ },
+ "rate-of-photosynthesis": {
+  "distBtns": "Switches what is on screen and records which were seen. Nothing is asked.",
+  "facBtns": "Switches what is on screen and records which were seen. Nothing is asked.",
+  "ghBtns": "Picks a grower step to read about. Nothing is asked."
+ },
+ "reaction-time": {
+  "condBtns": "Chooses what is on the bench or on screen; it starts already chosen. Any choice is fine, nothing is asked.",
+  "dropBtns": "Drops the ruler to take a simulated reading. Nothing is asked.",
+  "planCards": "Cards that open when tapped (\"Tap each\"), recording which were opened. Nothing is asked."
+ },
+ "reactions-of-acids": {
+  "acidBtns": "Chooses what is on the bench or on screen; it starts already chosen. Any choice is fine, nothing is asked.",
+  "reBtns": "Chooses what is on the bench or on screen; it starts already chosen. Any choice is fine, nothing is asked.",
+  "halves": "Cards that open when tapped (\"Tap each\"), recording which were opened. Nothing is asked."
+ },
+ "reactivity-series": {
+  "liquids": "Chooses what is on the bench or on screen; it starts already chosen. Any choice is fine, nothing is asked.",
+  "metals": "Switches what is on screen and records which were seen. Nothing is asked.",
+  "strips": "Chooses what is on the bench or on screen; it starts already chosen. Any choice is fine, nothing is asked.",
+  "sols": "Chooses what is on the bench or on screen; it starts already chosen. Any choice is fine, nothing is asked."
+ },
+ "red-shift-big-bang": {
+  "gals": "Switches what is on screen and records which were seen. Nothing is asked.",
+  "homes": "Chooses what is on the bench or on screen; it starts already chosen. Any choice is fine, nothing is asked."
+ },
+ "reflex-actions": {
+  "raceBtns": "Switches what is on screen and records which were seen. Nothing is asked.",
+  "exCards": "Cards that open when tapped (\"Tap each\"), recording which were opened. Nothing is asked."
+ },
+ "relative-atomic-mass": {
+  "mixBtns": "Chooses an isotope mix and shows the result. Any choice is fine, nothing is asked."
+ },
+ "resistors": {
+  "compTabs": "Chooses what is on the bench or on screen; it starts already chosen. Any choice is fine, nothing is asked."
+ },
+ "response-to-exercise": {
+  "phBtns": "Switches what is on screen and records which were seen. Nothing is asked.",
+  "paceBtns": "Switches what is on screen and records which were seen. Nothing is asked."
+ },
+ "role-of-biotechnology": {
+  "gCards": "Cards that open when tapped (\"Tap each\"), recording which were opened. Nothing is asked."
+ },
+ "sampling-techniques": {
+  "trBtns": "Moves along the transect."
+ },
+ "sexual-asexual-reproduction": {
+  "modeBtns": "Chooses what is on the bench or on screen; it starts already chosen. Any choice is fine, nothing is asked.",
+  "exCards": "Cards that open when tapped (\"Tap each\"), recording which were opened. Nothing is asked."
+ },
+ "sound-waves-hearing": {
+  "pPlay": "Plays a tone. The prediction beside it is a separate group, which is saved."
+ },
+ "stellar-evolution": {
+  "forceBtns": "Switches what is on screen and records which were seen. Nothing is asked.",
+  "massBtns": "Chooses what is on the bench or on screen; it starts already chosen. Any choice is fine, nothing is asked.",
+  "elBtns": "Switches what is on screen and records which were seen. Nothing is asked."
+ },
+ "stem-cells": {
+  "srcBtns": "Switches what is on screen and records which were seen. Nothing is asked.",
+  "weighCards": "Cards that open when tapped (\"Tap each\"), recording which were opened. Nothing is asked."
+ },
+ "structure-of-atom": {
+  "zooms": "Chooses what is on the bench or on screen; it starts already chosen. Any choice is fine, nothing is asked.",
+  "levelBtns": "Chooses what is on the bench or on screen; it starts already chosen. Any choice is fine, nothing is asked."
+ },
+ "subatomic-particles": {
+  "pCards": "Cards that open when tapped (\"Tap each\"), recording which were opened. Nothing is asked.",
+  "ionBtns": "Chooses what is on the bench or on screen; it starts already chosen. Any choice is fine, nothing is asked."
+ },
+ "sustainable-fisheries": {
+  "pCards": "Cards that open when tapped (\"Tap each\"), recording which were opened. Nothing is asked.",
+  "qBtns": "Toggles the quota on the model. Nothing is asked.",
+  "nBtns": "Toggles mesh size on the model. Nothing is asked.",
+  "lCards": "Cards that open when tapped (\"Tap each\"), recording which were opened. Nothing is asked."
+ },
+ "the-brain": {
+  "regBtns": "Switches what is on screen and records which were seen. Nothing is asked.",
+  "symBtns": "Switches what is on screen and records which were seen. Nothing is asked.",
+  "mapCards": "Cards that open when tapped (\"Tap each\"), recording which were opened. Nothing is asked."
+ },
+ "the-eye": {
+  "partBtns": "Switches what is on screen and records which were seen. Nothing is asked.",
+  "distBtns": "Switches what is on screen and records which were seen. Nothing is asked.",
+  "lightBtns": "Switches what is on screen and records which were seen. Nothing is asked."
+ },
+ "thermoregulation": {
+  "cenCards": "Cards that open when tapped (\"Tap each\"), recording which were opened. Nothing is asked.",
+  "tempBtns": "Switches what is on screen and records which were seen. Nothing is asked.",
+  "ctxBtns": "Switches what is on screen and records which were seen. Nothing is asked."
+ },
+ "titrations": {
+  "addBtns": "Adds acid. The reading is saved when the child records it."
+ },
+ "transfer-of-biomass": {
+  "lCards": "Cards that open when tapped (\"Tap each\"), recording which were opened. Nothing is asked."
+ },
+ "transition-metals": {
+  "tCards": "Cards that open when tapped (\"Tap each\"), recording which were opened. Nothing is asked."
+ },
+ "translocation": {
+  "sinkBtns": "Switches what is on screen and records which were seen. Nothing is asked."
+ },
+ "transpiration": {
+  "factors": "Sets conditions on the model and shows the rate. Any setting is fine, nothing is asked.",
+  "stomaBtns": "Opens or closes the stomata on the model."
+ },
+ "uses-of-glucose": {
+  "useBtns": "Switches what is on screen and records which were seen. Nothing is asked.",
+  "stBtns": "Switches what is on screen and records which were seen. Nothing is asked."
+ },
+ "using-moles-calculations": {
+  "steppers": "Sets a free-play mix for the bench. No particular mix is asked for.",
+  "mixTabs": "Chooses what is on the bench or on screen; it starts already chosen. Any choice is fine, nothing is asked."
+ },
+ "vaccination": {
+  "curveBtns": "Switches what is on screen and records which were seen. Nothing is asked.",
+  "herdBtns": "Switches what is on screen and records which were seen. Nothing is asked."
+ },
+ "viral-diseases": {
+  "hivBtns": "Switches what is on screen and records which were seen. Nothing is asked.",
+  "leafBtns": "Switches what is on screen and records which were seen. Nothing is asked."
+ },
+ "waste-management": {
+  "drivers": "Chooses what is on the bench or on screen; it starts already chosen. Any choice is fine, nothing is asked.",
+  "places": "Switches what is on screen and records which were seen. Nothing is asked."
+ }
+}

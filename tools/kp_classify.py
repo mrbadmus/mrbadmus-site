@@ -754,6 +754,7 @@ def round5_inventory():
     res = subprocess.run(["node", os.path.join(REPO, "tools", "activity_save_coverage.js"), REPO],
                          input="\n".join(pages), capture_output=True, text=True, check=True)
     seen = set()
+    routes = {}
     for page, r in sorted(json.loads(res.stdout).items()):
         if r.get("error"):
             continue
@@ -769,6 +770,22 @@ def round5_inventory():
             out.setdefault(("KS4", r["slug"]), []).append(
                 (qid, "ks4_root", "Choose: " + " / ".join(plain(x) for x in g.get("labels") or []),
                  plain((g.get("right") or [""])[0])))
+            routes.setdefault(r["slug"], set()).add(route)
+    # ⊕ 8 Nov 2026: what the classifier cannot see, ROOT_FORMS' typed answers,
+    # runs and builders. The entry after a stem is often the child's own (a run
+    # number, a tube), so the tag lives on the stem: the backend's kpOf falls
+    # back to it.
+    res = subprocess.run(["node", os.path.join(REPO, "tools", "kp_root_forms.js"), REPO],
+                         capture_output=True, text=True, check=True)
+    for slug, forms in sorted(json.loads(res.stdout).items()):
+        for route in sorted(routes.get(slug, ())):
+            for f in forms:
+                qid = "ks4:%s:%s#%s" % (slug, route, f["id"])
+                if qid in seen:
+                    continue
+                seen.add(qid)
+                out.setdefault(("KS4", slug), []).append(
+                    (qid, "ks4_root", plain(f["text"]) or "The lesson's own activity: %s" % f["id"], ""))
     return out
 
 
