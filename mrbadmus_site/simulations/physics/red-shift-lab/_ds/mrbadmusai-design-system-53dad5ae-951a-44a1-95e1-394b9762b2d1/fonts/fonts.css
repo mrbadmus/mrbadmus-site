@@ -1,0 +1,49 @@
+@font-face{
+  font-family: 'Bricolage Grotesque';
+  src: url('./bricolage-grotesque-var-latin.woff2') format('woff2');
+  font-weight: 400 800;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face{
+  font-family: 'Instrument Sans';
+  src: url('./instrument-sans-var-latin.woff2') format('woff2');
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face{
+  font-family: 'Instrument Sans';
+  src: url('./instrument-sans-var-italic-latin.woff2') format('woff2');
+  font-weight: 400 600;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face{
+  font-family: 'DM Mono';
+  src: url('./dm-mono-400-latin.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face{
+  font-family: 'DM Mono';
+  src: url('./dm-mono-500-latin.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face{
+  font-family: 'Fraunces';
+  src: url('./fraunces-var-latin.woff2') format('woff2');
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face{
+  font-family: 'Plus Jakarta Sans';
+  src: url('./plus-jakarta-sans-var-latin.woff2') format('woff2');
+  font-weight: 200 800;
+  font-style: normal;
+  font-display: swap;
+}

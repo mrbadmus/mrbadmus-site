@@ -72,3 +72,33 @@ html[data-sim="refraction"].sim-full div:has(> header) > :nth-child(2) > :first-
 html[data-sim="refraction"].sim-full #l-record { display: none !important; }
 html[data-sim="refraction"].sim-full #stage { height: calc(100dvh - 300px) !important; min-height: 260px; }
 html[data-sim="refraction"].sim-full #wstage { height: calc(100dvh - 240px) !important; min-height: 240px; }
+
+/* ── Red-shift Lab: keeps the four tabs, the stage (with its graph panel from
+   720px), each tab's controls including the Hα input and Record, and the GCSE /
+   A level switch and band. Hides the titles, the readout cards, the step guide, Results, the quiz and the footer. ── */
+html[data-sim="redshift"].sim-full div:has(> header) { max-width: none; padding-top: 14px !important; padding-bottom: 12px !important; gap: 12px; }
+html[data-sim="redshift"].sim-full div:has(> header) > header > :first-child { display: none !important; }
+html[data-sim="redshift"].sim-full div:has(> header) > :nth-child(n+3) { display: none !important; }
+html[data-sim="redshift"].sim-full div:has(> header) > :nth-child(2) > :nth-child(n+2) { display: none !important; }
+html[data-sim="redshift"].sim-full div:has(> header) > :nth-child(2) > :first-child > :nth-child(n+2) { display: none !important; }
+/* What is not stage: the tabs and the controls (one row of each from 1280px, two
+   rows of controls below that), plus the band at A level. */
+html[data-sim="redshift"].sim-full #stage { height: calc(100dvh - 172px) !important; min-height: 300px; }
+html[data-sim="redshift"][data-level="a"].sim-full #stage { height: calc(100dvh - 206px) !important; }
+@media (max-width: 1279px) {
+  html[data-sim="redshift"].sim-full #stage { height: calc(100dvh - 226px) !important; }
+  html[data-sim="redshift"][data-level="a"].sim-full #stage { height: calc(100dvh - 260px) !important; }
+}
+@media (max-width: 720px) {
+  html[data-sim="redshift"].sim-full #stage,
+  html[data-sim="redshift"][data-level="a"].sim-full #stage { height: calc(100dvh - 400px) !important; min-height: 470px; }
+}
+
+/* The smallest phones: the back link keeps its arrow and loses its word, or the
+   site bar on every lab pushes the page wider than the screen. */
+@media (max-width: 380px) { .sim-back { font-size: 0; gap: 0; } }
+/* The bar's home button overflowed behind the menu button below these measured
+   widths: Sign in at 662px, the longest signed-in label (My dashboard) at 731px.
+   The menu carries Sign in and the account actions. */
+@media (max-width: 662px) { .sim-bar #nav-auth-area:has(a[href*="auth.html"]) { display: none; } }
+@media (max-width: 731px) { .sim-bar #nav-auth-area:has(a:not([href*="auth.html"])) { display: none; } }

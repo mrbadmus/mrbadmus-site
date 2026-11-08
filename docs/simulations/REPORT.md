@@ -101,3 +101,87 @@ Also fixed: the page was 794px wide on a 390px phone after the graph had been dr
 2. **Not changed:** refractive index and n = sin i ÷ sin r are not in the AQA 8463 specification (Snell's law is A-level). The lab's results table, graph, readout card and quiz Q6 are built on it. Keep as extension, or cut back to "r is smaller than i"?
 3. **Not changed:** the practical is Physics-only (4.6.1.3, required practical 10); the wavefront explanation of refraction is Higher tier (4.6.2.2). The page says neither.
 4. **New wording, mine:** at the exit point the protractor names "the angle of the ray inside the block" and "the angle of the ray leaving the block" rather than i / r, since i and r in the practical mean the entry point.
+
+## 8 Nov 2026 — Red-shift Lab
+
+`/simulations/physics/red-shift-lab/`, from Design's `Red-shift Lab.dc.html`. Ported like the Refraction Lab: site bar, `/simulations/dc-runtime.js`, `data-sim="redshift"` keep-list in `fullscreen.css`, `sim-theme.css` for dark. Her top bar, in-stage full-screen button, `support.js`, `_ds_bundle.js` and `F` key are gone. The stage is a dark room in both themes; the Results graph follows the theme. Every `value=` and `checked` is out of the markup and set from JS.
+
+**GCSE / A level switch (Mide).** `GCSE | ✱ A LEVEL` in the header, also in full screen. It always opens on GCSE and is never remembered. A level shows a full-width band under the site bar and a `✱ A LEVEL` chip on the canvas on every tab. Switching keeps the tab (first step), keeps the rows and recalculates them; GCSE from the Binary tab goes to Doppler.
+- **GCSE:** 12 steps, nothing off 8463 4.8.2. Table: Galaxy, Distance (Mly), Hα seen, Shift Δλ, Check. Graph: shift (nm) against distance (Mly), best fit through the origin. No speed, z, equation or age. Two Big Bang cards. Quiz Q4 is the qualitative X and Y question.
+- **A level (AQA 7408 3.9.3):** 20 steps. Distances in Mpc. Table adds z and Speed away. Graph: speed against distance, `H = 70 km/s/Mpc · Age ≈ 1 ÷ H = 14 billion years`. Doppler adds a z card, Big Bang adds Glow, the quiz is its own set of eight, and there is a `5 · Binary stars` tab.
+
+**Improvements on her file:**
+1. **Graph in the stage.** From a 720px canvas the graph is a panel in the sky, and the galaxies stay left of it. One painter draws this and the Results graph.
+2. **Measure on the stage.** `Hα seen [ ] nm [Record]`. The pupil still types the reading. A rejected value adds no row, keeps focus and shows the reason on the stage. A good value adds the row, clears the input and selects the next unmeasured galaxy. "Close. Zoom in." records but stays on that galaxy.
+3. **Doppler shows the motion.** A dot marks where each of the last 8 waves started. Below 520px the spectrum panels stack.
+4. **Saves the machine.** The drawing loop stops when the lab is scrolled off-screen. Under `prefers-reduced-motion` it starts paused. Wavefronts drop from 56 pieces to 32, skipping pieces off the canvas (strokes per frame 1407 → 394, frame time with a forced flush 3.3 → 1.6 ms at 1366).
+5. **Teacher values.** `?teacher=1` shows true values and Fill all, with no visible link.
+
+**Changed from the brief, accepted by the coordinator:**
+- Steps 2, 8, 11 and 14 no longer autoplay, because their words say "Press…" and the button would already have read Pause.
+- Andromeda: zoom goes to 650–662 nm, `ok` is within 0.3 nm, "close" is within 1 nm and on the blue side, and the lab value is refused. Without this its 0.66 nm shift cannot be read on a phone.
+- Under 1060px the step guide sits above the stage.
+- Canvas `touch-action` is `pan-y`, so a swipe on the stage scrolls the page; horizontal drags still work.
+- The keys line leaves out `Space play` on spectra, where nothing plays.
+- Success messages name the galaxy, and comma decimals are accepted.
+
+**Choices made:**
+- The `✱` in the switch's own label shows on GCSE. Mide's control is `GCSE | ✱ A LEVEL`, so the "no ✱ at GCSE" check excludes the control.
+- Binary sliders carry no numbers, only Slower/Faster and Shorter/Longer, so the pupil reads Δλ from the strip and T from the clock; true values show only under `?teacher=1`. The clock in the controls row shows only in full screen, because the `Time` card shows it otherwise and full screen hides the cards.
+- Step 6 has no equation at either level; A level gets it on the next step.
+- Binary star A is green and B amber, so a star's colour cannot be mistaken for its shift.
+- Shared bar on every lab: the back link loses its word at 380px and under. The home button is hidden where it was measured to overflow: Sign in at 662px and under, signed-in labels at 731px and under. The menu has Sign in and the account actions.
+- "Measure 3 distant galaxies." counts down as galaxies are recorded.
+- A level quiz answer positions are 3/3/2 (0: Q2, Q5, Q8; 1: Q1, Q4, Q7; 2: Q3, Q6), ruled fine. GCSE is 2/3/3.
+
+**Proof, on the built tree, in headless Chrome with real mouse, key and touch input (347/347 at the final build):**
+- Opening and steps, 39/39: 29 requests all same-origin; console clean; a fresh load and a reload after A level both open on GCSE, with no level stored; GCSE visible text clean across all 12 steps; 12 and 20 steps forward and back; keys 1 to 5; flips keep the tab.
+- Measuring, 70/70: every rejection message. At 1366, 8 galaxies plus Andromeda at GCSE, flipped to A level: rows survive, H = 70 km s⁻¹ Mpc⁻¹, age 14. At 390, 6 galaxies measured from scratch at A level: H = 69.53, age 14.06.
+- Controls, 14/14: sliders stay, 7 drawing checkboxes obey, slow motion wave rate 10 → 3 → 10.
+- Binary and quiz, 26/26: v = 150 gives ±0.33 nm; v = 300 gives 0.65 against 0.656; T = 2 gives merges 1.0 day apart; teacher card r = 2.1 × 10⁷ km; both quizzes right, wrong and locked.
+- Review checks and the site bar, 67/67: stretched light frozen at 747 nm; P and Q exactly 100 and 200 Mly; 5 minutes reads 950 million K with the stage glowing; light curve fits at 360 and 1366; chip clear at 760; star A green; Sign in hidden at 662px and whole at 663px, signed-in labels hidden at 731px and whole at 732px, on all six labs.
+- Full screen, 109/109: all tabs at both levels at 1366 and 390; hidden parts checked by rendered size; 16 to 19px unused at 1366×768 at A level with no overflow; at 390 the controls need a scroll of up to about 190px.
+- Pause, teacher, reduced motion and touch, 16/16: rAF 120 → 0 → 120; `?teacher=1` on and off; nothing autoplays under reduced motion; a horizontal drag moves the cursor and a vertical swipe scrolls the page.
+- Widths, 6/6: no sideways scroll on 72 width, tab, level and theme combinations.
+- `brand_one_mark` passes. The node run of the page's script against a stub DOM covers the sums.
+- Not proved: a real phone or Chromebook, and a real signed-in session (signed-in bar widths were measured with the real labels placed in the bar).
+
+### Science decisions
+Mide left the science on this topic to Claude on 8 Nov 2026. These are decisions made, not questions. Reviewed by an independent AI examiner; no human physics check on this topic.
+
+1. **GCSE is qualitative plus a measured shift.** The speed column, v = c × Δλ ÷ λ, the gradient and the age are A level only, because none of them is in AQA 8463 4.8.2.
+2. **Frequency is A level only.** The Doppler `Frequency you see` card moved there: 3.9.3.1 covers Δf/f, and GCSE 4.8.2 speaks only of wavelength. GCSE Doppler has two cards.
+3. **A level follows AQA 7408 3.9.3.1, 3.9.3.2 and 3.9.2.6.** All A level text and the Binary tab are new authoring, not Design's. The sign convention z = −v/c follows AQA, and the table's "Speed away" is z × c, positive when receding.
+4. **Quasars (3.9.3.3) and exoplanets (3.9.3.4) are not covered.**
+5. **"No centre" stays at GCSE as enrichment.** It is beyond 4.8.2. The microwave background is A level only.
+6. **Wording.** "Dark mass" is kept: it is the AQA 8463 4.8.2 wording. "Suggest" replaces "show" for supernovae. The 1100× stretch figure and "fills all of space" are removed.
+7. **The Binary `Line shift` card stays.** Δλ is a reading, not the answer: the pupil still has to catch the maximum and do the calculation.
+8. **Kept from Design:**
+   - The fit passes through the origin and includes Andromeda.
+   - Galaxy speeds carry Design's own motions, so real readings give about 70 rather than exactly H0 × 3.26 = 70.09.
+   - Andromeda reads −320 km/s, not its true −300, because a reading to 0.1 nm rounds the shift to −0.7 nm.
+   - Binary orbits are drawn at a fixed size whatever r is, and one second of play is one day.
+
+**Changes from the review:**
+- Binary step 1: both lines shift at once, so it now says one star moves towards you as the other moves away, in the plane of the orbit.
+- Stretched light: the wavelength stops at arrival, 430 → 747 nm (red), and no longer grows into infrared. The step says "violet", which 430 nm is.
+- Big Bang labels: the model accelerates from 7.6 billion years, so "speeding up" no longer reads as future-only, and the future reads "if it keeps speeding up".
+- `aOf`: a grows as √t before 50 000 years. The old numbers were up to 40× too hot at 10 minutes.
+- Hydrogen and helium step: the stage sits at about 5 minutes and reads 950 million K. The clock can now say minutes.
+- Sky caption: "In this survey, fainter means further away." On canvases under 390px the "Click a galaxy." half is dropped, because the sentence does not fit.
+- Doppler caption: "The view follows it."
+- Range check: readings above 750 nm are outside visible light.
+- Expansion: P and Q are exactly 1:2 from the Milky Way.
+- GCSE wording: hydrogen absorbs certain wavelengths and the red line is Hα; "the light given out never changes"; further galaxies move away faster, as evidence of expansion.
+- GCSE quiz: Q2 uses galaxies M and N. Q6 is now speed increasing with distance as evidence for expansion. The Andromeda step stays.
+- Card: `Temperature of space`, at both levels.
+- Footers: "Doppler and Expansion not to scale"; GCSE gives "c = speed of light".
+- z step: adds Δf ÷ f = v ÷ c, "for v ≪ c (optical and radio)", and how the sign of v is used.
+- A level table and graph: "Velocity away", since Andromeda is negative. Doppler z and frequency cards note "equations need v ≪ c".
+- A level units: km s⁻¹ Mpc⁻¹. Hubble's law step gives AQA's data booklet value, 65 km s⁻¹ Mpc⁻¹.
+- Age step: put H in s⁻¹ first, 70 km s⁻¹ Mpc⁻¹ = 2.3 × 10⁻¹⁸ s⁻¹.
+- AQA wording: "Cosmological microwave background radiation", in the step and quiz Q6. That option is now the longest; it stays as AQA words it.
+- Supernova step: "type 1a", absolute magnitude, standard candles, "evidence suggests… is debated", and a typical light curve with the peak at about −19.3.
+- Binary step 2: "speed = c × Δλ ÷ λ"; r is each star's orbit radius; the stars have equal mass.
+- Also fixed in passing: readouts printed "9.5e+2 million K" for temperatures with three figures before the unit.
+- Also fixed in passing, a bug in Design's file: the colour lookup for the hot early universe returned no valid colour, so the stage stayed dark before light could travel. It now glows hot blue-white, cooling to orange.

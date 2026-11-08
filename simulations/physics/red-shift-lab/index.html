@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="en" data-sim="redshift">
+<head>
+<meta charset="utf-8">
+<script>(function(){var p='light';try{p=localStorage.getItem('mrb-theme')||'light'}catch(e){}if(p!=='dark'&&p!=='system')p='light';var d=p==='dark'||(p==='system'&&!!window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches),r=document.documentElement;r.setAttribute('data-theme',d?'dark':'light');r.setAttribute('data-theme-pref',p);r.style.colorScheme=d?'dark':'light'})()</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#FBF3E6">
+<title>Red-shift Lab | MrBadmus</title>
+<!--mrb:brand-head--><link rel="icon" type="image/svg+xml" href="/shared/brand/mrbadmus-favicon.svg?v=414f7a61"><link rel="apple-touch-icon" href="/shared/brand/mrbadmus-icon-light-512.png?v=cffd3cc4"><link rel="stylesheet" href="/shared/brand/brand.css?v=9c818614"><!--/mrb:brand-head-->
+<link rel="stylesheet" href="/simulations/simulations.css?v=c4ad56a2">
+<link rel="stylesheet" href="/simulations/fullscreen.css?v=4f7cced7">
+<link rel="stylesheet" href="sim-theme.css">
+<link rel="stylesheet" href="/shared/drawer.css?v=d5f3f86f"/>
+<script src="/shared/config.js?v=bb268b6f"></script>
+<script>window.MRB_SEARCH_SRC=["/shared/search-index.js?v=c016cb14","/shared/search.js?v=d011978d"];</script>
+<script src="/shared/account.js?v=d97ebd6b" defer></script>
+<script src="/shared/nav.js?v=987d5092" defer></script>
+<script src="/shared/class-entry.js?v=8c087f18" defer></script>
+<script src="/shared/theme.js?v=f04be205" defer></script>
+<script src="/simulations/fullscreen.js?v=992283cb" defer></script>
+<script src="/simulations/dc-runtime.js?v=d8291a18"></script>
+</head>
+<body>
+<header class="sim-bar">
+  <!--mrb:brand--><a class="mrb-brand" href="/" aria-label="MrBadmus home"><svg class="mrb-brand__mark" data-mrb-mark viewBox="0 0 22 22" aria-hidden="true" focusable="false"><path d="M3.5 3.5 L11 11 L3.5 18.5" stroke="#E4572E" stroke-opacity="0.34" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path><path d="M12 3.5 L19.5 11 L12 18.5" stroke="#E4572E" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg><span class="mrb-brand__word">MrBadmus</span></a><!--/mrb:brand-->
+  <a class="sim-back" href="/simulations/physics/"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3L5 8l5 5"/></svg>Physics</a>
+  <button class="sim-fs" type="button" aria-label="Full screen" aria-pressed="false"><svg class="sim-fs__in" width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 7V2h5M16 7V2h-5M2 11v5h5M16 11v5h-5"/></svg><svg class="sim-fs__out" width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" hidden><path d="M7 2v5H2M11 2v5h5M7 16v-5H2M11 16v-5h5"/></svg><span class="sim-fs__text">Full screen</span></button>
+  <span class="mrb-theme-slot" data-mrb-theme="compact"></span>
+  <span id="nav-auth-area"></span>
+  <button class="nav-burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav-drawer"><span></span><span></span><span></span></button>
+</header>
+<x-dc>
+<helmet>
+  <title>Red-shift Lab | MrBadmus</title>
+  <link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+  <style>
+    body{margin:0;background:#FBF3E6}
+    [hidden]{display:none !important}
+    :focus-visible{outline:2px solid #E4572E;outline-offset:2px}
+    a{color:#A93411}a:hover{color:#7F2408}
+    #rs-lab button:disabled{opacity:.45;cursor:default}
+    #rs-lab button,#rs-lab label{white-space:nowrap}
+  </style>
+</helmet>
+<div style="background:var(--st-ground);color:var(--st-ink);font-family:var(--st-ui);font-size:17px;line-height:1.5;min-height:100vh">
+  <div id="lvl-band" hidden style="background:var(--st-accent-text);color:var(--st-paper);font:600 13px/1 var(--st-mono);letter-spacing:0.16em;text-align:center;padding:10px 16px">✱ A LEVEL</div>
+  <div style="max-width:1560px;margin:0 auto;padding:22px clamp(16px,2.4vw,36px) 48px;display:grid;gap:20px">
+    <header style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px 24px">
+      <div style="min-width:0">
+        <div id="rs-eyebrow" style="font:500 12px/1.3 var(--st-mono);letter-spacing:0.16em;text-transform:uppercase;color:var(--st-caption)">Physics · Space · AQA 4.8.2</div>
+        <h1 style="margin:10px 0 0;font:600 clamp(32px,3.6vw,50px)/1 var(--st-display);letter-spacing:-0.035em;text-wrap:balance">Red-shift Lab</h1>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;max-width:100%">
+      <div id="lvl" role="group" aria-label="Level" style="display:flex;gap:2px;padding:3px;background:var(--st-seg-bg);border-radius:9px">
+        <button data-lvl="g" aria-pressed="true" style="font:500 15px/1 var(--st-ui);padding:11px 14px;border:0;border-radius:7px;background:transparent;color:var(--st-caption);cursor:pointer;white-space:nowrap">GCSE</button>
+        <button data-lvl="a" aria-pressed="false" style="font:500 15px/1 var(--st-ui);padding:11px 14px;border:0;border-radius:7px;background:transparent;color:var(--st-caption);cursor:pointer;white-space:nowrap">✱ A LEVEL</button>
+      </div>
+      <div id="tabs" role="tablist" aria-label="Section" style="display:flex;flex-wrap:wrap;gap:3px;padding:3px;background:var(--st-seg-bg);border-radius:9px">
+        <button role="tab" aria-selected="false" data-mode="D" style="font:500 15px/1 var(--st-ui);padding:11px 16px;border:0;border-radius:7px;background:transparent;color:var(--st-caption);cursor:pointer;white-space:nowrap">1 · Doppler</button>
+        <button role="tab" aria-selected="true" data-mode="S" style="font:500 15px/1 var(--st-ui);padding:11px 16px;border:0;border-radius:7px;background:transparent;color:var(--st-caption);cursor:pointer;white-space:nowrap">2 · Galaxy spectra</button>
+        <button role="tab" aria-selected="false" data-mode="E" style="font:500 15px/1 var(--st-ui);padding:11px 16px;border:0;border-radius:7px;background:transparent;color:var(--st-caption);cursor:pointer;white-space:nowrap">3 · Expansion</button>
+        <button role="tab" aria-selected="false" data-mode="B" style="font:500 15px/1 var(--st-ui);padding:11px 16px;border:0;border-radius:7px;background:transparent;color:var(--st-caption);cursor:pointer;white-space:nowrap">4 · Big Bang</button>
+        <button role="tab" aria-selected="false" data-mode="N" hidden style="font:500 15px/1 var(--st-ui);padding:11px 16px;border:0;border-radius:7px;background:transparent;color:var(--st-caption);cursor:pointer;white-space:nowrap">5 · Binary stars</button>
+      </div>
+      </div>
+    </header>
+
+    <div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start">
+      <div style="flex:3 1 680px;min-width:0;display:grid;gap:14px">
+        <div id="rs-lab" style="position:relative;background:var(--st-paper);border:1px solid var(--st-edge);border-radius:var(--st-r-stage);overflow:hidden;display:grid;box-shadow:var(--st-shadow-frame)">
+          <canvas id="stage" aria-label="Simulation" style="display:block;width:100%;height:clamp(470px,66vh,780px);touch-action:pan-y;background:#15110C"></canvas>
+
+          <div id="ctl-D" hidden style="display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;padding:14px 16px;border-top:1px solid var(--st-rule-soft)">
+            <button id="d-play" style="display:inline-flex;align-items:center;justify-content:center;gap:9px;min-width:7.5em;font:600 16px/1 var(--st-ui);padding:13px 18px;border:0;border-radius:var(--st-r-btn);background:var(--st-accent-text);color:var(--st-paper);cursor:pointer" style-hover="background:var(--st-accent-hover)"></button>
+            <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:6px 8px 6px 12px;border:1px solid var(--st-rule);border-radius:10px">
+              <span style="font:500 11.5px/1 var(--st-mono);letter-spacing:0.12em;text-transform:uppercase;color:var(--st-caption)">Source</span>
+              <input id="d-v" type="range" min="-40" max="40" step="1" aria-label="Source velocity. Left is away from you." style="width:190px;accent-color:#A93411">
+              <span id="d-v-lcd" style="font:500 18px/1 var(--st-mono);font-variant-numeric:tabular-nums;background:var(--st-room);color:#F5E6C8;border-radius:6px;padding:8px 10px;min-width:8.6em;text-align:right;white-space:nowrap">–</span>
+            </div>
+            <div id="d-pre" role="group" aria-label="Presets" style="display:flex;gap:2px;padding:2px;background:var(--st-seg-bg);border-radius:9px">
+              <button data-v="-20" style="font:500 14px/1 var(--st-ui);height:40px;padding:0 13px;border:0;border-radius:7px;background:transparent;color:var(--st-caption);cursor:pointer">Away</button>
+              <button data-v="0" style="font:500 14px/1 var(--st-ui);height:40px;padding:0 13px;border:0;border-radius:7px;background:transparent;color:var(--st-caption);cursor:pointer">Still</button>
+              <button data-v="20" style="font:500 14px/1 var(--st-ui);height:40px;padding:0 13px;border:0;border-radius:7px;background:transparent;color:var(--st-caption);cursor:pointer">Towards</button>
+            </div>
+            <label style="display:inline-flex;align-items:center;gap:7px;font-size:15px;cursor:pointer;user-select:none;padding:9px 11px;border:1px solid var(--st-rule);border-radius:8px;background:var(--st-ground)"><input type="checkbox" id="d-slow" style="width:17px;height:17px;margin:0;accent-color:#A93411"><span>Slow motion</span></label>
+            <label style="display:inline-flex;align-items:center;gap:7px;font-size:15px;cursor:pointer;user-select:none;padding:9px 11px;border:1px solid var(--st-rule);border-radius:8px;background:var(--st-ground)"><input type="checkbox" id="d-lam" style="width:17px;height:17px;margin:0;accent-color:#A93411"><span>Show λ</span></label>
+          </div>
+
+          <div id="ctl-S" style="display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;padding:14px 16px;border-top:1px solid var(--st-rule-soft)">
+            <button id="s-zoom" title="Zoom (Z)" style="display:inline-flex;align-items:center;gap:8px;font:600 15px/1 var(--st-ui);height:42px;padding:0 14px;border:0;border-radius:var(--st-r-btn);background:var(--st-ink);color:var(--st-paper);cursor:pointer"></button>
+            <div aria-label="Nudge the cursor" style="display:flex;flex-wrap:nowrap;white-space:nowrap;align-items:center;gap:6px;padding:5px 8px 5px 12px;border:1px solid var(--st-rule);border-radius:10px">
+              <span style="font:500 11.5px/1 var(--st-mono);letter-spacing:0.12em;text-transform:uppercase;color:var(--st-caption);margin-right:4px">Cursor</span>
+              <button data-nudge="-1" style="font:600 14px/1 var(--st-ui);height:38px;padding:0 10px;border:1.5px solid var(--st-btn-border);border-radius:var(--st-r-btn);background:var(--st-paper);color:var(--st-ink);cursor:pointer" style-hover="background:var(--st-note-bg)">−1</button>
+              <button data-nudge="-0.1" style="font:600 14px/1 var(--st-ui);height:38px;padding:0 10px;border:1.5px solid var(--st-btn-border);border-radius:var(--st-r-btn);background:var(--st-paper);color:var(--st-ink);cursor:pointer" style-hover="background:var(--st-note-bg)">−0.1</button>
+              <button data-nudge="0.1" style="font:600 14px/1 var(--st-ui);height:38px;padding:0 10px;border:1.5px solid var(--st-btn-border);border-radius:var(--st-r-btn);background:var(--st-paper);color:var(--st-ink);cursor:pointer" style-hover="background:var(--st-note-bg)">+0.1</button>
+              <button data-nudge="1" style="font:600 14px/1 var(--st-ui);height:38px;padding:0 10px;border:1.5px solid var(--st-btn-border);border-radius:var(--st-r-btn);background:var(--st-paper);color:var(--st-ink);cursor:pointer" style-hover="background:var(--st-note-bg)">+1</button>
+              <span style="font-size:14px;color:var(--st-muted)">nm</span>
+            </div>
+            <label style="display:inline-flex;align-items:center;gap:7px;font-size:15px;cursor:pointer;user-select:none;padding:9px 11px;border:1px solid var(--st-rule);border-radius:8px;background:var(--st-ground)"><input type="checkbox" id="s-shift" style="width:17px;height:17px;margin:0;accent-color:#A93411"><span>Show shift</span></label>
+            <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-left:auto">
+              <label for="s-ha" style="display:inline-flex;align-items:center;gap:7px;font-size:15px;cursor:text"><span>Hα seen</span><input id="s-ha" type="text" aria-label="Hα wavelength seen, in nanometres" style="width:5.2em;font:600 16px var(--st-ui);text-align:center;border:1.5px solid var(--st-accent-text);border-radius:6px;padding:10px 4px;background:var(--st-paper);color:var(--st-ink)"><span>nm</span></label>
+              <button id="s-record" title="Record (Enter)" style="display:inline-flex;align-items:center;gap:8px;font:600 16px/1 var(--st-ui);padding:13px 18px;border:0;border-radius:var(--st-r-btn);background:var(--st-accent-text);color:var(--st-paper);cursor:pointer" style-hover="background:var(--st-accent-hover)">Record</button>
+              <span id="s-msg" role="status" style="position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap"></span>
+            </div>
+          </div>
+
+          <div id="ctl-E" hidden style="display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;padding:14px 16px;border-top:1px solid var(--st-rule-soft)">
+            <button id="e-play" style="display:inline-flex;align-items:center;justify-content:center;gap:9px;min-width:7.5em;font:600 16px/1 var(--st-ui);padding:13px 18px;border:0;border-radius:var(--st-r-btn);background:var(--st-accent-text);color:var(--st-paper);cursor:pointer" style-hover="background:var(--st-accent-hover)"></button>
+            <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:6px 8px 6px 12px;border:1px solid var(--st-rule);border-radius:10px">
+              <span style="font:500 11.5px/1 var(--st-mono);letter-spacing:0.12em;text-transform:uppercase;color:var(--st-caption)">Time</span>
+              <input id="e-t" type="range" min="0" max="1000" step="1" aria-label="Time" style="width:170px;accent-color:#A93411">
+              <span id="e-lcd" style="font:500 18px/1 var(--st-mono);font-variant-numeric:tabular-nums;background:var(--st-room);color:#F5E6C8;border-radius:6px;padding:8px 10px;min-width:4.4em;text-align:right">×1.00</span>
+            </div>
+            <label style="display:inline-flex;align-items:center;gap:7px;font-size:15px;cursor:pointer;user-select:none;padding:9px 11px;border:1px solid var(--st-rule);border-radius:8px;background:var(--st-ground)"><input type="checkbox" id="e-grid" style="width:17px;height:17px;margin:0;accent-color:#A93411"><span>Space grid</span></label>
+            <label style="display:inline-flex;align-items:center;gap:7px;font-size:15px;cursor:pointer;user-select:none;padding:9px 11px;border:1px solid var(--st-rule);border-radius:8px;background:var(--st-ground)"><input type="checkbox" id="e-arrows" style="width:17px;height:17px;margin:0;accent-color:#A93411"><span>Speed arrows</span></label>
+            <label style="display:inline-flex;align-items:center;gap:7px;font-size:15px;cursor:pointer;user-select:none;padding:9px 11px;border:1px solid var(--st-rule);border-radius:8px;background:var(--st-ground)"><input type="checkbox" id="e-measure" style="width:17px;height:17px;margin:0;accent-color:#A93411"><span>P and Q</span></label>
+            <label style="display:inline-flex;align-items:center;gap:7px;font-size:15px;cursor:pointer;user-select:none;padding:9px 11px;border:1px solid var(--st-rule);border-radius:8px;background:var(--st-ground)"><input type="checkbox" id="e-light" style="width:17px;height:17px;margin:0;accent-color:#A93411"><span>Light wave</span></label>
+            <button id="e-home" style="display:inline-flex;align-items:center;gap:8px;font:600 15px/1 var(--st-ui);height:40px;padding:0 14px;border:1.5px solid var(--st-btn-border);border-radius:var(--st-r-btn);background:var(--st-paper);color:var(--st-ink);cursor:pointer" style-hover="background:var(--st-note-bg)">Back to the Milky Way</button>
+          </div>
+
+          <div id="ctl-B" hidden style="display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;padding:14px 16px;border-top:1px solid var(--st-rule-soft)">
+            <button id="b-rew" style="display:inline-flex;align-items:center;justify-content:center;gap:9px;min-width:7.5em;font:600 16px/1 var(--st-ui);padding:13px 18px;border:0;border-radius:var(--st-r-btn);background:var(--st-accent-text);color:var(--st-paper);cursor:pointer" style-hover="background:var(--st-accent-hover)"></button>
+            <button id="b-fwd" style="display:inline-flex;align-items:center;gap:8px;font:600 15px/1 var(--st-ui);height:44px;padding:0 14px;border:1.5px solid var(--st-btn-border);border-radius:var(--st-r-btn);background:var(--st-paper);color:var(--st-ink);cursor:pointer" style-hover="background:var(--st-note-bg)"></button>
+            <button id="b-now" style="display:inline-flex;align-items:center;gap:8px;font:600 15px/1 var(--st-ui);height:44px;padding:0 14px;border:1.5px solid var(--st-btn-border);border-radius:var(--st-r-btn);background:var(--st-paper);color:var(--st-ink);cursor:pointer" style-hover="background:var(--st-note-bg)">Today</button>
+            <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:6px 8px 6px 12px;border:1px solid var(--st-rule);border-radius:10px">
+              <span style="font:500 11.5px/1 var(--st-mono);letter-spacing:0.12em;text-transform:uppercase;color:var(--st-caption)">Time</span>
+              <input id="b-u" type="range" min="0" max="1000" step="1" aria-label="Time since the Big Bang" style="width:200px;accent-color:#A93411">
+              <span id="b-lcd" style="font:500 17px/1 var(--st-mono);font-variant-numeric:tabular-nums;background:var(--st-room);color:#F5E6C8;border-radius:6px;padding:8px 10px;min-width:11.5em;text-align:right;white-space:nowrap">–</span>
+            </div>
+            <label style="display:inline-flex;align-items:center;gap:7px;font-size:15px;cursor:pointer;user-select:none;padding:9px 11px;border:1px solid var(--st-rule);border-radius:8px;background:var(--st-ground)"><input type="checkbox" id="b-graph" style="width:17px;height:17px;margin:0;accent-color:#A93411"><span>Size graph</span></label>
+          </div>
+
+          <div id="ctl-N" hidden style="display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;padding:14px 16px;border-top:1px solid var(--st-rule-soft)">
+            <button id="n-play" style="display:inline-flex;align-items:center;justify-content:center;gap:9px;min-width:7.5em;font:600 16px/1 var(--st-ui);padding:13px 18px;border:0;border-radius:var(--st-r-btn);background:var(--st-accent-text);color:var(--st-paper);cursor:pointer" style-hover="background:var(--st-accent-hover)"></button>
+            <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:6px 8px 6px 12px;border:1px solid var(--st-rule);border-radius:10px">
+              <span style="font:500 11.5px/1 var(--st-mono);letter-spacing:0.12em;text-transform:uppercase;color:var(--st-caption)">Speed</span>
+              <span style="font-size:14px;color:var(--st-muted)">Slower</span>
+              <input id="n-v" type="range" min="50" max="300" step="5" aria-label="Orbital speed of each star" style="width:130px;accent-color:#A93411">
+              <span style="font-size:14px;color:var(--st-muted)">Faster</span>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:6px 8px 6px 12px;border:1px solid var(--st-rule);border-radius:10px">
+              <span style="font:500 11.5px/1 var(--st-mono);letter-spacing:0.12em;text-transform:uppercase;color:var(--st-caption)">Period</span>
+              <span style="font-size:14px;color:var(--st-muted)">Shorter</span>
+              <input id="n-T" type="range" min="2" max="20" step="1" aria-label="Orbital period" style="width:130px;accent-color:#A93411">
+              <span style="font-size:14px;color:var(--st-muted)">Longer</span>
+            </div>
+            <div id="n-clock-box" style="flex-wrap:wrap;align-items:center;gap:8px;padding:6px 8px 6px 12px;border:1px solid var(--st-rule);border-radius:10px">
+              <span style="font:500 11.5px/1 var(--st-mono);letter-spacing:0.12em;text-transform:uppercase;color:var(--st-caption)">Time</span>
+              <span id="n-clock" style="font:500 18px/1 var(--st-mono);font-variant-numeric:tabular-nums;background:var(--st-room);color:#F5E6C8;border-radius:6px;padding:8px 10px;text-align:right;white-space:nowrap;min-width:6em">–</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px">
+          <div style="background:var(--st-paper);border:1px solid var(--st-rule);border-radius:var(--st-r-card);padding:12px 16px;min-width:0">
+            <div id="ro-l1" style="font:500 11.5px/1.3 var(--st-mono);letter-spacing:0.08em;text-transform:uppercase;color:var(--st-caption)">–</div>
+            <div id="ro-v1" style="margin-top:6px;font:500 clamp(20px,1.8vw,26px)/1.2 var(--st-mono);font-variant-numeric:tabular-nums">–</div>
+            <div id="ro-s1" style="font-size:14px;color:var(--st-muted)"></div>
+          </div>
+          <div style="background:var(--st-paper);border:1.5px solid var(--st-accent);border-radius:var(--st-r-card);padding:12px 16px;min-width:0">
+            <div id="ro-l2" style="display:flex;align-items:center;gap:7px;font:500 11.5px/1.3 var(--st-mono);letter-spacing:0.08em;text-transform:uppercase;color:var(--st-caption)">–</div>
+            <div id="ro-v2" style="margin-top:6px;font:500 clamp(20px,1.8vw,26px)/1.2 var(--st-mono);font-variant-numeric:tabular-nums">–</div>
+            <div id="ro-s2" style="font-size:14px;color:var(--st-muted)"></div>
+          </div>
+          <div style="background:var(--st-paper);border:1px solid var(--st-rule);border-radius:var(--st-r-card);padding:12px 16px;min-width:0" id="ro-c3">
+            <div id="ro-l3" style="font:500 11.5px/1.3 var(--st-mono);letter-spacing:0.08em;text-transform:uppercase;color:var(--st-caption)">–</div>
+            <div id="ro-v3" style="margin-top:6px;font:500 clamp(20px,1.8vw,26px)/1.2 var(--st-mono);font-variant-numeric:tabular-nums">–</div>
+            <div id="ro-s3" style="font-size:14px;color:var(--st-muted)"></div>
+          </div>
+          <div id="ro-c4" hidden style="background:var(--st-paper);border:1px solid var(--st-rule);border-radius:var(--st-r-card);padding:12px 16px;min-width:0">
+            <div id="ro-l4" style="font:500 11.5px/1.3 var(--st-mono);letter-spacing:0.08em;text-transform:uppercase;color:var(--st-caption)">–</div>
+            <div id="ro-v4" style="margin-top:6px;font:500 clamp(20px,1.8vw,26px)/1.2 var(--st-mono);font-variant-numeric:tabular-nums">–</div>
+            <div id="ro-s4" style="font-size:14px;color:var(--st-muted)"></div>
+          </div>
+          <div id="ro-true" hidden style="background:var(--st-paper);border:1.5px dashed var(--st-note-border);border-radius:var(--st-r-card);padding:12px 16px;min-width:0">
+            <div style="font:500 11.5px/1.3 var(--st-mono);letter-spacing:0.08em;text-transform:uppercase;color:var(--st-caption)">Teacher · true values</div>
+            <div id="ro-true-v" style="margin-top:6px;font:500 clamp(18px,1.6vw,22px)/1.25 var(--st-mono);font-variant-numeric:tabular-nums">–</div>
+            <div id="ro-true-s" style="font-size:14px;color:var(--st-muted)"></div>
+          </div>
+        </div>
+      </div>
+
+      <aside id="rs-steps" aria-live="polite" style="flex:1 1 300px;max-width:420px;min-width:0;position:sticky;top:16px;background:var(--st-paper);border:1px solid var(--st-rule);border-radius:var(--st-r-stage);padding:20px 22px 18px;display:grid;gap:12px;align-content:start">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
+          <span id="g-count" style="font:500 11.5px/1 var(--st-mono);letter-spacing:0.16em;text-transform:uppercase;color:var(--st-caption)">Step 1</span>
+          <div id="g-dots" style="display:flex;gap:4px;flex-wrap:wrap"></div>
+        </div>
+        <h2 id="g-title" style="margin:0;font:600 clamp(22px,2vw,30px)/1.15 var(--st-display);letter-spacing:-0.025em;text-wrap:balance"></h2>
+        <div id="g-text" style="font-size:clamp(16px,1.25vw,18px);line-height:1.5;color:var(--st-body);display:grid;gap:10px;text-wrap:pretty"></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;padding-top:4px">
+          <button id="g-back" style="display:inline-flex;align-items:center;gap:8px;font:600 16px/1 var(--st-ui);padding:13px 16px;border:1.5px solid var(--st-btn-border);border-radius:var(--st-r-btn);background:var(--st-paper);color:var(--st-ink);cursor:pointer" style-hover="background:var(--st-note-bg)"><svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 6H2M6.5 1.5 2 6l4.5 4.5"></path></svg>Back</button>
+          <button id="g-next" style="flex:1;display:inline-flex;align-items:center;justify-content:center;gap:8px;font:600 16px/1 var(--st-ui);padding:14px 18px;border:0;border-radius:var(--st-r-btn);background:var(--st-accent-text);color:var(--st-paper);cursor:pointer" style-hover="background:var(--st-accent-hover)"></button>
+        </div>
+        <div id="g-keys" style="display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:14px;color:var(--st-muted)"></div>
+      </aside>
+    </div>
+
+    <section aria-label="Results" style="display:grid;gap:14px">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;padding-top:10px;border-top:1px solid var(--st-rule)">
+        <h2 style="margin:0;font:600 28px/1.1 var(--st-display);letter-spacing:-0.03em">Results</h2>
+        <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+          <button id="res-fill" hidden style="display:inline-flex;align-items:center;gap:7px;font:500 14px/1 var(--st-ui);padding:8px 12px;border:1.5px dashed var(--st-note-border);border-radius:var(--st-r-btn);background:var(--st-note-bg);color:var(--st-ink);cursor:pointer">Teacher · fill all</button>
+          <button id="res-toggle" style="display:inline-flex;align-items:center;gap:7px;font:500 14px/1 var(--st-ui);padding:8px 12px;border:1.5px solid var(--st-btn-border);border-radius:var(--st-r-btn);background:var(--st-paper);color:var(--st-ink);cursor:pointer" style-hover="background:var(--st-note-bg)"></button>
+        </div>
+      </div>
+      <div id="res-body" style="display:flex;flex-wrap:wrap;gap:12px;align-items:stretch">
+        <div style="flex:2 1 560px;min-width:0;background:var(--st-paper);border:1px solid var(--st-rule);border-radius:var(--st-r-stage);padding:6px 8px;overflow-x:auto">
+          <table style="border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums">
+            <thead><tr id="tb-head" style="font:500 12px/1.3 var(--st-mono);letter-spacing:0.06em;text-transform:uppercase;color:var(--st-caption)"></tr></thead>
+            <tbody id="tb"></tbody>
+          </table>
+        </div>
+        <div style="flex:1 1 320px;min-width:0;background:var(--st-paper);border:1px solid var(--st-rule);border-radius:var(--st-r-stage);padding:14px 16px;display:grid;gap:6px;align-content:start">
+          <div id="plot-title" style="font:500 11.5px/1.3 var(--st-mono);letter-spacing:0.08em;text-transform:uppercase;color:var(--st-caption)">Shift against distance</div>
+          <canvas id="plot" style="display:block;width:100%;height:260px"></canvas>
+          <div id="plot-cap" style="font-size:14px;color:var(--st-muted)"></div>
+        </div>
+      </div>
+    </section>
+
+    <section aria-label="Check your understanding" style="display:grid;gap:14px">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;padding-top:10px;border-top:1px solid var(--st-rule)">
+        <h2 style="margin:0;font:600 28px/1.1 var(--st-display);letter-spacing:-0.03em">Check your understanding</h2>
+        <div style="display:flex;align-items:center;gap:14px">
+          <span id="score" style="font:500 15px/1 var(--st-mono);letter-spacing:0.04em;color:var(--st-ink);white-space:nowrap">Score: 0 / 8</span>
+          <button id="quiz-toggle" style="display:inline-flex;align-items:center;gap:7px;font:500 14px/1 var(--st-ui);padding:8px 12px;border:1.5px solid var(--st-btn-border);border-radius:var(--st-r-btn);background:var(--st-paper);color:var(--st-ink);cursor:pointer" style-hover="background:var(--st-note-bg)"></button>
+        </div>
+      </div>
+      <div id="quiz-body" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(320px,100%),1fr));gap:16px"></div>
+    </section>
+
+    <footer id="rs-foot" style="color:var(--st-muted);font-size:14px;max-width:90ch">Mly = million light-years · c = speed of light · Doppler and Expansion not to scale</footer>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;teacherMode&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Teacher&quot;},&quot;startTab&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;Doppler&quot;,&quot;options&quot;:[&quot;Doppler&quot;,&quot;Galaxy spectra&quot;,&quot;Expansion&quot;,&quot;Big Bang&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lab&quot;},&quot;showResults&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Sections on load&quot;},&quot;showQuiz&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Sections on load&quot;}}">
+class Component extends DCLogic {
+  componentDidMount() { this._lab = startLab(this.props); }
+  componentDidUpdate(prev) {
+    if (!this._lab) return;
+    for (const [p, sec] of [["showResults", "res"], ["showQuiz", "quiz"]])
+      if (prev[p] !== this.props[p] && this.props[p] !== undefined) this._lab.setSection(sec, !!this.props[p]);
+    if (prev.teacherMode !== this.props.teacherMode) this._lab.setTeacher(!!this.props.teacherMode);
+    if (prev.startTab !== this.props.startTab && this.props.startTab) this._lab.goTab(this.props.startTab);
+  }
+  componentWillUnmount() { this._lab && this._lab.stop(); }
+  renderVals() { return {}; }
+}
+const I = {
+  play: '<svg width="13" height="13" viewBox="0 0 14 14" aria-hidden="true"><path d="M3 1.5v11l9.5-5.5z" fill="currentColor"/></svg>',
+  pause: '<svg width="13" height="13" viewBox="0 0 14 14" aria-hidden="true"><rect x="2.5" y="1.5" width="3.4" height="11" rx="1" fill="currentColor"/><rect x="8.1" y="1.5" width="3.4" height="11" rx="1" fill="currentColor"/></svg>',
+  rew: '<svg width="16" height="13" viewBox="0 0 16 14" aria-hidden="true"><path d="M8 1.5v11L1.5 7zM15 1.5v11L8.5 7z" fill="currentColor"/></svg>',
+  fwd: '<svg width="16" height="13" viewBox="0 0 16 14" aria-hidden="true"><path d="M1 1.5v11L7.5 7zM8 1.5v11L14.5 7z" fill="currentColor"/></svg>',
+  right: '<svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-1px"><path d="M1.5 6h12.5M9.5 1.5 14 6l-4.5 4.5"/></svg>',
+  left: '<svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-1px"><path d="M14.5 6H2M6.5 1.5 2 6l4.5 4.5"/></svg>',
+  tick: '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:none"><path d="M3 8.5 6.5 12 13 4.5"/></svg>',
+  cross: '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true" style="flex:none"><path d="M4 4l8 8M12 4l-8 8"/></svg>',
+  eye: '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M1.5 8S4 3.5 8 3.5 14.5 8 14.5 8 12 12.5 8 12.5 1.5 8 1.5 8z"/><circle cx="8" cy="8" r="2"/></svg>',
+  eyeOff: '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M1.5 8S4 3.5 8 3.5 14.5 8 14.5 8 12 12.5 8 12.5 1.5 8 1.5 8z"/><circle cx="8" cy="8" r="2"/><path d="M2.5 2.5l11 11"/></svg>',
+  zoom: '<svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="7" cy="7" r="5"/><path d="M11 11l3.5 3.5M5 7h4M7 5v4"/></svg>',
+  unzoom: '<svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="7" cy="7" r="5"/><path d="M11 11l3.5 3.5M5 7h4"/></svg>',
+};
+const KBD = (t) => `<span style="font:500 11px/1 var(--st-mono);letter-spacing:0.04em;color:var(--st-caption);border:1px solid var(--st-rule-strong);border-radius:4px;padding:4px 6px;display:inline-flex;align-items:center;white-space:nowrap">${t}</span>`;
+
+function startLab(props) {
+  const $ = (id) => document.getElementById(id);
+  const cv = $("stage"), cx = cv.getContext("2d");
+  const CK = 300000, H0 = 21.5, LAB = [410.2, 434.0, 486.1, 656.3], LNAME = ["Hδ", "Hγ", "Hβ", "Hα"], HA = 656.3, LAM0 = 530;
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  const fmtN = (n) => Math.round(n).toLocaleString("en-GB").replace(/,/g, "\u00A0");
+  let C = {};
+  function readColors() {
+    const cs = getComputedStyle(document.documentElement), v = (n, d) => cs.getPropertyValue(n).trim() || d;
+    C = { paper: v("--st-paper", "#FFFDF8"), ink: v("--st-ink", "#1A1714"), muted: v("--st-muted", "#6E655D"), caption: v("--st-caption", "#7A6E5F"), grid: v("--st-paper-grid", "#F2E8D6"),
+      accent: v("--st-accent", "#E4572E"), accentText: v("--st-accent-text", "#A93411"), ember: v("--st-ember", "#F2946E"), room: v("--st-room", "#15110C"), panel: v("--st-room-panel", "#1E1913"),
+      rtext: v("--st-room-text", "#B7AA98"), rmuted: v("--st-room-muted", "#8E8272"), rline: v("--st-room-line", "#3E362C"), rlineS: v("--st-room-line-strong", "#4A4036"), cream: v("--st-cream", "#FBF3E6"), blue: v("--rsl-blue", "#3F6E95") };
+  }
+  readColors(); setTimeout(() => { readColors(); drawPlot(); }, 400);
+  new MutationObserver(() => { readColors(); drawPlot(); }).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+
+  function rng(seed) { return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+  function wlRGB(nm) {
+    let r = 0, g = 0, b = 0;
+    if (nm < 380) { r = 0.45; b = 0.75; } else if (nm < 440) { r = (440 - nm) / 60; b = 1; } else if (nm < 490) { g = (nm - 440) / 50; b = 1; } else if (nm < 510) { g = 1; b = (510 - nm) / 20; } else if (nm < 580) { r = (nm - 510) / 70; g = 1; } else if (nm < 645) { r = 1; g = (645 - nm) / 65; } else r = 1;
+    let f = 1; if (nm < 380) f = Math.max(0.25, 0.45 - (380 - nm) / 200); else if (nm < 420) f = 0.35 + 0.65 * (nm - 380) / 40; else if (nm > 780) f = Math.max(0.16, 0.35 - (nm - 780) / 300); else if (nm > 700) f = 0.35 + 0.65 * (780 - nm) / 80;
+    return [r * f, g * f, b * f];
+  }
+  const WLC = []; for (let nm = 300; nm <= 950; nm++) { const [r, g, b] = wlRGB(nm); WLC.push(`rgb(${Math.round(r * 255)},${Math.round(g * 255)},${Math.round(b * 255)})`); }
+  const wlStr = (nm) => WLC[clamp(Math.round(nm), 300, 950) - 300];
+  const wlName = (nm) => nm < 380 ? "ultraviolet" : nm < 450 ? "violet" : nm < 495 ? "blue" : nm < 570 ? "green" : nm < 590 ? "yellow" : nm < 620 ? "orange" : nm <= 750 ? "red" : "infrared";
+
+  // ---------- canvas ----------
+  let W = 0, H = 0, dpr = 1, bgC = null;
+  const STARS = (() => { const R = rng(7), a = []; for (let i = 0; i < 280; i++) a.push({ x: R(), y: R(), r: R() < 0.9 ? 1 : 1.8, a: 0.15 + R() * 0.55 }); return a; })();
+  function makeSprite(core, mid) { const c = document.createElement("canvas"); c.width = c.height = 64; const x = c.getContext("2d"), g = x.createRadialGradient(32, 32, 0, 32, 32, 32); g.addColorStop(0, core); g.addColorStop(0.14, core); g.addColorStop(0.38, mid); g.addColorStop(1, "rgba(0,0,0,0)"); x.fillStyle = g; x.fillRect(0, 0, 64, 64); return c; }
+  const SPR = makeSprite("rgba(255,248,232,1)", "rgba(236,206,168,0.42)"), SPR_MW = makeSprite("rgba(255,240,205,1)", "rgba(242,148,110,0.55)");
+  const NOISE = (() => { const c = document.createElement("canvas"); c.width = 72; c.height = 44; const x = c.getContext("2d"), R = rng(5); for (let i = 0; i < 72; i++) for (let j = 0; j < 44; j++) { x.fillStyle = `rgba(${R() < 0.5 ? "0,0,0" : "255,255,255"},${(R() * 0.5).toFixed(3)})`; x.fillRect(i, j, 1, 1); } return c; })();
+  function buildBg() {
+    bgC = document.createElement("canvas"); bgC.width = Math.max(1, Math.round(W * dpr)); bgC.height = Math.max(1, Math.round(H * dpr));
+    const x = bgC.getContext("2d"); x.scale(dpr, dpr);
+    const g = x.createRadialGradient(W * 0.5, H * 0.38, 0, W * 0.5, H * 0.38, Math.max(W, H) * 0.78); g.addColorStop(0, "#2C261F"); g.addColorStop(0.55, "#191510"); g.addColorStop(1, "#100D0A");
+    x.fillStyle = g; x.fillRect(0, 0, W, H);
+    for (const s of STARS) { x.globalAlpha = s.a; x.fillStyle = "#F5E6C8"; x.fillRect(s.x * W, s.y * H, s.r, s.r); }
+  }
+  const paintBg = () => { if (bgC) cx.drawImage(bgC, 0, 0, W, H); };
+  function resize() {
+    dpr = Math.min(2, window.devicePixelRatio || 1); const r = cv.getBoundingClientRect(); if (!r.width) return;
+    W = r.width; H = r.height; cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); cx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    buildBg(); stripCache.clear(); buildLat(); requestAnimationFrame(drawPlot);
+  }
+  const UI = '"Instrument Sans", system-ui, sans-serif', MONO = '"DM Mono", ui-monospace, monospace';
+  function rr(ctx, x, y, w, h, r) { ctx.beginPath(); ctx.roundRect ? ctx.roundRect(x, y, w, h, r) : ctx.rect(x, y, w, h); }
+  function label(ctx, t, x, y, col, size = 15, align = "left", weight = 600, bg = null, fam = UI) {
+    ctx.font = `${weight} ${size}px ${fam}`; if ("letterSpacing" in ctx) ctx.letterSpacing = fam === MONO ? "1.1px" : "0px";
+    ctx.textAlign = align; ctx.textBaseline = "middle";
+    if (bg) { const m = ctx.measureText(t).width, p = 6, bx = align === "center" ? x - m / 2 : align === "right" ? x - m : x; ctx.fillStyle = bg; rr(ctx, bx - p, y - size * 0.78, m + p * 2, size * 1.56, 6); ctx.fill(); }
+    ctx.fillStyle = col; ctx.fillText(t, x, y);
+  }
+  function arrow(ctx, x1, y1, x2, y2, col, lw, head = 9, both = false) {
+    ctx.strokeStyle = col; ctx.fillStyle = col; ctx.lineWidth = lw; ctx.lineCap = "round"; ctx.setLineDash([]);
+    ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+    const tip = (ax, ay, bx, by) => { const a = Math.atan2(by - ay, bx - ax); ctx.beginPath(); ctx.moveTo(bx, by); ctx.lineTo(bx - head * Math.cos(a - 0.45), by - head * Math.sin(a - 0.45)); ctx.lineTo(bx - head * Math.cos(a + 0.45), by - head * Math.sin(a + 0.45)); ctx.closePath(); ctx.fill(); };
+    tip(x1, y1, x2, y2); if (both) tip(x2, y2, x1, y1);
+  }
+  function drawGal(x, y, r, tilt, rot, al, spr) { cx.save(); cx.globalAlpha = al; cx.translate(x, y); cx.rotate(rot); cx.scale(1, tilt); cx.drawImage(spr, -r, -r, 2 * r, 2 * r); cx.restore(); }
+  function caption(t, sub) { label(cx, t, 16, 22, C.cream, 12, "left", 500, null, MONO); if (sub) label(cx, sub, 16, 42, C.rmuted, 13, "left", 500); }
+  const ROOM_INK = "#1A1714";
+
+  // ---------- spectrum strips ----------
+  const stripCache = new Map();
+  function strip(key, w, h, lo, hi, f, broad, seed) {
+    const pw = Math.max(2, Math.round(w * dpr)), ph = Math.max(2, Math.round(h * dpr)), k = [key, pw, ph, lo, hi, f.toFixed(6), broad ? 1 : 0].join("|");
+    let c = stripCache.get(k); if (c) return c;
+    if (stripCache.size > 80) stripCache.clear();
+    const row = document.createElement("canvas"); row.width = pw; row.height = 1;
+    const rx = row.getContext("2d"), img = rx.createImageData(pw, 1), R = rng(seed || 1), sg = broad ? 1.25 : 0.6, dep = [0.6, 0.7, 0.8, 0.92];
+    for (let i = 0; i < pw; i++) {
+      const nm = lo + (hi - lo) * (i + 0.5) / pw; let tr = 1;
+      for (let j = 0; j < 4; j++) { const d = (nm - LAB[j] * f) / sg; tr *= 1 - dep[j] * Math.exp(-0.5 * d * d); }
+      const nz = seed ? 0.93 + R() * 0.12 : 1, [r, g, b] = wlRGB(nm), m = tr * nz * 255;
+      img.data[i * 4] = Math.min(255, r * m); img.data[i * 4 + 1] = Math.min(255, g * m); img.data[i * 4 + 2] = Math.min(255, b * m); img.data[i * 4 + 3] = 255;
+    }
+    rx.putImageData(img, 0, 0);
+    c = document.createElement("canvas"); c.width = pw; c.height = ph; const x = c.getContext("2d"); x.imageSmoothingEnabled = false; x.drawImage(row, 0, 0, pw, ph);
+    const gr = x.createLinearGradient(0, 0, 0, ph); gr.addColorStop(0, "rgba(0,0,0,0.3)"); gr.addColorStop(0.22, "rgba(0,0,0,0)"); gr.addColorStop(0.78, "rgba(0,0,0,0)"); gr.addColorStop(1, "rgba(0,0,0,0.3)"); x.fillStyle = gr; x.fillRect(0, 0, pw, ph);
+    stripCache.set(k, c); return c;
+  }
+
+  // ---------- state ----------
+  const REDUCE = !!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches);
+  let mode = "S", alive = true, hintMsg = "", hintT = 0, teacher = !!props.teacherMode || new URLSearchParams(location.search).get("teacher") === "1", lastFit = null;
+  let alevel = false;   // always opens on GCSE; never remembered
+  const MPC = 3.26;     // 1 Mpc = 3.26 Mly
+  const sf2 = (x) => String(Number(x.toPrecision(2)));
+  const hint = (m) => { hintMsg = m; hintT = performance.now(); $("s-msg").textContent = m; };
+
+  // ===== Doppler =====
+  const D = { vx: -0.2, playing: !REDUCE, t: 0, xw: 0, next: 0, fronts: [], slow: false, lam: true, drag: false, px: 0 };
+  // Below 520px two spectrum panels cannot sit side by side: their titles collide. They stack, shorter.
+  const dPanels = () => { const stack = W < 520, ph = stack ? 66 : 92, gap = 8; return { stack, ph, gap, top: H - 12 - (stack ? 2 * ph + gap : ph) }; };
+  const dGeom = () => ({ xs: W * 0.5, ys: Math.max(120, (dPanels().top - 16) * 0.5), c: Math.max(110, W * 0.13), lp: Math.max(30, Math.min(50, H * 0.07)) });
+  function stepD(dt) {
+    const g = dGeom(); D.t += dt; D.xw += D.vx * g.c * dt; const T = g.lp / g.c;
+    if (D.next < D.t - 1) D.next = D.t;
+    while (D.next <= D.t) { D.fronts.push({ te: D.next, xw: D.xw - D.vx * g.c * (D.t - D.next), vx: D.vx }); D.next += T; }
+    const maxR = Math.hypot(W, H); D.fronts = D.fronts.filter((f) => (D.t - f.te) * g.c < maxR);
+  }
+  const prewarmD = () => { D.fronts = []; D.t = 0; D.next = 0; D.xw = 0; for (let k = 0; k < 160; k++) stepD(0.05); };
+  function specPanel(x, y, w, h, title, f, compact) {
+    cx.fillStyle = "rgba(21,17,12,0.9)"; rr(cx, x, y, w, h, 10); cx.fill(); cx.strokeStyle = C.rline; cx.lineWidth = 1; cx.stroke();
+    const st = f > 1.002 ? "RED-SHIFT" : f < 0.998 ? "BLUE-SHIFT" : "NO SHIFT", pad = compact ? 10 : 14, ty = compact ? 13 : 17;
+    label(cx, title, x + pad, y + ty, C.rtext, 11, "left", 500, null, MONO);
+    label(cx, st, x + w - pad, y + ty, f > 1.002 ? C.ember : f < 0.998 ? "#9FC3F0" : C.rtext, 11, "right", 600, null, MONO);
+    const lx = x + (compact ? 50 : 58), sw = w - (compact ? 60 : 72), a = compact ? [26, 12, 32] : [34, 16, 42], b = compact ? [42, 16, 50] : [57, 22, 68];
+    label(cx, "LAB", x + pad, y + a[2], C.rmuted, 10.5, "left", 500, null, MONO); cx.drawImage(strip("dl", sw, a[1], 380, 750, 1, false, 0), lx, y + a[0], sw, a[1]);
+    label(cx, "SEEN", x + pad, y + b[2], C.rmuted, 10.5, "left", 500, null, MONO); cx.drawImage(strip("ds", sw, b[1], 380, 750, f, false, 0), lx, y + b[0], sw, b[1]);
+  }
+  function drawD() {
+    paintBg(); const g = dGeom(), maxR = Math.hypot(W, H) * 0.85;
+    cx.lineWidth = 2.2; cx.lineCap = "butt";
+    for (const f of D.fronts) {
+      const r = (D.t - f.te) * g.c; if (r < 3) continue;
+      const X = g.xs + (f.xw - D.xw), al = Math.max(0, 1 - r / maxR); if (al <= 0) continue;
+      cx.globalAlpha = al;
+      // One colour all round when the source is still; otherwise 32 pieces, and no drawing of pieces off the canvas.
+      const N = Math.abs(f.vx) < 0.004 ? 1 : 32, reach = r * Math.PI / N + 2;
+      for (let k = 0; k < N; k++) {
+        const a0 = k / N * 2 * Math.PI, a1 = (k + 1) / N * 2 * Math.PI + 0.004, mid = (a0 + a1) / 2, mx = X + r * Math.cos(mid), my = g.ys + r * Math.sin(mid);
+        if (mx < -reach || mx > W + reach || my < -reach || my > H + reach) continue;
+        cx.strokeStyle = wlStr(LAM0 * (1 - f.vx * Math.cos(mid))); cx.beginPath(); cx.arc(X, g.ys, r, a0, a1); cx.stroke();
+      }
+    }
+    cx.globalAlpha = 1;
+    const xY = W - 54, xO = 54;
+    for (const [x, t] of [[xY, "YOU"], [xO, "OTHER SIDE"]]) {
+      cx.fillStyle = C.panel; cx.beginPath(); cx.arc(x, g.ys, 13, 0, Math.PI * 2); cx.fill(); cx.strokeStyle = C.cream; cx.lineWidth = 2; cx.stroke();
+      cx.fillStyle = C.cream; cx.beginPath(); cx.arc(x, g.ys, 4, 0, Math.PI * 2); cx.fill();
+      label(cx, t, x, g.ys + 30, C.cream, 11, "center", 500, C.room, MONO);
+    }
+    if (D.lam) {
+      const right = D.fronts.map((f) => g.xs + (f.xw - D.xw) + (D.t - f.te) * g.c).sort((a, b) => a - b);
+      const left = D.fronts.map((f) => g.xs + (f.xw - D.xw) - (D.t - f.te) * g.c).sort((a, b) => a - b);
+      const br = (arr, target, y) => { for (let i = 0; i < arr.length - 1; i++) if (arr[i] <= target && arr[i + 1] >= target) { arrow(cx, arr[i], y, arr[i + 1], y, C.cream, 1.6, 7, true); label(cx, "λ", (arr[i] + arr[i + 1]) / 2, y - 14, C.cream, 15, "center", 600, C.room); return; } };
+      const off = Math.min(130, W * 0.17), ly = W < 520 ? g.ys + 68 : g.ys - 44; br(right, xY - off, ly); br(left, xO + off, ly);
+    }
+    const sg = 30; cx.drawImage(SPR_MW, g.xs - sg, g.ys - sg, sg * 2, sg * 2);
+    // Each wave started where the source WAS: a dot at the centre of each of the last 8.
+    const trail = D.fronts.slice(-8); cx.fillStyle = C.cream;
+    trail.forEach((f, i) => { const x = g.xs + (f.xw - D.xw); if (Math.abs(x - g.xs) < 4) return; cx.globalAlpha = 0.2 + 0.55 * (i + 1) / trail.length; cx.beginPath(); cx.arc(x, g.ys, 2, 0, Math.PI * 2); cx.fill(); });
+    cx.globalAlpha = 1;
+    if (Math.abs(D.vx) > 0.004) { const L = D.vx * W * 0.55; arrow(cx, g.xs, g.ys - 46, g.xs + L, g.ys - 46, C.ember, 3, 11); label(cx, `${Math.abs(D.vx).toFixed(2)} c`, g.xs + L / 2, g.ys - 66, C.ember, 14, "center", 600, C.room, MONO); }
+    label(cx, "SOURCE", g.xs, g.ys + 38, C.cream, 11, "center", 500, C.room, MONO);
+    if (D.drag) { cx.setLineDash([4, 4]); cx.strokeStyle = C.rtext; cx.lineWidth = 1.2; cx.beginPath(); cx.moveTo(g.xs, g.ys); cx.lineTo(D.px, g.ys); cx.stroke(); cx.setLineDash([]); }
+    const dp = dPanels(), ph = dp.ph, py = H - ph - 12;
+    if (dp.stack) { specPanel(12, dp.top, W - 24, ph, "OTHER SIDE SEES", 1 + D.vx, true); specPanel(12, py, W - 24, ph, "YOU SEE", 1 - D.vx, true); }
+    else { const pw = Math.min(460, (W - 36) / 2); specPanel(12, py, pw, ph, "OTHER SIDE SEES", 1 + D.vx); specPanel(W - 12 - pw, py, pw, ph, "YOU SEE", 1 - D.vx); }
+    caption("DOPPLER EFFECT", "Drag the source. The view follows it.");
+  }
+
+  // ===== Galaxy spectra =====
+  const GAL = [
+    { n: "A", d: 140, pv: 420, x: 0.15, y: 0.30, t: 0.55, rot: 0.4 }, { n: "B", d: 260, pv: -610, x: 0.70, y: 0.22, t: 0.35, rot: -0.6 },
+    { n: "C", d: 390, pv: 250, x: 0.40, y: 0.50, t: 0.7, rot: 1.1 }, { n: "D", d: 520, pv: -380, x: 0.90, y: 0.52, t: 0.45, rot: 0.2 },
+    { n: "E", d: 660, pv: 700, x: 0.25, y: 0.82, t: 0.6, rot: -1.0 }, { n: "F", d: 800, pv: -520, x: 0.60, y: 0.36, t: 0.5, rot: 2.0 },
+    { n: "G", d: 950, pv: 310, x: 0.06, y: 0.62, t: 0.75, rot: 0.9 }, { n: "H", d: 1120, pv: -450, x: 0.84, y: 0.84, t: 0.5, rot: -0.3 },
+    { n: "Andromeda", d: 2.5, v: -300, x: 0.53, y: 0.76, t: 0.32, rot: -0.5, big: true },
+  ];
+  GAL.forEach((g, i) => { if (g.v === undefined) g.v = H0 * g.d + g.pv; g.f = 1 + g.v / CK; g.lam = HA * g.f; g.seed = 100 + i * 17; });
+  const gName = (g) => g.big ? "Andromeda" : "Galaxy " + g.n;
+  const mpcOf = (g) => Number((g.d / MPC).toPrecision(3));
+  const gDist = (g) => alevel ? `${mpcOf(g)} Mpc` : `${g.d} Mly`;
+  const fmtD = (mly) => alevel ? `${fmtN(mly / MPC)} Mpc` : `${fmtN(mly)} Mly`;
+  const S = { sel: null, hover: null, zoom: false, cursor: HA, shift: true, drag: false };
+  const sGeom = () => {
+    const skyH = Math.max(Math.round(H * 0.52), H - 268), lw = Math.max(78, Math.min(118, W * 0.13)), x0 = lw, x1 = W - 22, sh = Math.max(30, Math.min(62, (H - skyH - 144) / 2));
+    // From 720px the graph grows inside the sky, and the galaxies keep to the left of it.
+    const pw = W >= 720 ? clamp(W * 0.36, 270, 440) : 0, skyW = pw ? W - pw - 20 : W;
+    // Andromeda's whole shift is 0.66 nm, so zoom goes in further on it or it cannot be read.
+    const fine = S.zoom && S.sel && S.sel.big;
+    const labY = skyH + 44, galY = labY + sh + 34, axY = galY + sh, [lo, hi] = fine ? [650, 662] : S.zoom ? [630, 720] : [380, 750];
+    return { skyH, skyW, pw, fine, lw, x0, x1, sh, labY, galY, axY, lo, hi, X: (nm) => x0 + (nm - lo) / (hi - lo) * (x1 - x0), N: (px) => lo + (px - x0) / (x1 - x0) * (hi - lo) };
+  };
+  const galPos = (g, G) => ({ x: 26 + g.x * (G.skyW - 52), y: 30 + g.y * (G.skyH - 56), r: g.big ? Math.min(G.skyW, G.skyH) * 0.09 : Math.max(5, 26 * Math.pow(140 / g.d, 0.72)) });
+  const galAt = (p, G) => { let best = null, bd = 1e9; for (const g of GAL) { const q = galPos(g, G), d = Math.hypot(q.x - p.x, q.y - p.y); if (d < q.r * (g.big ? 1.3 : 1) + 18 && d < bd) { bd = d; best = g; } } return best; };
+  const setCursor = (nm) => { const G = sGeom(); S.cursor = Math.round(clamp(nm, G.lo, G.hi) * 10) / 10; };
+  const selectGal = (g) => { S.sel = g; setCursor(g.big ? HA : S.cursor); };
+  function drawS() {
+    const G = sGeom(); paintBg();
+    const rec = new Set(rows.map((r) => r.g));
+    GAL.forEach((g, gi) => {
+      const p = galPos(g, G), al = g.big ? 0.95 : Math.min(1, 0.4 + 0.6 * Math.pow(140 / g.d, 0.55));
+      if (g.big) drawGal(p.x, p.y, p.r * 2.6, g.t, g.rot, 0.35, SPR);
+      drawGal(p.x, p.y, p.r * 1.6, g.t, g.rot, al, SPR);
+      const sel = S.sel === g, hov = S.hover === g;
+      if (sel || hov) { cx.strokeStyle = sel ? C.accent : C.rlineS; cx.lineWidth = sel ? 2.5 : 1.5; cx.beginPath(); cx.arc(p.x, p.y, p.r * (g.big ? 1.25 : 1) + 12, 0, Math.PI * 2); cx.stroke(); }
+      const lx = p.x + p.r * (g.big ? 1.25 : 1) + 16, ly = p.y - p.r * 0.5 - 4;
+      label(cx, g.n, lx, ly, sel ? C.cream : C.rtext, g.big ? 13 : 15, "left", 600);
+      if (rec.has(gi)) { cx.strokeStyle = C.ember; cx.lineWidth = 2; cx.lineCap = "round"; cx.lineJoin = "round"; const tx = lx + (g.big ? 74 : 13), ty = ly; cx.beginPath(); cx.moveTo(tx, ty); cx.lineTo(tx + 3, ty + 3); cx.lineTo(tx + 8, ty - 4); cx.stroke(); }
+    });
+    caption("SKY SURVEY", G.skyW < 390 ? "In this survey, fainter means further away." : "Click a galaxy. In this survey, fainter means further away.");
+    if (G.pw) {
+      const px = G.skyW + 10, py = 10, ph = G.skyH - 20;
+      cx.fillStyle = "rgba(21,17,12,0.92)"; rr(cx, px, py, G.pw, ph, 10); cx.fill(); cx.strokeStyle = C.rline; cx.lineWidth = 1; cx.stroke();
+      cx.save(); cx.translate(px, py);
+      const P = roomPal(); paintPlot(cx, G.pw, ph, P);
+      label(cx, alevel ? (G.pw < 300 ? "VELOCITY vs DISTANCE" : "VELOCITY AGAINST DISTANCE") : "SHIFT AGAINST DISTANCE", 12, 14, C.rtext, 10.5, "left", 500, null, MONO);
+      const tx = P.m.l + 8, ty = P.m.t + 10;
+      if (lastFit && alevel) { label(cx, `H = ${sf2(lastFit.H)} km s⁻¹ Mpc⁻¹`, tx, ty, C.cream, 12, "left", 600); label(cx, `Age ≈ ${sf2(lastFit.age)} billion years`, tx, ty + 17, C.cream, 12, "left", 600); }
+      else if (lastFit) { label(cx, "The further away,", tx, ty, C.cream, 12, "left", 600); label(cx, "the bigger the shift.", tx, ty + 17, C.cream, 12, "left", 600); }
+      else label(cx, needMore(), tx, ty, C.rtext, 12, "left", 500);
+      cx.restore();
+    }
+    cx.fillStyle = C.panel; cx.fillRect(0, G.skyH, W, H - G.skyH); cx.fillStyle = C.rline; cx.fillRect(0, G.skyH, W, 1);
+    label(cx, "SPECTROMETER", 16, G.skyH + 18, C.cream, 11.5, "left", 500, null, MONO);
+    label(cx, G.fine ? "ZOOM · 650–662 nm" : S.zoom ? "ZOOM · 630–720 nm" : "380–750 nm", W - 22, G.skyH + 18, C.rmuted, 11, "right", 500, null, MONO);
+    const sw = G.x1 - G.x0;
+    cx.drawImage(strip("lab", sw, G.sh, G.lo, G.hi, 1, false, 0), G.x0, G.labY, sw, G.sh);
+    label(cx, "LAB", 16, G.labY + G.sh / 2 - 8, C.cream, 14, "left", 600); label(cx, "hydrogen", 16, G.labY + G.sh / 2 + 10, C.rmuted, 12, "left", 500);
+    LAB.forEach((L, i) => { if (L >= G.lo && L <= G.hi) label(cx, LNAME[i] + (i === 3 || S.zoom ? " " + L.toFixed(1) : ""), G.X(L), G.labY - 11, i === 3 ? C.ember : C.rtext, W < 500 ? 10.5 : 12, "center", 600); });
+    if (S.sel) {
+      const g = S.sel;
+      cx.drawImage(strip("g" + g.n, sw, G.sh, G.lo, G.hi, g.f, true, g.seed), G.x0, G.galY, sw, G.sh);
+      label(cx, g.big ? "ANDROMEDA" : "GALAXY " + g.n, 16, G.galY + G.sh / 2 - 8, C.cream, g.big ? (W < 500 ? 10 : 11.5) : (W < 500 ? 11 : 14), "left", 600);
+      label(cx, gDist(g), 16, G.galY + G.sh / 2 + 10, C.rmuted, 12, "left", 500);
+      if (S.shift) LAB.forEach((L) => { const a = L, b = L * g.f; if (a >= G.lo && a <= G.hi && b >= G.lo && b <= G.hi) { cx.setLineDash([4, 4]); cx.strokeStyle = C.ember; cx.lineWidth = 1.5; cx.beginPath(); cx.moveTo(G.X(a), G.labY + G.sh + 2); cx.lineTo(G.X(b), G.galY - 4); cx.stroke(); cx.setLineDash([]); arrow(cx, G.X(b) - (G.X(b) - G.X(a)) * 0.02, G.galY - 9, G.X(b), G.galY - 3, C.ember, 1.5, 7); } });
+      if (teacher) { const xt = G.X(g.lam); cx.fillStyle = C.cream; cx.beginPath(); cx.moveTo(xt, G.galY + G.sh - 8); cx.lineTo(xt - 5, G.galY + G.sh); cx.lineTo(xt + 5, G.galY + G.sh); cx.fill(); }
+    } else {
+      cx.setLineDash([5, 4]); cx.strokeStyle = C.rlineS; cx.lineWidth = 1.2; rr(cx, G.x0, G.galY, sw, G.sh, 6); cx.stroke(); cx.setLineDash([]);
+      label(cx, "Click a galaxy", G.x0 + sw / 2, G.galY + G.sh / 2, C.rtext, 14, "center", 600);
+      label(cx, "GALAXY", 16, G.galY + G.sh / 2, C.rmuted, 12, "left", 500, null, MONO);
+    }
+    const step = G.fine ? 2 : S.zoom ? 10 : 50, minor = G.fine ? 0.5 : 1;
+    cx.fillStyle = C.rlineS; for (let nm = Math.ceil(G.lo / step) * step; nm <= G.hi; nm += step) { const x = G.X(nm); cx.fillRect(x, G.axY + 1, 1, 6); label(cx, String(nm), x, G.axY + 17, C.rmuted, 11, "center", 500, null, MONO); }
+    if (S.zoom) { cx.fillStyle = C.rline; for (let nm = Math.ceil(G.lo); nm <= G.hi; nm += minor) if (nm % step) cx.fillRect(G.X(nm), G.axY + 1, 1, 3); }
+    const xc = G.X(S.cursor);
+    cx.strokeStyle = "rgba(242,148,110,0.45)"; cx.lineWidth = 1; cx.setLineDash([3, 3]); cx.beginPath(); cx.moveTo(xc, G.labY); cx.lineTo(xc, G.labY + G.sh); cx.stroke(); cx.setLineDash([]);
+    cx.strokeStyle = C.cream; cx.lineWidth = 3; cx.beginPath(); cx.moveTo(xc, G.galY - 2); cx.lineTo(xc, G.axY + 26); cx.stroke();
+    cx.strokeStyle = C.accent; cx.lineWidth = 1.4; cx.beginPath(); cx.moveTo(xc, G.galY - 2); cx.lineTo(xc, G.axY + 26); cx.stroke();
+    const tx = clamp(xc, G.x0 + 40, G.x1 - 40);
+    cx.fillStyle = C.accent; cx.beginPath(); cx.moveTo(xc, G.axY + 26); cx.lineTo(xc - 7, G.axY + 36); cx.lineTo(xc + 7, G.axY + 36); cx.fill();
+    label(cx, `${S.cursor.toFixed(1)} nm`, tx, G.axY + 50, ROOM_INK, 14, "center", 600, C.cream, MONO);
+  }
+
+  // ===== Expansion =====
+  const E = { t: 0, playing: !REDUCE, hold: 0, home: { i: 0, j: 0 }, cam: { x: 0, y: 0 }, grid: true, arrows: true, measure: true, light: false };
+  let LAT = [], LMAP = new Map(), latN = 0;
+  const eS0 = () => Math.max(64, Math.min(140, Math.min(W, H) / 5.4));
+  function buildLat() {
+    const N = Math.ceil(Math.max(W, H) / (2 * eS0())) + 6; if (N === latN) return; latN = N;
+    const R = rng(11); LAT = []; LMAP = new Map();
+    for (let j = -N; j <= N; j++) for (let i = -N; i <= N; i++) { const jit = j === 0 ? 0 : 0.07, g = { i, j, x: i + (j & 1) * 0.5 + (R() - 0.5) * 2 * jit, y: j * 0.866 + (R() - 0.5) * 2 * jit, rot: R() * 3, t: 0.45 + R() * 0.4 }; LAT.push(g); LMAP.set(i + "," + j, g); }
+  }
+  const latAt = (i, j) => LMAP.get(i + "," + j);
+  const eA = () => Math.pow(1.8, E.t);
+  // The light has arrived by 0.94: its wavelength stops stretching there.
+  const eLam = () => 430 * Math.pow(1.8, Math.min(E.t, 0.94));
+  const eHome = () => latAt(E.home.i, E.home.j) || latAt(0, 0);
+  // Narrow screens: move YOU off-centre so that what is being watched stays on the canvas.
+  const eX0 = () => W >= 700 ? W / 2 : E.light ? W * 0.8 : E.measure ? W * 0.2 : W / 2;
+  const eScreen = (g) => { const a = eA(), s = eS0(); return { x: eX0() + (g.x - E.cam.x) * a * s, y: H / 2 + (g.y - E.cam.y) * a * s }; };
+  const ePQ = () => { const h = eHome(), P = latAt(h.i + 1, h.j), Q = latAt(h.i + 2, h.j); return { h, P, Q, dP: Math.hypot(P.x - h.x, P.y - h.y) * 100, dQ: Math.hypot(Q.x - h.x, Q.y - h.y) * 100 }; };
+  function stepE(dt) { if (E.t < 1) E.t = Math.min(1, E.t + dt / 8); else { E.hold += dt; if (E.hold > 1.8) { E.t = 0; E.hold = 0; } } }
+  function eGalAt(p) { let best = null, bd = 24; for (const g of LAT) { if (Math.abs(g.i) > latN - 4 || Math.abs(g.j) > latN - 4) continue; const q = eScreen(g), d = Math.hypot(q.x - p.x, q.y - p.y); if (d < bd) { bd = d; best = g; } } return best; }
+  function drawE() {
+    paintBg(); const s = eS0(), a = eA(), h = eHome();
+    E.cam.x += (h.x - E.cam.x) * 0.14; E.cam.y += (h.y - E.cam.y) * 0.14;
+    const hs = eScreen(h);
+    if (E.grid) {
+      cx.strokeStyle = "rgba(183,170,152,0.14)"; cx.lineWidth = 1; cx.beginPath();
+      const span = Math.max(W, H) / (2 * a * s) + 2;
+      for (let k = Math.floor(E.cam.x - span); k <= Math.ceil(E.cam.x + span); k++) { const x = eX0() + (k + 0.25 - E.cam.x) * a * s; cx.moveTo(x, 0); cx.lineTo(x, H); }
+      for (let k = Math.floor(E.cam.y / 0.866 - span); k <= Math.ceil(E.cam.y / 0.866 + span); k++) { const y = H / 2 + ((k + 0.5) * 0.866 - E.cam.y) * a * s; cx.moveTo(0, y); cx.lineTo(W, y); }
+      cx.stroke();
+    }
+    const vis = [];
+    for (const g of LAT) { const q = eScreen(g); if (q.x > -40 && q.x < W + 40 && q.y > -40 && q.y < H + 40) vis.push([g, q]); }
+    if (E.arrows) for (const [g, q] of vis) {
+      if (g === h) continue; const dx = q.x - hs.x, dy = q.y - hs.y, L = Math.hypot(dx, dy); if (L < 1) continue;
+      const ux = dx / L, uy = dy / L, len = L * 0.2; cx.globalAlpha = 0.8; arrow(cx, q.x + ux * 14, q.y + uy * 14, q.x + ux * (14 + len), q.y + uy * (14 + len), C.ember, 2, 7);
+    }
+    cx.globalAlpha = 1;
+    const mw = latAt(0, 0);
+    for (const [g, q] of vis) drawGal(q.x, q.y, g === h || g === mw ? 17 : 14, g.t, g.rot, 0.95, g === h || g === mw ? SPR_MW : SPR);
+    if (E.measure) {
+      const { P, Q, dP, dQ } = ePQ(), ps = eScreen(P), qs = eScreen(Q);
+      cx.strokeStyle = "rgba(251,243,230,0.55)"; cx.lineWidth = 1.5; cx.setLineDash([5, 4]); cx.beginPath(); cx.moveTo(hs.x, hs.y); cx.lineTo(qs.x, qs.y); cx.stroke(); cx.setLineDash([]);
+      // Q's labels sit a row further out, so P's and Q's can never touch while they are still close.
+      for (const [pt, nme, d0, rowOut] of [[ps, "P", dP, 0], [qs, "Q", dQ, 24]]) {
+        cx.strokeStyle = C.cream; cx.lineWidth = 2; cx.beginPath(); cx.arc(pt.x, pt.y, 16, 0, Math.PI * 2); cx.stroke();
+        const inside = (x, n) => clamp(x, n * 4.5 + 10, W - n * 4.5 - 10), t1 = `${nme}  ${fmtD(d0 * a)}`, t2 = `start ${fmtN(alevel ? d0 / MPC : d0)}`;
+        label(cx, t1, inside(pt.x, t1.length), pt.y - 34 - rowOut, C.cream, 13, "center", 600, C.room, MONO);
+        label(cx, t2, inside(pt.x, t2.length), pt.y + 32 + rowOut, C.rtext, 11.5, "center", 500, C.room, MONO);
+      }
+    }
+    if (E.light) {
+      const src = latAt(h.i - 3, h.j - 1), ss = eScreen(src), p = Math.min(1, E.t / 0.94), lam = eLam(), col = wlStr(lam);
+      cx.strokeStyle = C.rtext; cx.lineWidth = 1.5; cx.beginPath(); cx.arc(ss.x, ss.y, 18, 0, Math.PI * 2); cx.stroke();
+      label(cx, "EMITS 430 nm", clamp(ss.x, 62, W - 62), ss.y - 32, C.rtext, 11, "center", 500, C.room, MONO);
+      if (p < 1) {
+        const dx = hs.x - ss.x, dy = hs.y - ss.y, L = Math.hypot(dx, dy), ux = dx / L, uy = dy / L, nx = -uy, ny = ux, hx = ss.x + dx * p, hy = ss.y + dy * p, lp = 15 * a, len = Math.min(L * p, 5 * lp);
+        const path = () => { cx.beginPath(); for (let k = 0; k <= len; k += 1.5) { const w = Math.sin(2 * Math.PI * k / lp) * 8 * Math.min(1, (len - k) / lp, k / lp + 0.2); const x = hx - ux * k + nx * w, y = hy - uy * k + ny * w; k ? cx.lineTo(x, y) : cx.moveTo(x, y); } cx.stroke(); };
+        cx.lineCap = "round"; cx.globalAlpha = 0.3; cx.strokeStyle = col; cx.lineWidth = 9; path(); cx.globalAlpha = 1; cx.lineWidth = 3; path();
+        label(cx, `${Math.round(lam)} nm`, hx + nx * 30, hy + ny * 30, C.cream, 13, "center", 600, C.room, MONO);
+      } else { const t = `ARRIVES AT ${Math.round(lam)} nm · ${wlName(lam).toUpperCase()}`, tw = t.length * 4.6 + 10; label(cx, t, clamp(hs.x, tw + 6, W - tw - 6), hs.y + 52, C.ember, 12, "center", 600, C.room, MONO); }
+    }
+    cx.strokeStyle = C.accent; cx.lineWidth = 2.5; cx.beginPath(); cx.arc(hs.x, hs.y, 24, 0, Math.PI * 2); cx.stroke();
+    label(cx, h === mw ? "YOU · MILKY WAY" : "YOU", hs.x, hs.y + (E.light && E.t >= 0.94 ? 76 : E.measure ? 56 : 38), C.cream, 11.5, "center", 600, C.room, MONO);
+    if (h !== mw) { const m = eScreen(mw); if (m.x > 0 && m.x < W && m.y > 0 && m.y < H) label(cx, "MILKY WAY", m.x, m.y + 30, C.rtext, 11, "center", 500, C.room, MONO); }
+    label(cx, "Click any galaxy to stand on it", 16, 22, C.rtext, 13, "left", 500, C.room);
+  }
+
+  // ===== Big Bang =====
+  const TL = 11.59, T0 = 13.75, TMAX = 24, AA = 1 / Math.pow(Math.sinh(T0 / TL), 2 / 3), T_DEC = 3.8e-4;
+  // Radiation era: a grows as the square root of t before 50 000 years.
+  const aOf = (t) => t <= 0 ? 0 : AA * Math.pow(Math.sinh(t / TL), 2 / 3) * (t < 5e-5 ? Math.pow(t / 5e-5, -1 / 6) : 1);
+  const tOf = (u) => TMAX * Math.pow(u, 4), uOf = (t) => Math.pow(t / TMAX, 0.25), U_NOW = uOf(T0);
+  const B = { u: U_NOW, anim: 0, graph: true };
+  const FIELD = (() => { const R = rng(23), a = []; for (let k = 0; k < 18; k++) a.push({ x: R(), y: R(), r: 8 + R() * 7 }); return a; })();
+  const TILE = (() => { const c = document.createElement("canvas"); c.width = c.height = 128; const x = c.getContext("2d"); for (const g of FIELD) for (const ox of [-128, 0, 128]) for (const oy of [-128, 0, 128]) x.drawImage(SPR, g.x * 128 + ox - 5, g.y * 128 + oy - 5, 10, 10); return c; })();
+  let TPAT = null;
+  const bP = () => Math.max(480, Math.min(720, Math.min(W, H) * 1.05));
+  function bbRGB(T) {
+    const st = [[1000, [255, 56, 0]], [2000, [255, 137, 18]], [3000, [255, 180, 107]], [4000, [255, 209, 163]], [5500, [255, 236, 224]], [6500, [255, 249, 253]], [8000, [227, 233, 255]], [12000, [200, 213, 255]], [40000, [165, 185, 255]]];
+    if (T <= st[0][0]) return st[0][1]; for (let i = 1; i < st.length; i++) if (T <= st[i][0]) { const k = (T - st[i - 1][0]) / (st[i][0] - st[i - 1][0]); return st[i][1].map((v, j) => Math.round(st[i - 1][1][j] + (v - st[i - 1][1][j]) * k)); }
+    return st[st.length - 1][1];
+  }
+  const era = (t) => t <= 0 ? "THE BIG BANG" : t < T_DEC ? "TOO HOT FOR ATOMS" : t < 0.2 ? "DARK AGES · NO STARS YET" : t < 1 ? "FIRST STARS AND GALAXIES" : t < 7.6 ? "GALAXIES MOVING APART" : Math.abs(t - T0) < 0.08 ? "TODAY" : t < T0 ? "MOVING APART EVER FASTER" : "THE FUTURE · IF IT KEEPS SPEEDING UP";
+  function stepB(dt) {
+    if (!B.anim) return; B.u = clamp(B.u + B.anim * dt * 0.14 * (0.22 + B.u), 0, 1);
+    if (B.anim < 0 && B.u <= 0) setAnimB(0); if (B.anim > 0 && B.u >= 1) setAnimB(0);
+  }
+  function drawB() {
+    const t = tOf(B.u), a = aOf(t), T = a > 0 ? 2.725 / a : Infinity;
+    let dark = true;
+    if (t < T_DEC) {
+      const [r, g, b] = bbRGB(Math.min(T, 40000)); cx.fillStyle = `rgb(${r},${g},${b})`; cx.fillRect(0, 0, W, H);
+      cx.globalAlpha = 0.14; cx.imageSmoothingEnabled = true; cx.drawImage(NOISE, 0, 0, W, H); cx.globalAlpha = 1; dark = false;
+    } else {
+      paintBg();
+      const k = clamp((T - 600) / 2400, 0, 1); if (k > 0) { cx.fillStyle = `rgba(255,120,50,${(0.55 * k).toFixed(3)})`; cx.fillRect(0, 0, W, H); }
+      const ga = clamp((t - 0.15) / 0.7, 0, 1);
+      if (ga > 0) {
+        const tp = bP() * a, mix = clamp((tp - 90) / 40, 0, 1), LAYERS = [[0.62, 0, 0.75], [1.0, 0.93, 0.55], [1.41, 2.1, 0.45]];
+        if (mix < 1) { if (!TPAT) TPAT = cx.createPattern(TILE, "repeat"); const R2 = Math.hypot(W, H) / 2; for (const [k, rot, al] of LAYERS) { const sc = tp * k / 128; cx.save(); cx.translate(W / 2, H / 2); cx.rotate(rot); cx.scale(sc, sc); cx.globalAlpha = ga * (1 - mix) * al; cx.fillStyle = TPAT; cx.fillRect(-R2 / sc, -R2 / sc, 2 * R2 / sc, 2 * R2 / sc); cx.restore(); } }
+        if (mix > 0) {
+          const gs = Math.min(1, 0.45 + 0.55 * a), R2 = Math.hypot(W, H) / 2 + 20;
+          for (const [k, rot, al] of LAYERS) {
+            cx.globalAlpha = ga * mix * Math.min(1, al + 0.3); const L = tp * k, cs = Math.cos(rot), sn = Math.sin(rot), n0 = Math.floor(-R2 / L) - 1, n1 = Math.ceil(R2 / L);
+            for (let i = n0; i <= n1; i++) for (let j = n0; j <= n1; j++) for (const g of FIELD) { const u = (i + g.x) * L, v = (j + g.y) * L, X = W / 2 + u * cs - v * sn, Y = H / 2 + u * sn + v * cs, r = g.r * gs * 0.75; if (X > -r && X < W + r && Y > -r && Y < H + r) cx.drawImage(SPR, X - r, Y - r, 2 * r, 2 * r); }
+          }
+        }
+        cx.globalAlpha = 1;
+      }
+    }
+    label(cx, era(t), 16, 22, dark ? C.cream : ROOM_INK, 12, "left", 500, null, MONO);
+    if (B.graph) drawAGraph(t, a);
+  }
+  function drawAGraph(t, a) {
+    const gw = Math.min(310, Math.max(200, W * 0.38)), gh = Math.min(170, H * 0.32), gx = W - gw - 14, gy = H - gh - 14;
+    cx.fillStyle = "rgba(21,17,12,0.86)"; rr(cx, gx, gy, gw, gh, 10); cx.fill(); cx.strokeStyle = C.rline; cx.lineWidth = 1; cx.stroke();
+    const l = gx + 38, r = gx + gw - 14, tp = gy + 30, bt = gy + gh - 30, X = (v) => l + v / TMAX * (r - l), Y = (v) => bt - v / 2 * (bt - tp);
+    label(cx, "SIZE OF THE UNIVERSE", gx + 12, gy + 15, C.rtext, 10.5, "left", 500, null, MONO);
+    cx.strokeStyle = C.rlineS; cx.lineWidth = 1; cx.beginPath(); cx.moveTo(l, tp); cx.lineTo(l, bt); cx.lineTo(r, bt); cx.stroke();
+    for (const v of [0, 10, 20]) label(cx, String(v), X(v), bt + 11, C.rmuted, 10.5, "center", 500, null, MONO);
+    label(cx, "billion years", r, bt + 23, C.rmuted, 10.5, "right", 500, null, MONO);
+    label(cx, "today", l - 6, Y(1), C.rmuted, 10, "right", 500, null, MONO);
+    cx.setLineDash([3, 3]); cx.strokeStyle = C.rlineS; cx.beginPath(); cx.moveTo(l, Y(1)); cx.lineTo(X(T0), Y(1)); cx.lineTo(X(T0), bt); cx.stroke(); cx.setLineDash([]);
+    cx.strokeStyle = C.ember; cx.lineWidth = 2.2; cx.beginPath(); for (let v = 0; v <= TMAX; v += 0.1) { const y = Y(Math.min(2.05, aOf(v))); v ? cx.lineTo(X(v), y) : cx.moveTo(X(v), y); } cx.stroke();
+    cx.fillStyle = C.ember; cx.fillRect(X(7.6) - 1, Y(aOf(7.6)) - 5, 2, 10); label(cx, "speeding up →", X(8.2), Y(aOf(7.6)) + 13, C.ember, 11, "left", 600);
+    cx.fillStyle = C.cream; cx.beginPath(); cx.arc(X(t), Y(Math.min(2.05, a)), 5, 0, Math.PI * 2); cx.fill(); cx.strokeStyle = C.accent; cx.lineWidth = 2; cx.stroke();
+  }
+  const fmtYears = (t) => { if (t <= 0) return "0"; const y = t * 1e9; if (y < 1) { const m = y * 525960; return m < 1 ? "under 1 minute" : m < 120 ? `${Math.round(m)} minutes` : m < 2880 ? `${Math.round(m / 60)} hours` : `${Math.round(m / 1440)} days`; } if (y < 1e3) return `${Math.round(y)} years`; if (y < 1e6) return `${fmtN(Math.round(y / 1000) * 1000)} years`; if (y < 1e9) return `${(y / 1e6).toPrecision(3)} million years`; return `${t.toFixed(t < 10 ? 2 : 1)} billion years`; };
+  const fmtTemp = (T) => !isFinite(T) ? "extremely hot" : T < 10 ? `${T.toFixed(1)} K` : T < 1e6 ? `${fmtN(Number(T.toPrecision(3)))} K` : T < 1e9 ? `${Number((T / 1e6).toPrecision(2))} million K` : T < 1e12 ? `${Number((T / 1e9).toPrecision(2))} billion K` : "trillions of K";
+  const fmtLen = (m) => m >= 1e-3 ? `${(m * 1e3).toFixed(1)} mm` : m >= 1e-6 ? `${(m * 1e6).toPrecision(3)} µm` : m >= 1e-9 ? `${(m * 1e9).toPrecision(3)} nm` : `${Number((m * 1e12).toPrecision(2))} pm`;
+  const radType = (m) => m >= 1e-3 ? "microwaves" : m > 7.5e-7 ? "infrared" : m >= 3.8e-7 ? "visible light" : m >= 1e-8 ? "ultraviolet" : m >= 1e-11 ? "X-rays" : "gamma rays";
+
+  // ===== Binary stars (A level only) =====
+  // Two equal-mass stars, seen from above, YOU at the bottom. One second of play is one day.
+  const N = { t: 0, phase: 0, v: 150, T: 10, playing: !REDUCE };
+  const SPR_A = makeSprite("rgba(232,255,240,1)", "rgba(95,224,138,0.5)"), SPR_B = makeSprite("rgba(255,241,210,1)", "rgba(255,190,110,0.5)"), COL_A = "#5FE08A", COL_B = "#FFD27A";
+  // Star colours are names, not shifts: neither is on the red-blue reading of the spectrum.
+  const NLO = 655.0, NHI = 657.6;
+  // Velocity away from YOU, in km/s. Canvas +y points towards YOU, so star A at angle th has -v cos th.
+  const nAway = () => { const c = Math.cos(N.phase); return { a: -N.v * c, b: N.v * c }; };
+  function stepN(dt) { N.t += dt; N.phase = (N.phase + 2 * Math.PI * dt / N.T) % (2 * Math.PI); }
+  function drawN() {
+    paintBg();
+    const skyH = Math.max(Math.round(H * 0.62), H - 170), obsY = skyH - 28, top = 56, R = Math.min(W * 0.3, (obsY - 34 - top) / 2 - 18), mx = W / 2, my = (top + obsY - 34) / 2;
+    cx.setLineDash([4, 5]); cx.strokeStyle = C.rlineS; cx.lineWidth = 1.2;
+    cx.beginPath(); cx.arc(mx, my, R, 0, Math.PI * 2); cx.stroke();
+    cx.beginPath(); cx.moveTo(mx, my); cx.lineTo(mx, obsY - 15); cx.stroke(); cx.setLineDash([]);
+    cx.fillStyle = C.rtext; cx.beginPath(); cx.arc(mx, my, 2.5, 0, Math.PI * 2); cx.fill();
+    const cs = Math.cos(N.phase), sn = Math.sin(N.phase), len = 18 + 34 * N.v / 300;
+    for (const [sg, spr, col, nm] of [[1, SPR_A, COL_A, "A"], [-1, SPR_B, COL_B, "B"]]) {
+      const x = mx + sg * R * cs, y = my + sg * R * sn, ux = -sg * sn, uy = sg * cs;
+      drawGal(x, y, 24, 1, 0, 1, spr);
+      arrow(cx, x + ux * 15, y + uy * 15, x + ux * (15 + len), y + uy * (15 + len), col, 2.5, 8);
+      label(cx, nm, x + sg * cs * 26, y + sg * sn * 26, col, 14, "center", 600);
+    }
+    cx.fillStyle = C.panel; cx.beginPath(); cx.arc(mx, obsY, 13, 0, Math.PI * 2); cx.fill(); cx.strokeStyle = C.cream; cx.lineWidth = 2; cx.stroke();
+    cx.fillStyle = C.cream; cx.beginPath(); cx.arc(mx, obsY, 4, 0, Math.PI * 2); cx.fill();
+    label(cx, "YOU", mx + 22, obsY, C.cream, 11, "left", 500, C.room, MONO);
+    caption("BINARY STARS", "Seen from above");
+    cx.fillStyle = C.panel; cx.fillRect(0, skyH, W, H - skyH); cx.fillStyle = C.rline; cx.fillRect(0, skyH, W, 1);
+    label(cx, "SPECTROMETER", 16, skyH + 18, C.cream, 11.5, "left", 500, null, MONO);
+    label(cx, `ZOOM · ${NLO.toFixed(1)}–${NHI.toFixed(1)} nm`, W - 22, skyH + 18, C.rmuted, 11, "right", 500, null, MONO);
+    const x0 = Math.max(78, Math.min(118, W * 0.13)), x1 = W - 22, sw = x1 - x0, sy = skyH + 50, sh = Math.max(30, Math.min(64, H - sy - 34)), X = (nm) => x0 + (nm - NLO) / (NHI - NLO) * sw;
+    cx.globalAlpha = 0.42; cx.drawImage(strip("nb", sw, sh, NLO, NHI, 2, false, 0), x0, sy, sw, sh); cx.globalAlpha = 1;
+    label(cx, "Hα", 16, sy + sh / 2, C.cream, 14, "left", 600);
+    label(cx, `lab ${HA}`, X(HA), sy - 11, C.rtext, 11, "center", 500);
+    cx.setLineDash([3, 3]); cx.strokeStyle = C.cream; cx.lineWidth = 1; cx.beginPath(); cx.moveTo(X(HA), sy - 2); cx.lineTo(X(HA), sy + sh + 2); cx.stroke(); cx.setLineDash([]);
+    // A in the top half of the line, B in the bottom half, so a merged line still shows both.
+    const v = nAway(), xa = X(HA * (1 + v.a / CK)), xb = X(HA * (1 + v.b / CK));
+    cx.fillStyle = COL_A; cx.fillRect(xa - 2, sy, 4, sh / 2); cx.fillStyle = COL_B; cx.fillRect(xb - 2, sy + sh / 2, 4, sh / 2);
+    for (let nm = 655; nm <= NHI + 1e-9; nm += 0.5) { const x = X(nm); cx.fillStyle = C.rlineS; cx.fillRect(x, sy + sh + 1, 1, 6); label(cx, nm.toFixed(1), x, sy + sh + 18, C.rmuted, 11, "center", 500, null, MONO); }
+    cx.fillStyle = C.rline; for (let k = 0; k <= 26; k++) if (k % 5) cx.fillRect(X(NLO + k / 10), sy + sh + 1, 1, 3);
+  }
+
+  // ---------- loop ----------
+  let raf = 0, lastT = performance.now(), lastRO = 0;
+  function frame(now) {
+    if (!alive) return;
+    const dt = Math.min(0.05, (now - lastT) / 1000); lastT = now;
+    if (W) {
+      if (mode === "D") { if (D.playing) stepD(dt * (D.slow ? 0.3 : 1)); drawD(); }
+      else if (mode === "S") drawS();
+      else if (mode === "E") { if (E.playing) stepE(dt); drawE(); }
+      else if (mode === "N") { if (N.playing) stepN(dt); drawN(); }
+      else { stepB(dt); drawB(); }
+      if (mode === "S" && hintMsg && performance.now() - hintT < 3500) { const G = sGeom(); label(cx, hintMsg, G.skyW / 2, G.skyH - 20, ROOM_INK, 14, "center", 600, C.cream); }
+      if (alevel) label(cx, "✱ A LEVEL", W - 16, 24, ROOM_INK, 12, "right", 600, C.accent, MONO);
+    }
+    if (now - lastRO > 90) { readouts(); liveText(); lastRO = now; }
+    raf = requestAnimationFrame(frame);
+  }
+
+  // ---------- readouts ----------
+  // Greek must not be upper-cased by the label style: Hα would read HA, and λ would read Λ.
+  const RO = (k, l, v, s) => { $("ro-l" + k).textContent = l; $("ro-l" + k).style.textTransform = /[αλ]/.test(l) ? "none" : "uppercase"; $("ro-v" + k).textContent = v; $("ro-s" + k).textContent = s; };
+  const cards = (n) => { $("ro-c3").hidden = n < 3; $("ro-c4").hidden = n < 4; };
+  function readouts() {
+    let tv = "–", ts = "";
+    if (mode === "D") {
+      const v = D.vx, lam = LAM0 * (1 - v);
+      RO(1, "Emitted", `${LAM0} nm`, "");
+      RO(2, "You see", `${Math.round(lam)} nm`, wlName(lam));
+      // Frequency is A level only: 3.9.3.1 covers Δf/f; GCSE 4.8.2 speaks only of wavelength.
+      if (alevel) { const z = -v; RO(3, "Frequency you see", `${(1 / (1 - v)).toFixed(2)} × f`, "equations need v ≪ c"); RO(4, "z = Δλ ÷ λ", `${z >= 0 ? "+" : "−"}${Math.abs(z).toFixed(2)}`, "equations need v ≪ c"); }
+      cards(alevel ? 4 : 2);
+      tv = `λ seen = ${LAM0} × (1 ${v <= 0 ? "+" : "−"} ${Math.abs(v).toFixed(2)})`; ts = "λ = λ emitted × (1 + v/c) for a source moving away";
+      $("d-v-lcd").textContent = Math.abs(v) < 0.004 ? "still" : `${Math.abs(v).toFixed(2)} c ${v < 0 ? "away" : "towards"}`;
+    } else if (mode === "S") {
+      const g = S.sel, dl = S.cursor - HA;
+      cards(3);
+      RO(1, "Distance", g ? gDist(g) : "–", "");
+      RO(2, "Hα in lab", `${HA} nm`, "");
+      RO(3, "Shift at cursor", `${dl >= 0 ? "+" : "−"}${Math.abs(dl).toFixed(1)} nm`, dl > 0.15 ? "red-shift" : dl < -0.15 ? "blue-shift" : "no shift");
+      if (g) { tv = alevel ? `Hα ${g.lam.toFixed(1)} nm · v ${g.v < 0 ? "−" : ""}${fmtN(Math.abs(g.v))} km/s` : `Hα ${g.lam.toFixed(1)} nm · shift ${g.lam >= HA ? "+" : "−"}${Math.abs(g.lam - HA).toFixed(1)} nm`; ts = g.big ? "gravity: approaching the Milky Way" : alevel ? `Hubble flow ${fmtN(H0 * g.d)} ${g.pv < 0 ? "−" : "+"} ${Math.abs(g.pv)} own motion` : ""; }
+      else { tv = "select a galaxy"; ts = alevel ? `H = ${(H0 * MPC).toFixed(0)} km s⁻¹ Mpc⁻¹` : ""; }
+    } else if (mode === "E") {
+      const a = eA(), { dP, dQ } = ePQ(), k = Math.round(dQ / dP);
+      cards(3);
+      RO(1, "P moved", `+${fmtD(dP * (a - 1))}`, "");
+      RO(2, "Q moved", `+${fmtD(dQ * (a - 1))}`, `${k}× as far, ${k}× as fast`);
+      RO(3, "Light", `430 → ${Math.round(eLam())} nm`, "");
+      tv = alevel ? "v = Hd" : `Q is ${k}× as far as P`; ts = alevel ? "speed is proportional to distance for every observer" : "";
+      $("e-lcd").textContent = `×${a.toFixed(2)}`; if (E.playing) $("e-t").value = Math.round(E.t * 1000);
+    } else if (mode === "N") {
+      const v = nAway();
+      cards(2);
+      RO(1, "Line shift", `±${(HA * Math.abs(v.a) / CK).toFixed(2)} nm`, "");
+      RO(2, "Time", `${N.t.toFixed(1)} days`, "");
+      $("n-clock").textContent = `${N.t.toFixed(1)} days`;
+      tv = `v = ${N.v} km/s · T = ${N.T} days`; const r = N.v * N.T * 86400 / (2 * Math.PI), ex = Math.floor(Math.log10(r)); ts = `r = vT ÷ 2π = ${(r / Math.pow(10, ex)).toFixed(1)} × 10${String(ex).replace(/\d/g, (d) => "⁰¹²³⁴⁵⁶⁷⁸⁹"[d])} km`;
+    } else {
+      const t = tOf(B.u), a = aOf(t), T = a > 0 ? 2.725 / a : Infinity, lp = isFinite(T) ? 2.898e-3 / T : 0;
+      RO(1, "Size vs today", a <= 0 ? "tiny" : Math.abs(a - 1) < 0.006 ? "same" : a < 1 ? `1/${fmtN(Number((1 / a).toPrecision(2)))}` : `×${a.toFixed(2)}`, "");
+      RO(2, "Temperature of space", fmtTemp(T), "");
+      if (alevel) RO(3, "Glow", isFinite(T) ? radType(lp) : "gamma rays", isFinite(T) ? `peak ${fmtLen(lp)}` : "");
+      cards(alevel ? 3 : 2);
+      tv = `a = ${a.toPrecision(3)} · T = 2.7 K ÷ a`; ts = "model: 31% matter, 69% dark energy";
+      $("b-lcd").textContent = fmtYears(t); if (B.anim) $("b-u").value = Math.round(B.u * 1000);
+    }
+    if (teacher) { $("ro-true-v").textContent = tv; $("ro-true-s").textContent = ts; }
+  }
+
+  // ---------- controls ----------
+  const seg = (root, attr, val) => root.querySelectorAll("button").forEach((b) => { const on = b.dataset[attr] == val; b.setAttribute("aria-pressed", on);
+    Object.assign(b.style, on ? { background: "var(--st-paper)", color: "var(--st-ink)", fontWeight: "600", boxShadow: "0 1px 2px rgba(60,40,10,0.16)" } : { background: "transparent", color: "var(--st-caption)", fontWeight: "500", boxShadow: "none" }); });
+  function setVx(v) { D.vx = clamp(Math.round(v * 100) / 100, -0.4, 0.4); $("d-v").value = Math.round(D.vx * 100); seg($("d-pre"), "v", Math.round(D.vx * 100)); }
+  $("d-v").oninput = (e) => setVx(+e.target.value / 100);
+  $("d-pre").querySelectorAll("button").forEach((b) => b.onclick = () => setVx(+b.dataset.v / 100));
+  function setPlayD(p) { D.playing = p; $("d-play").innerHTML = p ? I.pause + "Pause" : I.play + "Play"; }
+  $("d-play").onclick = () => setPlayD(!D.playing);
+  $("d-slow").onchange = (e) => D.slow = e.target.checked; $("d-lam").onchange = (e) => D.lam = e.target.checked;
+
+  function setZoom(z) { S.zoom = z; $("s-zoom").innerHTML = z ? I.unzoom + "Full spectrum" : I.zoom + "Zoom on Hα"; setCursor(S.cursor); }
+  $("s-zoom").onclick = () => setZoom(!S.zoom);
+  document.querySelectorAll("[data-nudge]").forEach((b) => b.onclick = () => setCursor(S.cursor + +b.dataset.nudge));
+  $("s-shift").onchange = (e) => S.shift = e.target.checked;
+  $("s-record").onclick = record;
+  $("s-ha").setAttribute("inputmode", "decimal"); $("s-ha").setAttribute("autocomplete", "off");
+  $("s-ha").onkeydown = (e) => { if (e.key === "Enter") { e.preventDefault(); record(); } };
+  $("s-ha").oninput = () => $("s-ha").removeAttribute("aria-invalid");
+
+  function setPlayE(p) { E.playing = p; if (p && E.t >= 1) { E.t = 0; E.hold = 0; } $("e-play").innerHTML = p ? I.pause + "Pause" : I.play + "Play"; }
+  $("e-play").onclick = () => setPlayE(!E.playing);
+  $("e-t").oninput = (e) => { setPlayE(false); E.t = +e.target.value / 1000; E.hold = 0; };
+  for (const k of ["grid", "arrows", "measure", "light"]) $("e-" + k).onchange = (e) => E[k] = e.target.checked;
+  $("e-home").onclick = () => E.home = { i: 0, j: 0 };
+
+  function setAnimB(v) { B.anim = v; $("b-rew").innerHTML = v < 0 ? I.pause + "Pause" : I.rew + "Rewind"; $("b-fwd").innerHTML = v > 0 ? I.pause + "Pause" : I.fwd + "Play forward"; $("b-u").value = Math.round(B.u * 1000); }
+  $("b-rew").onclick = () => setAnimB(B.anim < 0 ? 0 : -1);
+  $("b-fwd").onclick = () => { if (B.anim > 0) return setAnimB(0); if (B.u >= 0.999) B.u = 0; setAnimB(1); };
+  $("b-now").onclick = () => { B.u = U_NOW; setAnimB(0); };
+  $("b-u").oninput = (e) => { B.u = +e.target.value / 1000; setAnimB(0); };
+  $("b-graph").onchange = (e) => B.graph = e.target.checked;
+
+  function setPlayN(p) { N.playing = p; $("n-play").innerHTML = p ? I.pause + "Pause" : I.play + "Play"; }
+  $("n-play").onclick = () => setPlayN(!N.playing);
+  function setN() { $("n-v").value = N.v; $("n-T").value = N.T; }
+  $("n-v").oninput = (e) => { N.v = +e.target.value; setN(); };
+  $("n-T").oninput = (e) => { N.T = +e.target.value; setN(); };
+
+  function syncAll() {
+    setVx(D.vx); setPlayD(D.playing); $("d-slow").checked = D.slow; $("d-lam").checked = D.lam;
+    setZoom(S.zoom); $("s-shift").checked = S.shift;
+    setPlayE(E.playing); $("e-t").value = Math.round(E.t * 1000); for (const k of ["grid", "arrows", "measure", "light"]) $("e-" + k).checked = E[k];
+    setAnimB(B.anim); $("b-graph").checked = B.graph;
+    setPlayN(N.playing); setN();
+  }
+
+  // ---------- pointer ----------
+  const pos = (e) => { const r = cv.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; };
+  const dVfromX = (x) => clamp((x - dGeom().xs) / (W * 0.3), -1, 1) * 0.4;
+  cv.addEventListener("pointerdown", (e) => {
+    if (e.button !== 0) return; const p = pos(e);
+    if (mode === "S") { const G = sGeom(); if (p.y < G.skyH) { const g = galAt(p, G); if (g) selectGal(g); } else { S.drag = true; setCursor(G.N(p.x)); try { cv.setPointerCapture(e.pointerId); } catch (_) {} } }
+    else if (mode === "E") { const g = eGalAt(p); if (g) E.home = { i: g.i, j: g.j }; }
+    else if (mode === "D") { const g = dGeom(); if (Math.abs(p.y - g.ys) < 90 && p.y < dPanels().top) { D.drag = true; D.px = p.x; setVx(dVfromX(p.x)); try { cv.setPointerCapture(e.pointerId); } catch (_) {} } }
+    e.preventDefault();
+  });
+  cv.addEventListener("pointermove", (e) => {
+    const p = pos(e);
+    if (mode === "S") { const G = sGeom(); if (S.drag) { setCursor(G.N(p.x)); return; } S.hover = p.y < G.skyH ? galAt(p, G) : null; cv.style.cursor = p.y >= G.skyH ? "ew-resize" : S.hover ? "pointer" : "default"; }
+    else if (mode === "E") cv.style.cursor = eGalAt(p) ? "pointer" : "default";
+    else if (mode === "D") { const g = dGeom(); if (D.drag) { D.px = p.x; setVx(dVfromX(p.x)); } cv.style.cursor = D.drag ? "grabbing" : Math.abs(p.y - g.ys) < 90 && p.y < dPanels().top ? "ew-resize" : "default"; }
+    else cv.style.cursor = "default";
+  });
+  const endDrag = () => { S.drag = false; D.drag = false; };
+  cv.addEventListener("pointerup", endDrag); cv.addEventListener("pointercancel", endDrag);
+  cv.addEventListener("pointerleave", () => { S.hover = null; });
+
+  // ---------- mode ----------
+  const tabs = [...document.querySelectorAll("#tabs button")];
+  const ARIA = { D: "A light source moving relative to two observers, with wavefronts and spectra", S: "Sky survey of galaxies and a spectrometer comparing their spectra with hydrogen in the lab", E: "Galaxies in expanding space", B: "The universe from the Big Bang to the future", N: "Two stars in orbit seen from above, with the observer at the bottom and their spectral lines below" };
+  function setMode(m) {
+    mode = m; seg($("tabs"), "mode", m); tabs.forEach((b) => b.setAttribute("aria-selected", b.dataset.mode === m));
+    for (const k of ["D", "S", "E", "B", "N"]) $("ctl-" + k).hidden = k !== m;
+    cv.setAttribute("aria-label", ARIA[m]); cv.style.cursor = "default";
+    $("g-keys").textContent = `← → steps · 1–${alevel ? 5 : 4} sections · ` + (m === "S" ? "Z zoom" : "Space play");
+  }
+  tabs.forEach((b) => b.onclick = () => goStep(steps.findIndex((s) => s.m === b.dataset.mode)));
+
+  // ---------- results ----------
+  const rows = [];
+  const TD = "padding:12px 10px;border-bottom:1px solid var(--st-rule-soft);font-size:16px;vertical-align:middle";
+  const INP = "width:5.6em;font:600 16px var(--st-ui);text-align:center;border:1.5px solid var(--st-accent-text);border-radius:6px;padding:7px 4px;background:var(--st-paper);color:var(--st-ink)";
+  const DEL = "font:500 13px/1 var(--st-ui);padding:8px 10px;border:1.5px solid var(--st-btn-border);border-radius:var(--st-r-btn);background:var(--st-paper);color:var(--st-ink);cursor:pointer";
+  const mut = (t) => `<span style="color:var(--st-muted)">${t}</span>`;
+  const nextUnmeasured = (gi) => { for (let k = 1; k < GAL.length; k++) { const j = (gi + k) % GAL.length; if (!rows.some((r) => r.g === j)) return GAL[j]; } return null; };
+  function record() {
+    if (mode !== "S") return;
+    if (!S.sel) return hint("Click a galaxy first.");
+    const inp = $("s-ha"), raw = inp.value.trim().replace(",", ".");
+    if (!isFinite(parseFloat(raw))) { hint("Type the Hα you read."); inp.focus({ preventScroll: true }); return; }
+    const gi = GAL.indexOf(S.sel), row = { g: gi, lam: raw }, ev = evalRow(row);
+    if (ev.state === "bad") { hint(ev.msg); inp.setAttribute("aria-invalid", "true"); inp.focus({ preventScroll: true }); inp.select(); return; }
+    inp.value = ""; inp.removeAttribute("aria-invalid");
+    const k = rows.findIndex((r) => r.g === gi); if (k < 0) rows.push(row); else rows[k].lam = raw;
+    renderRows(); hint(`${S.sel.big ? "Andromeda" : S.sel.n} ✓ ${ev.msg}`);
+    // "Close" stays on this galaxy so it can be zoomed and measured again; a good value moves on.
+    if (ev.state === "ok") { const nx = nextUnmeasured(gi); if (nx) selectGal(nx); }
+    // Touch: drop the keyboard so the next spectrum can be seen. Mouse: stay ready to type.
+    if (window.matchMedia && matchMedia("(hover: none)").matches) inp.blur(); else inp.focus({ preventScroll: true });
+  }
+  function evalRow(r) {
+    const g = GAL[r.g], v = parseFloat(String(r.lam).replace(",", ".")); if (!isFinite(v)) return { state: "wait" };
+    if (v < 380 || v > 750) return { state: "bad", msg: "Outside visible light." };
+    const err = Math.abs(v - g.lam);
+    for (let i = 0; i < 3; i++) if (Math.abs(v - LAB[i] * g.f) < 1.5 && err > 3) return { state: "bad", msg: `That's the ${LNAME[i]} line. Use Hα.` };
+    // Andromeda's whole shift is 0.66 nm, so its checks are tighter: the lab value, or a reading on the red side, is not a blue-shift.
+    if (Math.abs(v - HA) < 0.25 && (g.big || Math.abs(g.lam - HA) > 1)) return { state: "bad", msg: "That's the lab value." };
+    const dl = v - HA, sp = CK * dl / HA;
+    if (err <= (g.big ? 0.3 : 0.6)) return { state: "ok", dl, sp, msg: dl < 0 ? "Blue-shift: moving towards us." : "Red-shift: moving away." };
+    if (g.big ? err <= 1 && dl < 0 : err <= 3) return { state: "warn", dl, sp, msg: "Close. Zoom in." };
+    return { state: "bad", msg: "Not on the Hα line." };
+  }
+  const HEADS = {
+    g: ["Galaxy", "Distance (Mly)", 'H<span style="text-transform:none">α</span> seen (nm)', 'Shift <span style="text-transform:none">Δλ</span> (nm)', "Check", ""],
+    a: ["Galaxy", "Distance (Mpc)", 'H<span style="text-transform:none">α</span> seen (nm)', '<span style="text-transform:none">Δλ</span> (nm)', '<span style="text-transform:none">z</span>', "Velocity away (km/s)", "Check", ""],
+  };
+  const signed = (n, dp) => (n < 0 ? "−" : "+") + Math.abs(n).toFixed(dp);
+  function renderRows() {
+    const tb = $("tb"), cols = HEADS[alevel ? "a" : "g"].length;
+    if (!rows.length) { tb.innerHTML = `<tr><td colspan="${cols}" style="${TD};color:var(--st-muted);padding:18px 10px">No galaxies yet.</td></tr>`; drawPlot(); return; }
+    let html = "";
+    rows.forEach((r, k) => {
+      const g = GAL[r.g], ev = evalRow(r), bad = ev.state === "bad", col = bad ? "var(--rsl-bad,#B3261E)" : ev.state === "ok" ? "var(--rsl-ok-text,#0A6B36)" : "var(--st-muted)";
+      const has = ev.state === "ok" || ev.state === "warn";
+      const teach = teacher ? `<div style="font-size:13px;color:var(--st-caption);margin-top:4px">true ${g.lam.toFixed(1)}</div>` : "";
+      const chk = ev.state === "wait" ? mut("–") : `<div style="display:flex;gap:7px;align-items:flex-start;color:${col};font-size:14px;line-height:1.35;min-width:150px;max-width:40ch">${bad ? I.cross : ev.state === "ok" ? I.tick : ""}<span>${ev.msg}</span></div>`;
+      // Speed away = z × c, positive when receding.
+      const z = has ? ev.dl / HA : 0, speed = z * CK;
+      const extra = !alevel ? "" : `<td style="${TD}">${has ? signed(z, 4) : mut("–")}</td><td style="${TD}">${has ? `<b>${speed < 0 ? "−" : ""}${fmtN(Math.abs(Math.round(speed / 10) * 10))}</b>` : mut("–")}</td>`;
+      html += `<tr style="${bad ? "background:var(--rsl-bad-bg,#FBE4DE)" : ""}"><td style="${TD};font-weight:600;white-space:nowrap">${gName(g)}</td><td style="${TD}">${alevel ? mpcOf(g) : g.d}</td><td style="${TD}"><input data-i="${k}" inputmode="decimal" value="${r.lam}" aria-label="Hα wavelength seen, ${gName(g)}" placeholder="?" style="${INP}">${teach}</td><td style="${TD}">${has ? signed(ev.dl, 1) : mut("–")}</td>${extra}<td style="${TD}">${chk}</td><td style="${TD};text-align:right"><button data-del="${k}" style="${DEL}">Delete</button></td></tr>`;
+    });
+    tb.innerHTML = html;
+    tb.querySelectorAll("input").forEach((inp) => { inp.onchange = () => { rows[+inp.dataset.i].lam = inp.value; renderRows(); }; inp.onkeydown = (e) => { if (e.key === "Enter") inp.blur(); }; });
+    tb.querySelectorAll("[data-del]").forEach((b) => b.onclick = () => { rows.splice(+b.dataset.del, 1); renderRows(); });
+    drawPlot();
+  }
+  $("res-fill").onclick = () => { GAL.forEach((g, gi) => { const r = rows.find((x) => x.g === gi); if (r) r.lam = g.lam.toFixed(1); else rows.push({ g: gi, lam: g.lam.toFixed(1) }); }); renderRows(); };
+  // One painter, two graphs: the Results canvas (theme colours) and the panel in the sky (room colours).
+  let plotPts = [];
+  const needMore = () => { const left = 3 - plotPts.filter((p) => p.g.d > 50).length; return left >= 3 ? "Measure 3 distant galaxies." : left === 1 ? "Measure 1 more distant galaxy." : `Measure ${left} more distant galaxies.`; };
+  // GCSE: shift (nm) against distance (Mly). A level: speed (km/s) against distance (Mpc).
+  const axes = () => alevel
+    ? { xm: 400, gx: 50, lx: 100, y0: -2000, ym: 28000, gy: 4000, ly: 8000, xl: "distance (Mpc)", yl: "velocity away (km/s)", xOf: (q) => q.g.d / MPC, yOf: (q) => q.ev.sp }
+    : { xm: 1200, gx: 200, lx: 400, y0: -5, ym: 60, gy: 10, ly: 20, xl: "distance (Mly)", yl: "shift (nm)", xOf: (q) => q.g.d, yOf: (q) => q.ev.dl };
+  let plotFit = NaN;
+  function refit() {
+    plotPts = rows.map((rw) => ({ ev: evalRow(rw), g: GAL[rw.g] })).filter((p) => p.ev.state === "ok" || p.ev.state === "warn");
+    const ax = axes(); let sxy = 0, sxx = 0; for (const p of plotPts) { sxy += ax.xOf(p) * ax.yOf(p); sxx += ax.xOf(p) * ax.xOf(p); }
+    const fit = sxx > 0 ? sxy / sxx : NaN, nFar = plotPts.filter((p) => p.g.d > 50).length;
+    // A straight line through the origin. H and the age exist only at A level; age = 977.8 ÷ H for H in km s⁻¹ Mpc⁻¹.
+    lastFit = isFinite(fit) && nFar >= 3 ? (alevel ? { H: fit, age: 977.8 / fit } : { slope: fit }) : null;
+    plotFit = isFinite(fit) && nFar >= 2 ? fit : NaN;
+  }
+  const pagePal = () => ({ m: { l: 74, r: 18, t: 12, b: 38 }, fs: 11, lab: 12, step: 12, grid: C.grid, axis: C.ink, tick: C.caption, title: C.muted, fit: C.accentText, pt: C.accent, blue: C.blue, ring: C.paper, name: C.ink, sel: null });
+  const roomPal = () => ({ m: { l: 64, r: 22, t: 26, b: 34 }, fs: 10, lab: 11, step: 11, grid: "rgba(183,170,152,0.16)", axis: C.rtext, tick: C.rmuted, title: C.rtext, fit: C.ember, pt: C.ember, blue: "#9FC3F0", ring: C.panel, name: C.cream, sel: S.sel });
+  function paintPlot(ctx, w, h, p) {
+    const ax = axes(), { xm, y0, ym } = ax, m = p.m, pw = w - m.l - m.r, ph = h - m.t - m.b;
+    const X = (v) => m.l + v / xm * pw, Y = (v) => m.t + ph - (v - y0) / (ym - y0) * ph;
+    ctx.strokeStyle = p.grid; ctx.lineWidth = 1; ctx.beginPath();
+    for (let d = 0; d <= xm; d += ax.gx) { ctx.moveTo(X(d), Y(y0)); ctx.lineTo(X(d), Y(ym)); } for (let v = 0; v <= ym; v += ax.gy) { ctx.moveTo(X(0), Y(v)); ctx.lineTo(X(xm), Y(v)); } ctx.stroke();
+    ctx.strokeStyle = p.axis; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(X(0), Y(ym)); ctx.lineTo(X(0), Y(y0)); ctx.moveTo(X(0), Y(0)); ctx.lineTo(X(xm), Y(0)); ctx.stroke();
+    for (let d = 0; d <= xm; d += ax.lx) label(ctx, String(d), X(d), h - m.b + 16, p.tick, p.fs, "center", 500, null, MONO);
+    for (let v = 0; v <= ym; v += ax.ly) label(ctx, fmtN(v), m.l - 7, Y(v), p.tick, p.fs, "right", 500, null, MONO);
+    label(ctx, ax.xl, X(xm), h - 6, p.title, p.lab, "right", 600);
+    ctx.save(); ctx.translate(9, Y(ym)); ctx.rotate(-Math.PI / 2); label(ctx, ax.yl, 0, 0, p.title, p.lab, "right", 600); ctx.restore();
+    if (isFinite(plotFit)) { ctx.strokeStyle = p.fit; ctx.lineWidth = 1.8; ctx.setLineDash([6, 4]); const xe = Math.min(xm, ym / plotFit); ctx.beginPath(); ctx.moveTo(X(0), Y(0)); ctx.lineTo(X(xe), Y(xe * plotFit)); ctx.stroke(); ctx.setLineDash([]); }
+    for (const q of plotPts) {
+      const x = X(ax.xOf(q)), y = Y(clamp(ax.yOf(q), y0, ym)), blue = q.ev.sp < 0;
+      if (p.sel === q.g) { ctx.strokeStyle = p.name; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(x, y, 8, 0, Math.PI * 2); ctx.stroke(); }
+      ctx.fillStyle = blue ? p.blue : p.pt; ctx.beginPath(); ctx.arc(x, y, 5, 0, Math.PI * 2); ctx.fill(); ctx.strokeStyle = p.ring; ctx.lineWidth = 1.5; ctx.stroke();
+      if (blue) label(ctx, q.g.big ? "Andromeda" : q.g.n, x + 8, y + 3, p.name, p.lab, "left", 600); else label(ctx, q.g.n, x - 7, y - 9, p.name, p.lab, "right", 600);
+    }
+  }
+  function drawPlot() {
+    refit();
+    const c = $("plot"), ctx = c.getContext("2d"), r = c.getBoundingClientRect();
+    $("plot-cap").innerHTML = !lastFit ? needMore() : alevel ? `<b style="color:var(--st-ink)">H = ${sf2(lastFit.H)} km s⁻¹ Mpc⁻¹</b> · Age ≈ 1 ÷ H = <b style="color:var(--st-ink)">${sf2(lastFit.age)} billion years</b>` : "The further away, the bigger the shift.";
+    if (!r.width) return;
+    const dp = Math.min(2, window.devicePixelRatio || 1); c.width = r.width * dp; c.height = r.height * dp; ctx.setTransform(dp, 0, 0, dp, 0, 0);
+    ctx.clearRect(0, 0, r.width, r.height); paintPlot(ctx, r.width, r.height, pagePal());
+  }
+
+  // ---------- sections / teacher ----------
+  const secProp = { res: "showResults", quiz: "showQuiz" };
+  function setSection(sec, show, save = true) {
+    $(sec + "-body").hidden = !show; const b = $(sec + "-toggle"); b.innerHTML = show ? I.eyeOff + "Hide" : I.eye + "Show"; b.setAttribute("aria-expanded", show);
+    if (save) try { localStorage.setItem("rs-sec-" + sec, show ? "1" : "0"); } catch (e) {}
+    if (sec === "res" && show) requestAnimationFrame(drawPlot);
+  }
+  for (const sec of Object.keys(secProp)) {
+    let saved = null; try { saved = localStorage.getItem("rs-sec-" + sec); } catch (e) {}
+    setSection(sec, saved !== null ? saved === "1" : props[secProp[sec]] !== false, false);
+    $(sec + "-toggle").onclick = () => setSection(sec, $(sec + "-body").hidden);
+  }
+  function setTeacher(v) { teacher = v; $("ro-true").hidden = !v; $("res-fill").hidden = !v; renderRows(); }
+
+  // ---------- guided steps ----------
+  const ALLSTEPS = [
+    { m: "D", title: "Moving away", go() { setVx(-0.2); setPlayD(true); D.lam = true; prewarmD(); },
+      text: () => `<p>Each wave starts further from you, so the waves reaching you are stretched. Like a siren driving away.</p><p class="copy">Moving away: longer wavelength. Lines shift to the red end. This is red-shift.</p>` },
+    { m: "D", title: "Moving towards", go() { setVx(-0.2); prewarmD(); },
+      text: () => `<p>Press <b>Towards</b>. The waves reaching you are squashed.</p><p class="copy">Moving towards: shorter wavelength. This is blue-shift.</p>` },
+    { m: "D", title: "Faster, bigger shift", go() { setVx(-0.08); prewarmD(); },
+      text: () => `<p>Drag the source. Watch your lines move.</p><p class="look">The light given out never changes. Only the light you receive does.</p>` },
+    { m: "S", title: "Fingerprints in starlight", go() { selectGal(GAL[0]); setZoom(false); S.shift = true; S.cursor = HA; },
+      text: () => `<p>Hydrogen absorbs certain wavelengths, leaving dark lines. The red one is Hα. Same pattern as the lab, moved towards red. Click other galaxies and compare.</p>` },
+    { m: "S", title: "Measure the shift", go() { S.sel = GAL[3]; setZoom(true); S.shift = false; S.cursor = HA; },
+      text: () => `<p>Drag the cursor onto the galaxy's <b>Hα</b> line. Fine-tune with ${KBD(",")} ${KBD(".")} or the buttons.</p>` },
+    { m: "S", title: "Record and repeat", go() { setZoom(true); S.shift = false; },
+      text: () => `<p>Type the Hα you read, then <b>Record</b>. Do at least five galaxies.</p><p class="copy">The further away a galaxy is, the bigger its red-shift and the faster it moves away.</p>` },
+    { m: "S", lvl: "a", title: "z and speed", go() { setZoom(true); S.shift = false; },
+      text: () => `<p class="eq">Δf ÷ f = v ÷ c</p><p class="eq">z = Δλ ÷ λ = −v ÷ c</p><p>For v ≪ c (optical and radio). Here v is negative moving away. In v = Hd and the table, it is the speed away.</p>` },
+    { m: "S", lvl: "a", title: "Hubble's law", live: true, go() { setZoom(true); S.shift = false; },
+      text: () => `<p class="eq">v = Hd</p><p>Your gradient is H: ${lastFit ? `H = <b>${sf2(lastFit.H)} km s⁻¹ Mpc⁻¹</b>` : "Measure 3 galaxies first."}</p><p class="look">AQA's data booklet uses 65 km s⁻¹ Mpc⁻¹.</p>` },
+    { m: "S", title: "Not everything is red-shifted", go() { S.sel = GAL[8]; setZoom(true); S.shift = true; S.cursor = HA; },
+      text: () => `<p>Measure <b>Andromeda</b>: blue-shift. Gravity is pulling it towards us.</p><p class="look">Only a few nearby galaxies do this.</p>` },
+    { m: "E", title: "Space is stretching", go() { E.home = { i: 0, j: 0 }; E.t = 0; E.hold = 0; E.grid = true; E.arrows = true; E.measure = true; E.light = false; setPlayE(false); },
+      text: () => `<p>Press <b>Play</b>. Q is twice as far as P, so it moves away twice as fast.</p><p class="copy">Further galaxies move away faster. This is evidence that space itself is expanding.</p>` },
+    { m: "E", title: "No centre", go() { E.home = { i: 2, j: 1 }; E.t = 0; E.hold = 0; E.measure = false; E.arrows = true; E.light = false; setPlayE(true); },
+      text: () => `<p>Click any galaxy to stand on it. Every other galaxy still moves away.</p><p class="look">Every observer sees the same thing.</p>` },
+    { m: "E", title: "Stretched light", go() { E.home = { i: 0, j: 0 }; E.t = 0; E.hold = 0; E.measure = false; E.arrows = false; E.light = true; setPlayE(true); },
+      text: () => `<p>Light leaves as violet. Space stretches while it travels, so it arrives red-shifted. The further it travels, the more it stretches.</p>` },
+    { m: "B", title: "Run time backwards", go() { B.u = U_NOW; B.graph = true; setAnimB(0); },
+      text: () => `<p>Press <b>Rewind</b>. Galaxies get closer. The universe gets denser and hotter.</p><p class="look">Red-shift → space expanding → once closer together</p><p class="copy">Big Bang theory: the universe began from a very small region that was extremely hot and dense.</p>` },
+    { m: "B", lvl: "a", title: "The oldest light", go() { B.u = uOf(4.2e-4); setAnimB(0); },
+      text: () => `<p>After about 380 000 years, light could travel freely. Expansion has stretched that glow into microwaves.</p><p class="look">Cosmological microwave background radiation, now 2.7 K: evidence for the Big Bang.</p>` },
+    { m: "B", lvl: "a", title: "Hydrogen and helium", go() { B.u = uOf(1e-14); setAnimB(0); },
+      text: () => `<p>The early universe was hot enough to fuse hydrogen into helium for a few minutes, then too cool.</p><p class="look">Predicted ratio matches what we observe: about 3:1 hydrogen to helium by mass.</p>` },
+    { m: "B", lvl: "a", title: "How old is the universe?", live: true, go() { B.u = U_NOW; setAnimB(0); },
+      text: () => `<p class="eq">age ≈ 1 ÷ H</p><p>${lastFit ? `Your graph: <b>${sf2(lastFit.age)} billion years</b>` : "Measure 3 galaxies first."}</p><p class="look">Assumes H has always been constant.</p><p class="look">Put H in s⁻¹ first: 70 km s⁻¹ Mpc⁻¹ = 2.3 × 10⁻¹⁸ s⁻¹.</p>` },
+    { m: "B", title: "Speeding up", go() { B.u = U_NOW; setAnimB(0); },
+      text: () => `<p>Play into the future.</p><p class="copy">Since 1998, supernovae suggest distant galaxies are moving away ever faster.</p><p class="copy">Much is still not understood, such as dark mass and dark energy.</p>` },
+    { m: "B", lvl: "a", title: "Type 1a supernovae", go() { B.u = U_NOW; setAnimB(0); },
+      text: () => `<p>They all peak at about the same absolute magnitude, so they are standard candles and give distance. Distant ones are dimmer than expected.</p><svg viewBox="0 0 300 176" role="img" aria-label="Light curve of a typical type 1a supernova. Absolute magnitude against days, with brighter upwards. It rises from about −15 at day 0 to a peak of about −19.3 at day 20, then fades to about −16 by day 100." style="display:block;width:100%;max-width:340px;height:auto"><g style="fill:none;stroke:var(--st-rule);stroke-width:1"><path d="M44 14H284M44 40H284M44 66H284M44 92H284M44 118H284"></path></g><path d="M44 14V144H284" style="fill:none;stroke:var(--st-ink);stroke-width:1.5"></path><path d="M44 144C60 100 76 32 92 32C104 32 116 50 128 60.8S165 84 188 92S250 112 284 118" style="fill:none;stroke:var(--st-accent-text);stroke-width:2.5"></path><circle cx="92" cy="32" r="4" style="fill:var(--st-accent-text)"></circle><g style="fill:var(--st-caption);font:500 10.5px var(--st-mono)"><text x="38" y="18" text-anchor="end">−20</text><text x="38" y="70" text-anchor="end">−18</text><text x="38" y="122" text-anchor="end">−16</text><text x="38" y="148" text-anchor="end">−15</text><text x="44" y="158" text-anchor="middle">0</text><text x="164" y="158" text-anchor="middle">50</text><text x="284" y="158" text-anchor="middle">100</text><text x="164" y="172" text-anchor="middle">days</text><text transform="translate(9 79) rotate(-90)" text-anchor="middle">absolute magnitude</text></g><text x="102" y="28" style="fill:var(--st-ink);font:600 12px var(--st-ui)">peak ≈ −19.3</text></svg><p class="copy">Evidence suggests the expansion is accelerating. The cause, called dark energy, is debated.</p>` },
+    { m: "N", lvl: "a", title: "Lines split and merge", go() { setPlayN(true); },
+      text: () => `<p>One star moves towards you as the other moves away, so the lines split. You are in the plane of the orbit.</p><p class="look">They merge twice each orbit, when both stars move across your view.</p>` },
+    { m: "N", lvl: "a", title: "Measure it", go() { setPlayN(true); },
+      text: () => `<p>Read the biggest shift and the time for one full orbit.</p><p class="eq">speed = c × Δλ ÷ λ</p><p class="eq">r = vT ÷ 2π</p><p>r is each star's orbit radius. These stars have equal mass. Time one full orbit, not one merge to the next.</p>` },
+  ];
+  const ST = {
+    look: "margin:0;background:var(--st-note-bg);border:1px dashed var(--st-note-border);border-radius:var(--st-r-card);padding:12px 14px;font-weight:500;color:var(--st-ink);font-size:15px",
+    copy: "margin:0;color:var(--st-accent-text);font-size:clamp(17px,1.4vw,20px);font-weight:600;line-height:1.35",
+    eq: "margin:0;font:600 clamp(22px,2vw,30px)/1.15 var(--st-display);letter-spacing:-0.02em;color:var(--st-ink);background:var(--st-num-well);border-radius:var(--st-r-card);padding:12px 16px",
+    cl: "display:block;font:500 11px/1 var(--st-mono);letter-spacing:0.16em;text-transform:uppercase;margin-bottom:5px",
+  };
+  // lvl: "a" = A level only. Dots, step counts and live text all come from the visible list.
+  const visibleSteps = () => ALLSTEPS.filter((s) => !s.lvl || s.lvl === "a" && alevel);
+  let steps = visibleSteps(), step = 0, lastHTML = "";
+  const dots = $("g-dots");
+  function buildDots() { dots.innerHTML = ""; steps.forEach(() => { const d = document.createElement("i"); d.style.cssText = "width:10px;height:10px;border-radius:3px;display:block;background:var(--st-rule-strong)"; dots.appendChild(d); }); }
+  buildDots();
+  function styleText(gt) {
+    gt.querySelectorAll("p").forEach((p) => p.style.margin = "0");
+    gt.querySelectorAll(".look").forEach((el) => el.style.cssText = ST.look);
+    gt.querySelectorAll(".eq").forEach((el) => el.style.cssText = ST.eq);
+    gt.querySelectorAll(".copy").forEach((el) => { el.style.cssText = ST.copy; el.insertAdjacentHTML("afterbegin", `<span style="${ST.cl}">Copy this down</span>`); });
+  }
+  function goStep(i) {
+    step = clamp(i, 0, steps.length - 1);
+    const st = steps[step]; setMode(st.m); st.go();
+    if (REDUCE) { setPlayD(false); setPlayE(false); setAnimB(0); setPlayN(false); }
+    syncAll();
+    const inSec = steps.filter((s) => s.m === st.m), k = inSec.indexOf(st);
+    $("g-count").textContent = `Step ${k + 1} of ${inSec.length}`;
+    $("g-title").textContent = st.title;
+    const gt = $("g-text"); gt.innerHTML = lastHTML = st.text(); styleText(gt);
+    [...dots.children].forEach((d, j) => d.style.background = j === step ? "var(--st-accent)" : j < step ? "var(--st-ink)" : "var(--st-rule-strong)");
+    $("g-back").disabled = step === 0;
+    $("g-next").innerHTML = step === steps.length - 1 ? "Start again" : "Next" + I.right;
+  }
+  function liveText() { const st = steps[step]; if (!st || !st.live || st.m !== mode) return; const html = st.text(); if (html !== lastHTML) { const gt = $("g-text"); gt.innerHTML = lastHTML = html; styleText(gt); } }
+  $("g-next").onclick = () => goStep(step === steps.length - 1 ? 0 : step + 1);
+  $("g-back").onclick = () => goStep(step - 1);
+  const TABKEY = { "1": "D", "2": "S", "3": "E", "4": "B", "5": "N" };
+  const onKey = (e) => {
+    if (e.target.closest("input,select,textarea") || e.ctrlKey || e.metaKey || e.altKey) return;
+    if (e.key === "ArrowRight") goStep(step + 1); else if (e.key === "ArrowLeft") goStep(step - 1);
+    else if (TABKEY[e.key]) { const k = steps.findIndex((s) => s.m === TABKEY[e.key]); if (k >= 0) goStep(k); }
+    else if (e.key === " " && mode !== "S") { e.preventDefault(); if (mode === "D") setPlayD(!D.playing); else if (mode === "E") setPlayE(!E.playing); else if (mode === "N") setPlayN(!N.playing); else setAnimB(B.anim ? 0 : B.u >= U_NOW - 0.002 ? -1 : 1); }
+    else if (mode === "S" && (e.key === "," || e.key === "<" || e.key === "[")) setCursor(S.cursor - (e.shiftKey ? 1 : 0.1));
+    else if (mode === "S" && (e.key === "." || e.key === ">" || e.key === "]")) setCursor(S.cursor + (e.shiftKey ? 1 : 0.1));
+    else if (mode === "S" && (e.key === "z" || e.key === "Z")) setZoom(!S.zoom);
+    else if (mode === "S" && e.key === "Enter" && !e.target.closest("button")) record();
+  };
+  document.addEventListener("keydown", onKey);
+
+  // ---------- quiz ----------
+  const Q = [
+    { s: "Light from a distant galaxy has a longer wavelength than the same light in a lab. This is…", o: ["blue-shift", "red-shift", "refraction"], a: 1, why: "The lines move towards the red, long-wavelength end." },
+    { s: "Galaxy M has a bigger red-shift than galaxy N. M is…", o: ["closer, moving away more slowly", "moving towards us, faster", "further away, moving away faster"], a: 2, why: "The further away a galaxy is, the bigger its red-shift and the faster it moves." },
+    { s: "Why compare a galaxy's spectrum with hydrogen from a lab?", o: ["To see how far the lines have moved", "Because lab light is brighter", "Because galaxies only give out red light"], a: 0, why: "The same pattern of lines, so the shift can be measured." },
+    { s: "Galaxy X's Hα line shifts by 40 nm. Galaxy Y's shifts by 10 nm. Which is further away?", o: ["Y", "X", "They are the same distance"], a: 1, why: "A bigger shift means further away." },
+    { s: "An astronomer in galaxy H looks at the Milky Way. It appears to be…", o: ["not moving", "moving towards them", "moving away"], a: 2, why: "Every observer sees distant galaxies moving away." },
+    { s: "Speed increases with distance for galaxies. This is evidence that…", o: ["the universe is expanding", "galaxies are getting hotter", "the Milky Way is the centre"], a: 0, why: "Further galaxies move away faster, as an expanding universe predicts." },
+    { s: "How does red-shift support the Big Bang theory?", o: ["Galaxies are growing, so they were once small", "Galaxies are moving apart, so they were once closer", "The Milky Way is the centre of the universe"], a: 1, why: "Run it backwards: a very small, extremely hot, dense region." },
+    { s: "Since 1998, supernovae suggest distant galaxies are moving away…", o: ["more and more slowly", "at a steady speed", "ever faster"], a: 2, why: "The cause isn't understood. Scientists call it dark energy." },
+  ];
+  const QA = [
+    { s: "Hα (656.3 nm) is seen at 669.4 nm. z is about…", o: ["0.0020", "0.020", "0.20"], a: 1, why: "13.1 ÷ 656.3 = 0.020." },
+    { s: "z = 0.020 and c = 3.0 × 10⁸ m/s. The speed away from us is about…", o: ["6.0 × 10⁶ m/s", "6.0 × 10⁷ m/s", "1.5 × 10¹⁰ m/s"], a: 0, why: "Speed = zc = 0.020 × 3.0 × 10⁸." },
+    { s: "H = 70 km s⁻¹ Mpc⁻¹. A galaxy 200 Mpc away moves away at…", o: ["2.9 km/s", "350 km/s", "14 000 km/s"], a: 2, why: "v = Hd = 70 × 200." },
+    { s: "H = 2.3 × 10⁻¹⁸ s⁻¹. The age of the universe is about…", o: ["1.4 × 10⁸ years", "1.4 × 10¹⁰ years", "1.4 × 10¹² years"], a: 1, why: "1 ÷ H = 4.4 × 10¹⁷ s = 1.4 × 10¹⁰ years." },
+    { s: "Why is 1 ÷ H only an estimate of the age?", o: ["It assumes H has always been constant", "It ignores the mass of each galaxy", "It only works for blue-shifted galaxies"], a: 0, why: "The expansion rate has changed over time." },
+    { s: "Besides red-shift, which of these is evidence for the Big Bang?", o: ["Eclipses in binary star systems", "Transits of exoplanets across their stars", "Cosmological microwave background radiation"], a: 2, why: "The cooled, stretched glow of the early universe." },
+    { s: "Distant type 1a supernovae look dimmer than expected. This suggests the expansion is…", o: ["slowing down", "accelerating", "constant"], a: 1, why: "They are further away than a constant rate predicts. The cause is called dark energy." },
+    { s: "A binary is viewed in the plane of its orbit. Its spectral lines merge when the stars are moving…", o: ["across your line of sight", "towards you", "away from you"], a: 0, why: "Neither star moves towards or away from you, so neither is shifted." },
+  ];
+  let score = 0; const qs = $("quiz-body");
+  const OPT = "display:flex;align-items:center;gap:10px;width:100%;font:500 16px/1.35 var(--st-ui);text-align:left;border:1.5px solid var(--st-btn-border);background:var(--st-paper);color:var(--st-ink);border-radius:var(--st-r-control);padding:11px 14px;cursor:pointer";
+  function renderQuiz() {
+  qs.innerHTML = ""; score = 0; const QS = alevel ? QA : Q; $("score").textContent = `Score: 0 / ${QS.length}`;
+  QS.forEach((q, qi) => {
+    const box = document.createElement("div");
+    box.style.cssText = "background:var(--st-paper);border:1px solid var(--st-rule);border-radius:var(--st-r-stage);padding:18px;display:grid;gap:8px;align-content:start;min-width:0";
+    box.innerHTML = `<div style="display:flex;gap:10px;align-items:flex-start"><span style="flex:none;width:24px;height:24px;border-radius:5px;background:var(--st-num-well);display:flex;align-items:center;justify-content:center;font:500 12px/1 var(--st-mono);color:var(--st-caption);margin-top:1px">${String(qi + 1).padStart(2, "0")}</span><div style="font-weight:600;font-size:17px;line-height:1.4">${q.s}</div></div>`;
+    const fb = document.createElement("div"); fb.style.cssText = "font-size:15px;line-height:1.45"; let done = false;
+    const btns = q.o.map((t, oi) => {
+      const b = document.createElement("button"); b.style.cssText = OPT; b.innerHTML = `<span>${t}</span>`;
+      b.onmouseenter = () => { if (!done) b.style.background = "var(--st-note-bg)"; }; b.onmouseleave = () => { if (!done) b.style.background = "var(--st-paper)"; };
+      b.onclick = () => {
+        if (done) return; done = true; const right = oi === q.a;
+        btns.forEach((x, xi) => { x.style.cursor = "default"; x.style.background = "var(--st-paper)"; if (xi !== oi && xi !== q.a) x.style.opacity = "0.55"; });
+        const mark = (el, ok) => { el.style.borderColor = ok ? "var(--rsl-ok,#12A150)" : "var(--rsl-bad,#B3261E)"; el.style.background = ok ? "var(--rsl-ok-bg,#E4F7EB)" : "var(--rsl-bad-bg,#FBE4DE)"; el.insertAdjacentHTML("afterbegin", `<span style="display:flex;color:${ok ? "var(--rsl-ok-text,#0A6B36)" : "var(--rsl-bad,#B3261E)"}">${ok ? I.tick : I.cross}</span>`); };
+        mark(b, right); if (!right) mark(btns[q.a], true);
+        fb.style.color = right ? "var(--rsl-ok-text,#0A6B36)" : "var(--rsl-bad,#B3261E)"; fb.innerHTML = `<b>${right ? "Correct." : "Not quite."}</b> <span style="color:var(--st-body)">${q.why}</span>`;
+        if (right) score++; $("score").textContent = `Score: ${score} / ${QS.length}`;
+      };
+      box.appendChild(b); return b;
+    });
+    box.appendChild(fb); qs.appendChild(box);
+  });
+  }
+
+  // ---------- GCSE / A level ----------
+  function paintLevel() {
+    const root = document.documentElement;
+    if (alevel) root.setAttribute("data-level", "a"); else root.removeAttribute("data-level");
+    seg($("lvl"), "lvl", alevel ? "a" : "g");
+    $("lvl-band").hidden = !alevel;
+    $("rs-eyebrow").textContent = alevel ? "Physics · Cosmology · AQA 7408 3.9.3" : "Physics · Space · AQA 4.8.2";
+    $("rs-foot").textContent = alevel ? "1 Mpc = 3.26 Mly · c = 3.0 × 10⁸ m/s · Doppler and Expansion not to scale" : "Mly = million light-years · c = speed of light · Doppler and Expansion not to scale";
+    tabs.forEach((b) => { if (b.dataset.mode === "N") b.hidden = !alevel; });
+    const heads = HEADS[alevel ? "a" : "g"];
+    $("tb-head").innerHTML = heads.map((t) => `<th style="padding:12px 10px;text-align:left;border-bottom:1px solid var(--st-rule);font-weight:500">${t}</th>`).join("");
+    $("tb").parentElement.style.minWidth = alevel ? "760px" : "600px";
+    $("plot-title").textContent = alevel ? "Velocity against distance" : "Shift against distance";
+    $("plot").setAttribute("aria-label", alevel ? "Graph of velocity against distance" : "Graph of shift against distance");
+    steps = visibleSteps(); buildDots(); renderQuiz(); renderRows();
+  }
+  function setLevel(v) {
+    if (v === alevel) return;
+    const was = mode; alevel = v; paintLevel();
+    // Same tab, its first step. The Binary tab only exists at A level.
+    const k = steps.findIndex((s) => s.m === was); goStep(k >= 0 ? k : 0);
+  }
+  $("lvl").querySelectorAll("button").forEach((b) => b.onclick = () => setLevel(b.dataset.lvl === "a"));
+  // A page restored from the back/forward cache still opens on GCSE.
+  const onShow = (e) => { if (e.persisted) setLevel(false); };
+  window.addEventListener("pageshow", onShow);
+
+  // ---------- start ----------
+  const ro = new ResizeObserver(resize); ro.observe(cv); resize();
+  const plotRO = new ResizeObserver(() => drawPlot()); plotRO.observe($("plot"));
+  paintLevel(); setTeacher(teacher); prewarmD();
+  const TABS = { "Doppler": "D", "Galaxy spectra": "S", "Expansion": "E", "Big Bang": "B" };
+  const goTab = (name) => { const m = TABS[name] || "D"; goStep(steps.findIndex((s) => s.m === m)); };
+  goTab(props.startTab || "Doppler");
+  raf = requestAnimationFrame(frame);
+  // Saves the machine: no drawing while the stage is scrolled away.
+  const io = new IntersectionObserver((es) => { const on = es[es.length - 1].isIntersecting; if (on && !raf && alive) { lastT = performance.now(); raf = requestAnimationFrame(frame); } else if (!on && raf) { cancelAnimationFrame(raf); raf = 0; } });
+  io.observe($("rs-lab"));
+
+  return { setSection, setTeacher, goTab, stop() { alive = false; cancelAnimationFrame(raf); ro.disconnect(); io.disconnect(); plotRO.disconnect(); document.removeEventListener("keydown", onKey); window.removeEventListener("pageshow", onShow); document.documentElement.removeAttribute("data-level"); } };
+}
+</script>
+</body>
+</html>

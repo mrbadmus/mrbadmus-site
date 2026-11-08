@@ -23,5 +23,10 @@
     "subject": "physics",
     "name": "Refraction Lab",
     "path": "/simulations/physics/refraction-lab/"
+  },
+  {
+    "subject": "physics",
+    "name": "Red-shift Lab",
+    "path": "/simulations/physics/red-shift-lab/"
   }
 ]
