@@ -440,8 +440,9 @@ DB_SOURCE = {"ks3_bank": "ks3_bank", "ks3_ladder": "ks3_ladder", "ks4_bank": "ks
              "ks3_yourturn": "ks3_lesson", "ks3_lesson": "ks3_lesson", "ks4_match": "ks4_lesson",
              "ks4_quizbank": "ks4_lesson", "ks3_instrument": "ks3_lesson",
              "ks4_lessonbank": "ks4_lesson"}
-for _k in ("start", "choice", "sort", "cfifa", "steps", "ladder", "practice", "chain", "write"):
+for _k in ("start", "choice", "sort", "cfifa", "steps", "ladder", "practice", "chain", "write", "other"):
     DB_SOURCE["ks4_pilot_" + _k] = "ks4_lesson"
+DB_SOURCE["ks4_root"] = "ks4_lesson"      # ⊕ 25 Oct 2026: a lesson's own activities (round5_inventory)
 
 KS3_RUNGS_SET = set(RUNGS_KS3)
 _PILOT_ID = re.compile(r"^ks4:[a-z0-9-]+:(cf|ch|tf|th)#([a-z]+)(?:\d*)(?:-\d+)*$")
@@ -671,8 +672,11 @@ def ks4_quizbank_extra():
     return out
 
 
-# How many practice-set items the answer tap reports: mrbadmus.v2.js
-# HANDLERS.Ks4QuizBank takes `questions.filter(Boolean).slice(0, 5)`.
+# How many practice-set items the answer tap reports on a LESSON-AUTHORED
+# set (batch 4 on): the block itself caps its set at five, and the tap
+# (mrbadmus.v2.js quizLimit, 25 Oct 2026) follows the block's own count. The
+# pilot's set (every question, four at a time) is the subtopic quiz, whose
+# ids are the classic card ids, all known already.
 QUIZBANK_SENT = 5
 
 
@@ -719,6 +723,53 @@ def round4_inventory():
     practice-set items). The top-up (`--top-up`) also places every OTHER id
     the loaders know that the committed JSON does not tag yet."""
     return {("KS4", slug): items for slug, items in ks4_lessonbank_items().items()}
+
+
+def round5_inventory():
+    """⊕ 25 Oct 2026 (Mide's item 1: every activity saves). The ids the page
+    now sends that no earlier round knew:
+      KS4 — every rebuilt lesson's OWN activities (root option groups),
+            `ks4:<slug>:<route>#<state key>[-<entry>]`, classified per route
+            by the page's own classifier (tools/activity_save_coverage.js);
+      KS3 — the instrument kinds of the `<ks3-specs>` table,
+            `<slug>#<activity>-<n>` (kp_ks3_units.spec_units).
+    Stems are the options (KS4: the lesson's own labels; KS3: the block's
+    heading, commit line and unit words); the answer is the right option's
+    label where the lesson decides one."""
+    import subprocess
+    import kp_ks3_units as U
+    import ks3_data
+    out = {}
+    for slug in ks3_data.lesson_registry():
+        items = [(u["id"], "ks3_instrument",
+                  clip(u["prompt"], 400) + (" Options: " + " / ".join(u["options"][:12]) if u["options"] else ""), "")
+                 for u in U.spec_units(slug)]
+        if items:
+            out[("KS3", slug)] = items
+    pages = []
+    for p in sorted(glob.glob(os.path.join(REPO, "combined", "*", "*", "*", "*.html")) +
+                    glob.glob(os.path.join(REPO, "triple", "*", "*", "*", "*.html"))):
+        if "ks4-mount" in open(p, encoding="utf-8").read():
+            pages.append(os.path.relpath(p, REPO))
+    res = subprocess.run(["node", os.path.join(REPO, "tools", "activity_save_coverage.js"), REPO],
+                         input="\n".join(pages), capture_output=True, text=True, check=True)
+    seen = set()
+    for page, r in sorted(json.loads(res.stdout).items()):
+        if r.get("error"):
+            continue
+        m = re.match(r"^(combined|triple)/(foundation|higher)/", page)
+        route = m.group(1)[0] + m.group(2)[0]
+        for g in r["groups"]:
+            if not g.get("id"):
+                continue
+            qid = "ks4:%s:%s#%s" % (r["slug"], route, g["id"])
+            if qid in seen:
+                continue
+            seen.add(qid)
+            out.setdefault(("KS4", r["slug"]), []).append(
+                (qid, "ks4_root", "Choose: " + " / ".join(plain(x) for x in g.get("labels") or []),
+                 plain((g.get("right") or [""])[0])))
+    return out
 
 
 def round3_inventory():
@@ -1577,7 +1628,7 @@ def top_up(a):
             for q in sc["questions"]:
                 if q[1] != "ks4_rung":            # round 1's retired route-less ids
                     want.setdefault((ks, ref), []).append(q)
-    for extras in (extras_inventory(), round3_inventory(), round4_inventory()):
+    for extras in (extras_inventory(), round3_inventory(), round4_inventory(), round5_inventory()):
         for key, items in extras.items():
             want.setdefault(key, []).extend(items)
     named = set(a.scope)

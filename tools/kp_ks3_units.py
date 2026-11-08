@@ -228,6 +228,88 @@ def units(slug):
     return out
 
 
+# ── ⊕ 25 Oct 2026: the <ks3-specs> kinds (Mide's item 1) ───────────────
+# The rest of the KS3 instruments, named by kind in the `<ks3-specs>` table
+# of shared/mrbadmus.v2.js. Read from that table itself (its shape letter
+# and its unit / tab / part / whole selectors), so the ids here are the ids
+# the page sends: `<slug>#<activity>-<n>`, n counted over the units, the tabs
+# or the parts, else 1.
+
+def spec_table():
+    js = open(os.path.join(REPO, "shared", "mrbadmus.v2.js"), encoding="utf-8").read()
+    a, b = js.find("/* <ks3-specs> */"), js.find("/* </ks3-specs> */")
+    body = js[a:b] if a >= 0 and b > a else ""
+    out = {}
+    for k in re.findall(r"'(ks3-[a-z0-9-]+)': G\(\)", body):
+        out[k] = {"t": "u", "gate": True}
+    for m in re.finditer(r"'(ks3-[a-z0-9-]+)': \{ t: '(\w)'([^\n]*)", body):
+        line, sp = m.group(3), {"t": m.group(2)}
+        for f in ("opt", "unit", "tab", "part", "check", "inputs", "step"):
+            fm = re.search(r"\b%s: '([^']*)'" % f, line)
+            if fm:
+                sp[f] = fm.group(1)
+        sp["whole"] = "whole: true" in line
+        sp["toggle"] = "toggle: true" in line
+        out[m.group(1)] = sp
+    return out
+
+
+def _gate_opts(sec):
+    out = []
+    for b in sec.find_all("button"):
+        if any(re.match(r"^data-[a-z0-9]+-gopt$", k) for k in b.attrs) or \
+                ("ks3-option" in (b.get("class") or []) and b.find_parent(attrs={"data-benchgate": True})):
+            out.append(b)
+    return out
+
+
+def spec_units(slug):
+    """[{id, kind, activity, n, prompt, options}] for this lesson's <ks3-specs> blocks."""
+    sp_all = spec_table()
+    sp_soup = soup(slug)
+    if sp_soup is None:
+        return []
+    out = []
+    for sec in sp_soup.select("[data-activity][data-instrument]"):
+        if sec.find_parent(class_="ks3-ladder") or sec.has_attr("data-keyedblock"):
+            continue
+        k = _kind(sec, sp_all)
+        if not k:
+            continue
+        sp, act = sp_all[k], sec.get("data-activity")
+        head = sec.find(["h2", "h3"])
+        head = txt(head) if head is not None else ""
+        commit = sec.select_one(".ks3-commit")
+        ask = " — ".join(x for x in (head, txt(commit) if commit is not None else "") if x)
+        labels = lambda els: [opt_label(b) for b in els]
+        rows = []
+        if sp["t"] == "u":
+            opts = _gate_opts(sec) if sp.get("gate") else sec.select(sp["opt"])
+            if sp.get("unit"):
+                for n, u in enumerate(sec.select(sp["unit"]), 1):
+                    rows.append((n, ask + " — " + _prompt(u, sec) if _prompt(u, sec) else ask, labels(u.select(sp["opt"]))))
+            elif sp.get("tab"):
+                for n, tb in enumerate(sec.select(sp["tab"]), 1):
+                    rows.append((n, ask + " — " + txt(tb), labels(opts)))
+            else:
+                rows.append((1, ask, labels(opts)))
+        elif sp["t"] == "c":
+            if sp["whole"]:
+                tabs = sec.select(sp["tab"]) if sp.get("tab") else [None]
+                for n, tb in enumerate(tabs, 1):
+                    rows.append((n, ask + (" — " + txt(tb) if tb is not None else ""), labels(sec.select(sp["opt"]))))
+            else:
+                for n, prt in enumerate(sec.select(sp["part"]), 1):
+                    opts = ["Flagged", "Not flagged"] if sp["toggle"] else labels(prt.select(sp["opt"]))
+                    rows.append((n, ask + " — " + _prompt(prt, sec), opts))
+        else:
+            rows.append((1, ask, []))
+        for n, prompt, opts in rows:
+            out.append({"id": "%s#%s-%d" % (slug, act, n), "kind": k, "activity": act, "n": n,
+                        "prompt": prompt, "options": [o for o in opts if o]})
+    return out
+
+
 def page_choice_keys(slug):
     """{qid: {"options": [text], "key": text|None}} for the lesson's ladder MCQ
     rungs (`<slug>#recall|apply`; the right option carries data-correct="1",

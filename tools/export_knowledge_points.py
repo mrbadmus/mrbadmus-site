@@ -87,12 +87,13 @@ SOURCE_LABEL = {  # the coverage report's rows
     "ks4_pilot_practice": "KS4 pilot practice", "ks4_pilot_chain": "KS4 pilot chain",
     "ks4_pilot_write": "KS4 pilot write", "ks4_quizbank": "KS4 practice set (ruled text)",
     "ks4_lessonbank": "KS4 practice set (lesson-authored)",
+    "ks4_root": "KS4 lesson's own activity",
 }
 REPORT_ORDER = ["ks3_bank", "ks4_bank", "ks3_ladder", "exam_ks3", "exam_ks4", "ks4_quiz",
                 "ks3_start", "ks3_predict", "ks3_keyed", "ks3_yourturn", "ks3_instrument", "ks4_match",
                 "ks4_pilot_start", "ks4_pilot_choice", "ks4_pilot_sort", "ks4_pilot_cfifa",
                 "ks4_pilot_steps", "ks4_pilot_ladder", "ks4_pilot_practice", "ks4_pilot_chain",
-                "ks4_pilot_write", "ks4_quizbank", "ks4_lessonbank"]
+                "ks4_pilot_write", "ks4_quizbank", "ks4_lessonbank", "ks4_root"]
 CS_ID = re.compile(r"^cs-(bio|chem|phys)-[a-z0-9-]+$")
 
 
@@ -128,7 +129,7 @@ def expected(inv, extras=None):
         exp[exam_id] = ("exam_ks3", "KS3", slug)
     if extras is None:
         extras = {}
-        for inv_ in (kpc.extras_inventory(), kpc.round3_inventory(), kpc.round4_inventory()):
+        for inv_ in (kpc.extras_inventory(), kpc.round3_inventory(), kpc.round4_inventory(), kpc.round5_inventory()):
             for k_, v_ in inv_.items():
                 extras.setdefault(k_, []).extend(v_)
     for (ks, ref), items in extras.items():
