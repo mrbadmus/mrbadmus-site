@@ -955,6 +955,10 @@
   function positionPlaces(pos) {
     var labels = (pos && pos.labels) || {};
     var cursors = (pos && pos.cursors) || {};
+    /* ⊕ 8 Nov 2026: the lesson by name when the backend names it. A plan nobody
+       positioned starts at the term week, so "Cell Biology, lesson 7" read as
+       six lessons already done. */
+    var named = (pos && pos.next_lessons) || {};
     var subs = Object.keys(labels).filter(function (s) {
       return typeof labels[s] === 'string' && labels[s] && cursors[s] != null;
     });
@@ -966,7 +970,7 @@
       var finished = label === 'Finished the year';
       return {
         subject: s,
-        place: finished ? 'finished the year' : (m ? (m[2] === '1' ? m[1] : m[1] + ', lesson ' + m[2]) : label),
+        place: finished ? 'finished the year' : (named[s] || (m ? (m[2] === '1' ? m[1] : m[1] + ', lesson ' + m[2]) : label)),
         lead: s === lead,
         finished: finished
       };
