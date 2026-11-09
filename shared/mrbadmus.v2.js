@@ -4275,8 +4275,14 @@ try {
             Object.keys(s[o.done] || {}).forEach(function (k) {
               if (!s[o.done][k] || (w[o.done] || {})[k] || (s[o.pick] || {})[k] === undefined) { return; }
               var at = {}; at[o.step] = +k;
-              var v = x.vals(at), it = (v[o.opts] || [])[s[o.pick][k]];
-              out.push({ e: +k + 1, a: it ? it.label : null, ok: o.yes.test(String(v[o.word] || '')), q: String(v[o.ask] || '') });
+              var v = x.vals(at), it = (v[o.opts] || [])[s[o.pick][k]], good = null;
+              (v[o.opts] || []).forEach(function (cand, i) {
+                if (good !== null) { return; }
+                var tr = Object.assign({}, at), pk = {}; pk[k] = i;
+                tr[o.pick] = Object.assign({}, s[o.pick], pk);
+                if (o.yes.test(String(x.vals(tr)[o.word] || ''))) { good = cand.label; }
+              });
+              out.push({ e: +k + 1, a: it ? it.label : null, ok: o.yes.test(String(v[o.word] || '')), q: String(v[o.ask] || ''), good: good });
             });
             return out;
           },
@@ -4320,6 +4326,16 @@ try {
             return o.put(e, n, st);
           } };
       }
+      // The option the lesson answers "Yes" to, asked of its own render.
+      function optionWhere(x, list, key, word) {
+        var out = null;
+        (list || []).forEach(function (o) {
+          if (out !== null || o.value === '' || o.value == null) { return; }
+          var at = {}; at[key] = o.value;
+          if (/^Yes/.test(String(x.vals(at)[word] || ''))) { out = o.label; }
+        });
+        return out;
+      }
       var labelOfPressed = function (list) { var on = (list || []).filter(function (o) { return o && o.pressed; }); return on.length ? on[on.length - 1].label : null; };
       return {
         'decomposition': [
@@ -4339,11 +4355,13 @@ try {
             fire: function (s, w, x) {
               if (s.anom === w.anom || s.anom === '') { return null; }
               var v = x.vals(), i = (v.anomOpts || []).map(function (o) { return String(o.value); }).indexOf(String(s.anom));
-              return [{ e: null, a: i >= 0 ? v.anomOpts[i].label : s.anom, ok: /^Yes/.test(String(v.anomWord || '')), q: 'Which result is the anomaly?' }];
+              return [{ e: null, a: i >= 0 ? v.anomOpts[i].label : s.anom, ok: /^Yes/.test(String(v.anomWord || '')), q: 'Which result is the anomaly?', good: optionWhere(x, v.anomOpts, 'anom', 'anomWord') }];
             },
             back: function (r, e, st, x) {
               var o = x.vals().anomOpts || [], i = find(o, r.answer);
-              return i >= 0 ? { anom: o[i].value } : null;
+              if (i < 0) { return null; }
+              x.afterDraw(function () { var el = document.getElementById('enz-anom'); if (el) { el.value = o[i].value; } });
+              return { anom: o[i].value };
             } },
           typed({ key: 'mean', flag: 'meanChecked', word: 'meanWord', yes: /^Correct/, q: 'Work out the mean time at pH 6', covers: ['onMean'] })
         ],
@@ -4354,12 +4372,14 @@ try {
               fire: function (s, w, x) {
                 if (s.anom === w.anom || s.anom === '') { return null; }
                 var v = x.vals(), i = (v.timeOpts || []).map(function (o) { return String(o.value); }).indexOf(String(s.anom));
-                return [{ e: null, a: i >= 0 ? v.timeOpts[i].label : s.anom, ok: /^Yes/.test(String(v.anomWord || '')), q: 'Which reading is the anomaly?' }];
+                return [{ e: null, a: i >= 0 ? v.timeOpts[i].label : s.anom, ok: /^Yes/.test(String(v.anomWord || '')), q: 'Which reading is the anomaly?', good: optionWhere(x, v.timeOpts, 'anom', 'anomWord') }];
               },
               back: function (r, e, st, x) {
                 lab(x);
                 var o = x.vals().timeOpts || [], i = find(o, r.answer);
-                return i >= 0 ? { anom: o[i].value } : null;
+                if (i < 0) { return null; }
+                x.afterDraw(function () { var el = document.getElementById('anom'); if (el) { el.value = o[i].value; } });
+                return { anom: o[i].value };
               } },
             typed({ key: 'mp', flag: 'mpChecked', word: 'mpWord', yes: /^That agrees/, q: 'What is the melting point, in °C?', covers: ['onMp'], before: lab })
           ];
@@ -4656,6 +4676,9 @@ try {
                   try { if (x.L.judge(rows, sel).ok) { good = bs.filter(function (b, i) { return sel[i]; }).map(function (b) { return b.label; }).join('\n'); } } catch (e) { good = null; }
                 }
               }
+              // No selection of these runs passes ("Not concordant yet"): the lesson's answer is what it said.
+              if (good === null && !s.pick.ok) { good = [s.pick.word, s.pick.note].filter(Boolean).join(' '); }
+              if (good === null && s.pick.ok) { good = on.join('\n'); }
               return [{ e: null, a: on.join('\n'), ok: s.pick.ok === true, q: 'Choose the concordant titres', good: good }];
             },
             back: function (r, e, st, x) {
@@ -5155,6 +5178,8 @@ try {
         L: L,
         vals: function (at) { return A.valsAt(L, Object.assign(A.clone(L.state) || {}, at || {})); },
         set: function (p) { L.setState(p); },
+        // After the lesson's next draw: a <select> drawn new takes its value only once its options exist.
+        afterDraw: function (fn) { var h = document.getElementById('ks4-mount'), api = h && h.__mrbKs4; if (api && api.schedule) { api.schedule(fn); } },
         press: function (get) {
           var p = A.patchOf(L, L.state, typeof get === 'string' ? function (v) { return v[get]; } : get);
           if (p && Object.keys(p).length) { L.setState(p); }

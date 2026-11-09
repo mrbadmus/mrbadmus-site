@@ -329,14 +329,16 @@ CASES = [
          back="(function(){ var s = H.rootState(), el = document.getElementById('dec-rate'); return s.rate === '0.01' && s.rateChecked && s.own[40] === 100 && s.own[60] === null && !!el && el.value === '0.01'; })()"),
     # Selected and judged at once, then typed.
     dict(name="ks4-select-anom", page="/triple/higher/biology/organisation/enzymes.html", forms=True,
-         act="""var own = {}; H.v().phTabs.forEach(function (t) { own[+t.label.replace('pH ', '')] = 120; }); await H.set({ gate: 0, own: own });
+         act="""H.click(document.querySelector('#ks4-mount [aria-label^="Graph A"]')); await H.sleep(200);
+                var own = {}; H.v().phTabs.forEach(function (t) { own[+t.label.replace('pH ', '')] = 120; }); await H.set({ own: own });
                 var L = H.L(), right = null; H.v().anomOpts.forEach(function (o) { L.state.anom = o.value; if (o.value && /^Yes/.test(L.renderVals().anomWord)) { right = o.value; } }); L.state.anom = '';
                 await H.type(document.getElementById('enz-anom'), right);
                 await H.call('onMean', H.val('105')); await H.call('onMeanCheck'); await H.sleep(200);""",
          want=["ks4:enzymes:th#anom", "ks4:enzymes:th#mean"],
          check=lambda b: [x for x in b if x["question_id"].endswith("#anom")][0]["is_correct"] is True
+                         and bool([x for x in b if x["question_id"].endswith("#anom")][0]["correct_answer"])
                          and [x for x in b if x["question_id"].endswith("#mean")][0]["is_correct"] is True,
-         back="(function(){ var s = H.rootState(); return s.anom !== '' && s.mean === '105' && s.meanChecked && s.own[6] === 120 && /^Yes/.test(H.v().anomWord); })()"),
+         back="(function(){ var s = H.rootState(), el = document.getElementById('enz-anom'); return s.anom !== '' && s.mean === '105' && s.meanChecked && s.own[6] === 120 && /^Yes/.test(H.v().anomWord) && !!el && el.value === s.anom; })()"),
     dict(name="ks4-states-lab", page="/triple/higher/chemistry/bonding/states-of-matter.html", forms=True,
          act="""await H.set({ n: 21 }); await H.type(document.getElementById('anom'), '4');
                 await H.type(document.getElementById('mp'), '69'); H.click(H.exact('Check')); await H.sleep(300);""",
@@ -706,6 +708,14 @@ CASES = [
                 c.logic.setState({ chain: links, checked: false }); await H.sleep(90); c.logic.renderVals().onCheck(); await H.sleep(250);""",
          want=["ks4:heart-blood-vessels:ch#r*"],
          back="""(function(){ var P = H.block('Ks4Practice'), R = P.logic.props.rungs, ck = null; [R.r1, R.r2, R.r3, R.r4].forEach(function (items, ri) { items.forEach(function (it, i) { if ((it.kind || 'mcq') === 'chain' && !ck) { ck = ri + '-' + i; } }); }); return P.logic.state.q[ck].res === false; })()"""),
+    dict(name="ks4-concord-none", page="/triple/higher/chemistry/chemical-changes/titrations.html",
+         act="""var runs = [2500, 2520, 2510, 2470];
+                for (var i = 0; i < runs.length; i += 1) { await H.set({ gate: 0, added: runs[i], shown: runs[i] }); await H.call('onRecord'); if (i < 3) { await H.call('onNextRun'); } }
+                await H.call(function (v) { return v.rowBtns[2].onClick; }); await H.call(function (v) { return v.rowBtns[3].onClick; }); await H.call('onPickCheck'); await H.sleep(200);""",
+         want=["ks4:titrations:th#concord"],
+         check=lambda b: [x for x in b if x["question_id"].endswith("#concord")][0]["is_correct"] is False
+                         and "oncordant" in ([x for x in b if x["question_id"].endswith("#concord")][0]["correct_answer"] or ""),
+         back="(function(){ var s = H.rootState(); return !!s.pick && s.pick.ok === false; })()"),
     # ── KS3: the rest of the instruments ──
     dict(name="ks3-gate", page="/ks3/physics/energy-transfers/energy-transfers-before-and-after.html",
          act="var s = document.querySelector('.ks3-btally-block'); H.click(s.querySelector('[data-btally-gopt]')); await H.sleep(300);",
