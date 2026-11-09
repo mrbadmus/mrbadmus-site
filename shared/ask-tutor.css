@@ -1,7 +1,9 @@
 /* ask-tutor.css — the sheet beside a family child's practice question. See
    shared/ask-tutor.js. Colours are the page's own tokens, so both themes follow. */
 .mrb-at { position: static; }
-html.mrb-at-room body { padding-bottom: 72px; }
+/* Room to scroll the last option clear of the button. On the reading column:
+   the page's shell fills the viewport, so padding on body adds nothing. */
+html.mrb-at-room [data-mrb-qw="main"] { padding-bottom: 72px !important; }
 
 .mrb-at-open {
   position: fixed; right: 16px; bottom: 12px; z-index: 40;
@@ -66,12 +68,12 @@ html.mrb-at-room body { padding-bottom: 72px; }
 .mrb-at-form input {
   flex: 1; min-width: 0; min-height: 48px; padding: 0 14px; box-sizing: border-box;
   border: 2px solid var(--ks3-ink); border-radius: 12px;
-  background: var(--ks3-ground); color: var(--ks3-ink); font-size: 17px;
+  background: var(--ks3-ground); color: var(--ks3-ink); font: 400 17px var(--ks3-font-body, inherit);
 }
 .mrb-at-form input::placeholder { color: var(--ks3-ink-muted); opacity: 1; }
 .mrb-at-form button {
   min-height: 48px; padding: 0 18px; border: 2px solid var(--ks3-ink); border-radius: 12px;
-  background: var(--ks3-ink); color: var(--ks3-on-dark); font-weight: 700; font-size: 15px; cursor: pointer;
+  background: var(--ks3-ink); color: var(--ks3-ground); font-weight: 700; font-size: 15px; cursor: pointer;
 }
 .mrb-at-form button:disabled { opacity: .5; cursor: default; }
 @media print { .mrb-at { display: none; } }

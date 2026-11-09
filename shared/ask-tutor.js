@@ -30,10 +30,11 @@
   var assignment = new URLSearchParams(window.location.search).get('assignment') || '';
   var PATH = '/student/assignment.html' + (assignment ? '?assignment=' + encodeURIComponent(assignment) : '');
 
-  var root = null, btn = null, sheet = null, list = null, input = null, send = null, closeBtn = null, lastFocus = null;
+  var root = null, btn = null, sheet = null, list = null, input = null, send = null, closeBtn = null;
   var talk = [];            // {role, content} sent to the model, oldest first
   var loaded = null;        // the engine, once
-  var busy = false, opened = false;
+  var restored = null;      // the past talk, once
+  var busy = false;
 
   function esc(s) {
     return String(s == null ? '' : s).replace(/[&<>"']/g, function (x) {
@@ -50,7 +51,10 @@
     var opts = Array.prototype.map.call(document.querySelectorAll('[data-mrb-qw="opt"]'), function (o) {
       return { key: txt(o.querySelector('[data-mrb-qw="key"]')), text: txt(o.querySelector('[data-mrb-qw="text"]')) || txt(o) };
     });
-    return { stem: txt(stem), options: opts, answered: shown(document.querySelector('[data-mrb-qw="note"]')) };
+    /* The mark (RIGHT, NOT THIS ONE, THE ANSWER), not the feedback note: a bank
+       row with no `why` has no note, so a note says nothing about whether the
+       question has been answered. */
+    return { stem: txt(stem), options: opts, answered: shown(document.querySelector('[data-mrb-qw="status"]')) };
   }
 
   function assetUrl(src) {
@@ -116,13 +120,18 @@
         headers: { Authorization: 'Bearer ' + tok }
       });
     }).then(function (r) { return r.ok ? r.json() : null; }).then(function (b) {
+      /* Above anything asked while this read was out, so the talk stays in order. */
+      var first = list.querySelector('.mrb-at-msg'), past = [];
+      var put = function (li) { if (first) { list.insertBefore(li, first); } };
       (b && b.tutor || []).forEach(function (r) {
         if (!r.answered || !r.reply) { return; }
-        bubble('You', esc(r.question), true);
-        bubble('Tutor', M.formatReply(r.reply), false);
-        talk.push({ role: 'user', content: r.question }, { role: 'assistant', content: r.reply });
+        put(bubble('You', esc(r.question), true));
+        put(bubble('Tutor', M.formatReply(r.reply), false));
+        past.push({ role: 'user', content: r.question }, { role: 'assistant', content: r.reply });
       });
+      talk = past.concat(talk);
       while (talk.length > 20) { talk.splice(0, 2); }
+      list.scrollTop = list.scrollHeight;
     }).catch(function () { /* the sheet still works without the past */ });
   }
 
@@ -139,7 +148,7 @@
       wait.querySelector('.mrb-at-body').textContent = "The tutor isn't available just now. Try again in a minute.";
       wait.removeAttribute('aria-busy');
     };
-    engine().then(function (M) {
+    (restored || Promise.resolve()).then(engine).then(function (M) {
       var p = practice(), onScreen = question();
       var body = JSON.stringify({
         system: systemFor(M, onScreen), messages: talk,
@@ -171,22 +180,21 @@
   }
 
   function open() {
-    lastFocus = document.activeElement;
     root.classList.add('is-open');
     sheet.removeAttribute('hidden');
     document.documentElement.style.overflow = 'hidden';
+    list.scrollTop = list.scrollHeight;   // hiding the sheet forgets its scroll
     input.focus();
-    if (!opened) {
-      opened = true;
+    if (!restored) {
       drawEmpty();
-      engine().then(restore).catch(function () {});
+      restored = engine().then(restore).catch(function () {});
     }
   }
   function close() {
     root.classList.remove('is-open');
     sheet.setAttribute('hidden', '');
     document.documentElement.style.overflow = '';
-    if (lastFocus && lastFocus.focus && document.contains(lastFocus)) { lastFocus.focus(); } else { btn.focus(); }
+    btn.focus();
   }
 
   /* Above the action bar, and only while a question is on screen. */
@@ -237,8 +245,9 @@
         if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
         else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
       }
-      /* Number and letter keys pick an option on this page: not while typing here. */
-      e.stopPropagation();
+      /* No stopPropagation: this page has no key that picks an option, and its
+         clock listens for keydown on window, so swallowing keys here paused the
+         clock after 60 seconds of typing. */
     }, true);
     var queued = false;
     var soon = function () {
