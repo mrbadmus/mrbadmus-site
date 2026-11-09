@@ -259,6 +259,42 @@ until the lesson data carries a key.
 
 **Drafts:** an answer typed or selected and never submitted is not saved.
 
+### A second blind run's findings (9 Nov 2026)
+
+- **A lost answer.** With four state symbols right, the fifth's words read "All five right" rather than
+  "4 of 5 right", so the classifier called it an exploration and nothing posted. The classifier now reads
+  that sentence, and a group that takes answers from a clean start keeps taking them.
+- **A score that moved.** A rung scores the first check of a chain since it was last dealt, and "Retry
+  my misses" deals it again. A later "Check again" now goes with no rung, and the restore reads the last
+  row naming its rung. Rows written before this fix with a "Check again" read as a retry.
+- **Level picks** go as a value (`level`, 0–9) beside the ticks; the server keeps `100 + level` in
+  `self_ticks`, and every reader here ignores entries of 100 and over.
+- **Self-checked** now means a child compared typed work with a shown answer (`ks3-rwrite`, the
+  `ks3-pick` family). A commitment nothing judges goes unmarked. A commitment the page judges on a later
+  Reveal carries that verdict and the right answer (`ROOT_JUDGE`): series circuits, cell cycle, spectrum,
+  lenses, red-shift, wave stages, sound. A KS3 `think-commit-*` block reveals an explanation and rules on
+  nothing, so it goes unmarked.
+- **Right answers.** `anom` sends the option the lesson answers "Yes" to. `concord` sends the selection
+  the lesson accepts; when no selection of the child's runs can pass, it sends the lesson's own words
+  ("Not concordant yet. No two accurate titres agree…"), which is the path the blind run took. A form
+  that steps through picks (`stepPick`) sends the right option. The typed numbers (`rate`, `mean`, `mp`,
+  `ltext`, `ctext`, `pan`) and the rest of `ROOT_FORMS` still store no correct answer unless named here:
+  the lesson computes them from the child's own readings or keeps them private to its code.
+- **Drafts.** Written answers and five-line calculations typed and not sent are kept in `localStorage`,
+  per child and question id, and cleared when sent. **They are on this device only:** a part-way draft
+  does not reach another device, and the exam page's draft is handled separately. Other typed forms
+  (`rate`, `dxval`) are not drafted.
+- **Stems.** A root id's entries can be steps the lesson only reaches later (`preds-3-1`, when the first
+  draw offers `preds-2-1`), so the tagger never saw them. `round5_inventory` now lists the stem as well,
+  and `kpOf` falls back to it.
+
+**Left as they are, and why**
+
+- **"Compound 1" verdict on tab return:** the lesson's own tab press clears `dxChecked`, live as well as
+  on restore. The answers are kept; the page never redraws a verdict for a tab left behind.
+- **`curve-run` restarts at minute 0:** a heating curve the child steps through, an exploration with no
+  answer. Saving its position would be a row per press for nothing a parent can read. Named, not fixed.
+
 ### What these numbers do and do not prove
 
 - **The tables are static:** they say the capture code names a control, not that it was pressed.
@@ -336,6 +372,7 @@ Nothing here is an answer: no choice is committed and no single value could be p
 - **KS3 balancer part-way:** an equation not yet balanced is not saved.
 - **KS3 melting-point bench dials (`ks3-mpb-block`):** the verdict comes back, against the default
   rate and repeats, not the settings the child had chosen.
+- **Unsent drafts on another device:** see above.
 - **Bench settings generally:** a restored reading shows its result, not the animation. Which tab,
   temperature or run was on screen is not kept beyond what a form names, and a titration restored
   mid-run lands on its last recorded row.

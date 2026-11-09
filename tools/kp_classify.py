@@ -771,6 +771,16 @@ def round5_inventory():
             out.setdefault(("KS4", r["slug"]), []).append(
                 (qid, "ks4_root", "Choose: " + " / ".join(plain(x) for x in g.get("labels") or []),
                  plain((g.get("right") or [""])[0])))
+            # ⊕ 9 Nov 2026: an id's entries can be steps the lesson only reaches later
+            # (`preds-3-1`, where the first draw offers `preds-2-1`). Those ids are not
+            # listed here, so tag the stem too: the backend's kpOf falls back to it.
+            stem = re.sub(r"(-[a-z0-9]+)+$", "", g["id"]) if re.search(r"-\d", g["id"]) else None
+            if stem:
+                sq = "ks4:%s:%s#%s" % (r["slug"], route, stem)
+                if sq not in seen:
+                    seen.add(sq)
+                    out.setdefault(("KS4", r["slug"]), []).append(
+                        (sq, "ks4_root", "Choose: " + " / ".join(plain(x) for x in g.get("labels") or []), ""))
     # ⊕ 8 Nov 2026: what the classifier cannot see, ROOT_FORMS' typed answers,
     # runs and builders. The entry after a stem is often the child's own (a run
     # number, a tube), so the tag lives on the stem: the backend's kpOf falls
