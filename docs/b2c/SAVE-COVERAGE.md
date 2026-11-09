@@ -140,17 +140,17 @@ the unseen class above is the same tool with `--before`.
 | instrument (adapter A / B5C) | yes | yes | 86 |
 | instrument shape G | yes | yes | 68 |
 | reading (no controls) | no | no | 64 |
-| instrument shape X | no | no | 63 |
+| instrument shape X | no | no | 62 |
 | prediction (options + reveal) | yes | yes | 62 |
 | worked example (reveal the next step) | no | no | 58 |
 | "Your turn" calculation | yes | yes | 22 |
 | instrument shape M | yes | yes | 17 |
-| instrument shape S | yes | yes | 14 |
+| instrument shape S | yes | yes | 15 |
 | instrument shape A | yes | yes | 5 |
 | instrument shape T | yes | yes | 4 |
 | commitment (options, nothing revealed) | yes | yes | 2 |
 
-KS3 answerable blocks: **467**, saved: **467**, not saved: **0**. Instrument blocks not handled (any shape): **158**.
+KS3 answerable blocks: **468**, saved: **468**, not saved: **0**. Instrument blocks not handled (any shape): **157**.
 
 ### KS4 rebuilt lessons (148 lessons, 522 route pages)
 
@@ -216,26 +216,71 @@ which tones are heard (`sound-waves-hearing`), and the seven in the earlier run 
 ordering the spectrum, the bond predictor, the wall predictor, naming blood cells, the rough-titre
 call, the atoms-lost call).
 
+### A blind run's findings (9 Nov 2026)
+
+A tester using the real pages found what the first-control sweep cannot see.
+
+- **Several judged items under one id.** Five rulings on `measuring-a-temperature-change` were
+  stored as attempts 1 to 5 of one question, so reopening showed "1 of 5". `--units` now presses
+  every unit of one page of every kind, reloads, and compares. It found the same shape on the fault
+  bench, the route decider, the reactivity and halogen grids, the food-test combinations, the
+  variation plots, the sentence slots, the leaf-test steps, the graph readings, the specimen,
+  removal, sabotage and switch panels, and the sequencer gates. Each now has its own id, from a
+  table (`UNIT_BY_KIND`) or a spec.
+- **A kind that was never saved:** the `ks3-sort` chips ("Living / Once living / Never living").
+- **A tab saved as an answer.** Pressing a tab on `ks3-sc`, `ks3-ml`, `ks3-tb` and `ks3-cl` wrote a
+  self-checked row. It no longer does (`TAB_NOT_OPTION`), which moves `ks3-sc`'s ids down by one.
+- **Verdicts dropped.** `REVEAL_KEY` reads the right option from a reveal's own opening words, on the
+  11 kinds where every unit's reveal opens that way. Reviewed kind by kind on the words, not on the
+  science: this passes on what the page says.
+- **Bench counts.** A commit-first bench saved its commitment and lost the rest, so "3 of 3 states
+  seen" came back "1 of 3" (`state-bench`). The controls that moved the count now go with the
+  self-ticks on the commitment's row, and are pressed again. The same is true of every G-shape kind
+  with a counter. A count that moves more than 1.5 seconds after its press is missed.
+- **Indicative-point ticks** on a level-marked `Ks4Write` save beside the level in `self_ticks`,
+  counted on past the levels: `[3, 5, 7]` on four levels is Level position 3 and points 1 and 3.
+- **`rig-build`** saves each run. Self-ticks retry after a 429 and survive a reload
+  (`mrb_ticks_outbox_v1`, sent by `shared/account.js`); a tick set replaces the last, so a repeat
+  cannot double it.
+- **Correct answers.** `dxval-<n>` sends the formula the lesson's own `DX` table accepts, and `concord`
+  sends the selection the lesson's own `judge` accepts.
+
+**A flagged gap in the parent display.** `selfLevelOf` in the backend reads a level only when
+`self_ticks` holds exactly one number, so a child who picked a level AND ticked points shows as
+"Ticked 3" rather than "Picked Level 2". A level alone and ticks alone both read correctly. The fix
+is one line in `consumer/answers.js`, which this run did not touch.
+
+**Self-checked rows left as they are.** `--units` lists over 100 kinds with self-checked rows beside revealed
+words. Most reveal an outcome that does not rule on the press (a bench reading, a run). On some the
+reveal states the answer in words that do not name an option ("A barrier" for "Keeps oxygen and water
+out"), so no verdict is sent rather than a guessed one: `ks3-critique`, `ks3-dcomp`, `ks3-euse`,
+`ks3-fcard`, `ks3-mchoice`, `ks3-rstop`, `ks3-solid`, `ks3-ctube`, `ks3-cpair`. Those stay unmarked
+until the lesson data carries a key.
+
+**Drafts:** an answer typed or selected and never submitted is not saved.
+
 ### What these numbers do and do not prove
 
 - **The tables are static:** they say the capture code names a control, not that it was pressed.
-- **KS4, driven:** `activity_save_drive.py`: a press on device A, the row through the backend's own
-  `validateAnswerBody`, a fresh device B, and nothing posted while restoring. It passes
-  **424 of 425 at 1280px** on the final code. The one red is the pupil comparison on
-  `changes-in-energy`: the render counter differed (32 and 33) because the lesson's animation frame
-  count depends on timing. A control ran the OLD code three times and it differs from itself the
-  same way (32, 33, 32), and with the counter ignored old and new are identical. The red is left
-  standing: the case was not loosened. **The drive at 390px has NOT been re-run on the final code**
-  (it last passed 345 of 345 before the titration, reveal and read cases). Pupil pages compared: 7. Only the Triple Higher route of each lesson is driven. Most
-  cases call the lesson's own handler, and several set a bench's earlier results straight into its
-  state, rather than pressing every DOM button; cases whose capture reads the pressed words press
-  the real control.
-- **KS3 kinds, driven:** `activity_save_drive.py --sweep` opens one page per kind in `<ks3-specs>`,
-  presses the block's first control as a child, checks a valid body, and compares the block's
-  pressed states and values on a cleared browser. **At 390px on the final code: 96 of 96 kinds pass.** At 1280px it last passed 96 of 96 before the last KS4-only
-  edits and was not re-run. It
-  reuses one Chrome with cleared storage, not a separate profile per kind, and it proves the first
-  control of the first page carrying each kind, not every instance.
+- **Lesson cases, driven:** `activity_save_drive.py`: a press on device A, the row through the
+  backend's own `validateAnswerBody`, a fresh device B, and nothing posted while restoring.
+  **1280px: 487 of 487, and pupil comparisons 22 of 22.** **390px: 488 of 489, and pupil comparisons
+  22 of 22.** The red at 390px was the case's own selector (a label of "1" matched another button);
+  corrected, that case re-ran 6 of 6 at both widths. These were separate runs on the same page code:
+  Chrome stopped answering often enough on this machine to end a full run before its pupil section, so
+  the drive now retries a hung Chrome once, and it did so several times per run. The validator step
+  ran on the 1280px bodies only. Pupil pages compared: 7. The pupil comparison on `changes-in-energy`
+  has gone red before on the render counter alone, because the animation's frame count depends on
+  timing; the old code differs from itself the same way (32, 33, 32).
+  Only the Triple Higher route of each KS4 lesson is driven. Most cases call the lesson's own handler,
+  and several set a bench's earlier results straight into its state.
+- **KS3 kinds, driven:** `--sweep` opens one page per kind in `<ks3-specs>`, presses its first control,
+  checks a valid body, and compares the block on a cleared browser. **107 of 107 at 1280px and at
+  390px.** It proves the first control of the first page carrying each kind.
+- **Every unit, driven:** `--units` presses every unit of one page of every kind, then reloads and
+  compares. It ran at 1280px only, before the last two kinds were fixed, and it needs reading: it flags
+  an id whose question words differ, and on many kinds that is only revealed words joining the
+  question. It is a finder, not a gate.
 
 ### `numeric` does not imply a number
 

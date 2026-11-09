@@ -244,6 +244,12 @@ window.H = {
     var list = Array.prototype.filter.call(host.querySelectorAll('button'), function (b) { return (b.textContent || '').replace(/\s+/g, ' ').trim() === label; });
     return list[0] || null;
   },
+  // An option by its own label, whatever letter is drawn in front of it: a short label
+  // like "1" is inside other buttons' words, and which ones differs by width.
+  opt: function (label) {
+    var host = document.getElementById('ks4-mount');
+    return Array.prototype.filter.call(host.querySelectorAll('button'), function (b) { return (b.textContent || '').replace(/\\s+/g, ' ').trim().replace(/^[A-E] ?(?=.)/, '') === label; })[0] || null;
+  },
   type: async function (el, v) { el.scrollIntoView({ block: 'center' }); el.value = v; el.dispatchEvent(new Event('input', { bubbles: true })); el.dispatchEvent(new Event('change', { bubbles: true })); await H.sleep(90); },
   block: function (name) {
     var host = document.getElementById('ks4-mount'), out = null;
@@ -504,7 +510,7 @@ CASES = [
                          and "24.75" in [x for x in b if x["question_id"].endswith("#rows-2")][0]["answer"],
          back="""(function(){ var s = H.rootState(); return s.rows.length === 4 && s.rows[1].titre === 2475 && s.rows[1].run === 1 && s.rows[3].titre === 2470 && !s.rows[1].over && !!s.sel[1] && !!s.sel[3] && !!s.pick && s.pick.ok === true; })()"""),
     dict(name="ks4-reveal-check", page="/triple/higher/chemistry/quantitative/conservation-of-mass.html", forms=True,
-         act="""H.click(H.rootBtn(H.v().w1Options[0].label)); await H.sleep(150); H.click(H.rootBtn(H.v().w2Options[0].label)); await H.sleep(150);
+         act="""H.click(H.rootBtn(H.v().w1Options[0].label)); await H.sleep(400); H.click(H.opt(H.v().w2Options[0].label)); await H.sleep(400);
                 var n = H.v().w3Rows.length; for (var i = 0; i < n; i += 1) { H.click(document.querySelector('#ks4-mount button[aria-label="' + H.v().w3Rows[i].options[0].aria + '"]')); await H.sleep(120); }
                 await H.call('onW3Check'); await H.sleep(200);""",
          want=["ks4:conservation-of-mass:th#w3-1"],
@@ -1116,6 +1122,7 @@ def main():
     ap.add_argument("--only")
     ap.add_argument("--width", type=int, default=1280)
     ap.add_argument("--no-pupil", action="store_true")
+    ap.add_argument("--pupil-only", action="store_true", help="only the school-pupil comparisons")
     a = ap.parse_args()
     site, sport = start(Site)
     api, aport = start(Api)
@@ -1183,7 +1190,7 @@ def main():
 
 
     # A Chrome that stops answering is not a finding about the page: once more, then it counts.
-    for c in cases:
+    for c in ([] if a.pupil_only else cases):
         p0, f0, b0 = passes, len(fails), len(all_bodies)
         try:
             one_case(c)
@@ -1203,16 +1210,26 @@ def main():
             for legacy in (True, False):
                 LEDGER.reset()
                 LEGACY["on"] = legacy
-                with KB.Browser() as br:
-                    pg = open_page(br, sport, aport, c["page"], session(False), a.width, pin_random=True)
-                    time.sleep(0.5)
-                    glob_ = pg.eval("[typeof window.MrBadmusAnswerCapture, typeof window.MrBadmusKS4Tap, typeof window.MrBadmusSaved].join(',')")
+                # A Chrome that stops answering is not a finding: once more, then it counts.
+                for attempt in (1, 2):
                     try:
-                        run_act(pg, c["act"])
-                    except Exception as e:  # noqa: BLE001
-                        ok(False, "pupil presses ran (%s)" % ("old code" if legacy else "new code"), e)
-                    time.sleep(1.2)
-                    doms.append(pg.eval("document.documentElement.outerHTML"))
+                        with KB.Browser() as br:
+                            pg = open_page(br, sport, aport, c["page"], session(False), a.width, pin_random=True)
+                            time.sleep(0.5)
+                            glob_ = pg.eval("[typeof window.MrBadmusAnswerCapture, typeof window.MrBadmusKS4Tap, typeof window.MrBadmusSaved].join(',')")
+                            try:
+                                run_act(pg, c["act"])
+                            except KB.CDPError:
+                                raise
+                            except Exception as e:  # noqa: BLE001
+                                ok(False, "pupil presses ran (%s)" % ("old code" if legacy else "new code"), e)
+                            time.sleep(1.2)
+                            doms.append(pg.eval("document.documentElement.outerHTML"))
+                        break
+                    except KB.CDPError as e:
+                        print("  ⟳ Chrome stopped answering (%s), once more" % str(e)[:80], flush=True)
+                        if attempt == 2:
+                            raise
                 if not legacy:
                     ok(glob_ == "undefined,undefined,undefined", "pupil: no capture installed", glob_)
                     ok(not LEDGER.bodies and not LEDGER.ticks, "pupil: nothing posted", LEDGER.bodies)
