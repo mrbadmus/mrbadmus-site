@@ -156,8 +156,8 @@
           return C.api('/api/consumer/family', { token: session.access_token }).then(function (f) {
             var st = f && f.billing && f.billing.state;
             if (!st || st === 'none') { return C.go('/consumer/signup.html'); }
-            C.go('/consumer/overview.html');
-          }, function () { C.go('/consumer/overview.html'); });
+            C.go('/consumer/family.html');
+          }, function () { C.go('/consumer/family.html'); });
         })
         .catch(function (e) {
           /* Verified, but the family could not be created. That is NOT a

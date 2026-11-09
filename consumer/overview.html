@@ -316,7 +316,7 @@
     position: fixed;
     left: 0; right: 0; bottom: 0;
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: repeat(4, 1fr);
     border-top: 2px solid var(--ks3-ink);
     background: var(--ks3-card);
     padding-bottom: env(safe-area-inset-bottom);
@@ -517,6 +517,7 @@
     cross: '<path d="M6 6l12 12M18 6L6 18"/>',
     back:  '<path d="M15 5l-7 7 7 7"/>',
     home:  '<path d="M4 11l8-7 8 7v9H4z"/>',
+    past:  '<path d="M4 6h16M4 12h16M4 18h10"/>',
     chat:  '<path d="M4 5h16v11H9l-5 4z"/>',
     user:  '<circle cx="12" cy="8" r="4"/><path d="M4 20c1.5-4 4.5-6 8-6s6.5 2 8 6"/>',
     plus:  '<path d="M12 5v14M5 12h14"/>',
@@ -801,7 +802,21 @@
   }
 
   /* ═══ derived values — Design's `renderVals`, over real fields ════════ */
-  function workOf(k) { return Array.isArray(k.work) ? k.work : []; }
+  /* ⊕ 9 Nov 2026 (F6): the Mon–Sun week, the week the strip above it and the
+     parent home count. `work` is the teaching week, which rolls on a Sunday:
+     it read 6/8 here beside 5 of 7 there, from the same rows. An older backend
+     sends only `work`. */
+  function workOf(k) {
+    return Array.isArray(k.week_items) ? k.week_items : (Array.isArray(k.work) ? k.work : []);
+  }
+  /* Whatever opens after that week. */
+  function laterOf(k) {
+    if (!Array.isArray(k.week_items)) { return Array.isArray(k.upcoming) ? k.upcoming : []; }
+    var dates = (k.week_strip && k.week_strip.dates) || [];
+    var end = dates[dates.length - 1] || '';
+    return (Array.isArray(k.work) ? k.work : []).concat(Array.isArray(k.upcoming) ? k.upcoming : [])
+      .filter(function (w) { return String(w.scheduled_for || '').slice(0, 10) > end; });
+  }
   function doneOf(k) { return workOf(k).filter(function (w) { return w.done; }).length; }
 
   function cardHeadline(k) {
@@ -1055,7 +1070,7 @@
     /* ── sidebar (≥960) ───────────────────────────────────────────────── */
     var side =
       '<div class="dk-side-top" style="display:flex;align-items:center;gap:10px;padding:0 4px">' +
-        C.brandLockup('/consumer/overview.html') +
+        C.brandLockup('/consumer/family.html') +
         /* ⊕ 16 Oct 2026: the theme control ends the sidebar's brand row
            (the one-button menu, consumer.css .c-theme-btn). */
         '<span class="mrb-theme-slot c-theme-btn" data-mrb-theme="compact"></span></div>' +
@@ -1065,6 +1080,10 @@
           'border-radius:14px;background:' + (onChat ? 'transparent' : 'var(--ks3-band)') + ';' +
           'font-weight:700;font-size:16px;color:var(--ks3-ink);cursor:pointer;text-align:left">' +
           svg(MARK.home, 20) + 'Home</button>' +
+        /* ⊕ 9 Nov 2026 (F6): Past work lives on the parent home. */
+        '<a href="' + esc(C.href('/consumer/family.html', { view: 'past' })) + '" style="display:flex;align-items:center;gap:12px;min-height:46px;' +
+          'padding:0 12px;border:2px solid transparent;border-radius:14px;font-weight:700;' +
+          'font-size:16px;color:var(--ks3-ink)">' + svg(MARK.past, 20) + 'Past work</a>' +
         '<button data-act="tab-chat" style="display:flex;align-items:center;gap:12px;min-height:46px;' +
           'padding:0 12px;border:2px solid ' + (onChat ? 'var(--ks3-ink)' : 'transparent') + ';' +
           'border-radius:14px;background:' + (onChat ? 'var(--ks3-band)' : 'transparent') + ';' +
@@ -1166,7 +1185,7 @@
         'width:40px;height:40px;margin-left:-8px;border:0;border-radius:12px;background:none;' +
         'color:var(--ks3-ink);cursor:pointer">' + svg(MARK.back, 22) + '</button>';
     } else {
-      head += C.brandLockup('/consumer/overview.html');
+      head += C.brandLockup('/consumer/family.html');
     }
     head += '<span style="flex:1;font-family:var(--ks3-font-display);font-weight:800;font-size:20px;' +
       'letter-spacing:-.02em">' + esc(screenTitle()) + '</span>' +
@@ -1187,6 +1206,8 @@
       '<button class="dk-tab" data-act="tab-home" style="color:' +
         (onChat ? 'var(--ks3-ink-muted)' : 'var(--ks3-accent-text)') + '">' +
         svg(MARK.home, 22) + 'Home</button>' +
+      '<a class="dk-tab" href="' + esc(C.href('/consumer/family.html', { view: 'past' })) + '" style="color:var(--ks3-ink-muted)">' +
+        svg(MARK.past, 22) + 'Past work</a>' +
       '<button class="dk-tab" data-act="tab-chat" style="position:relative;color:' +
         (onChat ? 'var(--ks3-accent-text)' : 'var(--ks3-ink-muted)') + '">' +
         svg(MARK.chat, 22) + 'Messages' +
@@ -1350,7 +1371,7 @@
     if (!k) { return noChild(); }
     var sc = scoresOf(k);
     var w = workOf(k);
-    var upcoming = Array.isArray(k.upcoming) ? k.upcoming : [];
+    var upcoming = laterOf(k);
     var strip = k.week_strip || { done: [0, 0, 0, 0, 0, 0, 0], dates: [], today: (C.ymdWeekday(C.londonYMD()) + 6) % 7 };
     var todayIdx = strip.today;   // Monday = 0 … Sunday = 6
 

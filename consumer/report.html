@@ -521,8 +521,8 @@
   C.boot({ requireSession: true, run: function (ctx) {
     var host = document.getElementById('c-main');
     document.getElementById('rpt-back').href = childId
-      ? C.href('/consumer/overview.html', { child: childId, view: 'child' })
-      : C.href('/consumer/overview.html');
+      ? C.href('/consumer/family.html', { view: 'child', child: childId })
+      : C.href('/consumer/family.html');
 
     if (!childId) {
       document.getElementById('rpt-actions').hidden = false;

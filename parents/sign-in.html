@@ -248,7 +248,10 @@
              signup draft. Signing in here must not leave them there: signup
              creates them and carries on from the right step. */
           if (draftHasChild()) { return C.go('/consumer/signup.html'); }
-          C.go('/consumer/overview.html');
+          /* ⊕ 9 Nov 2026 (F6): the parent home. shared/account.js HOMES.parent
+             has said so since 25 Oct; this line was missed, so email sign-in
+             landed on the old dashboard while Google sign-in did not. */
+          C.go('/consumer/family.html');
         });
       }).catch(function (err) {
         C.setBusy(btn, false);
