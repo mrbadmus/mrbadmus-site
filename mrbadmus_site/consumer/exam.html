@@ -418,7 +418,7 @@
 <script src="/shared/config.js?v=bb268b6f"></script>
 <!-- Front door (12 Oct 2026): the one map; consumer-common asks it whether a school pupil has wandered in. -->
 <script src="/shared/account.js?v=d97ebd6b"></script>
-<script src="/consumer/consumer-common.js?v=355a3cd0"></script>
+<script src="/consumer/consumer-common.js?v=aa142c74"></script>
 <script>
 /* ═══════════════════════════════════════════════════════════════════════
    consumer/exam.html — write an answer, get it marked. MRB-317 Night 3.
@@ -505,6 +505,17 @@
     if (score >= max * 0.66) { return 'Solid. The rest is precision.'; }
     if (score >= max * 0.34) { return 'Halfway. Read the note.'; }
     return 'A start. Read the note, then go again.';
+  }
+
+  /* The note without its per-point account (see paintResult). The pattern
+     is the backend's own (consumer/point-account.js ACCOUNT_LINE), so only
+     lines the backend added are taken out; the marker's words and any line
+     after the account stay, in order. */
+  var ACCOUNT_LINE = /^Point \d+: (?:got it|not yet|not needed, you already have full marks) — /;
+  function noteWithoutAccount(fb) {
+    return String(fb || '').split('\n').filter(function (l) {
+      return !ACCOUNT_LINE.test(l.trim());
+    }).join('\n').trim();
   }
 
   /* ⊕ D11 (13 Oct 2026). A levels-marked 6-mark answer comes back with
@@ -1019,6 +1030,7 @@
                    feedback: d.feedback, answer: text, answer_id: d.answer_id,
                    verdict: d.verdict || '',
                    level: levelOf(d.level), next_step: d.next_step || '',
+                   points: Array.isArray(d.points) ? d.points : null,
                    practice: d.provider === 'stub' };
         if (d.quotaLeft != null) { quota.left = d.quotaLeft; }
         if (d.quotaTotal != null) { quota.total = d.quotaTotal; }
@@ -1070,12 +1082,29 @@
            esc(nextStep) + '</p>')
         : '';
 
+      /* ⊕ B2C small fixes (26 Oct 2026) — EVERY POINT, ONCE. Since the
+         backend's 9b96370 the note ends with one "Point N: got it — …" /
+         "Point N: not yet — …" line per scheme point, and the tick list below
+         already says exactly that for every point, hit or missed, in order —
+         so the screen said each point twice (Mide's no-redundant-text rule).
+         The LIST is the one account: built from the response's `points`
+         ([{n, earned, text}], the same ticks the mark was computed from) when
+         it came, else from the scheme and `hits` as before. The NOTE keeps
+         the marker's own words and any line after the account (a checked
+         final answer), with the account lines taken out by the backend's
+         own pattern (consumer/point-account.js ACCOUNT_LINE). Each row
+         carries its verdict as hidden text, because the tick is a picture
+         and the account it replaces was the only words saying it. */
       var scheme = q.scheme || [];
       var hits = {};
       (r.hits || []).forEach(function (i) { hits[Number(i)] = true; });
+      var rows = (Array.isArray(r.points) && r.points.length)
+        ? r.points.map(function (p) { return { ok: !!p.earned, text: String(p.text || '') }; })
+        : scheme.map(function (pt, i) { return { ok: !!hits[i], text: C.schemePoint(pt) }; });
+      var fullMarks = r.score != null && max != null && Number(r.score) >= Number(max);
 
-      var points = scheme.map(function (pt, i) {
-        var ok = !!hits[i];
+      var points = rows.map(function (row, i) {
+        var ok = row.ok;
         return '<li class="ex-point' + (ok ? ' is-hit' : '') + '">' +
           '<span class="ex-point-mark">' +
             (ok
@@ -1083,9 +1112,14 @@
                 '<path d="M5 12.5l4.5 4.5L19 7"/></svg>'
               : '<span class="ex-point-n">' + (i + 1) + '</span>') +
           '</span>' +
-          '<span class="ex-point-text">' + esc(C.schemePoint(pt)) + '</span>' +
+          '<span class="ex-point-text"><span class="ks3-sr-only">' +
+            (ok ? 'Got it: ' : (fullMarks ? 'Not needed: ' : 'Not yet: ')) + '</span>' +
+            esc(row.text) + '</span>' +
         '</li>';
       }).join('');
+      // No list on screen (no scheme came back) → the note's own account is
+      // the only one, so it stays whole.
+      var note = rows.length ? noteWithoutAccount(r.feedback) : String(r.feedback || '');
 
       /* Send-to-Mr-Badmus: three mutually exclusive states, Design's own. */
       var answerId = r.answer_id || q.answer_id || '';
@@ -1122,10 +1156,10 @@
             ? '<p class="ex-practice">Practice mark — the AI marker didn’t check this one.</p>'
             : '') +
           (points ? ('<ul class="ks3-ticks">' + points + '</ul>') : '') +
-          (r.feedback
+          (note
             ? ('<div class="ks3-feedback ex-note">' +
                '<p class="ex-note-label">' + (r.practice ? 'Note' : 'Examiner’s note') + '</p>' +
-               '<p>' + esc(r.feedback) + '</p></div>')
+               '<p>' + esc(note) + '</p></div>')
             : '') +
         '</div>' +
 

@@ -801,11 +801,12 @@ class Component extends DCLogic {
       hasRight: nDone > 0, rightText: pad(nRight) + ' RIGHT',
       leftText: nLeft ? pad(nLeft) + ' LEFT' : 'NONE LEFT',
       leftColor: nLeft ? 'var(--st-caption)' : 'var(--ks3-accent-text)',
+      /* ⊕ B2C small fixes, 25 Oct 2026 — the answered count is in the
+         rail's header (`answeredText`); it is not said again here. */
       railStats: [
-        { label: 'ANSWERED', value: pad(nDone) + '/' + pad(total), color: 'var(--st-ink)' },
         { label: 'RIGHT', value: pad(nRight), color: 'var(--st-ink)' },
         { label: 'TIME', value: this.mmss(st.elapsed), color: st.paused ? 'var(--st-muted)' : 'var(--st-ink)' }
-      ].map((s, i) => Object.assign(s, { edge: i < 2 ? '1px solid var(--st-rule-fact)' : 'none', pl: i ? '13px' : '0' })),
+      ].map((s, i, all) => Object.assign(s, { edge: i < all.length - 1 ? '1px solid var(--st-rule-fact)' : 'none', pl: i ? '13px' : '0' })),
 
       /* ⊕ RULED 22 Aug 2026 — three welded values in one line of Design's.
          The week was 04 for every class in every week of every year; the topic
@@ -959,7 +960,7 @@ window.__MRB_MOUNT__ = function () {
   });
 };
 </script>
-<script>window.__MRB_ASSET_V__={"account.js":"d97ebd6b","brand/brand.css":"9c818614","brand/brand.js":"a4ee216b","brand/mrbadmus-favicon.svg":"414f7a61","brand/mrbadmus-icon-light-512.png":"cffd3cc4","catch-up-sheet.js":"33c2fbc1","class-entry.js":"8c087f18","config.js":"bb268b6f","figures-ks3.js":"efe2cfd6","figures-ks4.js":"a2fa6f5f","flashcard-homework.js":"fd716ee7","flashcard-keyboard.js":"4a245645","flashcard-library.css":"7c4a483f","flashcard-library.js":"08bd8d3f","formulae.js":"e4bfb091","ks3-lesson-urls.js":"98cd0930","ks4-lesson-urls.js":"07963eee","rum.js":"66210c21","shoutouts.js":"23393220","student-bell.js":"26753434","student-data.js":"7c977f8d","student-guard.js":"042d8aca","theme.js":"f04be205","topbar.css":"d857b6c3","topbar.js":"83f9708c","wrapped.css":"ae26c56e","wrapped.js":"a31d709c"};</script>
+<script>window.__MRB_ASSET_V__={"account.js":"d97ebd6b","ask-tutor.css":"30ac9886","ask-tutor.js":"5a865611","brand/brand.css":"9c818614","brand/brand.js":"a4ee216b","brand/mrbadmus-favicon.svg":"414f7a61","brand/mrbadmus-icon-light-512.png":"cffd3cc4","catch-up-sheet.js":"33c2fbc1","class-entry.js":"8c087f18","config.js":"bb268b6f","figures-ks3.js":"efe2cfd6","figures-ks4.js":"a2fa6f5f","flashcard-homework.js":"fd716ee7","flashcard-keyboard.js":"4a245645","flashcard-library.css":"7c4a483f","flashcard-library.js":"08bd8d3f","formulae.js":"e4bfb091","ks3-lesson-urls.js":"98cd0930","ks4-lesson-urls.js":"07963eee","mrbadmus.v2.js":"327a9b50","rum.js":"66210c21","shoutouts.js":"23393220","student-bell.js":"26753434","student-data.js":"7c977f8d","student-guard.js":"042d8aca","theme.js":"f04be205","topbar.css":"d857b6c3","topbar.js":"83f9708c","wrapped.css":"ae26c56e","wrapped.js":"a31d709c"};</script>
 <script src="/shared/student-fixture-assignment.js?v=75d1eede"></script>
 <script>window.__MRB_MOUNT__();</script>
 <script src="/shared/topbar.js?v=83f9708c" defer></script>

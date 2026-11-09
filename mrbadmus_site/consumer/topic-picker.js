@@ -232,6 +232,13 @@
     if (st.q == null) { st.q = ''; }
     var child = opts.child || {};
     var model = build(opts.index, child, opts.units);
+    /* ⊕ 8 Nov 2026 `opts.hide(selection)`: a topic the caller cannot use here
+       is dropped, not greyed — a greyed row would claim "not in this year". */
+    if (typeof opts.hide === 'function') {
+      model.topics = model.topics.filter(function (t) { return !opts.hide(selectionOf(t)); });
+      model.items = model.items.filter(function (i) { return !opts.hide(selectionOf(i)); });
+      model.topics.forEach(function (t) { t.kids = t.kids.filter(function (k) { return !opts.hide(selectionOf(k)); }); });
+    }
     var base = 'tp' + (++uid);
     var lessons = opts.allowLessons !== false;
 

@@ -123,22 +123,43 @@ window.KS4 = (function () {
       railBarStyle: 'display:block;height:100%;width:' + Math.round(nDone / list.length * 100) + '%;background:var(--ks3-accent-text);'
     };
   }
+  // ⊕ R23 (ks4_rulings.py): the current section is computed from positions, not from band entries.
   function observe(cmp, list) {
-    if (!('IntersectionObserver' in window)) return null;
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) {
-        if (!e.isIntersecting) return;
-        var i = list.findIndex(function (r) { return r.id === e.target.id; });
-        if (i >= 0) cmp.setState({ active: i });
+    var off = false, queued = false, ro = null, tries = 0;
+    function pick() {
+      var doc = document.documentElement, vh = window.innerHeight || doc.clientHeight || 0;
+      var left = Math.max(0, (doc.scrollHeight - vh) - (window.pageYOffset || doc.scrollTop || 0));
+      var line = vh * 0.45; if (left < vh * 0.55) line += vh * 0.55 - left;
+      var at = -1, atTop = -Infinity, first = -1, firstTop = Infinity, found = 0;
+      list.forEach(function (r, k) {
+        var el = document.getElementById(r.id); if (!el) return; found++;
+        var b = el.getBoundingClientRect(); if (!b.width && !b.height) return;
+        if (b.top < firstTop) { first = k; firstTop = b.top; }
+        if (b.top <= line && b.top >= atTop) { at = k; atTop = b.top; }
       });
-    }, { rootMargin: '-40% 0px -55% 0px' });
-    var tries = 0;
+      return { i: at >= 0 ? at : first, found: found };
+    }
+    function update() {
+      queued = false; if (off) return;
+      var p = pick();
+      if (p.i >= 0 && (cmp.state || {}).active !== p.i) cmp.setState({ active: p.i });
+      return p;
+    }
+    function soon() { if (!queued && !off) { queued = true; (window.requestAnimationFrame || setTimeout)(update); } }
+    window.addEventListener('scroll', soon, { passive: true });
+    window.addEventListener('resize', soon);
+    function later() { setTimeout(soon, 0); }
+    document.addEventListener('click', later, true);
+    if (window.ResizeObserver && document.body) { ro = new ResizeObserver(soon); ro.observe(document.body); }
     (function hook() {
-      var found = 0;
-      list.forEach(function (r) { var el = document.getElementById(r.id); if (el) { io.observe(el); found++; } });
-      if (found < list.length && tries++ < 40) setTimeout(hook, 150);
+      var p = update();
+      if (p && p.found < list.length && tries++ < 40) setTimeout(hook, 150);
     })();
-    return io;
+    return { disconnect: function () {
+      off = true; window.removeEventListener('scroll', soon); window.removeEventListener('resize', soon);
+      document.removeEventListener('click', later, true);
+      if (ro) ro.disconnect();
+    } };
   }
   /* Route plumbing: the page reads one record and renders one route. */
   function route(cmp) {

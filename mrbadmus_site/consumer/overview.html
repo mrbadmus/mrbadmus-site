@@ -416,8 +416,8 @@
 <script src="/shared/config.js?v=bb268b6f"></script>
 <!-- Front door (12 Oct 2026): the one map; consumer-common asks it whether a school pupil has wandered in. -->
 <script src="/shared/account.js?v=d97ebd6b"></script>
-<script src="/consumer/consumer-common.js?v=355a3cd0"></script>
-<script src="/consumer/topic-picker.js?v=9bcb2548"></script>
+<script src="/consumer/consumer-common.js?v=aa142c74"></script>
+<script src="/consumer/topic-picker.js?v=fd0ebee6"></script>
 <script>
 /* ═══════════════════════════════════════════════════════════════════════
    consumer/overview.html — six screens, one page. MRB-317, Night 3.
@@ -476,16 +476,16 @@
      label for what the backend calls `steady`; the label is hers and the
      key is the contract's, so neither has to bend. */
   var INTENSITY = {
-    light:  { label: 'Light',    per: '2 a week' },
-    steady: { label: 'Standard', per: '3 a week' },
-    full:   { label: 'Full',     per: '4–5 a week' }
+    light:  { label: 'Light',    per: '2 sessions a week' },
+    steady: { label: 'Standard', per: '3 sessions a week' },
+    full:   { label: 'Full',     per: '4–5 sessions a week' }
   };
   /* Her three kinds. Her second id was `retrieval`; the contract's word for
      the same thing is `practice`, so the id below is the contract's and the
      label and description are hers, verbatim. */
   var WORK_KINDS = [
-    { id: 'lesson',   label: 'A lesson',        desc: 'A full 20-minute lesson on a topic.' },
-    { id: 'practice', label: 'Quick questions', desc: 'Eight short recall questions, 10 minutes.' },
+    { id: 'lesson',   label: 'A lesson',        desc: 'A full lesson on a topic, about 20 minutes.' },
+    { id: 'practice', label: 'Quick questions', desc: 'Up to ten short questions, about 10 minutes.' },
     { id: 'exam',     label: 'An exam question', desc: 'One 4- or 6-marker, marked instantly.' }
   ];
   var CHAT_STARTERS = ['How did today go?', 'Proud of you for keeping the streak.',
@@ -1585,7 +1585,7 @@
 
   function intensityLabel(k) {
     var i = INTENSITY[k.intensity] || null;
-    return i ? (i.label + ' · ' + i.per) : 'How much a week';
+    return i ? (i.label + ': ' + i.per) : 'How much a week';
   }
   function answersMeta(k) {
     var n = (S.answersFor === k.id && Array.isArray(S.answers)) ? S.answers.length : null;
@@ -1626,7 +1626,10 @@
       '<div id="dk-msg"></div>' +
       '<p style="margin:22px 0 8px;font-weight:700;font-size:15px;color:var(--ks3-ink-muted)">What kind</p>' +
       '<div style="display:flex;flex-direction:column;gap:8px">' +
-        WORK_KINDS.map(function (kind) {
+        WORK_KINDS.filter(function (kind) {
+          /* ⊕ 8 Nov 2026: a kind that can never be set here is not offered. */
+          return kind.id !== 'exam' || S.examAny !== false;
+        }).map(function (kind) {
           return '<button class="ks3-option" aria-pressed="' +
             (S.workKind === kind.id ? 'true' : 'false') + '" data-act="pick-kind" data-id="' +
             kind.id + '" style="flex-direction:column;align-items:flex-start;gap:2px;padding:14px 16px">' +
@@ -2078,6 +2081,12 @@
     if (!host || !k || !curriculum || !Array.isArray(S.picker)) { return; }
     window.MrBadmusTopicPicker.mount(host, {
       index: curriculum, units: S.picker, state: S.tp,
+      /* ⊕ 8 Nov 2026: while the kind is an exam question, a topic with none
+         is not listed (it used to be listed, and the Set button then held). */
+      hide: S.workKind === 'exam' ? function (sel) {
+        var u = examUnitFor(sel);
+        return !!u && u.exam === false;
+      } : null,
       child: { year: k.year_group, pathway: k.pathway, tier: k.tier },
       listLabel: 'Topics for ' + k.first_name,
       onChange: function (sel) { S.topic = sel; syncSetButton(); }
@@ -2190,7 +2199,12 @@
     'send': function () { send(); },
     'checkout': function (el) { checkout(el); },
 
-    'pick-kind': function (el) { S.workKind = el.getAttribute('data-id'); render(); },
+    'pick-kind': function (el) {
+      S.workKind = el.getAttribute('data-id');
+      // A topic chosen under another kind stays only if the question can come from it.
+      if (S.workKind === 'exam' && S.topic && !examAvailable()) { S.topic = null; S.tp = {}; }
+      render();
+    },
     'pick-due':  function (el) { S.due = Number(el.getAttribute('data-id')) || 0; render(); },
 
     'pick-intensity': function (el) { S.edit.intensity = el.getAttribute('data-id'); render(); },
