@@ -1912,10 +1912,10 @@ try {
            reply opens "Good guess." on the option the science says is right
            (build_ks3.py `_hook_guess`), so the hook is judged; any other
            keyed commit is a commitment the page reveals against (R3: KS3
-           activities never mark), so it is sent self_checked.
+           activities never mark), so it is sent unmarked.
          · a prediction ([data-activity] that is not an instrument, with
            options and a reveal — shared/ks3.js `wirePredictions`): every
-           changed pick, self_checked, with the reveal as what the page showed.
+           changed pick, unmarked, with the reveal as what the page showed.
          · "Your turn" five-line calculations (data-p<N>cfa): each time the
            check opens the worked lines, the child's five lines — ⊕ 13 Oct
            2026 MARKED (calcOf): the model's lines are the scheme and the
@@ -1979,7 +1979,7 @@ try {
          `data-correct` on the option, `data-<p>-want-<unit>` on the block,
          `data-<p>-is` in the unit, `data-answer` on the unit's row, or the
          is-correct / is-right / is-wrong class the page puts on the option —
-         else the answer is sent self_checked with what the page revealed in
+         else the answer is sent unmarked with what the page revealed in
          `explanation`.
 
          Adapter B5C — the `wireB5Commit` family: pick a part, choose its
@@ -2179,7 +2179,6 @@ try {
                       for (var i = 0; i < a.length; i += 1) { if (/^data-/.test(a[i].name) && SHOWN_RE.test(a[i].name)) { return true; } }
                       return false;
                     }) || null };
-          if (verdict === null) { d.self_checked = true; }
           post(d);
         });
       };
@@ -2202,8 +2201,7 @@ try {
         post({ __block: w, key_stage: 'KS3', lesson_slug: slug, question_id: id, rung: null, kind: 'choice',
                question_text: (txt(name) ? txt(name) + ' — ' : '') + txt(w.querySelector('.ks3-b5c-ask')),
                answer: optLabel(pick), correct_answer: good ? optLabel(good) : null,
-               is_correct: right == null ? null : pick.getAttribute('data-opt') === right,
-               self_checked: right == null });
+               is_correct: right == null ? null : pick.getAttribute('data-opt') === right });
       };
       /* ── ⊕ 25 Oct 2026 (Mide's item 1): the rest of the KS3 instruments ──
          266 instrument blocks were handled by nothing above. Each kind was
@@ -2651,7 +2649,7 @@ try {
           if (v && typeof v.ok === 'boolean') {
             d.is_correct = v.ok;
             d.correct_answer = v.good ? optLabel(v.good) : (v.ok ? optLabel(opt) : null);
-          } else { d.is_correct = null; d.correct_answer = null; d.self_checked = true; }
+          } else { d.is_correct = null; d.correct_answer = null; }
           specSent[id] = d.answer;
           post(d);
         });
@@ -2695,7 +2693,6 @@ try {
             var ok = sp.right ? sp.right(null, null, sec) : null;
             var d = { key_stage: 'KS3', lesson_slug: slug, question_id: id, rung: null, kind: 'choice', question_text: ask,
                       answer: answer, correct_answer: null, is_correct: typeof ok === 'boolean' ? ok : null };
-            if (typeof ok !== 'boolean') { d.self_checked = true; }
             post(d);
             return;
           }
@@ -2710,7 +2707,6 @@ try {
             var d = { key_stage: 'KS3', lesson_slug: slug, question_id: id, rung: null, kind: 'choice',
                       question_text: ask + (x.words ? ' — ' + x.words : ''), answer: label, correct_answer: null,
                       is_correct: typeof ok === 'boolean' ? ok : null };
-            if (typeof ok !== 'boolean') { d.self_checked = true; }
             batch.push(d);
           });
           postAll(batch);
@@ -2751,7 +2747,6 @@ try {
           var d = { __block: sec, key_stage: 'KS3', lesson_slug: slug, question_id: slug + '#' + act + '-1', rung: null, kind: 'order',
                     question_text: ask, answer: steps.map(function (s) { return optLabel(s).replace(/^\d+\s*/, ''); }).join('\n'),
                     correct_answer: null, is_correct: typeof ok === 'boolean' ? ok : null };
-          if (typeof ok !== 'boolean') { d.self_checked = true; }
           post(d);
         });
       };
@@ -2769,7 +2764,6 @@ try {
           var d = { __block: sec, key_stage: 'KS3', lesson_slug: slug, question_id: id, rung: null, kind: 'choice',
                     question_text: ask + (v.ask ? ' — ' + v.ask : ''), answer: v.answer, correct_answer: null,
                     is_correct: typeof v.ok === 'boolean' ? v.ok : null };
-          if (typeof v.ok !== 'boolean') { d.self_checked = true; }
           post(d);
         });
       };
@@ -2833,7 +2827,7 @@ try {
               } else {
                 post({ __block: sec, key_stage: 'KS3', lesson_slug: slug, question_id: slug + '#' + act, rung: null,
                        kind: 'choice', question_text: promptOf(sec), answer: optLabel(opt),
-                       correct_answer: null, is_correct: null, self_checked: true });
+                       correct_answer: null, is_correct: null });
               }
               return;
             }
@@ -2844,14 +2838,14 @@ try {
               post({ __block: sec, key_stage: 'KS3', lesson_slug: slug, question_id: slug + '#' + act, rung: null,
                      kind: 'choice', question_text: promptOf(sec), answer: optLabel(opt),
                      correct_answer: null, explanation: txt(sec.querySelector('[data-reveal]')) || null,
-                     is_correct: null, self_checked: true });
+                     is_correct: null });
             } else if (!sec.hasAttribute('data-instrument')) {
               // ⊕ 25 Oct 2026 (commitNoReveal): a "commit first" choice with
               // nothing revealed on the block itself (a practical's first
               // question). Every changed pick, self-checked.
               post({ __block: sec, key_stage: 'KS3', lesson_slug: slug, question_id: slug + '#' + act, rung: null,
                      kind: 'choice', question_text: promptOf(sec), answer: optLabel(opt),
-                     correct_answer: null, is_correct: null, self_checked: true });
+                     correct_answer: null, is_correct: null });
             }
             return;
           }
@@ -3459,7 +3453,7 @@ try {
         d.kind = 'choice'; d.question_text = p.prompt || '';
         d.answer = optText(o);
         if (graded) { d.correct_answer = optText(rightOpt(opts)); d.is_correct = !!o.correct; }
-        else { d.explanation = p.reveal || null; d.self_checked = true; }
+        else { d.explanation = p.reveal || null; }
         post(d);
       },
       Ks4Sort: function (api, s, prev) {
@@ -4233,7 +4227,6 @@ try {
           d.answer = labels[cur[k]] == null ? null : labels[cur[k]];
           d.correct_answer = good === null ? null : labels[good];
           d.is_correct = good === null ? null : cur[k] === good;
-          if (good === null) { d.self_checked = true; }
           post(d);
         });
       });
@@ -5189,7 +5182,7 @@ try {
           if (r.a == null || r.a === '') { return; }
           var d = base(f.id + (r.e == null ? '' : '-' + String(r.e).toLowerCase().replace(/[^a-z0-9._-]+/g, '-')));
           d.__block = api.host; d.kind = r.kind || 'choice'; d.question_text = r.q || ''; d.answer = String(r.a);
-          if (typeof r.ok === 'boolean') { d.is_correct = r.ok; } else { d.self_checked = true; }
+          if (typeof r.ok === 'boolean') { d.is_correct = r.ok; }
           if (r.good != null) { d.correct_answer = String(r.good); }
           post(d);
         });
@@ -5268,6 +5261,39 @@ try {
       });
       return parts.join(' — ');
     }
+    /* ⊕ 9 Nov 2026 (a blind run: "Self-checked" beside a page that had said "goes up,
+       not stays the same"). `self_checked` means the child compared their own work with
+       a shown answer, and only typed work does that. A commitment nothing judges goes
+       unmarked. A commitment the page judges on a later Reveal is judged here: the
+       lesson's own render is asked what it would draw once revealed, for each option,
+       and its verdict style says which are right. `show` opens that reveal on a COPY of
+       the state; `read` is the verdict for this slot. */
+    var ROOT_JUDGE = {
+      'series-parallel-circuits': { preds: { show: function (s, t) { s.step = +t[1]; s.revealed = Object.assign({}, s.revealed); s.revealed[t[1]] = true; }, read: function (v, t) { return (v.verdicts || [])[+t[2]]; } } },
+      'chromosomes-mitosis': { preds: { show: function (s, t) { s.st = +t[1]; s.revealed = Object.assign({}, s.revealed); s.revealed[t[1]] = true; }, read: function (v, t) { return (v.cyVerdicts || [])[+t[2]]; } } },
+      'types-of-em-waves': { preds: { show: function (s, t) { s.pair = +t[1]; s.shown = Object.assign({}, s.shown); s.shown[t[1]] = true; }, read: function (v, t) { return (v.verdicts || [])[+t[2]]; } } },
+      'lenses': { preds: { show: function (s, t) { s.shown = Object.assign({}, s.shown); s.shown[t[1]] = true; }, read: function (v, t) { return (v.bVerdicts || [])[['t', 's', 'w'].indexOf(t[2])]; } } },
+      'red-shift-big-bang': { pred: { show: function (s) { s.gal = 2; }, read: function (v) { return { style: v.specNoteStyle }; } } },
+      'waves-detection-exploration': {
+        qPred: { show: function (s, t) { s.qStage = +t[1]; s.qShown = Object.assign({}, s.qShown); s.qShown[t[1]] = true; }, read: function (v) { return { style: v.qVerdictStyle }; } },
+        uPred: { show: function (s, t) { s.uStage = +t[1]; s.uShown = Object.assign({}, s.uShown); s.uShown[t[1]] = true; }, read: function (v) { return { style: v.uVerdictStyle }; } } },
+      'sound-waves-hearing': { pPred: { show: function (s, t) { s.pStage = +t[1]; s.pShown = Object.assign({}, s.pShown); s.pShown[t[1]] = true; }, read: function (v) { return (v.pVerdicts || [])[0]; } } }
+    };
+    function rootJudged(r, pre) {
+      var cfg = (ROOT_JUDGE[pathSlug] || {})[String(r.slot && r.slot[0])], R = rootActsOf();
+      if (!cfg || !R || r.kind !== 'pick') { return null; }
+      var A = KS4RootActs, L = R.api.logic, right = [], label = null, seen = false;
+      r.options.forEach(function (o) {
+        if (!o.patch) { return; }
+        var st = A.apply(pre, o.patch);
+        cfg.show(st, r.slot);
+        var w = cfg.read(A.valsAt(L, st), r.slot);
+        if (!w || !w.style) { return; }
+        seen = true;
+        if (!/ks3-alert/.test(w.style)) { right.push(o.k); if (label === null) { label = o.label; } }
+      });
+      return seen && right.length ? { right: right, label: label } : null;
+    }
     function rootAnswer(R, g, pre, me, ask, hit) {
       var A = KS4RootActs, L = R.api.logic;
       var r = A.analyse(L, g, pre, R.init, me.oi);
@@ -5300,13 +5326,16 @@ try {
         Object.keys(st2).forEach(function (k) { if (st2[k] === true && /ok$/i.test(k)) { st2[k] = false; } });
         var chk = A.probe(L, g, st2, me.oi).filter(function (x) { return x.k === r.check; })[0];
         var okw = chk && chk.ws.filter(function (w) { return typeof w.after === 'boolean' && /ok$/i.test(String(w.path[w.path.length - 1])); })[0];
-        if (okw) { d.is_correct = okw.after; } else { d.self_checked = true; }
+        if (okw) { d.is_correct = okw.after; }
       } else {
         d.answer = o.label;
         if (r.graded && r.right && r.right.length) {
           d.correct_answer = labelOf(r.right[0]);
           d.is_correct = r.right.indexOf(me.k) >= 0;
-        } else { d.self_checked = true; }
+        } else {
+          var jr = rootJudged(r, pre);
+          if (jr) { d.is_correct = jr.right.indexOf(me.k) >= 0; d.correct_answer = jr.label; }
+        }
       }
       post(d);
     }

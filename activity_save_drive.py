@@ -132,7 +132,7 @@ class Api(http.server.BaseHTTPRequestHandler):
                     "is_correct": None if self_checked else body.get("is_correct"),
                     "marks_scored": body.get("marks_scored"), "marks_available": body.get("marks") or 1,
                     "points_hit": None, "points_total": None, "feedback": None, "mark_level": None,
-                    "mark_next_step": None, "marked_by": "unmarked" if self_checked else "key",
+                    "mark_next_step": None, "marked_by": "key" if (not self_checked and body.get("is_correct") is not None) else "unmarked",
                     "self_ticks": None, "attempt_no": att, "answered_at": body.get("answered_at"),
                     "surface": "lesson", "work_item_id": None,
                     "key_stage": body.get("key_stage"), "lesson_slug": slug, "client_event_id": body.get("client_event_id"),
@@ -286,7 +286,8 @@ CASES = [
     dict(name="ks4-prediction-map", page="/combined/higher/biology/cell-biology/chromosomes-mitosis.html",
          act="H.click(H.rootBtn('It grows, makes more ribosomes')); await H.sleep(400);",
          want=["ks4:chromosomes-mitosis:ch#preds-1-1"],
-         check=lambda b: [x for x in b if x["question_id"].endswith("#preds-1-1")][0].get("self_checked") is True,
+         check=lambda b: isinstance([x for x in b if x["question_id"].endswith("#preds-1-1")][0]["is_correct"], bool)
+                         and bool([x for x in b if x["question_id"].endswith("#preds-1-1")][0]["correct_answer"]),
          back="JSON.stringify(H.rootState().preds[0]) === '[0]'"),
     dict(name="ks4-level-pick", page="/triple/higher/biology/inheritance/advantages-sexual-asexual.html",
          act="""var w = H.write(); if (!w) { throw new Error('no level-marked write'); }
@@ -519,10 +520,12 @@ CASES = [
     dict(name="ks4-reveal-circuit", page="/triple/higher/physics/electricity/series-parallel-circuits.html", forms=True,
          act="""H.click(H.rootBtn(H.v().qs[0].opts[0].label, 0)); await H.sleep(150); H.click(H.rootBtn(H.v().qs[1].opts[1].label, 1)); await H.sleep(150); await H.call('onReveal'); await H.sleep(200);""",
          want=["ks4:series-parallel-circuits:th#preds-*"],
+         check=lambda b: all(isinstance(x["is_correct"], bool) and x["correct_answer"] and x["self_checked"] is False for x in b if "#preds-" in x["question_id"]),
          back="""(function(){ var s = H.rootState(); return s.revealed[s.step] === true && H.v().revealed === true && s.preds[s.step][1] === 1; })()"""),
     dict(name="ks4-reveal-waves", page="/triple/higher/physics/waves/waves-detection-exploration.html", forms=True,
          act="""H.click(H.rootBtn(H.v().qOpts[0].text)); await H.sleep(150); await H.call('onQReveal'); H.click(H.rootBtn(H.v().uOpts[1].text)); await H.sleep(150); await H.call('onUReveal'); await H.sleep(200);""",
          want=["ks4:waves-detection-exploration:th#qpred-*", "ks4:waves-detection-exploration:th#upred-*"],
+         check=lambda b: all(isinstance(x["is_correct"], bool) and x["correct_answer"] for x in b if "pred-" in x["question_id"]),
          back="""(function(){ var v = H.v(), s = H.rootState(); return v.qShown === true && v.uShown === true && s.qPred[s.qStage] === 0 && s.uPred[s.uStage] === 1; })()"""),
     dict(name="ks4-reveal-sound", page="/triple/higher/physics/waves/sound-waves-hearing.html", forms=True,
          act="""H.click(H.rootBtn(H.v().pOpts[0].text)); await H.sleep(150); await H.call('onPReveal');
@@ -530,6 +533,7 @@ CASES = [
                 var n = H.v().pTones.length; for (var i = 0; i < n; i += 1) { await H.call((function (j) { return function (v) { return v.pTones[j].opts[0].onClick; }; })(i)); }
                 await H.call('onPReveal'); await H.sleep(200); window.__st = st;""",
          want=["ks4:sound-waves-hearing:th#ppred-*", "ks4:sound-waves-hearing:th#tpred-*-1"],
+         check=lambda b: all(isinstance(x["is_correct"], bool) and x["correct_answer"] for x in b if "#ppred-" in x["question_id"]),
          back="""(function(){ var s = H.rootState(), n = H.v().pTones.length; return s.pShown[1] === true && n > 0 && s.pShown[s.pStage] === true && Object.keys(s.tPred).length === n; })()"""),
     # ── Answers found by reading the groups the classifier filed as not-an-answer ──
     dict(name="ks4-read-threats", page="/triple/higher/biology/ecology/factors-affecting-food-security.html", forms=True,
@@ -649,7 +653,8 @@ CASES = [
                 H.click(s.querySelector('[data-hgrid-opt="no"]')); await H.sleep(80); H.click(c[0]); await H.sleep(150); H.click(c[1]); await H.sleep(150);""",
          want=["group-7-the-halogens#grid-nine-1", "group-7-the-halogens#grid-nine-2"],
          check=lambda b: [x for x in b if x["question_id"].endswith("#grid-nine-1")][0]["is_correct"] is True
-                         and [x for x in b if x["question_id"].endswith("#grid-nine-2")][0]["self_checked"] is True,
+                         and [x for x in b if x["question_id"].endswith("#grid-nine-2")][0]["is_correct"] is None
+                         and [x for x in b if x["question_id"].endswith("#grid-nine-2")][0]["self_checked"] is False,
          back="""H.pressed(document.querySelectorAll('.ks3-hgrid-block [data-hgrid-cell]')[1])"""),
     dict(name="ks3-units-combinations", page="/ks3/biology/nutrition-and-digestion/food-tests.html",
          act="""var s = document.querySelector('.ks3-tbench-block'); H.click(s.querySelectorAll('[data-predict] .ks3-option')[0]); await H.sleep(200);
@@ -1073,7 +1078,7 @@ def run_units(sport, aport, width, only):
             for b in bodies:
                 words[b["question_id"]].add(b.get("question_text") or "")
             dup = {i: len(t) for i, t in words.items() if len(t) > 1}
-            self_c = [b for b in bodies if b.get("self_checked")]
+            self_c = [b for b in bodies if b.get("is_correct") is None]
             line = "%s groups=%d posts=%d ids=%d selfchecked=%d" % (k, r["groups"], len(bodies), len(n_id), len(self_c))
             if dup:
                 shared.append((k, found[k], dup))
