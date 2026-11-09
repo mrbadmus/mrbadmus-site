@@ -56,6 +56,7 @@ class Ledger:
 
 
 LEDGER = Ledger()
+THROTTLE = {"ticks": 0}                 # refuse this many self-tick posts with a 429
 
 
 def quiz_id(slug, text):
@@ -137,6 +138,9 @@ class Api(http.server.BaseHTTPRequestHandler):
                 })
             return self._json(200, {"ok": True})
         if u.path == "/api/consumer/child/self-ticks":
+            if THROTTLE["ticks"] > 0:
+                THROTTLE["ticks"] -= 1
+                return self._json(429, {"error": "too_many", "retry_after_s": 1})
             with LEDGER.lock:
                 LEDGER.ticks.append(body)
                 hit = [r for r in LEDGER.rows if r["question_id"] == body.get("question_id")]
@@ -584,6 +588,83 @@ CASES = [
          want=["ks4:cell-specialisation:th#compared-1"],
          check=lambda b: b[-1]["answer"].count("\n") == 1,
          back="(function(){ var s = H.rootState(); var k = Object.keys(s.compared)[0]; return !!k && s.picks[k].length === 2; })()"),
+    # ── ⊕ 9 Nov 2026: a blind run's findings ──
+    dict(name="ks3-five-rulings", page="/ks3/chemistry/energy-changes-in-reactions/measuring-a-temperature-change.html",
+         act="""var c = document.querySelectorAll('.ks3-rplan-step'); for (var i = 0; i < c.length; i += 1) { H.click(c[i].querySelectorAll('.ks3-rplan-opt')[0]); await H.sleep(120); }""",
+         want=["measuring-a-temperature-change#plan-judge-%d" % n for n in range(1, 6)],
+         check=lambda b: all(isinstance(x["is_correct"], bool) and x.get("correct_answer") for x in b if "#plan-judge-" in x["question_id"])
+                         and [x for x in b if x["question_id"].endswith("-1")][0]["is_correct"] is False,
+         back="""(function(){ var c = document.querySelectorAll('.ks3-rplan-step'); return Array.prototype.every.call(c, function (s) { return H.pressed(s.querySelectorAll('.ks3-rplan-opt')[0]) && s.getAttribute('data-open') === '1'; }) && /^5 of 5|all/.test(document.querySelector('.ks3-rplan-block [data-count]').textContent); })()"""),
+    dict(name="ks3-bench-count", page="/ks3/chemistry/particles-and-their-behaviour/solids-liquids-and-gases.html",
+         act="""var s = document.querySelector('.ks3-sbench-block'); H.click(s.querySelector('[data-benchgate] .ks3-option')); await H.sleep(200);
+                var st = s.querySelectorAll('[data-sbench-state]'); for (var i = 0; i < st.length; i += 1) { H.click(st[i]); await H.sleep(150); } await H.sleep(1000);""",
+         want=["solids-liquids-and-gases#state-bench-1"],
+         ticks=True, settle=1.5,
+         back="""/all three seen|^3 of 3/.test(document.querySelector('.ks3-sbench-block [data-count]').textContent)"""),
+    dict(name="ks3-rig-runs", page="/ks3/chemistry/energy-changes-in-reactions/measuring-a-temperature-change.html",
+         act="""var s = document.querySelector('.ks3-rigb-block'); var run = s.querySelector('[data-rigb-run]'); H.click(run); await H.sleep(150);
+                var d = s.querySelectorAll('.ks3-rigb-dial'); for (var i = 0; i < 2; i += 1) { var o = d[i].querySelectorAll('[data-rigb-for]'); H.click(o[o.length - 1]); await H.sleep(100); H.click(s.querySelector('[data-rigb-run]')); await H.sleep(150); }""",
+         want=["measuring-a-temperature-change#rig-build-1"],
+         check=lambda b: sum(1 for x in b if x["question_id"].endswith("#rig-build-1")) == 3,
+         back="""(function(){ var s = document.querySelector('.ks3-rigb-block'); return s.getAttribute('data-stage-done') === '1'; })()"""),
+    dict(name="ks4-indicative-ticks", page="/triple/higher/biology/inheritance/advantages-sexual-asexual.html", ticks429=1, settle=2,
+         act="""var w = H.write(); var ta = w.host.querySelector('textarea'); ta.scrollIntoView({block:'center'});
+                ta.value = 'Sexual reproduction gives variation so some offspring may survive a change, while asexual reproduction is faster and needs only one parent.';
+                ta.dispatchEvent(new Event('input', {bubbles: true})); await H.sleep(300);
+                H.click(H.btnIn(w.host, 'button', 'Show the mark scheme')); await H.sleep(500);
+                var lv = Array.prototype.filter.call(w.host.querySelectorAll('button'), function (b) { return /Level 1/.test(b.textContent); })[0]; H.click(lv); await H.sleep(200);
+                var boxes = w.host.querySelectorAll('input[type=checkbox]'); H.click(boxes[0]); await H.sleep(100); H.click(boxes[2]); await H.sleep(2500);""",
+         want=["ks4:advantages-sexual-asexual:th#*"],
+         ticks=True,
+         tickcheck=lambda t: t[-1]["ticks"] == [3, 5, 7],
+         back="""(function(){ var w = H.write(); var s = w.logic.state; return s.open === true && typeof s.level === 'number' && /Level 1/.test(w.logic.props.levels[s.level].label) && !!s.ticks[0] && !s.ticks[1] && !!s.ticks[2]; })()"""),
+    # Every unit of a multi-unit kind gets its own id, and every one comes back.
+    dict(name="ks3-units-fault", page="/ks3/biology/breathing-and-gas-exchange/exercise-asthma-and-smoking.html",
+         act="""var s = document.querySelector('.ks3-fault-block'); var t = s.querySelectorAll('.ks3-fault-tab');
+                for (var i = 0; i < 2; i += 1) { H.click(t[i]); await H.sleep(100); H.click(s.querySelectorAll('[data-fault] .ks3-option')[i]); await H.sleep(100); H.click(s.querySelector('[data-fault-open]')); await H.sleep(150); }""",
+         want=["exercise-asthma-and-smoking#locate-the-fault-1", "exercise-asthma-and-smoking#locate-the-fault-2"],
+         check=lambda b: all(isinstance(x["is_correct"], bool) for x in b if "#locate-the-fault" in x["question_id"]),
+         back="""/^2 of 3/.test(document.querySelector('.ks3-fault-block [data-count]').textContent)"""),
+    dict(name="ks3-units-route", page="/ks3/biology/respiration/aerobic-vs-anaerobic.html",
+         act="""var s = document.querySelector('.ks3-rd-block'); var t = s.querySelectorAll('[data-rd-case]');
+                for (var i = 0; i < 2; i += 1) { H.click(t[i]); await H.sleep(100); H.click(s.querySelectorAll('[data-rd-route]')[0]); await H.sleep(100); H.click(s.querySelector('[data-rd-run]')); await H.sleep(150); }""",
+         want=["aerobic-vs-anaerobic#which-route-is-running-1", "aerobic-vs-anaerobic#which-route-is-running-2"],
+         check=lambda b: all(isinstance(x["is_correct"], bool) for x in b if "#which-route" in x["question_id"]),
+         back="""/^2 of/.test(document.querySelector('.ks3-rd-block [data-rd-progress]').textContent)"""),
+    dict(name="ks3-units-grid", page="/ks3/chemistry/types-of-reaction/displacement.html",
+         act="""var s = document.querySelector('.ks3-rgrid-block'); var c = s.querySelectorAll('[data-rgrid-cell]');
+                for (var i = 0; i < 2; i += 1) { H.click(c[i + 1]); await H.sleep(100); H.click(s.querySelector('[data-rgrid-opt="yes"]')); await H.sleep(200); }""",
+         want=["displacement#grid-sixteen-2", "displacement#grid-sixteen-3"],
+         check=lambda b: all(isinstance(x["is_correct"], bool) for x in b if "#grid-sixteen" in x["question_id"]),
+         back="""document.querySelectorAll('.ks3-rgrid-block [data-rgrid-state]').length >= 2"""),
+    dict(name="ks3-units-halogens", page="/ks3/chemistry/the-periodic-table/group-7-the-halogens.html",
+         act="""var s = document.querySelector('.ks3-hgrid-block'); var c = s.querySelectorAll('[data-hgrid-cell]');
+                H.click(s.querySelector('[data-hgrid-opt="no"]')); await H.sleep(80); H.click(c[0]); await H.sleep(150); H.click(c[1]); await H.sleep(150);""",
+         want=["group-7-the-halogens#grid-nine-1", "group-7-the-halogens#grid-nine-2"],
+         check=lambda b: [x for x in b if x["question_id"].endswith("#grid-nine-1")][0]["is_correct"] is True
+                         and [x for x in b if x["question_id"].endswith("#grid-nine-2")][0]["self_checked"] is True,
+         back="""H.pressed(document.querySelectorAll('.ks3-hgrid-block [data-hgrid-cell]')[1])"""),
+    dict(name="ks3-units-combinations", page="/ks3/biology/nutrition-and-digestion/food-tests.html",
+         act="""var s = document.querySelector('.ks3-tbench-block'); H.click(s.querySelectorAll('[data-predict] .ks3-option')[0]); await H.sleep(200);
+                H.click(s.querySelectorAll('.ks3-tbench-tab[data-food]')[1]); await H.sleep(120); H.click(s.querySelectorAll('[data-predict] .ks3-option')[1]); await H.sleep(200);""",
+         want=["food-tests#twenty-combinations-1", "food-tests#twenty-combinations-5"],
+         check=lambda b: all(isinstance(x["is_correct"], bool) for x in b if "#twenty" in x["question_id"]),
+         back="""/^2 of/.test(document.querySelector('.ks3-tbench-block [data-count]').textContent)"""),
+    dict(name="ks3-units-sentence", page="/ks3/chemistry/chemical-reactions/chemical-vs-physical-change.html",
+         act="""var s = document.querySelector('.ks3-chain-block'); var u = s.querySelectorAll('[data-chain-slot]'); H.click(u[0].querySelector('.ks3-option')); await H.sleep(120); H.click(u[1].querySelector('.ks3-option')); await H.sleep(150);""",
+         want=["chemical-vs-physical-change#chain-wax-1", "chemical-vs-physical-change#chain-wax-2"],
+         check=lambda b: all(isinstance(x["is_correct"], bool) for x in b),
+         back="""(function(){ var u = document.querySelectorAll('.ks3-chain-block [data-chain-slot]'); return H.pressed(u[0].querySelector('.ks3-option')) && H.pressed(u[1].querySelector('.ks3-option')); })()"""),
+    dict(name="ks3-units-order", page="/ks3/chemistry/the-earth-and-its-atmosphere/the-rock-cycle.html",
+         act="""var p = document.querySelectorAll('.ks3-grain-block [data-grain-pick]'); for (var i = 0; i < p.length; i += 1) { H.click(p[i]); await H.sleep(50); } await H.sleep(200);""",
+         want=["the-rock-cycle#grain-order-1"],
+         check=lambda b: len(b) == 1 and b[0]["kind"] == "order" and isinstance(b[0]["is_correct"], bool),
+         back="""(function(){ var p = document.querySelectorAll('.ks3-grain-block [data-grain-pick]'); return Array.prototype.every.call(p, function (x) { return H.pressed(x); }); })()"""),
+    dict(name="ks3-units-sort", page="/ks3/biology/cells-and-organisation/life-processes.html",
+         act="""var r = document.querySelectorAll('.ks3-sort .ks3-sortrow'); H.click(r[0].querySelector('.ks3-sort-chip')); await H.sleep(120); H.click(r[1].querySelectorAll('.ks3-sort-chip')[1]); await H.sleep(120);""",
+         want=["life-processes#living-once-never-*"],
+         check=lambda b: len(set(x["question_id"] for x in b)) == 2 and all(isinstance(x["is_correct"], bool) for x in b),
+         back="""(function(){ var r = document.querySelectorAll('.ks3-sort .ks3-sortrow'); return H.pressed(r[0].querySelector('.ks3-sort-chip')) && H.pressed(r[1].querySelectorAll('.ks3-sort-chip')[1]); })()"""),
     # ── KS3: the rest of the instruments ──
     dict(name="ks3-gate", page="/ks3/physics/energy-transfers/energy-transfers-before-and-after.html",
          act="var s = document.querySelector('.ks3-btally-block'); H.click(s.querySelector('[data-btally-gopt]')); await H.sleep(300);",
@@ -801,6 +882,155 @@ window.SW = {
 """
 
 
+# ── --units: every unit of one page of every kind ─────────────────────────
+# The sweep presses a block's FIRST control, so it cannot see several separately
+# judged items sharing an id. This presses the first free button of EVERY group of
+# sibling buttons in the block, in turn, as new groups appear, and watches what was
+# posted: two groups under one id is a finding; a self-checked row beside words the
+# press revealed is listed to be read.
+UNITS_JS = r"""
+window.UN = {
+  // What must come back: every pressed control. A tab on screen is allowed to differ.
+  sig: function (sec) {
+    return Array.prototype.filter.call(sec.querySelectorAll('[aria-pressed]'), function (b) {
+      return !/tab|seg-btn/.test(b.className || '') && !b.closest('[role="tablist"]');
+    }).map(function (b) { return b.getAttribute('aria-pressed') === 'true' ? '1' : '0'; }).join('');
+  },
+  sec: function (k) { return Array.prototype.filter.call(document.querySelectorAll('[data-instrument]'), function (s) { return s.classList.contains(k); })[0]; },
+  lines: function (sec) {
+    var out = {};
+    Array.prototype.forEach.call(sec.querySelectorAll('p, li, strong, dd, td, h3, h4'), function (el) {
+      if (el.closest('button') || el.closest('[hidden]') || !el.getClientRects().length) { return; }
+      var t = (el.textContent || '').replace(/\s+/g, ' ').trim();
+      if (t) { out[t] = 1; }
+    });
+    return out;
+  },
+  go: async function (k) {
+    var sleep = function (ms) { return new Promise(function (r) { setTimeout(r, ms); }); };
+    var sec = UN.sec(k);
+    if (!sec) { throw new Error('no block'); }
+    // A group is the buttons of one question: a list's <li>s are one group.
+    var groupOf = function (x) { return (x.parentElement && x.parentElement.tagName === 'LI' && x.parentElement.parentElement) || x.parentElement; };
+    var live = function (x) { return !x.disabled && x.getAttribute('aria-disabled') !== 'true' && !x.closest('[hidden]') && x.getClientRects().length > 0; };
+    var clicked = [], used = [], steps = [];
+    var press = async function (b) {
+      clicked.push(b);
+      var before = UN.lines(sec);
+      b.scrollIntoView({ block: 'center' }); b.click();
+      await sleep(90);
+      var after = UN.lines(sec), added = Object.keys(after).filter(function (t) { return !before[t]; });
+      steps.push({ label: (b.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 50), added: added.join(' / ').slice(0, 200) });
+    };
+    for (var n = 0; n < 70; n += 1) {
+      var all = Array.prototype.filter.call(sec.querySelectorAll('button'), live);
+      // First the first free button of a group not yet answered; a group that has
+      // been reset (nothing pressed in it) counts as free again.
+      var b = all.filter(function (x) {
+        var g = groupOf(x);
+        if (used.indexOf(g) < 0) { return clicked.indexOf(x) < 0; }
+        return false;
+      })[0];
+      if (b) { used.push(groupOf(b)); await press(b); continue; }
+      // Then a button never pressed: a tab that may bring a new question up.
+      b = all.filter(function (x) { return clicked.indexOf(x) < 0; })[0];
+      if (!b) { break; }
+      var g2 = groupOf(b);
+      await press(b);
+      // Whatever it brought up can be answered again.
+      used = used.filter(function (g) { return g === g2 || !g.querySelector('[aria-pressed="false"]') || g.querySelector('[aria-pressed="true"]'); });
+    }
+    return JSON.stringify({ groups: used.length, steps: steps, sig: UN.sig(sec) });
+  }
+};
+"""
+
+
+def run_units(sport, aport, width, only):
+    js = open(os.path.join(REPO, "shared", "mrbadmus.v2.js"), encoding="utf-8").read()
+    block = js[js.find("/* <ks3-specs> */"):js.find("/* </ks3-specs> */")]
+    kinds = set(re.findall(r"'(ks3-[a-z0-9-]+)'\s*:", block))
+    for name in ("KIND_A", "KIND_B5C"):
+        m = re.search(r"var %s = (\{.*?\});" % name, js)
+        kinds |= set(json.loads(m.group(1)))
+    kinds = sorted(kinds)
+    import glob
+    found = {}
+    for p in sorted(glob.glob(os.path.join(REPO, "ks3", "**", "*.html"), recursive=True)):
+        with open(p, encoding="utf-8") as f:
+            h = f.read()
+        for k in kinds:
+            if k not in found and re.search(r'<section[^>]*class="[^"]*\b%s(?![\w-])[^"]*"[^>]*data-instrument' % re.escape(k), h):
+                found[k] = "/" + os.path.relpath(p, REPO)
+    base = "http://127.0.0.1:%d" % sport
+    shared, listed, differs, n_ok, t0 = [], [], [], 0, time.time()
+    with KB.Browser() as br:
+        pg = br.attach()
+        pg.set_viewport(width, 900)
+        pg.send("Network.enable")
+        pg.send("Network.setBlockedURLs", {"urls": ["*supabase.co*", "*onrender.com*", "*mrbadmus.com*", "*googleapis*", "*gstatic*", "*unpkg*", "*jsdelivr*", "*cdnjs*"]})
+        fresh = "localStorage.clear(); sessionStorage.clear(); localStorage.setItem(%s, %s)" % (json.dumps(AUTH_KEY), json.dumps(json.dumps(session(True))))
+        for k in kinds:
+            if only and not re.search(only, k):
+                continue
+            if k not in found:
+                print("  -- %s: no page carries it" % k, flush=True)
+                continue
+            LEDGER.reset()
+            try:
+                pg.goto(base + "/404.html")
+                pg.eval(fresh)
+                pg.goto("%s%s?api=http://127.0.0.1:%d" % (base, found[k], aport), settle=0.4)
+                wait_saved(pg)
+                pg.eval(UNITS_JS)
+                r = json.loads(pg.eval("UN.go(%s)" % json.dumps(k), timeout=60))
+                time.sleep(0.4)
+            except Exception as e:  # noqa: BLE001
+                print("  !! %s: %s" % (k, str(e)[:120]), flush=True)
+                continue
+            act_prefix = found[k].rsplit("/", 1)[-1].replace(".html", "") + "#"
+            bodies = [b for b in LEDGER.bodies if (b.get("question_id") or "").startswith(act_prefix)]
+            import collections
+            n_id = collections.Counter(b["question_id"] for b in bodies)
+            # One id asked about different things: the question words differ between its rows.
+            words = collections.defaultdict(set)
+            for b in bodies:
+                words[b["question_id"]].add(b.get("question_text") or "")
+            dup = {i: len(t) for i, t in words.items() if len(t) > 1}
+            self_c = [b for b in bodies if b.get("self_checked")]
+            line = "%s groups=%d posts=%d ids=%d selfchecked=%d" % (k, r["groups"], len(bodies), len(n_id), len(self_c))
+            if dup:
+                shared.append((k, found[k], dup))
+                line += " SHARED=%s Q=%s" % (json.dumps(dup), json.dumps(sorted(list(words.values())[0])[:2], ensure_ascii=False)[:200])
+            if self_c:
+                reveal = [s2["added"] for s2 in r["steps"] if s2["added"]][:2]
+                listed.append((k, found[k], reveal))
+                line += " SAW=%s" % json.dumps(reveal, ensure_ascii=False)[:260]
+            # Device B: every row back, nothing posted.
+            if bodies:
+                n_b = len(LEDGER.bodies)
+                try:
+                    pg.goto(base + "/404.html")
+                    pg.eval(fresh)
+                    pg.goto("%s%s?api=http://127.0.0.1:%d" % (base, found[k], aport), settle=0.4)
+                    wait_saved(pg)
+                    pg.eval(UNITS_JS)
+                    time.sleep(0.4)
+                    back = pg.eval("UN.sig(UN.sec(%s))" % json.dumps(k))
+                    if back != r["sig"]:
+                        differs.append(k)
+                        line += " B-DIFFERS A=%s B=%s" % (r["sig"][:40], back[:40])
+                    if len(LEDGER.bodies) != n_b:
+                        differs.append(k)
+                        line += " B-POSTED=%d" % (len(LEDGER.bodies) - n_b)
+                except Exception as e:  # noqa: BLE001
+                    line += " B-ERROR %s" % str(e)[:60]
+            print("  " + line, flush=True)
+            n_ok += 1
+    print("\nunits: %d kinds pressed in full, %d with an id shared by different questions, %d with self-checked rows to read, %d whose presses did not all come back, %.0f s" % (n_ok, len(shared), len(listed), len(differs), time.time() - t0))
+    return shared
+
+
 def sweep_pages():
     js = open(os.path.join(REPO, "shared", "mrbadmus.v2.js"), encoding="utf-8").read()
     block = js[js.find("/* <ks3-specs> */"):js.find("/* </ks3-specs> */")]
@@ -881,6 +1111,7 @@ def run_sweep(sport, aport, width, only):
 
 def main():
     ap = argparse.ArgumentParser()
+    ap.add_argument("--units", action="store_true", help="every unit of one page of every KS3 kind: flags an id several separately judged items share")
     ap.add_argument("--sweep", action="store_true", help="every KS3 kind in <ks3-specs>: first control, valid body, back on device B")
     ap.add_argument("--only")
     ap.add_argument("--width", type=int, default=1280)
@@ -888,6 +1119,8 @@ def main():
     a = ap.parse_args()
     site, sport = start(Site)
     api, aport = start(Api)
+    if a.units:
+        return 1 if run_units(sport, aport, a.width, a.only) else 0
     if a.sweep:
         f, b = run_sweep(sport, aport, a.width, a.only)
         return 1 if f or b else 0
@@ -908,6 +1141,7 @@ def main():
         print("\n── %s  (%s, %dpx)" % (c["name"], c["page"], a.width))
         LEDGER.reset()
         LEGACY["on"] = False
+        THROTTLE["ticks"] = c.get("ticks429", 0)
         with KB.Browser() as br:
             pg = open_page(br, sport, aport, c["page"], session(True), a.width)
             wait_saved(pg)
@@ -916,8 +1150,8 @@ def main():
             except Exception as e:  # noqa: BLE001 — a drive error is a finding
                 ok(False, "device A: the presses ran", e)
                 return
-            time.sleep(1.5)
-            errs = [e for e in pg.console_errors() if "net::ERR_BLOCKED" not in e and "ERR_BLOCKED_BY_CLIENT" not in e]
+            time.sleep(1.5 + c.get("settle", 0))
+            errs = [e for e in pg.console_errors() if "net::ERR_BLOCKED" not in e and "ERR_BLOCKED_BY_CLIENT" not in e and "429" not in e]
         bodies = list(LEDGER.bodies)
         all_bodies.extend(bodies)
         ids = [b.get("question_id") or "" for b in bodies]
@@ -931,6 +1165,8 @@ def main():
             ok(good, "device A: right/wrong as the lesson judged it", [(b.get("question_id"), b.get("is_correct"), b.get("self_checked"), b.get("answer")) for b in bodies])
         if c.get("ticks"):
             ok(any(t.get("ticks") for t in LEDGER.ticks), "device A sent the level pick as the child's own tick", LEDGER.ticks)
+            if c.get("tickcheck"):
+                ok(c["tickcheck"](LEDGER.ticks), "the ticks reached the ledger in the shape the page keeps them", LEDGER.ticks)
         ok(all(isinstance(b.get("time_spent_seconds"), int) or b.get("time_spent_seconds") is None for b in bodies), "every body carries a measured time (or null)")
         ok(not errs, "device A: no page errors", errs)
         n_before = len(LEDGER.bodies)

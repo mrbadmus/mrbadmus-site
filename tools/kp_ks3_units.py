@@ -28,6 +28,7 @@ The adapter rules, verbatim from mrbadmus.v2.js (round 4):
     after a click — does not exist in static HTML.)
 """
 
+import json
 import os
 import re
 import sys
@@ -70,11 +71,51 @@ def opt_attr(b):
     return None
 
 
+def _js_table(name):
+    js = open(os.path.join(REPO, "shared", "mrbadmus.v2.js"), encoding="utf-8").read()
+    m = re.search(r"var %s = (\{.*?\});" % name, js)
+    return json.loads(m.group(1)) if m else {}
+
+
+# ⊕ 9 Nov 2026: the page's own tables (adapter A), read rather than copied.
+UNIT_BY_KIND = _js_table("UNIT_BY_KIND")
+TAB_NOT_OPTION = _js_table("TAB_NOT_OPTION")
+REVEAL_KEY = _js_table("REVEAL_KEY")
+
+
 def is_option(b):
-    return opt_attr(b) is not None or "ks3-option" in (b.get("class") or [])
+    if not (opt_attr(b) is not None or "ks3-option" in (b.get("class") or [])):
+        return False
+    sec = b.find_parent(attrs={"data-instrument": True})
+    k = _kind(sec, TAB_NOT_OPTION) if sec is not None else None
+    return not (k and b in sec.select(TAB_NOT_OPTION[k]))
+
+
+def reveal_key(scope, opts):
+    """The option a unit's reveal names first, as mrbadmus.v2.js revealKey reads it."""
+    rev = scope.find(attrs={"data-reveal": True}) or scope.find(lambda e: any(re.match(r"^data-[a-z0-9]+-reveal$", a) for a in e.attrs))
+    if rev is None:
+        return None
+    first = next((c for c in rev.find_all(True, recursive=False)), rev)
+    lead = re.sub(r"[.\s]+$", "", re.split(r" — |\. |: ", txt(first))[0].lower())
+    if not lead:
+        return None
+    norm = lambda t: " " + re.sub(r"[^a-z0-9.%-]+", " ", t).strip() + " "
+    hits = []
+    for o in opts:
+        lab = re.sub(r"[.\s]+$", "", opt_label(o).lower())
+        if lab and (norm(lab) in norm(lead) or norm(lead) in norm(lab)):
+            hits.append(o)
+    return hits[0] if len(hits) == 1 else None
 
 
 def unit_of(b, sec):
+    named = _kind(sec, UNIT_BY_KIND)
+    if named:
+        all_u = sec.select(UNIT_BY_KIND[named])
+        for i, u in enumerate(all_u):
+            if u is b or u in b.parents:
+                return u, "named=%d" % i
     el = b.parent
     while el is not None and el is not sec:
         for k, v in (el.attrs or {}).items():
@@ -176,7 +217,7 @@ def units(slug):
                             "key_from": "b5c" if good is not None else None})
             continue
         kind = _kind(sec, KIND_A)
-        if not kind:
+        if not kind or kind in _SPEC_KINDS():
             continue
         buttons = [b for b in sec.find_all("button") if is_option(b) and not b.find_parent(class_="ks3-ladder")]
         order, groups = [], {}
@@ -219,6 +260,8 @@ def units(slug):
                     want = row.get("data-answer")
                     good = next((b for b in opts if value_of(b) == want), None)
                     how = "data-answer"
+            if good is None and kind in REVEAL_KEY and scope is not None:
+                good, how = reveal_key(scope, opts), "reveal"
             out.append({"id": "%s#%s-%d" % (slug, act, n), "kind": kind, "activity": act, "n": n,
                         "prompt": _prompt(scope, sec),
                         "options": [opt_label(b) for b in opts],
@@ -235,7 +278,17 @@ def units(slug):
 # the page sends: `<slug>#<activity>-<n>`, n counted over the units, the tabs
 # or the parts, else 1.
 
+def _SPEC_KINDS():
+    # A kind named in <ks3-specs> is answered there; its adapter-A row would be a second, wrong id.
+    return spec_table()
+
+
+_SPEC_MEMO = {}
+
+
 def spec_table():
+    if _SPEC_MEMO:
+        return _SPEC_MEMO
     js = open(os.path.join(REPO, "shared", "mrbadmus.v2.js"), encoding="utf-8").read()
     a, b = js.find("/* <ks3-specs> */"), js.find("/* </ks3-specs> */")
     body = js[a:b] if a >= 0 and b > a else ""
@@ -250,7 +303,18 @@ def spec_table():
                 sp[f] = fm.group(1)
         sp["whole"] = "whole: true" in line
         sp["toggle"] = "toggle: true" in line
+        dm = re.search(r"\bdims: \[(.*?)\],", line)
+        if dm:
+            sp["dims"] = re.findall(r"'([^']+)'", dm.group(1))
+        pm = re.search(r"\bpress: '([^']*)'", line)
+        if pm:
+            sp["press"] = pm.group(1)
         out[m.group(1)] = sp
+    # ⊕ 9 Nov 2026: a grid of cells (gridCells('hgrid')): one answer per cell.
+    for k, p in re.findall(r"'(ks3-[a-z0-9-]+)': gridCells\('([a-z0-9]+)'\)", body):
+        out[k] = {"t": "l", "cells": "[data-%s-cell]" % p}
+    out["ks3-cbal-block"] = dict(out.get("ks3-cbal-block") or {"t": "l"}, cells="[data-cbal-eq]")
+    _SPEC_MEMO.update(out)
     return out
 
 
@@ -285,7 +349,14 @@ def spec_units(slug):
         rows = []
         if sp["t"] == "u":
             opts = _gate_opts(sec) if sp.get("gate") else sec.select(sp["opt"])
-            if sp.get("unit"):
+            if sp.get("dims"):
+                a_, b_ = sec.select(sp["dims"][0]), sec.select(sp["dims"][1])
+                n = 0
+                for x_ in a_:
+                    for y_ in b_:
+                        n += 1
+                        rows.append((n, ask + " — " + txt(x_) + " · " + txt(y_), labels(opts)))
+            elif sp.get("unit"):
                 for n, u in enumerate(sec.select(sp["unit"]), 1):
                     rows.append((n, ask + " — " + _prompt(u, sec) if _prompt(u, sec) else ask, labels(u.select(sp["opt"]))))
             elif sp.get("tab"):
@@ -302,6 +373,9 @@ def spec_units(slug):
                 for n, prt in enumerate(sec.select(sp["part"]), 1):
                     opts = ["Flagged", "Not flagged"] if sp["toggle"] else labels(prt.select(sp["opt"]))
                     rows.append((n, ask + " — " + _prompt(prt, sec), opts))
+        elif sp.get("cells"):
+            for n, cell in enumerate(sec.select(sp["cells"]), 1):
+                rows.append((n, ask + " — " + _prompt(cell, sec), []))
         else:
             rows.append((1, ask, []))
         for n, prompt, opts in rows:

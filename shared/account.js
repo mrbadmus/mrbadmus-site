@@ -700,6 +700,40 @@
         body: JSON.stringify(b)
       });
     }
+    /* The kept self-ticks (mrbadmus.v2.js tickKeep): the latest set per question. A
+       set replaces what the row holds, so sending it twice changes nothing. A 404 is
+       an answer not landed yet: it stays until the row exists or a week has passed. */
+    var TICKS = 'mrb_ticks_outbox_v1';
+    function ticksRead() { try { var b = JSON.parse(store.getItem(TICKS) || '{}'); return b && typeof b === 'object' ? b : {}; } catch (e) { return {}; } }
+    function ticksDrop(qid) {
+      var b = ticksRead(); delete b[qid];
+      try { if (Object.keys(b).length) { store.setItem(TICKS, JSON.stringify(b)); } else { store.removeItem(TICKS); } } catch (e) { /* storage refused */ }
+    }
+    function ticksSend() {
+      var box = ticksRead();
+      var due = Object.keys(box).filter(function (q) { var n = env.now() - (box[q] && box[q].at); return n >= MIN_AGE; });
+      var i = 0;
+      return (function next() {
+        if (i >= due.length) { return Promise.resolve(0); }
+        var q = due[i]; i += 1;
+        if (env.now() - box[q].at >= TTL) { ticksDrop(q); return next(); }
+        var send = function (tok) {
+          return env.fetch(cfg.BACKEND_URL + '/api/consumer/child/self-ticks', {
+            method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + tok },
+            body: JSON.stringify({ question_id: q, ticks: box[q].ticks })
+          });
+        };
+        return token(false).then(function (tok) {
+          return tok ? send(tok).then(function (r) { return r.status === 401 ? token(true).then(function (t2) { return t2 ? send(t2) : r; }) : r; }) : null;
+        }).then(function (r) {
+          if (r && (r.ok || r.status === 204)) { ticksDrop(q); return next(); }
+          if (r && r.status === 429) {
+            return r.json().then(function (d) { return Number(d && d.retry_after_s) * 1000 || EVERY; }, function () { return EVERY; });
+          }
+          return next();
+        });
+      })();
+    }
     var timer = null, busy = false, pause = EVERY;
     function again(ms) { if (timer) { env.clearTimeout(timer); } timer = env.setTimeout(tick, ms); }
     function failed() { pause = Math.min(MAX_PAUSE, pause * 2); busy = false; again(pause); }
@@ -708,7 +742,11 @@
       if (busy) { return; }
       if (!isChild()) { return; }            // signed out: the timer stops
       var due = read().filter(function (b) { var n = age(b); return n >= MIN_AGE && n < TTL; });
-      if (!due.length) { pause = EVERY; again(EVERY); return; }
+      if (!due.length) {
+        busy = true;
+        ticksSend().then(function (wait) { busy = false; pause = EVERY; again(Math.max(wait || EVERY, 5000)); }, function () { busy = false; again(EVERY); });
+        return;
+      }
       busy = true;
       var i = 0;
       (function next() {

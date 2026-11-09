@@ -1490,7 +1490,7 @@
    "notes": "Gate options sit directly in <ul> without <li>; observer tabs [data-rframe-obs] and sliders after the gate are exploration."
   },
   "ks3-rigb-block": {
-   "shape": "X",
+   "shape": "S",
    "marker": null,
    "n_blocks": 1,
    "commit": null,
@@ -1499,7 +1499,7 @@
    "verdict": "none: three dials ([data-rigb-for]/[data-rigb-val] seg buttons) plus [data-rigb-run] reveal the authored [data-rigb-panel=key]; [data-rigb-close] unhides when the run key equals wrap data-best=\"cup|lid|fast\"",
    "restore": "n/a",
    "wire": "wireRigBuilder @35024",
-   "notes": "Closest to an answer is 'found the best rig' (data-best on [data-rigb]), but every combination is a legitimate run with its own reading, so it is an exploration with a discovery payoff, not a judged choice."
+   "notes": "⊕ 9 Nov 2026: read again after a blind run. The rig a child runs is their own, kept each run."
   },
   "ks3-route-block": {
    "shape": "X",

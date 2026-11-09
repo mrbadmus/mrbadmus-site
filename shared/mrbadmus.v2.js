@@ -1692,6 +1692,14 @@ try {
        marked first): tried again, waiting longer each time, for ~2 minutes. While `mute` is held (a restore) nothing
        is sent, and the restored ticks are remembered as already saved. */
     var tickTimers = {}, tickLast = {}, tickWant = {};
+    function tickKeep(qid, list) {
+      try {
+        var box = JSON.parse(window.localStorage.getItem('mrb_ticks_outbox_v1') || '{}');
+        if (list) { box[qid] = { ticks: list, at: Date.now() }; } else { delete box[qid]; }
+        if (Object.keys(box).length) { window.localStorage.setItem('mrb_ticks_outbox_v1', JSON.stringify(box)); }
+        else { window.localStorage.removeItem('mrb_ticks_outbox_v1'); }
+      } catch (e) { /* storage refused: the in-page retry still runs */ }
+    }
     function sendTicks(qid, list, tries) {
       qid = safeId(qid);
       if (!qid) { return; }
@@ -1701,6 +1709,7 @@ try {
       if (tries && tickWant[qid] !== key) { return; }        // a newer set has been asked for
       tickWant[qid] = key;
       if (!tries && tickLast[qid] === key) { return; }
+      if (!tries) { tickKeep(qid, null); }                 // this set supersedes any waiting one
       clearTimeout(tickTimers[qid]);
       tickTimers[qid] = setTimeout(function () {
         var go = function (tok) {
@@ -1716,13 +1725,23 @@ try {
             return r;
           })
           .then(function (r) {
-            if (r && (r.ok || r.status === 204)) { tickLast[qid] = key; return; }
+            if (r && (r.ok || r.status === 204)) { tickLast[qid] = key; tickKeep(qid, null); return; }
+            /* ⊕ 9 Nov 2026: a 429 waits what it says and sends the same set again.
+               A tick set replaces the last one on the row, so a repeat cannot double
+               it. Whatever is left is kept for shared/account.js to send after a reload. */
+            if (r && r.status === 429) {
+              tickKeep(qid, list);
+              return r.json().then(function (d) { return d && d.retry_after_s; }, function () { return null; }).then(function (s) {
+                if ((tries || 0) < 8) { setTimeout(function () { sendTicks(qid, list, (tries || 0) + 1); }, Math.max(Number(s) > 0 ? Number(s) * 1000 : 30000, 1000)); }
+              });
+            }
+            tickKeep(qid, list);
             // A written answer is marked BEFORE its row lands (up to half a
             // minute), so the wait grows: 3 s, 6 s, … eight tries, ~2 min.
             if (r && r.status === 404 && (tries || 0) < 8) {
               setTimeout(function () { sendTicks(qid, list, (tries || 0) + 1); }, 3000 * ((tries || 0) + 1));
             }
-          }, function () { /* the next change sends them again */ });
+          }, function () { tickKeep(qid, list); });
       }, tries ? 0 : 700);
     }
     window.MrBadmusAnswerCapture.ticks = sendTicks;
@@ -1963,10 +1982,49 @@ try {
         }
         return null;
       };
+      /* ⊕ 9 Nov 2026: a blind run found five rulings stored under one id, shown as
+         "1 of 5". UNIT_RE only knows the unit words most kinds use. These kinds
+         call their unit something else, so it is named here (a selector), which
+         tools/kp_ks3_units.py reads too. TAB_NOT_OPTION: a `.ks3-option` that only
+         chooses what is on screen, never an answer. REVEAL_KEY: kinds whose reveal
+         opens with the right option in the lesson's own words ("Flawed — …"). */
+      var UNIT_BY_KIND = {"ks3-rplan-block":"[data-rplan-step]","ks3-gplot-block":"[data-gplot-read]","ks3-mb-block":".ks3-mb-step","ks3-board":".ks3-board-panel","ks3-removal-block":".ks3-removal-panel","ks3-sab-block":".ks3-sab-panel","ks3-switch-block":".ks3-switch-panel","ks3-seq-block":"[data-seq-step]"};
+      var TAB_NOT_OPTION = {"ks3-sc-block":".ks3-sc-tab","ks3-ml-block":"[data-ml-amount]","ks3-tb-block":"[data-tb-food]","ks3-cl-block":"[data-cl-chain]"};
+      var REVEAL_KEY = {"ks3-rplan-block":1,"ks3-esort-block":1,"ks3-tsort-block":1,"ks3-bottle-block":1,"ks3-gapfill-block":1,"ks3-pdeck-block":1,"ks3-pcards-block":1,"ks3-ruse-block":1,"ks3-prop-block":1,"ks3-psort-block":1,"ks3-ajudge-block":1};
       var isOption = function (btn) {
-        return !!(optAttr(btn) || (btn.classList && btn.classList.contains('ks3-option')));
+        if (!(optAttr(btn) || (btn.classList && btn.classList.contains('ks3-option')))) { return false; }
+        var s0 = btn.closest && btn.closest('[data-instrument]'), k0 = s0 && kindOf(s0, TAB_NOT_OPTION);
+        return !(k0 && btn.matches(TAB_NOT_OPTION[k0]));
+      };
+      // The option the unit's reveal names first, exactly one or none.
+      var revealKey = function (scope, opts) {
+        var rev = scope.querySelector('[data-reveal]');
+        if (!rev) {
+          var els = scope.querySelectorAll('*');
+          for (var q = 0; q < els.length && !rev; q += 1) {
+            var at = els[q].attributes || [];
+            for (var w = 0; w < at.length; w += 1) { if (/^data-[a-z0-9]+-reveal$/.test(at[w].name)) { rev = els[q]; break; } }
+          }
+        }
+        if (!rev) { return null; }
+        var first = rev.firstElementChild || rev;
+        var lead = txt(first).split(/ — |\. |: /)[0].toLowerCase().replace(/[.\s]+$/, '');
+        if (!lead) { return null; }
+        var whole = function (hay, nee) { return (' ' + hay.replace(/[^a-z0-9.%-]+/g, ' ') + ' ').indexOf(' ' + nee.replace(/[^a-z0-9.%-]+/g, ' ').trim() + ' ') >= 0; };
+        var hits = opts.filter(function (o) {
+          var l = optLabel(o).toLowerCase().replace(/[.\s]+$/, '');
+          return l && (whole(lead, l) || whole(l, lead));
+        });
+        return hits.length === 1 ? hits[0] : null;
       };
       var unitOf = function (btn, sec) {
+        var named = kindOf(sec, UNIT_BY_KIND);
+        if (named) {
+          var ue = btn.closest(UNIT_BY_KIND[named]);
+          if (ue && sec.contains(ue)) {
+            return { el: ue, key: 'named=' + Array.prototype.indexOf.call(sec.querySelectorAll(UNIT_BY_KIND[named]), ue) };
+          }
+        }
         for (var el = btn.parentNode; el && el !== sec; el = el.parentNode) {
           var a = el.attributes || [];
           for (var i = 0; i < a.length; i += 1) {
@@ -2081,6 +2139,10 @@ try {
             var markAfter = markOf(btn);
             if (!markAfter || markAfter === markBefore) { return; }
           }
+          if (verdict === null && kindOf(sec, REVEAL_KEY)) {
+            var rk = revealKey(scope, opts);
+            if (rk) { good = rk; verdict = rk === btn; }
+          }
           if (verdict === null && btn.classList) {
             if (btn.classList.contains('is-correct') || btn.classList.contains('is-right')) { verdict = true; good = btn; }
             else if (btn.classList.contains('is-wrong')) {
@@ -2153,7 +2215,7 @@ try {
         for (var i = 0; i < a.length; i += 1) { if (/^data-[a-z0-9]+-gopt$/.test(a[i].name)) { return true; } }
         return !!(b.closest && b.closest('[data-benchgate]') && b.classList.contains('ks3-option'));
       };
-      var G = function () { return { t: 'u', opt: gateOpt }; };
+      var G = function () { return { t: 'u', opt: gateOpt, count: true }; };
       var attr = function (el, n) { return el ? el.getAttribute(n) : null; };
       var shownIn = function (root, sel) {
         var out = null;
@@ -2164,6 +2226,26 @@ try {
         var w = String(word || '').replace(/[.\s]+$/, '').trim().toLowerCase();
         for (var i = 0; i < opts.length; i += 1) { if (optLabel(opts[i]).replace(/[.\s]+$/, '').trim().toLowerCase() === w) { return opts[i]; } }
         return null;
+      };
+      var gridCells = function (p) {
+        var cell = '[data-' + p + '-cell]', pred = '[data-' + p + '-opt]';
+        return { t: 'l', press: cell,
+          pre: function (sec) { var on = sec.querySelector(pred + '[aria-pressed="true"]'); return on || null; },
+          read: function (sec, b, on) {
+            var key = attr(b, 'data-' + p + '-cell'), all = sec.querySelectorAll(cell);
+            var n = Array.prototype.indexOf.call(all, b) + 1;
+            var verdict = sec.querySelector('[data-' + p + '-out="' + key + '"] .ks3-' + p + '-verdict');
+            // Only where the page words it as a plain yes or no ("A reaction." / "No reaction.").
+            var said = txt(verdict), no = /^no reaction/i.test(said), yes = /^a reaction/i.test(said);
+            var ok = on && (yes || no) ? (attr(on, 'data-' + p + '-opt') === (yes ? 'yes' : 'no')) : null;
+            return { n: n, answer: on ? optLabel(on) : 'Opened without predicting', ok: ok, ask: txt(sec.querySelector('[data-' + p + '-out="' + key + '"] .ks3-' + p + '-title')) };
+          },
+          back: function (sec, n, r) {
+            var c = sec.querySelectorAll(cell)[n - 1];
+            if (!c) { return; }
+            Array.prototype.forEach.call(sec.querySelectorAll(pred), function (o) { if (same(optLabel(o), r.answer)) { o.click(); } });
+            c.click();
+          } };
       };
       var KS3_SPECS = {
         // Commit-before-explore gates (a prediction; nothing judges it).
@@ -2370,7 +2452,75 @@ try {
               }
             });
           } },
+        // ⊕ 9 Nov 2026: separately judged items that shared one id.
+        'ks3-rd-block': { t: 'u', opt: '[data-rd-route]', tab: '[data-rd-case]', commit: '[data-rd-run]',
+          right: function (b, u, sec, tab) {
+            var cs = null;
+            try { cs = JSON.parse(attr(sec.querySelector('[data-rd]'), 'data-cases') || 'null'); } catch (e) { cs = null; }
+            var c = (cs || []).filter(function (x) { return tab && x.id === attr(tab, 'data-rd-case'); })[0];
+            return c ? { ok: attr(b, 'data-rd-route') === c.answer, good: sec.querySelector('[data-rd-route="' + c.answer + '"]') } : null;
+          } },
+        'ks3-rgrid-block': { t: 'u', opt: '[data-rgrid-opt]', tab: '[data-rgrid-cell]',
+          right: function (b, u, sec, tab) {
+            var o = attr(tab, 'data-rgrid-outcome');
+            if (o == null) { return null; }
+            var want = o === 'reacts' ? 'yes' : 'no';
+            return { ok: attr(b, 'data-rgrid-opt') === want, good: sec.querySelector('[data-rgrid-opt="' + want + '"]') };
+          } },
+        'ks3-tbench-block': { t: 'u', opt: '[data-predict] .ks3-option', dims: ['.ks3-tbench-tab[data-food]', '.ks3-tbench-tab[data-test]'],
+          right: function (b, u, sec) { return shownIn(sec, '[data-verdict="hit"]') ? { ok: true, good: b } : shownIn(sec, '[data-verdict="miss"]') ? { ok: false, good: null } : null; } },
+        'ks3-vp-block': { t: 'u', opt: '[data-vp-pred]', unit: '[data-vp-charpanel]', after: '[data-vp-plot]',
+          right: function (b, u) {
+            var el = u.querySelector('[data-vp-type]') || (u.hasAttribute('data-vp-type') ? u : null), want = attr(el, 'data-vp-type');
+            return want == null ? null : { ok: attr(b, 'data-vp-pred') === want, good: u.querySelector('[data-vp-pred="' + want + '"]') };
+          } },
+        'ks3-chain-block': { t: 'u', opt: '[data-chain-slot] .ks3-option', unit: '[data-chain-slot]',
+          right: function (b, u, sec) {
+            var ideal = attr(sec.querySelector('[data-chain]'), 'data-chain-ideal'), slot = attr(u, 'data-chain-slot'), m = new RegExp('(?:^|,)' + slot + ':(\\d+)').exec(ideal || '');
+            return m ? { ok: attr(b, 'data-i') === m[1], good: u.querySelector('.ks3-option[data-i="' + m[1] + '"]') } : null;
+          } },
+        'ks3-fault-block': { t: 'u', opt: '[data-fault] .ks3-option', tab: '.ks3-fault-tab', commit: '[data-fault-open]',
+          right: function (b, u, sec, tab) {
+            var rv = tab && sec.querySelector('.ks3-fault-reveal[data-factor="' + attr(tab, 'data-factor') + '"]');
+            var a = attr(rv, 'data-answer');
+            return a == null ? null : { ok: attr(b, 'data-part') === a, good: sec.querySelector('.ks3-option[data-part="' + a + '"]') };
+          } },
+        'ks3-sort': { t: 'u', opt: '.ks3-sort-chip, [data-selfcheck] .ks3-option', unit: '.ks3-sortrow, [data-selfcheck]',
+          right: function (b, u) {
+            var w = u.querySelector('.ks3-sort-answer');
+            var good = w ? byWord(txt(w), u.querySelectorAll('.ks3-sort-chip')) : null;
+            return good ? { ok: good === b, good: good } : null;
+          } },
+        // A cell of a grid opens its own outcome; the prediction pressed before it belongs to that cell.
+        'ks3-hgrid-block': gridCells('hgrid'),
+        'ks3-raudit-block': gridCells('raud'),
+        // The rig the child built, each time they ran it. Nothing judges a rig.
+        'ks3-rigb-block': { t: 'l', press: '[data-rigb-run]',
+          read: function (sec) {
+            var lines = [];
+            Array.prototype.forEach.call(sec.querySelectorAll('.ks3-rigb-dial'), function (d) {
+              var on = d.querySelector('[data-rigb-for][aria-pressed="true"]');
+              if (on) { lines.push(txt(d.querySelector('.ks3-rigb-diallabel')) + ': ' + optLabel(on)); }
+            });
+            return { n: 1, answer: lines.join('\n'), ok: null, again: true };
+          },
+          back: function (sec, n, r) {
+            String(r.answer == null ? '' : r.answer).split('\n').forEach(function (ln) {
+              var ix = ln.lastIndexOf(': '), name = ln.slice(0, ix), label = ln.slice(ix + 2);
+              Array.prototype.forEach.call(sec.querySelectorAll('.ks3-rigb-dial'), function (d) {
+                if (ix < 0 || !same(txt(d.querySelector('.ks3-rigb-diallabel')), name)) { return; }
+                Array.prototype.forEach.call(d.querySelectorAll('[data-rigb-for]'), function (o) {
+                  if (same(optLabel(o), label) && o.getAttribute('aria-pressed') !== 'true') { o.click(); }
+                });
+              });
+            });
+            var run = sec.querySelector('[data-rigb-run]');
+            if (run) { run.click(); }
+          } },
         // An order built step by step.
+        'ks3-grain-block': { t: 'o', step: '[data-grain-pick]', clear: '[data-grain-reset]', badge: '[data-grain-badge]',
+          done: function (sec) { return shownIn(sec, '[data-grain-verdict]'); },
+          right: function (sec) { return shownIn(sec, '[data-grain-verdict="right"]') ? true : shownIn(sec, '[data-grain-verdict="wrong"]') ? false : null; } },
         'ks3-morder-block': { t: 'o', step: '[data-morder-step]', clear: '[data-morder-clear]',
           done: function (sec) { return shownIn(sec, '[data-morder-answer]'); },
           right: function (sec) { return shownIn(sec, '[data-morder-verdict="right"]') ? true : shownIn(sec, '[data-morder-verdict="wrong"]') ? false : null; } }
@@ -2407,6 +2557,37 @@ try {
         return parts.filter(function (x, k) { return parts.indexOf(x) === k; }).join(' — ');
       };
       var specSent = {};                       // question_id → the answer last sent
+      // Two sets of tabs choose one unit between them (a food and a test).
+      var dimN = function (sec, sp) {
+        var n = 0, mult = 1;
+        sp.dims.slice().reverse().forEach(function (sel) {
+          var tabs = sec.querySelectorAll(sel), on = 0;
+          for (var i = 0; i < tabs.length; i += 1) { if (tabs[i].getAttribute('aria-pressed') === 'true') { on = i; } }
+          n += on * mult; mult *= tabs.length;
+        });
+        return n + 1;
+      };
+      /* ⊕ 9 Nov 2026 (F9): a commit-first bench saves its one commitment, and its
+         "3 of 3 states seen" came back "1 of 3". Which controls moved that count are
+         the child's own, not an answer: they are kept with the self-ticks on the
+         commitment's row, as the position of each control, and pressed again. */
+      var countSeen = {};
+      var countTrack = function (sp, sec, t, slug) {
+        if (!sp.count) { return; }
+        var b = t.closest('button'), cnt = sec.querySelector('[data-count]');
+        if (!b || !cnt || !sec.contains(b) || matches(b, sp.opt)) { return; }
+        var id = slug + '#' + (sec.getAttribute('data-activity') || 'block') + '-1';
+        var pos = Array.prototype.indexOf.call(sec.querySelectorAll('button'), b) + 1;
+        if (pos < 1 || pos > 20) { return; }
+        var was = txt(cnt);
+        var look = function () {
+          if (txt(cnt) === was || (countSeen[id] || []).indexOf(pos) >= 0) { return; }
+          countSeen[id] = (countSeen[id] || []).concat([pos]);
+          sendTicks(id, countSeen[id]);
+        };
+        later(look);
+        setTimeout(function () { try { look(); } catch (e) { /* never breaks a page */ } }, 1500);
+      };
       var specU = function (sp, t, sec, slug) {
         var act = sec.getAttribute('data-activity') || 'block';
         var btn = null, viaCommit = false;
@@ -2420,7 +2601,8 @@ try {
         if (!btn || btn.disabled) { return; }
         if (sp.commit && !viaCommit) { return; }          // the option alone is not the answer: its Check is
         var unitEl = null, n = 1, tab = null;
-        if (sp.tab) { var pt = pressedTab(sec, sp); tab = pt.el; n = pt.n || 1; }
+        if (sp.dims) { n = dimN(sec, sp); }
+        else if (sp.tab) { var pt = pressedTab(sec, sp); tab = pt.el; n = pt.n || 1; }
         else if (sp.unit) {
           unitEl = (viaCommit ? null : btn.closest(sp.unit));
           if (!unitEl || !sec.contains(unitEl)) { return; }
@@ -2543,7 +2725,7 @@ try {
         later(function () {
           if (!sp.done(sec)) { return; }
           var steps = Array.prototype.slice.call(sec.querySelectorAll(sp.step));
-          var badge = function (s) { var b = s.querySelector('[data-morder-badge]'); var n = parseInt(b ? txt(b) : '', 10); return isNaN(n) ? 99 : n; };
+          var badge = function (s) { var b = s.querySelector(sp.badge || '[data-morder-badge]'); var n = parseInt(b ? txt(b) : '', 10); return isNaN(n) ? 99 : n; };
           steps.sort(function (a, b) { return badge(a) - badge(b); });
           var ok = sp.right(sec);
           var d = { __block: sec, key_stage: 'KS3', lesson_slug: slug, question_id: slug + '#' + act + '-1', rung: null, kind: 'order',
@@ -2557,11 +2739,12 @@ try {
         var b = t.closest(sp.press);
         if (!b || !sec.contains(b) || b.disabled || b.getAttribute('aria-disabled') === 'true' || b.getAttribute('aria-pressed') === 'true') { return; }
         var act = sec.getAttribute('data-activity') || 'block', ask = askOf(sec, null, b);
+        var pre = sp.pre ? sp.pre(sec, b) : null;
         later(function () {
-          var v = sp.read(sec, b);
+          var v = sp.read(sec, b, pre);
           if (!v) { return; }
           var id = slug + '#' + act + '-' + v.n;
-          if (specSent[id] === v.answer) { return; }
+          if (specSent[id] === v.answer && !v.again) { return; }
           specSent[id] = v.answer;
           var d = { __block: sec, key_stage: 'KS3', lesson_slug: slug, question_id: id, rung: null, kind: 'choice',
                     question_text: ask + (v.ask ? ' — ' + v.ask : ''), answer: v.answer, correct_answer: null,
@@ -2586,7 +2769,7 @@ try {
           var bsec = t.closest('[data-instrument]');
           if (bsec && !bsec.hasAttribute('data-keyedblock')) {
             var sp0 = specOf(bsec);
-            if (sp0) { specCapture(sp0, t, bsec, slug); return; }
+            if (sp0) { countTrack(sp0, bsec, t, slug); specCapture(sp0, t, bsec, slug); return; }
             if (kindOf(bsec, KIND_B5C)) {
               var b5 = t.closest('[data-b5c-check]');
               if (b5 && !b5.disabled) { answerB5C(b5, bsec, slug); }
@@ -2731,6 +2914,7 @@ try {
       /* Saved work for the <ks3-specs> kinds: the same controls pressed
          again, in the unit (or on the tab) the id numbers, then the Check. */
       var specPend = [];
+      var slug0 = function (sec) { return ks3Slug() + '#' + (sec.getAttribute('data-activity') || 'block'); };
       var specBack = function (sp, sec, n, r) {
         var click = function (b) { if (b && !b.disabled) { b.click(); } };
         var press = function (list, label) {
@@ -2741,6 +2925,16 @@ try {
         };
         if (sp.t === 'l') { sp.back(sec, n, r); return; }
         var lines = String(r.answer == null ? '' : r.answer).split('\n');
+        if (sp.dims) {
+          var left = n - 1, sizes = sp.dims.map(function (sel) { return sec.querySelectorAll(sel).length; });
+          sp.dims.forEach(function (sel, di) {
+            var below = 1;
+            for (var dj = di + 1; dj < sizes.length; dj += 1) { below *= sizes[dj]; }
+            var want = Math.floor(left / below); left -= want * below;
+            var tb = sec.querySelectorAll(sel)[want];
+            if (tb && tb.getAttribute('aria-pressed') !== 'true') { click(tb); }
+          });
+        }
         if (sp.tab) {
           var tabs = sec.querySelectorAll(sp.tab);
           if (tabs[n - 1] && tabs[n - 1].getAttribute('aria-pressed') !== 'true') { click(tabs[n - 1]); }
@@ -2751,6 +2945,14 @@ try {
           if (sp.first) { click(sec.querySelector(sp.first)); }
           var hit = press(allIn(scope, sp.opt), r.answer);
           if (hit && sp.commit) { click(sec.querySelector(sp.commit)); }
+          if (hit && sp.after) { var af = scope.querySelector(sp.after); if (af) { click(af); } }
+          if (hit && sp.count && Array.isArray(r.self_ticks)) {
+            var bs0 = sec.querySelectorAll('button'), kept = [];
+            r.self_ticks.forEach(function (pos) {
+              if (bs0[pos - 1]) { click(bs0[pos - 1]); kept.push(pos); }
+            });
+            countSeen[slug0(sec) + '-1'] = kept;
+          }
           return;
         }
         if (sp.t === 'c') {
@@ -3497,11 +3699,20 @@ try {
        on that answer's own row, holding the ONE level picked, counted from 1
        in the order the page lists the levels (top level first). It never
        touches the mark. Before this, the pick lived only on the page. */
+    var levelSent = {};
     function levelTicks(api) {
-      var st = api.logic.state || {};
-      if (!st.open || typeof st.level !== 'number') { return; }
+      var st = api.logic.state || {}, lvs = (api.logic.props || {}).levels || [];
+      if (!st.open) { return; }
       var qid = writeQid(api);
-      if (qid) { sendTicks(qid, [st.level + 1]); }
+      if (!qid) { return; }
+      /* ⊕ 9 Nov 2026 (F4): the "Indicative content" ticks beside the levels, in the
+         same `self_ticks`, counted on past the levels so the two can never be read
+         for each other: [2, 6] on four levels is "the second level, and point 2". */
+      var list = typeof st.level === 'number' ? [st.level + 1] : [];
+      boolList(st.ticks).forEach(function (n) { list.push(n + lvs.length); });
+      if (!list.length && !levelSent[qid]) { return; }
+      levelSent[qid] = 1;
+      sendTicks(qid, list);
     }
     function tickTap(api) {
       var st = api.logic.state || {}, p = api.logic.props || {};
@@ -4110,7 +4321,15 @@ try {
             fire: function (s, w, x) {
               if (!rose(s, w, 'dxChecked')) { return null; }
               var v = x.vals(), tab = (v.dxTabs || [])[s.dx];
-              return [{ e: s.dx + 1, a: s.dxVal[s.dx], ok: /^That matches/.test(String(v.dxWord || '')), kind: 'numeric',
+              // The formula the lesson accepts, in the lesson's own table (its `DX`).
+              var acc = null;
+              Array.prototype.forEach.call(document.scripts, function (sc) {
+                if (acc !== null || String(sc.textContent).indexOf('const DX = [') < 0) { return; }
+                var found = String(sc.textContent).slice(sc.textContent.indexOf('const DX = [')).split('];')[0].match(/accept: \['([^']*)'/g) || [];
+                var one = found[s.dx];
+                acc = one ? one.replace(/^accept: \['|'$/g, '') : '';
+              });
+              return [{ e: s.dx + 1, a: s.dxVal[s.dx], ok: /^That matches/.test(String(v.dxWord || '')), kind: 'numeric', good: acc || null,
                         q: 'Write the formula' + (tab ? ' — ' + String(tab.label).replace(/ · done$/, '') : '') }];
             },
             back: function (r, e, st, x) {
@@ -4374,7 +4593,16 @@ try {
             fire: function (s, w, x) {
               if (!s.pick || w.pick) { return null; }
               var on = (x.vals().rowBtns || []).filter(function (b) { return b.pressed; }).map(function (b) { return b.label; });
-              return [{ e: null, a: on.join('\n'), ok: s.pick.ok === true, q: 'Choose the concordant titres' }];
+              // The lesson's own judge, asked which selection it would accept.
+              var good = null, rows = s.rows || [], bs = x.vals().rowBtns || [];
+              if (typeof x.L.judge === 'function' && rows.length && rows.length <= 12) {
+                for (var m = 1; m < (1 << rows.length) && good === null; m += 1) {
+                  var sel = {};
+                  rows.forEach(function (y, i) { if (m & (1 << i)) { sel[i] = true; } });
+                  try { if (x.L.judge(rows, sel).ok) { good = bs.filter(function (b, i) { return sel[i]; }).map(function (b) { return b.label; }).join('\n'); } } catch (e) { good = null; }
+                }
+              }
+              return [{ e: null, a: on.join('\n'), ok: s.pick.ok === true, q: 'Choose the concordant titres', good: good }];
             },
             back: function (r, e, st, x) {
               x.set({ sel: {}, pick: null });
@@ -4901,6 +5129,7 @@ try {
           var d = base(f.id + (r.e == null ? '' : '-' + String(r.e).toLowerCase().replace(/[^a-z0-9._-]+/g, '-')));
           d.__block = api.host; d.kind = r.kind || 'choice'; d.question_text = r.q || ''; d.answer = String(r.a);
           if (typeof r.ok === 'boolean') { d.is_correct = r.ok; } else { d.self_checked = true; }
+          if (r.good != null) { d.correct_answer = String(r.good); }
           post(d);
         });
       });
@@ -5127,9 +5356,12 @@ try {
       // the tally is then the top of that level, as it was on the page.
       var lvs = (w.logic.props || {}).levels || [];
       if (lvs.length) {
-        var lv = Array.isArray(r.self_ticks) && r.self_ticks.length ? r.self_ticks[0] - 1 : null;
-        if (!(lv >= 0 && lv < lvs.length)) { lv = null; }
-        w.logic.setState({ text: String(r.answer || ''), open: true, level: lv, reported: true });
+        var own = Array.isArray(r.self_ticks) ? r.self_ticks : [], lv = null, tkl = [];
+        own.forEach(function (h) {
+          if (h >= 1 && h <= lvs.length) { lv = h - 1; }
+          else if (h > lvs.length && h - lvs.length <= ((w.logic.props || {}).points || []).length) { tkl[h - lvs.length - 1] = true; }
+        });
+        w.logic.setState({ text: String(r.answer || ''), open: true, level: lv, ticks: tkl, reported: true });
         var awl = lv !== null ? Math.min(marks, (lvs[lv] && lvs[lv].max) || 0) : (r.marks_scored == null ? 0 : r.marks_scored);
         var wpl = w.logic.props || {};
         if (notify && lv !== null && typeof wpl.onMark === 'function') { wpl.onMark({ awarded: awl, marks: marks, set: true }); }
