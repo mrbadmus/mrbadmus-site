@@ -724,6 +724,11 @@ CASES = [
                          and "oncordant" in ([x for x in b if x["question_id"].endswith("#concord")][0]["correct_answer"] or ""),
          back="(function(){ var s = H.rootState(); return !!s.pick && s.pick.ok === false; })()"),
     # ── ⊕ 9 Nov 2026: a third blind run ──
+    dict(name="ks4-typed-rate", page="/triple/higher/biology/ecology/decomposition.html",
+         act="""var L = document.getElementById('ks4-mount').__mrbKs4.logic; L.setState({ own: { 40: 120 } }); await H.sleep(150); L.setState({ rate: '1' }); await H.sleep(100); await H.call('onRateCheck'); await H.sleep(250);""",
+         want=["ks4:decomposition:th#rate"],
+         check=lambda b: [x for x in b if x["question_id"].endswith("#rate")][0]["correct_answer"] == "0.0083",
+         back="true"),
     dict(name="ks3-commit-run", page="/ks3/chemistry/chemical-reactions/mass-in-a-reaction.html",
          act="""var s = document.querySelector('.ks3-bbench-block'), o = s.querySelectorAll('[data-bbench-predict] .ks3-option'); H.click(o[0]); await H.sleep(120); H.click(o[1]); await H.sleep(120); H.click(s.querySelector('[data-bbench-run]')); await H.sleep(500);""",
          want=["mass-in-a-reaction#*-1"],

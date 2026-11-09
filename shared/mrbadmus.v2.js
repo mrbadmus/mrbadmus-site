@@ -4681,7 +4681,7 @@ try {
         return { id: o.id || o.key, covers: o.covers,
           fire: function (s, w, x) {
             if (!rose(s, w, o.flag)) { return null; }
-            return [{ e: null, a: s[o.key], ok: o.yes.test(String(x.vals()[o.word] || '')), q: o.q, kind: 'numeric' }];
+            return [{ e: null, a: s[o.key], ok: o.yes.test(String(x.vals()[o.word] || '')), good: o.good ? function () { return o.good(s, x); } : null, q: o.q, kind: 'numeric' }];
           },
           back: function (r, e, st, x) {
             if (o.before) { o.before(x); }
@@ -4720,7 +4720,9 @@ try {
         'decomposition': [
           readings({ q: function (k) { return 'Your time for the pink to go at ' + k + ' °C'; },
             put: function (e, n, st) { var p = { own: put(st.own, e, n), run: put(st.run, e, true) }; if (String(st.temp) === String(e)) { p.simT = n === null ? 600 : n; } return p; } }),
-          typed({ key: 'rate', flag: 'rateChecked', word: 'rateWord', yes: /^Correct/, q: 'Work out the rate at 40 °C, in s⁻¹', covers: ['onRate'] })
+          typed({ key: 'rate', flag: 'rateChecked', word: 'rateWord', yes: /^Correct/, q: 'Work out the rate at 40 °C, in s⁻¹', covers: ['onRate'],
+            // From the child's own reading, as the lesson works it, and only if the lesson then agrees.
+            good: function (s, x) { var n = (s.own || {})[40]; if (typeof n !== 'number') { return null; } var v = (1 / n).toFixed(4); return x.vals({ rate: v, rateChecked: true }).rateWord === 'Correct.' ? v : null; } })
         ],
         'enzymes': [
           readings({ q: function (k) { return 'Your time for the starch to go at pH ' + k; },
@@ -4742,7 +4744,8 @@ try {
               x.afterDraw(function () { var el = document.getElementById('enz-anom'); if (el) { el.value = o[i].value; } });
               return { anom: o[i].value };
             } },
-          typed({ key: 'mean', flag: 'meanChecked', word: 'meanWord', yes: /^Correct/, q: 'Work out the mean time at pH 6', covers: ['onMean'] })
+          typed({ key: 'mean', flag: 'meanChecked', word: 'meanWord', yes: /^Correct/, q: 'Work out the mean time at pH 6', covers: ['onMean'],
+            good: function (s, x) { var n = (s.own || {})[6]; if (typeof n !== 'number') { return null; } var v = String((n + 90) / 2), t = x.vals({ mean: v, meanChecked: true }); return t.meanWord === 'Correct.' ? String(t.meanText || '').split(' s.')[0] + ' s' : null; } })
         ],
         'states-of-matter': (function () {
           var lab = function (x) { if (!x.vals().labDone) { x.fast('onRun'); } };
@@ -4760,7 +4763,8 @@ try {
                 x.afterDraw(function () { var el = document.getElementById('anom'); if (el) { el.value = o[i].value; } });
                 return { anom: o[i].value };
               } },
-            typed({ key: 'mp', flag: 'mpChecked', word: 'mpWord', yes: /^That agrees/, q: 'What is the melting point, in °C?', covers: ['onMp'], before: lab })
+            typed({ key: 'mp', flag: 'mpChecked', word: 'mpWord', yes: /^That agrees/, q: 'What is the melting point, in °C?', covers: ['onMp'], before: lab,
+              good: function (s, x) { for (var c = 0; c <= 400; c += 1) { var t = x.vals({ mp: String(c), mpChecked: true }); if (/^That agrees/.test(String(t.mpWord || ''))) { var m = /about (\d+)/.exec(String(t.mpText || '')); return m ? m[1] + ' °C' : null; } } return null; } })
           ];
         })(),
         'conservation-of-mass': [

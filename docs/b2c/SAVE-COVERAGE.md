@@ -319,8 +319,8 @@ until the lesson data carries a key.
   state and reading the lesson's verdict. Typed numbers get the lesson's own worked line (`ltext`, `ctext`,
   `pan`). KS3 specs carry `key`, from the page's own markup. `--commits` fails on a judged row or spec with
   none; `--units` and `--units-ks4` list what actually posts.
-  **Named, cannot name a right answer:** `rate`, `mean` and `mp` compute from the child's own readings, so
-  they are not judged and send no answer. Nothing else sends wrong without one.
+  `rate` and `mean` work the answer from the child's own reading, and send it only once the lesson agrees
+  with it. If there is no reading yet, they send no answer. Nothing else sends wrong without one.
 - **No self-checked without a check.** `your-four-steps`, `own-rule` and `seven-parts-two-cells` store a
   written answer with nothing to mark it against, so they read as not marked.
 - **Drafts cover every field.** Every text box, number, slider and dropdown in a KS3 activity, the picks
