@@ -60,7 +60,9 @@ PRACTICE = "student/assignment-fixture.html"
 # Press the first answerable option; the state the blind run failed in.
 PRESS = ("(function(){var o=document.querySelector('.ks3-option:not([disabled])');if(o){o.scrollIntoView();o.click();}"
          "return !!o;})()")
-PRACTICE_REVIEW = None
+# KS4's practice blocks: every lettered option, so the spent letters beside a chosen one are measured.
+PRESS_ALL = ("(function(){var n=0;[].slice.call(document.querySelectorAll('button')).forEach(function(b){"
+             "var t=(b.innerText||'').trim();if(/^[ABCD]\\n/.test(t)&&!b.disabled&&b.offsetParent){b.click();n++;}});return n;})()")
 
 
 def measure(p, label, width):
@@ -148,6 +150,10 @@ def main():
                         if p.eval(PRESS):
                             p.eval("new Promise(function(r){setTimeout(r,500);})", timeout=10)
                             measure(p, label + ", an option chosen", width)
+                        pressed = p.eval(PRESS_ALL)
+                        p.eval("new Promise(function(r){setTimeout(r,700);})", timeout=10)
+                        check(path == KS3 or pressed > 0, "%s @%d: lettered options reached" % (label, width), pressed)
+                        measure(p, label + ", every lettered option pressed", width)
                     if path == PRACTICE:
                         # The review a child reads: each confirmed answer, right and wrong.
                         for n in range(3):
