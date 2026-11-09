@@ -56,6 +56,7 @@ class Ledger:
 
 
 LEDGER = Ledger()
+KS3_CFA_PAGE = "/ks3/physics/pressure/pressure-force-over-area.html"
 THROTTLE = {"ticks": 0}                 # refuse this many self-tick posts with a 429
 
 
@@ -779,6 +780,46 @@ CASES = [
 PUPIL = ["ks4-flag-pick", "ks4-level-pick", "ks4-form-round", "ks4-list-features", "ks3-gate", "ks3-parts-check", "ks3-typed"]
 
 
+# Typed and not sent: back on the same device, nowhere else, and gone once sent.
+DRAFTS = [
+    dict(name="write", page="/triple/higher/biology/inheritance/advantages-sexual-asexual.html",
+         type="""var w = H.write(), ta = w.host.querySelector('textarea'); ta.value = 'A half written answer about variation.'; ta.dispatchEvent(new Event('input', {bubbles: true}));""",
+         back="H.write().logic.state.text === 'A half written answer about variation.' && H.write().host.querySelector('textarea').value === 'A half written answer about variation.'",
+         blank="H.write().logic.state.text === ''"),
+    dict(name="five lines, KS4", page="/combined/higher/biology/cell-biology/eukaryotes-prokaryotes.html",
+         type="""var cf = H.block('Ks4Cfifa'), ins = cf.host.querySelectorAll('input'); ins[0].value = 'none yet'; ins[0].dispatchEvent(new Event('input', {bubbles: true})); await H.sleep(100); ins[1].value = 'Actual size'; ins[1].dispatchEvent(new Event('input', {bubbles: true}));""",
+         back="(function(){ var ins = H.block('Ks4Cfifa').host.querySelectorAll('input'); return ins[0].value === 'none yet' && ins[1].value === 'Actual size'; })()",
+         blank="H.block('Ks4Cfifa').host.querySelectorAll('input')[0].value === ''"),
+    dict(name="five lines, KS3", page=KS3_CFA_PAGE,
+         type="""var i = document.querySelectorAll('[data-instrument] input'), ins = Array.prototype.filter.call(i, function (x) { return Array.prototype.some.call(x.attributes, function (a) { return /^data-p\\d+cfa-input$/.test(a.name); }); }); window.__n = ins.length; ins[0].value = 'keep this line'; ins[0].dispatchEvent(new Event('input', {bubbles: true}));""",
+         back="Array.prototype.some.call(document.querySelectorAll('[data-instrument] input'), function (x) { return x.value === 'keep this line'; })",
+         blank="!Array.prototype.some.call(document.querySelectorAll('[data-instrument] input'), function (x) { return x.value === 'keep this line'; })"),
+]
+
+
+def run_drafts(sport, aport, width, ok):
+    base = "http://127.0.0.1:%d" % sport
+    for d in DRAFTS:
+        print("\n── draft: %s" % d["name"])
+        LEDGER.reset()
+        with KB.Browser() as br:
+            pg = open_page(br, sport, aport, d["page"], session(True), width)
+            wait_saved(pg)
+            run_act(pg, d["type"])
+            time.sleep(0.9)
+            pg.goto("%s%s?api=http://127.0.0.1:%d" % (base, d["page"], aport), settle=1.0)
+            pg.eval(HELPERS)
+            wait_saved(pg)
+            time.sleep(0.5)
+            ok(pg.eval("!!(%s)" % d["back"]) is True, "a draft comes back on the same device")
+            ok(not LEDGER.bodies, "a draft posts nothing", LEDGER.bodies)
+        with KB.Browser() as br:
+            pg = open_page(br, sport, aport, d["page"], session(True), width)
+            wait_saved(pg)
+            time.sleep(0.4)
+            ok(pg.eval("!!(%s)" % d["blank"]) is True, "a draft never reaches another device")
+
+
 def session(child):
     email = ("11111111-2222-4333-8444-555555555555@children.mrbadmus.internal" if child else "pupil@rainford.example")
     return {"access_token": "fake-token", "refresh_token": "fake-refresh", "token_type": "bearer",
@@ -1231,6 +1272,9 @@ def main():
                 one_case(c)
             except KB.CDPError as e2:
                 ok(False, "%s: Chrome stopped answering twice" % c["name"], e2)
+
+    if not a.pupil_only and (not a.only or re.search(a.only, "draft")):
+        run_drafts(sport, aport, a.width, ok)
 
     if not a.no_pupil:
         for c in [c for c in cases if c["name"] in PUPIL]:

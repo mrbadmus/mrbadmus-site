@@ -1692,6 +1692,18 @@ try {
        marked first): tried again, waiting longer each time, for ~2 minutes. While `mute` is held (a restore) nothing
        is sent, and the restored ticks are remembered as already saved. */
     var tickTimers = {}, tickLast = {}, tickWant = {};
+    /* ⊕ 9 Nov 2026: unsubmitted typing, kept on this device only, per child and
+       question, cleared when the answer is sent. It never reaches the server and
+       never comes back on another device. A family child's session only: this whole
+       capture installs for nobody else. */
+    var draftChild = (session.user && session.user.id) || 'child', draftTimers = {};
+    function draftKey(q) { return 'mrb_draft_v1:' + draftChild + ':' + q; }
+    function draftPut(q, v) {
+      clearTimeout(draftTimers[q]);
+      draftTimers[q] = setTimeout(function () { try { window.localStorage.setItem(draftKey(q), JSON.stringify(v)); } catch (e) { /* storage refused */ } }, 300);
+    }
+    function draftGet(q) { try { return JSON.parse(window.localStorage.getItem(draftKey(q)) || 'null'); } catch (e) { return null; } }
+    function draftDrop(q) { clearTimeout(draftTimers[q]); try { window.localStorage.removeItem(draftKey(q)); } catch (e) { /* storage refused */ } }
     // A saved row's own ticks: the server's 100 + level is not one of them.
     function ownTicks(r) { return r && Array.isArray(r.self_ticks) ? r.self_ticks.filter(function (n) { return n < 100; }) : null; }
     function tickKeep(qid, list, level) {
@@ -1752,6 +1764,7 @@ try {
       }, tries ? 0 : 700);
     }
     window.MrBadmusAnswerCapture.ticks = sendTicks;
+    window.MrBadmusAnswerCapture.afterReplay = [];
 
     // The server accepts ids matching ^[a-z0-9:#._-]{1,200}$ and marks 1–20
     // with 0 ≤ marks_scored ≤ marks; anything else is sent as null rather
@@ -2853,6 +2866,7 @@ try {
           if (!rev || !rev.hasAttribute('hidden')) { return; }   // already open: not a new submission
           later(function () {
             if (rev.hasAttribute('hidden')) { return; }          // the page refused (nothing to check yet)
+            draftDrop(cfaId(q, pre, csec));
             var labelFor = function (inp) {
               var l = inp.id ? q.querySelector('label[for="' + inp.id + '"]') : null;
               return l ? txt(l) : '';
@@ -2885,6 +2899,41 @@ try {
           });
         } catch (err) { /* capture never breaks a lesson */ }
       }, true);
+
+      /* ⊕ 9 Nov 2026: "Your turn" lines typed and not yet checked (draftPut). */
+      var cfaInput = function (el) {
+        var a = el.attributes || [];
+        for (var i = 0; i < a.length; i += 1) { var m = /^(data-p\d+cfa)-input$/.exec(a[i].name); if (m) { return m[1]; } }
+        return null;
+      };
+      var cfaId = function (q, pre, csec) {
+        var n = parseInt(q.getAttribute(pre + '-q'), 10);
+        return ks3Slug() + '#' + (csec.getAttribute('data-activity') || 'your-turn') + '-' + ((isNaN(n) ? 0 : n) + 1);
+      };
+      document.addEventListener('input', function (e) {
+        var t = e.target, pre = t && t.getAttribute ? cfaInput(t) : null;
+        if (!pre) { return; }
+        var q = t.closest('[' + pre + '-q]'), csec = t.closest('[data-activity]');
+        if (!q || !csec) { return; }
+        var vals = Array.prototype.map.call(q.querySelectorAll('[' + pre + '-input]'), function (i) { return i.value || ''; });
+        if (vals.some(function (v) { return v.trim(); })) { draftPut(cfaId(q, pre, csec), vals); } else { draftDrop(cfaId(q, pre, csec)); }
+      }, true);
+      window.MrBadmusAnswerCapture.afterReplay.push(function () {
+        var seen = [];
+        Array.prototype.forEach.call(document.querySelectorAll('input, textarea, select'), function (el) {
+          var pre = cfaInput(el), q = pre && el.closest('[' + pre + '-q]'), csec = q && el.closest('[data-activity]');
+          if (!csec || seen.indexOf(q) >= 0) { return; }
+          seen.push(q);
+          var rev = q.querySelector('[' + pre + '-reveal]'), id = cfaId(q, pre, csec);
+          if (rev && !rev.hasAttribute('hidden')) { draftDrop(id); return; }
+          var vals = draftGet(id), ins = q.querySelectorAll('[' + pre + '-input]');
+          if (!Array.isArray(vals) || Array.prototype.some.call(ins, function (i) { return (i.value || '').trim(); })) { return; }
+          Array.prototype.forEach.call(ins, function (i, k) {
+            i.value = vals[k] == null ? '' : vals[k];
+            try { i.dispatchEvent(new Event('input', { bubbles: true })); } catch (e) { /* old browser */ }
+          });
+        });
+      });
 
       /* ── Saved work follow-up: "Your turn" ticks ("I had this") ──
          Read a tick after the page has flipped it; the whole set of ticked
@@ -5295,8 +5344,48 @@ try {
       } catch (err) { /* capture never breaks a lesson */ }
     }, true);
 
+    /* ⊕ 9 Nov 2026: a written answer and a five-line calculation typed and not yet
+       opened (draftPut). A Ks4Write anywhere; a calculation at the lesson's own level. */
+    function draftsOf(api) {
+      var st = api.logic.state || {}, out = [];
+      if (api.comp === 'Ks4Write') {
+        var q = writeQid(api);
+        if (q) { out.push({ id: q, done: !!st.open, val: st.text, empty: !String(st.text || '').trim(), put: function (v) { api.logic.setState({ text: String(v) }); } }); }
+      } else if (api.comp === 'Ks4Cfifa' && rootLevel(api)) {
+        var k = nth(api);
+        ((api.logic.props || {}).questions || []).forEach(function (o, i) {
+          var cur = (st.q || {})[i] || { lines: [], ticks: [], open: false };
+          out.push({ id: pilotId(pathSlug, 'cfifa-' + k + '-' + (i + 1)), done: !!cur.open, val: cur.lines, empty: !(cur.lines || []).some(function (l) { return String(l || '').trim(); }),
+            put: function (v) { var nq = Object.assign({}, api.logic.state.q || {}); nq[i] = Object.assign({ ticks: [], open: false }, nq[i] || {}, { lines: v }); api.logic.setState({ q: nq }); } });
+        });
+      } else if (api.comp === 'Ks4Steps' && rootLevel(api) && (api.logic.props || {}).mode === 'attempt') {
+        var vs = st.vals || {};
+        out.push({ id: pilotId(pathSlug, 'steps-' + nth(api)), done: !!st.checked, val: vs, empty: !Object.keys(vs).some(function (x) { return String(vs[x] || '').trim(); }), put: function (v) { api.logic.setState({ vals: v }); } });
+      }
+      return out;
+    }
+    function draftTap(api) {
+      draftsOf(api).forEach(function (d) {
+        if (d.done || d.empty) { draftDrop(d.id); } else { draftPut(d.id, d.val); }
+      });
+    }
+    window.MrBadmusAnswerCapture.afterReplay.push(function () {
+      var seen = [];
+      Array.prototype.forEach.call(document.querySelectorAll('[data-dc-tpl]'), function (el) {
+        var api = el.__mrbKs4;
+        if (!api || !api.logic || api.comp === undefined || seen.indexOf(api) >= 0) { return; }
+        seen.push(api);
+        draftsOf(api).forEach(function (d) {
+          if (d.done) { draftDrop(d.id); return; }
+          var v = d.empty ? draftGet(d.id) : null;
+          if (v) { d.put(v); }
+        });
+      });
+    });
+
     window.MrBadmusKS4Tap = function (api) {
       if (!api || !api.logic || !prevOf) { return; }
+      if (api.comp !== undefined) { try { draftTap(api); } catch (e) { /* never breaks a lesson */ } }
       // ⊕ Saved work follow-up: the lesson's own one-off activities (the
       // page's root instance) and the child's own ticks.
       if (api.comp === undefined) {
@@ -5875,6 +5964,8 @@ try {
         if (data && data.answers.length && cap && cap.replay) {
           cap.replay.forEach(function (fn) { try { fn(data.answers); } catch (e) {} });
         }
+        // Last, and even when the read failed: only what the saved rows did not fill.
+        if (cap && cap.afterReplay) { cap.afterReplay.forEach(function (fn) { try { fn(); } catch (e) {} }); }
         if (data && data.tutor.length && window.MrBadmus && typeof window.MrBadmus.restoreTalk === 'function') {
           window.MrBadmus.restoreTalk(data.tutor);
         }
