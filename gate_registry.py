@@ -485,6 +485,15 @@ GATES = [
              "palette: parity drives the PREVIEW pair and behaviour compares "
              "text, so a colour change ships unwatched without this."),
 
+    dict(name="outbox_retry_check",
+         cmd=["python3", "outbox_retry_check.py"],
+         speed="fast",
+         watches=["outbox_retry_check.py", "outbox_retry_check.js", "shared/account.js"],
+         why="⊕ 9 Nov 2026, blind-test fix F5 — a family child's answer that "
+             "meets a 429 is re-sent without a reload, after the wait the server "
+             "gave, with its own client_event_id: never doubled, never lost. A "
+             "school pupil never starts the timer."),
+
     # ── ⊕ Front door (12 Oct 2026) · the one map of who goes where ────
 
     dict(name="account_map_check",
