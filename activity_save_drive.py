@@ -671,6 +671,14 @@ CASES = [
          want=["life-processes#living-once-never-*"],
          check=lambda b: len(set(x["question_id"] for x in b)) == 2 and all(isinstance(x["is_correct"], bool) for x in b),
          back="""(function(){ var r = document.querySelectorAll('.ks3-sort .ks3-sortrow'); return H.pressed(r[0].querySelector('.ks3-sort-chip')) && H.pressed(r[1].querySelectorAll('.ks3-sort-chip')[1]); })()"""),
+    # ── ⊕ 9 Nov 2026: a second blind run ──
+    dict(name="ks4-all-right", page="/combined/higher/chemistry/quantitative/conservation-of-mass.html",
+         act="""await H.set({ w1: 0, w2: 2 }); var R = [0, 3, 3, 1, 2];
+                for (var i = 0; i < 5; i += 1) { var o = H.v().w3Rows[i].options[R[i]]; H.click(document.querySelector('#ks4-mount button[aria-label="' + o.aria + '"]')); await H.sleep(200); }
+                await H.call('onW3Check'); await H.sleep(200);""",
+         want=["ks4:conservation-of-mass:ch#w3-%d" % n for n in range(1, 6)],
+         check=lambda b: all(x["is_correct"] is True for x in b if "#w3-" in x["question_id"]),
+         back="""(function(){ var s = H.rootState(); return s.w3Checked === true && Object.keys(s.w3).length === 5 && /^All five right/.test(H.v().w3Word); })()"""),
     # ── KS3: the rest of the instruments ──
     dict(name="ks3-gate", page="/ks3/physics/energy-transfers/energy-transfers-before-and-after.html",
          act="var s = document.querySelector('.ks3-btally-block'); H.click(s.querySelector('[data-btally-gopt]')); await H.sleep(300);",

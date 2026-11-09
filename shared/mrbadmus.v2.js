@@ -4094,6 +4094,8 @@ try {
           for (var k in t) { if (!base[k]) { added.push(k); } }
           var m = null;
           for (var k2 in t) { var mm = TALLY.exec(k2); if (mm) { m = Math.max(m === null ? -1 : m, Number(mm[1])); } }
+          // The last right answer of a tally often stops counting and says "All five right".
+          if (m === null) { for (var k3 in t) { if (/^all\b.{0,30}\b(right|correct)\b/i.test(k3)) { m = Infinity; } } }
           return { added: added, yes: added.some(function (x) { return YES.test(x); }), tally: m, alerts: alerts(v) };
         });
         var real = per.filter(Boolean);
@@ -5220,7 +5222,17 @@ try {
     function rootAnswer(R, g, pre, me, ask, hit) {
       var A = KS4RootActs, L = R.api.logic;
       var r = A.analyse(L, g, pre, R.init, me.oi);
-      if (r.kind !== 'pick' && r.kind !== 'gate' && r.kind !== 'multi') { return; }
+      /* ⊕ 9 Nov 2026: a blind run lost the fifth of five answers. Analysed with four
+         already right, the fifth's words stopped looking like a tally, so it read as an
+         exploration and was never sent. A group that takes answers from a clean start
+         keeps taking them: never drop an answer on how the words happen to read now. */
+      if (r.kind !== 'pick' && r.kind !== 'gate' && r.kind !== 'multi') {
+        var r0 = A.analyse(L, g, R.init, R.init, me.oi);
+        if (r0.kind !== 'pick' && r0.kind !== 'gate' && r0.kind !== 'multi') { return; }
+        r = A.classify(L, g, pre, R.init, me.oi);
+        if (r.kind !== 'pick' && r.kind !== 'gate' && r.kind !== 'multi') { return; }
+        if (r0.graded && r0.right && r.kind === r0.kind) { r.right = r0.right; r.graded = true; }
+      }
       var o = null;
       r.options.forEach(function (x) { if (x.k === me.k) { o = x; } });
       if (!o || !o.ws || !o.ws.length) { return; }          // this press changes nothing: not a new answer
