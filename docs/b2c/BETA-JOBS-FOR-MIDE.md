@@ -120,6 +120,8 @@ update public.quiz_scores set score = 2, percentage = 50
 
 **New tonight:** a balanced whole-number multiple on the KS3 equation balancer (e.g. 2H₂ + 2… all doubled) is saved as self-checked rather than wrong, because the page says balanced but gives no tick. Whether AQA credits a multiple is your call.
 
+**Also new tonight, alveoli "put the links in order":** on Heart and Blood Vessels (rung 3, question 2), a child who put the same three correct points in a different order got 0/3. The question is "Explain how the alveoli are adapted for gas exchange. Put the links in order." The three links are independent adaptations: "There are millions of alveoli, giving a very large surface area", "Their walls are thin, so the diffusion distance is short" and "A dense capillary network carries oxygen away, keeping the concentration gradient steep". Should order count here? AQA wouldn't usually require one, but it's your call. Other ladders may have the same shape; I haven't checked them all.
+
 ---
 
 ## Also yours, smaller
