@@ -299,17 +299,13 @@ until the lesson data carries a key.
 
 - **The tables are static:** they say the capture code names a control, not that it was pressed.
 - **Lesson cases, driven:** `activity_save_drive.py`: a press on device A, the row through the
-  backend's own `validateAnswerBody`, a fresh device B, and nothing posted while restoring.
-  **1280px: 487 of 487, and pupil comparisons 22 of 22.** **390px: 488 of 489, and pupil comparisons
-  22 of 22.** The red at 390px was the case's own selector (a label of "1" matched another button);
-  corrected, that case re-ran 6 of 6 at both widths. These were separate runs on the same page code:
-  Chrome stopped answering often enough on this machine to end a full run before its pupil section, so
-  the drive now retries a hung Chrome once, and it did so several times per run. The validator step
-  ran on the 1280px bodies only. Pupil pages compared: 7. The pupil comparison on `changes-in-energy`
-  has gone red before on the render counter alone, because the animation's frame count depends on
-  timing; the old code differs from itself the same way (32, 33, 32).
-  Only the Triple Higher route of each KS4 lesson is driven. Most cases call the lesson's own handler,
-  and several set a bench's earlier results straight into its state.
+  backend's own `validateAnswerBody`, a fresh device B, and nothing posted while restoring, with drafts
+  and a school pupil's page compared with the previous code's on 7 page types. **1280px: 546 of 546 in
+  one run.** At 390px the lesson cases and first drafts were green and a hung Chrome then ended the run,
+  so the drafts and pupil pages were re-run alone and passed; the validator step ran at 1280px. Chrome
+  stops answering often enough on this machine that the drive retries it once, several times per run.
+  Only the Triple Higher route of each KS4 lesson is driven (a few Combined Higher). Most cases call the
+  lesson's own handler, and several set a bench's earlier results straight into its state.
 - **KS3 kinds, driven:** `--sweep` opens one page per kind in `<ks3-specs>`, presses its first control,
   checks a valid body, and compares the block on a cleared browser. **107 of 107 at 1280px and at
   390px.** It proves the first control of the first page carrying each kind.

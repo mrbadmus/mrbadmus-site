@@ -814,7 +814,7 @@ DRAFTS = [
 
 def run_drafts(sport, aport, width, ok):
     base = "http://127.0.0.1:%d" % sport
-    for d in DRAFTS:
+    def one(d):
         print("\n── draft: %s" % d["name"])
         LEDGER.reset()
         with KB.Browser() as br:
@@ -833,6 +833,14 @@ def run_drafts(sport, aport, width, ok):
             wait_saved(pg)
             time.sleep(0.4)
             ok(pg.eval("!!(%s)" % d["blank"]) is True, "a draft never reaches another device")
+
+    # A Chrome that stops answering is not a finding: once more, then it counts.
+    for d in DRAFTS:
+        try:
+            one(d)
+        except KB.CDPError as e:
+            print("  ⟳ Chrome stopped answering (%s), once more" % str(e)[:80], flush=True)
+            one(d)
 
 
 def session(child):
