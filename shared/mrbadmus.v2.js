@@ -1736,6 +1736,11 @@ try {
       if (q != null && Object.prototype.hasOwnProperty.call(draftCarry, q)) { c = draftCarry[q]; has = true; delete draftCarry[q]; }
       var b = d.__block, sent = String(d.answer == null ? '' : d.answer);
       if (b && b.id === 'ks4-mount' && rootCarry !== undefined) { c = rootCarry; has = true; rootCarry = undefined; }
+      var owner = b && b.closest ? b.closest('[data-activity]') : null;
+      if (owner && owner.__mrbPickKey) {
+        draftDrop(owner.__mrbPickKey);
+        if (Object.prototype.hasOwnProperty.call(owner, '__mrbPickCarry')) { c = owner.__mrbPickCarry; has = true; delete owner.__mrbPickCarry; }
+      }
       if (b && b.querySelectorAll) {
         Array.prototype.forEach.call(b.querySelectorAll('input, textarea, select'), function (el) {
           var val = el.tagName === 'SELECT' ? (el.options[el.selectedIndex] ? (el.options[el.selectedIndex].textContent || '').trim() : '') : String(el.value || '').trim();
@@ -2369,9 +2374,9 @@ try {
         'ks3-solen-block': G(), 'ks3-span-block': G(), 'ks3-spbench-block': G(), 'ks3-splot-block': G(), 'ks3-tgap-block': G(),
         'ks3-tpair-block': G(), 'ks3-vtap-block': G(), 'ks3-walk-block': G(), 'ks3-xfer-block': G(), 'ks3-sand-block-shell': G(),
         // Predictions with their own controls (one per block; re-asked runs are new attempts).
-        'ks3-bbench-block': { t: 'u', opt: '[data-bbench-predict] .ks3-option' },
+        'ks3-bbench-block': { t: 'u', opt: '[data-bbench-predict] .ks3-option', commit: '[data-bbench-run]' },
         'ks3-burner-block': { t: 'u', opt: '[data-burner-predict] .ks3-option' },
-        'ks3-cryst-block': { t: 'u', opt: '[data-cryst-gate-opts] .ks3-option' },
+        'ks3-cryst-block': { t: 'u', opt: '[data-cryst-gate-opts] .ks3-option', commit: '[data-cryst-run]' },
         'ks3-trough-block': { t: 'u', opt: '[data-trough-opt]' },
         'ks3-still-block': { t: 'u', opt: '[data-still-predict] .ks3-option', unit: '[data-still-predict]' },
         'ks3-tempb-block': { t: 'u', opt: '[data-tempb-predict]', unit: '[data-tempb-card]' },
@@ -2446,14 +2451,18 @@ try {
           right: function (b, u, sec, tab) {
             var out = tab && sec.querySelector('[data-xroute-out="' + attr(tab, 'data-xroute-ore') + ':' + attr(b, 'data-xroute-method') + '"]');
             var w = attr(out, 'data-works');
-            return w == null ? null : { ok: w === '1', good: null };
+            if (w == null) { return null; }
+            var fits = sec.querySelector('[data-xroute-out^="' + attr(tab, 'data-xroute-ore') + ':"][data-works="1"]');
+            return { ok: w === '1', good: fits ? sec.querySelector('[data-xroute-method="' + attr(fits, 'data-xroute-out').split(':')[1] + '"]') : null };
           } },
         'ks3-specb-block': { t: 'u', opt: '[data-specb-mat]', tab: '[data-specb-jbtn]',
           right: function (b, u, sec, tab) {
             var job = tab && tab.closest('[data-specb-job]');
             var out = job && sec.querySelector('[data-specb-out="' + attr(job, 'data-specb-job') + ':' + attr(b, 'data-specb-mat') + '"]');
             var f = attr(out, 'data-fit');
-            return f == null ? null : { ok: f === '1', good: null };
+            if (f == null) { return null; }
+            var fits = sec.querySelector('[data-specb-out^="' + attr(job, 'data-specb-job') + ':"][data-fit="1"]');
+            return { ok: f === '1', good: fits ? sec.querySelector('[data-specb-mat="' + attr(fits, 'data-specb-out').split(':')[1] + '"]') : null };
           } },
         'ks3-ccheck-block': { t: 'u', opt: '.ks3-ccheck-fault', tab: '[data-pick]', commit: '[data-ccheck-open]',
           right: function (b, u, sec, tab) {
@@ -2463,36 +2472,66 @@ try {
           } },
         // Several parts, one Check.
         'ks3-gas-block': { t: 'c', check: '[data-gas-open]', part: '.ks3-gas-row', opt: '.ks3-gas-choice',
-          right: function (p) { var v = attr(p, 'data-verdict'); return v === 'right' ? true : v === 'wrong' ? false : null; } },
+          right: function (p) { var v = attr(p, 'data-verdict'); return v === 'right' ? true : v === 'wrong' ? false : null; },
+          key: function (p) { return optLabel(p.querySelector('.ks3-gas-choice[data-choice="' + attr(p, 'data-change') + '"]')); } },
         'ks3-plate-block': { t: 'c', check: '[data-plate-open]', part: '.ks3-plate-row', opt: '.ks3-plate-band',
-          right: function (p) { var v = attr(p, 'data-state'); return v === 'hit' ? true : v === 'miss' ? false : null; } },
+          right: function (p) { var v = attr(p, 'data-state'); return v === 'hit' ? true : v === 'miss' ? false : null; },
+          key: function (p) { return optLabel(p.querySelector('.ks3-plate-band[data-band="' + attr(p, 'data-answer') + '"]')); } },
         'ks3-hard': { t: 'c', check: '[data-hard-reveal]', part: '.ks3-hardrow', opt: '.ks3-rung-chip',
-          right: function (p) { var v = attr(p, 'data-right'); return v === '1' ? true : v === '0' ? false : null; } },
+          right: function (p) { var v = attr(p, 'data-right'); return v === '1' ? true : v === '0' ? false : null; },
+          key: function (p) { return attr(p, 'data-answer'); } },
         'ks3-settles': { t: 'c', check: '[data-settle-reveal]', part: '.ks3-feature', opt: '.ks3-settle-choice', scope: '.ks3-case-panel',
-          right: function (p, c) { var s = attr(p, 'data-settles'); return s == null || !c ? null : (attr(c, 'data-pick') === 'yes') === (s === '1'); } },
+          right: function (p, c) { var s = attr(p, 'data-settles'); return s == null || !c ? null : (attr(c, 'data-pick') === 'yes') === (s === '1'); },
+          key: function (p) { return optLabel(p.querySelector('.ks3-settle-choice[data-pick="' + (attr(p, 'data-settles') === '1' ? 'yes' : 'no') + '"]')); } },
         'ks3-pairs': { t: 'c', check: '[data-pair-reveal]', part: '.ks3-pairrow', opt: '.ks3-pair-chip',
           right: function (p, c) {
             var w = p.querySelector('.ks3-pairrow-word');
             var good = w ? byWord(txt(w), p.querySelectorAll('.ks3-pair-chip')) : null;
             return good && c ? good === c : null;
-          } },
+          },
+          key: function (p) { var w = p.querySelector('.ks3-pairrow-word'); var good = w ? byWord(txt(w), p.querySelectorAll('.ks3-pair-chip')) : null; return good ? optLabel(good) : null; } },
         'ks3-critique': { t: 'c', check: '[data-steps-reveal]', part: '.ks3-step', opt: '.ks3-step-btn', toggle: true,
-          right: function (p, c) { var f = attr(p, 'data-fault'); return f == null ? null : !!c === (f === '1'); } },
+          right: function (p, c) { var f = attr(p, 'data-fault'); return f == null ? null : !!c === (f === '1'); },
+          key: function (p) { return attr(p, 'data-fault') === '1' ? 'Flagged' : 'Not flagged'; } },
         'ks3-saudit-block': { t: 'c', whole: true, check: '[data-saudit-check]', part: '.ks3-saudit-chip', opt: '.ks3-saudit-chip', toggle: true, tab: '[data-saudit-sc]',
-          right: function (p, c, sec) { var v = shownIn(sec, '[data-saudit-vlabel]'); return v ? /balanced/i.test(txt(v)) && !/not/i.test(txt(v)) : null; } },
+          right: function (p, c, sec) { var v = shownIn(sec, '[data-saudit-vlabel]'); return v ? /balanced/i.test(txt(v)) && !/not/i.test(txt(v)) : null; },
+          key: function (p, c, sec) {
+            var sc = attr(sec.querySelector('[data-saudit-sc][aria-pressed="true"]'), 'data-saudit-sc');
+            return sc ? Array.prototype.map.call(sec.querySelectorAll('.ks3-saudit-chip[data-saudit-want-' + sc + ']'), optLabel).join('\n') : null;
+          } },
         'ks3-eqb-block': { t: 'c', whole: true, check: '[data-eqb-check]', part: '[data-eqb-row]', opt: '[data-eqb-place]', tab: '[data-eqb-tab]',
           right: function (p, c, sec) {
             var br = shownIn(sec, '[data-eqb-branch]');
             return br ? attr(br, 'data-eqb-branch') === 'perfect' : null;
+          },
+          key: function (p, c, sec) {
+            var cfg = JSON.parse(attr(sec.querySelector('[data-eqb]'), 'data-eqb-cfg') || '{}');
+            var tab = attr(sec.querySelector('[data-eqb-tab][aria-pressed="true"]'), 'data-eqb-tab');
+            var one = (cfg.cases || []).filter(function (x) { return x.id === tab; })[0] || (cfg.cases || [])[0];
+            return one ? 'Reactants: ' + (one.reactants || []).join(', ') + '\nProducts: ' + (one.products || []).join(', ') : null;
           } },
         'ks3-fit-block': { t: 'c', whole: true, check: '[data-fit-run]', part: '.ks3-fit-part', opt: '.ks3-fit-part', toggle: true, tab: '.ks3-fit-tab',
-          right: function (p, c, sec) { var b = sec.querySelector('[data-fit-badge]'); var s = attr(b, 'data-state'); return s ? s === 'works' : null; } },
+          right: function (p, c, sec) { var b = sec.querySelector('[data-fit-badge]'); var s = attr(b, 'data-state'); return s ? s === 'works' : null; },
+          key: function (p, c, sec) {
+            var spec = JSON.parse(attr(sec.querySelector('[data-fit-spec]'), 'data-fit-spec') || '{}'), on = attr(sec.querySelector('.ks3-fit-tab[aria-pressed="true"]'), 'data-fit');
+            var one = (spec.specimens || []).filter(function (x) { return x.id === on; })[0];
+            if (!one) { return null; }
+            return Array.prototype.filter.call(sec.querySelectorAll('.ks3-fit-part'), function (b) {
+              return Array.prototype.some.call(b.attributes, function (a) { return /^data-/.test(a.name) && one.needs.indexOf(a.value) >= 0; });
+            }).map(optLabel).join('\n') || null;
+          } },
         'ks3-jwalk-block': { t: 'c', whole: true, check: '[data-jwalk-send]', part: '[data-jwalk-seg]', opt: '[data-jwalk-mode]',
           right: function (p, c, sec) {
             var tg = attr(sec.querySelector('[data-jwalk]'), 'data-target');
             if (!tg) { return null; }
             var mine = Array.prototype.map.call(sec.querySelectorAll('[data-jwalk-seg]'), function (s) { return attr(s.querySelector('[data-jwalk-mode][aria-pressed="true"]'), 'data-jwalk-mode') || ''; });
             return mine.join('|') === tg;
+          },
+          key: function (p, c, sec) {
+            var tg = String(attr(sec.querySelector('[data-jwalk]'), 'data-target') || '').split('|');
+            return Array.prototype.map.call(sec.querySelectorAll('[data-jwalk-seg]'), function (s, i) {
+              return (partWords(s) ? partWords(s) + ': ' : '') + optLabel(s.querySelector('[data-jwalk-mode="' + tg[i] + '"]'));
+            }).join('\n');
           } },
         // Typed or selected, then shown: one written answer, self-checked.
         'ks3-construct-block': { t: 't', check: '[data-construct-check]', inputs: '[data-fifa-input]' },
@@ -2514,7 +2553,14 @@ try {
             try { want = JSON.parse(attr(sec.querySelector('[data-dh]'), 'data-target') || 'null'); } catch (e) { want = null; }
             var ok = null;
             if (want) { ok = Object.keys(want).every(function (k) { return mine[k] === want[k]; }); }
-            return { n: 1, answer: lines.join('\n'), ok: ok };
+            var good = null;
+            if (want && ok === false) {
+              good = Array.prototype.map.call(sec.querySelectorAll('.ks3-dh-dial'), function (d) {
+                var o = Array.prototype.filter.call(d.querySelectorAll('.ks3-dh-opt'), function (b) { return want[attr(b, 'data-dh-dial')] === attr(b, 'data-dh-opt'); })[0];
+                return txt(d.querySelector('.ks3-dh-dialname')) + ': ' + (o ? optLabel(o) : '');
+              }).join('\n');
+            }
+            return { n: 1, answer: lines.join('\n'), ok: ok, good: good };
           },
           back: function (sec, n, r) {
             String(r.answer == null ? '' : r.answer).split('\n').forEach(function (ln) {
@@ -2577,7 +2623,15 @@ try {
           } },
         'ks3-tbench-block': { t: 'u', opt: '[data-predict] .ks3-option', dims: ['.ks3-tbench-tab[data-food]', '.ks3-tbench-tab[data-test]'],
           right: function (b, u, sec) { return shownIn(sec, '[data-verdict="hit"]') ? { ok: true, good: b } : shownIn(sec, '[data-verdict="miss"]') ? { ok: false, good: null } : null; } },
-        'ks3-vp-block': { t: 'u', opt: '[data-vp-pred]', unit: '[data-vp-charpanel]', after: '[data-vp-plot]',
+        'ks3-switch-block': { t: 'u', opt: '.ks3-switch-predict .ks3-option', unit: '.ks3-switch-panel', unitTab: '.ks3-switch-tab', commit: '[data-switch]' },
+        'ks3-mb-block': { t: 'c', whole: true, check: '[data-mb-run]', part: '.ks3-mb-step', opt: '.ks3-mb-opt' },
+        'ks3-sc-block': { t: 'u', opt: '.ks3-sc-verdict', tab: '.ks3-sc-tab', commit: '[data-sc-check]',
+          right: function (b, u, sec, tab) {
+            var panel = tab && sec.querySelector('[data-sc-panel="' + attr(tab, 'data-sc-case') + '"]');
+            var a = attr(panel, 'data-sc-answer');
+            return a == null ? null : { ok: attr(b, 'data-sc-verdict') === a, good: panel.querySelector('.ks3-sc-verdict[data-sc-verdict="' + a + '"]') };
+          } },
+        'ks3-vp-block': { t: 'u', opt: '[data-vp-pred]', unit: '[data-vp-charpanel]', unitTab: '[data-vp-char]', commit: '[data-vp-plot]',
           right: function (b, u) {
             var el = u.querySelector('[data-vp-type]') || (u.hasAttribute('data-vp-type') ? u : null), want = attr(el, 'data-vp-type');
             return want == null ? null : { ok: attr(b, 'data-vp-pred') === want, good: u.querySelector('[data-vp-pred="' + want + '"]') };
@@ -2593,12 +2647,16 @@ try {
             var a = attr(rv, 'data-answer');
             return a == null ? null : { ok: attr(b, 'data-part') === a, good: sec.querySelector('.ks3-option[data-part="' + a + '"]') };
           } },
-        'ks3-sort': { t: 'u', opt: '.ks3-sort-chip, [data-selfcheck] .ks3-option', unit: '.ks3-sortrow, [data-selfcheck]',
-          right: function (b, u) {
-            var w = u.querySelector('.ks3-sort-answer');
-            var good = w ? byWord(txt(w), u.querySelectorAll('.ks3-sort-chip')) : null;
-            return good ? { ok: good === b, good: good } : null;
-          } },
+        // ⊕ 9 Nov 2026: the chips stay changeable until the reveal, so that is the answer.
+        // The question under the reveal is a press of its own (`also`), with the ids it always had.
+        'ks3-sort': { t: 'c', check: '[data-sort-reveal]', part: '.ks3-sortrow', opt: '.ks3-sort-chip',
+          right: function (p, c) {
+            var w = p.querySelector('.ks3-sort-answer');
+            var good = w ? byWord(txt(w), p.querySelectorAll('.ks3-sort-chip')) : null;
+            return good && c ? good === c : null;
+          },
+          key: function (p) { var w = p.querySelector('.ks3-sort-answer'); var good = w ? byWord(txt(w), p.querySelectorAll('.ks3-sort-chip')) : null; return good ? optLabel(good) : null; },
+          also: { t: 'u', opt: '[data-selfcheck] .ks3-option', unit: '.ks3-sortrow, [data-selfcheck]' } },
         // A cell of a grid opens its own outcome; the prediction pressed before it belongs to that cell.
         'ks3-hgrid-block': gridCells('hgrid'),
         'ks3-raudit-block': gridCells('raud'),
@@ -2717,12 +2775,12 @@ try {
         if (sp.dims) { n = dimN(sec, sp); }
         else if (sp.tab) { var pt = pressedTab(sec, sp); tab = pt.el; n = pt.n || 1; }
         else if (sp.unit) {
-          unitEl = (viaCommit ? null : btn.closest(sp.unit));
+          unitEl = btn.closest(sp.unit) || (viaCommit ? shownIn(sec, sp.unit) : null);
           if (!unitEl || !sec.contains(unitEl)) { return; }
           n = Array.prototype.indexOf.call(sec.querySelectorAll(sp.unit), unitEl) + 1;
         }
         var opt = viaCommit ? (function () {
-          var on = allIn(sec, sp.opt).filter(function (o) { return o.getAttribute('aria-pressed') === 'true'; });
+          var on = allIn(unitEl || sec, sp.opt).filter(function (o) { return o.getAttribute('aria-pressed') === 'true'; });
           return on[on.length - 1] || null;
         })() : btn;
         if (!opt) { return; }
@@ -2765,6 +2823,11 @@ try {
         var on = Array.prototype.filter.call(part.querySelectorAll(sp.opt), function (o) { return o.getAttribute('aria-pressed') === 'true'; });
         return on[on.length - 1] || null;
       };
+      // The answer the page holds, asked for only when the child's was wrong.
+      var specKey = function (sp, p, c, sec, ok) {
+        if (ok !== false || !sp.key) { return null; }
+        try { return sp.key(p, c, sec) || null; } catch (e) { return null; }
+      };
       var specC = function (sp, t, sec, slug) {
         var chk = t.closest(sp.check);
         if (!chk || !sec.contains(chk) || chk.disabled) { return; }
@@ -2786,8 +2849,8 @@ try {
             var answer = chosen.map(function (x) { return sp.toggle ? x.label : (partWords(x.p) ? partWords(x.p) + ': ' : '') + x.label; }).join('\n');
             var id = slug + '#' + act + '-' + (tn || 1);
             var ok = sp.right ? sp.right(null, null, sec) : null;
-            var d = { key_stage: 'KS3', lesson_slug: slug, question_id: id, rung: null, kind: 'choice', question_text: ask,
-                      answer: answer, correct_answer: null, is_correct: typeof ok === 'boolean' ? ok : null };
+            var d = { __block: sec, key_stage: 'KS3', lesson_slug: slug, question_id: id, rung: null, kind: 'choice', question_text: ask,
+                      answer: answer, correct_answer: specKey(sp, null, null, sec, ok), is_correct: typeof ok === 'boolean' ? ok : null };
             post(d);
             return;
           }
@@ -2799,8 +2862,8 @@ try {
             if (specSent[id] === label) { return; }               // unchanged since it was last sent
             specSent[id] = label;
             var ok = sp.right ? sp.right(x.p, x.c, sec) : null;
-            var d = { key_stage: 'KS3', lesson_slug: slug, question_id: id, rung: null, kind: 'choice',
-                      question_text: ask + (x.words ? ' — ' + x.words : ''), answer: label, correct_answer: null,
+            var d = { __block: sec, key_stage: 'KS3', lesson_slug: slug, question_id: id, rung: null, kind: 'choice',
+                      question_text: ask + (x.words ? ' — ' + x.words : ''), answer: label, correct_answer: specKey(sp, x.p, x.c, sec, ok),
                       is_correct: typeof ok === 'boolean' ? ok : null };
             batch.push(d);
           });
@@ -2857,12 +2920,13 @@ try {
           if (specSent[id] === v.answer && !v.again) { return; }
           specSent[id] = v.answer;
           var d = { __block: sec, key_stage: 'KS3', lesson_slug: slug, question_id: id, rung: null, kind: 'choice',
-                    question_text: ask + (v.ask ? ' — ' + v.ask : ''), answer: v.answer, correct_answer: null,
+                    question_text: ask + (v.ask ? ' — ' + v.ask : ''), answer: v.answer, correct_answer: v.good || null,
                     is_correct: typeof v.ok === 'boolean' ? v.ok : null };
           post(d);
         });
       };
       var specCapture = function (sp, t, sec, slug) {
+        if (sp.also) { specCapture(sp.also, t, sec, slug); }
         if (sp.t === 'u') { specU(sp, t, sec, slug); }
         else if (sp.t === 'c') { specC(sp, t, sec, slug); }
         else if (sp.t === 't') { specT(sp, t, sec, slug); }
@@ -3079,6 +3143,41 @@ try {
         });
       });
 
+      /* ⊕ 9 Nov 2026: picks on a block with its own Check or Run, not yet committed. Not
+         an answer, so nothing is sent; pressed again on return, on this device, after the
+         saved rows have gone back, and forgotten once an answer from the block is sent. */
+      var pickLogged = function (lsec) {
+        var sp = specOf(lsec);
+        if (sp && (sp.commit || sp.t === 'c')) { return sp.commit || sp.check; }
+        return kindOf(lsec, KIND_B5C) ? '[data-b5c-check]' : null;
+      };
+      var pickKey = function (lsec) { return ks3Slug() + '#' + lsec.getAttribute('data-activity') + '~picks'; };
+      document.addEventListener('click', function (e) {
+        if (muted) { return; }
+        var b = e.target && e.target.closest ? e.target.closest('button') : null;
+        var lsec = b && !b.disabled ? b.closest('[data-activity]') : null;
+        var commit = lsec && !lsec.closest('.ks3-ladder') ? pickLogged(lsec) : null;
+        if (!commit || b.closest(commit)) { return; }
+        var list = draftGet(pickKey(lsec));
+        lsec.__mrbPickKey = pickKey(lsec);
+        draftPut(pickKey(lsec), (Array.isArray(list) ? list : []).concat([Array.prototype.indexOf.call(lsec.querySelectorAll('button'), b)]));
+      }, true);
+      window.MrBadmusAnswerCapture.afterReplay.push(function () {
+        Array.prototype.forEach.call(document.querySelectorAll('[data-activity]'), function (lsec) {
+          if (!pickLogged(lsec)) { return; }
+          var key = pickKey(lsec), list = draftGet(key);
+          if (!Array.isArray(list) || !list.length) { return; }
+          lsec.__mrbPickKey = key;
+          draftTake(key);
+          lsec.__mrbPickCarry = draftCarry[key];
+          delete draftCarry[key];
+          list.forEach(function (at) {
+            var b = lsec.querySelectorAll('button')[at];
+            if (b && !b.disabled) { b.click(); }
+          });
+        });
+      });
+
       /* ⊕ 9 Nov 2026: a "3 of 6 opened" count on a block that takes no answer. It is
          not work to mark, so it is kept on this device, and comes back by pressing the
          same controls again. <ks3-count-local> is checked against the pages by
@@ -3175,8 +3274,9 @@ try {
           var scope = sp.unit ? sec.querySelectorAll(sp.unit)[n - 1] : sec;
           if (!scope) { return; }
           if (sp.first) { click(sec.querySelector(sp.first)); }
+          if (sp.unitTab) { click(sec.querySelectorAll(sp.unitTab)[n - 1]); }
           var hit = press(allIn(scope, sp.opt), r.answer);
-          if (hit && sp.commit) { click(sec.querySelector(sp.commit)); }
+          if (hit && sp.commit) { click(scope.querySelector(sp.commit) || sec.querySelector(sp.commit)); }
           if (hit && sp.after) { var af = scope.querySelector(sp.after); if (af) { click(af); } }
           if (hit && sp.count && ownTicks(r)) {
             var bs0 = sec.querySelectorAll('button'), kept = [];
@@ -3211,7 +3311,7 @@ try {
             return;
           }
           var part = sec.querySelectorAll(sp.part)[n - 1];
-          if (!part) { return; }
+          if (!part) { if (sp.also) { specBack(sp.also, sec, n, r); } return; }
           if (sp.toggle) {
             var tb2 = part.matches(sp.opt) ? part : part.querySelector(sp.opt);
             if (tb2 && (tb2.getAttribute('aria-pressed') === 'true') !== (r.answer === 'Flagged')) { click(tb2); }
@@ -4067,7 +4167,7 @@ try {
       }
       function labelText(g, item) {
         var v = g.label ? look(g.label, item) : null;
-        if (v == null && item) { v = item.label != null ? item.label : (item.text != null ? item.text : item.name); }
+        if (v == null && item) { v = item.label != null ? item.label : (item.text != null ? item.text : (item.name != null ? item.name : item.aria)); }
         return v == null ? null : String(v).replace(/\s+/g, ' ').trim();
       }
       // Run fn with the lesson's state set to `state` (a copy), setState
@@ -4664,7 +4764,7 @@ try {
           ];
         })(),
         'conservation-of-mass': [
-          { id: 'w3', covers: ['w3Rows'],
+          { words: 'Choose the state symbol for each substance in the equation', id: 'w3', covers: ['w3Rows'],
             fire: function (s, w, x) {
               if (!rose(s, w, 'w3Checked')) { return null; }
               var out = [];
@@ -4722,7 +4822,7 @@ try {
                   var v = KS4RootActs.valsAt(x.L, was), o = (v.wOptions || [])[list[j]];
                   // The lesson's own line for this step: its log says "Yes." or "Not this."
                   var log = (x.vals({ w: wi }).wLog || [])[j];
-                  out.push({ e: (wi + 1) + '-' + (j + 1), a: o ? o.label : null, ok: !!log && log.word === 'Yes.', good: function () { return rightBy(x, was, function (t) { return t.wOptions; }, function (t) { return ((t.wLog || [])[j] || {}).word === 'Yes.'; }); }, q: String(v.wPrompt || '') });
+                  out.push({ e: (wi + 1) + '-' + (j + 1), a: o ? o.label : null, ok: !!log && log.word === 'Yes.', good: (function (from, step) { return function () { return rightBy(x, from, function (t) { return t.wOptions; }, function (t) { return ((t.wLog || [])[step] || {}).word === 'Yes.'; }); }; })(was, j), q: String(v.wPrompt || '') });
                 }
               });
               return out;
@@ -4785,7 +4885,7 @@ try {
                 if (!s.pd[k] || (w.pd || {})[k]) { return; }
                 var v = x.vals({ pi: +k }), o = (v.panOpts || [])[s.pp[k]], pv = s.pv[k] || {};
                 out.push({ e: +k + 1, a: 'Prediction: ' + (o ? o.label : '') + '\nReactants: ' + pv.l + '\nProducts: ' + pv.r,
-                           ok: /^Both totals right/.test(String(v.panVerdict || '')), good: function () { var f = /level: (\S+) and (\S+?)\./.exec(String((v.pFig || {}).alt || '')); return f ? 'Reactants: ' + f[1] + '\nProducts: ' + f[2] : null; }, q: 'Predict, then total each side', kind: 'numeric' });
+                           ok: /^Both totals right/.test(String(v.panVerdict || '')), good: function () { var f = /level: (\S+) and (\S+?)\./.exec(String((v.panFig || {}).alt || '')); return f ? 'Reactants: ' + f[1] + '\nProducts: ' + f[2] : null; }, q: 'Predict, then total each side', kind: 'numeric' });
               });
               return out;
             },
@@ -4921,7 +5021,7 @@ try {
             } }
         ],
         'types-of-em-waves': [
-          commitPicks({ id: 'preds', map: 'preds', done: 'shown', step: 'pair', press: 'onSend', qs: 'pairQs', verdicts: 'verdicts', covers: ['pairQs'] }),
+          commitPicks({ words: 'Compare two electromagnetic waves: wavelength, frequency and speed in a vacuum', id: 'preds', map: 'preds', done: 'shown', step: 'pair', press: 'onSend', qs: 'pairQs', verdicts: 'verdicts', covers: ['pairQs'] }),
           { id: 'placed', covers: ['tray', 'slots'],
             fire: function (s, w, x) {
               if (!rose(s, w, 'p1')) { return null; }
@@ -5095,7 +5195,7 @@ try {
             } }
         ],
         'sound-waves-hearing': [
-          commitPicks({ id: 'ppred', map: 'pPred', done: 'pShown', step: 'pStage', press: 'onPReveal', opts: 'pOpts', verdicts: 'pVerdicts', ask: 'pPrompt', covers: ['pOpts'] }),
+          commitPicks({ words: 'What do the air particles and the ear drum do when a sound passes?', id: 'ppred', map: 'pPred', done: 'pShown', step: 'pStage', press: 'onPReveal', opts: 'pOpts', verdicts: 'pVerdicts', ask: 'pPrompt', covers: ['pOpts'] }),
           { id: 'tpred', covers: ['pTones'],
             fire: function (s, w, x) {
               var out = [];
@@ -5156,7 +5256,7 @@ try {
         'resistors': [(function () {
           var lists = {}, taken = {};
           var word = function (x, k) { var c = (x.vals({ comp: k }).simTitle || ''); return c.split(' \u00b7 ')[0] || k; };
-          return { id: 'data', covers: [],
+          return { words: 'Readings of potential difference and current for a component', id: 'data', covers: [],
             fire: function (s, w, x) {
               var out = [];
               Object.keys(s.data || {}).forEach(function (k) {
@@ -5184,20 +5284,21 @@ try {
               return patch;
             } };
         })()],
-        'series-parallel-circuits': [commitPicks({ id: 'preds', map: 'preds', done: 'revealed', step: 'step', press: 'onReveal', qs: 'qs', verdicts: 'verdicts', covers: ['qs'] })],
-        'chromosomes-mitosis': [commitPicks({ id: 'preds', map: 'preds', done: 'revealed', step: 'st', press: 'onCyRun', qs: 'cyQs', verdicts: 'cyVerdicts', covers: ['cyQs'] })],
-        'lenses': [commitPicks({ id: 'preds', map: 'preds', done: 'shown', press: 'onDraw', qs: 'bQs', verdicts: 'bVerdicts', slots: ['t', 's', 'w'], covers: ['bQs'],
+        'series-parallel-circuits': [commitPicks({ words: 'What happens to the ammeter and voltmeter readings when the circuit changes?', id: 'preds', map: 'preds', done: 'revealed', step: 'step', press: 'onReveal', qs: 'qs', verdicts: 'verdicts', covers: ['qs'] })],
+        'chromosomes-mitosis': [commitPicks({ words: 'Predict each stage of the cell cycle and mitosis before running the model', id: 'preds', map: 'preds', done: 'revealed', step: 'st', press: 'onCyRun', qs: 'cyQs', verdicts: 'cyVerdicts', covers: ['cyQs'] })],
+        'lenses': [commitPicks({ words: 'Predict the image a lens forms for this object distance', id: 'preds', map: 'preds', done: 'shown', press: 'onDraw', qs: 'bQs', verdicts: 'bVerdicts', slots: ['t', 's', 'w'], covers: ['bQs'],
           at: function (k, x) {
             var lens = String(k).slice(0, 2), s0 = {}; s0[k] = true;
             for (var pos = 0; pos < 12; pos += 1) {
-              var v = x.vals({ lens: lens, pos: pos, shown: Object.assign({}, x.L.state.shown, s0) });
+              // Only this key shown, so an earlier position's verdicts are never read for this one.
+              var v = x.vals({ lens: lens, pos: pos, shown: s0 });
               if ((v.bVerdicts || []).length) { return { lens: lens, pos: pos }; }
             }
             return { lens: lens };
           } })],
         'waves-detection-exploration': [
-          commitPicks({ id: 'qpred', map: 'qPred', done: 'qShown', step: 'qStage', press: 'onQReveal', opts: 'qOpts', style: 'qVerdictStyle', ask: 'qPrompt', covers: ['qOpts'] }),
-          commitPicks({ id: 'upred', map: 'uPred', done: 'uShown', step: 'uStage', press: 'onUReveal', opts: 'uOpts', style: 'uVerdictStyle', ask: 'uPrompt', covers: ['uOpts'] })
+          commitPicks({ words: 'What do seismometer records of P-waves and S-waves show about the structure of the Earth?', id: 'qpred', map: 'qPred', done: 'qShown', step: 'qStage', press: 'onQReveal', opts: 'qOpts', style: 'qVerdictStyle', ask: 'qPrompt', covers: ['qOpts'] }),
+          commitPicks({ words: 'Ultrasound echoes from boundaries: how many come back to the probe?', id: 'upred', map: 'uPred', done: 'uShown', step: 'uStage', press: 'onUReveal', opts: 'uOpts', style: 'uVerdictStyle', ask: 'uPrompt', covers: ['uOpts'] })
         ],
         'changes-in-energy': [stepPick({ pick: 'picks', done: 'revealed', step: 'round', opts: 'roundOpts', word: 'verdictWord', yes: /as you said/, ask: 'roundAsk', also: { anim: 1 }, covers: ['roundOpts'] })],
         'power': [stepPick({ pick: 'picks', done: 'revealed', step: 'round', opts: 'roundOpts', word: 'verdictWord', yes: /^Yes/, ask: 'roundAsk', covers: ['roundOpts'] })],
@@ -5959,16 +6060,25 @@ try {
         var api = host && host.__mrbKs4;
         if (!forms || !api || !api.logic) { return; }
         var L = api.logic, x = formX(L), prefix = pilotId(pathSlug, '');
-        (rows || []).forEach(function (r) {
-          var id = String((r && r.question_id) || '');
-          if (id.indexOf(prefix) !== 0) { return; }
-          var rest = id.slice(prefix.length), f = formOf(rest);
-          if (!f) { return; }
-          try {
-            var p = f.back(r, rest === f.id ? null : rest.slice(f.id.length + 1), L.state, x);
-            if (p) { L.setState(p); }
-          } catch (e) { /* one answer never stops the rest */ }
-        });
+        // The same reduced path as rootActsBack: a restored step lands finished, never mid-animation.
+        var had = Object.prototype.hasOwnProperty.call(L, 'reduced'), keep = L.reduced;
+        L.reduced = typeof keep === 'function' ? function () { return true; } : true;
+        L.__mrbFast = true;
+        try {
+          (rows || []).forEach(function (r) {
+            var id = String((r && r.question_id) || '');
+            if (id.indexOf(prefix) !== 0) { return; }
+            var rest = id.slice(prefix.length), f = formOf(rest);
+            if (!f) { return; }
+            try {
+              var p = f.back(r, rest === f.id ? null : rest.slice(f.id.length + 1), L.state, x);
+              if (p) { L.setState(p); }
+            } catch (e) { /* one answer never stops the rest */ }
+          });
+        } finally {
+          L.__mrbFast = false;
+          if (had) { L.reduced = keep; } else { delete L.reduced; }
+        }
       }
       /* ⊕ 25 Oct 2026: every other lesson's own activities (rootActClick).
          Each saved row, oldest first, is matched to the group whose answer

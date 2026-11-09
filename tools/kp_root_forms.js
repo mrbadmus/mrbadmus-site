@@ -62,6 +62,9 @@ function literals(s) {
   return out;
 }
 function words(el) {
+  // A form whose questions come from the lesson's own data names its topic in `words:`.
+  const w = /\bwords:\s*'((?:[^'\\]|\\.)*)'/.exec(el);
+  if (w) { return w[1].replace(/\\(.)/g, '$1'); }
   const q = /\bq:\s*'((?:[^'\\]|\\.)*)'/.exec(el);
   if (q) { return q[1].replace(/\\(.)/g, '$1'); }
   return literals(el).filter((t) => t.length >= 12).slice(0, 4).join(' / ');

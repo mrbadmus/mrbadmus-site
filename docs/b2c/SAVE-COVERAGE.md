@@ -295,6 +295,47 @@ until the lesson data carries a key.
 - **`curve-run` restarts at minute 0:** a heating curve the child steps through, an exploration with no
   answer. Saving its position would be a row per press for nothing a parent can read. Named, not fixed.
 
+### A third blind run's findings (9 Nov 2026)
+
+- **A sequence comes back whole.** Restoring step 1 ran its handler as if just pressed, which starts an
+  animation, and the lesson refuses the next answer while one runs. So steps 2 and 3 came back blank and
+  answerable, and answering again stacked attempts. A restore now takes the lesson's own reduced-motion path.
+- **Resistor readings** are saved, one numeric row each (`data-<component>-<n>`), with the figures the
+  meters showed. Clear is a row too. Nothing judges a reading, so a parent sees them unmarked.
+- **A pick that can still change is not an answer.** Series circuits, the cell cycle, lenses, wave
+  stages, sound, the spectrum and state symbols now save at the commit (Close the switch, Check, Reveal),
+  with the verdict and the right answer. `--commits` lists any group that posts before its own commit.
+  At KS3 the same rule moved `ks3-bbench`, `ks3-cryst`, `ks3-vp`, `ks3-sc`, `ks3-switch` (their Run, Check or
+  Plot), `ks3-sort` (its reveal) and `ks3-mb` (one row for the whole method, at Add the iodine).
+  **Named, not per tap:** a pick that locks as it is pressed is the commitment (the `G()` gates,
+  `ks3-still`, `ks3-walk`, `ks3-rtotal`, `temperature-changes-shc` gate, `percentage-yield`, `carbon-cycle`,
+  `covalent-bonding`, `enzymes`, `giant-covalent-structures`). A block with no commit and an immediate verdict
+  stays changeable, each press an attempt, by the 13 Oct rule (`ks3-chain`, `ks3-ebench`, `ks3-predict`,
+  `ks3-pwsort`, `ks3-rsort`, `ks3-sortcards`, `ks3-specb`, `ks3-xroute`, `ks3-burner`, `ks3-trough`, `ks3-gap`,
+  whose tests explore and commit nothing).
+- **A control's label is not an answer.** A row of one live option ("Drop it in") posts nothing.
+- **Wrong always names the right answer, where the lesson holds it.** Each judged `ROOT_FORMS` row carries
+  `good`, worked out only when the child was wrong, by running each option's own handler on a copy of the
+  state and reading the lesson's verdict. Typed numbers get the lesson's own worked line (`ltext`, `ctext`,
+  `pan`). KS3 specs carry `key`, from the page's own markup. `--commits` fails on a judged row or spec with
+  none; `--units` and `--units-ks4` list what actually posts.
+  **Named, cannot name a right answer:** `rate`, `mean` and `mp` compute from the child's own readings, so
+  they are not judged and send no answer. Nothing else sends wrong without one.
+- **No self-checked without a check.** `your-four-steps`, `own-rule` and `seven-parts-two-cells` store a
+  written answer with nothing to mark it against, so they read as not marked.
+- **Drafts cover every field.** Every text box, number, slider and dropdown in a KS3 activity, the picks
+  on a KS3 block with its own Check or Run, and the picks and typed values in a KS4 lesson's own activity
+  (`ROOT_DRAFT`), are kept per child and id until sent. Saved answers beat a draft. **Device only**, as before.
+- **Time.** A draft keeps how long the child had been at it, and the answer carries that time. Where
+  the time is unknown (a draft from before this, a ladder rung's text put back by the page itself) the
+  answer sends null, never a low figure. An answer with no draft still measures from the page opening.
+- **Best before today** is worked out from saved rows dated before today, on any device. A child's
+  `ks4-best-*` localStorage value is no longer read or written. A school pupil's still is.
+- **Counts on a block that takes no answer** (`process-arrows` and the 38 other kinds on
+  `<ks3-count-local>`) come back by pressing the same controls again. **Device only**: it is not work a
+  parent reads, so no row is sent.
+- **Fuel-bill sliders** come back as drafts. **Device only.**
+
 ### What these numbers do and do not prove
 
 - **The tables are static:** they say the capture code names a control, not that it was pressed.
@@ -368,7 +409,8 @@ Nothing here is an answer: no choice is committed and no single value could be p
 - **KS3 balancer part-way:** an equation not yet balanced is not saved.
 - **KS3 melting-point bench dials (`ks3-mpb-block`):** the verdict comes back, against the default
   rate and repeats, not the settings the child had chosen.
-- **Unsent drafts on another device:** see above.
+- **Unsent drafts, slider positions and exploration counts on another device:** kept on the device
+  that made them, by design. Sent answers are what cross devices.
 - **Bench settings generally:** a restored reading shows its result, not the animation. Which tab,
   temperature or run was on screen is not kept beyond what a form names, and a titration restored
   mid-run lands on its last recorded row.

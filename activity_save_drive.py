@@ -679,10 +679,13 @@ CASES = [
          check=lambda b: len(b) == 1 and b[0]["kind"] == "order" and isinstance(b[0]["is_correct"], bool) and b[0]["correct_answer"].count("\n") >= 3,
          back="""(function(){ var p = document.querySelectorAll('.ks3-grain-block [data-grain-pick]'); return Array.prototype.every.call(p, function (x) { return H.pressed(x); }); })()"""),
     dict(name="ks3-units-sort", page="/ks3/biology/cells-and-organisation/life-processes.html",
-         act="""var r = document.querySelectorAll('.ks3-sort .ks3-sortrow'); H.click(r[0].querySelector('.ks3-sort-chip')); await H.sleep(120); H.click(r[1].querySelectorAll('.ks3-sort-chip')[1]); await H.sleep(120);""",
+         act="""var r = document.querySelectorAll('.ks3-sort .ks3-sortrow'); for (var i = 0; i < r.length; i += 1) { H.click(r[i].querySelector('.ks3-sort-chip')); await H.sleep(40); }
+                H.click(r[1].querySelectorAll('.ks3-sort-chip')[1]); await H.sleep(120);
+                H.click(document.querySelector('.ks3-sort [data-sort-reveal]')); await H.sleep(300);
+                H.click(document.querySelector('.ks3-sort [data-selfcheck] .ks3-option')); await H.sleep(200);""",
          want=["life-processes#living-once-never-*"],
-         check=lambda b: len(set(x["question_id"] for x in b)) == 2 and all(isinstance(x["is_correct"], bool) for x in b),
-         back="""(function(){ var r = document.querySelectorAll('.ks3-sort .ks3-sortrow'); return H.pressed(r[0].querySelector('.ks3-sort-chip')) && H.pressed(r[1].querySelectorAll('.ks3-sort-chip')[1]); })()"""),
+         check=lambda b: len(set(x["question_id"] for x in b)) == len(b) and len(b) >= 8 and all(x["correct_answer"] for x in b if x["is_correct"] is False),
+         back="""(function(){ var r = document.querySelectorAll('.ks3-sort .ks3-sortrow'); return H.pressed(r[0].querySelector('.ks3-sort-chip')) && H.pressed(r[1].querySelectorAll('.ks3-sort-chip')[1]) && !r[0].querySelector('.ks3-sort-answer').closest('[hidden]') && H.pressed(document.querySelector('.ks3-sort [data-selfcheck] .ks3-option')); })()"""),
     # ── ⊕ 9 Nov 2026: a second blind run ──
     dict(name="ks4-all-right", page="/combined/higher/chemistry/quantitative/conservation-of-mass.html",
          act="""await H.set({ w1: 0, w2: 2 }); var R = [0, 3, 3, 1, 2];
@@ -721,6 +724,36 @@ CASES = [
                          and "oncordant" in ([x for x in b if x["question_id"].endswith("#concord")][0]["correct_answer"] or ""),
          back="(function(){ var s = H.rootState(); return !!s.pick && s.pick.ok === false; })()"),
     # ── ⊕ 9 Nov 2026: a third blind run ──
+    dict(name="ks3-commit-run", page="/ks3/chemistry/chemical-reactions/mass-in-a-reaction.html",
+         act="""var s = document.querySelector('.ks3-bbench-block'), o = s.querySelectorAll('[data-bbench-predict] .ks3-option'); H.click(o[0]); await H.sleep(120); H.click(o[1]); await H.sleep(120); H.click(s.querySelector('[data-bbench-run]')); await H.sleep(500);""",
+         want=["mass-in-a-reaction#*-1"],
+         check=lambda b: len(b) == 1,
+         back="""H.pressed(document.querySelectorAll('.ks3-bbench-block [data-bbench-predict] .ks3-option')[1])"""),
+    dict(name="ks3-commit-run-2", page="/ks3/chemistry/mixtures-and-separation/evaporation-and-crystallisation.html",
+         act="""var s = document.querySelector('.ks3-cryst-block'), o = s.querySelectorAll('[data-cryst-gate-opts] .ks3-option'); H.click(o[0]); await H.sleep(120); H.click(o[1]); await H.sleep(120); H.click(s.querySelector('[data-cryst-run]')); await H.sleep(500);""",
+         want=["evaporation-and-crystallisation#*-1"],
+         check=lambda b: len(b) == 1,
+         back="""H.pressed(document.querySelectorAll('.ks3-cryst-block [data-cryst-gate-opts] .ks3-option')[1])"""),
+    dict(name="ks3-commit-panel", page="/ks3/biology/movement-skeleton-and-muscles/what-the-skeleton-does.html",
+         act="""var s = document.querySelector('.ks3-switch-block'), o = s.querySelectorAll('.ks3-switch-panel:not([hidden]) .ks3-option'); H.click(o[0]); await H.sleep(120); H.click(o[1]); await H.sleep(120); H.click(s.querySelector('.ks3-switch-panel:not([hidden]) [data-switch]')); await H.sleep(300);""",
+         want=["what-the-skeleton-does#switch-off-chains-1"],
+         check=lambda b: len(b) == 1,
+         back="""H.pressed(document.querySelectorAll('.ks3-switch-block .ks3-switch-panel .ks3-option')[1])"""),
+    dict(name="ks3-commit-whole", page="/ks3/biology/photosynthesis/testing-a-leaf-for-starch.html",
+         act="""var s = document.querySelector('.ks3-mb-block'), o = s.querySelectorAll('.ks3-mb-opt[data-step="boil"]'); H.click(o[1]); await H.sleep(120); H.click(s.querySelector('[data-mb-run]')); await H.sleep(400);""",
+         want=["testing-a-leaf-for-starch#*-1"],
+         check=lambda b: len(b) == 1 and b[0]["answer"].count("\n") >= 4,
+         back="""H.pressed(document.querySelectorAll('.ks3-mb-block .ks3-mb-opt[data-step="boil"]')[1])"""),
+    dict(name="ks3-commit-check", page="/ks3/biology/inheritance-and-dna/what-makes-a-species.html",
+         act="""var s = document.querySelector('.ks3-sc-block'), p = s.querySelector('[data-sc-panel="dogs"]'), o = p.querySelectorAll('.ks3-sc-verdict'); H.click(o[1]); await H.sleep(120); H.click(o[2]); await H.sleep(120); H.click(s.querySelector('[data-sc-check]')); await H.sleep(300);""",
+         want=["what-makes-a-species#same-species-or-not-1"],
+         check=lambda b: len(b) == 1 and b[0]["is_correct"] is False and b[0]["correct_answer"] == "Same species",
+         back="""H.pressed(document.querySelector('.ks3-sc-block [data-sc-panel="dogs"]').querySelectorAll('.ks3-sc-verdict')[2])"""),
+    dict(name="ks3-commit-plot", page="/ks3/biology/inheritance-and-dna/variation-continuous-and-discontinuous.html",
+         act="""var s = document.querySelector('.ks3-vp-block'), o = s.querySelectorAll('[data-vp-pred]'); H.click(o[0]); await H.sleep(120); H.click(o[1]); await H.sleep(120); H.click(s.querySelector('[data-vp-plot]')); await H.sleep(300);""",
+         want=["variation-continuous-and-discontinuous#*-1"],
+         check=lambda b: len(b) == 1 and isinstance(b[0]["is_correct"], bool) and b[0]["correct_answer"],
+         back="""H.pressed(document.querySelectorAll('.ks3-vp-block [data-vp-pred]')[1])"""),
     dict(name="ks4-readings", page="/combined/higher/physics/electricity/resistors.html",
          act="""H.click(document.querySelector('[aria-label^="Graph A"]')); await H.sleep(200);
                 for (var i = 0; i < 3; i += 1) { await H.call('onRecord'); await H.sleep(120); }
@@ -751,10 +784,13 @@ CASES = [
          back="""(function(){ var s = H.rootState(); return s.revealed[s.step] === true && s.preds[s.step][0] === 1; })()"""),
     dict(name="ks4-commit-lens", page="/triple/higher/physics/waves/lenses.html",
          act="""var q = H.v().bQs; for (var i = 0; i < q.length; i += 1) { await H.call((function (j) { return function (v) { return v.bQs[j] && v.bQs[j].opts[0].onClick; }; })(i)); }
+                await H.call('onDraw'); await H.sleep(200);
+                document.getElementById('ks4-mount').__mrbKs4.logic.setState({ pos: 1 }); await H.sleep(200);
+                q = H.v().bQs; for (var j = 0; j < q.length; j += 1) { await H.call((function (n) { return function (v) { return v.bQs[n].opts[0].onClick; }; })(j)); }
                 await H.call('onDraw'); await H.sleep(200);""",
          want=["ks4:lenses:th#preds-*"],
-         check=lambda b: all(isinstance(x["is_correct"], bool) for x in b if "#preds-" in x["question_id"]),
-         back="""(function(){ var s = H.rootState(); return Object.keys(s.shown).length === 1 && H.v().bVerdicts.length > 0; })()"""),
+         check=lambda b: all(isinstance(x["is_correct"], bool) and x["correct_answer"] and x["is_correct"] == (x["answer"] == x["correct_answer"]) for x in b if "#preds-" in x["question_id"]) and any("cx20" in x["question_id"] for x in b),
+         back="""(function(){ var s = H.rootState(); return Object.keys(s.shown).length === 2 && H.v().bVerdicts.length > 0; })()"""),
     dict(name="ks4-commit-pair", page="/triple/higher/physics/waves/types-of-em-waves.html",
          act="""var q = H.v().pairQs; for (var i = 0; i < q.length; i += 1) { await H.call((function (j) { return function (v) { return v.pairQs[j].opts[0].onClick; }; })(i)); }
                 await H.call('onSend'); await H.sleep(200);""",
@@ -879,6 +915,14 @@ DRAFTS = [
          type="""var s = document.querySelector('.ks3-parrow-block'), p = s.querySelectorAll('[data-parrow-pick]'); H.click(p[1]); await H.sleep(120); H.click(p[2]); await H.sleep(120);""",
          back="/^3 of 6/.test(document.querySelector('.ks3-parrow-block [data-count]').textContent.trim())",
          blank="/^1 of 6/.test(document.querySelector('.ks3-parrow-block [data-count]').textContent.trim())"),
+    dict(name="picks on a KS3 block, not yet opened", page="/ks3/biology/cells-and-organisation/levels-of-organisation.html",
+         type="""await H.sleep(2500); var r = document.querySelector('.ks3-hard .ks3-hardrow'); H.click(r.querySelectorAll('.ks3-rung-chip')[1]); await H.sleep(150);""",
+         back="H.pressed(document.querySelector('.ks3-hard .ks3-hardrow').querySelectorAll('.ks3-rung-chip')[1])",
+         blank="!H.pressed(document.querySelector('.ks3-hard .ks3-hardrow').querySelectorAll('.ks3-rung-chip')[1])"),
+    dict(name="a pick behind its own Check", page="/ks3/biology/reproduction/seed-dispersal.html",
+         type="""var o = document.querySelectorAll('.ks3-dsort-block .ks3-b5c-opt[data-owner="dandelion"]'); H.click(o[1]); await H.sleep(150);""",
+         back="""H.pressed(document.querySelectorAll('.ks3-dsort-block .ks3-b5c-opt[data-owner="dandelion"]')[1])""",
+         blank="""!H.pressed(document.querySelectorAll('.ks3-dsort-block .ks3-b5c-opt[data-owner="dandelion"]')[1])"""),
     dict(name="picks not yet closed", page="/combined/higher/physics/electricity/series-parallel-circuits.html",
          type="""await H.sleep(2500); var q = H.v().qs; H.click(H.rootBtn(q[0].opts[0].label, 0)); await H.sleep(150);""",
          back="(function(){ var s = H.rootState(); return s.preds[s.step][0] === 0 && !s.revealed[s.step]; })()",
@@ -972,7 +1016,7 @@ def run_best(sport, aport, width, ok):
             wait_saved(pg)
             time.sleep(0.6)
             ok(pg.eval("H.block('Ks4Practice').logic.state.best") == want, "%s: best is %s" % (name, want), pg.eval("H.block('Ks4Practice').logic.state.best"))
-            shown = pg.eval("/Best before today/.test(document.body.textContent)")
+            shown = pg.eval("/Best before today/.test(document.body.innerText)")
             ok(shown is (want is not None), "%s: the page says so" % name)
     LEDGER.reset()
 
@@ -1121,12 +1165,14 @@ window.SW = {
 # sibling buttons in the block, in turn, as new groups appear, and watches what was
 # posted: two groups under one id is a finding; a self-checked row beside words the
 # press revealed is listed to be read.
-CONTROL_WORD = re.compile(r"^(drop|run|start|next|check|go|send|play|add|test|show|reveal|close|press|try again|reset)\b", re.I)
-COMMIT_WORD = re.compile(r"^(run|check|close|send|reveal|test|show|mark|start|submit|light|fire|switch|see)\b", re.I)
+CONTROL_WORD = re.compile(r"^(drop|run|start|next|check|go(?= *$)|send|play|add|test|show|reveal|close|press|try again|reset)\b", re.I)
+# "Run step 2" moves a lesson on after its verdict; it commits nothing.
+COMMIT_WORD = re.compile(r"^(run(?! step)|check|close|send|reveal|test|show|mark|start(?! again)|submit|light|fire|switch|see)\b", re.I)
 # A pick that unlocks the next step of a lesson rather than committing an answer.
 COMMIT_NAMED = ["giant-covalent-structures qOpts"]
 # Form rows whose answer the lesson does not hold in a sentence: named, see SAVE-COVERAGE.
 FORM_NO_KEY = set()
+SPEC_NO_KEY = set()
 UNITS_JS = r"""
 window.UN = {
   // What must come back: every pressed control. A tab on screen is allowed to differ.
@@ -1153,7 +1199,17 @@ window.UN = {
     var groupOf = function (x) { return (x.parentElement && x.parentElement.tagName === 'LI' && x.parentElement.parentElement) || x.parentElement; };
     var live = function (x) { return !x.disabled && x.getAttribute('aria-disabled') !== 'true' && !x.closest('[hidden]') && x.getClientRects().length > 0; };
     var clicked = [], used = [], steps = [];
+    // Answers sent, counted per press: the difference between a post at the press and one at its commit.
+    window.__unSent = 0;
+    if (!window.__unFetch) {
+      window.__unFetch = window.fetch;
+      window.fetch = function (u, o) {
+        if (o && o.method === 'POST' && /answer/.test(String(u))) { window.__unSent += 1; }
+        return window.__unFetch.apply(this, arguments);
+      };
+    }
     var press = async function (b) {
+      var sentAt = window.__unSent;
       clicked.push(b);
       var before = UN.lines(sec), liveBefore = Array.prototype.filter.call(sec.querySelectorAll('button'), live);
       b.scrollIntoView({ block: 'center' }); b.click();
@@ -1162,7 +1218,7 @@ window.UN = {
       // A button this press has just made pressable: what a per-tap post would come before.
       var opened = Array.prototype.filter.call(sec.querySelectorAll('button'), live).filter(function (x) { return liveBefore.indexOf(x) < 0; })
         .map(function (x) { return (x.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 40); });
-      steps.push({ label: (b.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 50), added: added.join(' / ').slice(0, 200), opened: opened });
+      steps.push({ label: (b.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 50), added: added.join(' / ').slice(0, 200), opened: opened, posted: window.__unSent > sentAt });
     };
     var filled = [];
     for (var n = 0; n < (k === 'ks4' ? 110 : 70); n += 1) {
@@ -1262,7 +1318,7 @@ def run_units(sport, aport, width, only):
                     swept["a control's label as the answer"].append((k, b["question_id"], b["answer"]))
             for st in r["steps"]:
                 commit = [x for x in st.get("opened") or [] if COMMIT_WORD.match(x)]
-                if commit and st["label"] and any(st["label"] in str(b.get("answer") or "") for b in bodies):
+                if commit and st.get("posted"):
                     swept["posted per tap, with a commit it opened"].append((k, st["label"], commit[:2]))
             line = "%s groups=%d posts=%d ids=%d selfchecked=%d" % (k, r["groups"], len(bodies), len(n_id), len(self_c))
             if dup:
@@ -1371,6 +1427,19 @@ def run_commits():
         if row[0] not in FORM_NO_KEY:
             print("   no answer:", row)
             bad += 1
+    # A KS3 spec that judges and names no right answer.
+    specs = js[js.find("/* <ks3-specs> */"):js.find("/* </ks3-specs> */")]
+    chunks = re.split(r"(?m)^(?=\s{8}'ks3-[a-z0-9-]+':)", specs)
+    no_key = []
+    for ch in chunks:
+        m2 = re.match(r"\s{8}'(ks3-[a-z0-9-]+)':", ch)
+        if m2 and "right:" in ch and "key:" not in ch and not re.search(r"good: (?!null)", ch):
+            no_key.append(m2.group(1))
+    print("KS3 specs that judge and name no right answer: %d" % len(no_key))
+    for k in no_key:
+        if k not in SPEC_NO_KEY:
+            print("   no answer:", k)
+            bad += 1
     print("commits: %s" % ("clean" if not bad else "%d to read" % bad))
     return bad
 
@@ -1384,10 +1453,13 @@ def run_units_ks4(sport, aport, width, only):
             if "MrBadmusKS4Runtime.mount" in f.read():
                 pages.setdefault(os.path.basename(p)[:-5], "/" + os.path.relpath(p, REPO))
     base = "http://127.0.0.1:%d" % sport
-    swept = {"wrong without an answer": [], "self-checked": [], "a control's label as the answer": [], "same id posted again": []}
+    swept = {"wrong without an answer": [], "self-checked": [], "a control's label as the answer": [], "same id posted again": [], "posted per tap, with a commit it opened": []}
     n_ok, posts = 0, 0
     fresh = "localStorage.clear(); sessionStorage.clear(); localStorage.setItem(%s, %s)" % (json.dumps(AUTH_KEY), json.dumps(json.dumps(session(True))))
     items = [(s2, pg2) for s2, pg2 in sorted(pages.items()) if not only or re.search(only, s2)]
+    if os.environ.get("MRB_SLICE"):
+        lo, hi = os.environ["MRB_SLICE"].split(":")
+        items = items[int(lo):int(hi)]
     while items:
         try:
             with KB.Browser() as br:
@@ -1403,7 +1475,7 @@ def run_units_ks4(sport, aport, width, only):
                     pg.goto("%s%s?api=http://127.0.0.1:%d" % (base, page, aport), settle=0.5)
                     wait_saved(pg)
                     pg.eval(UNITS_JS)
-                    json.loads(pg.eval("UN.go('ks4')", timeout=90))
+                    r = json.loads(pg.eval("UN.go('ks4')", timeout=90))
                     time.sleep(0.3)
                     n_ok += 1
                     bodies = list(LEDGER.bodies)
@@ -1416,6 +1488,10 @@ def run_units_ks4(sport, aport, width, only):
                             swept["self-checked"].append((q,))
                         if CONTROL_WORD.match(str(b.get("answer") or "")):
                             swept["a control's label as the answer"].append((q, b.get("answer")))
+                    for st in r["steps"]:
+                        commit = [x for x in st.get("opened") or [] if COMMIT_WORD.match(x)]
+                        if commit and st.get("posted"):
+                            swept["posted per tap, with a commit it opened"].append((slug, st["label"], commit[:2]))
                     again = collections.Counter(b["question_id"] for b in bodies if b.get("question_id"))
                     for q, c in again.items():
                         if c > 1:
