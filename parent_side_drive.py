@@ -149,7 +149,8 @@ def child(d):
     check(d.js("document.querySelectorAll('#wrong .ps-wrong li').length") == sum(len(r["answers"]) for r in kw),
           "keeps wrong: each wrong answer is shown")
     check(d.js("!!document.querySelector('#tutor .ps-reply sub')"), "tutor reply: the backend's <sub> renders as markup")
-    check("The reply wasn’t saved." in d.text("#tutor"), "a reply that was not saved says so")
+    check("The reply wasn’t saved." in d.text("#tutor"), "an answered question whose reply was not kept says so")
+    check("No reply came." in d.text("#tutor"), "an unanswered question says no reply came, not that one was lost")
     check(d.js("document.querySelectorAll('#tutor .ps-tutor-row').length") == len(psf.TUTOR), "every tutor question")
     no_sideways(d, "child 1440")
     d.shot("child-1440.png", 1440)
@@ -172,6 +173,7 @@ def child(d):
     d.wait("!!document.querySelector('.ps-panel .ps-q')")
     p = d.text(".ps-panel")
     check("Picked Level 2 for themselves, not marked" in p, "F4: the child's own pick, in words", p[:300])
+    check("Ticked" not in p, "blind 2: a level with no ticks is no ticks: the level's position is not a tick")
     check("0/6" not in p and "Level 0" not in p and "AQA level" not in p, "F4: an unmarked answer never reads as 0")
     check(d.js("document.querySelector('.ps-panel .ps-q-top .ps-chip').textContent.trim()") == "Not marked", "F4: it reads Not marked")
     d.open("consumer/family.html?view=child&child=kid-ada&open=own-heart", width=1440, state="trialing", kids=2, **PS)
@@ -180,6 +182,18 @@ def child(d):
     check("Marked by AI" not in p and "Practice mark, the AI marker didn’t check" in p and "Practice level" in p and "AQA level" not in p,
           "F2: a keyword count is never called the AI's mark", p[:300])
     check("Picked Level 3 for themselves, not marked" in p, "F4: the pick's real level (position 1 of a top-first list)")
+    check("Ticked 3 of 6 for themselves, not marked" in p, "blind 2: a pick plus ticks shows both", p[:400])
+    d.open("consumer/family.html?view=child&child=kid-ada&open=own-pressure", width=1440, state="trialing", kids=2, **PS)
+    d.wait("!!document.querySelector('.ps-panel .ps-q')")
+    p = d.text(".ps-panel")
+    check("180 Pa" in p and "multiply the force" not in p and "2000 Pa" in p and "shared over" not in p,
+          "blind 2: a ladder option reads as the child saw it", p[:300])
+    check("It stays the same — the weight has not changed" in p, "blind 2: an option the child saw whole stays whole")
+    check(d.js("window.MrBadmusParentSide.markState({kind:'choice',outcome:'unmarked',marked_by:'unmarked',unmarked_reason:'self_checked'})") == "unmarked"
+          and d.js("window.MrBadmusParentSide.markState({kind:'written',outcome:'unmarked',marked_by:'unmarked',unmarked_reason:'self_checked'})") == "self_checked",
+          "blind 2: a choice is never self-checked, on a backend that does not say")
+    gw = "window.MrBadmusParentSide.groupWeeks([{id:'x',status:'done',subject:null,done_day:'2026-09-29',done_at:'2026-09-29T10:00:00Z',kind:'flashcards'}],'newest','Physics').length"
+    check(d.js(gw) == 1, "blind 2: flashcards with no recorded subject stay under a subject filter")
     d.open("consumer/family.html?view=child&child=kid-ada&open=ada-w9", width=1440, state="trialing", kids=2, **PS)
     d.wait("document.querySelectorAll('.ps-panel .ps-q').length>0")
     check(d.js("document.querySelectorAll('.ps-panel .ps-q').length") == 2, "F8: the part-done practice opens to its answers")
@@ -361,6 +375,36 @@ def kid(d):
     no_sideways(d, "today 390")
 
 
+def tap_targets(d):
+    print("\n── tap targets at 390 ──")
+    js = ("[].slice.call(document.querySelectorAll('#ps-root a[href],#ps-root button:not([disabled]),#ps-root select')).filter(function(e){"
+          "return e.offsetParent&&!e.closest('.mrb-theme-slot')&&!e.closest('.ps-panel');}).map(function(e){var r=e.getBoundingClientRect();"
+          "return [Math.round(r.height),e.className||e.tagName,(e.textContent||'').trim().slice(0,20)];}).filter(function(x){return x[0]<44;})")
+    for path, ready in (("consumer/family.html", ".ps-kid"), ("consumer/family.html?view=child&child=kid-ada", "#week .ps-row"),
+                        ("consumer/family.html?view=past", ".ps-weeks .ps-row")):
+        d.open(path, width=390, state="trialing", kids=2, **PS)
+        d.wait("!!document.querySelector(%r)" % ready)
+        small = d.js(js)
+        check(not small, "390 %s: every target at least 44 high" % path, small)
+
+
+def exam_draft(d):
+    print("\n── the exam draft ──")
+    d.open("consumer/exam.html?q=q-particles-describe", width=390, state="trialing", kids=2, who="child")
+    d.wait("!!document.getElementById('ex-answer')")
+    d.js("(function(){var t=document.getElementById('ex-answer');t.value='The particles are close together and vibrate';t.dispatchEvent(new Event('input',{bubbles:true}));})()")
+    d.open("consumer/exam.html?q=q-particles-describe", width=390, state="trialing", kids=2, who="child")
+    d.wait("!!document.getElementById('ex-answer')")
+    check(d.js("document.getElementById('ex-answer').value") == "The particles are close together and vibrate", "a reload keeps the draft")
+    check(d.js("document.getElementById('ex-words').textContent") == "7 words", "and counts it")
+    keys = d.js("Object.keys(localStorage).filter(function(k){return k.indexOf('mrb_exam_draft_v1:')===0;})")
+    check(len(keys) == 1 and keys[0].endswith(":q-particles-describe"), "kept per child and question", keys)
+    d.click("#ex-mark")
+    d.wait("!document.getElementById('ex-answer')&&!document.querySelector('.ex-marking')")
+    keys = d.js("Object.keys(localStorage).filter(function(k){return k.indexOf('mrb_exam_draft_v1:')===0;})")
+    check(keys == [], "cleared once it is marked", keys)
+
+
 def f5_f6_f10(d):
     print("\n── a refusal's wait, the parent's week, the exam page's mark ──")
     d.open("consumer/family.html", width=1440, state="trialing", kids=2, **PS)
@@ -396,6 +440,8 @@ def main():
             past(d)
             kid(d)
             f5_f6_f10(d)
+            tap_targets(d)
+            exam_draft(d)
     finally:
         server.shutdown()
     fails = cdd.FAILS

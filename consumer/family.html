@@ -49,6 +49,7 @@
 <script src="/shared/config.js?v=bb268b6f"></script>
 <script src="/shared/account.js?v=867b2fa5"></script>
 <script src="/consumer/consumer-common.js?v=a8f0270c"></script>
+<script src="/consumer/option-label.js"></script>
 <script src="/consumer/parent-side.js?v=74671aec"></script>
 <script>
 /* ═══════════════════════════════════════════════════════════════════════
@@ -672,8 +673,8 @@
               var q = r.kind === 'question' ? (titleOf[a.work_item_id] || '') : (a.question_text || '');
               return '<li><span class="ps-mono">' + esc(PS.dateShort(PS.dayOf(a.answered_at))) + '</span><span>' +
                 (q ? '<span class="q">' + esc(q) + '</span>' : '') +
-                '<span class="said"><strong>Said:</strong> <span>' + esc(a.answer == null ? 'No answer given' : a.answer) + '</span></span>' +
-                (a.correct_answer ? '<span class="ans"><strong>Answer:</strong> ' + esc(a.correct_answer) + '</span>' : '') +
+                '<span class="said"><strong>Said:</strong> <span>' + esc(a.answer == null ? 'No answer given' : PS.shownOption(a, a.answer)) + '</span></span>' +
+                (a.correct_answer ? '<span class="ans"><strong>Answer:</strong> ' + esc(PS.shownOption(a, a.correct_answer)) + '</span>' : '') +
                 '</span></li>';
             }).join('') + '</ol></article>';
         }).join('') + '</div>' : '<p style="margin:10px 0 0;font-size:15px;color:var(--ks3-ink-body)">Nothing wrong twice yet.</p>') +
@@ -696,7 +697,11 @@
             return '<div class="ps-tutor-row"><div><span class="ps-eyebrow">' + esc(k.first_name) + ' asked · ' + esc(C.fmtTime(t.asked_at)) + '</span>' +
                 (t.question_html != null ? t.question_html : esc(t.question || '')) + '</div>' +
               '<div class="ps-reply"><span class="ps-eyebrow">Reply</span>' +
-                (t.reply_html ? t.reply_html : '<span class="ps-muted">The reply wasn’t saved.</span>') + '</div></div>';
+                /* `answered` false: the tutor gave no reply (a refusal, or the model
+                   failed; the row doesn't record which). True with nothing kept is an
+                   older row, from before replies were stored. */
+                (t.reply_html ? t.reply_html : '<span class="ps-muted">' +
+                  (t.answered === false ? 'No reply came. The tutor couldn’t answer this one.' : 'The reply wasn’t saved.') + '</span>') + '</div></div>';
           }).join('') + '</div></section>';
       }).join('') + '</div>' : '<p style="margin:10px 0 0;font-size:15px;color:var(--ks3-ink-body)">' + esc(k.first_name) + ' hasn’t asked the tutor anything yet.</p>') +
       '</section>';

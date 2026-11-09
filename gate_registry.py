@@ -300,7 +300,7 @@ GATES = [
     dict(name="option_labels",
          cmd=["python3", "option_labels_check.py"],
          speed="fast",
-         watches=["option_labels_check.py", "option_labels.py", "generate_site_v5.py",
+         watches=["option_labels_check.py", "option_labels.py", "consumer/option-label.js", "generate_site_v5.py",
                   "build_ks3.py", "build_ks4.py", "ks4_rulings.py", "ks4_lessons/**",
                   "all_subtopics_*.py", "ks3_data/**", "!ks3_data/**/questions_*.py", "ks3_art/kit.py",
                   "shared/ks4-lib.js", "shared/ks3.js", "shared/mrbadmus.v2.js", "mrbadmus_site/combined/**",

@@ -399,6 +399,9 @@ _JS = r"""
     }
     // ⊕ B2C unit 6 — the child's pages, the parent's report, the org dashboard.
     if (path === '/api/consumer/child/today') { return reply(200, F.childToday); }
+    if (path === '/api/consumer/mark' && method === 'POST') {
+      return reply(200, { ok: true, score: 2, max: 3, hits: [0], feedback: 'Fixture mark.', provider: 'stub', answer_id: 'ans-9' });
+    }
     if (path === '/api/consumer/child/session') { return reply(200, { ok: true, first_name: 'Ada' }); }
     if (path === '/api/consumer/child/unit-checks') { return reply(200, { ok: true, attempts: [] }); }
     if (path === '/api/consumer/child/unit-check') {

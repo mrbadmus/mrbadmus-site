@@ -228,6 +228,9 @@ def main():
     qs = ks4_questions()
     rungs = ks3_rungs()
     agree = check_twins(qs, problems)
+    with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "consumer", "option-label.js"), encoding="utf-8") as _f:
+        if _f.read() != OL.consumer_js():
+            problems.append("consumer/option-label.js differs from option_labels.consumer_js(): run python3 option_labels.py")
     n_strip, n_exc, exc_texts = check_rule(qs, rungs, problems)
     built = check_built(exc_texts, problems)
     print("option_labels_check: %d KS4 questions, %d KS3 rungs; %d stripped, %d named exceptions; "
