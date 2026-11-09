@@ -223,14 +223,111 @@ def check_built(exc_texts, problems):
     return bad
 
 
+def short_texts(qs, rungs):
+    """Every option text a page shows shortened, normalised, and every one it shows
+    whole though it has a dash. KS3's page sends the rendered text, so both forms."""
+    from ks3_art.kit import sci
+    short, whole = {}, set()
+    for (_s, _r, _t, _slug, _i, q) in qs:
+        pl = OL.plan(q["q"], q["opts"], q.get("wrong_explanations"))
+        for k, (o, _ok) in enumerate(q["opts"]):
+            if OL.SEP in o:
+                if pl["strip"]:
+                    short[_norm(o)] = _norm(pl["labels"][k])
+                else:
+                    whole.add(_norm(o))
+    for (_u, _slug, _rung, r) in rungs:
+        pl = ks3_plan(r)
+        for k, o in enumerate(r["options"]):
+            if OL.SEP in o:
+                for form in (o, OL.sent_text(sci(o))):
+                    if pl["strip"]:
+                        short[_norm(form)] = _norm(pl["labels"][k])
+                    else:
+                        whole.add(_norm(form))
+    return short, whole
+
+
+def page_truth():
+    """What the pages themselves show: `data-full` on a built page, and KS4's real
+    `item()` over every question the rebuilt lessons serve. None when there is no build."""
+    truth = {}
+    site = os.path.join(ROOT, "mrbadmus_site")
+    if not os.path.isdir(site):
+        return None
+    btn = re.compile(r'<button[^>]*data-full="([^"]*)"[^>]*>(.*?)</button>', re.S)
+    mark = re.compile(r'<span class="ks3-opt-mark"[^>]*>[^<]*</span>')
+    for rel in ("ks3", "combined", "triple"):
+        for f in glob.glob(os.path.join(site, rel, "**", "*.html"), recursive=True):
+            for m in btn.finditer(open(f, encoding="utf-8").read()):
+                truth[_norm(m.group(1))] = _norm(mark.sub("", m.group(2)))
+    runner = (
+        "const fs=require('fs'),path=require('path');var window={KS4SRC:{},addEventListener(){},requestAnimationFrame(){},pageYOffset:0};"
+        "var localStorage={};var document={documentElement:{classList:{add(){},remove(){}}},addEventListener(){}};"
+        "const dir=%s;for(const f of fs.readdirSync(dir)){if(/^ks4-source.*\\.js$/.test(f))eval(fs.readFileSync(path.join(dir,f),'utf8'));}"
+        "eval(fs.readFileSync(path.join(dir,'ks4-lib.js'),'utf8'));const out=[];"
+        "(function w(o){if(!o||typeof o!=='object')return;if(Array.isArray(o)){o.forEach(w);return;}"
+        "if(typeof o.q==='string'&&Array.isArray(o.opts)){window.KS4.item(o).options.forEach(function(x){if(x.full!=null&&x.full!==x.text)out.push([x.full,x.text]);});}"
+        "else Object.values(o).forEach(w);})(window.KS4SRC);process.stdout.write(JSON.stringify(out));"
+    ) % json.dumps(os.path.join(ROOT, "shared"))
+    p = subprocess.run(["node", "-e", runner], capture_output=True, text=True)
+    if p.returncode != 0:
+        raise SystemExit("option_labels_check: could not run KS4's item(): " + p.stderr[-400:])
+    for full, label in json.loads(p.stdout):
+        truth[_norm(full)] = _norm(label)
+    return truth
+
+
+def check_panel_list(qs, rungs, problems):
+    """The panel's list: exact, against the pages, and the two cases that matter."""
+    short, whole = short_texts(qs, rungs)
+    both = set(short) & whole
+    if both:
+        problems.append("%d option texts are shortened in one question and whole in another: %r" % (len(both), sorted(both)[:3]))
+    path = os.path.join(ROOT, "consumer", "option-label.js")
+    want = OL.consumer_js({OL.text_hash(t) for t in short})
+    if "--write" in sys.argv:
+        with open(path, "w", encoding="utf-8") as f:
+            f.write(want)
+    got = open(path, encoding="utf-8").read() if os.path.exists(path) else ""
+    if got != want:
+        problems.append("consumer/option-label.js is out of date: python3 option_labels_check.py --write")
+    if len({OL.text_hash(t) for t in short}) != len(short):
+        problems.append("two shortened option texts hash alike")
+    truth = page_truth()
+    if truth is None:
+        print("SKIPPED panel list against the pages: mrbadmus_site/ absent")
+    else:
+        extra = [t for t in short if t not in truth]
+        missing = [t for t in truth if t not in short]
+        differ = [t for t in short if t in truth and truth[t] != short[t]]
+        for name, lst in (("the list shortens but no page does", extra), ("a page shortens but the list doesn't", missing), ("label differs from the page", differ)):
+            if lst:
+                problems.append("panel list: %d option(s) %s, e.g. %r" % (len(lst), name, lst[:3]))
+        print("panel list: %d option texts shortened, %d confirmed on the pages, %d mismatches" % (
+            len(short), len(set(short) & set(truth)), len(extra) + len(missing) + len(differ)))
+    cases = json.dumps([
+        "No \u2014 every rock must be metamorphosed before it can become sediment",
+        "Yes \u2014 weathering and erosion can act on any rock at the surface",
+        "180 Pa \u2014 multiply the force by the area",
+        "2000 Pa \u2014 600 N shared over 0.30 m\u00b2",
+        "No dash here",
+    ])
+    p = subprocess.run(["node", "-e", "var window={};" + got + "process.stdout.write(JSON.stringify(%s.map(window.MrBadmusShortOption)));" % cases],
+                       capture_output=True, text=True)
+    res = json.loads(p.stdout) if p.returncode == 0 else p.stderr[-300:]
+    exp = ["No \u2014 every rock must be metamorphosed before it can become sediment",
+           "Yes \u2014 weathering and erosion can act on any rock at the surface", "180 Pa", "2000 Pa", "No dash here"]
+    if res != exp:
+        problems.append("panel list: the rock cycle stays whole and 180 Pa short: got %r" % (res,))
+
+
 def main():
     problems = []
     qs = ks4_questions()
     rungs = ks3_rungs()
     agree = check_twins(qs, problems)
-    with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "consumer", "option-label.js"), encoding="utf-8") as _f:
-        if _f.read() != OL.consumer_js():
-            problems.append("consumer/option-label.js differs from option_labels.consumer_js(): run python3 option_labels.py")
+    check_panel_list(qs, rungs, problems)
     n_strip, n_exc, exc_texts = check_rule(qs, rungs, problems)
     built = check_built(exc_texts, problems)
     print("option_labels_check: %d KS4 questions, %d KS3 rungs; %d stripped, %d named exceptions; "

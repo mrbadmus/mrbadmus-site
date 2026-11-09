@@ -46,7 +46,8 @@ def expected_chip(it, today=psf.TODAY):
     """The row chip's word, from the fixture by the plan's rules — written
     out independently of parent-side.js."""
     if it.get("started") or (it["status"] != "done" and it.get("answers")):
-        return "Started"
+        sm = it["summary"]
+        return "Started · %d/%d" % (sm["marks_scored"], sm["marks_available"]) if sm["marks_available"] else "Started"
     if it["status"] == "done":
         if not it["tracked"]:
             return "Done"
@@ -129,8 +130,8 @@ def child(d):
           "only work holding something opens", (empty,))
     check(d.js("!document.querySelector('#week .ps-row[data-open=ada-w9]').disabled"),
           "F8: a practice part-way through, with saved answers, opens")
-    check(d.js("document.querySelector('#week .ps-row[data-open=ada-w9] .ps-chip').textContent.trim()") == "Started",
-          "F8: …and says it is started, not done")
+    check(d.js("document.querySelector('#week .ps-row[data-open=ada-w9] .ps-chip').textContent.trim()") == "Started · 1/2",
+          "F8: …and says it is started, with its score so far")
     own = [i for i in psf.own_items() if psf.WEEK <= i["done_day"] <= "2026-10-04"]
     check(d.js("[].map.call(document.querySelectorAll('#ps-own .ps-row'),function(e){return e.getAttribute('data-open');}).sort().join()")
           == ",".join(sorted(i["id"] for i in own)),
@@ -189,11 +190,14 @@ def child(d):
     check("180 Pa" in p and "multiply the force" not in p and "2000 Pa" in p and "shared over" not in p,
           "blind 2: a ladder option reads as the child saw it", p[:300])
     check("It stays the same — the weight has not changed" in p, "blind 2: an option the child saw whole stays whole")
+    check("No — every rock must be metamorphosed before it can become sediment" in p and
+          "Yes — weathering and erosion can act on any rock at the surface" in p,
+          "blind 3: rock cycle: a question the page showed whole reads whole, the right answer not reduced to Yes", p[:600])
     check(d.js("window.MrBadmusParentSide.markState({kind:'choice',outcome:'unmarked',marked_by:'unmarked',unmarked_reason:'self_checked'})") == "unmarked"
           and d.js("window.MrBadmusParentSide.markState({kind:'written',outcome:'unmarked',marked_by:'unmarked',unmarked_reason:'self_checked'})") == "self_checked",
           "blind 2: a choice is never self-checked, on a backend that does not say")
     gw = "window.MrBadmusParentSide.groupWeeks([{id:'x',status:'done',subject:null,done_day:'2026-09-29',done_at:'2026-09-29T10:00:00Z',kind:'flashcards'}],'newest','Physics').length"
-    check(d.js(gw) == 1, "blind 2: flashcards with no recorded subject stay under a subject filter")
+    check(d.js(gw) == 0 and d.js(gw.replace("'Physics'", "''")) == 1, "blind 3: a piece with no recorded subject is under All only")
     d.open("consumer/family.html?view=child&child=kid-ada&open=ada-w9", width=1440, state="trialing", kids=2, **PS)
     d.wait("document.querySelectorAll('.ps-panel .ps-q').length>0")
     check(d.js("document.querySelectorAll('.ps-panel .ps-q').length") == 2, "F8: the part-done practice opens to its answers")
@@ -397,12 +401,28 @@ def exam_draft(d):
     d.wait("!!document.getElementById('ex-answer')")
     check(d.js("document.getElementById('ex-answer').value") == "The particles are close together and vibrate", "a reload keeps the draft")
     check(d.js("document.getElementById('ex-words').textContent") == "7 words", "and counts it")
+    d.js("new Promise(function(r){setTimeout(r,2500);})")
     keys = d.js("Object.keys(localStorage).filter(function(k){return k.indexOf('mrb_exam_draft_v1:')===0;})")
     check(len(keys) == 1 and keys[0].endswith(":q-particles-describe"), "kept per child and question", keys)
     d.click("#ex-mark")
     d.wait("!document.getElementById('ex-answer')&&!document.querySelector('.ex-marking')")
     keys = d.js("Object.keys(localStorage).filter(function(k){return k.indexOf('mrb_exam_draft_v1:')===0;})")
     check(keys == [], "cleared once it is marked", keys)
+    spent = d.calls("/api/consumer/mark")[-1]["body"].get("time_spent_seconds")
+    check(isinstance(spent, int) and spent >= 2, "blind 3: the time written before the reload is in what is sent", spent)
+    d.open("consumer/exam.html?q=q-particles-describe", width=390, state="trialing", kids=2, who="child")
+    d.wait("!!document.getElementById('ex-answer')")
+    d.js("(function(){var t=document.getElementById('ex-answer');t.value='The particles are close together and vibrate';t.dispatchEvent(new Event('input',{bubbles:true}));})()")
+    k = d.js("Object.keys(localStorage).filter(function(x){return x.indexOf('mrb_exam_draft_v1:')===0;})[0]")
+    # From another page, so the exam page's own save on leaving can't overwrite it.
+    d.open("consumer/done.html", width=390, state="trialing", kids=2, who="child", **PS)
+    d.js("localStorage.setItem(%s,'written before the time went with it')" % json.dumps(k))
+    d.p.goto("http://127.0.0.1:%d/consumer/exam.html?q=q-particles-describe" % d.port)
+    d.wait("!!document.getElementById('ex-answer')")
+    check(d.js("document.getElementById('ex-answer').value") == "written before the time went with it", "an older draft still comes back")
+    d.click("#ex-mark")
+    d.wait("!document.getElementById('ex-answer')&&!document.querySelector('.ex-marking')")
+    check(d.calls("/api/consumer/mark")[-1]["body"].get("time_spent_seconds") is None, "blind 3: and with no time on record it sends null, never a false low")
 
 
 def f5_f6_f10(d):

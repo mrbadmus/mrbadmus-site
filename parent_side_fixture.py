@@ -278,6 +278,11 @@ def own_items():
     # A ladder rung: stored with its reason, which the child never saw.
     press = mcq(None, "part", "A 600 N crate rests on 0.30 m². What is the pressure?", "180 Pa — multiply the force by the area",
                 "2000 Pa — 600 N shared over 0.30 m²", False, "2026-09-22T18:40:00Z", qid="pressure-force-over-area#recall")
+    # Rock cycle `apply`: two options open "No —", so the page shows the question whole.
+    rock = mcq(None, "part", "Can an igneous rock become a sedimentary rock without ever becoming metamorphic?",
+               "No — every rock must be metamorphosed before it can become sediment",
+               "Yes — weathering and erosion can act on any rock at the surface", False,
+               "2026-09-22T18:42:00Z", qid="the-rock-cycle#apply")
     # An instrument's option: the child saw all of it.
     sand = dict(mcq(None, "part", "What happens to the pressure?", "It stays the same — the weight has not changed", None, False,
                     "2026-09-22T18:41:00Z", qid="pressure-force-over-area#sand-1"))
@@ -286,7 +291,7 @@ def own_items():
         own_item("own-exam", "exam", "Photosynthesis", "Biology", "2026-09-30", [ex], "2026-09-30T06:20:00Z"),
         own_item("own-enzymes", "lesson", "Enzymes", "Biology", "2026-09-21", [pick], "2026-09-21T18:30:00Z"),
         own_item("own-heart", "lesson", "The heart", "Biology", "2026-09-16", [stub], "2026-09-16T18:30:00Z"),
-        own_item("own-pressure", "lesson", "Pressure", "Biology", "2026-09-22", [press, sand], "2026-09-22T18:41:00Z"),
+        own_item("own-pressure", "lesson", "Pressure", "Biology", "2026-09-22", [press, sand, rock], "2026-09-22T18:42:00Z"),
     ]
 
 

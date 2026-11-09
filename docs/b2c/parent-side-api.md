@@ -259,6 +259,8 @@ question's latest marked attempt; `answers` still lists every attempt. See API-C
 ⊕ 9 Nov 2026, additive. A row may be `own_work: true` (see section 1), or `started: true` with its `status`: set
 work holding answers but not finished, in the week of its last answer. A week's `done` stays set work, with
 `own_work` and `started` counted beside it. Every answer row of the child is in exactly one row here.
+A week's `score` is the sum of its rows, and a started row carries its score so far. A piece with no recorded
+subject is under All only.
 
 ## 4. `GET /family/past-work?sort=&subject=&week=&child=`
 This has the same shape as route 3, across every child in the family. It starts with

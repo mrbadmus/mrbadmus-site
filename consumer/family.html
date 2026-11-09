@@ -525,7 +525,7 @@
     opts = opts || {};
     var st = PS.itemState(it, today);
     var t = st.done ? PS.itemTime(it) : null;
-    var sc = st.done ? PS.itemScore(it) : null;
+    var sc = (st.done || st.started) ? PS.itemScore(it) : null;
     var sub = esc(PS.kindLabel(it.kind)) + (it.subject ? ' · ' + PS.subjHtml(it.subject) : '') +
       (opts.past && sc && sc.questions ? ' · ' + esc(PS.plural(sc.questions, 'question')) : '') +
       (t ? ' · ' + esc(t) : '') +
