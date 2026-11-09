@@ -760,6 +760,7 @@ def round5_inventory():
             continue
         m = re.match(r"^(combined|triple)/(foundation|higher)/", page)
         route = m.group(1)[0] + m.group(2)[0]
+        routes.setdefault(r["slug"], set()).add(route)
         for g in r["groups"]:
             if not g.get("id"):
                 continue
@@ -770,7 +771,6 @@ def round5_inventory():
             out.setdefault(("KS4", r["slug"]), []).append(
                 (qid, "ks4_root", "Choose: " + " / ".join(plain(x) for x in g.get("labels") or []),
                  plain((g.get("right") or [""])[0])))
-            routes.setdefault(r["slug"], set()).add(route)
     # ⊕ 8 Nov 2026: what the classifier cannot see, ROOT_FORMS' typed answers,
     # runs and builders. The entry after a stem is often the child's own (a run
     # number, a tube), so the tag lives on the stem: the backend's kpOf falls
