@@ -90,6 +90,27 @@
   }
   function plural(n, one, many) { return n + ' ' + (n === 1 ? one : (many || one + 's')); }
 
+  /* ── what the child saw ─────────────────────────────────────────────── */
+  /* ⊕ 9 Nov 2026 (blind run 2): a lesson's quiz option is stored with its reason
+     ("180 Pa — multiply the force by the area"), which is its answer key, and
+     stays as stored. The page shows it without the reason, by option_labels.py's
+     rule. Only the renderers that apply that rule are in QUIZ_ID: a KS3 ladder's
+     marked rungs and KS4's practice questions. A lesson's other options were shown
+     whole, and a practice set shows its bank's text. The panel holds two of a
+     question's options, not all of them, so the rule runs on those two. */
+  var QUIZ_ID = /(^ks4q:|#(recall|apply)$|^ks4:.*#(choice-\d+|r1(-\d+)?)$)/;
+  function shownOption(a, text) {
+    if (text == null || !a || a.surface !== 'lesson' || a.kind !== 'choice' || !QUIZ_ID.test(String(a.question_id || ''))) { return text; }
+    var plan = window.MrBadmusOptionPlan;
+    if (!plan) { return text; }
+    var opts = [[a.answer, false]];
+    if (a.correct_answer != null && a.correct_answer !== a.answer) { opts.push([a.correct_answer, true]); }
+    opts = opts.filter(function (o) { return o[0] != null; });
+    var p = plan(a.question_text || '', opts, null);
+    for (var i = 0; i < opts.length; i += 1) { if (opts[i][0] === text) { return p.labels[i]; } }
+    return text;
+  }
+
   /* ── one answer ─────────────────────────────────────────────────────── */
   /* scored | self_checked | unmarked. The contract's answer carries
      `outcome` ('unmarked' for anything nobody marked); a self-check is an
@@ -100,7 +121,10 @@
     var ms = a.mark_state || a.marking_state;
     if (ms === 'scored' || ms === 'self_checked' || ms === 'unmarked') { return ms; }
     if (a.outcome === 'unmarked' || a.marked_by === 'unmarked') {
-      return (a.unmarked_reason === 'self_checked' || a.self_checked === true) ? 'self_checked' : 'unmarked';
+      /* Only a written or ordered answer can have been checked by the child
+         (consumer/answers.js markState): an older row said so of a tapped choice. */
+      return ((a.unmarked_reason === 'self_checked' || a.self_checked === true) && (a.kind === 'written' || a.kind === 'order'))
+        ? 'self_checked' : 'unmarked';
     }
     return 'scored';
   }
@@ -248,7 +272,7 @@
     if (rows.length === 1) {
       body += '<span class="k">' + esc(who) + ' answered</span>' +
         '<span class="v said' + (v.cls === 'wrong' ? ' is-wrong' : '') + '">' +
-        (last.answer != null && last.answer !== '' ? esc(last.answer) : '<span class="ps-muted">No answer given</span>') + '</span>';
+        (last.answer != null && last.answer !== '' ? esc(shownOption(last, last.answer)) : '<span class="ps-muted">No answer given</span>') + '</span>';
     } else {
       body += '<span class="k">' + esc(who) + ' answered</span><ol class="ps-attempts v">' +
         rows.map(function (a, i) {
@@ -256,12 +280,12 @@
           var t = fmtSecs(a.time_spent_seconds);
           return '<li><span class="ps-mono ps-muted">Attempt ' + (a.attempt_no || (i + 1)) + '</span>' +
             '<span class="said' + (av.cls === 'wrong' ? ' is-wrong' : '') + '" style="font-weight:600">' +
-            (a.answer != null && a.answer !== '' ? esc(a.answer) : '<span class="ps-muted">No answer given</span>') + '</span>' +
+            (a.answer != null && a.answer !== '' ? esc(shownOption(a, a.answer)) : '<span class="ps-muted">No answer given</span>') + '</span>' +
             chip(av, true) + (t ? '<span class="ps-mono ps-muted">' + esc(t) + '</span>' : '') + '</li>';
         }).join('') + '</ol>';
     }
     if (last.correct_answer) {
-      body += '<span class="k">Correct answer</span><span class="v">' + esc(last.correct_answer) + '</span>';
+      body += '<span class="k">Correct answer</span><span class="v">' + esc(shownOption(last, last.correct_answer)) + '</span>';
     } else if (v.cls === 'wrong' || v.cls === 'part') {
       /* ⊕ 9 Nov 2026 (F10): the lesson judged this and saved no right answer
          to show (a typed formula, the concordant titres). Said, not left for
@@ -274,8 +298,13 @@
     if (last.self_level != null) {
       body += '<span class="k">Own pick</span><span class="v">Picked Level ' + esc(String(last.self_level)) +
         ' for ' + yourself + ', not marked</span>';
-    } else if (last.kind === 'written' && Array.isArray(last.self_ticks) && last.self_ticks.length) {
-      body += '<span class="k">Own ticks</span><span class="v">Ticked ' + last.self_ticks.length +
+    }
+    /* The points ticked, beside any pick. The backend counts them; the array also
+       holds the level's own position. */
+    var ticked = last.self_points != null ? Number(last.self_points)
+      : (Array.isArray(last.self_ticks) ? last.self_ticks.length : 0);
+    if (last.kind === 'written' && ticked > 0) {
+      body += '<span class="k">Own ticks</span><span class="v">Ticked ' + ticked +
         (last.points_total ? ' of ' + esc(String(last.points_total)) : '') + ' for ' + yourself + ', not marked</span>';
     }
     if (last.mark_level != null && last.mark_level !== '' && markState(last) === 'scored') {
@@ -404,7 +433,8 @@
     var by = {}, order = [];
     (items || []).forEach(function (it) {
       if (!isDone(it)) { return; }
-      if (subject && it.subject !== subject) { return; }
+      /* A piece whose subject nothing records is under every subject, not none. */
+      if (subject && it.subject && it.subject !== subject) { return; }
       var ws = mondayOf(itemDate(it)) || String(it.week_start || '').slice(0, 10);
       if (!by[ws]) { by[ws] = []; order.push(ws); }
       by[ws].push(it);
@@ -476,7 +506,7 @@
     fmtSecs: fmtSecs, kindLabel: kindLabel, subjKey: subjKey, subjHtml: subjHtml, plural: plural,
     markState: markState, verdict: verdict, chip: chip, itemScore: itemScore, itemTime: itemTime,
     itemState: itemState, itemDate: itemDate, mondayOf: mondayOf, isDone: isDone, doneChip: doneChip, isTracked: isTracked,
-    isOwn: isOwn, allItems: allItems, hasAnswers: hasAnswers, NOT_SET: NOT_SET,
+    isOwn: isOwn, allItems: allItems, hasAnswers: hasAnswers, NOT_SET: NOT_SET, shownOption: shownOption,
     panelHtml: panelHtml, openPanel: openPanel, closePanel: closePanel,
     groupWeeks: groupWeeks, sortGroups: sortGroups, weekSummary: weekSummary
   };

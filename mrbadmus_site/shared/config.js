@@ -167,6 +167,21 @@
 
   window.MrBadmusConfig = config;
 
+  /* ── A family child's dark mode (blind run 2, 9 Nov 2026) ────────────────
+   * Lessons and practice are shared with school, and school does not change: a
+   * softened dark ground goes only to a family child's session, read here, the
+   * same test student-live.js uses for ask-tutor.js. A school pupil's page never
+   * requests the file. See shared/family-dark.css. */
+  try {
+    if (/^\/(ks3|combined|triple|student)\//.test(window.location.pathname || '') &&
+        config.isChildSession(JSON.parse(window.localStorage.getItem(config.AUTH_STORAGE_KEY) || 'null'))) {
+      var familyDark = document.createElement('link');
+      familyDark.rel = 'stylesheet';
+      familyDark.href = '/shared/family-dark.css';
+      document.head.appendChild(familyDark);
+    }
+  } catch (e) { /* no storage: the page's own dark mode stands */ }
+
   /* ── A child's token stays fresh on a lesson page (Orion fix, 16 Oct 2026)
    * The lesson pages (/ks3/, /combined/, /triple/) load no Supabase SDK, so
    * nothing there ever refreshed the session: they read the access token out

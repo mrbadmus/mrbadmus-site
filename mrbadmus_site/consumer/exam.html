@@ -18,6 +18,7 @@
   <link rel="stylesheet" href="/shared/ks3.css?v=fbc85f27"/>
 <link rel="stylesheet" href="/shared/ks3-theme.css?v=a2df0340"/>
   <link rel="stylesheet" href="/consumer/consumer.css?v=5d8a38a0"/>
+  <link rel="stylesheet" href="/shared/family-dark.css?v=924f7878"/>
   <style>
   /* ── consumer/exam.html — Design's `Child Exam Questions.dc.html`, live ──
      Her per-element inline styles transcribed; the repeated ones lifted here
@@ -422,9 +423,9 @@
   <main class="ex-main" id="ex-main"></main>
 </div>
 
-<script src="/shared/config.js?v=bb268b6f"></script>
+<script src="/shared/config.js?v=fc11de5b"></script>
 <!-- Front door (12 Oct 2026): the one map; consumer-common asks it whether a school pupil has wandered in. -->
-<script src="/shared/account.js?v=867b2fa5"></script>
+<script src="/shared/account.js?v=e64f3c2a"></script>
 <script src="/consumer/consumer-common.js?v=a8f0270c"></script>
 <script>
 /* ═══════════════════════════════════════════════════════════════════════
@@ -564,6 +565,22 @@
     var currentUnit = null;       // the unit name from /child/today, or null
     var openId = new URLSearchParams(window.location.search).get('q');
     var draft = '';               // survives a 503 — see markAnswer()
+    /* ⊕ 9 Nov 2026 (blind run 2): and a reload. Ten minutes of writing were lost to
+       one. Kept per child and question, on this device only, until it is marked.
+       A draft is not an answer, so nothing a parent reads ever sees it. */
+    function draftKey(id) {
+      var who = (ctx.session && ctx.session.user && ctx.session.user.id) || '';
+      return 'mrb_exam_draft_v1:' + who + ':' + id;
+    }
+    function draftRead(id) {
+      try { return window.localStorage.getItem(draftKey(id)) || ''; } catch (e) { return ''; }
+    }
+    function draftWrite(id, text) {
+      try {
+        if (text) { window.localStorage.setItem(draftKey(id), text); }
+        else { window.localStorage.removeItem(draftKey(id)); }
+      } catch (e) { /* private mode: it lasts as long as the page */ }
+    }
     /* ⊕ Parent truth (11 Oct 2026) — when the writing screen for this
        question was first shown, so the mark request can say how long the
        answer took (question shown → "Mark my answer"). Kept across a failed
@@ -972,6 +989,7 @@
     function paintWrite() {
       var q = find(openId) || {};
       if (!writeClock || writeClock.id !== q.id) { writeClock = startClock(q.id); }
+      if (!draft && q.id) { draft = draftRead(q.id); }
       var words = draft.trim() ? draft.trim().split(/\s+/).length : 0;
       var tooShort = words < 3;
 
@@ -1002,6 +1020,7 @@
       ta.value = draft;
       ta.addEventListener('input', function () {
         draft = ta.value;
+        draftWrite(q.id, draft);
         var n = draft.trim() ? draft.trim().split(/\s+/).length : 0;
         document.getElementById('ex-words').textContent = n + ' words';
         document.getElementById('ex-mark').disabled = (n < 3) || !writable;
@@ -1033,6 +1052,7 @@
       }).then(function (d) {
         d = d || {};
         writeClock = null;
+        draftWrite(q.id, '');
         result = { score: d.score, max: d.max, hits: d.hits || [],
                    feedback: d.feedback, answer: text, answer_id: d.answer_id,
                    verdict: d.verdict || '',

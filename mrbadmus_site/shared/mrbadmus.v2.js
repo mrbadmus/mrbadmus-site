@@ -1692,19 +1692,38 @@ try {
        marked first): tried again, waiting longer each time, for ~2 minutes. While `mute` is held (a restore) nothing
        is sent, and the restored ticks are remembered as already saved. */
     var tickTimers = {}, tickLast = {}, tickWant = {};
-    function tickKeep(qid, list) {
+    /* ⊕ 9 Nov 2026: unsubmitted typing, kept on this device only, per child and
+       question, cleared when the answer is sent. It never reaches the server and
+       never comes back on another device. A family child's session only: this whole
+       capture installs for nobody else. */
+    var draftChild = (session.user && session.user.id) || 'child', draftTimers = {};
+    function draftKey(q) { return 'mrb_draft_v1:' + draftChild + ':' + q; }
+    function draftPut(q, v) {
+      clearTimeout(draftTimers[q]);
+      draftTimers[q] = setTimeout(function () { try { window.localStorage.setItem(draftKey(q), JSON.stringify(v)); } catch (e) { /* storage refused */ } }, 300);
+    }
+    function draftGet(q) { try { return JSON.parse(window.localStorage.getItem(draftKey(q)) || 'null'); } catch (e) { return null; } }
+    function draftDrop(q) { clearTimeout(draftTimers[q]); try { window.localStorage.removeItem(draftKey(q)); } catch (e) { /* storage refused */ } }
+    // A saved row's own ticks: the server's 100 + level is not one of them.
+    function ownTicks(r) { return r && Array.isArray(r.self_ticks) ? r.self_ticks.filter(function (n) { return n < 100; }) : null; }
+    function tickKeep(qid, list, level) {
       try {
         var box = JSON.parse(window.localStorage.getItem('mrb_ticks_outbox_v1') || '{}');
-        if (list) { box[qid] = { ticks: list, at: Date.now() }; } else { delete box[qid]; }
+        if (list) { box[qid] = { ticks: list, at: Date.now() }; if (typeof level === 'number') { box[qid].level = level; } } else { delete box[qid]; }
         if (Object.keys(box).length) { window.localStorage.setItem('mrb_ticks_outbox_v1', JSON.stringify(box)); }
         else { window.localStorage.removeItem('mrb_ticks_outbox_v1'); }
       } catch (e) { /* storage refused: the in-page retry still runs */ }
     }
-    function sendTicks(qid, list, tries) {
+    /* ⊕ 9 Nov 2026: `level` (a value, 0–9) is the level a child picked, read from
+       the label they pressed. A rung's correct_answer is its indicative points, so
+       the server cannot read a pick from a position in `ticks`. It keeps the value
+       inside self_ticks as 100 + level: every reader here uses ownTicks(). */
+    function sendTicks(qid, list, tries, level) {
       qid = safeId(qid);
       if (!qid) { return; }
       list = (list || []).filter(function (n) { return n >= 1 && n <= 20; });
-      var key = list.join(',');
+      var lvl = typeof level === 'number' && level >= 0 && level <= 9 ? level : null;
+      var key = list.join(',') + '|' + (lvl === null ? '' : lvl);
       if (muted) { tickLast[qid] = key; tickWant[qid] = key; return; }
       if (tries && tickWant[qid] !== key) { return; }        // a newer set has been asked for
       tickWant[qid] = key;
@@ -1716,7 +1735,7 @@ try {
           return fetch(c.BACKEND_URL + '/api/consumer/child/self-ticks', {
             method: 'POST', keepalive: true,
             headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + tok },
-            body: JSON.stringify({ question_id: qid, ticks: list })
+            body: JSON.stringify(lvl === null ? { question_id: qid, ticks: list } : { question_id: qid, ticks: list, level: lvl })
           });
         };
         token().then(function (tok) { return tok ? go(tok) : null; })
@@ -1730,21 +1749,22 @@ try {
                A tick set replaces the last one on the row, so a repeat cannot double
                it. Whatever is left is kept for shared/account.js to send after a reload. */
             if (r && r.status === 429) {
-              tickKeep(qid, list);
+              tickKeep(qid, list, lvl);
               return r.json().then(function (d) { return d && d.retry_after_s; }, function () { return null; }).then(function (s) {
-                if ((tries || 0) < 8) { setTimeout(function () { sendTicks(qid, list, (tries || 0) + 1); }, Math.max(Number(s) > 0 ? Number(s) * 1000 : 30000, 1000)); }
+                if ((tries || 0) < 8) { setTimeout(function () { sendTicks(qid, list, (tries || 0) + 1, lvl); }, Math.max(Number(s) > 0 ? Number(s) * 1000 : 30000, 1000)); }
               });
             }
-            tickKeep(qid, list);
+            tickKeep(qid, list, lvl);
             // A written answer is marked BEFORE its row lands (up to half a
             // minute), so the wait grows: 3 s, 6 s, … eight tries, ~2 min.
             if (r && r.status === 404 && (tries || 0) < 8) {
-              setTimeout(function () { sendTicks(qid, list, (tries || 0) + 1); }, 3000 * ((tries || 0) + 1));
+              setTimeout(function () { sendTicks(qid, list, (tries || 0) + 1, lvl); }, 3000 * ((tries || 0) + 1));
             }
-          }, function () { tickKeep(qid, list); });
+          }, function () { tickKeep(qid, list, lvl); });
       }, tries ? 0 : 700);
     }
     window.MrBadmusAnswerCapture.ticks = sendTicks;
+    window.MrBadmusAnswerCapture.afterReplay = [];
 
     // The server accepts ids matching ^[a-z0-9:#._-]{1,200}$ and marks 1–20
     // with 0 ≤ marks_scored ≤ marks; anything else is sent as null rather
@@ -1892,10 +1912,10 @@ try {
            reply opens "Good guess." on the option the science says is right
            (build_ks3.py `_hook_guess`), so the hook is judged; any other
            keyed commit is a commitment the page reveals against (R3: KS3
-           activities never mark), so it is sent self_checked.
+           activities never mark), so it is sent unmarked.
          · a prediction ([data-activity] that is not an instrument, with
            options and a reveal — shared/ks3.js `wirePredictions`): every
-           changed pick, self_checked, with the reveal as what the page showed.
+           changed pick, unmarked, with the reveal as what the page showed.
          · "Your turn" five-line calculations (data-p<N>cfa): each time the
            check opens the worked lines, the child's five lines — ⊕ 13 Oct
            2026 MARKED (calcOf): the model's lines are the scheme and the
@@ -1959,7 +1979,7 @@ try {
          `data-correct` on the option, `data-<p>-want-<unit>` on the block,
          `data-<p>-is` in the unit, `data-answer` on the unit's row, or the
          is-correct / is-right / is-wrong class the page puts on the option —
-         else the answer is sent self_checked with what the page revealed in
+         else the answer is sent unmarked with what the page revealed in
          `explanation`.
 
          Adapter B5C — the `wireB5Commit` family: pick a part, choose its
@@ -2159,7 +2179,6 @@ try {
                       for (var i = 0; i < a.length; i += 1) { if (/^data-/.test(a[i].name) && SHOWN_RE.test(a[i].name)) { return true; } }
                       return false;
                     }) || null };
-          if (verdict === null) { d.self_checked = true; }
           post(d);
         });
       };
@@ -2182,8 +2201,7 @@ try {
         post({ __block: w, key_stage: 'KS3', lesson_slug: slug, question_id: id, rung: null, kind: 'choice',
                question_text: (txt(name) ? txt(name) + ' — ' : '') + txt(w.querySelector('.ks3-b5c-ask')),
                answer: optLabel(pick), correct_answer: good ? optLabel(good) : null,
-               is_correct: right == null ? null : pick.getAttribute('data-opt') === right,
-               self_checked: right == null });
+               is_correct: right == null ? null : pick.getAttribute('data-opt') === right });
       };
       /* ── ⊕ 25 Oct 2026 (Mide's item 1): the rest of the KS3 instruments ──
          266 instrument blocks were handled by nothing above. Each kind was
@@ -2631,7 +2649,7 @@ try {
           if (v && typeof v.ok === 'boolean') {
             d.is_correct = v.ok;
             d.correct_answer = v.good ? optLabel(v.good) : (v.ok ? optLabel(opt) : null);
-          } else { d.is_correct = null; d.correct_answer = null; d.self_checked = true; }
+          } else { d.is_correct = null; d.correct_answer = null; }
           specSent[id] = d.answer;
           post(d);
         });
@@ -2675,7 +2693,6 @@ try {
             var ok = sp.right ? sp.right(null, null, sec) : null;
             var d = { key_stage: 'KS3', lesson_slug: slug, question_id: id, rung: null, kind: 'choice', question_text: ask,
                       answer: answer, correct_answer: null, is_correct: typeof ok === 'boolean' ? ok : null };
-            if (typeof ok !== 'boolean') { d.self_checked = true; }
             post(d);
             return;
           }
@@ -2690,7 +2707,6 @@ try {
             var d = { key_stage: 'KS3', lesson_slug: slug, question_id: id, rung: null, kind: 'choice',
                       question_text: ask + (x.words ? ' — ' + x.words : ''), answer: label, correct_answer: null,
                       is_correct: typeof ok === 'boolean' ? ok : null };
-            if (typeof ok !== 'boolean') { d.self_checked = true; }
             batch.push(d);
           });
           postAll(batch);
@@ -2731,7 +2747,6 @@ try {
           var d = { __block: sec, key_stage: 'KS3', lesson_slug: slug, question_id: slug + '#' + act + '-1', rung: null, kind: 'order',
                     question_text: ask, answer: steps.map(function (s) { return optLabel(s).replace(/^\d+\s*/, ''); }).join('\n'),
                     correct_answer: null, is_correct: typeof ok === 'boolean' ? ok : null };
-          if (typeof ok !== 'boolean') { d.self_checked = true; }
           post(d);
         });
       };
@@ -2749,7 +2764,6 @@ try {
           var d = { __block: sec, key_stage: 'KS3', lesson_slug: slug, question_id: id, rung: null, kind: 'choice',
                     question_text: ask + (v.ask ? ' — ' + v.ask : ''), answer: v.answer, correct_answer: null,
                     is_correct: typeof v.ok === 'boolean' ? v.ok : null };
-          if (typeof v.ok !== 'boolean') { d.self_checked = true; }
           post(d);
         });
       };
@@ -2813,7 +2827,7 @@ try {
               } else {
                 post({ __block: sec, key_stage: 'KS3', lesson_slug: slug, question_id: slug + '#' + act, rung: null,
                        kind: 'choice', question_text: promptOf(sec), answer: optLabel(opt),
-                       correct_answer: null, is_correct: null, self_checked: true });
+                       correct_answer: null, is_correct: null });
               }
               return;
             }
@@ -2824,14 +2838,14 @@ try {
               post({ __block: sec, key_stage: 'KS3', lesson_slug: slug, question_id: slug + '#' + act, rung: null,
                      kind: 'choice', question_text: promptOf(sec), answer: optLabel(opt),
                      correct_answer: null, explanation: txt(sec.querySelector('[data-reveal]')) || null,
-                     is_correct: null, self_checked: true });
+                     is_correct: null });
             } else if (!sec.hasAttribute('data-instrument')) {
               // ⊕ 25 Oct 2026 (commitNoReveal): a "commit first" choice with
               // nothing revealed on the block itself (a practical's first
               // question). Every changed pick, self-checked.
               post({ __block: sec, key_stage: 'KS3', lesson_slug: slug, question_id: slug + '#' + act, rung: null,
                      kind: 'choice', question_text: promptOf(sec), answer: optLabel(opt),
-                     correct_answer: null, is_correct: null, self_checked: true });
+                     correct_answer: null, is_correct: null });
             }
             return;
           }
@@ -2846,6 +2860,7 @@ try {
           if (!rev || !rev.hasAttribute('hidden')) { return; }   // already open: not a new submission
           later(function () {
             if (rev.hasAttribute('hidden')) { return; }          // the page refused (nothing to check yet)
+            draftDrop(cfaId(q, pre, csec));
             var labelFor = function (inp) {
               var l = inp.id ? q.querySelector('label[for="' + inp.id + '"]') : null;
               return l ? txt(l) : '';
@@ -2878,6 +2893,41 @@ try {
           });
         } catch (err) { /* capture never breaks a lesson */ }
       }, true);
+
+      /* ⊕ 9 Nov 2026: "Your turn" lines typed and not yet checked (draftPut). */
+      var cfaInput = function (el) {
+        var a = el.attributes || [];
+        for (var i = 0; i < a.length; i += 1) { var m = /^(data-p\d+cfa)-input$/.exec(a[i].name); if (m) { return m[1]; } }
+        return null;
+      };
+      var cfaId = function (q, pre, csec) {
+        var n = parseInt(q.getAttribute(pre + '-q'), 10);
+        return ks3Slug() + '#' + (csec.getAttribute('data-activity') || 'your-turn') + '-' + ((isNaN(n) ? 0 : n) + 1);
+      };
+      document.addEventListener('input', function (e) {
+        var t = e.target, pre = t && t.getAttribute ? cfaInput(t) : null;
+        if (!pre) { return; }
+        var q = t.closest('[' + pre + '-q]'), csec = t.closest('[data-activity]');
+        if (!q || !csec) { return; }
+        var vals = Array.prototype.map.call(q.querySelectorAll('[' + pre + '-input]'), function (i) { return i.value || ''; });
+        if (vals.some(function (v) { return v.trim(); })) { draftPut(cfaId(q, pre, csec), vals); } else { draftDrop(cfaId(q, pre, csec)); }
+      }, true);
+      window.MrBadmusAnswerCapture.afterReplay.push(function () {
+        var seen = [];
+        Array.prototype.forEach.call(document.querySelectorAll('input, textarea, select'), function (el) {
+          var pre = cfaInput(el), q = pre && el.closest('[' + pre + '-q]'), csec = q && el.closest('[data-activity]');
+          if (!csec || seen.indexOf(q) >= 0) { return; }
+          seen.push(q);
+          var rev = q.querySelector('[' + pre + '-reveal]'), id = cfaId(q, pre, csec);
+          if (rev && !rev.hasAttribute('hidden')) { draftDrop(id); return; }
+          var vals = draftGet(id), ins = q.querySelectorAll('[' + pre + '-input]');
+          if (!Array.isArray(vals) || Array.prototype.some.call(ins, function (i) { return (i.value || '').trim(); })) { return; }
+          Array.prototype.forEach.call(ins, function (i, k) {
+            i.value = vals[k] == null ? '' : vals[k];
+            try { i.dispatchEvent(new Event('input', { bubbles: true })); } catch (e) { /* old browser */ }
+          });
+        });
+      });
 
       /* ── Saved work follow-up: "Your turn" ticks ("I had this") ──
          Read a tick after the page has flipped it; the whole set of ticked
@@ -2946,9 +2996,9 @@ try {
           var hit = press(allIn(scope, sp.opt), r.answer);
           if (hit && sp.commit) { click(sec.querySelector(sp.commit)); }
           if (hit && sp.after) { var af = scope.querySelector(sp.after); if (af) { click(af); } }
-          if (hit && sp.count && Array.isArray(r.self_ticks)) {
+          if (hit && sp.count && ownTicks(r)) {
             var bs0 = sec.querySelectorAll('button'), kept = [];
-            r.self_ticks.forEach(function (pos) {
+            ownTicks(r).forEach(function (pos) {
               if (bs0[pos - 1]) { click(bs0[pos - 1]); kept.push(pos); }
             });
             countSeen[slug0(sec) + '-1'] = kept;
@@ -3064,9 +3114,10 @@ try {
             // The child's own "I had this" ticks, as they were saved (an
             // older row without them leaves the ticks as the page has them).
             var putTicks = function () {
-              if (!Array.isArray(r.self_ticks)) { return; }
+              var own3 = ownTicks(r);
+              if (!own3) { return; }
               Array.prototype.forEach.call(q.querySelectorAll('[' + pre + '-tick]'), function (tb) {
-                var want = r.self_ticks.indexOf(parseInt(tb.getAttribute(pre + '-tick'), 10) + 1) >= 0;
+                var want = own3.indexOf(parseInt(tb.getAttribute(pre + '-tick'), 10) + 1) >= 0;
                 if ((tb.getAttribute('aria-pressed') === 'true') !== want && !tb.disabled) { tb.click(); }
               });
             };
@@ -3402,7 +3453,7 @@ try {
         d.kind = 'choice'; d.question_text = p.prompt || '';
         d.answer = optText(o);
         if (graded) { d.correct_answer = optText(rightOpt(opts)); d.is_correct = !!o.correct; }
-        else { d.explanation = p.reveal || null; d.self_checked = true; }
+        else { d.explanation = p.reveal || null; }
         post(d);
       },
       Ks4Sort: function (api, s, prev) {
@@ -3515,7 +3566,7 @@ try {
         var op = owner.logic.props || {}, R = op.rungs || {}, r = null, d2 = null;
         if (owner.comp === 'Ks4Ladder') {
           r = R.r3 || {};
-          d2 = base('r3', 'r3');
+          d2 = base('r3');                      // no rung: see scoredRow
           if (op.slug) { d2.lesson_slug = op.slug; d2.question_id = pilotId(op.slug, 'r3'); }
           d2.marks = r.marks || 3;
         } else if (owner.comp === 'Ks4Practice') {
@@ -3526,7 +3577,7 @@ try {
           var at = keys[kids(owner, 'Ks4Chain').indexOf(api)];
           if (!at) { return; }
           r = L[at[0]][at[1]] || {};
-          d2 = base('r' + (at[0] + 1) + '-' + (at[1] + 1), 'r' + (at[0] + 1));
+          d2 = base('r' + (at[0] + 1) + '-' + (at[1] + 1));
           d2.marks = r.marks || [1, 3, 3, 6][at[0]];
         } else { return; }
         d2.kind = 'order'; d2.question_text = r.prompt || '';
@@ -3712,7 +3763,9 @@ try {
       boolList(st.ticks).forEach(function (n) { list.push(n + lvs.length); });
       if (!list.length && !levelSent[qid]) { return; }
       levelSent[qid] = 1;
-      sendTicks(qid, list);
+      var lb = typeof st.level === 'number' ? String((lvs[st.level] || {}).label || '') : '';
+      var lm = /level\s*(\d)/i.exec(lb);
+      sendTicks(qid, list, 0, lm ? parseInt(lm[1], 10) : (/no relevant content/i.test(lb) ? 0 : undefined));
     }
     function tickTap(api) {
       var st = api.logic.state || {}, p = api.logic.props || {};
@@ -4084,6 +4137,8 @@ try {
           for (var k in t) { if (!base[k]) { added.push(k); } }
           var m = null;
           for (var k2 in t) { var mm = TALLY.exec(k2); if (mm) { m = Math.max(m === null ? -1 : m, Number(mm[1])); } }
+          // The last right answer of a tally often stops counting and says "All five right".
+          if (m === null) { for (var k3 in t) { if (/^all\b.{0,30}\b(right|correct)\b/i.test(k3)) { m = Infinity; } } }
           return { added: added, yes: added.some(function (x) { return YES.test(x); }), tally: m, alerts: alerts(v) };
         });
         var real = per.filter(Boolean);
@@ -4172,7 +4227,6 @@ try {
           d.answer = labels[cur[k]] == null ? null : labels[cur[k]];
           d.correct_answer = good === null ? null : labels[good];
           d.is_correct = good === null ? null : cur[k] === good;
-          if (good === null) { d.self_checked = true; }
           post(d);
         });
       });
@@ -4221,8 +4275,14 @@ try {
             Object.keys(s[o.done] || {}).forEach(function (k) {
               if (!s[o.done][k] || (w[o.done] || {})[k] || (s[o.pick] || {})[k] === undefined) { return; }
               var at = {}; at[o.step] = +k;
-              var v = x.vals(at), it = (v[o.opts] || [])[s[o.pick][k]];
-              out.push({ e: +k + 1, a: it ? it.label : null, ok: o.yes.test(String(v[o.word] || '')), q: String(v[o.ask] || '') });
+              var v = x.vals(at), it = (v[o.opts] || [])[s[o.pick][k]], good = null;
+              (v[o.opts] || []).forEach(function (cand, i) {
+                if (good !== null) { return; }
+                var tr = Object.assign({}, at), pk = {}; pk[k] = i;
+                tr[o.pick] = Object.assign({}, s[o.pick], pk);
+                if (o.yes.test(String(x.vals(tr)[o.word] || ''))) { good = cand.label; }
+              });
+              out.push({ e: +k + 1, a: it ? it.label : null, ok: o.yes.test(String(v[o.word] || '')), q: String(v[o.ask] || ''), good: good });
             });
             return out;
           },
@@ -4266,6 +4326,16 @@ try {
             return o.put(e, n, st);
           } };
       }
+      // The option the lesson answers "Yes" to, asked of its own render.
+      function optionWhere(x, list, key, word) {
+        var out = null;
+        (list || []).forEach(function (o) {
+          if (out !== null || o.value === '' || o.value == null) { return; }
+          var at = {}; at[key] = o.value;
+          if (/^Yes/.test(String(x.vals(at)[word] || ''))) { out = o.label; }
+        });
+        return out;
+      }
       var labelOfPressed = function (list) { var on = (list || []).filter(function (o) { return o && o.pressed; }); return on.length ? on[on.length - 1].label : null; };
       return {
         'decomposition': [
@@ -4285,11 +4355,13 @@ try {
             fire: function (s, w, x) {
               if (s.anom === w.anom || s.anom === '') { return null; }
               var v = x.vals(), i = (v.anomOpts || []).map(function (o) { return String(o.value); }).indexOf(String(s.anom));
-              return [{ e: null, a: i >= 0 ? v.anomOpts[i].label : s.anom, ok: /^Yes/.test(String(v.anomWord || '')), q: 'Which result is the anomaly?' }];
+              return [{ e: null, a: i >= 0 ? v.anomOpts[i].label : s.anom, ok: /^Yes/.test(String(v.anomWord || '')), q: 'Which result is the anomaly?', good: optionWhere(x, v.anomOpts, 'anom', 'anomWord') }];
             },
             back: function (r, e, st, x) {
               var o = x.vals().anomOpts || [], i = find(o, r.answer);
-              return i >= 0 ? { anom: o[i].value } : null;
+              if (i < 0) { return null; }
+              x.afterDraw(function () { var el = document.getElementById('enz-anom'); if (el) { el.value = o[i].value; } });
+              return { anom: o[i].value };
             } },
           typed({ key: 'mean', flag: 'meanChecked', word: 'meanWord', yes: /^Correct/, q: 'Work out the mean time at pH 6', covers: ['onMean'] })
         ],
@@ -4300,12 +4372,14 @@ try {
               fire: function (s, w, x) {
                 if (s.anom === w.anom || s.anom === '') { return null; }
                 var v = x.vals(), i = (v.timeOpts || []).map(function (o) { return String(o.value); }).indexOf(String(s.anom));
-                return [{ e: null, a: i >= 0 ? v.timeOpts[i].label : s.anom, ok: /^Yes/.test(String(v.anomWord || '')), q: 'Which reading is the anomaly?' }];
+                return [{ e: null, a: i >= 0 ? v.timeOpts[i].label : s.anom, ok: /^Yes/.test(String(v.anomWord || '')), q: 'Which reading is the anomaly?', good: optionWhere(x, v.timeOpts, 'anom', 'anomWord') }];
               },
               back: function (r, e, st, x) {
                 lab(x);
                 var o = x.vals().timeOpts || [], i = find(o, r.answer);
-                return i >= 0 ? { anom: o[i].value } : null;
+                if (i < 0) { return null; }
+                x.afterDraw(function () { var el = document.getElementById('anom'); if (el) { el.value = o[i].value; } });
+                return { anom: o[i].value };
               } },
             typed({ key: 'mp', flag: 'mpChecked', word: 'mpWord', yes: /^That agrees/, q: 'What is the melting point, in °C?', covers: ['onMp'], before: lab })
           ];
@@ -4602,6 +4676,9 @@ try {
                   try { if (x.L.judge(rows, sel).ok) { good = bs.filter(function (b, i) { return sel[i]; }).map(function (b) { return b.label; }).join('\n'); } } catch (e) { good = null; }
                 }
               }
+              // No selection of these runs passes ("Not concordant yet"): the lesson's answer is what it said.
+              if (good === null && !s.pick.ok) { good = [s.pick.word, s.pick.note].filter(Boolean).join(' '); }
+              if (good === null && s.pick.ok) { good = on.join('\n'); }
               return [{ e: null, a: on.join('\n'), ok: s.pick.ok === true, q: 'Choose the concordant titres', good: good }];
             },
             back: function (r, e, st, x) {
@@ -5101,6 +5178,8 @@ try {
         L: L,
         vals: function (at) { return A.valsAt(L, Object.assign(A.clone(L.state) || {}, at || {})); },
         set: function (p) { L.setState(p); },
+        // After the lesson's next draw: a <select> drawn new takes its value only once its options exist.
+        afterDraw: function (fn) { var h = document.getElementById('ks4-mount'), api = h && h.__mrbKs4; if (api && api.schedule) { api.schedule(fn); } },
         press: function (get) {
           var p = A.patchOf(L, L.state, typeof get === 'string' ? function (v) { return v[get]; } : get);
           if (p && Object.keys(p).length) { L.setState(p); }
@@ -5128,7 +5207,7 @@ try {
           if (r.a == null || r.a === '') { return; }
           var d = base(f.id + (r.e == null ? '' : '-' + String(r.e).toLowerCase().replace(/[^a-z0-9._-]+/g, '-')));
           d.__block = api.host; d.kind = r.kind || 'choice'; d.question_text = r.q || ''; d.answer = String(r.a);
-          if (typeof r.ok === 'boolean') { d.is_correct = r.ok; } else { d.self_checked = true; }
+          if (typeof r.ok === 'boolean') { d.is_correct = r.ok; }
           if (r.good != null) { d.correct_answer = String(r.good); }
           post(d);
         });
@@ -5207,10 +5286,53 @@ try {
       });
       return parts.join(' — ');
     }
+    /* ⊕ 9 Nov 2026 (a blind run: "Self-checked" beside a page that had said "goes up,
+       not stays the same"). `self_checked` means the child compared their own work with
+       a shown answer, and only typed work does that. A commitment nothing judges goes
+       unmarked. A commitment the page judges on a later Reveal is judged here: the
+       lesson's own render is asked what it would draw once revealed, for each option,
+       and its verdict style says which are right. `show` opens that reveal on a COPY of
+       the state; `read` is the verdict for this slot. */
+    var ROOT_JUDGE = {
+      'series-parallel-circuits': { preds: { show: function (s, t) { s.step = +t[1]; s.revealed = Object.assign({}, s.revealed); s.revealed[t[1]] = true; }, read: function (v, t) { return (v.verdicts || [])[+t[2]]; } } },
+      'chromosomes-mitosis': { preds: { show: function (s, t) { s.st = +t[1]; s.revealed = Object.assign({}, s.revealed); s.revealed[t[1]] = true; }, read: function (v, t) { return (v.cyVerdicts || [])[+t[2]]; } } },
+      'types-of-em-waves': { preds: { show: function (s, t) { s.pair = +t[1]; s.shown = Object.assign({}, s.shown); s.shown[t[1]] = true; }, read: function (v, t) { return (v.verdicts || [])[+t[2]]; } } },
+      'lenses': { preds: { show: function (s, t) { s.shown = Object.assign({}, s.shown); s.shown[t[1]] = true; }, read: function (v, t) { return (v.bVerdicts || [])[['t', 's', 'w'].indexOf(t[2])]; } } },
+      'red-shift-big-bang': { pred: { show: function (s) { s.gal = 2; }, read: function (v) { return { style: v.specNoteStyle }; } } },
+      'waves-detection-exploration': {
+        qPred: { show: function (s, t) { s.qStage = +t[1]; s.qShown = Object.assign({}, s.qShown); s.qShown[t[1]] = true; }, read: function (v) { return { style: v.qVerdictStyle }; } },
+        uPred: { show: function (s, t) { s.uStage = +t[1]; s.uShown = Object.assign({}, s.uShown); s.uShown[t[1]] = true; }, read: function (v) { return { style: v.uVerdictStyle }; } } },
+      'sound-waves-hearing': { pPred: { show: function (s, t) { s.pStage = +t[1]; s.pShown = Object.assign({}, s.pShown); s.pShown[t[1]] = true; }, read: function (v) { return (v.pVerdicts || [])[0]; } } }
+    };
+    function rootJudged(r, pre) {
+      var cfg = (ROOT_JUDGE[pathSlug] || {})[String(r.slot && r.slot[0])], R = rootActsOf();
+      if (!cfg || !R || r.kind !== 'pick') { return null; }
+      var A = KS4RootActs, L = R.api.logic, right = [], label = null, seen = false;
+      r.options.forEach(function (o) {
+        if (!o.patch) { return; }
+        var st = A.apply(pre, o.patch);
+        cfg.show(st, r.slot);
+        var w = cfg.read(A.valsAt(L, st), r.slot);
+        if (!w || !w.style) { return; }
+        seen = true;
+        if (!/ks3-alert/.test(w.style)) { right.push(o.k); if (label === null) { label = o.label; } }
+      });
+      return seen && right.length ? { right: right, label: label } : null;
+    }
     function rootAnswer(R, g, pre, me, ask, hit) {
       var A = KS4RootActs, L = R.api.logic;
       var r = A.analyse(L, g, pre, R.init, me.oi);
-      if (r.kind !== 'pick' && r.kind !== 'gate' && r.kind !== 'multi') { return; }
+      /* ⊕ 9 Nov 2026: a blind run lost the fifth of five answers. Analysed with four
+         already right, the fifth's words stopped looking like a tally, so it read as an
+         exploration and was never sent. A group that takes answers from a clean start
+         keeps taking them: never drop an answer on how the words happen to read now. */
+      if (r.kind !== 'pick' && r.kind !== 'gate' && r.kind !== 'multi') {
+        var r0 = A.analyse(L, g, R.init, R.init, me.oi);
+        if (r0.kind !== 'pick' && r0.kind !== 'gate' && r0.kind !== 'multi') { return; }
+        r = A.classify(L, g, pre, R.init, me.oi);
+        if (r.kind !== 'pick' && r.kind !== 'gate' && r.kind !== 'multi') { return; }
+        if (r0.graded && r0.right && r.kind === r0.kind) { r.right = r0.right; r.graded = true; }
+      }
       var o = null;
       r.options.forEach(function (x) { if (x.k === me.k) { o = x; } });
       if (!o || !o.ws || !o.ws.length) { return; }          // this press changes nothing: not a new answer
@@ -5229,13 +5351,16 @@ try {
         Object.keys(st2).forEach(function (k) { if (st2[k] === true && /ok$/i.test(k)) { st2[k] = false; } });
         var chk = A.probe(L, g, st2, me.oi).filter(function (x) { return x.k === r.check; })[0];
         var okw = chk && chk.ws.filter(function (w) { return typeof w.after === 'boolean' && /ok$/i.test(String(w.path[w.path.length - 1])); })[0];
-        if (okw) { d.is_correct = okw.after; } else { d.self_checked = true; }
+        if (okw) { d.is_correct = okw.after; }
       } else {
         d.answer = o.label;
         if (r.graded && r.right && r.right.length) {
           d.correct_answer = labelOf(r.right[0]);
           d.is_correct = r.right.indexOf(me.k) >= 0;
-        } else { d.self_checked = true; }
+        } else {
+          var jr = rootJudged(r, pre);
+          if (jr) { d.is_correct = jr.right.indexOf(me.k) >= 0; d.correct_answer = jr.label; }
+        }
       }
       post(d);
     }
@@ -5273,8 +5398,48 @@ try {
       } catch (err) { /* capture never breaks a lesson */ }
     }, true);
 
+    /* ⊕ 9 Nov 2026: a written answer and a five-line calculation typed and not yet
+       opened (draftPut). A Ks4Write anywhere; a calculation at the lesson's own level. */
+    function draftsOf(api) {
+      var st = api.logic.state || {}, out = [];
+      if (api.comp === 'Ks4Write') {
+        var q = writeQid(api);
+        if (q) { out.push({ id: q, done: !!st.open, val: st.text, empty: !String(st.text || '').trim(), put: function (v) { api.logic.setState({ text: String(v) }); } }); }
+      } else if (api.comp === 'Ks4Cfifa' && rootLevel(api)) {
+        var k = nth(api);
+        ((api.logic.props || {}).questions || []).forEach(function (o, i) {
+          var cur = (st.q || {})[i] || { lines: [], ticks: [], open: false };
+          out.push({ id: pilotId(pathSlug, 'cfifa-' + k + '-' + (i + 1)), done: !!cur.open, val: cur.lines, empty: !(cur.lines || []).some(function (l) { return String(l || '').trim(); }),
+            put: function (v) { var nq = Object.assign({}, api.logic.state.q || {}); nq[i] = Object.assign({ ticks: [], open: false }, nq[i] || {}, { lines: v }); api.logic.setState({ q: nq }); } });
+        });
+      } else if (api.comp === 'Ks4Steps' && rootLevel(api) && (api.logic.props || {}).mode === 'attempt') {
+        var vs = st.vals || {};
+        out.push({ id: pilotId(pathSlug, 'steps-' + nth(api)), done: !!st.checked, val: vs, empty: !Object.keys(vs).some(function (x) { return String(vs[x] || '').trim(); }), put: function (v) { api.logic.setState({ vals: v }); } });
+      }
+      return out;
+    }
+    function draftTap(api) {
+      draftsOf(api).forEach(function (d) {
+        if (d.done || d.empty) { draftDrop(d.id); } else { draftPut(d.id, d.val); }
+      });
+    }
+    window.MrBadmusAnswerCapture.afterReplay.push(function () {
+      var seen = [];
+      Array.prototype.forEach.call(document.querySelectorAll('[data-dc-tpl]'), function (el) {
+        var api = el.__mrbKs4;
+        if (!api || !api.logic || api.comp === undefined || seen.indexOf(api) >= 0) { return; }
+        seen.push(api);
+        draftsOf(api).forEach(function (d) {
+          if (d.done) { draftDrop(d.id); return; }
+          var v = d.empty ? draftGet(d.id) : null;
+          if (v) { d.put(v); }
+        });
+      });
+    });
+
     window.MrBadmusKS4Tap = function (api) {
       if (!api || !api.logic || !prevOf) { return; }
+      if (api.comp !== undefined) { try { draftTap(api); } catch (e) { /* never breaks a lesson */ } }
       // ⊕ Saved work follow-up: the lesson's own one-off activities (the
       // page's root instance) and the child's own ticks.
       if (api.comp === undefined) {
@@ -5342,8 +5507,8 @@ try {
        themselves 4 of 4 (the marker had credited points 2–6). */
     function ticksBack(r, n) {
       var t = [];
-      if (!r || !n || !Array.isArray(r.self_ticks)) { return t; }
-      r.self_ticks.forEach(function (h) { if (h >= 1 && h <= n) { t[h - 1] = true; } });
+      if (!r || !n || !ownTicks(r)) { return t; }
+      ownTicks(r).forEach(function (h) { if (h >= 1 && h <= n) { t[h - 1] = true; } });
       return t;
     }
     // A Ks4Write put back; returns the marks its own tally now shows. An
@@ -5356,7 +5521,7 @@ try {
       // the tally is then the top of that level, as it was on the page.
       var lvs = (w.logic.props || {}).levels || [];
       if (lvs.length) {
-        var own = Array.isArray(r.self_ticks) ? r.self_ticks : [], lv = null, tkl = [];
+        var own = ownTicks(r) || [], lv = null, tkl = [];
         own.forEach(function (h) {
           if (h >= 1 && h <= lvs.length) { lv = h - 1; }
           else if (h > lvs.length && h - lvs.length <= ((w.logic.props || {}).points || []).length) { tkl[h - lvs.length - 1] = true; }
@@ -5370,7 +5535,7 @@ try {
       var ticks = ticksBack(r, (points || []).length);
       var n = ticks.filter(Boolean).length;
       w.logic.setState({ text: String(r.answer || ''), open: true, ticks: ticks, reported: true });
-      var aw = (points || []).length && Array.isArray(r.self_ticks) ? Math.min(marks, n) : (r.marks_scored == null ? 0 : r.marks_scored);
+      var aw = (points || []).length && ownTicks(r) ? Math.min(marks, n) : (r.marks_scored == null ? 0 : r.marks_scored);
       // A Write on its own tells the lesson it was marked, as it does live.
       var wp = w.logic.props || {};
       if (notify && (points || []).length && typeof wp.onMark === 'function') { wp.onMark({ awarded: aw, marks: marks, set: true }); }
@@ -5379,9 +5544,19 @@ try {
     // A block's own "done" signal to its lesson, as the block sends it live,
     // so the lesson's progress (its rail, "N of 5 done") counts it.
     function tell(fn) { if (typeof fn === 'function') { try { fn.apply(null, Array.prototype.slice.call(arguments, 1)); } catch (e) { /* never breaks a lesson */ } } }
+    /* ⊕ 9 Nov 2026: the page's own rule is that a rung scores the FIRST check of a
+       chain since it was last dealt ("The rung scores your first attempt"), and "Retry
+       my misses" deals it again. The rung's handler sends that check with the rung
+       named; a later "Check again" is sent with none. So the row that scored is the
+       last one naming its rung. (An older "Check again" did name it, and reads as a
+       retry.) Reading the first row gave 3 of 4 where the page had said 4 of 4. */
+    function scoredAt(rs) {
+      for (var i = (rs || []).length - 1; i >= 0; i -= 1) { if (rs[i] && rs[i].rung) { return i; } }
+      return 0;
+    }
     function chainSet(ch, rs, links, herr) {
       if (!ch || !ch.logic || !rs || !rs.length || (ch.logic.state || {}).attempts) { return; }
-      ch.logic.setState({ chain: chainBack(links, herr, lastOf(rs).answer), checked: true, attempts: rs.length, reported: true });
+      ch.logic.setState({ chain: chainBack(links, herr, lastOf(rs).answer), checked: true, attempts: rs.length - scoredAt(rs), reported: true });
     }
     replay.push(function (rows) {
       var ids = byId(rows);
@@ -5620,7 +5795,7 @@ try {
                 vals[si + '-' + j] = lead && line.indexOf(lead) === 0 ? line.slice(lead.length) : line;
               });
             });
-            var tk = {}, own = Array.isArray(r.self_ticks) ? r.self_ticks : [], n1 = 0;
+            var tk = {}, own = ownTicks(r) || [], n1 = 0;
             (p.steps || []).forEach(function (stp, si) {
               (stp.lines || []).forEach(function (ln, j) { n1 += 1; if (own.indexOf(n1) >= 0) { tk[si + '-' + j] = true; } });
             });
@@ -5656,7 +5831,7 @@ try {
             }
             rs = lid('r3');
             if (st.r3 == null && rs && rs.length) {
-              patch.r3 = rs[0].is_correct === true; has = true;      // the rung scores the first check
+              patch.r3 = rs[scoredAt(rs)].is_correct === true; has = true;
               chainSet(kids(api, 'Ks4Chain')[0], rs, (R.r3 || {}).links || [], (R.r3 || {}).herrings || []);
             }
             if (st.r4 == null && (r = lastOf(lid('r4')))) {
@@ -5693,7 +5868,7 @@ try {
                   var cbp = calcBack(it, pr.answer);
                   q[kk] = Object.assign(base, cur, { res: pr.is_correct === true, conv: cbp.conv, num: cbp.num, unit: cbp.unit });
                 } else if (kd === 'chain') {
-                  q[kk] = Object.assign(base, cur, { res: prs[0].is_correct === true });
+                  q[kk] = Object.assign(base, cur, { res: prs[scoredAt(prs)].is_correct === true });
                   chainSet(kids(api, 'Ks4Chain')[chainKeys.indexOf(kk)], prs, it.links || [], it.herrings || []);
                 } else {
                   var mkw = it.marks || [1, 3, 3, 6][ri];
@@ -5843,6 +6018,8 @@ try {
         if (data && data.answers.length && cap && cap.replay) {
           cap.replay.forEach(function (fn) { try { fn(data.answers); } catch (e) {} });
         }
+        // Last, and even when the read failed: only what the saved rows did not fill.
+        if (cap && cap.afterReplay) { cap.afterReplay.forEach(function (fn) { try { fn(); } catch (e) {} }); }
         if (data && data.tutor.length && window.MrBadmus && typeof window.MrBadmus.restoreTalk === 'function') {
           window.MrBadmus.restoreTalk(data.tutor);
         }
