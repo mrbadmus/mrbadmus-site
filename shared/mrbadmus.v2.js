@@ -1696,14 +1696,61 @@ try {
        question, cleared when the answer is sent. It never reaches the server and
        never comes back on another device. A family child's session only: this whole
        capture installs for nobody else. */
-    var draftChild = (session.user && session.user.id) || 'child', draftTimers = {};
+    var draftChild = (session.user && session.user.id) || 'child', draftTimers = {}, draftWaiting = {};
+    /* ⊕ 9 Nov 2026: a timer that starts again on reload makes an answer look quick.
+       A draft keeps how long the child had been at it, and the answer it becomes is
+       sent with that time added. A draft from before this (no time kept) gives null,
+       never a low figure. */
+    var draftCarry = {};
     function draftKey(q) { return 'mrb_draft_v1:' + draftChild + ':' + q; }
-    function draftPut(q, v) {
-      clearTimeout(draftTimers[q]);
-      draftTimers[q] = setTimeout(function () { try { window.localStorage.setItem(draftKey(q), JSON.stringify(v)); } catch (e) { /* storage refused */ } }, 300);
+    function draftWrite(q) {
+      var w = draftWaiting[q];
+      delete draftWaiting[q];
+      if (w === undefined) { return; }
+      try { window.localStorage.setItem(draftKey(q), w); } catch (e) { /* storage refused */ }
     }
-    function draftGet(q) { try { return JSON.parse(window.localStorage.getItem(draftKey(q)) || 'null'); } catch (e) { return null; } }
-    function draftDrop(q) { clearTimeout(draftTimers[q]); try { window.localStorage.removeItem(draftKey(q)); } catch (e) { /* storage refused */ } }
+    function draftPut(q, v) {
+      var had = Object.prototype.hasOwnProperty.call(draftCarry, q) ? draftCarry[q] : 0;
+      var ms = had === null ? null : had + visibleMs(lastAt, Date.now());
+      draftWaiting[q] = JSON.stringify({ __d: 1, v: v, ms: ms });
+      clearTimeout(draftTimers[q]);
+      draftTimers[q] = setTimeout(function () { draftWrite(q); }, 300);
+    }
+    function draftRaw(q) { try { return JSON.parse(draftWaiting[q] || window.localStorage.getItem(draftKey(q)) || 'null'); } catch (e) { return null; } }
+    function draftGet(q) { var r = draftRaw(q); return r && r.__d ? r.v : r; }
+    // The draft is going back on screen: its time goes with it.
+    function draftTake(q) {
+      var r = draftRaw(q);
+      if (r === null) { return null; }
+      draftCarry[q] = r.__d && typeof r.ms === 'number' ? r.ms : null;
+      return r.__d ? r.v : r;
+    }
+    function draftDrop(q) { clearTimeout(draftTimers[q]); delete draftWaiting[q]; try { window.localStorage.removeItem(draftKey(q)); } catch (e) { /* storage refused */ } }
+    function draftsFlush() { Object.keys(draftWaiting).forEach(function (q) { clearTimeout(draftTimers[q]); draftWrite(q); }); }
+    window.addEventListener('pagehide', draftsFlush);
+    document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'hidden') { draftsFlush(); } });
+    var rootCarry;                       // a lesson's own picks, restored: see rootDraftBack
+    // What this answer owes its draft, if it came from one.
+    function carried(d, t) {
+      var c, has = false, q = d.question_id;
+      if (q != null && Object.prototype.hasOwnProperty.call(draftCarry, q)) { c = draftCarry[q]; has = true; delete draftCarry[q]; }
+      var b = d.__block, sent = String(d.answer == null ? '' : d.answer);
+      if (b && b.id === 'ks4-mount' && rootCarry !== undefined) { c = rootCarry; has = true; rootCarry = undefined; }
+      if (b && b.querySelectorAll) {
+        Array.prototype.forEach.call(b.querySelectorAll('input, textarea, select'), function (el) {
+          var val = el.tagName === 'SELECT' ? (el.options[el.selectedIndex] ? (el.options[el.selectedIndex].textContent || '').trim() : '') : String(el.value || '').trim();
+          var went = !!val && sent.indexOf(val) >= 0;
+          if (el.__mrbDraftKey && (went || el.disabled)) { draftDrop(el.__mrbDraftKey); }
+          if (went && Object.prototype.hasOwnProperty.call(el, '__mrbCarry')) {
+            c = has && (c === null || c === undefined) ? null : el.__mrbCarry; has = true; delete el.__mrbCarry;
+          }
+        });
+      }
+      if (!has) { return t; }
+      if (t == null || c == null) { return null; }
+      var total = t + Math.round(c / 1000);
+      return total > CAP_S ? null : total;
+    }
     // A saved row's own ticks: the server's 100 + level is not one of them.
     function ownTicks(r) { return r && Array.isArray(r.self_ticks) ? r.self_ticks.filter(function (n) { return n < 100; }) : null; }
     function tickKeep(qid, list, level) {
@@ -1765,6 +1812,7 @@ try {
     }
     window.MrBadmusAnswerCapture.ticks = sendTicks;
     window.MrBadmusAnswerCapture.afterReplay = [];
+    window.MrBadmusAnswerCapture.beforeReplay = [];
 
     // The server accepts ids matching ^[a-z0-9:#._-]{1,200}$ and marks 1–20
     // with 0 ≤ marks_scored ≤ marks; anything else is sent as null rather
@@ -1776,7 +1824,7 @@ try {
     }
     function post(d) {
       if (muted) { return; }                   // a restored answer, already in the ledger
-      var t = ('__t' in d) ? d.__t : spans(1)[0];
+      var t = carried(d, ('__t' in d) ? d.__t : spans(1)[0]);
       var mk = (typeof d.marks === 'number' && isFinite(d.marks)) ? Math.round(d.marks) : null;
       if (mk !== null && (mk < 1 || mk > 20)) { mk = null; }
       var ms = (mk !== null && typeof d.marks_scored === 'number' && isFinite(d.marks_scored))
@@ -1890,6 +1938,48 @@ try {
       var x = String(t == null ? '' : t);
       try { x = x.normalize('NFKC'); } catch (e) { /* old browser */ }
       return x.replace(/^\s*\d+[.)]\s+/, '').replace(/\s+/g, ' ').trim().toLowerCase();
+    }
+    /* The best whole round on any earlier day: for each of those days, the latest
+       answer to every question so far, scored as the lesson scores it (a rung counts
+       when all its questions are right), and only once every question has one. */
+    function bestBefore(rungs, hidden, ids) {
+      var today = new Date().toDateString(), days = {};
+      var at = function (ri, n) { return ids[pilotId(pathSlug, 'r' + (ri + 1) + '-' + (n + 1))] || []; };
+      var right = function (r, list, it, ri) {
+        if ((it.kind || 'mcq') === 'chain') { r = list[scoredAt(list)]; }
+        if (typeof r.is_correct === 'boolean') { return r.is_correct; }
+        var mk = it.marks || [1, 3, 3, 6][ri];
+        return typeof r.marks_scored === 'number' && r.marks_scored >= Math.ceil(mk / 2);
+      };
+      rungs.forEach(function (items, ri) {
+        items.forEach(function (it, n) {
+          at(ri, n).forEach(function (r) {
+            var d = r.answered_at ? new Date(r.answered_at) : null;
+            if (d && d.toDateString() !== today) { days[d.toDateString()] = d.getTime(); }
+          });
+        });
+      });
+      var best = null;
+      Object.keys(days).forEach(function (day) {
+        var end = new Date(day).getTime() + 864e5, score = 0, whole = true;
+        rungs.forEach(function (items, ri) {
+          var all = items.length > 0;
+          items.forEach(function (it, n) {
+            var list = at(ri, n).filter(function (r) { return r.answered_at && new Date(r.answered_at).getTime() < end; });
+            if (!list.length) { whole = false; all = false; return; }
+            if (!right(list[list.length - 1], list, it, ri)) { all = false; }
+          });
+          if (!items.length) { whole = false; }
+          if (all) { score += 1; }
+        });
+        if (whole && (best === null || score > best)) { best = score; }
+      });
+      return best;
+    }
+    if (window.KS4 && typeof window.KS4.load === 'function' && typeof window.KS4.save === 'function') {
+      var ks4Load = window.KS4.load, ks4Save = window.KS4.save;
+      window.KS4.load = function (key, fb) { return /^ks4-best-/.test(String(key)) ? fb : ks4Load(key, fb); };
+      window.KS4.save = function (key, v) { if (!/^ks4-best-/.test(String(key))) { ks4Save(key, v); } };
     }
     function byId(rows) {
       var out = {};
@@ -2735,7 +2825,7 @@ try {
           var after = linesOf(sec);
           if (after.join('\n') === before.join('\n') && !chk.disabled) { return; }   // the page refused (not ready)
           post({ __block: sec, key_stage: 'KS3', lesson_slug: slug, question_id: slug + '#' + act + '-1', rung: null, kind: 'written',
-                 question_text: ask, answer: lines.join('\n'), correct_answer: null, is_correct: null, self_checked: true,
+                 question_text: ask, answer: lines.join('\n'), correct_answer: null, is_correct: null,
                  explanation: after.filter(function (l) { return before.indexOf(l) < 0; }).join(' ') || null });
         });
       };
@@ -2927,9 +3017,96 @@ try {
           if (rev && !rev.hasAttribute('hidden')) { draftDrop(id); return; }
           var vals = draftGet(id), ins = q.querySelectorAll('[' + pre + '-input]');
           if (!Array.isArray(vals) || Array.prototype.some.call(ins, function (i) { return (i.value || '').trim(); })) { return; }
+          draftTake(id);
           Array.prototype.forEach.call(ins, function (i, k) {
             i.value = vals[k] == null ? '' : vals[k];
             try { i.dispatchEvent(new Event('input', { bubbles: true })); } catch (e) { /* old browser */ }
+          });
+          // Work typed under "Question 2" must not come back behind an empty "Question 1".
+          if (q.hasAttribute('hidden')) {
+            var open = csec.querySelector('[' + pre + '-q]:not([hidden])');
+            var openEmpty = open && !Array.prototype.some.call(open.querySelectorAll('[' + pre + '-input]'), function (i) { return (i.value || '').trim(); });
+            var tab = openEmpty ? csec.querySelector('[' + pre + '-tab="' + q.getAttribute(pre + '-q') + '"]') : null;
+            if (tab) { tab.click(); }
+          }
+        });
+      });
+
+      /* ⊕ 9 Nov 2026: every other field in a KS3 activity that nothing has sent yet:
+         typed text, a number, a slider, a dropdown. Same rule as above: on this
+         device, for this child, cleared once the value has gone in an answer. A field
+         only takes its draft if it still holds what it held when the child began, so
+         a saved answer always beats it. The ladder keeps its own text (shared/ks3.js). */
+      var FIELD = 'input:not([type=checkbox]):not([type=radio]):not([type=file]):not([type=hidden]):not([type=button]):not([type=submit]), textarea, select';
+      var fieldKey = function (el) {
+        if (!el || !el.matches || !el.matches(FIELD) || cfaInput(el) || el.closest('.ks3-ladder')) { return null; }
+        var fsec = el.closest('[data-activity]');
+        if (!fsec) { return null; }
+        return ks3Slug() + '#' + fsec.getAttribute('data-activity') + '~' + (el.id || Array.prototype.indexOf.call(fsec.querySelectorAll(FIELD), el));
+      };
+      var fieldTap = function (e) {
+        if (muted) { return; }
+        var el = e.target, k = fieldKey(el);
+        if (!k) { return; }
+        if (!Object.prototype.hasOwnProperty.call(el, '__mrbBase')) { el.__mrbBase = el.tagName === 'SELECT' ? (el.options[0] ? el.options[0].value : '') : el.defaultValue; }
+        el.__mrbDraftKey = k;
+        if (el.value === el.__mrbBase) { draftDrop(k); } else { draftPut(k, { val: el.value, base: el.__mrbBase }); }
+      };
+      document.addEventListener('input', fieldTap, true);
+      document.addEventListener('change', fieldTap, true);
+      window.MrBadmusAnswerCapture.afterReplay.push(function () {
+        Array.prototype.forEach.call(document.querySelectorAll('[data-activity]'), function (fsec) {
+          Array.prototype.forEach.call(fsec.querySelectorAll(FIELD), function (el) {
+            var k = fieldKey(el);
+            if (!k) { return; }
+            var raw = draftGet(k);
+            el.__mrbBase = el.value;
+            if (!raw || typeof raw !== 'object') { return; }
+            if (el.disabled || el.value !== raw.base) { draftDrop(k); return; }
+            el.__mrbBase = raw.base;
+            el.value = raw.val;
+            if (el.value !== raw.val) { el.value = raw.base; draftDrop(k); return; }   // the page no longer offers it
+            draftTake(k);
+            el.__mrbDraftKey = k;
+            el.__mrbCarry = draftCarry[k];
+            delete draftCarry[k];
+            try { el.dispatchEvent(new Event('input', { bubbles: true })); el.dispatchEvent(new Event('change', { bubbles: true })); } catch (e) { /* old browser */ }
+          });
+        });
+        // A ladder rung's text the page itself put back: the time since load is not how long it took.
+        Array.prototype.forEach.call(document.querySelectorAll('.ks3-ladder [data-answer]'), function (el) {
+          if ((el.value || '').trim()) { el.__mrbCarry = null; }
+        });
+      });
+
+      /* ⊕ 9 Nov 2026: a "3 of 6 opened" count on a block that takes no answer. It is
+         not work to mark, so it is kept on this device, and comes back by pressing the
+         same controls again. <ks3-count-local> is checked against the pages by
+         activity_save_drive --units. */
+      var COUNT_LOCAL = /* <ks3-count-local> */ /\bks3-(ab|ahist|amix|ba|bb|becomes|bell|cd|clock|cross|cy|dial|elay|erun|fm|fold|gcmp|ghouse|gut|jobsw|ledger|lt|mloop|nr|od|parrow|pb|pc|qb|route|rr|rs|scale|shell|srig|ss|stock|tpl|zb)-block\b/ /* </ks3-count-local> */;
+      var countKey = function (lsec) { return ks3Slug() + '#' + lsec.getAttribute('data-activity') + '~count'; };
+      document.addEventListener('click', function (e) {
+        if (muted) { return; }
+        var b = e.target && e.target.closest ? e.target.closest('button') : null;
+        var lsec = b && b.closest('[data-activity]');
+        if (!lsec || !COUNT_LOCAL.test(lsec.className)) { return; }
+        var cnt = lsec.querySelector('[data-count]');
+        if (!cnt) { return; }
+        var was = cnt.textContent, at = Array.prototype.indexOf.call(lsec.querySelectorAll('button'), b);
+        setTimeout(function () {
+          if (cnt.textContent === was) { return; }
+          var list = draftGet(countKey(lsec));
+          draftPut(countKey(lsec), (Array.isArray(list) ? list : []).concat([at]));
+        }, 0);
+      }, true);
+      window.MrBadmusAnswerCapture.afterReplay.push(function () {
+        Array.prototype.forEach.call(document.querySelectorAll('[data-activity]'), function (lsec) {
+          if (!COUNT_LOCAL.test(lsec.className) || !lsec.querySelector('[data-count]')) { return; }
+          var list = draftGet(countKey(lsec));
+          if (!Array.isArray(list)) { return; }
+          list.forEach(function (at) {
+            var b = lsec.querySelectorAll('button')[at];
+            if (b && !b.disabled) { b.click(); }
           });
         });
       });
@@ -4267,6 +4444,42 @@ try {
     /* <ks4-root-forms> */
     var lastRootPress = null;                  // the words on the root control last pressed
     var ROOT_FORMS = (function () {
+      /* ⊕ 9 Nov 2026: the right answer, as the lesson itself decides it. Each option's own
+         handler is run on a copy of the state the child answered from, and the option
+         the lesson's verdict calls right is the one named. Read only, never drawn, and
+         run only when the child's answer was wrong. */
+      function rightBy(x, from, list, test) {
+        var A = KS4RootActs, items = list(A.valsAt(x.L, A.clone(from))) || [];
+        for (var i = 0; i < items.length; i += 1) {
+          try {
+            var p = A.patchOf(x.L, A.clone(from), (function (n) { return function (t) { return ((list(t) || [])[n] || {}).onClick; }; })(i));
+            if (!p) { continue; }
+            var at = A.apply(A.clone(from), p);
+            if (test(A.valsAt(x.L, at), at)) { return items[i].label != null ? items[i].label : items[i].text; }
+          } catch (e) { /* the next option */ }
+        }
+        return null;
+      }
+      // Small whole numbers per slot, the few a balancing question can need; never long on a phone.
+      function findCounts(n, max, test, show) {
+        var cand = [], t0 = Date.now(), i;
+        for (i = 0; i < n; i += 1) { cand.push(1); }
+        while (Date.now() - t0 < 250) {
+          if (test(cand)) { return show ? show(cand) : cand.join(', '); }
+          for (i = n - 1; i >= 0; i -= 1) { if (cand[i] < max) { cand[i] += 1; break; } cand[i] = 1; }
+          if (i < 0) { return null; }
+        }
+        return null;
+      }
+      function partRight(x, s, k, r, part, names) {
+        var hit = null;
+        Object.keys(names).forEach(function (key) {
+          if (hit !== null) { return; }
+          var at = {}, one = {}; one[part] = key; at[k] = Object.assign({}, r, one);
+          if (!/alert/.test(String(x.vals({ cur: k, rec: Object.assign({}, s.rec, at) }).verdictStyle || ''))) { hit = names[key]; }
+        });
+        return hit;
+      }
       function put(o, k, v) { var c = Object.assign({}, o || {}); c[k] = v; return c; }
       function find(list, text, key) {
         for (var i = 0; i < (list || []).length; i += 1) { if (list[i] && same(list[i][key || 'label'], text)) { return i; } }
@@ -4509,7 +4722,7 @@ try {
                   var v = KS4RootActs.valsAt(x.L, was), o = (v.wOptions || [])[list[j]];
                   // The lesson's own line for this step: its log says "Yes." or "Not this."
                   var log = (x.vals({ w: wi }).wLog || [])[j];
-                  out.push({ e: (wi + 1) + '-' + (j + 1), a: o ? o.label : null, ok: !!log && log.word === 'Yes.', q: String(v.wPrompt || '') });
+                  out.push({ e: (wi + 1) + '-' + (j + 1), a: o ? o.label : null, ok: !!log && log.word === 'Yes.', good: function () { return rightBy(x, was, function (t) { return t.wOptions; }, function (t) { return ((t.wLog || [])[j] || {}).word === 'Yes.'; }); }, q: String(v.wPrompt || '') });
                 }
               });
               return out;
@@ -4526,7 +4739,7 @@ try {
               if (!rose(s, w, 'dChecked')) { return null; }
               var v = x.vals();
               return [{ e: s.dp + 1, a: 'Electrons moved: ' + s.moved + '\n' + v.dMetalLabel + ': ' + s.mq + '\n' + v.dNonLabel + ': ' + s.xq,
-                        ok: (v.dLines || []).every(function (l) { return /right\.$/.test(String(l.word)); }), q: 'Draw the transfer and give each ion its charge' }];
+                        ok: (v.dLines || []).every(function (l) { return /right\.$/.test(String(l.word)); }), good: function () { for (var n = 1; n <= 3; n += 1) { var t = x.vals({ moved: n, mq: String(n), xq: String(-n), dChecked: true }); if ((t.dLines || []).every(function (l) { return /right\.$/.test(String(l.word)); })) { return 'Electrons moved: ' + n + '\n' + t.dMetalLabel + ': ' + n + '\n' + t.dNonLabel + ': ' + (-n); } } return null; }, q: 'Draw the transfer and give each ion its charge' }];
             },
             back: function (r, e, st, x) {
               var l = String(r.answer || '').split('\n');
@@ -4554,7 +4767,7 @@ try {
               (x.vals().lRows || []).forEach(function (row) {
                 if (!row.value || sent[row.letter] === row.value) { return; }
                 sent[row.letter] = row.value;
-                out.push({ e: row.letter, a: row.value, ok: !row.hasWhy, q: String(row.aria || '') });
+                out.push({ e: row.letter, a: row.value, ok: !row.hasWhy, good: function () { var el = document.getElementById(row.id), hit = null; Array.prototype.forEach.call(el ? el.options : [], function (o) { if (hit !== null || !o.value) { return; } var at = {}; at[row.letter] = o.value; var t = x.vals({ labels: Object.assign({}, s.labels, at), lChecked: true }); if ((t.lRows || []).some(function (y) { return y.letter === row.letter && !y.hasWhy; })) { hit = o.value; } }); return hit; }, q: String(row.aria || '') });
               });
               return out;
             },
@@ -4572,7 +4785,7 @@ try {
                 if (!s.pd[k] || (w.pd || {})[k]) { return; }
                 var v = x.vals({ pi: +k }), o = (v.panOpts || [])[s.pp[k]], pv = s.pv[k] || {};
                 out.push({ e: +k + 1, a: 'Prediction: ' + (o ? o.label : '') + '\nReactants: ' + pv.l + '\nProducts: ' + pv.r,
-                           ok: /^Both totals right/.test(String(v.panVerdict || '')), q: 'Predict, then total each side', kind: 'numeric' });
+                           ok: /^Both totals right/.test(String(v.panVerdict || '')), good: function () { var f = /level: (\S+) and (\S+?)\./.exec(String((v.pFig || {}).alt || '')); return f ? 'Reactants: ' + f[1] + '\nProducts: ' + f[2] : null; }, q: 'Predict, then total each side', kind: 'numeric' });
               });
               return out;
             },
@@ -4591,7 +4804,7 @@ try {
               Object.keys(s.ans || {}).forEach(function (k) {
                 if ((w.ans || {})[k] === s.ans[k]) { return; }
                 var q = (v.logSteps || [])[k], o = q && q.opts[s.ans[k]];
-                out.push({ e: +k + 1, a: o ? o.label : null, ok: !!q && q.fbWord === 'Yes.', q: q ? String(q.prompt || '') : '' });
+                out.push({ e: +k + 1, a: o ? o.label : null, ok: !!q && q.fbWord === 'Yes.', good: function () { return rightBy(x, w, function (t) { return (t.logSteps || [])[k] ? t.logSteps[k].opts : []; }, function (t) { return ((t.logSteps || [])[k] || {}).fbWord === 'Yes.'; }); }, q: q ? String(q.prompt || '') : '' });
               });
               return out;
             },
@@ -4606,7 +4819,7 @@ try {
             fire: function (s, w, x) {
               if (s.lCode === null || (s.lTries === w.lTries && s.lCode === w.lCode)) { return null; }
               var u = (x.vals().lUnits || [])[s.lUnit];
-              return [{ e: null, a: s.lText + '\n' + (u ? u.label : ''), ok: s.lCode === 'ok', q: 'Calculate the specific latent heat, with its unit', kind: 'numeric' }];
+              return [{ e: null, a: s.lText + '\n' + (u ? u.label : ''), ok: s.lCode === 'ok', good: function () { return String(x.vals({ lCode: 'ok' }).lFbText || '').replace(/^Yes\.\s*/, '') || null; }, q: 'Calculate the specific latent heat, with its unit', kind: 'numeric' }];
             },
             back: function (r, e, st, x) {
               var l = String(r.answer || '').split('\n');
@@ -4622,7 +4835,7 @@ try {
             fire: function (s, w, x) {
               if (!rose(s, w, 'raceDone')) { return null; }
               var v = x.vals(), c = v.raceCards || [];
-              return [{ e: null, a: (s.order || []).map(function (i) { return c[i] ? c[i].text : ''; }).join('\n'), ok: v.raceVerdictWord === 'Right order.', q: 'Put the four samples in the order they reach the temperature', kind: 'order' }];
+              return [{ e: null, a: (s.order || []).map(function (i) { return c[i] ? c[i].text : ''; }).join('\n'), ok: v.raceVerdictWord === 'Right order.', good: function () { return String(v.raceVerdictWord || '').replace(/^The order is /, '').replace(/\.$/, '') || null; }, q: 'Put the four samples in the order they reach the temperature', kind: 'order' }];
             },
             back: function (r, e, st, x) {
               var c = x.vals().raceCards || [], o = String(r.answer || '').split('\n').map(function (t) { return find(c, t, 'text'); });
@@ -4632,7 +4845,7 @@ try {
             fire: function (s, w, x) {
               if (s.offPick === w.offPick || s.offPick === null) { return null; }
               var o = (x.vals().offOpts || [])[s.offPick];
-              return [{ e: null, a: o ? o.label : null, ok: s.offPick === 1, q: 'The heater has switched off. Which temperature do you record as the final one?' }];
+              return [{ e: null, a: o ? o.label : null, ok: s.offPick === 1, good: function () { return ((x.vals().offOpts || [])[1] || {}).label || null; }, q: 'The heater has switched off. Which temperature do you record as the final one?' }];
             },
             back: function (r, e, st, x) {
               if (x.L.state.phase === 'ready') { x.fast('onRun'); }
@@ -4641,9 +4854,9 @@ try {
               return null;
             } },
           { id: 'ctext', covers: ['onCText'],
-            fire: function (s, w) {
+            fire: function (s, w, x) {
               if (s.cCode === null || (s.cTries === w.cTries && s.cCode === w.cCode)) { return null; }
-              return [{ e: null, a: s.cText, ok: s.cCode === 'ok', q: 'Calculate the specific heat capacity', kind: 'numeric' }];
+              return [{ e: null, a: s.cText, ok: s.cCode === 'ok', good: function () { return String(x.vals({ cCode: 'ok' }).cFbText || '') || null; }, q: 'Calculate the specific heat capacity', kind: 'numeric' }];
             },
             back: function (r, e, st, x) {
               x.set({ cText: String(r.answer == null ? '' : r.answer) });
@@ -4656,7 +4869,7 @@ try {
             fire: function (s, w, x) {
               if (s.gate === w.gate || s.gate === null) { return null; }
               var v = x.vals(), o = (v.gateOpts || [])[s.gate];
-              return [{ e: null, a: o ? o.label : null, ok: v.gateWord === 'Yes.', q: 'What separates when it melts or boils?' }];
+              return [{ e: null, a: o ? o.label : null, ok: v.gateWord === 'Yes.', good: function () { return rightBy(x, w, function (t) { return t.gateOpts; }, function (t) { return t.gateWord === 'Yes.'; }); }, q: 'What separates when it melts or boils?' }];
             },
             back: function (r, e, st, x) {
               var i = find(x.vals().gateOpts, r.answer);
@@ -4667,7 +4880,7 @@ try {
             fire: function (s, w, x) {
               if (!rose(s, w, 'rankChecked')) { return null; }
               var v = x.vals();
-              return [{ e: null, a: (v.rankSlots || []).map(function (o) { return o.label; }).join('\n'), ok: s.rankOk === true, q: 'Tap them in order from the lowest boiling point to the highest.', kind: 'order' }];
+              return [{ e: null, a: (v.rankSlots || []).map(function (o) { return o.label; }).join('\n'), ok: s.rankOk === true, good: function () { var t = x.vals({ order: [1, 2, 3, 4], rankChecked: true }); return t.rankWord === 'In order.' ? (t.rankSlots || []).map(function (o) { return o.label; }).join('\n') : null; }, q: 'Tap them in order from the lowest boiling point to the highest.', kind: 'order' }];
             },
             back: function (r, e, st, x) {
               x.set({ order: [], rankChecked: false });
@@ -4681,9 +4894,9 @@ try {
         ],
         'thermal-conductivity': [
           { id: 'tries', covers: ['changes', 'predictions'],
-            fire: function (s, w) {
+            fire: function (s, w, x) {
               if (!(s.tries > w.tries) || !s.pred || w.pend === null) { return null; }
-              return [{ e: s.tries + '-' + (w.pend + 1), a: s.pred.pick, ok: s.pred.pick === s.pred.result, q: 'Change from ' + s.pred.from + ' to ' + s.pred.to + '. The house will cool:' }];
+              return [{ e: s.tries + '-' + (w.pend + 1), a: s.pred.pick, ok: s.pred.pick === s.pred.result, good: function () { return s.pred.result; }, q: 'Change from ' + s.pred.from + ' to ' + s.pred.to + '. The house will cool:' }];
             },
             back: function (r, e, st, x) {
               var n = parseInt(String(e).split('-')[1], 10) - 1;
@@ -4695,10 +4908,10 @@ try {
         ],
         'blood': [
           { id: 'cell', covers: ['choices', 'targets'],
-            fire: function (s, w) {
+            fire: function (s, w, x) {
               var said = lastRootPress && lastRootPress.text, moved = s.stage !== w.stage && w.sel === s.sel;
               if (!moved && (s.wrong === null || s.wrong === w.wrong)) { return null; }
-              return [{ e: (s.sel + 1) + '-' + w.stage, a: said, ok: moved, q: w.stage === 'name' ? 'Name this cell' : 'What is its job?' }];
+              return [{ e: (s.sel + 1) + '-' + w.stage, a: said, ok: moved, good: function () { return rightBy(x, w, function (t) { return t.choices; }, function (t, at) { return at.stage !== w.stage; }); }, q: w.stage === 'name' ? 'Name this cell' : 'What is its job?' }];
             },
             back: function (r, e, st, x) {
               x.set({ sel: parseInt(e, 10) - 1 });
@@ -4713,7 +4926,7 @@ try {
             fire: function (s, w, x) {
               if (!rose(s, w, 'p1')) { return null; }
               var v = x.vals();
-              return [{ e: null, a: (s.placed || []).join('\n'), ok: !(v.p1Notes || []).length, q: 'Tap the seven groups in order, longest wavelength first.', kind: 'order' }];
+              return [{ e: null, a: (s.placed || []).join('\n'), ok: !(v.p1Notes || []).length, good: function () { var ids = s.placed || [], truth = ids.map(function (nope, k) { for (var n = 0; n < ids.length; n += 1) { var arr = ids.slice(); arr[k] = ids[n]; if (((x.vals({ placed: arr, p1: true }).slots || [])[k] || {}).isOk) { return ids[n]; } } return null; }); return truth.indexOf(null) >= 0 ? null : truth.join('\n'); }, q: 'Tap the seven groups in order, longest wavelength first.', kind: 'order' }];
             },
             back: function (r, e, st, x) {
               var ids = String(r.answer || '').split('\n');
@@ -4779,9 +4992,9 @@ try {
         ],
         'energy-resources': [
           { id: 'placed', covers: ['zones'],
-            fire: function (s, w) {
+            fire: function (s, w, x) {
               if (s.tried === null || s.tried === w.tried || s.card !== w.card) { return null; }
-              return [{ e: s.card + 1, a: lastRootPress && lastRootPress.text, ok: !!s.flip, q: 'Place the card on the grid' }];
+              return [{ e: s.card + 1, a: lastRootPress && lastRootPress.text, ok: !!s.flip, good: function () { return rightBy(x, w, function (t) { return t.zones; }, function (t, at) { return at.flip === true; }); }, q: 'Place the card on the grid' }];
             },
             back: function (r, e, st, x) {
               x.set({ card: +e - 1, tried: null, flip: false });
@@ -4796,7 +5009,7 @@ try {
               var k = s.hi, was = (w.picks || [])[k];
               if ((s.picks || [])[k] === undefined || (s.picks || [])[k] === null || (s.picks || [])[k] === was) { return null; }
               var said = lastRootPress && lastRootPress.text, v = x.vals();
-              return [{ e: k + 1, a: said, ok: /^Yes/.test(String(v.headReply || '')), q: 'File the headline under the threat it shows' }];
+              return [{ e: k + 1, a: said, ok: /^Yes/.test(String(v.headReply || '')), good: function () { return rightBy(x, w, function (t) { return t.threatBtns; }, function (t) { return /^Yes/.test(String(t.headReply || '')); }); }, q: 'File the headline under the threat it shows' }];
             },
             back: function (r, e, st, x) {
               x.set({ hi: +e - 1 });
@@ -4810,7 +5023,7 @@ try {
             fire: function (s, w, x) {
               var k = s.ei, a = (s.picks || [])[k];
               if (a === undefined || a === null || a === (w.picks || [])[k]) { return null; }
-              return [{ e: k + 1, a: lastRootPress && lastRootPress.text, ok: /^Yes\./.test(String(x.vals().exReply || '')), q: 'Which level of organisation is it?' }];
+              return [{ e: k + 1, a: lastRootPress && lastRootPress.text, ok: /^Yes\./.test(String(x.vals().exReply || '')), good: function () { return rightBy(x, w, function (t) { return t.levelBtns; }, function (t) { return /^Yes\./.test(String(t.exReply || '')); }); }, q: 'Which level of organisation is it?' }];
             },
             back: function (r, e, st, x) {
               x.set({ ei: +e - 1 });
@@ -4824,7 +5037,7 @@ try {
             fire: function (s, w, x) {
               if (s.pick === null || s.pick === w.pick) { return null; }
               var v = x.vals();
-              return [{ e: s.metal + 1, a: lastRootPress && lastRootPress.text, ok: !/^Check where/.test(String(v.chooseNote || '')), q: String(v.chooseQ || '') }];
+              return [{ e: s.metal + 1, a: lastRootPress && lastRootPress.text, ok: !/^Check where/.test(String(v.chooseNote || '')), good: function () { return rightBy(x, w, function (t) { return t.methods; }, function (t) { return !/^Check where/.test(String(t.chooseNote || '')); }); }, q: String(v.chooseQ || '') }];
             },
             back: function (r, e, st, x) {
               x.set({ metal: +e - 1, pick: null });
@@ -4838,7 +5051,7 @@ try {
             fire: function (s, w, x) {
               if (s.pick === null || s.pick === w.pick) { return null; }
               var v = x.vals();
-              return [{ e: s.ci + 1, a: lastRootPress && lastRootPress.text, ok: /^Yes/.test(String(v.clueNote || '')), q: 'Which disease? ' + String(v.clueCount || '') }];
+              return [{ e: s.ci + 1, a: lastRootPress && lastRootPress.text, ok: /^Yes/.test(String(v.clueNote || '')), good: function () { return rightBy(x, w, function (t) { return t.clueBtns; }, function (t) { return /^Yes/.test(String(t.clueNote || '')); }); }, q: 'Which disease? ' + String(v.clueCount || '') }];
             },
             back: function (r, e, st, x) {
               x.set({ ci: +e - 1, pick: null });
@@ -4849,12 +5062,12 @@ try {
         ],
         'meiosis': [
           { id: 'gate', covers: ['stepBtns'],
-            fire: function (s, w) {
+            fire: function (s, w, x) {
               var said = lastRootPress && lastRootPress.text;
               if (!said || /^(Next step|Start again)$/.test(said)) { return null; }
               var wrong = s.gateMsg && s.gateMsg !== w.gateMsg, right = s.step > w.step;
               if (!wrong && !right) { return null; }
-              return [{ e: w.step + 1, a: said, ok: !!right, q: 'Predict what happens next' }];
+              return [{ e: w.step + 1, a: said, ok: !!right, good: function () { return rightBy(x, w, function (t) { return t.stepBtns; }, function (t, at) { return at.step > w.step; }); }, q: 'Predict what happens next' }];
             },
             back: function (r, e, st, x) {
               x.set({ step: +e - 1, gateMsg: '' });
@@ -4869,7 +5082,7 @@ try {
               var out = [], v = x.vals(), said = lastRootPress && lastRootPress.text;
               (s.gate || []).forEach(function (g, i) {
                 if (g === null || g === (w.gate || [])[i]) { return; }
-                out.push({ e: i + 1, a: said, ok: v.gateWord === 'Yes.', q: String(x.vals({ pending: i }).gatePrompt || '') });
+                out.push({ e: i + 1, a: said, ok: v.gateWord === 'Yes.', good: function () { return rightBy(x, w, function (t) { return t.gateOpts; }, function (t) { return t.gateWord === 'Yes.'; }); }, q: String(x.vals({ pending: i }).gatePrompt || '') });
               });
               return out;
             },
@@ -4910,7 +5123,7 @@ try {
             fire: function (s, w, x) {
               if (s.apPick === w.apPick || s.apPick === null) { return null; }
               var v = x.vals(), o = (v.apOpts || [])[s.apPick];
-              return [{ e: null, a: o ? o.label : null, ok: /as you said/.test(String(v.apWord || '')), q: 'Eight ethene molecules (48 atoms) join into one chain. How many atoms are lost?' }];
+              return [{ e: null, a: o ? o.label : null, ok: /as you said/.test(String(v.apWord || '')), good: function () { return rightBy(x, w, function (t) { return t.apOpts; }, function (t) { return /as you said/.test(String(t.apWord || '')); }); }, q: 'Eight ethene molecules (48 atoms) join into one chain. How many atoms are lost?' }];
             },
             back: function (r, e, st, x) {
               var i = find(x.vals().apOpts, r.answer);
@@ -4923,7 +5136,7 @@ try {
             fire: function (s, w, x) {
               if (s.pred === null || s.pred === w.pred) { return null; }
               var v = x.vals(), on = (v.cells || []).filter(function (c) { return c.pressed; }).map(function (c) { return c.sym; });
-              return [{ e: on.join('-'), a: lastRootPress && lastRootPress.text, ok: !/alert/.test(String(v.verdictStyle || '')), q: 'What kind of bond forms between ' + on.join(' and ') + '?' }];
+              return [{ e: on.join('-'), a: lastRootPress && lastRootPress.text, ok: !/alert/.test(String(v.verdictStyle || '')), good: function () { return rightBy(x, w, function (t) { return t.predictButtons; }, function (t) { return !/alert/.test(String(t.verdictStyle || '')); }); }, q: 'What kind of bond forms between ' + on.join(' and ') + '?' }];
             },
             back: function (r, e, st, x) {
               x.press('onNewPair');
@@ -4937,6 +5150,40 @@ try {
               return null;
             } }
         ],
+        /* ⊕ 9 Nov 2026: readings taken on the bench. Each is a row of its own, numbered
+           across the whole session, with the meters' figures; Clear is a row too, so
+           the list comes back the same on any device. Nothing judges a reading. */
+        'resistors': [(function () {
+          var lists = {}, taken = {};
+          var word = function (x, k) { var c = (x.vals({ comp: k }).simTitle || ''); return c.split(' \u00b7 ')[0] || k; };
+          return { id: 'data', covers: [],
+            fire: function (s, w, x) {
+              var out = [];
+              Object.keys(s.data || {}).forEach(function (k) {
+                var now = s.data[k] || [], was = (w.data || {})[k] || [];
+                if (now.length < was.length) {
+                  out.push({ e: k + '-cleared', a: 'Cleared ' + was.length + (was.length === 1 ? ' reading' : ' readings'), ok: null, q: word(x, k) + ': readings cleared', kind: 'numeric' });
+                }
+                now.slice(was.length).forEach(function (p) {
+                  taken[k] = (taken[k] || 0) + 1;
+                  out.push({ e: k + '-' + taken[k], a: p.v + ' V, ' + Number(p.i).toPrecision(4) + ' A', ok: null, q: word(x, k) + ': reading ' + taken[k], kind: 'numeric' });
+                });
+              });
+              return out;
+            },
+            back: function (r, e) {
+              var m = /^([a-z]+)-(\d+|cleared)$/.exec(e || '');
+              if (!m) { return null; }
+              if (m[2] === 'cleared') { lists[m[1]] = []; } else {
+                var a = /^(-?[\d.]+(?:e[-+]?\d+)?) V, (-?[\d.]+(?:e[-+]?\d+)?) A$/i.exec(String(r.answer || ''));
+                if (!a) { return null; }
+                lists[m[1]] = (lists[m[1]] || []).concat([{ v: Number(a[1]), i: Number(a[2]) }]);
+                taken[m[1]] = Math.max(taken[m[1]] || 0, Number(m[2]));
+              }
+              var patch = { data: Object.assign({ resistor: [], lamp: [], diode: [] }, lists), comp: m[1] };
+              return patch;
+            } };
+        })()],
         'series-parallel-circuits': [commitPicks({ id: 'preds', map: 'preds', done: 'revealed', step: 'step', press: 'onReveal', qs: 'qs', verdicts: 'verdicts', covers: ['qs'] })],
         'chromosomes-mitosis': [commitPicks({ id: 'preds', map: 'preds', done: 'revealed', step: 'st', press: 'onCyRun', qs: 'cyQs', verdicts: 'cyVerdicts', covers: ['cyQs'] })],
         'lenses': [commitPicks({ id: 'preds', map: 'preds', done: 'shown', press: 'onDraw', qs: 'bQs', verdicts: 'bVerdicts', slots: ['t', 's', 'w'], covers: ['bQs'],
@@ -4963,7 +5210,7 @@ try {
               fire: function (s, w, x) {
                 if (!rose(s, w, dn)) { return null; }
                 var v = x.vals(), o = (v[op] || [])[s[pk]];
-                return [{ e: null, a: o ? o.label : null, ok: /^Yes/.test(String(v[n + 'VerdictWord'] || '')), q: 'Commit, then run the piston' }];
+                return [{ e: null, a: o ? o.label : null, ok: /^Yes/.test(String(v[n + 'VerdictWord'] || '')), good: function () { var list = v[op] || [], hit = null; list.forEach(function (o2, i) { var at = {}; at[pk] = i; at[dn] = true; if (hit === null && /^Yes/.test(String(x.vals(at)[n + 'VerdictWord'] || ''))) { hit = o2.label; } }); return hit; }, q: 'Commit, then run the piston' }];
               },
               back: function (r, e, st, x) {
                 var i = find(x.vals()[op], r.answer);
@@ -4985,7 +5232,7 @@ try {
                 var a = labelOfPressed(q.options);
                 if (a == null || sent[i] === a) { return; }
                 sent[i] = a;
-                out.push({ e: i + 1, a: a, ok: !q.hasWhy, q: q.label });
+                out.push({ e: i + 1, a: a, ok: !q.hasWhy, good: function () { return rightBy(x, w, function (t) { return ((t.repQs || [])[i] || {}).options || []; }, function (t, at) { return !((x.vals(Object.assign({}, at, { repChecked: true })).repQs || [])[i] || {}).hasWhy; }); }, q: q.label });
               });
               return out;
             },
@@ -5013,10 +5260,10 @@ try {
                 Object.keys(s.rec || {}).forEach(function (k) {
                   var r = s.rec[k] || {}, was = (w.rec || {})[k] || {}, v = x.vals({ cur: k });
                   var good = !/alert/.test(String(v.verdictStyle || ''));
-                  if (r.s1 === 'done' && was.s1 !== 'done' && r.p1) { out.push({ e: k + '-p1', a: P1[r.p1], ok: good, q: String(v.askPrompt || 'A few drops of sodium hydroxide go in. What forms?') }); }
-                  if (r.s2 === 'done' && was.s2 !== 'done' && r.p2) { out.push({ e: k + '-p2', a: P2[r.p2], ok: good, q: 'Now add sodium hydroxide until it is in excess. What happens to the precipitate?' }); }
+                  if (r.s1 === 'done' && was.s1 !== 'done' && r.p1) { out.push({ e: k + '-p1', a: P1[r.p1], ok: good, good: function () { return partRight(x, s, k, r, 'p1', P1); }, q: String(v.askPrompt || 'A few drops of sodium hydroxide go in. What forms?') }); }
+                  if (r.s2 === 'done' && was.s2 !== 'done' && r.p2) { out.push({ e: k + '-p2', a: P2[r.p2], ok: good, good: function () { return partRight(x, s, k, r, 'p2', P2); }, q: 'Now add sodium hydroxide until it is in excess. What happens to the precipitate?' }); }
                   if (r.last && r.last !== was.last) {
-                    out.push({ e: k + '-id', a: labelOfPressed(v.askOptions), ok: r.idOk === true, q: String(v.askPrompt || ('Which metal ion is in tube ' + k + '?')) });
+                    out.push({ e: k + '-id', a: labelOfPressed(v.askOptions), ok: r.idOk === true, good: function () { return rightBy(x, Object.assign({}, w, { cur: k }), function (t) { return t.askOptions; }, function (t, at) { return ((at.rec || {})[k] || {}).idOk === true; }); }, q: String(v.askPrompt || ('Which metal ion is in tube ' + k + '?')) });
                   }
                 });
                 return out;
@@ -5043,7 +5290,7 @@ try {
                   var key = String(((f.parts || [])[0] || {}).id || '').replace(/^mh-|-\d+$/g, '');
                   var st = (s.forge || {})[key], was = (w.forge || {})[key];
                   if (!st || !st.checked || (was && was.checked)) { return; }
-                  out.push({ e: n + 1, a: f.parts.map(function (p) { return p.label + ': ' + labelOfPressed(p.options); }).join('\n'), ok: st.ok === true, q: String(f.head || '') });
+                  out.push({ e: n + 1, a: f.parts.map(function (p) { return p.label + ': ' + labelOfPressed(p.options); }).join('\n'), ok: st.ok === true, good: function () { var at = {}; at[key] = { picks: st.picks || {}, checked: true, ok: true }; return ((x.vals({ forge: Object.assign({}, s.forge, at) }).forgeItems || [])[n] || {}).note || null; }, q: String(f.head || '') });
                 });
                 return out;
               },
@@ -5060,7 +5307,7 @@ try {
               fire: function (s, w, x) {
                 if (!(s.ion || {}).checked || (w.ion || {}).checked) { return null; }
                 var v = x.vals();
-                return [{ e: null, a: (v.ionParts || []).map(function (p) { return p.label + ': ' + labelOfPressed(p.options); }).join('\n'), ok: s.ion.ok === true, q: 'Build the ionic equation' }];
+                return [{ e: null, a: (v.ionParts || []).map(function (p) { return p.label + ': ' + labelOfPressed(p.options); }).join('\n'), ok: s.ion.ok === true, good: function () { return x.vals({ ion: { picks: s.ion.picks || {}, checked: true, ok: true } }).ionNote || null; }, q: 'Build the ionic equation' }];
               },
               back: function (r, e, st, x) {
                 String(r.answer || '').split('\n').forEach(function (ln, pi) {
@@ -5077,7 +5324,7 @@ try {
             fire: function (s, w, x) {
               if (!rose(s, w, 'checked')) { return null; }
               var v = x.vals(), a = (v.products || []).filter(function (p) { return p.pressed; }).map(function (p) { return p.label; });
-              return [{ e: s.ci + 1, a: a.join('\n'), ok: v.verdictWord === 'Exactly right.', q: 'Which products form? ' + String(v.caseText || '') }];
+              return [{ e: s.ci + 1, a: a.join('\n'), ok: v.verdictWord === 'Exactly right.', good: function () { return (x.vals({ picks: {}, checked: true }).products || []).filter(function (p) { return p.mark === 'missed'; }).map(function (p) { return p.label; }).join('\n') || null; }, q: 'Which products form? ' + String(v.caseText || '') }];
             },
             back: function (r, e, st, x) {
               x.set({ ci: +e - 1, picks: {}, checked: false });
@@ -5097,7 +5344,7 @@ try {
                 if ((w.bv || {})[k] === s.bv[k] && JSON.stringify((w.bc || {})[k]) === JSON.stringify((s.bc || {})[k])) { return; }
                 var c = (s.bc || {})[k], v = x.vals({ bi: +k });
                 if (!c) { c = (v.balTerms || []).filter(function (t) { return t.isSpecies; }).map(function () { return 1; }); }
-                out.push({ e: +k + 1, a: c.join(', '), ok: s.bv[k] === 'ok' ? true : (s.bv[k] === 'no' ? false : null), q: 'Balance the equation: ' + (v.balTerms || []).map(function (t) { return t.isSign ? t.sign : t.formula; }).join(' ') });
+                out.push({ e: +k + 1, a: c.join(', '), ok: s.bv[k] === 'ok' ? true : (s.bv[k] === 'no' ? false : null), good: function () { return s.bv[k] === 'no' ? findCounts(c.length, 5, function (cand) { var at = {}; at[k] = cand; var p = KS4RootActs.patchOf(x.L, Object.assign(KS4RootActs.clone(s), { bi: +k, bc: Object.assign({}, s.bc, at), bv: {} }), function (t) { return t.onBalCheck; }); return !!p && !!p.bv && p.bv[k] === 'ok'; }) : null; }, q: 'Balance the equation: ' + (v.balTerms || []).map(function (t) { return t.isSign ? t.sign : t.formula; }).join(' ') });
               });
               return out;
             },
@@ -5115,7 +5362,7 @@ try {
               (v.specItems || []).forEach(function (it, i) {
                 var st = (s.spec || {})[i], was = (w.spec || {})[i];
                 if (!st || !st.checked || (was && was.checked)) { return; }
-                out.push({ e: i + 1, a: (it.chips || []).filter(function (c) { return c.pressed; }).map(function (c) { return c.label; }).join('\n'), ok: st.ok === true, q: 'Mark the spectator ions: ' + String(it.full || '') });
+                out.push({ e: i + 1, a: (it.chips || []).filter(function (c) { return c.pressed; }).map(function (c) { return c.label; }).join('\n'), ok: st.ok === true, good: function () { var chips = it.chips || [], n2 = chips.length; for (var bits = 0; bits < (1 << n2); bits += 1) { var marks = {}; chips.forEach(function (c, z) { if (bits & (1 << z)) { marks[z] = true; } }); var at = {}; at[i] = { marks: marks, checked: false, ok: false }; var p = KS4RootActs.patchOf(x.L, Object.assign(KS4RootActs.clone(s), { spec: Object.assign({}, s.spec, at) }), function (t) { return (t.specItems || [])[i].onCheck; }); if (p && p.spec && p.spec[i] && p.spec[i].ok) { return chips.filter(function (c, z) { return bits & (1 << z); }).map(function (c) { return c.label; }).join('\n'); } } return null; }, q: 'Mark the spectator ions: ' + String(it.full || '') });
               });
               return out;
             },
@@ -5135,7 +5382,7 @@ try {
             fire: function (s, w, x) {
               if (!rose(s, w, 'bChecked')) { return null; }
               var v = x.vals();
-              return [{ e: s.m + 1, a: (v.bBonds || []).map(function (b) { return b.label + ': ' + b.value; }).join('\n'), ok: v.bWord === 'Every shell is full.', q: 'Choose how many pairs each bond shares.' }];
+              return [{ e: s.m + 1, a: (v.bBonds || []).map(function (b) { return b.label + ': ' + b.value; }).join('\n'), ok: v.bWord === 'Every shell is full.', good: function () { var mk = null, n3 = (v.bBonds || []).length, zero = String(((v.bBonds || [])[0] || {}).value); Object.keys(s.orders || {}).forEach(function (key) { var at = {}; at[key] = (v.bBonds || []).map(function () { return 3; }); if (mk === null && String(((x.vals({ orders: at }).bBonds || [])[0] || {}).value) !== String(((x.vals({ orders: {} }).bBonds || [])[0] || {}).value)) { mk = key; } }); if (mk === null || !n3 || !zero) { return null; } return findCounts(n3, 3, function (cand) { var at = {}; at[mk] = cand; return x.vals({ orders: at, bChecked: true }).bWord === 'Every shell is full.'; }, function (cand) { var at = {}; at[mk] = cand; return (x.vals({ orders: at, bChecked: true }).bBonds || []).map(function (b) { return b.label + ': ' + b.value; }).join('\n'); }); }, q: 'Choose how many pairs each bond shares.' }];
             },
             back: function (r, e, st, x) {
               x.set({ m: +e - 1 });
@@ -5155,7 +5402,7 @@ try {
               (s.verdict || []).forEach(function (val, i) {
                 if (val === null || val === (w.verdict || [])[i]) { return; }
                 var v = x.vals({ samp: i });
-                out.push({ e: i + 1, a: val ? 'Metal' : 'Non-metal', ok: !/^L/.test(String(v.verdictNote || '')), q: 'This sample is a metal or a non-metal? ' + String(v.sampleLook || '') });
+                out.push({ e: i + 1, a: val ? 'Metal' : 'Non-metal', ok: !/^L/.test(String(v.verdictNote || '')), good: function () { return val ? 'Non-metal' : 'Metal'; }, q: 'This sample is a metal or a non-metal? ' + String(v.sampleLook || '') });
               });
               return out;
             },
@@ -5169,7 +5416,7 @@ try {
             fire: function (s, w, x) {
               if (s.pred === null || s.pred === w.pred) { return null; }
               var v = x.vals(), st = (v.strips || [])[s.strip], so = (v.sols || [])[s.sol];
-              return [{ e: (s.strip + 1) + '-' + (s.sol + 1), a: s.pred ? 'Reacts' : 'No reaction', ok: /^Right/.test(String(v.swapNote || '')), q: 'Will it react? ' + (st ? st.label : '') + ' in ' + (so ? so.label : '') }];
+              return [{ e: (s.strip + 1) + '-' + (s.sol + 1), a: s.pred ? 'Reacts' : 'No reaction', ok: /^Right/.test(String(v.swapNote || '')), good: function () { return s.pred ? 'No reaction' : 'Reacts'; }, q: 'Will it react? ' + (st ? st.label : '') + ' in ' + (so ? so.label : '') }];
             },
             back: function (r, e, st) {
               var n = String(e).split('-');
@@ -5178,10 +5425,10 @@ try {
         ],
         'red-shift-big-bang': [
           { id: 'order', covers: ['links'],
-            fire: function (s, w) {
+            fire: function (s, w, x) {
               var said = lastRootPress && lastRootPress.text, grew = (s.order || []).length > (w.order || []).length;
               if (!grew && (s.wrongTap === null || s.wrongTap === w.wrongTap)) { return null; }
-              return [{ e: (w.order || []).length + 1, a: said, ok: grew, q: 'Tap the four links in order.', kind: 'choice' }];
+              return [{ e: (w.order || []).length + 1, a: said, ok: grew, good: function () { return rightBy(x, w, function (t) { return t.links; }, function (t, at) { return (at.order || []).length > (w.order || []).length; }); }, q: 'Tap the four links in order.', kind: 'choice' }];
             },
             back: function (r, e, st, x) {
               var L = x.vals().links || [], i = -1;
@@ -5192,10 +5439,10 @@ try {
         ],
         'stellar-evolution': [
           { id: 'step', covers: ['nextBtns'],
-            fire: function (s, w) {
+            fire: function (s, w, x) {
               var m = s.mass, a = (s.step || {})[m], b = (w.step || {})[m];
               if (!(a > b) || m !== w.mass) { return null; }
-              return [{ e: m + '-' + a, a: lastRootPress && lastRootPress.text, ok: s.last === 'ok', q: 'What comes next?' }];
+              return [{ e: m + '-' + a, a: lastRootPress && lastRootPress.text, ok: s.last === 'ok', good: function () { return rightBy(x, w, function (t) { return t.nextBtns; }, function (t, at) { return at.last === 'ok'; }); }, q: 'What comes next?' }];
             },
             back: function (r, e, st, x) {
               x.set({ mass: String(e).split('-')[0] });
@@ -5268,6 +5515,64 @@ try {
       };
       return x;
     }
+    /* ⊕ 9 Nov 2026: a pick or a typed value in a lesson's own activity that has not
+       been committed. Not an answer, so it never reaches the server; it comes back on
+       this device, per child, wherever the saved answers left that slot untouched.
+       The keys are the lesson's own state: activity_save_drive --commits checks them. */
+    /* <ks4-root-drafts> */
+    var ROOT_DRAFT = {
+      'decomposition': ['rate'], 'enzymes': ['mean'], 'states-of-matter': ['mp'], 'ionic-compounds': ['dxVal'],
+      'ionic-bonding': ['moved', 'mq', 'xq', 'fm', 'fx'], 'carbon-cycle': ['labels'], 'relative-formula-mass': ['pp', 'pv'],
+      'specific-latent-heat': ['picks', 'lText', 'lUnit'], 'temperature-changes-shc': ['cText', 'order'],
+      'changes-in-energy': ['picks'], 'power': ['picks'], 'internal-energy': ['picks'],
+      'particle-motion-pressure': ['bPick', 'p3Pick', 'p4Pick'], 'greenhouse-gases': ['rep'], 'metal-hydroxides': ['forge', 'ion'],
+      'atmospheric-pollutants': ['picks'], 'atoms-elements-compounds': ['bc'], 'carbonates-halides-sulfates': ['spec'], 'covalent-bonding': ['orders'],
+      'cell-specialisation': ['picks'], 'properties-small-molecules': ['order'], 'types-of-em-waves': ['placed', 'preds'],
+      'series-parallel-circuits': ['preds'], 'chromosomes-mitosis': ['preds'], 'lenses': ['preds'],
+      'sound-waves-hearing': ['pPred', 'tPred'], 'waves-detection-exploration': ['qPred', 'uPred'], 'conservation-of-mass': ['w3']
+    };
+    /* </ks4-root-drafts> */
+    var rootBase = null;
+    function rootDraftKey() { return pathSlug + '~own'; }
+    function rootDraftTap(api) {
+      var keys = ROOT_DRAFT[pathSlug];
+      if (!keys || muted || !rootBase) { return; }
+      var st = api.logic.state, vals = {}, any = false;
+      keys.forEach(function (k) {
+        if (JSON.stringify(st[k]) !== JSON.stringify(rootBase[k])) { vals[k] = st[k]; any = true; }
+      });
+      if (any) { draftPut(rootDraftKey(), vals); } else { draftDrop(rootDraftKey()); }
+    }
+    function draftMerge(cur, dv, base) {
+      if (JSON.stringify(cur) === JSON.stringify(base)) { return dv; }
+      if (cur && dv && typeof cur === 'object' && typeof dv === 'object') {
+        var out = Array.isArray(cur) ? cur.slice() : Object.assign({}, cur);
+        Object.keys(dv).forEach(function (k) { out[k] = draftMerge(cur[k], dv[k], base ? base[k] : undefined); });
+        return out;
+      }
+      return cur;
+    }
+    window.MrBadmusAnswerCapture.beforeReplay.push(function () {
+      var host = document.getElementById('ks4-mount'), api = host && host.__mrbKs4;
+      if (ROOT_DRAFT[pathSlug] && api && api.logic) { rootBase = KS4RootActs.clone(api.logic.state); }
+    });
+    window.MrBadmusAnswerCapture.afterReplay.push(function () {
+      var host = document.getElementById('ks4-mount'), api = host && host.__mrbKs4;
+      if (!rootBase || !api || !api.logic) { return; }
+      var vals = draftGet(rootDraftKey());
+      if (!vals || typeof vals !== 'object') { return; }
+      var patch = {}, any = false, st = api.logic.state;
+      Object.keys(vals).forEach(function (k) {
+        var m = draftMerge(st[k], vals[k], rootBase[k]);
+        if (JSON.stringify(m) !== JSON.stringify(st[k])) { patch[k] = m; any = true; }
+      });
+      if (!any) { return; }
+      draftTake(rootDraftKey());
+      rootCarry = draftCarry[rootDraftKey()];
+      delete draftCarry[rootDraftKey()];
+      if (rootCarry === undefined) { rootCarry = null; }
+      api.logic.setState(patch);
+    });
     function formTap(api) {
       var forms = ROOT_FORMS[pathSlug];
       if (!forms) { return; }
@@ -5283,7 +5588,10 @@ try {
           var d = base(f.id + (r.e == null ? '' : '-' + String(r.e).toLowerCase().replace(/[^a-z0-9._-]+/g, '-')));
           d.__block = api.host; d.kind = r.kind || 'choice'; d.question_text = r.q || ''; d.answer = String(r.a);
           if (typeof r.ok === 'boolean') { d.is_correct = r.ok; }
-          if (r.good != null) { d.correct_answer = String(r.good); }
+          // Worked out only for a wrong answer: it runs the lesson's handlers on copies.
+          var good = r.good;
+          if (typeof good === 'function') { try { good = r.ok === false ? good() : null; } catch (e) { good = null; } }
+          if (good != null) { d.correct_answer = String(good); }
           post(d);
         });
       });
@@ -5500,7 +5808,7 @@ try {
         draftsOf(api).forEach(function (d) {
           if (d.done) { draftDrop(d.id); return; }
           var v = d.empty ? draftGet(d.id) : null;
-          if (v) { d.put(v); }
+          if (v) { draftTake(d.id); d.put(v); }
         });
       });
     });
@@ -5513,6 +5821,7 @@ try {
       if (api.comp === undefined) {
         try { rootTap(api); } catch (e) { /* never breaks a lesson */ }
         try { formTap(api); } catch (e) { /* never breaks a lesson */ }
+        try { rootDraftTap(api); } catch (e) { /* never breaks a lesson */ }
         return;
       }
       try { tickTap(api); } catch (e) { /* never breaks a lesson */ }
@@ -5960,6 +6269,9 @@ try {
               });
             });
             if (gotP) { L.setState({ q: q }); }
+            // ⊕ 9 Nov 2026: "Best before today" comes from the saved rows, so every device
+            // reads the same and today's own answers are never "before today".
+            L.setState({ best: bestBefore(LP, hid, ids) });
             return;
           }
           default:
@@ -6095,6 +6407,7 @@ try {
       if (cap && cap.mute) { cap.mute(true); }
       try {
         waiting.splice(0).forEach(function (fn) { try { fn(data); } catch (e) {} });
+        if (cap && cap.beforeReplay) { cap.beforeReplay.forEach(function (fn) { try { fn(); } catch (e) {} }); }
         if (data && data.answers.length && cap && cap.replay) {
           cap.replay.forEach(function (fn) { try { fn(data.answers); } catch (e) {} });
         }

@@ -38,6 +38,7 @@ import threading
 import time
 import urllib.parse
 
+import datetime as _dt
 import ks3_browser as KB
 
 REPO = os.path.dirname(os.path.abspath(__file__))
@@ -720,6 +721,22 @@ CASES = [
                          and "oncordant" in ([x for x in b if x["question_id"].endswith("#concord")][0]["correct_answer"] or ""),
          back="(function(){ var s = H.rootState(); return !!s.pick && s.pick.ok === false; })()"),
     # ── ⊕ 9 Nov 2026: a third blind run ──
+    dict(name="ks4-readings", page="/combined/higher/physics/electricity/resistors.html",
+         act="""H.click(document.querySelector('[aria-label^="Graph A"]')); await H.sleep(200);
+                for (var i = 0; i < 3; i += 1) { await H.call('onRecord'); await H.sleep(120); }
+                await H.call('onClear'); await H.sleep(120);
+                for (var j = 0; j < 2; j += 1) { await H.call('onRecord'); await H.sleep(120); }""",
+         want=["ks4:resistors:ch#data-resistor-1", "ks4:resistors:ch#data-resistor-5", "ks4:resistors:ch#data-resistor-cleared"],
+         check=lambda b: all(x["kind"] == "numeric" and x["is_correct"] is None for x in b if "#data-" in x["question_id"]) and [x for x in b if x["question_id"].endswith("gate-resistor")][0]["correct_answer"] == "A",
+         back="H.rootState().data.resistor.length === 2 && H.rootState().gate.resistor === 0"),
+    dict(name="ks3-rig-build", page="/ks3/chemistry/energy-changes-in-reactions/measuring-a-temperature-change.html",
+         act="""var s = document.querySelector('.ks3-rigb-block'); H.click(s.querySelector('[data-rigb-run]')); await H.sleep(400);""",
+         want=["measuring-a-temperature-change#rig-build-1"],
+         back="true"),
+    dict(name="ks3-curve-run", page="/ks3/chemistry/energy-changes-in-reactions/energy-and-changes-of-state.html",
+         act="""var s = document.querySelector('.ks3-hcurve-block'); var b = s.querySelector('[data-hcurve-step]'); for (var i = 0; i < 8 && !b.disabled; i += 1) { H.click(b); await H.sleep(120); }""",
+         want=[],
+         back="(function(){ var s = document.querySelector('.ks3-hcurve-block'); return !!s; })()"),
     dict(name="ks4-steps-wrong", page="/combined/higher/biology/ecology/decomposition.html",
          act="""var settle = async function () { for (var t = 0; t < 40 && H.rootState().cycAnim; t += 1) { await H.sleep(200); } };
                 for (var i = 0; i < 3; i += 1) { var o = H.v().cycOptions; H.click(H.rootBtn(o[i === 1 ? 1 : 0].text)); await H.sleep(150); await settle(); if (i < 2) { await H.call('onCycNext'); } }""",
@@ -791,7 +808,7 @@ CASES = [
                 f.value = 'If a substance gains oxygen it is oxidised, and if a fuel burns in oxygen that is combustion.';
                 f.dispatchEvent(new Event('input', {bubbles: true})); await H.sleep(200); H.click(s.querySelector('[data-rwrite-show]')); await H.sleep(400);""",
          want=["which-reaction-is-this#*-1"],
-         check=lambda b: [x for x in b if x["kind"] == "written"][0].get("self_checked") is True,
+         check=lambda b: [x for x in b if x["kind"] == "written"][0].get("self_checked") is False and [x for x in b if x["kind"] == "written"][0].get("is_correct") is None,
          back="(function(){ var s = document.querySelector('.ks3-rwrite-block'); return /gains oxygen/.test(s.querySelector('[data-rwrite-field]').value) && s.querySelector('[data-rwrite-show]').disabled; })()"),
     dict(name="ks3-order", page="/ks3/chemistry/acids-and-alkalis/making-a-pure-dry-salt.html",
          act="""var s = document.querySelector('.ks3-morder-block'); var st = s.querySelectorAll('[data-morder-step]');
@@ -841,10 +858,37 @@ DRAFTS = [
          type="""var i = document.querySelectorAll('[data-instrument] input'), ins = Array.prototype.filter.call(i, function (x) { return Array.prototype.some.call(x.attributes, function (a) { return /^data-p\\d+cfa-input$/.test(a.name); }); }); window.__n = ins.length; ins[0].value = 'keep this line'; ins[0].dispatchEvent(new Event('input', {bubbles: true}));""",
          back="Array.prototype.some.call(document.querySelectorAll('[data-instrument] input'), function (x) { return x.value === 'keep this line'; })",
          blank="!Array.prototype.some.call(document.querySelectorAll('[data-instrument] input'), function (x) { return x.value === 'keep this line'; })"),
+    # ⊕ 9 Nov 2026, a third blind run. Each `send` then presses the commit after the
+    # reload and `sent` reads the time on the answer: it must include the typing.
+    dict(name="typed, a KS3 rule of your own", page="/ks3/chemistry/types-of-reaction/which-reaction-is-this.html",
+         type="""await H.sleep(3000); var f = document.querySelector('[data-rwrite-field]'); f.value = 'If a substance gains oxygen it is oxidised, which is a longer rule than the page asks for.'; f.dispatchEvent(new Event('input', {bubbles: true}));""",
+         back="/gains oxygen/.test(document.querySelector('[data-rwrite-field]').value) && !document.querySelector('[data-rwrite-show]').disabled",
+         blank="document.querySelector('[data-rwrite-field]').value === ''",
+         send="H.click(document.querySelector('[data-rwrite-show]')); await H.sleep(400);",
+         sent=lambda b: b and b[0]["time_spent_seconds"] is not None and b[0]["time_spent_seconds"] >= 3),
+    dict(name="typed, KS3 Question 2", page="/ks3/physics/space/mass-vs-weight.html",
+         type="""var s = document.querySelector('[data-activity="your-turn-mass"]'); H.click(s.querySelector('[data-p12cfa-tab="1"]')); await H.sleep(150);
+                 var i = s.querySelector('[data-p12cfa-q="1"] [data-p12cfa-input="1"]'); i.value = 'second question line'; i.dispatchEvent(new Event('input', {bubbles: true}));""",
+         back="""(function(){ var q = document.querySelector('[data-activity="your-turn-mass"] [data-p12cfa-q="1"]'); return !q.hasAttribute('hidden') && q.querySelector('[data-p12cfa-input="1"]').value === 'second question line'; })()""",
+         blank="""document.querySelector('[data-activity="your-turn-mass"] [data-p12cfa-q="1"] [data-p12cfa-input="1"]').value === ''"""),
+    dict(name="a slider", page="/ks3/physics/energy-at-home/reading-a-fuel-bill.html",
+         type="""var r = document.querySelector('[data-bill-slider="shower"]'); r.value = '45'; r.dispatchEvent(new Event('input', {bubbles: true}));""",
+         back="""document.querySelector('[data-bill-slider="shower"]').value === '45'""",
+         blank="""document.querySelector('[data-bill-slider="shower"]').value === '20'"""),
+    dict(name="a count on a block that takes no answer", page="/ks3/chemistry/the-earth-and-its-atmosphere/the-rock-cycle.html",
+         type="""var s = document.querySelector('.ks3-parrow-block'), p = s.querySelectorAll('[data-parrow-pick]'); H.click(p[1]); await H.sleep(120); H.click(p[2]); await H.sleep(120);""",
+         back="/^3 of 6/.test(document.querySelector('.ks3-parrow-block [data-count]').textContent.trim())",
+         blank="/^1 of 6/.test(document.querySelector('.ks3-parrow-block [data-count]').textContent.trim())"),
+    dict(name="picks not yet closed", page="/combined/higher/physics/electricity/series-parallel-circuits.html",
+         type="""await H.sleep(2500); var q = H.v().qs; H.click(H.rootBtn(q[0].opts[0].label, 0)); await H.sleep(150);""",
+         back="(function(){ var s = H.rootState(); return s.preds[s.step][0] === 0 && !s.revealed[s.step]; })()",
+         blank="(function(){ var s = H.rootState(); return !(s.preds[s.step] || []).length; })()",
+         send="""var q = H.v().qs; for (var i = 1; i < q.length; i += 1) { H.click(H.rootBtn(H.v().qs[i].opts[0].label, i)); await H.sleep(100); } await H.call('onReveal'); await H.sleep(250);""",
+         sent=lambda b: b and b[0]["time_spent_seconds"] is not None and b[0]["time_spent_seconds"] >= 2),
 ]
 
 
-def run_drafts(sport, aport, width, ok):
+def run_drafts(sport, aport, width, ok, only=None):
     base = "http://127.0.0.1:%d" % sport
     def one(d):
         print("\n── draft: %s" % d["name"])
@@ -858,8 +902,17 @@ def run_drafts(sport, aport, width, ok):
             pg.eval(HELPERS)
             wait_saved(pg)
             time.sleep(0.5)
-            ok(pg.eval("!!(%s)" % d["back"]) is True, "a draft comes back on the same device")
+            try:
+                came = pg.eval("!!(%s)" % d["back"]) is True
+            except KB.JSError:
+                came = False
+            ok(came, "a draft comes back on the same device", pg.eval("JSON.stringify(Object.keys(localStorage).filter(function (k) { return /draft/.test(k); }).map(function (k) { return [k, localStorage.getItem(k).slice(0, 200)]; }))"))
             ok(not LEDGER.bodies, "a draft posts nothing", LEDGER.bodies)
+            if d.get("send"):
+                run_act(pg, d["send"])
+                time.sleep(0.5)
+                ok(bool(d["sent"](LEDGER.bodies)), "the answer's time includes the draft", [(x.get("question_id"), x.get("time_spent_seconds")) for x in LEDGER.bodies])
+                LEDGER.reset()
         with KB.Browser() as br:
             pg = open_page(br, sport, aport, d["page"], session(True), width)
             wait_saved(pg)
@@ -868,11 +921,60 @@ def run_drafts(sport, aport, width, ok):
 
     # A Chrome that stops answering is not a finding: once more, then it counts.
     for d in DRAFTS:
+        if only and not re.search(only, "draft " + d["name"]):
+            continue
         try:
             one(d)
         except KB.CDPError as e:
             print("  ⟳ Chrome stopped answering (%s), once more" % str(e)[:80], flush=True)
             one(d)
+
+
+def run_best(sport, aport, width, ok):
+    """⊕ 9 Nov 2026: "Best before today" reads the saved rows: same on every device, and
+    today's own answers are never before today."""
+    page = "/combined/higher/biology/organisation/heart-blood-vessels.html"
+    items_js = """JSON.stringify((function () { var R = H.block('Ks4Practice').logic.props.rungs, out = [];
+        ['r1', 'r2', 'r3', 'r4'].forEach(function (k, ri) { (R[k] || []).forEach(function (it, n) {
+          var good = (it.options || []).filter(function (o) { return o && o.correct; })[0];
+          out.push({ id: 'ks4:heart-blood-vessels:ch#r' + (ri + 1) + '-' + (n + 1), answer: good ? (good.text || good.label || '') : 'x', kind: it.kind || 'mcq' });
+        }); });
+        return out; })())"""
+    def row(it, when):
+        return {"question_id": it["id"], "rung": it["id"].split("#")[1].split("-")[0], "answer_kind": "choice" if it["kind"] == "mcq" else "written",
+                "question_text": "q", "answer": it["answer"], "correct_answer": it["answer"], "is_correct": True, "marks_scored": 1, "marks_available": 1,
+                "points_hit": None, "points_total": None, "feedback": None, "mark_level": None, "mark_next_step": None, "marked_by": "key",
+                "self_ticks": None, "attempt_no": 1, "answered_at": when, "surface": "lesson", "work_item_id": None,
+                "key_stage": "KS4", "lesson_slug": "heart-blood-vessels", "client_event_id": it["id"]}
+    now = _dt.datetime.now(_dt.timezone.utc)
+    today, yesterday = now.isoformat(), (now - _dt.timedelta(days=2)).isoformat()
+    print("\n── best before today")
+    LEDGER.reset()
+    with KB.Browser() as br:
+        pg = open_page(br, sport, aport, page, session(True), width)
+        wait_saved(pg)
+        time.sleep(0.4)
+        items = json.loads(pg.eval(items_js))
+        ok(len(items) == 7, "the practice block has its seven questions", items)
+        pg.eval("localStorage.setItem('ks4-best-heart-blood-vessels', '4')")
+        pg.goto("http://127.0.0.1:%d%s?api=http://127.0.0.1:%d" % (sport, page, aport), settle=1.0)
+        pg.eval(HELPERS)
+        wait_saved(pg)
+        time.sleep(0.4)
+        ok(pg.eval("H.block('Ks4Practice').logic.state.best") is None, "no saved rows: this device's old number is not used")
+    for name, rows, want in (("answered today", [row(i, today) for i in items], None),
+                             ("answered on an earlier day", [row(i, yesterday) for i in items], 4),
+                             ("an earlier day, one question missing", [row(i, yesterday) for i in items[:-1]], None)):
+        LEDGER.reset()
+        LEDGER.rows.extend(rows)
+        with KB.Browser() as br:
+            pg = open_page(br, sport, aport, page, session(True), width)
+            wait_saved(pg)
+            time.sleep(0.6)
+            ok(pg.eval("H.block('Ks4Practice').logic.state.best") == want, "%s: best is %s" % (name, want), pg.eval("H.block('Ks4Practice').logic.state.best"))
+            shown = pg.eval("/Best before today/.test(document.body.textContent)")
+            ok(shown is (want is not None), "%s: the page says so" % name)
+    LEDGER.reset()
 
 
 def session(child):
@@ -949,7 +1051,7 @@ def validate(bodies):
 # ── --sweep: every KS3 kind in <ks3-specs>, one page each, its first control ──
 SWEEP_JS = r"""
 window.SW = {
-  sec: function (k) { return Array.prototype.filter.call(document.querySelectorAll('[data-instrument]'), function (s) { return s.classList.contains(k); })[0]; },
+  sec: function (k) { if (k === 'ks4') { return document.getElementById('ks4-mount'); } return Array.prototype.filter.call(document.querySelectorAll('[data-instrument]'), function (s) { return s.classList.contains(k); })[0]; },
   sig: function (sec) {
     return JSON.stringify({
       p: Array.prototype.map.call(sec.querySelectorAll('[aria-pressed]'), function (b) { return b.getAttribute('aria-pressed'); }).join(''),
@@ -1019,6 +1121,12 @@ window.SW = {
 # sibling buttons in the block, in turn, as new groups appear, and watches what was
 # posted: two groups under one id is a finding; a self-checked row beside words the
 # press revealed is listed to be read.
+CONTROL_WORD = re.compile(r"^(drop|run|start|next|check|go|send|play|add|test|show|reveal|close|press|try again|reset)\b", re.I)
+COMMIT_WORD = re.compile(r"^(run|check|close|send|reveal|test|show|mark|start|submit|light|fire|switch|see)\b", re.I)
+# A pick that unlocks the next step of a lesson rather than committing an answer.
+COMMIT_NAMED = ["giant-covalent-structures qOpts"]
+# Form rows whose answer the lesson does not hold in a sentence: named, see SAVE-COVERAGE.
+FORM_NO_KEY = set()
 UNITS_JS = r"""
 window.UN = {
   // What must come back: every pressed control. A tab on screen is allowed to differ.
@@ -1027,7 +1135,7 @@ window.UN = {
       return !/tab|seg-btn/.test(b.className || '') && !b.closest('[role="tablist"]');
     }).map(function (b) { return b.getAttribute('aria-pressed') === 'true' ? '1' : '0'; }).join('');
   },
-  sec: function (k) { return Array.prototype.filter.call(document.querySelectorAll('[data-instrument]'), function (s) { return s.classList.contains(k); })[0]; },
+  sec: function (k) { if (k === 'ks4') { return document.getElementById('ks4-mount'); } return Array.prototype.filter.call(document.querySelectorAll('[data-instrument]'), function (s) { return s.classList.contains(k); })[0]; },
   lines: function (sec) {
     var out = {};
     Array.prototype.forEach.call(sec.querySelectorAll('p, li, strong, dd, td, h3, h4'), function (el) {
@@ -1047,13 +1155,27 @@ window.UN = {
     var clicked = [], used = [], steps = [];
     var press = async function (b) {
       clicked.push(b);
-      var before = UN.lines(sec);
+      var before = UN.lines(sec), liveBefore = Array.prototype.filter.call(sec.querySelectorAll('button'), live);
       b.scrollIntoView({ block: 'center' }); b.click();
       await sleep(90);
       var after = UN.lines(sec), added = Object.keys(after).filter(function (t) { return !before[t]; });
-      steps.push({ label: (b.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 50), added: added.join(' / ').slice(0, 200) });
+      // A button this press has just made pressable: what a per-tap post would come before.
+      var opened = Array.prototype.filter.call(sec.querySelectorAll('button'), live).filter(function (x) { return liveBefore.indexOf(x) < 0; })
+        .map(function (x) { return (x.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 40); });
+      steps.push({ label: (b.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 50), added: added.join(' / ').slice(0, 200), opened: opened });
     };
-    for (var n = 0; n < 70; n += 1) {
+    var filled = [];
+    for (var n = 0; n < (k === 'ks4' ? 110 : 70); n += 1) {
+      // A KS4 lesson's own typed boxes and dropdowns: something in each, once, so its Check can be pressed.
+      if (k === 'ks4') {
+        Array.prototype.forEach.call(sec.querySelectorAll('input:not([type=checkbox]):not([type=radio]):not([type=range]), select'), function (f) {
+          if (filled.indexOf(f) >= 0 || f.disabled || f.closest('[hidden]') || !f.getClientRects().length) { return; }
+          filled.push(f);
+          if (f.tagName === 'SELECT') { if (f.options.length > 1) { f.selectedIndex = 1; } } else { f.value = '1'; }
+          f.dispatchEvent(new Event('input', { bubbles: true })); f.dispatchEvent(new Event('change', { bubbles: true }));
+        });
+        await sleep(30);
+      }
       var all = Array.prototype.filter.call(sec.querySelectorAll('button'), live);
       // First the first free button of a group not yet answered; a group that has
       // been reset (nothing pressed in it) counts as free again.
@@ -1095,6 +1217,7 @@ def run_units(sport, aport, width, only):
                 found[k] = "/" + os.path.relpath(p, REPO)
     base = "http://127.0.0.1:%d" % sport
     shared, listed, differs, n_ok, t0 = [], [], [], 0, time.time()
+    swept = {"wrong without an answer": [], "self-checked": [], "a control's label as the answer": [], "posted per tap, with a commit it opened": []}
     with KB.Browser() as br:
         pg = br.attach()
         pg.set_viewport(width, 900)
@@ -1129,6 +1252,18 @@ def run_units(sport, aport, width, only):
                 words[b["question_id"]].add(b.get("question_text") or "")
             dup = {i: len(t) for i, t in words.items() if len(t) > 1}
             self_c = [b for b in bodies if b.get("is_correct") is None]
+            # ⊕ 9 Nov 2026: the shapes the blind runs keep finding, listed for every kind.
+            for b in bodies:
+                if b.get("is_correct") is False and not b.get("correct_answer"):
+                    swept["wrong without an answer"].append((k, b["question_id"]))
+                if b.get("self_checked") is True:
+                    swept["self-checked"].append((k, b["question_id"]))
+                if CONTROL_WORD.match(str(b.get("answer") or "")):
+                    swept["a control's label as the answer"].append((k, b["question_id"], b["answer"]))
+            for st in r["steps"]:
+                commit = [x for x in st.get("opened") or [] if COMMIT_WORD.match(x)]
+                if commit and st["label"] and any(st["label"] in str(b.get("answer") or "") for b in bodies):
+                    swept["posted per tap, with a commit it opened"].append((k, st["label"], commit[:2]))
             line = "%s groups=%d posts=%d ids=%d selfchecked=%d" % (k, r["groups"], len(bodies), len(n_id), len(self_c))
             if dup:
                 shared.append((k, found[k], dup))
@@ -1159,7 +1294,141 @@ def run_units(sport, aport, width, only):
             print("  " + line, flush=True)
             n_ok += 1
     print("\nunits: %d kinds pressed in full, %d with an id shared by different questions, %d with self-checked rows to read, %d whose presses did not all come back, %.0f s" % (n_ok, len(shared), len(listed), len(differs), time.time() - t0))
+    for name, rows in swept.items():
+        print("\n%s: %d" % (name, len(rows)))
+        for row in rows:
+            print("   ", row)
     return shared
+
+
+# ── --commits: what can be read without a browser ─────────────────────────
+def run_commits():
+    """Lists every instance of a shape from the source, so a new lesson cannot bring one in unseen:
+    a group that posts per tap before its own commit; a ROOT_FORMS row that judges and gives no
+    right answer; a draft key the lesson does not have; a count that would drop on reload."""
+    import glob, subprocess
+    js = open(os.path.join(REPO, "shared", "mrbadmus.v2.js"), encoding="utf-8").read()
+    bad = 0
+    pages = {}
+    for p in sorted(glob.glob(os.path.join(REPO, "combined", "higher", "*", "*", "*.html")) + glob.glob(os.path.join(REPO, "triple", "higher", "*", "*", "*.html"))):
+        with open(p, encoding="utf-8") as f:
+            if "MrBadmusKS4Runtime.mount" in f.read():
+                pages.setdefault(os.path.basename(p)[:-5], os.path.relpath(p, REPO))
+    out = subprocess.run(["node", "tools/kp_commit_scan.js"], input="\n".join(pages.values()), cwd=REPO, capture_output=True, text=True, timeout=300)
+    named = {tuple(x.split()[:2]) for x in COMMIT_NAMED}
+    rows = [ln for ln in out.stdout.splitlines() if ln.strip()]
+    loose = [ln for ln in rows if tuple(ln.split()[:2]) not in named]
+    print("commit scan: %d lessons, %d groups a pick unlocks, %d named as not a commit, %d posting before a commit" % (len(pages), len(rows), len(rows) - len(loose), len(loose)))
+    for ln in loose:
+        print("   per tap:", ln)
+    bad += len(loose)
+    if out.returncode:
+        print(out.stderr[:400])
+        bad += 1
+    # A draft key must be a key of the lesson's own state.
+    m = re.search(r"var ROOT_DRAFT = (\{.*?\});", js, re.S)
+    for slug, keys in re.findall(r"'([a-z0-9-]+)': \[([^\]]*)\]", m.group(1)):
+        if slug not in pages:
+            print("   draft: no lesson called", slug)
+            bad += 1
+            continue
+        with open(os.path.join(REPO, pages[slug]), encoding="utf-8") as f:
+            h = f.read()
+        j = h.rfind("class Component extends DCLogic")
+        head = h[j:h.find("renderVals", j)]
+        for k in re.findall(r"'(\w+)'", keys):
+            if not re.search(r"\b%s\s*:" % k, head):
+                print("   draft: %s has no %s in its state" % (slug, k))
+                bad += 1
+    # A count on a block that takes no answer must be on the local list.
+    kinds = json.load(open(os.path.join(REPO, "tools", "ks3_instrument_shapes.json"), encoding="utf-8"))["kinds"]
+    want = set()
+    for p in glob.glob(os.path.join(REPO, "ks3", "*", "*", "*.html")):
+        with open(p, encoding="utf-8") as f:
+            h = f.read()
+        for mm in re.finditer(r'<section[^>]*class="[^"]*\b(ks3-[a-z0-9-]+-block)\b[^"]*"[^>]*data-instrument', h):
+            end = h.find("</section>", mm.end())
+            if (kinds.get(mm.group(1)) or {}).get("shape") == "X" and "data-count" in h[mm.end():end]:
+                want.add(mm.group(1)[4:-6])
+    have = set(re.search(r"<ks3-count-local> \*/ /\\bks3-\(([^)]*)\)", js).group(1).split("|"))
+    print("local counts: %d kinds on the list, %d in the pages" % (len(have), len(want)))
+    for k in sorted(want - have):
+        print("   count: ks3-%s-block is not on the list" % k)
+        bad += 1
+    for k in sorted(have - want):
+        print("   count: ks3-%s-block is listed and no page has one" % k)
+    # A form row that judges and names no right answer.
+    block = js[js.find("/* <ks4-root-forms> */"):js.find("/* </ks4-root-forms> */")]
+    slug, loose_rows = None, []
+    for ln in block.splitlines():
+        h2 = re.match(r"\s{8}'([a-z0-9-]+)':", ln)
+        if h2:
+            slug = h2.group(1)
+        if re.search(r"\bok: (?!null|true,)", ln) and "good:" not in ln and slug:
+            loose_rows.append((slug, ln.strip()[:90]))
+    print("form rows that judge and name no right answer: %d (TYPED_NO_KEY names the ones the lesson cannot answer)" % len(loose_rows))
+    for row in loose_rows:
+        if row[0] not in FORM_NO_KEY:
+            print("   no answer:", row)
+            bad += 1
+    print("commits: %s" % ("clean" if not bad else "%d to read" % bad))
+    return bad
+
+
+# ── --units-ks4: every rebuilt lesson, every control pressed ──────────────
+def run_units_ks4(sport, aport, width, only):
+    import glob, collections
+    pages = {}
+    for p in sorted(glob.glob(os.path.join(REPO, "combined", "higher", "*", "*", "*.html")) + glob.glob(os.path.join(REPO, "triple", "higher", "*", "*", "*.html"))):
+        with open(p, encoding="utf-8") as f:
+            if "MrBadmusKS4Runtime.mount" in f.read():
+                pages.setdefault(os.path.basename(p)[:-5], "/" + os.path.relpath(p, REPO))
+    base = "http://127.0.0.1:%d" % sport
+    swept = {"wrong without an answer": [], "self-checked": [], "a control's label as the answer": [], "same id posted again": []}
+    n_ok, posts = 0, 0
+    fresh = "localStorage.clear(); sessionStorage.clear(); localStorage.setItem(%s, %s)" % (json.dumps(AUTH_KEY), json.dumps(json.dumps(session(True))))
+    items = [(s2, pg2) for s2, pg2 in sorted(pages.items()) if not only or re.search(only, s2)]
+    while items:
+        try:
+            with KB.Browser() as br:
+                pg = br.attach()
+                pg.set_viewport(width, 900)
+                pg.send("Network.enable")
+                pg.send("Network.setBlockedURLs", {"urls": ["*supabase.co*", "*onrender.com*", "*mrbadmus.com*", "*googleapis*", "*gstatic*", "*unpkg*", "*jsdelivr*", "*cdnjs*"]})
+                while items:
+                    slug, page = items.pop(0)
+                    LEDGER.reset()
+                    pg.goto(base + "/404.html")
+                    pg.eval(fresh)
+                    pg.goto("%s%s?api=http://127.0.0.1:%d" % (base, page, aport), settle=0.5)
+                    wait_saved(pg)
+                    pg.eval(UNITS_JS)
+                    json.loads(pg.eval("UN.go('ks4')", timeout=90))
+                    time.sleep(0.3)
+                    n_ok += 1
+                    bodies = list(LEDGER.bodies)
+                    posts += len(bodies)
+                    for b in bodies:
+                        q = b.get("question_id") or ""
+                        if b.get("is_correct") is False and not b.get("correct_answer"):
+                            swept["wrong without an answer"].append((q, b.get("kind")))
+                        if b.get("self_checked") is True:
+                            swept["self-checked"].append((q,))
+                        if CONTROL_WORD.match(str(b.get("answer") or "")):
+                            swept["a control's label as the answer"].append((q, b.get("answer")))
+                    again = collections.Counter(b["question_id"] for b in bodies if b.get("question_id"))
+                    for q, c in again.items():
+                        if c > 1:
+                            swept["same id posted again"].append((q, c))
+                    print("  %s posts=%d" % (slug, len(bodies)), flush=True)
+        except Exception as e:  # noqa: BLE001
+            print("  !! %s: %s" % (slug, str(e)[:100]), flush=True)
+    print("\nunits-ks4: %d lessons pressed, %d answers" % (n_ok, posts))
+    for name, rows in swept.items():
+        print("\n%s: %d" % (name, len(rows)))
+        for row in rows:
+            print("   ", row)
+    return 0
 
 
 def sweep_pages():
@@ -1245,12 +1514,18 @@ def main():
     ap.add_argument("--units", action="store_true", help="every unit of one page of every KS3 kind: flags an id several separately judged items share")
     ap.add_argument("--sweep", action="store_true", help="every KS3 kind in <ks3-specs>: first control, valid body, back on device B")
     ap.add_argument("--only")
+    ap.add_argument("--units-ks4", action="store_true", help="every rebuilt KS4 lesson, every control pressed: lists wrong-without-answer, control labels, self-checked, repeated ids")
+    ap.add_argument("--commits", action="store_true", help="no browser: every group posting before its commit, every judged form row with no right answer, draft keys, local counts")
     ap.add_argument("--width", type=int, default=1280)
     ap.add_argument("--no-pupil", action="store_true")
     ap.add_argument("--pupil-only", action="store_true", help="only the school-pupil comparisons")
     a = ap.parse_args()
+    if a.commits:
+        return 1 if run_commits() else 0
     site, sport = start(Site)
     api, aport = start(Api)
+    if a.units_ks4:
+        return run_units_ks4(sport, aport, a.width, a.only)
     if a.units:
         return 1 if run_units(sport, aport, a.width, a.only) else 0
     if a.sweep:
@@ -1328,8 +1603,10 @@ def main():
             except KB.CDPError as e2:
                 ok(False, "%s: Chrome stopped answering twice" % c["name"], e2)
 
-    if not a.pupil_only and (not a.only or re.search(a.only, "draft")):
-        run_drafts(sport, aport, a.width, ok)
+    if not a.pupil_only and (not a.only or any(re.search(a.only, "draft " + d["name"]) for d in DRAFTS)):
+        run_drafts(sport, aport, a.width, ok, a.only)
+    if not a.pupil_only and (not a.only or re.search(a.only, "best")):
+        run_best(sport, aport, a.width, ok)
 
     if not a.no_pupil:
         for c in [c for c in cases if c["name"] in PUPIL]:
