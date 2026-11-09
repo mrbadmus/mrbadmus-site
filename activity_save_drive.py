@@ -146,7 +146,7 @@ class Api(http.server.BaseHTTPRequestHandler):
                 hit = [r for r in LEDGER.rows if r["question_id"] == body.get("question_id")]
                 if not hit:
                     return self._json(404, {"error": "no_answer"})
-                hit[-1]["self_ticks"] = sorted(set(body.get("ticks") or []))
+                hit[-1]["self_ticks"] = sorted(set((body.get("ticks") or []) + ([100 + body["level"]] if isinstance(body.get("level"), int) else [])))
             return self._json(200, {"ok": True, "ticks": hit[-1]["self_ticks"]})
         self.send_response(204)
         self._cors()
@@ -622,7 +622,7 @@ CASES = [
                 var boxes = w.host.querySelectorAll('input[type=checkbox]'); H.click(boxes[0]); await H.sleep(100); H.click(boxes[2]); await H.sleep(2500);""",
          want=["ks4:advantages-sexual-asexual:th#*"],
          ticks=True,
-         tickcheck=lambda t: t[-1]["ticks"] == [3, 5, 7],
+         tickcheck=lambda t: t[-1]["ticks"] == [3, 5, 7] and t[-1].get("level") == 1,
          back="""(function(){ var w = H.write(); var s = w.logic.state; return s.open === true && typeof s.level === 'number' && /Level 1/.test(w.logic.props.levels[s.level].label) && !!s.ticks[0] && !s.ticks[1] && !!s.ticks[2]; })()"""),
     # Every unit of a multi-unit kind gets its own id, and every one comes back.
     dict(name="ks3-units-fault", page="/ks3/biology/breathing-and-gas-exchange/exercise-asthma-and-smoking.html",

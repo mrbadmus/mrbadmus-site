@@ -720,7 +720,7 @@
         var send = function (tok) {
           return env.fetch(cfg.BACKEND_URL + '/api/consumer/child/self-ticks', {
             method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + tok },
-            body: JSON.stringify({ question_id: q, ticks: box[q].ticks })
+            body: JSON.stringify(typeof box[q].level === 'number' ? { question_id: q, ticks: box[q].ticks, level: box[q].level } : { question_id: q, ticks: box[q].ticks })
           });
         };
         return token(false).then(function (tok) {

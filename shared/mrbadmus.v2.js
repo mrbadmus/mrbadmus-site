@@ -1692,19 +1692,26 @@ try {
        marked first): tried again, waiting longer each time, for ~2 minutes. While `mute` is held (a restore) nothing
        is sent, and the restored ticks are remembered as already saved. */
     var tickTimers = {}, tickLast = {}, tickWant = {};
-    function tickKeep(qid, list) {
+    // A saved row's own ticks: the server's 100 + level is not one of them.
+    function ownTicks(r) { return r && Array.isArray(r.self_ticks) ? r.self_ticks.filter(function (n) { return n < 100; }) : null; }
+    function tickKeep(qid, list, level) {
       try {
         var box = JSON.parse(window.localStorage.getItem('mrb_ticks_outbox_v1') || '{}');
-        if (list) { box[qid] = { ticks: list, at: Date.now() }; } else { delete box[qid]; }
+        if (list) { box[qid] = { ticks: list, at: Date.now() }; if (typeof level === 'number') { box[qid].level = level; } } else { delete box[qid]; }
         if (Object.keys(box).length) { window.localStorage.setItem('mrb_ticks_outbox_v1', JSON.stringify(box)); }
         else { window.localStorage.removeItem('mrb_ticks_outbox_v1'); }
       } catch (e) { /* storage refused: the in-page retry still runs */ }
     }
-    function sendTicks(qid, list, tries) {
+    /* ⊕ 9 Nov 2026: `level` (a value, 0–9) is the level a child picked, read from
+       the label they pressed. A rung's correct_answer is its indicative points, so
+       the server cannot read a pick from a position in `ticks`. It keeps the value
+       inside self_ticks as 100 + level: every reader here uses ownTicks(). */
+    function sendTicks(qid, list, tries, level) {
       qid = safeId(qid);
       if (!qid) { return; }
       list = (list || []).filter(function (n) { return n >= 1 && n <= 20; });
-      var key = list.join(',');
+      var lvl = typeof level === 'number' && level >= 0 && level <= 9 ? level : null;
+      var key = list.join(',') + '|' + (lvl === null ? '' : lvl);
       if (muted) { tickLast[qid] = key; tickWant[qid] = key; return; }
       if (tries && tickWant[qid] !== key) { return; }        // a newer set has been asked for
       tickWant[qid] = key;
@@ -1716,7 +1723,7 @@ try {
           return fetch(c.BACKEND_URL + '/api/consumer/child/self-ticks', {
             method: 'POST', keepalive: true,
             headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + tok },
-            body: JSON.stringify({ question_id: qid, ticks: list })
+            body: JSON.stringify(lvl === null ? { question_id: qid, ticks: list } : { question_id: qid, ticks: list, level: lvl })
           });
         };
         token().then(function (tok) { return tok ? go(tok) : null; })
@@ -1730,18 +1737,18 @@ try {
                A tick set replaces the last one on the row, so a repeat cannot double
                it. Whatever is left is kept for shared/account.js to send after a reload. */
             if (r && r.status === 429) {
-              tickKeep(qid, list);
+              tickKeep(qid, list, lvl);
               return r.json().then(function (d) { return d && d.retry_after_s; }, function () { return null; }).then(function (s) {
-                if ((tries || 0) < 8) { setTimeout(function () { sendTicks(qid, list, (tries || 0) + 1); }, Math.max(Number(s) > 0 ? Number(s) * 1000 : 30000, 1000)); }
+                if ((tries || 0) < 8) { setTimeout(function () { sendTicks(qid, list, (tries || 0) + 1, lvl); }, Math.max(Number(s) > 0 ? Number(s) * 1000 : 30000, 1000)); }
               });
             }
-            tickKeep(qid, list);
+            tickKeep(qid, list, lvl);
             // A written answer is marked BEFORE its row lands (up to half a
             // minute), so the wait grows: 3 s, 6 s, … eight tries, ~2 min.
             if (r && r.status === 404 && (tries || 0) < 8) {
-              setTimeout(function () { sendTicks(qid, list, (tries || 0) + 1); }, 3000 * ((tries || 0) + 1));
+              setTimeout(function () { sendTicks(qid, list, (tries || 0) + 1, lvl); }, 3000 * ((tries || 0) + 1));
             }
-          }, function () { tickKeep(qid, list); });
+          }, function () { tickKeep(qid, list, lvl); });
       }, tries ? 0 : 700);
     }
     window.MrBadmusAnswerCapture.ticks = sendTicks;
@@ -2946,9 +2953,9 @@ try {
           var hit = press(allIn(scope, sp.opt), r.answer);
           if (hit && sp.commit) { click(sec.querySelector(sp.commit)); }
           if (hit && sp.after) { var af = scope.querySelector(sp.after); if (af) { click(af); } }
-          if (hit && sp.count && Array.isArray(r.self_ticks)) {
+          if (hit && sp.count && ownTicks(r)) {
             var bs0 = sec.querySelectorAll('button'), kept = [];
-            r.self_ticks.forEach(function (pos) {
+            ownTicks(r).forEach(function (pos) {
               if (bs0[pos - 1]) { click(bs0[pos - 1]); kept.push(pos); }
             });
             countSeen[slug0(sec) + '-1'] = kept;
@@ -3064,9 +3071,10 @@ try {
             // The child's own "I had this" ticks, as they were saved (an
             // older row without them leaves the ticks as the page has them).
             var putTicks = function () {
-              if (!Array.isArray(r.self_ticks)) { return; }
+              var own3 = ownTicks(r);
+              if (!own3) { return; }
               Array.prototype.forEach.call(q.querySelectorAll('[' + pre + '-tick]'), function (tb) {
-                var want = r.self_ticks.indexOf(parseInt(tb.getAttribute(pre + '-tick'), 10) + 1) >= 0;
+                var want = own3.indexOf(parseInt(tb.getAttribute(pre + '-tick'), 10) + 1) >= 0;
                 if ((tb.getAttribute('aria-pressed') === 'true') !== want && !tb.disabled) { tb.click(); }
               });
             };
@@ -3712,7 +3720,9 @@ try {
       boolList(st.ticks).forEach(function (n) { list.push(n + lvs.length); });
       if (!list.length && !levelSent[qid]) { return; }
       levelSent[qid] = 1;
-      sendTicks(qid, list);
+      var lb = typeof st.level === 'number' ? String((lvs[st.level] || {}).label || '') : '';
+      var lm = /level\s*(\d)/i.exec(lb);
+      sendTicks(qid, list, 0, lm ? parseInt(lm[1], 10) : (/no relevant content/i.test(lb) ? 0 : undefined));
     }
     function tickTap(api) {
       var st = api.logic.state || {}, p = api.logic.props || {};
@@ -5342,8 +5352,8 @@ try {
        themselves 4 of 4 (the marker had credited points 2–6). */
     function ticksBack(r, n) {
       var t = [];
-      if (!r || !n || !Array.isArray(r.self_ticks)) { return t; }
-      r.self_ticks.forEach(function (h) { if (h >= 1 && h <= n) { t[h - 1] = true; } });
+      if (!r || !n || !ownTicks(r)) { return t; }
+      ownTicks(r).forEach(function (h) { if (h >= 1 && h <= n) { t[h - 1] = true; } });
       return t;
     }
     // A Ks4Write put back; returns the marks its own tally now shows. An
@@ -5356,7 +5366,7 @@ try {
       // the tally is then the top of that level, as it was on the page.
       var lvs = (w.logic.props || {}).levels || [];
       if (lvs.length) {
-        var own = Array.isArray(r.self_ticks) ? r.self_ticks : [], lv = null, tkl = [];
+        var own = ownTicks(r) || [], lv = null, tkl = [];
         own.forEach(function (h) {
           if (h >= 1 && h <= lvs.length) { lv = h - 1; }
           else if (h > lvs.length && h - lvs.length <= ((w.logic.props || {}).points || []).length) { tkl[h - lvs.length - 1] = true; }
@@ -5370,7 +5380,7 @@ try {
       var ticks = ticksBack(r, (points || []).length);
       var n = ticks.filter(Boolean).length;
       w.logic.setState({ text: String(r.answer || ''), open: true, ticks: ticks, reported: true });
-      var aw = (points || []).length && Array.isArray(r.self_ticks) ? Math.min(marks, n) : (r.marks_scored == null ? 0 : r.marks_scored);
+      var aw = (points || []).length && ownTicks(r) ? Math.min(marks, n) : (r.marks_scored == null ? 0 : r.marks_scored);
       // A Write on its own tells the lesson it was marked, as it does live.
       var wp = w.logic.props || {};
       if (notify && (points || []).length && typeof wp.onMark === 'function') { wp.onMark({ awarded: aw, marks: marks, set: true }); }
@@ -5620,7 +5630,7 @@ try {
                 vals[si + '-' + j] = lead && line.indexOf(lead) === 0 ? line.slice(lead.length) : line;
               });
             });
-            var tk = {}, own = Array.isArray(r.self_ticks) ? r.self_ticks : [], n1 = 0;
+            var tk = {}, own = ownTicks(r) || [], n1 = 0;
             (p.steps || []).forEach(function (stp, si) {
               (stp.lines || []).forEach(function (ln, j) { n1 += 1; if (own.indexOf(n1) >= 0) { tk[si + '-' + j] = true; } });
             });
