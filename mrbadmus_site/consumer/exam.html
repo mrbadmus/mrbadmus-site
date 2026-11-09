@@ -18,7 +18,7 @@
   <link rel="stylesheet" href="/shared/ks3.css?v=fbc85f27"/>
 <link rel="stylesheet" href="/shared/ks3-theme.css?v=a2df0340"/>
   <link rel="stylesheet" href="/consumer/consumer.css?v=5d8a38a0"/>
-  <link rel="stylesheet" href="/shared/family-dark.css?v=924f7878"/>
+  <link rel="stylesheet" href="/shared/family-dark.css?v=88fbc62a"/>
   <style>
   /* ── consumer/exam.html — Design's `Child Exam Questions.dc.html`, live ──
      Her per-element inline styles transcribed; the repeated ones lifted here
@@ -567,19 +567,33 @@
     var draft = '';               // survives a 503 — see markAnswer()
     /* ⊕ 9 Nov 2026 (blind run 2): and a reload. Ten minutes of writing were lost to
        one. Kept per child and question, on this device only, until it is marked.
-       A draft is not an answer, so nothing a parent reads ever sees it. */
+       A draft is not an answer, so nothing a parent reads ever sees it.
+       ⊕ Blind run 3: the active time goes with it, or a reload reads "Time 2 s" on a
+       six-marker. A draft with no time on record sends null, never a false low. */
     function draftKey(id) {
       var who = (ctx.session && ctx.session.user && ctx.session.user.id) || '';
       return 'mrb_exam_draft_v1:' + who + ':' + id;
     }
+    /* {text, ms}: ms null when the time isn't known (a draft saved before this). */
     function draftRead(id) {
-      try { return window.localStorage.getItem(draftKey(id)) || ''; } catch (e) { return ''; }
-    }
-    function draftWrite(id, text) {
+      var raw = null;
+      try { raw = window.localStorage.getItem(draftKey(id)); } catch (e) { return null; }
+      if (!raw) { return null; }
       try {
-        if (text) { window.localStorage.setItem(draftKey(id), text); }
-        else { window.localStorage.removeItem(draftKey(id)); }
-      } catch (e) { /* private mode: it lasts as long as the page */ }
+        var d = JSON.parse(raw);
+        if (d && typeof d === 'object' && typeof d.text === 'string') { return { text: d.text, ms: typeof d.ms === 'number' ? d.ms : null }; }
+      } catch (e) { /* written before the time went with it */ }
+      return { text: raw, ms: null };
+    }
+    function draftClear(id) {
+      try { window.localStorage.removeItem(draftKey(id)); } catch (e) { /* private mode */ }
+    }
+    /* What is on the screen and the time so far. Time spent reading counts, so an
+       empty box is kept too, until the answer is marked. */
+    function draftSave() {
+      if (!writeClock) { return; }
+      var ms = writeClock.unknown ? null : clockMs(writeClock);
+      try { window.localStorage.setItem(draftKey(writeClock.id), JSON.stringify({ text: draft, ms: ms })); } catch (e) { /* private mode */ }
     }
     /* ⊕ Parent truth (11 Oct 2026) — when the writing screen for this
        question was first shown, so the mark request can say how long the
@@ -595,10 +609,10 @@
     function startClock(id) {
       return { id: id, ms: 0, since: document.hidden ? null : Date.now() };
     }
+    function clockMs(clock) { return clock.ms + (clock.since != null ? (Date.now() - clock.since) : 0); }
     function activeSeconds(clock) {
-      if (!clock) { return null; }
-      var ms = clock.ms + (clock.since != null ? (Date.now() - clock.since) : 0);
-      var sec = Math.max(0, Math.round(ms / 1000));
+      if (!clock || clock.unknown) { return null; }
+      var sec = Math.max(0, Math.round(clockMs(clock) / 1000));
       return sec > 1800 ? null : sec;
     }
     document.addEventListener('visibilitychange', function () {
@@ -609,6 +623,7 @@
         writeClock.since = Date.now();
       }
     });
+    window.addEventListener('pagehide', draftSave);
     var result = null;            // the LAST mark for the open question
     var justSent = false;
 
@@ -626,6 +641,7 @@
     function toPick() {
       fromToday = false;
       screen = 'pick'; result = null; justSent = false; draft = '';
+      draftSave();
       writeClock = null;
       paint();
     }
@@ -955,6 +971,7 @@
       if (!q) { return; }
       openId = id;
       justSent = !!q.waiting;
+      draftSave();
       writeClock = null;
       /* Coming back from a question must land on the group it came from,
          open. Set here rather than on the back button so it is true however
@@ -988,8 +1005,14 @@
 
     function paintWrite() {
       var q = find(openId) || {};
-      if (!writeClock || writeClock.id !== q.id) { writeClock = startClock(q.id); }
-      if (!draft && q.id) { draft = draftRead(q.id); }
+      if (!writeClock || writeClock.id !== q.id) {
+        writeClock = startClock(q.id);
+        var kept = q.id ? draftRead(q.id) : null;
+        if (kept) {
+          if (!draft) { draft = kept.text; }
+          if (kept.ms === null) { writeClock.unknown = true; } else { writeClock.ms = kept.ms; }
+        }
+      }
       var words = draft.trim() ? draft.trim().split(/\s+/).length : 0;
       var tooShort = words < 3;
 
@@ -1020,7 +1043,7 @@
       ta.value = draft;
       ta.addEventListener('input', function () {
         draft = ta.value;
-        draftWrite(q.id, draft);
+        draftSave();
         var n = draft.trim() ? draft.trim().split(/\s+/).length : 0;
         document.getElementById('ex-words').textContent = n + ' words';
         document.getElementById('ex-mark').disabled = (n < 3) || !writable;
@@ -1052,7 +1075,7 @@
       }).then(function (d) {
         d = d || {};
         writeClock = null;
-        draftWrite(q.id, '');
+        draftClear(q.id);
         result = { score: d.score, max: d.max, hits: d.hits || [],
                    feedback: d.feedback, answer: text, answer_id: d.answer_id,
                    verdict: d.verdict || '',

@@ -59,8 +59,17 @@
      this pair; KS4's never did. */
   html[data-theme="dark"]:root .rd[data-mode="ks3"] .ks3-mis-badge { color: #5A430A; }
 
-  /* Practice review: a marked option's letter is cream on its fill: 2.14:1 on a wrong
-     one, 1.57:1 on a right one. The page writes both inline, so only this reaches it. */
-  html[data-theme="dark"]:root [style*="background:var(--err)"][style*="#FFFDF8"],
-  html[data-theme="dark"]:root [style*="background:var(--ks3-ok-text)"][style*="#FFFDF8"] { color: #221E1B !important; }
+  /* Practice: a letter on a filled key is written inline, so only this reaches it.
+     Selected, before confirm: cream on --st-ink, 1.13:1. Marked: cream on --err 2.14:1,
+     on the green 1.57:1. Handed in: --st-paper on --err. */
+  html[data-theme="dark"]:root [style*="background:var(--st-ink)"]:not([data-bench-surface] *),
+  html[data-theme="dark"]:root [style*="background:var(--err)"],
+  html[data-theme="dark"]:root [style*="background:var(--ks3-ok-text)"] { color: #221E1B !important; }
+
+  /* KS4: an option passed over after a choice faded to .62 inline, 3.5:1 on its letter. */
+  html[data-theme="dark"]:root .rd[data-mode="ks3"] .ks3-option[style*="opacity:.62"] { opacity: .92 !important; }
+
+  /* KS4: "Back to Today" was --st-paper on rust, 2.05:1. */
+  html[data-theme="dark"]:root .btn--primary,
+  html[data-theme="dark"]:root .btn--primary:hover { color: #FFFFFF; }
 }

@@ -91,24 +91,14 @@
   function plural(n, one, many) { return n + ' ' + (n === 1 ? one : (many || one + 's')); }
 
   /* ── what the child saw ─────────────────────────────────────────────── */
-  /* ⊕ 9 Nov 2026 (blind run 2): a lesson's quiz option is stored with its reason
-     ("180 Pa — multiply the force by the area"), which is its answer key, and
-     stays as stored. The page shows it without the reason, by option_labels.py's
-     rule. Only the renderers that apply that rule are in QUIZ_ID: a KS3 ladder's
-     marked rungs and KS4's practice questions. A lesson's other options were shown
-     whole, and a practice set shows its bank's text. The panel holds two of a
-     question's options, not all of them, so the rule runs on those two. */
-  var QUIZ_ID = /(^ks4q:|#(recall|apply)$|^ks4:.*#(choice-\d+|r1(-\d+)?)$)/;
+  /* ⊕ 9 Nov 2026 (blind run 2, corrected in 3): a lesson's quiz option is stored
+     with its reason ("180 Pa — multiply the force by the area"), which is its
+     answer key, and stays as stored. The short form is shown ONLY where a page
+     showed it to the child: consumer/option-label.js lists those, and anything
+     else stays whole. A practice set shows its bank's text. */
   function shownOption(a, text) {
-    if (text == null || !a || a.surface !== 'lesson' || a.kind !== 'choice' || !QUIZ_ID.test(String(a.question_id || ''))) { return text; }
-    var plan = window.MrBadmusOptionPlan;
-    if (!plan) { return text; }
-    var opts = [[a.answer, false]];
-    if (a.correct_answer != null && a.correct_answer !== a.answer) { opts.push([a.correct_answer, true]); }
-    opts = opts.filter(function (o) { return o[0] != null; });
-    var p = plan(a.question_text || '', opts, null);
-    for (var i = 0; i < opts.length; i += 1) { if (opts[i][0] === text) { return p.labels[i]; } }
-    return text;
+    if (text == null || !a || a.surface !== 'lesson' || a.kind !== 'choice' || !window.MrBadmusShortOption) { return text; }
+    return window.MrBadmusShortOption(text);
   }
 
   /* ── one answer ─────────────────────────────────────────────────────── */
@@ -236,7 +226,11 @@
   function itemState(it, today) {
     if (isDone(it)) { return { done: true, chip: doneChip(it), dim: false }; }
     /* ⊕ 9 Nov 2026 (F8): part-way through, with saved answers. It opens. */
-    if (hasAnswers(it)) { return { done: false, dim: false, started: true, chip: { cls: 'ahead', glyph: 'half', word: 'Started' } }; }
+    /* ⊕ blind run 3: with its score so far, so a week's rows add up to its header. */
+    if (hasAnswers(it)) {
+      var so = itemScore(it);
+      return { done: false, dim: false, started: true, chip: { cls: 'ahead', glyph: 'half', word: 'Started' + (so.avail > 0 ? ' · ' + so.text : '') } };
+    }
     var d = String(it.scheduled_for || '').slice(0, 10);
     if (d && today && d < today) { return { done: false, dim: true, chip: { cls: 'notdone', glyph: 'dash', word: 'Not done' } }; }
     if (d && d === today) { return { done: false, dim: false, chip: { cls: 'today', glyph: 'dot', word: 'Today' } }; }
@@ -433,8 +427,8 @@
     var by = {}, order = [];
     (items || []).forEach(function (it) {
       if (!isDone(it)) { return; }
-      /* A piece whose subject nothing records is under every subject, not none. */
-      if (subject && it.subject && it.subject !== subject) { return; }
+      /* A piece whose subject nothing records is under All only (the backend's rule). */
+      if (subject && it.subject !== subject) { return; }
       var ws = mondayOf(itemDate(it)) || String(it.week_start || '').slice(0, 10);
       if (!by[ws]) { by[ws] = []; order.push(ws); }
       by[ws].push(it);
