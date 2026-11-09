@@ -35,6 +35,7 @@
   var loaded = null;        // the engine, once
   var restored = null;      // the past talk, once
   var busy = false;
+  var pastTalk = false;     // this work has a conversation to come back to
 
   function esc(s) {
     return String(s == null ? '' : s).replace(/[&<>"']/g, function (x) {
@@ -180,6 +181,8 @@
   }
 
   function open() {
+    root.querySelector('.mrb-at-head p').textContent =
+      (question() ? 'About this question' : 'About this work') + ' · your parent or tutor can read this';
     root.classList.add('is-open');
     sheet.removeAttribute('hidden');
     document.documentElement.style.overflow = 'hidden';
@@ -197,9 +200,19 @@
     btn.focus();
   }
 
-  /* Above the action bar, and only while a question is on screen. */
+  /* Finished work shows no question, but what the child asked comes back. */
+  function lookForTalk() {
+    fetch(c.BACKEND_URL + '/api/consumer/child/tutor-talk?path=' + encodeURIComponent(PATH), {
+      headers: { Authorization: 'Bearer ' + session.access_token }
+    }).then(function (r) { return r.ok ? r.json() : null; }).then(function (b) {
+      pastTalk = !!(b && b.tutor || []).some(function (r) { return r.answered && r.reply; });
+      place();
+    }).catch(function () {});
+  }
+
+  /* Above the action bar, while a question is on screen or there is talk to read. */
   function place() {
-    var on = !!question();
+    var on = !!question() || pastTalk;
     btn.hidden = !on;
     document.documentElement.classList.toggle('mrb-at-room', on);
     if (!on) { return; }
@@ -258,6 +271,7 @@
     new MutationObserver(soon).observe(document.body, { childList: true, subtree: true });
     window.addEventListener('resize', soon, { passive: true });
     place();
+    lookForTalk();
   }
 
   var link = document.createElement('link');
