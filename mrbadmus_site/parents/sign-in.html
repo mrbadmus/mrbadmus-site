@@ -109,9 +109,9 @@
 </div>
 
 <script src="/shared/config.js?v=bb268b6f"></script>
-<script src="/consumer/consumer-common.js?v=aa142c74"></script>
-<script src="/parents/public.js?v=26edda28"></script>
-<script src="/shared/account.js?v=d97ebd6b"></script>
+<script src="/consumer/consumer-common.js?v=a8f0270c"></script>
+<script src="/parents/public.js?v=fc623fe5"></script>
+<script src="/shared/account.js?v=867b2fa5"></script>
 <script src="/shared/class-entry.js?v=8c087f18" defer></script>
 <script>
 /* ═══════════════════════════════════════════════════════════════════════
@@ -263,7 +263,10 @@
              signup draft. Signing in here must not leave them there: signup
              creates them and carries on from the right step. */
           if (draftHasChild()) { return C.go('/consumer/signup.html'); }
-          C.go('/consumer/overview.html');
+          /* ⊕ 9 Nov 2026 (F6): the parent home. shared/account.js HOMES.parent
+             has said so since 25 Oct; this line was missed, so email sign-in
+             landed on the old dashboard while Google sign-in did not. */
+          C.go('/consumer/family.html');
         });
       }).catch(function (err) {
         C.setBusy(btn, false);

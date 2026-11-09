@@ -652,6 +652,143 @@
     switchAccount: switchAccount
   };
 
+  /* ── A family child's answers, sent again without a reload ──────────────
+     ⊕ 9 Nov 2026 (blind-test fix F5). The lesson page's outbox
+     (shared/mrbadmus.v2.js, `mrb_answer_outbox_v1`, whose twin flush is in
+     consumer-common.js) keeps an answer until the server has it, but only ever
+     re-sends it at the next page load or the next answer. A child whose answer
+     met a 429 had it sit there until they reloaded.
+
+     This re-sends what is waiting, on a timer: after what a 429 says to wait,
+     and with a growing pause after any other failure. An answer is at least a
+     minute old before it is touched, so a first send still being marked is left
+     alone. A re-send keeps its `client_event_id` and `answered_at`, and the server
+     answers a repeat with the row it already made, so nothing is doubled and
+     nothing is dropped until a 2xx. ⚠️ The key, the age limit and the route
+     match the other two: change them together.
+
+     ⚠️ A SCHOOL PUPIL NEVER REACHES ANY OF THIS: without a family child's session
+     at load the timer is never set. It lives here and not in mrbadmus.v2.js
+     because every page with an outbox loads this file. */
+  function startOutboxRetry(env) {
+    var cfg = env.config, store = env.storage;
+    var KEY = 'mrb_answer_outbox_v1', TTL = 7 * 24 * 3600 * 1000, MIN_AGE = 60 * 1000;
+    var EVERY = 45 * 1000, MAX_PAUSE = 5 * 60 * 1000;
+    function session() {
+      try { return JSON.parse(store.getItem(cfg.AUTH_STORAGE_KEY) || 'null'); } catch (e) { return null; }
+    }
+    function isChild() { return !!cfg.isChildSession && cfg.isChildSession(session()); }
+    if (!isChild()) { return false; }
+    function read() {
+      try { var v = JSON.parse(store.getItem(KEY) || '[]'); return Array.isArray(v) ? v : []; } catch (e) { return []; }
+    }
+    function age(b) { var t = b && b.client_event_id && Date.parse(b.answered_at); return t ? env.now() - t : -1; }
+    function drop(id) {
+      var left = read().filter(function (b) { return b.client_event_id !== id && age(b) < TTL; });
+      try { if (left.length) { store.setItem(KEY, JSON.stringify(left)); } else { store.removeItem(KEY); } } catch (e) { /* private mode */ }
+    }
+    function token(refresh) {
+      var a = env.auth && env.auth();
+      if (a) { return refresh ? a.refresh(cfg) : a.token(cfg); }
+      var s = session();
+      return Promise.resolve((s && s.access_token) || null);
+    }
+    function post(b, tok) {
+      return env.fetch(cfg.BACKEND_URL + '/api/consumer/child/answer', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + tok },
+        body: JSON.stringify(b)
+      });
+    }
+    /* The kept self-ticks (mrbadmus.v2.js tickKeep): the latest set per question. A
+       set replaces what the row holds, so sending it twice changes nothing. A 404 is
+       an answer not landed yet: it stays until the row exists or a week has passed. */
+    var TICKS = 'mrb_ticks_outbox_v1';
+    function ticksRead() { try { var b = JSON.parse(store.getItem(TICKS) || '{}'); return b && typeof b === 'object' ? b : {}; } catch (e) { return {}; } }
+    function ticksDrop(qid) {
+      var b = ticksRead(); delete b[qid];
+      try { if (Object.keys(b).length) { store.setItem(TICKS, JSON.stringify(b)); } else { store.removeItem(TICKS); } } catch (e) { /* storage refused */ }
+    }
+    function ticksSend() {
+      var box = ticksRead();
+      var due = Object.keys(box).filter(function (q) { var n = env.now() - (box[q] && box[q].at); return n >= MIN_AGE; });
+      var i = 0;
+      return (function next() {
+        if (i >= due.length) { return Promise.resolve(0); }
+        var q = due[i]; i += 1;
+        if (env.now() - box[q].at >= TTL) { ticksDrop(q); return next(); }
+        var send = function (tok) {
+          return env.fetch(cfg.BACKEND_URL + '/api/consumer/child/self-ticks', {
+            method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + tok },
+            body: JSON.stringify({ question_id: q, ticks: box[q].ticks })
+          });
+        };
+        return token(false).then(function (tok) {
+          return tok ? send(tok).then(function (r) { return r.status === 401 ? token(true).then(function (t2) { return t2 ? send(t2) : r; }) : r; }) : null;
+        }).then(function (r) {
+          if (r && (r.ok || r.status === 204)) { ticksDrop(q); return next(); }
+          if (r && r.status === 429) {
+            return r.json().then(function (d) { return Number(d && d.retry_after_s) * 1000 || EVERY; }, function () { return EVERY; });
+          }
+          return next();
+        });
+      })();
+    }
+    var timer = null, busy = false, pause = EVERY;
+    function again(ms) { if (timer) { env.clearTimeout(timer); } timer = env.setTimeout(tick, ms); }
+    function failed() { pause = Math.min(MAX_PAUSE, pause * 2); busy = false; again(pause); }
+    function tick() {
+      timer = null;
+      if (busy) { return; }
+      if (!isChild()) { return; }            // signed out: the timer stops
+      var due = read().filter(function (b) { var n = age(b); return n >= MIN_AGE && n < TTL; });
+      if (!due.length) {
+        busy = true;
+        ticksSend().then(function (wait) { busy = false; pause = EVERY; again(Math.max(wait || EVERY, 5000)); }, function () { busy = false; again(EVERY); });
+        return;
+      }
+      busy = true;
+      var i = 0;
+      (function next() {
+        if (i >= due.length) { busy = false; pause = EVERY; again(EVERY); return; }
+        var b = due[i];
+        token(false).then(function (tok) {
+          return tok ? post(b, tok).then(function (r) {
+            if (r.status !== 401) { return r; }
+            return token(true).then(function (t2) { return t2 ? post(b, t2) : r; });
+          }) : null;
+        }).then(function (r) {
+          if (r && r.ok) { drop(b.client_event_id); i += 1; next(); return; }
+          if (r && r.status === 429) {
+            /* The body, not the header: Retry-After is not exposed cross-origin. */
+            return r.json().then(function (d) { return d && d.retry_after_s; }, function () { return null; }).then(function (s) {
+              busy = false;
+              again(Math.max(Number(s) > 0 ? Number(s) * 1000 : EVERY, 5000));
+            });
+          }
+          failed();
+        }, failed);
+      })();
+    }
+    again(EVERY);
+    if (env.onOnline) { env.onOnline(function () { if (!busy) { again(1000); } }); }
+    return true;
+  }
+  if (root.document && root.MrBadmusConfig) {
+    try {
+      startOutboxRetry({
+        config: root.MrBadmusConfig, storage: root.localStorage,
+        now: function () { return Date.now(); },
+        fetch: function (u, o) { return root.fetch(u, o); },
+        setTimeout: function (f, ms) { return root.setTimeout(f, ms); },
+        clearTimeout: function (t) { root.clearTimeout(t); },
+        auth: function () { return root.MrBadmus && root.MrBadmus.childAuth; },
+        onOnline: function (f) { root.addEventListener('online', f); }
+      });
+    } catch (e) { /* storage refused: there is no outbox either */ }
+  }
+  api.startOutboxRetry = startOutboxRetry;
+
   root.MrBadmusAccount = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
 })(typeof window !== 'undefined' ? window : globalThis);

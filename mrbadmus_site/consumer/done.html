@@ -43,9 +43,9 @@
 </div>
 
 <script src="/shared/config.js?v=bb268b6f"></script>
-<script src="/shared/account.js?v=d97ebd6b"></script>
-<script src="/consumer/consumer-common.js?v=aa142c74"></script>
-<script src="/consumer/parent-side.js?v=87963ef3"></script>
+<script src="/shared/account.js?v=867b2fa5"></script>
+<script src="/consumer/consumer-common.js?v=a8f0270c"></script>
+<script src="/consumer/parent-side.js?v=74671aec"></script>
 <script>
 (function () {
   var C = window.MrBadmusConsumer;
@@ -77,7 +77,8 @@
     syncPanel();
   });
 
-  function items() { return (S.data && S.data.work_items) || []; }
+  /* ⊕ 9 Nov 2026 (F1): set work and what they did by choice, all of it theirs. */
+  function items() { return PS.allItems(S.data); }
   function card(it) {
     var v = PS.doneChip(it);
     var sc = PS.itemScore(it);
@@ -87,7 +88,8 @@
       '<span class="ps-wscore" aria-hidden="true">' + face + '</span>' +
       '<span style="flex:1;min-width:0"><span class="ps-wtitle">' + esc(it.title || PS.kindLabel(it.kind)) + '</span>' +
       '<span class="ps-wsub">' + esc(PS.kindLabel(it.kind)) + (it.subject ? ' · ' + PS.subjHtml(it.subject) : '') +
-        ' · ' + esc(PS.dateShort(date)) + (sc.avail > 0 ? '' : ' · ' + esc(v.word)) + '</span>' +
+        ' · ' + esc(PS.dateShort(date)) + (sc.avail > 0 ? '' : ' · ' + esc(v.word)) +
+        (PS.isOwn(it) ? ' · ' + esc(PS.NOT_SET) : '') + '</span>' +
       '<span class="ps-sr">' + esc(sc.line || v.word) + '</span></span></button>';
   }
   function render() {
@@ -96,7 +98,11 @@
     var all = items().filter(function (i) { return i.status === 'done' && !i.removed; });
     var groups = PS.groupWeeks(items(), S.sort, S.subj);
     var chips = [{ v: '', l: 'All subjects' }].concat(SUBJECTS.map(function (s) { return { v: s, l: s }; }));
-    var html = '<h1 class="ps-kid-h1">' + (all.length ? esc(PS.plural(all.length, 'thing')) + ' done.' : 'Nothing finished yet.') + '</h1>';
+    /* ⊕ 9 Nov 2026 (F10): the count is of what is on the screen under the
+       chosen subject, not of everything. */
+    var shown = groups.reduce(function (n, g) { return n + g.items.length; }, 0);
+    var html = '<h1 class="ps-kid-h1">' + (shown ? esc(PS.plural(shown, S.subj ? S.subj + ' thing' : 'thing')) + ' done.'
+      : (S.subj && all.length ? 'No ' + esc(S.subj) + ' yet.' : 'Nothing finished yet.')) + '</h1>';
     if (all.length) {
       html += '<div class="ps-filters"><div class="ps-fchips" role="group" aria-label="Subject">' +
         chips.map(function (c) {
@@ -108,11 +114,10 @@
         '</select></label></div>';
     }
     if (!groups.length) {
-      html += '<div class="ps-dashed" style="margin-top:20px;border:2px dashed var(--ks3-rule-strong)">' +
-        '<p style="margin:0;font-family:var(--ks3-font-display);font-weight:800;font-size:22px">' +
-          (S.subj && all.length ? 'No ' + esc(S.subj) + ' yet' : 'Nothing here yet') + '</p>' +
-        (all.length ? '' : '<p style="margin:6px 0 0;font-size:16px;color:var(--ks3-ink-body)">Finish a lesson or practice and it shows up here.</p>') +
-        '</div>';
+      if (!all.length) {
+        html += '<div class="ps-dashed" style="margin-top:20px;border:2px dashed var(--ks3-rule-strong)">' +
+          '<p style="margin:0;font-size:16px;color:var(--ks3-ink-body)">Finish a lesson or practice and it shows up here.</p></div>';
+      }
     } else {
       html += '<div style="margin-top:22px;display:flex;flex-direction:column;gap:24px">' + groups.map(function (g) {
         var n = g.items.length;
@@ -162,7 +167,7 @@
         if (C.isSignedOut(e)) { return C.signedOutPanel(document.getElementById('c-main'), C.childLoginUrl); }
         C.fail(document.getElementById('c-main'),
           e && e.status === 429 ? 'Too many requests just now.' : 'We couldn’t load your work just now.',
-          'Try again in a minute.');
+          e && e.status === 429 ? C.retryLine(e) : 'Try again in a minute.');
       });
   } });
 })();

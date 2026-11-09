@@ -75,7 +75,12 @@
     font-size: 20px; letter-spacing: -.02em;
     overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
   }
+  /* ⊕ 9 Nov 2026: the lockup, on a row of its own on a phone: that row was
+     already full (see above), and the mark is not the thing to squeeze. */
+  .ex-head .mrb-brand { flex: 0 0 auto; }
   @media (max-width: 439px) {
+    .ex-head { flex-wrap: wrap; }
+    .ex-head .mrb-brand { order: -1; flex: 1 0 100%; }
     .ex-title { display: none; }
     .ex-quota-chip { margin-left: auto; }
   }
@@ -401,6 +406,8 @@
     <button class="ex-back" id="ex-back-btn" type="button" aria-label="Back" hidden>
       <svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
     </button>
+    <!-- ⊕ 9 Nov 2026 (F10): the one mark, as on every other page. -->
+    <!--mrb:brand href=/consumer/today.html--><a class="mrb-brand" href="/consumer/today.html" aria-label="MrBadmus home"><svg class="mrb-brand__mark" data-mrb-mark viewBox="0 0 22 22" aria-hidden="true" focusable="false"><path d="M3.5 3.5 L11 11 L3.5 18.5" stroke="#E4572E" stroke-opacity="0.34" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path><path d="M12 3.5 L19.5 11 L12 18.5" stroke="#E4572E" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg><span class="mrb-brand__word">MrBadmus</span></a><!--/mrb:brand-->
     <span class="ex-title">Exam questions</span>
     <span class="ex-quota-chip" id="ex-quota-chip"></span>
     <!-- Night 4, MRB-317 ruling 3. See today.html. -->
@@ -417,8 +424,8 @@
 
 <script src="/shared/config.js?v=bb268b6f"></script>
 <!-- Front door (12 Oct 2026): the one map; consumer-common asks it whether a school pupil has wandered in. -->
-<script src="/shared/account.js?v=d97ebd6b"></script>
-<script src="/consumer/consumer-common.js?v=aa142c74"></script>
+<script src="/shared/account.js?v=867b2fa5"></script>
+<script src="/consumer/consumer-common.js?v=a8f0270c"></script>
 <script>
 /* ═══════════════════════════════════════════════════════════════════════
    consumer/exam.html — write an answer, get it marked. MRB-317 Night 3.

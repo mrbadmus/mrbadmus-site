@@ -163,7 +163,7 @@
 
   function navHtml(rightHtml) {
     return '<nav class="c-nav">' +
-      brandLockup('/consumer/overview.html') +
+      brandLockup('/consumer/family.html') +
       '<div class="c-nav-right">' + (rightHtml || '') + '</div>' +
       '</nav>';
   }
@@ -1729,6 +1729,15 @@
     return bits.join(' · ');
   }
 
+  /* ⊕ 9 Nov 2026 (F5): a 429's wait, in words, from what the server says it
+     is: a page never promises "a minute" for a thirteen-minute refusal. */
+  function retryLine(e) {
+    var s = Number(e && e.data && e.data.retry_after_s);
+    if (!(s > 0)) { return 'Try again shortly.'; }
+    var mins = Math.ceil(s / 60);
+    return 'Try again in ' + (mins <= 1 ? 'a minute' : mins + ' minutes') + '.';
+  }
+
   window.MrBadmusConsumer = {
     ENABLED: ENABLED,
     BRANDMARK: BRANDMARK,
@@ -1741,6 +1750,7 @@
     escapeHtml: escapeHtml,
     childLine: childLine,
     plainSentence: plainSentence,
+    retryLine: retryLine,
     plainMessage: plainMessage,
     isClosing: isClosing,
     fail: fail,

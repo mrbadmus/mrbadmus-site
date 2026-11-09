@@ -47,9 +47,9 @@
 </div>
 
 <script src="/shared/config.js?v=bb268b6f"></script>
-<script src="/shared/account.js?v=d97ebd6b"></script>
-<script src="/consumer/consumer-common.js?v=aa142c74"></script>
-<script src="/consumer/parent-side.js?v=87963ef3"></script>
+<script src="/shared/account.js?v=867b2fa5"></script>
+<script src="/consumer/consumer-common.js?v=a8f0270c"></script>
+<script src="/consumer/parent-side.js?v=74671aec"></script>
 <script>
 /* ═══════════════════════════════════════════════════════════════════════
    The parent side. Every number below is read from the API:
@@ -143,9 +143,10 @@
     }
     return got[path];
   }
-  /* A rate-limited request (429) is said plainly, never as a code. */
+  /* A rate-limited request (429) is said plainly, never as a code, with the
+     wait the server gave. */
   function failLine(e) {
-    if (e && e.status === 429) { return ['Too many requests just now.', 'Try again in a minute.']; }
+    if (e && e.status === 429) { return ['Too many requests just now.', C.retryLine(e)]; }
     return [e && e.message, 'Refresh in a moment. If it keeps happening, email support@mrbadmus.com.'];
   }
   function loadFamily(fresh) {
@@ -192,7 +193,7 @@
         return Promise.all(ids.map(loadActivity)).then(function (acts) {
           var items = [];
           acts.forEach(function (a, i) {
-            (a && a.work_items || []).forEach(function (it) {
+            PS.allItems(a).forEach(function (it) {
               var x = Object.assign({}, it);
               x.child = { id: ids[i], first_name: (kidById(ids[i]) || {}).first_name };
               items.push(x);
@@ -207,6 +208,11 @@
     for (var i = 0; i < S.kids.length; i++) { if (String(S.kids[i].id) === String(id)) { return S.kids[i]; } }
     return null;
   }
+  /* The Mon–Sun week's work, as the home counts it (`work` is the teaching
+     week, on an older backend the only list there is). */
+  function weekWork(k) {
+    return Array.isArray(k.week_items) ? k.week_items : (Array.isArray(k.work) ? k.work : []);
+  }
   function homeChild(id) {
     var h = S.home && !S.home.error && Array.isArray(S.home.children) ? S.home.children : null;
     if (h) { for (var i = 0; i < h.length; i++) { if (String(h[i].id) === String(id)) { return h[i]; } } }
@@ -218,7 +224,7 @@
   function homeFromFamily(k) {
     if (!k) { return null; }
     var strip = k.week_strip || null;
-    var work = Array.isArray(k.work) ? k.work : [];
+    var work = weekWork(k);
     var today = todayYmd();
     var days = [];
     if (strip && Array.isArray(strip.dates)) {
@@ -370,7 +376,10 @@
         (a.topic ? ': ' + a.topic : '') + (a.more ? ' (and ' + a.more + ' more)' : '');
     }
     if (a.kind === 'inactive') {
-      return 'Nothing done for ' + a.days + ' days.' + (a.due_count ? ' ' + PS.plural(a.due_count, 'piece') + ' still to do this week.' : '');
+      /* ⊕ 9 Nov 2026 (F10): due_count is what has opened and isn't done, not
+         what is left of the week: "still to do this week" read wrong beside
+         "0 of 4". */
+      return 'Nothing done for ' + a.days + ' days.' + (a.due_count ? ' ' + PS.plural(a.due_count, 'piece') + ' open and not done.' : '');
     }
     if (a.kind === 'never_logged_in') { return 'Hasn’t logged in yet.'; }
     if (a.kind === 'overdue') { return PS.plural(a.due_count, 'piece') + ' from earlier this week not done.'; }
@@ -519,9 +528,11 @@
     var sub = esc(PS.kindLabel(it.kind)) + (it.subject ? ' · ' + PS.subjHtml(it.subject) : '') +
       (opts.past && sc && sc.questions ? ' · ' + esc(PS.plural(sc.questions, 'question')) : '') +
       (t ? ' · ' + esc(t) : '') +
+      (PS.isOwn(it) && !opts.underOwn ? ' · ' + esc(PS.NOT_SET) : '') +
       (opts.who ? ' · ' + esc(opts.who) : '');
-    var day = opts.past ? PS.dateShort(PS.itemDate(it)) : PS.dayShort(String(it.scheduled_for || '').slice(0, 10));
-    var open = st.done && !it.removed;
+    var day = (opts.past || PS.isOwn(it)) ? PS.dateShort(PS.itemDate(it)) : PS.dayShort(String(it.scheduled_for || '').slice(0, 10));
+    /* ⊕ 9 Nov 2026 (F8): anything holding saved answers opens, finished or not. */
+    var open = st.done || PS.hasAnswers(it);
     return '<button type="button" class="ps-row' + (opts.past ? ' is-past' : '') + (st.dim ? ' is-dim' : '') + '"' +
       (open ? ' data-open="' + esc(it.id) + '"' + (opts.cid ? ' data-cid="' + esc(opts.cid) + '"' : '') : ' disabled') + '>' +
       '<span class="ps-row-day">' + esc(day) + '</span>' +
@@ -571,7 +582,7 @@
     }
     var items = [], topics = null, repeats = null, tutor = [];
     if (A.error) {
-      items = (Array.isArray(k.work) ? k.work : []).map(function (w) {
+      items = weekWork(k).map(function (w) {
         return { id: w.id, kind: w.kind || 'lesson', title: w.title, scheduled_for: w.scheduled_for, status: w.done ? 'done' : 'set',
                  tracked: false, summary: {}, answers: [], week_start: ws };
       });
@@ -586,8 +597,14 @@
       tutor = Array.isArray(A.tutor_questions) ? A.tutor_questions : [];
     }
     var byParent = {};
-    (Array.isArray(k.work) ? k.work : []).forEach(function (w) { if (w.byParent && !w.done) { byParent[w.id] = true; } });
+    weekWork(k).forEach(function (w) { if (w.byParent && !w.done) { byParent[w.id] = true; } });
     var doneN = items.filter(function (i) { return i.status === 'done'; }).length;
+    /* ⊕ 9 Nov 2026 (F1): what they did this week that nobody set. Beside the
+       set work, never in its count. */
+    var own = ((A && A.own_work) || []).filter(function (it) {
+      var d = String(it.done_day || '').slice(0, 10);
+      return d >= ws && d <= C.ymdPlusDays(ws, 6);
+    });
 
     var idle = h.days_inactive != null && h.days_inactive >= 5
       ? '<div class="ps-status" role="status" style="margin-top:12px">' + G('warn', 18) + '<span>Nothing done for ' + h.days_inactive +
@@ -608,8 +625,10 @@
         return '<li>' + rowHtml(it, today, { cid: k.id }) + rm + '</li>';
       }).join('') + '</ul>'
         : '<p style="margin:12px 0 0;font-size:15px;color:var(--ks3-ink-body)">Nothing set for this week.</p>') +
-      (A.error ? '<p class="ps-foot">Answers can’t be shown just now. Try again in a minute.</p>'
-               : (items.length ? '<p class="ps-foot">Time is shown only where it was measured.</p>' : '')) +
+      (own.length ? '<p class="ps-eyebrow" style="margin:18px 0 0">' + esc(PS.NOT_SET) + '</p><ul class="ps-list" id="ps-own">' +
+        own.map(function (it) { return '<li>' + rowHtml(it, today, { cid: k.id, underOwn: true }) + '</li>'; }).join('') + '</ul>' : '') +
+      (A.error ? '<p class="ps-foot">Answers can’t be shown just now. ' + esc(A.error.status === 429 ? C.retryLine(A.error) : 'Try again in a minute.') + '</p>'
+               : (items.length || own.length ? '<p class="ps-foot">Time is shown only where it was measured.</p>' : '')) +
       (k.paused ? '' : '<button type="button" class="ps-quiet" data-act="pause">Pause work for ' + esc(k.first_name) + '</button>') +
       '</section>';
 
@@ -642,7 +661,7 @@
     var rp = '';
     if (repeats) {
       var titleOf = {};
-      (A.work_items || []).forEach(function (it) { titleOf[it.id] = PS.kindLabel(it.kind) + ' · ' + (it.title || ''); });
+      PS.allItems(A).forEach(function (it) { titleOf[it.id] = PS.kindLabel(it.kind) + ' · ' + (it.title || ''); });
       rp = '<section id="wrong"><h2 class="ps-h2">Keeps getting wrong</h2>' +
         (repeats.length ? '<div class="ps-wrongs">' + repeats.map(function (r) {
           return '<article class="ps-card ps-wrong"><div class="ps-wrong-h"><p class="ps-eyebrow">' + (r.kind === 'question' ? 'Question' : 'Topic') +
@@ -766,7 +785,7 @@
   }
   function findItem(id, cid) {
     var src = [];
-    if (cid && S.act[cid] && S.act[cid].work_items) { src.push(S.act[cid].work_items); }
+    if (cid && S.act[cid]) { src.push(PS.allItems(S.act[cid])); }
     Object.keys(S.past).forEach(function (k) {
       var P = S.past[k];
       (P && P.weeks || []).forEach(function (g) { src.push(g.items || []); });
@@ -778,8 +797,7 @@
   }
   var panelFor = null;
   function inActivity(cid, id) {
-    var A = S.act[cid];
-    var list = (A && A.work_items) || [];
+    var list = PS.allItems(S.act[cid]);
     for (var i = 0; i < list.length; i++) { if (String(list[i].id) === String(id)) { return list[i]; } }
     return null;
   }

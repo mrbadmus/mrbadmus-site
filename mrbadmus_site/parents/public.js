@@ -50,7 +50,7 @@
     orgs:    { href: '/parents/organisations.html',  label: 'Organisations' },
     signIn:  { href: '/parents/sign-in.html',        label: 'Sign in' },
     signUp:  { href: '/consumer/signup.html',        label: 'Start free' },
-    dash:    { href: '/consumer/overview.html',      label: 'Dashboard' },
+    dash:    { href: '/consumer/family.html',        label: 'Dashboard' },
 
     /* ⊕ NOT DESIGN'S. She drew no legal links; a UK consumer subscription
        cannot open beta without terms and a privacy policy reachable from
