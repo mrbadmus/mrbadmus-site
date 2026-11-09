@@ -485,6 +485,18 @@ GATES = [
              "palette: parity drives the PREVIEW pair and behaviour compares "
              "text, so a colour change ships unwatched without this."),
 
+    dict(name="family_dark_drive",
+         cmd=["python3", "family_dark_drive.py"],
+         speed="slow",
+         watches=["family_dark_drive.py", "shared/family-dark.css", "shared/config.js", "contrast_audit.py",
+                  "ks3_browser.py", "student_behaviour.py", "shared/ks3.css", "shared/ks3-theme.css",
+                  "shared/ks4-theme.css", "shared/ks4-lesson.css", "shared/student-ds.css",
+                  "student/assignment-fixture.html"],
+         why="⊕ 9 Nov 2026, blind run 2 — a family child's dark lesson and practice "
+             "sit on the parent's softened ground, every text sample at AA, and a "
+             "school pupil's page never requests the sheet: lessons and practice "
+             "are shared with school, and school does not change."),
+
     dict(name="outbox_retry_check",
          cmd=["python3", "outbox_retry_check.py"],
          speed="fast",

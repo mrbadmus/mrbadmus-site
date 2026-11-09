@@ -1,0 +1,66 @@
+/* shared/family-dark.css — dark mode for a family child (blind run 2, 9 Nov 2026).
+
+   The softened warm charcoal the parent pages carry (consumer/parent-side.css,
+   Design's set), and the contrast fixes a child's dark lesson needed. Dark text
+   on a softer ground has less room, so every text sample is measured against it:
+   family_dark_drive.py, at 4.5:1.
+
+   ── WHO GETS THIS ─────────────────────────────────────────────────────────
+   Lessons and practice are shared with school, and school does not change. So on
+   those pages this file is loaded by shared/config.js ONLY for a family child's
+   session, the test student-live.js uses for ask-tutor.js. A school pupil's page
+   never requests it. The family-only consumer pages link it directly.
+
+   `html[data-theme="dark"]:root` is one step above every dark rule it replaces,
+   so this wins wherever in the head it lands. Dark only, and print stays light. */
+@media screen {
+  html[data-theme="dark"]:root body { background: #2A2420; }
+
+  /* KS3, KS4, the consumer pages: the --ks3-* family, as parent-side.css has it. */
+  html[data-theme="dark"]:root .rd[data-mode="ks3"] {
+    --ks3-ground: #2A2420; --ks3-card: #342D28; --ks3-band: #3F372F; --ks3-inset: #3A322C; --ks3-row-dim: #302925;
+    --ks3-rule: #4D443B; --ks3-rule-strong: #6A5F53; --ks3-option-border: #5C5147; --ks3-option-spent: #3A322C;
+    --ks3-ink: #F5EEE3; --ks3-ink-body: #E6DCCD; --ks3-ink-muted: #CBBFAE; --ks3-ink-faint: #B8AB9A;
+    /* Parent-side's ghost (#8F8375) is too faint for the letters it paints on a band here. */
+    --ks3-ink-ghost: #BDB09F;
+    --ks3-accent: #F07A4E; --ks3-accent-text: #FFA383; --ks3-accent-tint: #4A2A1E; --ks3-accent-hover: #FFC2A8;
+    --ks3-ok: #3CC477; --ks3-ok-text: #8FE8B2; --ks3-ok-tint: #1F3A2A;
+    --ks3-alert: #FFC53D; --ks3-alert-text: #FFDC85; --ks3-alert-tint: #463716; --ks3-alert-border: #D9821A;
+    --ks3-blue: #6C8EFF; --ks3-blue-text: #A8C0FF; --ks3-blue-tint: #263050;
+    --ks3-biology: var(--ks3-ok-text); --ks3-chemistry: var(--ks3-accent-text); --ks3-physics: var(--ks3-blue-text);
+    --ks3-nav-bg: rgba(42, 36, 32, .93); --ks3-dot: #332B26; --ks3-tag: #3F372F;
+    /* What the tutor chat and the shared chrome read at KS3's scope. */
+    --surface-page: #2A2420; --surface-card: #342D28; --surface-panel: #342D28; --surface-inset: #3A322C;
+    --rule: #4D443B; --ink: #F5EEE3; --ink-body: #E6DCCD; --ink-muted: #CBBFAE; --ink-faint: #B8AB9A;
+  }
+
+  html[data-theme="dark"]:root #chatOverlay {
+    --bg: #2A2420; --card: #342D28; --border: #4D443B; --border-strong: #6A5F53;
+    --text: #F5EEE3; --muted: #CBBFAE; --sunken: #3A322C;
+  }
+
+  /* Practice: its own --st-* family (shared/student-ds.css). */
+  html[data-theme="dark"]:root {
+    --st-ground: #2A2420; --st-paper: #342D28; --st-ink: #F5EEE3; --st-body: #E6DCCD;
+    --st-muted: #CBBFAE; --st-caption: #BDB09F; --st-faint: #BDB09F; --st-ghost: #BDB09F;
+    --st-rule: #4D443B; --st-rule-soft: #453C34; --st-rule-fact: #453C34; --st-rule-strong: #6A5F53;
+    --st-edge: #4D443B; --st-btn-border: #5C5147; --st-crumb-bg: #302925; --st-crumb-sep: #6A5F53;
+    --st-seg-bg: #3F372F; --st-note-bg: #3A322C; --st-note-border: #5C5147;
+    --st-chip-tint: #4A2A1E; --st-chip-tint-border: #6B3A28; --st-num-well: #3A322C;
+    --err-bg: #4A221E;
+  }
+
+  /* ── what the softer ground, or an old pairing, left short of 4.5:1 ── */
+
+  /* KS3: the chosen option's letter was cream on the accent fill, 2.35:1. */
+  html[data-theme="dark"]:root .rd[data-mode="ks3"] .ks3-option[aria-pressed="true"] .ks3-opt-mark { color: #221E1B; }
+
+  /* KS4: the "!" badge was amber on a cream fill, 1.34:1. KS3's own dark file has
+     this pair; KS4's never did. */
+  html[data-theme="dark"]:root .rd[data-mode="ks3"] .ks3-mis-badge { color: #5A430A; }
+
+  /* Practice review: a marked option's letter is cream on its fill: 2.14:1 on a wrong
+     one, 1.57:1 on a right one. The page writes both inline, so only this reaches it. */
+  html[data-theme="dark"]:root [style*="background:var(--err)"][style*="#FFFDF8"],
+  html[data-theme="dark"]:root [style*="background:var(--ks3-ok-text)"][style*="#FFFDF8"] { color: #221E1B !important; }
+}
