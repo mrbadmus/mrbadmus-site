@@ -2537,10 +2537,15 @@ try {
           } },
         // An order built step by step.
         'ks3-grain-block': { t: 'o', step: '[data-grain-pick]', clear: '[data-grain-reset]', badge: '[data-grain-badge]',
+          key: function (sec) {
+            return Array.prototype.slice.call(sec.querySelectorAll('[data-grain-pick]')).sort(function (a, b) { return parseInt(attr(a, 'data-grain-rank'), 10) - parseInt(attr(b, 'data-grain-rank'), 10); })
+              .map(function (b) { return optLabel(b).replace(/^\d+\s*/, ''); }).join('\n');
+          },
           done: function (sec) { return shownIn(sec, '[data-grain-verdict]'); },
           right: function (sec) { return shownIn(sec, '[data-grain-verdict="right"]') ? true : shownIn(sec, '[data-grain-verdict="wrong"]') ? false : null; } },
         'ks3-morder-block': { t: 'o', step: '[data-morder-step]', clear: '[data-morder-clear]',
           done: function (sec) { return shownIn(sec, '[data-morder-answer]'); },
+          key: function (sec) { return txt(shownIn(sec, '[data-morder-answer]')) || null; },
           right: function (sec) { return shownIn(sec, '[data-morder-verdict="right"]') ? true : shownIn(sec, '[data-morder-verdict="wrong"]') ? false : null; } }
       };
       /* </ks3-specs> */
@@ -2746,7 +2751,7 @@ try {
           var ok = sp.right(sec);
           var d = { __block: sec, key_stage: 'KS3', lesson_slug: slug, question_id: slug + '#' + act + '-1', rung: null, kind: 'order',
                     question_text: ask, answer: steps.map(function (s) { return optLabel(s).replace(/^\d+\s*/, ''); }).join('\n'),
-                    correct_answer: null, is_correct: typeof ok === 'boolean' ? ok : null };
+                    correct_answer: sp.key ? sp.key(sec) : null, is_correct: typeof ok === 'boolean' ? ok : null };
           post(d);
         });
       };
@@ -3913,11 +3918,13 @@ try {
         var work = clone(state) || {};
         return withStubs(L, work, function () {
           var patch = {}, any = false;
-          L.setState = function (u) {
+          L.setState = function (u, cb) {
             var nx = typeof u === 'function' ? u(clone(work), L.props) : u;
             if (nx && typeof nx === 'object') {
               for (var k in nx) { if (Object.prototype.hasOwnProperty.call(nx, k)) { patch[k] = clone(nx[k]); work[k] = clone(nx[k]); any = true; } }
             }
+            // On a restore, what the lesson does when an animation ends happens too.
+            if (L.__mrbFast && typeof cb === 'function') { cb(); }
           };
           try {
             var fn = getFn(L.renderVals() || {});
@@ -4297,6 +4304,65 @@ try {
             return Object.assign(d, o.also || {});
           } };
       }
+      /* ⊕ 9 Nov 2026: picks a separate press commits ("Close the switch", Reveal, Check).
+         A pick the child can still change is not an answer, so nothing goes until the
+         press, and then one row per question with the verdict the page draws. `qs`: the
+         render's questions, each with `opts`; or `opts` alone for one question per step.
+         `at(k)`, or `step`, puts that step on screen. */
+      function commitPicks(o) {
+        var atOf = function (k, x) { if (o.at) { return o.at(k, x); } var a = {}; a[o.step] = +k; return a; };
+        var withPick = function (s, k, j, i) {
+          var m = Object.assign({}, s[o.map] || {}), out = {};
+          if (j === null) { m[k] = i; }
+          else if (o.slots) { m[k] = Object.assign({}, m[k] || {}); m[k][o.slots[j]] = i; }
+          else { m[k] = (m[k] || []).slice(); m[k][j] = i; }
+          out[o.map] = m;
+          return out;
+        };
+        var styleOf = function (v, j) {
+          if (o.style) { return v[o.style]; }
+          var w = (v[o.verdicts] || [])[j === null ? 0 : j];
+          return w ? w.style : null;
+        };
+        var listOf = function (v) { return o.qs ? (v[o.qs] || []) : (v[o.opts] && v[o.opts].length ? [{ opts: v[o.opts] }] : []); };
+        var lab = function (x) { return x ? (x.label != null ? x.label : x.text) : null; };
+        return { id: o.id, covers: o.covers,
+          fire: function (s, w, x) {
+            var out = [];
+            Object.keys(s[o.done] || {}).forEach(function (k) {
+              if (!s[o.done][k] || (w[o.done] || {})[k]) { return; }
+              var at = atOf(k, x), v = x.vals(at);
+              listOf(v).forEach(function (q, j) {
+                var on = (q.opts || []).filter(function (c) { return c.pressed; })[0];
+                if (!on) { return; }
+                var jj = o.qs ? j : null, st = styleOf(v, jj), good = null;
+                (q.opts || []).forEach(function (c, i) {
+                  if (good !== null) { return; }
+                  var tr = Object.assign({}, at, withPick(s, k, jj, i));
+                  if (styleOf(x.vals(tr), jj) && !/ks3-alert/.test(String(styleOf(x.vals(tr), jj)))) { good = lab(c); }
+                });
+                var key = /^\d+$/.test(k) ? +k + 1 : k;
+                out.push({ e: o.qs ? key + '-' + (o.slots ? o.slots[j] : j + 1) : key, a: lab(on), ok: st ? !/ks3-alert/.test(String(st)) : null, good: good, q: String(q.prompt || (o.ask ? v[o.ask] : '') || '') });
+              });
+            });
+            return out;
+          },
+          back: function (r, e, st, x) {
+            var parts = String(e).split('-'), slotKey = o.qs ? parts.pop() : null, kk = parts.join('-');
+            var k = /^\d+$/.test(kk) ? String(+kk - 1) : kk;
+            var j = o.qs ? (o.slots ? o.slots.indexOf(slotKey) : +slotKey - 1) : null;
+            x.set(atOf(k, x));
+            var q = listOf(x.vals())[o.qs ? j : 0], i = q ? findLab(q.opts, r.answer) : -1;
+            if (i < 0) { return null; }
+            x.set(withPick(x.L.state, k, j, i));
+            x.fast(o.press);
+            return null;
+          } };
+      }
+      function findLab(list, text) {
+        for (var i = 0; i < (list || []).length; i += 1) { if (list[i] && same(list[i].label != null ? list[i].label : list[i].text, text)) { return i; } }
+        return -1;
+      }
       // A typed value and the flag its Check raises.
       function typed(o) {
         return { id: o.id || o.key, covers: o.covers,
@@ -4384,11 +4450,30 @@ try {
             typed({ key: 'mp', flag: 'mpChecked', word: 'mpWord', yes: /^That agrees/, q: 'What is the melting point, in °C?', covers: ['onMp'], before: lab })
           ];
         })(),
+        'conservation-of-mass': [
+          { id: 'w3', covers: ['w3Rows'],
+            fire: function (s, w, x) {
+              if (!rose(s, w, 'w3Checked')) { return null; }
+              var out = [];
+              (x.vals().w3Rows || []).forEach(function (row, i) {
+                var on = labelOfPressed(row.options);
+                var good = (row.options || []).filter(function (o) { return /--ks3-accent-text/.test(String(o.style || '')); })[0];
+                if (on) { out.push({ e: i + 1, a: on, ok: !row.hasWhy, q: String(row.group || ''), good: good ? good.label : (row.hasWhy ? null : on) }); }
+              });
+              return out;
+            },
+            back: function (r, e, st, x) {
+              var k = +e - 1, row = (x.vals().w3Rows || [])[k], i = row ? find(row.options, r.answer) : -1;
+              if (i >= 0) { x.press(function (v) { return v.w3Rows[k].options[i].onClick; }); }
+              x.press('onW3Check');
+              return null;
+            } }
+        ],
         'ionic-compounds': [
           { id: 'lenspick', covers: ['lensOpts'],
             fire: function (s, w) {
               if (s.lensPick === w.lensPick || s.lensPick === null) { return null; }
-              return [{ e: null, a: String(s.lensPick), ok: s.lensPick === 6, q: 'In a real salt crystal, how many chloride ions sit right next to one sodium ion?' }];
+              return [{ e: null, a: String(s.lensPick), ok: s.lensPick === 6, good: '6', q: 'In a real salt crystal, how many chloride ions sit right next to one sodium ion?' }];
             },
             back: function (r) { return { lensPick: parseInt(r.answer, 10) }; } },
           { id: 'dxval', covers: ['onDx'],
@@ -4623,6 +4708,7 @@ try {
             } }
         ],
         'types-of-em-waves': [
+          commitPicks({ id: 'preds', map: 'preds', done: 'shown', step: 'pair', press: 'onSend', qs: 'pairQs', verdicts: 'verdicts', covers: ['pairQs'] }),
           { id: 'placed', covers: ['tray', 'slots'],
             fire: function (s, w, x) {
               if (!rose(s, w, 'p1')) { return null; }
@@ -4796,6 +4882,7 @@ try {
             } }
         ],
         'sound-waves-hearing': [
+          commitPicks({ id: 'ppred', map: 'pPred', done: 'pShown', step: 'pStage', press: 'onPReveal', opts: 'pOpts', verdicts: 'pVerdicts', ask: 'pPrompt', covers: ['pOpts'] }),
           { id: 'tpred', covers: ['pTones'],
             fire: function (s, w, x) {
               var out = [];
@@ -4849,6 +4936,21 @@ try {
               if (p >= 0) { x.fast(function (v) { return v.predictButtons[p].onClick; }); }
               return null;
             } }
+        ],
+        'series-parallel-circuits': [commitPicks({ id: 'preds', map: 'preds', done: 'revealed', step: 'step', press: 'onReveal', qs: 'qs', verdicts: 'verdicts', covers: ['qs'] })],
+        'chromosomes-mitosis': [commitPicks({ id: 'preds', map: 'preds', done: 'revealed', step: 'st', press: 'onCyRun', qs: 'cyQs', verdicts: 'cyVerdicts', covers: ['cyQs'] })],
+        'lenses': [commitPicks({ id: 'preds', map: 'preds', done: 'shown', press: 'onDraw', qs: 'bQs', verdicts: 'bVerdicts', slots: ['t', 's', 'w'], covers: ['bQs'],
+          at: function (k, x) {
+            var lens = String(k).slice(0, 2), s0 = {}; s0[k] = true;
+            for (var pos = 0; pos < 12; pos += 1) {
+              var v = x.vals({ lens: lens, pos: pos, shown: Object.assign({}, x.L.state.shown, s0) });
+              if ((v.bVerdicts || []).length) { return { lens: lens, pos: pos }; }
+            }
+            return { lens: lens };
+          } })],
+        'waves-detection-exploration': [
+          commitPicks({ id: 'qpred', map: 'qPred', done: 'qShown', step: 'qStage', press: 'onQReveal', opts: 'qOpts', style: 'qVerdictStyle', ask: 'qPrompt', covers: ['qOpts'] }),
+          commitPicks({ id: 'upred', map: 'uPred', done: 'uShown', step: 'uStage', press: 'onUReveal', opts: 'uOpts', style: 'uVerdictStyle', ask: 'uPrompt', covers: ['uOpts'] })
         ],
         'changes-in-energy': [stepPick({ pick: 'picks', done: 'revealed', step: 'round', opts: 'roundOpts', word: 'verdictWord', yes: /as you said/, ask: 'roundAsk', also: { anim: 1 }, covers: ['roundOpts'] })],
         'power': [stepPick({ pick: 'picks', done: 'revealed', step: 'round', opts: 'roundOpts', word: 'verdictWord', yes: /^Yes/, ask: 'roundAsk', covers: ['roundOpts'] })],
@@ -5137,34 +5239,6 @@ try {
       };
     })();
     /* </ks4-root-forms> */
-    /* A Reveal or a Check that is not an answer: the picks behind it are saved
-       (KS4RootActs). Nothing is sent for the press, so on restore the verdict
-       is drawn wherever the lesson's own handler accepts the saved picks. A
-       child who picked and had not yet pressed sees the verdict too. */
-    var ROOT_REVEALS = {
-      'conservation-of-mass': [{ press: 'onW3Check' }],
-      'series-parallel-circuits': [{ map: 'preds', step: 'step', press: 'onReveal' }],
-      'waves-detection-exploration': [{ map: 'qPred', step: 'qStage', press: 'onQReveal' }, { map: 'uPred', step: 'uStage', press: 'onUReveal' }],
-      'sound-waves-hearing': [{ map: 'pPred', step: 'pStage', press: 'onPReveal' }]
-    };
-    function revealsBack() {
-      var list = ROOT_REVEALS[pathSlug];
-      var host = document.getElementById('ks4-mount');
-      var api = host && host.__mrbKs4;
-      if (!list || !api || !api.logic) { return; }
-      var L = api.logic, x = formX(L);
-      list.forEach(function (o) {
-        if (!o.map) { x.press(o.press); return; }
-        var keys = Object.keys(L.state[o.map] || {}).map(Number).sort(function (a, b) { return a - b; });
-        if (!keys.length) { return; }
-        var top = Math.max(keys[keys.length - 1], L.state[o.step] || 0);
-        keys.forEach(function (k) {
-          var at = {}; at[o.step] = k; x.set(at);
-          x.press(o.press);
-        });
-        var end = {}; end[o.step] = top; x.set(end);
-      });
-    }
     var formPrev = null;
     // The form a row's id belongs to (the longest stem that fits), or null.
     function formOf(rest) {
@@ -5188,7 +5262,8 @@ try {
         fast: function (get) {
           var had = Object.prototype.hasOwnProperty.call(L, 'reduced'), keep = L.reduced;
           L.reduced = typeof keep === 'function' ? function () { return true; } : true;
-          try { return x.press(get); } finally { if (had) { L.reduced = keep; } else { delete L.reduced; } }
+          L.__mrbFast = true;
+          try { return x.press(get); } finally { L.__mrbFast = false; if (had) { L.reduced = keep; } else { delete L.reduced; } }
         }
       };
       return x;
@@ -5288,21 +5363,12 @@ try {
     }
     /* ⊕ 9 Nov 2026 (a blind run: "Self-checked" beside a page that had said "goes up,
        not stays the same"). `self_checked` means the child compared their own work with
-       a shown answer, and only typed work does that. A commitment nothing judges goes
-       unmarked. A commitment the page judges on a later Reveal is judged here: the
-       lesson's own render is asked what it would draw once revealed, for each option,
-       and its verdict style says which are right. `show` opens that reveal on a COPY of
-       the state; `read` is the verdict for this slot. */
+       a shown answer. A commitment nothing judges goes unmarked. A commitment the page
+       judges a moment later is judged here: the lesson's own render is asked what it
+       would draw, for each option, and its verdict style says which are right. `show`
+       opens that on a COPY of the state; `read` is the verdict for this slot. */
     var ROOT_JUDGE = {
-      'series-parallel-circuits': { preds: { show: function (s, t) { s.step = +t[1]; s.revealed = Object.assign({}, s.revealed); s.revealed[t[1]] = true; }, read: function (v, t) { return (v.verdicts || [])[+t[2]]; } } },
-      'chromosomes-mitosis': { preds: { show: function (s, t) { s.st = +t[1]; s.revealed = Object.assign({}, s.revealed); s.revealed[t[1]] = true; }, read: function (v, t) { return (v.cyVerdicts || [])[+t[2]]; } } },
-      'types-of-em-waves': { preds: { show: function (s, t) { s.pair = +t[1]; s.shown = Object.assign({}, s.shown); s.shown[t[1]] = true; }, read: function (v, t) { return (v.verdicts || [])[+t[2]]; } } },
-      'lenses': { preds: { show: function (s, t) { s.shown = Object.assign({}, s.shown); s.shown[t[1]] = true; }, read: function (v, t) { return (v.bVerdicts || [])[['t', 's', 'w'].indexOf(t[2])]; } } },
-      'red-shift-big-bang': { pred: { show: function (s) { s.gal = 2; }, read: function (v) { return { style: v.specNoteStyle }; } } },
-      'waves-detection-exploration': {
-        qPred: { show: function (s, t) { s.qStage = +t[1]; s.qShown = Object.assign({}, s.qShown); s.qShown[t[1]] = true; }, read: function (v) { return { style: v.qVerdictStyle }; } },
-        uPred: { show: function (s, t) { s.uStage = +t[1]; s.uShown = Object.assign({}, s.uShown); s.uShown[t[1]] = true; }, read: function (v) { return { style: v.uVerdictStyle }; } } },
-      'sound-waves-hearing': { pPred: { show: function (s, t) { s.pStage = +t[1]; s.pShown = Object.assign({}, s.pShown); s.pShown[t[1]] = true; }, read: function (v) { return (v.pVerdicts || [])[0]; } } }
+      'red-shift-big-bang': { pred: { show: function (s) { s.gal = 2; }, read: function (v) { return { style: v.specNoteStyle }; } } }
     };
     function rootJudged(r, pre) {
       var cfg = (ROOT_JUDGE[pathSlug] || {})[String(r.slot && r.slot[0])], R = rootActsOf();
@@ -5340,6 +5406,8 @@ try {
       var took = o.ws.every(function (w) { return JSON.stringify(A.at(L.state, w.path)) === JSON.stringify(w.after); });
       if (!took) { return; }
       if (r.kind === 'multi' && me.k !== r.check) { return; }  // a toggle: the Check is the answer
+      // One button is a control ("Drop it in"), not a choice between anything.
+      if (r.kind === 'pick' && r.options.filter(function (x) { return x.ws && x.ws.length; }).length < 2) { return; }
       var labelOf = function (k) { var l = null; r.options.forEach(function (x) { if (x.k === k) { l = x.label; } }); return l; };
       var d = base(A.slotId(r, me.oi));
       d.__block = hit; d.kind = 'choice'; d.question_text = ask;
@@ -5574,7 +5642,6 @@ try {
       try { rootBack(); } catch (e) { /* the lesson's own activities never stop the rest */ }
       try { rootActsBack(); } catch (e) { /* the lesson's own activities never stop the rest */ }
       try { formsBack(); } catch (e) { /* the lesson's own activities never stop the rest */ }
-      try { revealsBack(); } catch (e) { /* the lesson's own activities never stop the rest */ }
       /* ⊕ 8 Nov 2026: the forms, typed answers and builders (ROOT_FORMS), each
          row oldest first, so a changed answer ends on the latest. */
       function formsBack() {
@@ -5602,9 +5669,22 @@ try {
          handler, run against a copy of its state: exactly the change the
          press made, flags and tallies included. The step the child last
          answered on is put back on screen. */
+      /* ⊕ 9 Nov 2026: a blind run's step 2 came back blank and answerable. Restoring
+         step 1 ran its handler as if the child had just pressed it, which starts an
+         animation, and a lesson refuses the next answer while one runs. So a restore
+         takes the lesson's own reduced-motion path: every step lands finished. */
       function rootActsBack() {
         var R = rootActsOf();
         if (!R || !R.groups.length) { return; }
+        var L0 = R.api.logic, had = Object.prototype.hasOwnProperty.call(L0, 'reduced'), keep = L0.reduced;
+        L0.reduced = typeof keep === 'function' ? function () { return true; } : true;
+        L0.__mrbFast = true;
+        try { rootActsPut(R); } finally {
+          L0.__mrbFast = false;
+          if (had) { L0.reduced = keep; } else { delete L0.reduced; }
+        }
+      }
+      function rootActsPut(R) {
         var A = KS4RootActs, L = R.api.logic, prefix = pilotId(pathSlug, '');
         var mine = (rows || []).filter(function (r) { return r && r.answer_kind === 'choice' && String(r.question_id || '').indexOf(prefix) === 0 && !formOf(String(r.question_id).slice(prefix.length)); });
         if (!mine.length) { return; }

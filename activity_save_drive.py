@@ -284,11 +284,13 @@ CASES = [
          check=lambda b: [x["is_correct"] for x in b if x["question_id"] == "ks4:ecosystems:ch#lv-1"] == [False, True],
          back="H.rootState().lv === 1"),
     dict(name="ks4-prediction-map", page="/combined/higher/biology/cell-biology/chromosomes-mitosis.html",
-         act="H.click(H.rootBtn('It grows, makes more ribosomes')); await H.sleep(400);",
+         act="""H.click(H.rootBtn('It grows, makes more ribosomes')); await H.sleep(300);
+                var q = H.v().cyQs; for (var i = 1; i < q.length; i += 1) { H.click(H.rootBtn(H.v().cyQs[i].opts[0].label, 0)); await H.sleep(200); }
+                await H.call('onCyRun'); await H.sleep(300);""",
          want=["ks4:chromosomes-mitosis:ch#preds-1-1"],
          check=lambda b: isinstance([x for x in b if x["question_id"].endswith("#preds-1-1")][0]["is_correct"], bool)
                          and bool([x for x in b if x["question_id"].endswith("#preds-1-1")][0]["correct_answer"]),
-         back="JSON.stringify(H.rootState().preds[0]) === '[0]'"),
+         back="H.rootState().preds[0][0] === 0 && H.rootState().revealed[0] === true"),
     dict(name="ks4-level-pick", page="/triple/higher/biology/inheritance/advantages-sexual-asexual.html",
          act="""var w = H.write(); if (!w) { throw new Error('no level-marked write'); }
                 var ta = w.host.querySelector('textarea'); ta.scrollIntoView({block:'center'});
@@ -349,7 +351,8 @@ CASES = [
          act="""H.click(H.exact('6')); await H.sleep(200); await H.call('onDx', H.val('wrong')); await H.call('onDxCheck');
                 await H.call(function (v) { return v.dxTabs[1].onClick; }); await H.call('onDx', H.val('X2Y')); await H.call('onDxCheck'); await H.sleep(200);""",
          want=["ks4:ionic-compounds:th#lenspick", "ks4:ionic-compounds:th#dxval-1", "ks4:ionic-compounds:th#dxval-2"],
-         check=lambda b: [x for x in b if x["question_id"].endswith("#dxval-1")][0]["is_correct"] is False,
+         check=lambda b: [x for x in b if x["question_id"].endswith("#dxval-1")][0]["is_correct"] is False
+                         and [x for x in b if x["question_id"].endswith("#lenspick")][0]["correct_answer"] == "6",
          back="(function(){ var s = H.rootState(); return s.lensPick === 6 && s.dxVal[0] === 'wrong' && s.dxVal[1] === 'X2Y' && s.dx === 1 && s.dxChecked === true; })()"),
     # A list of picks, a form, and a builder, all in one lesson.
     dict(name="ks4-list-of-picks", page="/triple/higher/chemistry/bonding/ionic-bonding.html", forms=True,
@@ -672,7 +675,7 @@ CASES = [
     dict(name="ks3-units-order", page="/ks3/chemistry/the-earth-and-its-atmosphere/the-rock-cycle.html",
          act="""var p = document.querySelectorAll('.ks3-grain-block [data-grain-pick]'); for (var i = 0; i < p.length; i += 1) { H.click(p[i]); await H.sleep(50); } await H.sleep(200);""",
          want=["the-rock-cycle#grain-order-1"],
-         check=lambda b: len(b) == 1 and b[0]["kind"] == "order" and isinstance(b[0]["is_correct"], bool),
+         check=lambda b: len(b) == 1 and b[0]["kind"] == "order" and isinstance(b[0]["is_correct"], bool) and b[0]["correct_answer"].count("\n") >= 3,
          back="""(function(){ var p = document.querySelectorAll('.ks3-grain-block [data-grain-pick]'); return Array.prototype.every.call(p, function (x) { return H.pressed(x); }); })()"""),
     dict(name="ks3-units-sort", page="/ks3/biology/cells-and-organisation/life-processes.html",
          act="""var r = document.querySelectorAll('.ks3-sort .ks3-sortrow'); H.click(r[0].querySelector('.ks3-sort-chip')); await H.sleep(120); H.click(r[1].querySelectorAll('.ks3-sort-chip')[1]); await H.sleep(120);""",
@@ -716,6 +719,35 @@ CASES = [
          check=lambda b: [x for x in b if x["question_id"].endswith("#concord")][0]["is_correct"] is False
                          and "oncordant" in ([x for x in b if x["question_id"].endswith("#concord")][0]["correct_answer"] or ""),
          back="(function(){ var s = H.rootState(); return !!s.pick && s.pick.ok === false; })()"),
+    # ── ⊕ 9 Nov 2026: a third blind run ──
+    dict(name="ks4-steps-wrong", page="/combined/higher/biology/ecology/decomposition.html",
+         act="""var settle = async function () { for (var t = 0; t < 40 && H.rootState().cycAnim; t += 1) { await H.sleep(200); } };
+                for (var i = 0; i < 3; i += 1) { var o = H.v().cycOptions; H.click(H.rootBtn(o[i === 1 ? 1 : 0].text)); await H.sleep(150); await settle(); if (i < 2) { await H.call('onCycNext'); } }""",
+         want=["ks4:decomposition:ch#cycpick-1", "ks4:decomposition:ch#cycpick-2", "ks4:decomposition:ch#cycpick-3"],
+         check=lambda b: all(isinstance(x["is_correct"], bool) and x["correct_answer"] for x in b if "#cycpick-" in x["question_id"]),
+         back="""(function(){ var s = H.rootState(); return s.cycPick.every(function (x) { return x !== null; }) && !s.cycAnim && s.cyc === 2; })()"""),
+    dict(name="ks4-commit-only", page="/combined/higher/physics/electricity/series-parallel-circuits.html",
+         act="""var q = H.v().qs; H.click(H.rootBtn(q[0].opts[0].label, 0)); await H.sleep(120); H.click(H.rootBtn(H.v().qs[0].opts[1].label, 0)); await H.sleep(120); H.click(H.rootBtn(H.v().qs[1].opts[1].label, 1)); await H.sleep(120);
+                window.__before = 1; await H.sleep(200); await H.call('onReveal'); await H.sleep(250);""",
+         want=["ks4:series-parallel-circuits:ch#preds-2-1", "ks4:series-parallel-circuits:ch#preds-2-2"],
+         check=lambda b: len([x for x in b if "#preds-" in x["question_id"]]) == 2 and all(x.get("correct_answer") and isinstance(x["is_correct"], bool) for x in b if "#preds-" in x["question_id"]),
+         back="""(function(){ var s = H.rootState(); return s.revealed[s.step] === true && s.preds[s.step][0] === 1; })()"""),
+    dict(name="ks4-commit-lens", page="/triple/higher/physics/waves/lenses.html",
+         act="""var q = H.v().bQs; for (var i = 0; i < q.length; i += 1) { await H.call((function (j) { return function (v) { return v.bQs[j] && v.bQs[j].opts[0].onClick; }; })(i)); }
+                await H.call('onDraw'); await H.sleep(200);""",
+         want=["ks4:lenses:th#preds-*"],
+         check=lambda b: all(isinstance(x["is_correct"], bool) for x in b if "#preds-" in x["question_id"]),
+         back="""(function(){ var s = H.rootState(); return Object.keys(s.shown).length === 1 && H.v().bVerdicts.length > 0; })()"""),
+    dict(name="ks4-commit-pair", page="/triple/higher/physics/waves/types-of-em-waves.html",
+         act="""var q = H.v().pairQs; for (var i = 0; i < q.length; i += 1) { await H.call((function (j) { return function (v) { return v.pairQs[j].opts[0].onClick; }; })(i)); }
+                await H.call('onSend'); await H.sleep(200);""",
+         want=["ks4:types-of-em-waves:th#preds-1-1"],
+         back="""(function(){ return H.rootState().shown[0] === true; })()"""),
+    dict(name="ks4-control-label", page="/combined/higher/chemistry/atomic-structure/group-1.html",
+         act="H.click(H.exact('Drop it in')); await H.sleep(400);",
+         want=[],
+         check=lambda b: not any(x.get("answer") == "Drop it in" for x in b),
+         back="true"),
     # ── KS3: the rest of the instruments ──
     dict(name="ks3-gate", page="/ks3/physics/energy-transfers/energy-transfers-before-and-after.html",
          act="var s = document.querySelector('.ks3-btally-block'); H.click(s.querySelector('[data-btally-gopt]')); await H.sleep(300);",
@@ -765,7 +797,7 @@ CASES = [
          act="""var s = document.querySelector('.ks3-morder-block'); var st = s.querySelectorAll('[data-morder-step]');
                 for (var i = 0; i < st.length; i += 1) { H.click(st[i]); await H.sleep(60); } await H.sleep(400);""",
          want=["making-a-pure-dry-salt#*-1"],
-         check=lambda b: [x for x in b if x["kind"] == "order"][0]["answer"].count("\n") >= 3,
+         check=lambda b: [x for x in b if x["kind"] == "order"][0]["answer"].count("\n") >= 3 and bool([x for x in b if x["kind"] == "order"][0]["correct_answer"]),
          back="(function(){ var s = document.querySelector('.ks3-morder-block'); return !!s.querySelector('[data-morder-answer]') && !s.querySelector('[data-morder-answer]').hidden; })()"),
     # ⊕ 8 Nov 2026: the two live puzzles (no Check; the page judges every press).
     dict(name="ks3-live-model", page="/ks3/biology/inheritance-and-dna/how-we-worked-out-dna.html",
