@@ -679,6 +679,27 @@ CASES = [
          want=["ks4:conservation-of-mass:ch#w3-%d" % n for n in range(1, 6)],
          check=lambda b: all(x["is_correct"] is True for x in b if "#w3-" in x["question_id"]),
          back="""(function(){ var s = H.rootState(); return s.w3Checked === true && Object.keys(s.w3).length === 5 && /^All five right/.test(H.v().w3Word); })()"""),
+    dict(name="ks4-chain-retry", page="/combined/higher/biology/organisation/heart-blood-vessels.html",
+         act="""var P = H.block('Ks4Practice'), R = P.logic.props.rungs, keys = [], ck = null, n = 0;
+                [R.r1, R.r2, R.r3, R.r4].forEach(function (items, ri) { items.forEach(function (it, i) { keys.push(ri + '-' + i); if ((it.kind || 'mcq') === 'chain' && !ck) { ck = [ri, i, it]; } }); });
+                var kid = function () { var o = null; Array.prototype.forEach.call(P.host.querySelectorAll('[data-dc-tpl]'), function (el) { var a = el.__mrbKs4; if (!o && a && a.comp === 'Ks4Chain') { o = a; } }); return o; };
+                var links = ck[2].links.map(function (t, k) { return 'L' + k; });
+                var check = async function (order) { var c = kid(); c.logic.setState({ chain: order, checked: false }); await H.sleep(90); c.logic.renderVals().onCheck(); await H.sleep(250); };
+                await check(links.slice().reverse());
+                var q = {}; keys.forEach(function (k) { q[k] = { res: k === ck[0] + '-' + ck[1] ? false : true, pick: 0, conv: null, num: '', unit: '' }; }); P.logic.setState({ q: q }); await H.sleep(120);
+                P.logic.renderVals().onRetry(); await H.sleep(300);
+                await check(links); await H.sleep(200); window.__ck = ck[0] + '-' + ck[1];""",
+         want=["ks4:heart-blood-vessels:ch#r*"],
+         back="""(function(){ var P = H.block('Ks4Practice'), R = P.logic.props.rungs, ck = null; [R.r1, R.r2, R.r3, R.r4].forEach(function (items, ri) { items.forEach(function (it, i) { if ((it.kind || 'mcq') === 'chain' && !ck) { ck = ri + '-' + i; } }); }); return P.logic.state.q[ck].res === true; })()"""),
+    dict(name="ks4-chain-recheck", page="/combined/higher/biology/organisation/heart-blood-vessels.html",
+         act="""var P = H.block('Ks4Practice'), R = P.logic.props.rungs, ck = null;
+                [R.r1, R.r2, R.r3, R.r4].forEach(function (items) { items.forEach(function (it) { if ((it.kind || 'mcq') === 'chain' && !ck) { ck = it; } }); });
+                var c = null; Array.prototype.forEach.call(P.host.querySelectorAll('[data-dc-tpl]'), function (el) { var a = el.__mrbKs4; if (!c && a && a.comp === 'Ks4Chain') { c = a; } });
+                var links = ck.links.map(function (t, k) { return 'L' + k; });
+                c.logic.setState({ chain: links.slice().reverse(), checked: false }); await H.sleep(90); c.logic.renderVals().onCheck(); await H.sleep(250);
+                c.logic.setState({ chain: links, checked: false }); await H.sleep(90); c.logic.renderVals().onCheck(); await H.sleep(250);""",
+         want=["ks4:heart-blood-vessels:ch#r*"],
+         back="""(function(){ var P = H.block('Ks4Practice'), R = P.logic.props.rungs, ck = null; [R.r1, R.r2, R.r3, R.r4].forEach(function (items, ri) { items.forEach(function (it, i) { if ((it.kind || 'mcq') === 'chain' && !ck) { ck = ri + '-' + i; } }); }); return P.logic.state.q[ck].res === false; })()"""),
     # ── KS3: the rest of the instruments ──
     dict(name="ks3-gate", page="/ks3/physics/energy-transfers/energy-transfers-before-and-after.html",
          act="var s = document.querySelector('.ks3-btally-block'); H.click(s.querySelector('[data-btally-gopt]')); await H.sleep(300);",

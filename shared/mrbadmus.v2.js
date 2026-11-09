@@ -3523,7 +3523,7 @@ try {
         var op = owner.logic.props || {}, R = op.rungs || {}, r = null, d2 = null;
         if (owner.comp === 'Ks4Ladder') {
           r = R.r3 || {};
-          d2 = base('r3', 'r3');
+          d2 = base('r3');                      // no rung: see scoredRow
           if (op.slug) { d2.lesson_slug = op.slug; d2.question_id = pilotId(op.slug, 'r3'); }
           d2.marks = r.marks || 3;
         } else if (owner.comp === 'Ks4Practice') {
@@ -3534,7 +3534,7 @@ try {
           var at = keys[kids(owner, 'Ks4Chain').indexOf(api)];
           if (!at) { return; }
           r = L[at[0]][at[1]] || {};
-          d2 = base('r' + (at[0] + 1) + '-' + (at[1] + 1), 'r' + (at[0] + 1));
+          d2 = base('r' + (at[0] + 1) + '-' + (at[1] + 1));
           d2.marks = r.marks || [1, 3, 3, 6][at[0]];
         } else { return; }
         d2.kind = 'order'; d2.question_text = r.prompt || '';
@@ -5401,9 +5401,19 @@ try {
     // A block's own "done" signal to its lesson, as the block sends it live,
     // so the lesson's progress (its rail, "N of 5 done") counts it.
     function tell(fn) { if (typeof fn === 'function') { try { fn.apply(null, Array.prototype.slice.call(arguments, 1)); } catch (e) { /* never breaks a lesson */ } } }
+    /* ⊕ 9 Nov 2026: the page's own rule is that a rung scores the FIRST check of a
+       chain since it was last dealt ("The rung scores your first attempt"), and "Retry
+       my misses" deals it again. The rung's handler sends that check with the rung
+       named; a later "Check again" is sent with none. So the row that scored is the
+       last one naming its rung. (An older "Check again" did name it, and reads as a
+       retry.) Reading the first row gave 3 of 4 where the page had said 4 of 4. */
+    function scoredAt(rs) {
+      for (var i = (rs || []).length - 1; i >= 0; i -= 1) { if (rs[i] && rs[i].rung) { return i; } }
+      return 0;
+    }
     function chainSet(ch, rs, links, herr) {
       if (!ch || !ch.logic || !rs || !rs.length || (ch.logic.state || {}).attempts) { return; }
-      ch.logic.setState({ chain: chainBack(links, herr, lastOf(rs).answer), checked: true, attempts: rs.length, reported: true });
+      ch.logic.setState({ chain: chainBack(links, herr, lastOf(rs).answer), checked: true, attempts: rs.length - scoredAt(rs), reported: true });
     }
     replay.push(function (rows) {
       var ids = byId(rows);
@@ -5678,7 +5688,7 @@ try {
             }
             rs = lid('r3');
             if (st.r3 == null && rs && rs.length) {
-              patch.r3 = rs[0].is_correct === true; has = true;      // the rung scores the first check
+              patch.r3 = rs[scoredAt(rs)].is_correct === true; has = true;
               chainSet(kids(api, 'Ks4Chain')[0], rs, (R.r3 || {}).links || [], (R.r3 || {}).herrings || []);
             }
             if (st.r4 == null && (r = lastOf(lid('r4')))) {
@@ -5715,7 +5725,7 @@ try {
                   var cbp = calcBack(it, pr.answer);
                   q[kk] = Object.assign(base, cur, { res: pr.is_correct === true, conv: cbp.conv, num: cbp.num, unit: cbp.unit });
                 } else if (kd === 'chain') {
-                  q[kk] = Object.assign(base, cur, { res: prs[0].is_correct === true });
+                  q[kk] = Object.assign(base, cur, { res: prs[scoredAt(prs)].is_correct === true });
                   chainSet(kids(api, 'Ks4Chain')[chainKeys.indexOf(kk)], prs, it.links || [], it.herrings || []);
                 } else {
                   var mkw = it.marks || [1, 3, 3, 6][ri];
