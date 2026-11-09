@@ -269,12 +269,12 @@ def own_items():
     pick = written(None, "cells", "Explain how enzymes speed up a reaction. (6 marks)", "They lower the energy needed.",
                    "Level 3 (5–6 marks): a\nLevel 2 (3–4 marks): b\nLevel 1 (1–2 marks): c", 0, 6, "2026-09-21T18:30:00Z",
                    marked_by="unmarked", reason="marker_error")
-    pick.update({"self_ticks": [2, 102], "self_level": 2, "self_points": 0})
+    pick.update({"self_ticks": [2], "self_level": 2, "self_points": 0})
     # The same, on a backend with no marking model.
     stub = written(None, "cells", "Explain why the heart has four chambers. (6 marks)", "To pump blood.",
                    "Level 3 (5–6 marks): a\nLevel 2 (3–4 marks): b\nLevel 1 (1–2 marks): c", 0, 6, "2026-09-16T18:30:00Z",
                    level=0, marked_by="stub", feedback="Practice note.")
-    stub.update({"self_ticks": [1, 6, 8, 9, 103], "self_level": 3, "self_points": 3, "points_total": 6})
+    stub.update({"self_ticks": [1, 6, 8, 9], "self_level": 3, "self_points": 3, "points_total": 6})
     # A ladder rung: stored with its reason, which the child never saw.
     press = mcq(None, "part", "A 600 N crate rests on 0.30 m². What is the pressure?", "180 Pa — multiply the force by the area",
                 "2000 Pa — 600 N shared over 0.30 m²", False, "2026-09-22T18:40:00Z", qid="pressure-force-over-area#recall")
