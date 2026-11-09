@@ -522,7 +522,7 @@ def _ps(fam, opts):
 def prescript(state="trialing", kids=2, checkout="ok", deletion=None, messages=None,
               fail=None, signed_in=True, draft=None, taken=None, existing=False,
               password_ok=False, unconfirmed=False, who="parent", next_title=None,
-              days_left="fixture", ps=None):
+              days_left="fixture", ps=None, weekly=False):
     """`fail`: regexes over the request path that answer 500 — for proving a
     page's failure line, not for anything a gate measures.
 
@@ -555,6 +555,11 @@ def prescript(state="trialing", kids=2, checkout="ok", deletion=None, messages=N
         fam["children"].reverse()
     if next_title is not None:
         fam["children"][0]["work"][1]["title"] = next_title
+    if weekly:
+        # ⊕ 9 Nov 2026: `week_items`, the Mon–Sun week: not the same rows as
+        # `work`, so a page reading the wrong list is caught.
+        k0 = fam["children"][0]
+        k0["week_items"] = [dict(w, done=(i < 2)) for i, w in enumerate((k0["work"] + k0["work"] + k0["work"])[:3])]
     if days_left != "fixture":
         fam["billing"]["days_left"] = days_left
     fx = {"family": fam, "pricing": PRICING,

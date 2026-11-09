@@ -45,6 +45,8 @@ PS = {"ps": {}}
 def expected_chip(it, today=psf.TODAY):
     """The row chip's word, from the fixture by the plan's rules — written
     out independently of parent-side.js."""
+    if it.get("started") or (it["status"] != "done" and it.get("answers")):
+        return "Started"
     if it["status"] == "done":
         if not it["tracked"]:
             return "Done"
@@ -117,13 +119,23 @@ def child(d):
     d.wait("document.querySelectorAll('#week .ps-row').length>0")
     items = [i for i in psf.ada_items() if psf.WEEK <= i["scheduled_for"] <= "2026-10-04"]
     items.sort(key=lambda i: i["scheduled_for"])
-    chips = d.js("[].map.call(document.querySelectorAll('#week .ps-row .ps-chip'),function(e){return e.textContent.trim();})")
+    chips = d.js("[].map.call(document.querySelectorAll('#week .ps-list:not(#ps-own) .ps-row .ps-chip'),function(e){return e.textContent.trim();})")
     check(sorted(chips) == sorted(expected_chip(i) for i in items),
           "This week: every row's chip is the fixture's (scores marked-only, Today/Opens/Not done)", chips)
     done = sum(1 for i in items if i["status"] == "done")
     check("%d of %d done" % (done, len(items)) in d.text("#week"), "This week: done count")
-    check(d.js("document.querySelectorAll('#week .ps-row[disabled]').length") == len(items) - done,
-          "only finished work opens")
+    empty = sum(1 for i in items if i["status"] != "done" and not i["answers"])
+    check(d.js("document.querySelectorAll('#week .ps-row[disabled]').length") == empty,
+          "only work holding something opens", (empty,))
+    check(d.js("!document.querySelector('#week .ps-row[data-open=ada-w9]').disabled"),
+          "F8: a practice part-way through, with saved answers, opens")
+    check(d.js("document.querySelector('#week .ps-row[data-open=ada-w9] .ps-chip').textContent.trim()") == "Started",
+          "F8: …and says it is started, not done")
+    own = [i for i in psf.own_items() if psf.WEEK <= i["done_day"] <= "2026-10-04"]
+    check(d.js("[].map.call(document.querySelectorAll('#ps-own .ps-row'),function(e){return e.getAttribute('data-open');}).sort().join()")
+          == ",".join(sorted(i["id"] for i in own)),
+          "F1: this week's own work is listed, each row opening", [i["id"] for i in own])
+    check("NOT SET WORK" in d.text("#week").upper(), "F1: and said plainly not to be set work")
     tops = psf.topics()
     for st, label in (("secure", "Secure"), ("shaky", "Shaky"), ("not_yet", "Not yet")):
         n = d.js("(function(){var h=document.querySelector('.ps-tg-%s .ps-mono');return h&&h.textContent;})()" % st)
@@ -142,7 +154,39 @@ def child(d):
     no_sideways(d, "child 1440")
     d.shot("child-1440.png", 1440)
 
+    print("\n── own work, in the panel ──")
+    d.click("#ps-own .ps-row[data-open='own-exam']")
+    d.wait("!!document.querySelector('.ps-panel')")
+    p = d.text(".ps-panel")
+    check("EXAM QUESTION" in p.upper() and "NOT SET WORK" in p.upper() and "Photosynthesis" in p and "Level 2" in p,
+          "F1: a free-choice exam answer opens with its AQA level", p[:160])
+    d.js("document.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape',bubbles:true}))")
+    d.wait("!document.querySelector('.ps-panel')")
+    d.open("consumer/family.html?view=child&child=kid-ada&open=own-ionic", width=1440, state="trialing", kids=2, **PS)
+    d.wait("!!document.querySelector('.ps-panel .ps-q')")
+    p = d.text(".ps-panel")
+    check(d.js("[].filter.call(document.querySelectorAll('.ps-panel .ps-q'),function(q){return q.textContent.indexOf('Correct answer')>=0;}).length") == 1
+          and "Not tracked yet" in p,
+          "F10: a wrong answer with no saved right answer says so; a right one says nothing", p[:240])
+    d.open("consumer/family.html?view=child&child=kid-ada&open=own-enzymes", width=1440, state="trialing", kids=2, **PS)
+    d.wait("!!document.querySelector('.ps-panel .ps-q')")
+    p = d.text(".ps-panel")
+    check("Picked Level 2 for themselves, not marked" in p, "F4: the child's own pick, in words", p[:300])
+    check("0/6" not in p and "Level 0" not in p and "AQA level" not in p, "F4: an unmarked answer never reads as 0")
+    check(d.js("document.querySelector('.ps-panel .ps-q-top .ps-chip').textContent.trim()") == "Not marked", "F4: it reads Not marked")
+    d.open("consumer/family.html?view=child&child=kid-ada&open=own-heart", width=1440, state="trialing", kids=2, **PS)
+    d.wait("!!document.querySelector('.ps-panel .ps-q')")
+    p = d.text(".ps-panel")
+    check("Marked by AI" not in p and "Practice mark, the AI marker didn’t check" in p and "Practice level" in p and "AQA level" not in p,
+          "F2: a keyword count is never called the AI's mark", p[:300])
+    check("Picked Level 3 for themselves, not marked" in p, "F4: the pick's real level (position 1 of a top-first list)")
+    d.open("consumer/family.html?view=child&child=kid-ada&open=ada-w9", width=1440, state="trialing", kids=2, **PS)
+    d.wait("document.querySelectorAll('.ps-panel .ps-q').length>0")
+    check(d.js("document.querySelectorAll('.ps-panel .ps-q').length") == 2, "F8: the part-done practice opens to its answers")
+
     print("\n── the work panel ──")
+    d.open("consumer/family.html?view=child&child=kid-ada", width=1440, state="trialing", kids=2, **PS)
+    d.wait("document.querySelectorAll('#week .ps-row').length>0")
     d.click("#week .ps-row[data-open='ada-w1']")
     d.wait("!!document.querySelector('.ps-panel')")
     it = [i for i in psf.ada_items() if i["id"] == "ada-w1"][0]
@@ -212,8 +256,17 @@ def past(d):
     allrows = [i for g in psf.past_work(("kid-ada", "kid-ben"), sort="lowest")["weeks"] for i in g["items"]]
     check(rows == len(allrows) and dis == 0,
           "every past-work row (no `status`, as the API sends it) is done and openable", (rows, dis))
-    check("Not done" not in chips and sorted(chips) == sorted(expected_chip(dict(i, status="done")) for i in allrows),
+    check("Not done" not in chips and sorted(chips) == sorted(expected_chip(dict(i, status=i.get("status", "done"))) for i in allrows),
           "past-work chips are the scores / honest states, never 'Not done'", chips)
+    check(any("Not set work" in s for s in d.js("[].map.call(document.querySelectorAll('.ps-weeks .ps-row-sub'),function(e){return e.textContent;})")),
+          "F1: own work is in Past work, marked not set work")
+    sums = d.js("[].map.call(document.querySelectorAll('.ps-week-h span'),function(e){return e.textContent;})")
+    check(any("not set work" in s for s in sums), "F1: a week's line counts it beside what was done", sums)
+    d.click(".ps-weeks .ps-row[data-open='own-enzymes']")
+    d.wait("!!document.querySelector('.ps-panel .ps-q')")
+    check("Picked Level 2" in d.text(".ps-panel"), "F1: a past own-work row opens to every question")
+    d.js("document.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape',bubbles:true}))")
+    d.wait("!document.querySelector('.ps-panel')")
     d.click(".ps-weeks .ps-row[data-open='ada-w3']")
     d.wait("!!document.querySelector('.ps-panel .ps-q')")
     check("Level 2" in d.text(".ps-panel"), "All children: a past row opens with every question")
@@ -262,8 +315,21 @@ def kid(d):
     print("\n── the child's pages ──")
     d.open("consumer/done.html", width=1440, state="trialing", kids=2, who="child", **PS)
     d.wait("document.querySelectorAll('.ps-wcard').length>0")
-    n = sum(1 for i in psf.ada_items() if i["status"] == "done")
-    check(d.text("h1") == "%d things done." % n, "Everything you've done: the count is the API's", d.text("h1"))
+    n = sum(1 for i in psf.ada_items() if i["status"] == "done") + len(psf.own_items())
+    check(d.text("h1") == "%d things done." % n, "Everything you've done: the count is the API's, own work with it", d.text("h1"))
+    check(d.js("document.querySelectorAll('.ps-wcard').length") == n, "F1: every one of them is a card")
+    check(d.js("!!document.querySelector('.ps-wcard[data-open=own-exam]')") and "Not set work" in d.text(".ps-wcard[data-open=own-exam]"),
+          "F1: a free-choice answer is there, said not to be set work")
+    d.click("[data-subj=Chemistry]")
+    d.wait("document.querySelector('[data-subj=Chemistry]').getAttribute('aria-pressed')==='true'")
+    cn = sum(1 for i in psf.ada_items() + psf.own_items() if i["status"] == "done" and i["subject"] == "Chemistry")
+    check(d.text("h1") == "%d Chemistry things done." % cn and d.js("document.querySelectorAll('.ps-wcard').length") == cn,
+          "F10: the count follows the subject filter", d.text("h1"))
+    d.click("[data-subj=Physics]")
+    d.wait("document.querySelector('[data-subj=Physics]').getAttribute('aria-pressed')==='true'")
+    check(d.text("h1") == "No Physics yet.", "F10: …down to none, said once", d.text("h1"))
+    d.click("[data-subj='']")
+    d.wait("document.querySelectorAll('.ps-wcard').length==%d" % n)
     d.click(".ps-wcard[data-open='ada-w3']")
     d.wait("!!document.querySelector('.ps-panel')")
     check("You answered" in d.text(".ps-panel"), "the child's panel says You")
@@ -295,6 +361,25 @@ def kid(d):
     no_sideways(d, "today 390")
 
 
+def f5_f6_f10(d):
+    print("\n── a refusal's wait, the parent's week, the exam page's mark ──")
+    d.open("consumer/family.html", width=1440, state="trialing", kids=2, **PS)
+    check("still to do" not in d.text("#c-main"), "F10: no count of what is left beside 0 of 4")
+    for width in (390, 1440):
+        d.open("consumer/overview.html", width=width, state="trialing", kids=2, weekly=True)
+        href = d.js("(function(){var a=[].filter.call(document.querySelectorAll('a'),function(x){return x.textContent.trim()==='Past work'&&x.offsetParent;})[0];"
+                    "return a&&a.getAttribute('href');})()")
+        check(href and "consumer/family.html" in href and "view=past" in href, "F6: overview has a route to Past work @%d" % width, href)
+        no_sideways(d, "overview %d" % width)
+    t = d.text("#c-main")
+    check("2 of 3 done" in t or "2/3" in t, "F6: overview counts the Mon–Sun week_items when the API sends them", t[:200])
+    for width in (390, 1440):
+        d.open("consumer/exam.html", width=width, state="trialing", kids=2, who="child")
+        check(d.js("!!document.querySelector('.ex-head .mrb-brand .mrb-brand__mark')"), "F10: the exam page wears the lockup @%d" % width)
+        no_sideways(d, "exam %d" % width)
+    d.shot("exam-390.png")
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--shots", default=None)
@@ -310,6 +395,7 @@ def main():
             back_nav(d)
             past(d)
             kid(d)
+            f5_f6_f10(d)
     finally:
         server.shutdown()
     fails = cdd.FAILS

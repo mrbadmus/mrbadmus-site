@@ -194,9 +194,14 @@ def ada_items():
                   "It spreads out slowly until the colour is the same everywhere.",
                   "The particles spread from high to low concentration by diffusion until evenly mixed.",
                   0, 2, "2026-09-30T06:55:00Z", marked_by="unmarked", reason="self_checked", secs=95)]
+    w9 = "ada-w9"   # Tue: a practice part-way through, with saved answers
+    p9 = [mcq(w9, "cells", "What does the cell wall do?", "Supports the cell", "Supports the cell", True,
+              "2026-09-29T18:01:00Z"),
+          mcq(w9, "cells", "What is cytoplasm?", "A gas", "Where reactions happen", False, "2026-09-29T18:02:00Z")]
     this_week = [
         item(w1, "lesson", "Cells and organisation", "Biology", WEEK, "2026-09-28", "done", l1,
              done_at="2026-09-28T17:20:00Z"),
+        item(w9, "practice", "Cell structures", "Biology", WEEK, "2026-09-29", "set", p9),
         item(w7, "lesson", "Using a microscope", "Biology", WEEK, "2026-09-28", "done",
              done_at="2026-09-28T18:05:00Z", tracked=False, reason="custom_layout"),
         item("ada-w6", "lesson", "Specialised cells", "Biology", WEEK, "2026-09-28", "set"),
@@ -240,6 +245,42 @@ def ada_items():
              done_at="2026-09-15T16:12:00Z"),
     ]
     return this_week + earlier
+
+
+def own_item(iid, kind, title, subject, day, answers, at):
+    """An `own_work` entry, as ownWorkEntries builds it (answers in no work item)."""
+    out = item(iid, kind, title, subject, _monday(day), None, "done", answers, done_at=at)
+    out.update({"own_work": True, "done_day": day})
+    return out
+
+
+def own_items():
+    # Ionic compounds, free choice: a typed formula and the concordant titres the
+    # lesson judged, with no right answer saved (dxval-1, concord).
+    dx = dict(mcq(None, "part", "Write the formula — sodium chloride", "NaCl2", None, False, "2026-09-29T19:01:00Z",
+                  qid="ks4:ionic-compounds:th#dxval-1"), kind="numeric")
+    con = mcq(None, "part", "Choose the concordant titres", "24.60", None, True, "2026-09-29T19:02:00Z", qid="ks4:titrations:th#concord")
+    # A free-choice 6-mark exam answer, marked, Level 2.
+    ex = written(None, "cells", "Explain how a leaf is adapted for photosynthesis. (6 marks)",
+                 "Thin and wide so light gets in, with chloroplasts.", "Level 3 (5–6 marks): a\nLevel 2 (3–4 marks): b\nLevel 1 (1–2 marks): c",
+                 3, 6, "2026-09-30T06:20:00Z", level=2, feedback="Link the shape to the light it takes in.")
+    ex["surface"] = "exam"
+    # A Ks4Write the marker could not reach, with the child's own level pick.
+    pick = written(None, "cells", "Explain how enzymes speed up a reaction. (6 marks)", "They lower the energy needed.",
+                   "Level 3 (5–6 marks): a\nLevel 2 (3–4 marks): b\nLevel 1 (1–2 marks): c", 0, 6, "2026-09-21T18:30:00Z",
+                   marked_by="unmarked", reason="marker_error")
+    pick.update({"self_ticks": [2], "self_level": 2})
+    # The same, on a backend with no marking model.
+    stub = written(None, "cells", "Explain why the heart has four chambers. (6 marks)", "To pump blood.",
+                   "Level 3 (5–6 marks): a\nLevel 2 (3–4 marks): b\nLevel 1 (1–2 marks): c", 0, 6, "2026-09-16T18:30:00Z",
+                   level=0, marked_by="stub", feedback="Practice note.")
+    stub.update({"self_ticks": [1], "self_level": 3})
+    return [
+        own_item("own-ionic", "lesson", "Ionic compounds", "Chemistry", "2026-09-29", [dx, con], "2026-09-29T19:02:00Z"),
+        own_item("own-exam", "exam", "Photosynthesis", "Biology", "2026-09-30", [ex], "2026-09-30T06:20:00Z"),
+        own_item("own-enzymes", "lesson", "Enzymes", "Biology", "2026-09-21", [pick], "2026-09-21T18:30:00Z"),
+        own_item("own-heart", "lesson", "The heart", "Biology", "2026-09-16", [stub], "2026-09-16T18:30:00Z"),
+    ]
 
 
 def topics():
@@ -306,14 +347,14 @@ def activity(child_id="kid-ada", first_name="Ada", year=8, child_view=False):
                           "key_stage": "KS4" if year >= 10 else "KS3",
                           "username": "ben.saturn", "last_active_at": None},
                 "range": {"from": None, "to": TODAY, "all_time": True},
-                "work_items": [], "other_answers": [], "knowledge_points": [],
+                "work_items": [], "other_answers": [], "own_work": [], "knowledge_points": [],
                 "topics": [], "keeps_wrong": [], "tutor_questions": []}
     items = ada_items()
     out = {
         "child": {"id": child_id, "first_name": first_name, "year_group": year, "key_stage": "KS3",
                   "username": "ada.comet", "last_active_at": "2026-09-30T07:50:00Z"},
         "range": {"from": None, "to": TODAY, "all_time": True},
-        "work_items": items, "other_answers": [], "knowledge_points": [],
+        "work_items": items, "other_answers": [], "own_work": own_items(), "knowledge_points": [],
         "topics": topics(), "keeps_wrong": keeps_wrong(items),
         "tutor_questions": copy.deepcopy(TUTOR),
     }
@@ -346,14 +387,22 @@ def past_work(child_ids=("kid-ada",), names=None, sort="newest", subject=""):
     for cid in child_ids:
         if cid != "kid-ada":
             continue
-        for it in ada_items():
-            if it["status"] != "done" or (subject and it["subject"] != subject):
+        for it in ada_items() + own_items():
+            started = it["status"] != "done" and bool(it["answers"])
+            if (it["status"] != "done" and not started) or (subject and it["subject"] != subject):
                 continue
-            day = it["done_at"][:10]
+            done_at = it["done_at"] or it["answers"][-1]["answered_at"]
+            day = done_at[:10]
             sm = it["summary"]
-            x = {k: it[k] for k in ("id", "kind", "title", "sub", "subject", "scheduled_for", "done_at",
+            x = {k: it[k] for k in ("id", "kind", "title", "sub", "subject", "scheduled_for",
                                     "summary", "tracked", "untracked_reason")}
+            x["done_at"] = done_at
             x["done_day"] = day
+            if it.get("own_work"):
+                x["own_work"] = True
+            if started:
+                x["started"] = True
+                x["status"] = it["status"]
             x["score"] = {"marked_scored": sm["marks_scored"], "marked_available": sm["marks_available"],
                           "marked": sm["answered"] - sm["unmarked"], "unmarked": sm["unmarked"],
                           "fraction": (sm["marks_scored"] / sm["marks_available"]) if sm["marks_available"] else None}
@@ -367,7 +416,10 @@ def past_work(child_ids=("kid-ada",), names=None, sort="newest", subject=""):
         its.sort(key=lambda i: i["done_at"], reverse=True)
         s = sum(i["score"]["marked_scored"] for i in its)
         a = sum(i["score"]["marked_available"] for i in its)
-        groups.append({"week_start": ws, "label": WEEK_LABELS.get(ws, ws), "done": len(its),
+        own = sum(1 for i in its if i.get("own_work"))
+        begun = sum(1 for i in its if i.get("started"))
+        groups.append({"week_start": ws, "label": WEEK_LABELS.get(ws, ws), "done": len(its) - own - begun,
+                       "own_work": own, "started": begun,
                        "untracked": sum(1 for i in its if not i["tracked"]),
                        "score": {"marked_scored": s, "marked_available": a,
                                  "unmarked": sum(i["score"]["unmarked"] for i in its),

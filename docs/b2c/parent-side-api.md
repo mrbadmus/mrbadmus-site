@@ -94,8 +94,15 @@ up a time estimate.
 
 ## 1. `GET /children/:id/activity`: additions
 All existing fields are unchanged, and the new ones are appended. Top-level keys, in order:
-`child, range, work_items, other_answers, knowledge_points, tutor_questions,` **`topics, topics_unplaced,
+`child, range, work_items, other_answers, own_work, knowledge_points, tutor_questions,` **`topics, topics_unplaced,
 keeps_wrong`**.
+
+⊕ 9 Nov 2026, additive. `own_work` holds the answers in no work item (a child's free choice), as pieces in the
+shape of a done item, with `own_work: true`, `done_day` and `answers`: one per child + lesson (or exam or session)
++ UK day. A page shows these or `other_answers`, never both, and every answer row is in exactly one work item or
+own-work entry. "N of M done" and the week strip stay about set work. On an answer, `self_ticks` and `self_level`
+are the child's own self-marking, never a mark. A piece's `marks_scored` and `marks_available` count each
+question's latest marked attempt; `answers` still lists every attempt. See API-CONTRACT.md.
 
 ```json
 {
@@ -248,6 +255,10 @@ keeps_wrong`**.
 - `title` and `sub` are the display names (`work-display.js`, the same names Today shows).
 - To open an item, use the `answers[]` of that `work_items[]` entry from `/children/:id/activity`, or from
   `/child/activity` for the child.
+
+⊕ 9 Nov 2026, additive. A row may be `own_work: true` (see section 1), or `started: true` with its `status`: set
+work holding answers but not finished, in the week of its last answer. A week's `done` stays set work, with
+`own_work` and `started` counted beside it. Every answer row of the child is in exactly one row here.
 
 ## 4. `GET /family/past-work?sort=&subject=&week=&child=`
 This has the same shape as route 3, across every child in the family. It starts with

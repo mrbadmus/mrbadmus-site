@@ -128,13 +128,31 @@
   function markedBy(a) {
     if (markState(a) !== 'scored') { return ''; }
     if (a.marked_by === 'key') { return 'Marked automatically'; }
-    if (a.marked_by === 'ai' || a.marked_by === 'stub') { return 'Marked by AI'; }
+    if (a.marked_by === 'ai') { return 'Marked by AI'; }
+    /* ⊕ 9 Nov 2026 (F2): 'stub' is the keyword-count fallback, written only
+       when the backend has no marking model (no key). A failed model call is
+       never a stub. The child's page calls it a practice mark; so does this. */
+    if (a.marked_by === 'stub') { return 'Practice mark, the AI marker didn’t check'; }
     return '';
   }
 
   /* ── one work item ──────────────────────────────────────────────────── */
   function answersOf(it) { return (it && Array.isArray(it.answers)) ? it.answers : []; }
   function isTracked(it) { return !(it && it.tracked === false); }
+  /* ⊕ 9 Nov 2026 (F1): answers in no work item, as pieces (`own_work`). They
+     are listed and opened like any other and said plainly not to be set work;
+     "N of M done" and the week strip never count them. */
+  var NOT_SET = 'Not set work';
+  function isOwn(it) { return !!(it && it.own_work); }
+  /* Everything an activity read holds: set work, then own work. */
+  function allItems(act) {
+    return ((act && act.work_items) || []).concat((act && act.own_work) || []);
+  }
+  /* Has this piece saved anything? On a past-work row the answers themselves
+     are not sent; the summary says. */
+  function hasAnswers(it) {
+    return answersOf(it).length > 0 || Number(((it && it.summary) || {}).answered) > 0;
+  }
   /* The numbers a row and the panel say, from `summary` (the backend's
      count over every answer row) with the self-check split counted from the
      answers themselves. */
@@ -193,6 +211,8 @@
   }
   function itemState(it, today) {
     if (isDone(it)) { return { done: true, chip: doneChip(it), dim: false }; }
+    /* ⊕ 9 Nov 2026 (F8): part-way through, with saved answers. It opens. */
+    if (hasAnswers(it)) { return { done: false, dim: false, started: true, chip: { cls: 'ahead', glyph: 'half', word: 'Started' } }; }
     var d = String(it.scheduled_for || '').slice(0, 10);
     if (d && today && d < today) { return { done: false, dim: true, chip: { cls: 'notdone', glyph: 'dash', word: 'Not done' } }; }
     if (d && d === today) { return { done: false, dim: false, chip: { cls: 'today', glyph: 'dot', word: 'Today' } }; }
@@ -242,13 +262,30 @@
     }
     if (last.correct_answer) {
       body += '<span class="k">Correct answer</span><span class="v">' + esc(last.correct_answer) + '</span>';
+    } else if (v.cls === 'wrong' || v.cls === 'part') {
+      /* ⊕ 9 Nov 2026 (F10): the lesson judged this and saved no right answer
+         to show (a typed formula, the concordant titres). Said, not left for
+         a parent to go looking. */
+      body += '<span class="k">Correct answer</span><span class="v ps-muted">Not tracked yet</span>';
     }
-    if (last.mark_level != null && last.mark_level !== '') {
+    /* ⊕ 9 Nov 2026 (F4): the child's own self-marking, in their words. It is
+       stored apart from the mark and is never a mark. */
+    var yourself = who === 'You' ? 'yourself' : 'themselves';
+    if (last.self_level != null) {
+      body += '<span class="k">Own pick</span><span class="v">Picked Level ' + esc(String(last.self_level)) +
+        ' for ' + yourself + ', not marked</span>';
+    } else if (last.kind === 'written' && Array.isArray(last.self_ticks) && last.self_ticks.length) {
+      body += '<span class="k">Own ticks</span><span class="v">Ticked ' + last.self_ticks.length +
+        (last.points_total ? ' of ' + esc(String(last.points_total)) : '') + ' for ' + yourself + ', not marked</span>';
+    }
+    if (last.mark_level != null && last.mark_level !== '' && markState(last) === 'scored') {
       /* The backend sends the AQA level as a number (0–3); older rows may
          carry the words. Either reads "Level 2". */
       var lv = typeof last.mark_level === 'number' || /^\d+$/.test(String(last.mark_level))
         ? 'Level ' + last.mark_level : String(last.mark_level);
-      body += '<span class="k">AQA level</span><span class="v"><strong>' + esc(lv) + '</strong></span>';
+      /* A keyword count's level is not an examiner's (markedBy). */
+      body += '<span class="k">' + (last.marked_by === 'stub' ? 'Practice level' : 'AQA level') +
+        '</span><span class="v"><strong>' + esc(lv) + '</strong></span>';
     }
     if (last.mark_next_step) {
       body += '<span class="k">Next step</span><span class="v">' + esc(last.mark_next_step) + '</span>';
@@ -300,7 +337,8 @@
     }
     return '<div class="ps-panel-h"><div style="flex:1;min-width:0">' +
         '<p class="ps-eyebrow">' + esc(kindLabel(it.kind)) + (it.subject ? ' · ' + subjHtml(it.subject) : '') +
-          (date ? ' · ' + esc(dayShort(date) + ' ' + dateShort(date)) : '') + '</p>' +
+          (date ? ' · ' + esc(dayShort(date) + ' ' + dateShort(date)) : '') +
+          (isOwn(it) ? ' · ' + NOT_SET : '') + '</p>' +
         '<h2 id="ps-panel-title">' + esc(it.title || kindLabel(it.kind)) + '</h2>' + stats + '</div>' +
         '<button type="button" class="ps-iconbtn" data-ps-close aria-label="Close">' + glyph('close', 20) + '</button></div>' +
       '<div class="ps-panel-b">' + body + '</div>';
@@ -378,7 +416,8 @@
         var sm = it.summary || {};
         s += Number(sm.marks_scored) || 0; a += Number(sm.marks_available) || 0; un += Number(sm.unmarked) || 0;
       });
-      return { week_start: ws, label: weekLabel(ws), items: its, done: its.length,
+      var own = its.filter(isOwn).length;
+      return { week_start: ws, label: weekLabel(ws), items: its, done: its.length - own, own_work: own,
                score: { marked_scored: s, marked_available: a, unmarked: un, fraction: a > 0 ? s / a : null } };
     });
     return sortGroups(groups, sort);
@@ -423,7 +462,11 @@
   function weekSummary(g) {
     var sc = g.score || {};
     var n = g.done != null ? g.done : (g.items || []).length;
-    var bits = [n + ' done'];
+    var own = Number(g.own_work) || 0, started = Number(g.started) || 0;
+    var bits = [];
+    if (n || !(own || started)) { bits.push(n + ' done'); }
+    if (started) { bits.push(started + ' started'); }
+    if (own) { bits.push(own + ' not set work'); }
     if (sc.marked_available > 0) { bits.push(sc.marked_scored + '/' + sc.marked_available + ' marked'); }
     return bits.join(' · ');
   }
@@ -433,6 +476,7 @@
     fmtSecs: fmtSecs, kindLabel: kindLabel, subjKey: subjKey, subjHtml: subjHtml, plural: plural,
     markState: markState, verdict: verdict, chip: chip, itemScore: itemScore, itemTime: itemTime,
     itemState: itemState, itemDate: itemDate, mondayOf: mondayOf, isDone: isDone, doneChip: doneChip, isTracked: isTracked,
+    isOwn: isOwn, allItems: allItems, hasAnswers: hasAnswers, NOT_SET: NOT_SET,
     panelHtml: panelHtml, openPanel: openPanel, closePanel: closePanel,
     groupWeeks: groupWeeks, sortGroups: sortGroups, weekSummary: weekSummary
   };
