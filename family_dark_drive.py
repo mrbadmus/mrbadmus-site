@@ -98,6 +98,41 @@ BACK_LINKS = r"""(function(){
   var m=document.querySelector('main')||document.body,d=document.createElement('div');d.id='fd-samples';d.style.cssText='padding:20px;display:flex;gap:12px;flex-wrap:wrap';
   d.innerHTML='<a class="btn btn--primary" href="#">Back to Today</a><a class="ks3-btn is-primary" href="#">Back to Today</a>';m.appendChild(d);return true;
 })()"""
+MOMENTS = "ks3/physics/forces/moments.html"
+FOURSTEPS = "ks3/chemistry/atoms-elements-and-compounds/conservation-of-mass.html"
+SEED = "ks3/biology/reproduction/seed-dispersal.html"
+GROUP1 = "combined/higher/chemistry/atomic-structure/group-1.html"
+# A marked KS3 calculation: write every line, Check, tick one.
+CFA_MARK = r"""(async function(){
+  var b=document.querySelector('[data-p4cfablock]')||document;
+  var ins=[].slice.call(b.querySelectorAll('[data-p4cfa-input]'));
+  ins.forEach(function(i,k){i.value=['no conversion','M = F x d','M = 50 x 0.3','50 x 0.3 = 15','15 N m'][k%5];i.dispatchEvent(new Event('input',{bubbles:true}));});
+  var c=b.querySelector('[data-p4cfa-check]');if(c){c.click();}
+  await new Promise(function(r){setTimeout(r,500);});
+  var t=b.querySelector('[data-p4cfa-tick]');if(t){t.click();}
+  await new Promise(function(r){setTimeout(r,300);});
+  return {inputs:ins.length,lines:b.querySelectorAll('[data-p4cfa-line]').length,reveal:!!b.querySelector('[data-p4cfa-reveal]:not([hidden])')};
+})()"""
+# The spanner: a longer arm and a pull, so every label is drawn.
+SPAN_SET = r"""(async function(){
+  var a=[].slice.call(document.querySelectorAll('[data-span-arm]'));if(a.length){a[a.length-1].click();}
+  await new Promise(function(r){setTimeout(r,400);});
+  return [].slice.call(document.querySelectorAll('[data-span-fill]')).filter(function(e){return !e.hidden&&e.textContent;}).length;
+})()"""
+# The four steps: a pick in each step, then the worked version.
+FOUR = r"""(async function(){
+  var seen={},n=0;
+  var opts=[].slice.call(document.querySelectorAll('.ks3-pick-opt[data-group]'));
+  for(var i=0;i<opts.length;i++){var g=opts[i].getAttribute('data-group');if(seen[g]||opts[i].disabled){continue;}seen[g]=1;opts[i].click();n++;await new Promise(function(r){setTimeout(r,150);});}
+  var inp=document.querySelector('.ks3-pick-input');if(inp){inp.value='2.2';inp.dispatchEvent(new Event('input',{bubbles:true}));}
+  var sel=inp&&inp.parentElement.querySelector('select');if(sel){var g=[].slice.call(sel.options).filter(function(o){return o.value&&o.value!=='';})[0];if(g){sel.value=g.value;sel.dispatchEvent(new Event('change',{bubbles:true}));}}
+  await new Promise(function(r){setTimeout(r,200);});
+  var rv=[].slice.call(document.querySelectorAll('button')).filter(function(b){return /four steps/i.test(b.textContent)&&!b.disabled;})[0];
+  if(rv){rv.click();}
+  await new Promise(function(r){setTimeout(r,500);});
+  return {picked:n,disabled:document.querySelectorAll('.ks3-pick-opt[disabled]').length};
+})()"""
+
 PRACTICE_HANDED = r"""(function(){
   var inst=window.__fdInst;var l=inst&&inst.logic;
   if(!l||!l.seedFor){return 'no logic';}
@@ -218,6 +253,30 @@ def main():
                         measure(p, "practice, reviewing a question", width)
                     if width == 390:
                         p.screenshot(os.path.join(shots, "%s-390.png" % label.replace(" ", "-")))
+
+            print("\n── blind run 4: a marked calculation, the four steps, the rig ──")
+            for width in (390, 1440):
+                go(MOMENTS, CHILD, width)
+                measure(p, "moments, idle", width)
+                drawn = p.eval(SPAN_SET, timeout=20)
+                check(drawn >= 2, "moments @%d: the rig's labels are drawn" % width, drawn)
+                measure(p, "moments, the rig", width)
+                got = p.eval(CFA_MARK, timeout=20)
+                check(got["reveal"] and got["lines"] >= 5, "moments @%d: the calculation is marked, its model lines shown" % width, got)
+                measure(p, "moments, a marked calculation", width)
+                go(FOURSTEPS, CHILD, width)
+                measure(p, "four steps, idle", width)
+                got = p.eval(FOUR, timeout=20)
+                check(got["picked"] >= 2 and got["disabled"] >= 2, "four steps @%d: picked, the rest locked" % width, got)
+                measure(p, "four steps, picked and opened", width)
+                go(SEED, CHILD, width)
+                measure(p, "seed dispersal, idle (a locked Check)", width)
+                go(GROUP1, CHILD, width)
+                measure(p, "group 1, idle", width)
+                got = p.eval(KS4_STATES, timeout=60)
+                measure(p, "group 1, every option pressed", width)
+                if width == 390:
+                    p.screenshot(os.path.join(shots, "moments-after-390.png"))
     finally:
         server.shutdown()
     print("\n%s — %d failure(s)" % ("PASS" if not FAILS else "FAIL", len(FAILS)))
