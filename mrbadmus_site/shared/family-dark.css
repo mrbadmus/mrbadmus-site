@@ -66,10 +66,41 @@
   html[data-theme="dark"]:root [style*="background:var(--err)"],
   html[data-theme="dark"]:root [style*="background:var(--ks3-ok-text)"] { color: #221E1B !important; }
 
-  /* KS4: an option passed over after a choice faded to .62 inline, 3.5:1 on its letter. */
-  html[data-theme="dark"]:root .rd[data-mode="ks3"] .ks3-option[style*="opacity:.62"] { opacity: .92 !important; }
+  /* KS4: an option passed over after a choice faded to .62 inline, 3.5:1 on its
+     letter. (The general fade rule below takes it to .88.) */
 
   /* KS4: "Back to Today" was --st-paper on rust, 2.05:1. */
   html[data-theme="dark"]:root .btn--primary,
   html[data-theme="dark"]:root .btn--primary:hover { color: #FFFFFF; }
+
+  /* ── blind run 4: a marked calculation, the four steps, the moments rig ── */
+
+  /* KS3's marked CFIFA lines sit on --ks3-dark-panel, which never inverted in dark
+     the way the named ink panels in ks3-theme.css do, so near-black ink sat on dark
+     brown: 1.59:1, "I had this" 1.97, the letters 2.17. The same inversion here. */
+  html[data-theme="dark"]:root .rd[data-mode="ks3"] .ks3-cfa-reveal {
+    --ks3-dark-panel: #FFFCF5;
+    --ks3-on-dark: #221E1B;
+    --ks3-on-dark-body: #2E2419;
+    --ks3-on-dark-muted: #4A3C2E;
+  }
+  /* The moments rig is drawn for a dark plate (its labels are pale blue and pale
+     grey, set inline), but its block inverts to cream: 1.7:1. Its figure keeps
+     the plate it was drawn for. */
+  html[data-theme="dark"]:root .rd[data-mode="ks3"] .ks3-span-figwrap {
+    background: #221E1B; border-radius: var(--ks3-r-panel, 14px);
+    --ks3-on-dark-muted: #C6B9A7;
+  }
+  /* Faded and disabled controls: a 45-70% fade left text at 2.9-4.2:1. Still
+     visibly quieter, now readable. Covers the four-steps picks and their reveal,
+     a locked Check, and the KS4 blocks' inline fades. */
+  html[data-theme="dark"]:root .rd[data-mode="ks3"] :is(button, a, select, input, span, div)[disabled],
+  html[data-theme="dark"]:root .rd[data-mode="ks3"] .ks3-pick-opt[disabled],
+  html[data-theme="dark"]:root .rd[data-mode="ks3"] :is(.ks3-reveal-btn, .ks3-retry, .ks3-check-btn, .ks3-ccheck-check):disabled,
+  html[data-theme="dark"]:root .rd[data-mode="ks3"] :is([style*="opacity:.4"], [style*="opacity:.5"], [style*="opacity:.6"], [style*="opacity:.7"]) {
+    opacity: .88 !important;
+  }
+  /* The cover bar's ghost label sits on the cover plate, --ks3-ink, which is cream
+     in dark: the pale ghost read 1.85:1. Still the quieter label, now legible. */
+  html[data-theme="dark"]:root .rd[data-mode="ks3"] .ks3-bar-ghost { fill: #5F564F; }
 }
