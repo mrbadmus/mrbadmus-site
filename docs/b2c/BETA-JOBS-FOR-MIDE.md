@@ -120,7 +120,9 @@ update public.quiz_scores set score = 2, percentage = 50
 
 **New tonight:** a balanced whole-number multiple on the KS3 equation balancer (e.g. 2H₂ + 2… all doubled) is saved as self-checked rather than wrong, because the page says balanced but gives no tick. Whether AQA credits a multiple is your call.
 
-**Also new tonight, alveoli "put the links in order":** on Heart and Blood Vessels (rung 3, question 2), a child who put the same three correct points in a different order got 0/3. The question is "Explain how the alveoli are adapted for gas exchange. Put the links in order." The three links are independent adaptations: "There are millions of alveoli, giving a very large surface area", "Their walls are thin, so the diffusion distance is short" and "A dense capillary network carries oxygen away, keeping the concentration gradient steep". Should order count here? AQA wouldn't usually require one, but it's your call. Other ladders may have the same shape; I haven't checked them all.
+**Also new tonight, alveoli "put the links in order":** on Heart and Blood Vessels (rung 3, question 2), a child who put the same three correct points in a different order got 0/3. The question is "Explain how the alveoli are adapted for gas exchange. Put the links in order." The three links are independent adaptations: "There are millions of alveoli, giving a very large surface area", "Their walls are thin, so the diffusion distance is short" and "A dense capillary network carries oxygen away, keeping the concentration gradient steep". Should order count here? AQA wouldn't usually require one, but it's your call. Other ladders may have the same shape; I haven't checked them all. The fourth blind test hit it again: all three links right, in another order, marked wrong, so the parent saw it twice under "Keeps getting wrong".
+
+**From the fourth blind test, KS3 Moments wording:** with the pull set to exactly 40 N the page says "as little as 40 N", and when the moment equals 12 N m it says "More than the 12 N m". Both read oddly at the boundary. The wording is yours to decide.
 
 ---
 
