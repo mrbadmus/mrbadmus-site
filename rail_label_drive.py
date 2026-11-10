@@ -181,13 +181,17 @@ def drive(b, base, kind, path, frac, size, shots):
     scroll_to(page, max(top_y, top_k - h * frac + 20), wait=0.6)
     before = read(page, kind, frac)
     y0 = before["y"]
+    # ⊕ 10 Nov 2026: grown by a STYLE RULE on section k-1, not an inserted
+    # <div>. A KS4 lesson re-syncs its DOM to its template when the label
+    # changes and drops any node the template doesn't own, so an inserted
+    # div vanished the moment the strip reacted and the check read the old
+    # layout. A rule in <head> survives that, as template-driven growth does.
     page.eval(r"""(function (id, hgt) {
-      var el = document.getElementById(id);
-      var d = document.createElement('div');
-      d.setAttribute('data-rail-drive', '1');
-      d.style.height = hgt + 'px';
-      el.parentNode.insertBefore(d, el);
-      return 1; })(%r, %d)""" % (before["ids"][k], h))
+      var s = document.createElement('style');
+      s.setAttribute('data-rail-drive', '1');
+      s.textContent = '#' + CSS.escape(id) + ' { padding-bottom: ' + hgt + 'px !important; }';
+      document.head.appendChild(s);
+      return 1; })(%r, %d)""" % (before["ids"][k - 1], h))
     time.sleep(1.0)
     after = read(page, kind, frac)
     page.eval("document.querySelectorAll('[data-rail-drive]').forEach(function (e) { e.remove(); }); 1")
