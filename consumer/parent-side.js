@@ -236,7 +236,16 @@
     if (d && d === today) { return { done: false, dim: false, chip: { cls: 'today', glyph: 'dot', word: 'Today' } }; }
     return { done: false, dim: false, chip: { cls: 'ahead', glyph: '', word: d ? ('Opens ' + dayShort(d)) : 'Set' } };
   }
-  function itemDate(it) { return it.done_day || dayOf(it.done_at) || String(it.scheduled_for || '').slice(0, 10); }
+  /* The day the work happened: finished, the day it was done; started, the day of
+     its last answer (blind run 4: Resistors, answered on Tue 10 Nov and set for Wed,
+     read 10 Nov in the list and Wed 11 Nov in its panel). Else the day it is set. */
+  function lastAnswerDay(it) {
+    var last = answersOf(it).map(function (a) { return String(a.answered_at || ''); }).sort().pop();
+    return last ? dayOf(last) : null;
+  }
+  function itemDate(it) {
+    return it.done_day || dayOf(it.done_at) || lastAnswerDay(it) || String(it.scheduled_for || '').slice(0, 10);
+  }
   /* The Monday of a civil date's Mon–Sun week. */
   function mondayOf(ymd) {
     var c = civil(ymd);
@@ -426,7 +435,9 @@
        week of the day each was done (London). */
     var by = {}, order = [];
     (items || []).forEach(function (it) {
-      if (!isDone(it)) { return; }
+      /* Done, or started with answers: the backend's past-work rule (blind run 4:
+         the child's own page left Group 1 and Resistors out). */
+      if (!isDone(it) && !(hasAnswers(it) && !it.removed)) { return; }
       /* A piece whose subject nothing records is under All only (the backend's rule). */
       if (subject && it.subject !== subject) { return; }
       var ws = mondayOf(itemDate(it)) || String(it.week_start || '').slice(0, 10);
@@ -441,7 +452,8 @@
         s += Number(sm.marks_scored) || 0; a += Number(sm.marks_available) || 0; un += Number(sm.unmarked) || 0;
       });
       var own = its.filter(isOwn).length;
-      return { week_start: ws, label: weekLabel(ws), items: its, done: its.length - own, own_work: own,
+      var started = its.filter(function (it) { return !isDone(it); }).length;
+      return { week_start: ws, label: weekLabel(ws), items: its, done: its.length - own - started, own_work: own, started: started,
                score: { marked_scored: s, marked_available: a, unmarked: un, fraction: a > 0 ? s / a : null } };
     });
     return sortGroups(groups, sort);
@@ -455,7 +467,8 @@
     return a > 0 ? (Number(s.marks_scored) || 0) / a : null;
   }
   function itemOrder(sort) {
-    var byDone = function (a, b) { return String(b.done_at || '').localeCompare(String(a.done_at || '')); };
+    var when = function (it) { return String(it.done_at || answersOf(it).map(function (x) { return String(x.answered_at || ''); }).sort().pop() || ''); };
+    var byDone = function (a, b) { return when(b).localeCompare(when(a)); };
     if (sort === 'oldest') { return function (a, b) { return byDone(b, a); }; }
     if (sort !== 'highest' && sort !== 'lowest') { return byDone; }
     var dir = sort === 'lowest' ? -1 : 1;

@@ -201,7 +201,8 @@ def ada_items():
     this_week = [
         item(w1, "lesson", "Cells and organisation", "Biology", WEEK, "2026-09-28", "done", l1,
              done_at="2026-09-28T17:20:00Z"),
-        item(w9, "practice", "Cell structures", "Biology", WEEK, "2026-09-29", "set", p9),
+        # Set for Thursday, answered on Tuesday: the day it happened is Tuesday.
+        item(w9, "practice", "Cell structures", "Biology", WEEK, "2026-10-01", "set", p9),
         item(w7, "lesson", "Using a microscope", "Biology", WEEK, "2026-09-28", "done",
              done_at="2026-09-28T18:05:00Z", tracked=False, reason="custom_layout"),
         item("ada-w6", "lesson", "Specialised cells", "Biology", WEEK, "2026-09-28", "set"),

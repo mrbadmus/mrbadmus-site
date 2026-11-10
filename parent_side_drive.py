@@ -335,7 +335,20 @@ def kid(d):
     d.wait("document.querySelectorAll('.ps-wcard').length>0")
     n = sum(1 for i in psf.ada_items() if i["status"] == "done") + len(psf.own_items())
     check(d.text("h1") == "%d things done." % n, "Everything you've done: the count is the API's, own work with it", d.text("h1"))
-    check(d.js("document.querySelectorAll('.ps-wcard').length") == n, "F1: every one of them is a card")
+    started = [i for i in psf.ada_items() if i["status"] != "done" and i["answers"]]
+    check(d.js("document.querySelectorAll('.ps-wcard').length") == n + len(started), "F1: every one of them is a card, and started work too")
+    check(started and "Started" in d.text(".ps-wcard[data-open=%s]" % started[0]["id"]),
+          "blind 4: started set work is on the child's own page, saying so", [i["id"] for i in started])
+    d.click(".ps-wcard[data-open=%s]" % started[0]["id"])
+    d.wait("!!document.querySelector('.ps-panel')")
+    last = max(a["answered_at"] for a in started[0]["answers"])[:10]
+    import datetime
+    dd = datetime.date.fromisoformat(last)
+    day = ("%d %s" % (dd.day, dd.strftime("%b"))).upper()
+    check(day in d.text(".ps-panel-h").upper() and d.text(".ps-wcard[data-open=%s]" % started[0]["id"]).upper().count(day) == 1,
+          "blind 4: its card and its panel give the same date, the day it was answered", d.text(".ps-panel-h")[:80])
+    d.js("document.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape',bubbles:true}))")
+    d.wait("!document.querySelector('.ps-panel')")
     check(d.js("!!document.querySelector('.ps-wcard[data-open=own-exam]')") and "Not set work" in d.text(".ps-wcard[data-open=own-exam]"),
           "F1: a free-choice answer is there, said not to be set work")
     d.click("[data-subj=Chemistry]")
@@ -347,7 +360,7 @@ def kid(d):
     d.wait("document.querySelector('[data-subj=Physics]').getAttribute('aria-pressed')==='true'")
     check(d.text("h1") == "No Physics yet.", "F10: …down to none, said once", d.text("h1"))
     d.click("[data-subj='']")
-    d.wait("document.querySelectorAll('.ps-wcard').length==%d" % n)
+    d.wait("document.querySelectorAll('.ps-wcard').length==%d" % (n + len(started)))
     d.click(".ps-wcard[data-open='ada-w3']")
     d.wait("!!document.querySelector('.ps-panel')")
     check("You answered" in d.text(".ps-panel"), "the child's panel says You")
