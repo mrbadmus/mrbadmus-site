@@ -3274,6 +3274,16 @@ try {
          through a burn comes back as a full burn of the mass that had gone. */
       var RECORDS = {
         'ks3-calor-block': { rec: '[data-calor-record]', rows: '[data-calor-rows] tr',
+          /* Only a run the slider can hold exactly is made again: a part-way burn
+             (0.07 g on a slider that starts at 0.1) would come back as other numbers. */
+          can: function (sec, cells) {
+            var food = Array.prototype.filter.call(sec.querySelectorAll('[data-calor-food]'), function (b) { return same(txt(b), cells[0]); })[0];
+            var slider = sec.querySelector('[data-calor-mass]'), mass = parseFloat(String(cells[1] || ''));
+            if (!food || !slider || isNaN(mass)) { return false; }
+            var lo = parseFloat(slider.min), hi = parseFloat(slider.max), st = parseFloat(slider.step) || 0;
+            if (mass < lo - 1e-9 || mass > hi + 1e-9) { return false; }
+            return !st || Math.abs((mass - lo) / st - Math.round((mass - lo) / st)) < 1e-6;
+          },
           put: function (sec, cells, done) {
             var food = Array.prototype.filter.call(sec.querySelectorAll('[data-calor-food]'), function (b) { return same(txt(b), cells[0]); })[0];
             var slider = sec.querySelector('[data-calor-mass]'), burn = sec.querySelector('[data-calor-burn]');
@@ -3318,9 +3328,11 @@ try {
           if (!spec) { return; }
           var pre = ks3Slug() + '#' + (rsec.getAttribute('data-activity') || 'block') + '-run-', mine = {};
           (rows || []).forEach(function (r) { if (String(r.question_id || '').indexOf(pre) === 0) { mine[r.question_id] = r; } });
-          Object.keys(mine).sort(function (a, b) { return parseInt(a.slice(pre.length), 10) - parseInt(b.slice(pre.length), 10); }).forEach(function (q) {
-            todo.push({ sec: rsec, spec: spec, cells: String(mine[q].answer || '').split(' · ') });
+          var runs = Object.keys(mine).sort(function (a, b) { return parseInt(a.slice(pre.length), 10) - parseInt(b.slice(pre.length), 10); }).map(function (q) {
+            return { sec: rsec, spec: spec, cells: String(mine[q].answer || '').split(' · ') };
           });
+          // All or none: a table missing one run would renumber the rest.
+          if (runs.every(function (r) { return !spec.can || spec.can(r.sec, r.cells); })) { todo = todo.concat(runs); }
         });
         if (!todo.length) { return; }
         // Runs take the page's own time to burn: the answers they make are held back throughout.
