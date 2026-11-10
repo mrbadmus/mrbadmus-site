@@ -765,6 +765,18 @@ CASES = [
          want=["energy-in-food#food-calorimeter-run-1", "energy-in-food#food-calorimeter-run-2"],
          check=lambda b: all(x["kind"] == "numeric" and x["is_correct"] is None and x["answer"].count(" · ") == 3 for x in b if "-run-" in x["question_id"]),
          back="""(function(){ var r = document.querySelectorAll('.ks3-calor-block [data-calor-rows] tr'); return r.length === 2 && r[1].children[1].textContent.trim() === document.querySelectorAll('.ks3-calor-block [data-calor-food]')[1].textContent.trim(); })()"""),
+    # ⊕ 10 Nov 2026, fifth blind run: a run recorded part-way through a burn burned less
+    # than the slider's smallest mass, so it can't be made again with the same numbers.
+    # It stays saved; the page's table starts empty rather than showing other numbers.
+    dict(name="ks3-bench-part-run", page="/ks3/physics/energy-at-home/energy-in-food.html", settle=0, settle_b=7,
+         act="""var s = document.querySelector('.ks3-calor-block'); H.click(s.querySelector('[data-calor-gopt]')); await H.sleep(200);
+                var m = s.querySelector('[data-calor-mass]'); m.value = m.min; m.dispatchEvent(new Event('input', {bubbles: true})); await H.sleep(100);
+                H.click(s.querySelectorAll('[data-calor-food]')[0]); await H.sleep(100);
+                H.click(s.querySelector('[data-calor-burn]')); await H.sleep(600);
+                H.click(s.querySelector('[data-calor-record]')); await H.sleep(300);""",
+         want=["energy-in-food#food-calorimeter-run-1"],
+         check=lambda b: [x for x in b if x["question_id"].endswith("-run-1")][0]["answer"].split(" · ")[0].strip() not in ("0.1 g", "0.10 g"),
+         back="""(function(){ return document.querySelectorAll('.ks3-calor-block [data-calor-rows] tr').length === 0; })()"""),
     # ── ⊕ 9 Nov 2026: a third blind run ──
     dict(name="ks4-typed-rate", page="/triple/higher/biology/ecology/decomposition.html",
          act="""var L = document.getElementById('ks4-mount').__mrbKs4.logic; L.setState({ own: { 40: 120 } }); await H.sleep(150); L.setState({ rate: '1' }); await H.sleep(100); await H.call('onRateCheck'); await H.sleep(250);""",

@@ -349,7 +349,11 @@ until the lesson data carries a key.
   back as drafts, beside a live bench too.
 - **Calorimeter runs** are saved, one numeric row each (`food-calorimeter-run-<n>`), with the table's own
   cells, and come back by running the same food and mass again through the page (a full burn, then Record).
-  A run recorded part-way through a burn comes back as a full burn of the mass that had gone.
+  Only runs the mass slider can hold exactly come back, and only if every run in the table can: a run
+  recorded part-way through a burn (0.07 g burned, on a slider that starts at 0.1 g) can't be made again
+  with the same numbers, so the table then starts empty on the page. The rows stay saved and the parent
+  sees them. A run the child records after that is numbered from 1 again, so it is saved as a later
+  attempt of run 1 (fifth blind test, 10 Nov 2026).
 - **Record presses are no longer replayed by a block's count.** Pressing Record on return recorded the
   bench as it stood, not as it was. **Same shape, not saved, named:** the light-gate table (`ks3-lgate`),
   the lever table (`ks3-plever`) and the spring plot readings (`ks3-splot`). Each is a reading of the
