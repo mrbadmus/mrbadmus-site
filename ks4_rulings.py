@@ -1152,7 +1152,8 @@ def apply_r22_stored_text(text):
 # never reached the band at all. It also never re-read after a layout change (an answer, a reveal, a restored
 # answer). Same defect and same fix as shared/ks3.js wireRail (rail_label_drive.py drives both): `active` is
 # COMPUTED from where the sections are — the one whose top is the greatest at or above the line, by position —
-# on every scroll, resize and body resize; over the last half-screen of scroll the line slides to the bottom
+# on every scroll, resize and resize of a section or its container (⊕ 10 Nov 2026: not <body>, which on a
+# KS4 page is one screen tall); over the last half-screen of scroll the line slides to the bottom
 # edge so the end of the page names the last section. Same return contract: an object with disconnect().
 R23_OBSERVE_FROM = (
     "  function observe(cmp, list) {\n"
@@ -1175,14 +1176,21 @@ R23_OBSERVE_FROM = (
 R23_OBSERVE_TO = (
     "  // ⊕ R23 (ks4_rulings.py): the current section is computed from positions, not from band entries.\n"
     "  function observe(cmp, list) {\n"
-    "    var off = false, queued = false, ro = null, tries = 0;\n"
+    "    var off = false, queued = false, ro = null, tries = 0, seen = [];\n"
+    "    // Watch the sections and their container, not <body>: a KS4 page's body is one screen tall and the\n"
+    "    // lesson overflows it, so the body never resizes when an answer opens feedback above the line.\n"
+    "    function watch(el) {\n"
+    "      if (!ro || !el || el.nodeType !== 1 || seen.indexOf(el) >= 0) return;\n"
+    "      if (seen.length > 64) seen = seen.filter(function (e) { if (e.isConnected) return true; ro.unobserve(e); return false; });\n"
+    "      seen.push(el); ro.observe(el);\n"
+    "    }\n"
     "    function pick() {\n"
     "      var doc = document.documentElement, vh = window.innerHeight || doc.clientHeight || 0;\n"
     "      var left = Math.max(0, (doc.scrollHeight - vh) - (window.pageYOffset || doc.scrollTop || 0));\n"
     "      var line = vh * 0.45; if (left < vh * 0.55) line += vh * 0.55 - left;\n"
     "      var at = -1, atTop = -Infinity, first = -1, firstTop = Infinity, found = 0;\n"
     "      list.forEach(function (r, k) {\n"
-    "        var el = document.getElementById(r.id); if (!el) return; found++;\n"
+    "        var el = document.getElementById(r.id); if (!el) return; found++; watch(el); watch(el.parentNode);\n"
     "        var b = el.getBoundingClientRect(); if (!b.width && !b.height) return;\n"
     "        if (b.top < firstTop) { first = k; firstTop = b.top; }\n"
     "        if (b.top <= line && b.top >= atTop) { at = k; atTop = b.top; }\n"
@@ -1200,7 +1208,7 @@ R23_OBSERVE_TO = (
     "    window.addEventListener('resize', soon);\n"
     "    function later() { setTimeout(soon, 0); }\n"
     "    document.addEventListener('click', later, true);\n"
-    "    if (window.ResizeObserver && document.body) { ro = new ResizeObserver(soon); ro.observe(document.body); }\n"
+    "    if (window.ResizeObserver) { ro = new ResizeObserver(soon); watch(document.body); }\n"
     "    (function hook() {\n"
     "      var p = update();\n"
     "      if (p && p.found < list.length && tries++ < 40) setTimeout(hook, 150);\n"

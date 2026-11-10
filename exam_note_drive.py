@@ -103,8 +103,13 @@ READ = r"""
     return { hit: li.classList.contains('is-hit'),
              text: li.querySelector('.ex-point-text').textContent };
   });
+  // The marking's account, without "You wrote": the child's own words may
+  // repeat a scheme point word for word (B's answer does), and that is the
+  // child's answer, not a second account of the point.
+  var text = main ? main.innerText : '', wrote = main && main.querySelector('.ex-wrote');
+  if (wrote) { text = text.replace(wrote.innerText, ''); }
   return { note: note ? note.textContent : null, rows: rows,
-           text: main ? main.innerText : '', result: !!(main && main.querySelector('.ex-score')) };
+           text: text, result: !!(main && main.querySelector('.ex-score')) };
 })()
 """
 

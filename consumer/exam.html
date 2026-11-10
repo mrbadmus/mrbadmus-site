@@ -76,14 +76,23 @@
     font-size: 20px; letter-spacing: -.02em;
     overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
   }
-  /* ⊕ 9 Nov 2026: the lockup, on a row of its own on a phone: that row was
-     already full (see above), and the mark is not the thing to squeeze. */
+  /* ⊕ 9 Nov 2026: the lockup joins the row. ⊕ 10 Nov 2026: on a phone the
+     row then held back, mark, chip, theme and sign-out, about 470px in 350,
+     and a header is one row (theme_placement_drive). The mark is not the
+     thing to squeeze and the chip is not the thing to truncate (see above),
+     so below 440px the chip leaves the header for the line under it,
+     `.ex-quota-top`. One of the two shows at any width, never both. */
   .ex-head .mrb-brand { flex: 0 0 auto; }
+  .ex-quota-top { display: none; }
   @media (max-width: 439px) {
-    .ex-head { flex-wrap: wrap; }
-    .ex-head .mrb-brand { order: -1; flex: 1 0 100%; }
     .ex-title { display: none; }
-    .ex-quota-chip { margin-left: auto; }
+    .ex-head .ex-quota-chip { display: none; }
+    .ex-head .c-head-theme { margin-left: auto; }
+    .ex-quota-top:not(:empty) {
+      display: block; max-width: 600px; margin: 12px auto 0; padding: 0 20px;
+      text-align: right; font-family: var(--ks3-font-mono); font-size: 12px;
+      letter-spacing: .06em; color: var(--ks3-ink-muted);
+    }
   }
   .ex-quota-chip {
     min-width: 0; overflow: hidden; text-overflow: ellipsis;
@@ -419,6 +428,7 @@
     <span class="mrb-theme-slot c-head-theme" data-mrb-theme="compact"></span>
     <span id="ex-signout"></span>
   </header>
+  <p class="ex-quota-top" id="ex-quota-top"></p>
 
   <main class="ex-main" id="ex-main"></main>
 </div>
@@ -690,8 +700,11 @@
 
     function paintChip() {
       var chip = document.getElementById('ex-quota-chip');
-      if (quota.left == null || quota.total == null) { chip.textContent = ''; return; }
-      chip.textContent = 'Mr Badmus: ' + quota.left + ' of ' + quota.total + ' left';
+      var top = document.getElementById('ex-quota-top');   // the same words, shown on a phone instead
+      var words = (quota.left == null || quota.total == null) ? ''
+        : 'Mr Badmus: ' + quota.left + ' of ' + quota.total + ' left';
+      chip.textContent = words;
+      if (top) { top.textContent = words; }
     }
 
     /* ── paint ─────────────────────────────────────────────────────────── */
