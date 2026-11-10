@@ -5413,8 +5413,7 @@ try {
                   var p = KS4RootActs.patchOf(x.L, KS4RootActs.clone(from), function (t) { return (t.predBtns || []).filter(function (c) { return c.label === b.label; })[0].onClick; });
                   if (p && p.preds && p.preds[i] === s.preds[i]) { said = b.label; }
                 });
-                out.push({ e: i + 1, a: said, ok: !/other way/i.test(String(v.waterNote || '')),
-                           good: function () { return rightBy(x, from, function (t) { return t.predBtns; }, function (t) { return !/other way/i.test(String(t.waterNote || '')); }); },
+                out.push({ e: i + 1, a: said, ok: !/other way/i.test(String(v.waterNote || '')), good: function () { return rightBy(x, from, function (t) { return t.predBtns; }, function (t) { return !/other way/i.test(String(t.waterNote || '')); }); },
                            q: 'Before it goes in, predict: ' + String(((v.metals || [])[i] || {}).label || '') + ' reacts…' });
               });
               return out;
