@@ -27,6 +27,7 @@ so a body the real server would refuse fails here.
 
     python3 activity_save_drive.py [--only NAME] [--width 1280]
 """
+import config_env  # the production hosts, read from shared/config.js
 import argparse
 import http.server
 import json
@@ -37,6 +38,9 @@ import sys
 import threading
 import time
 import urllib.parse
+
+# Every request off this machine is refused; the backend platform is named by config, never here.
+OFF_BOX = ["*supabase.co*", "*%s*" % config_env.PROD_BACKEND_PLATFORM, "*mrbadmus.com*", "*googleapis*", "*gstatic*", "*unpkg*", "*jsdelivr*", "*cdnjs*"]
 
 import datetime as _dt
 import ks3_browser as KB
@@ -1114,7 +1118,7 @@ def open_page(br, site, api, page, sess, width, pin_random=False):
         pg.send("Page.enable")
         pg.send("Page.addScriptToEvaluateOnNewDocument", {"source": PIN_RANDOM})
     pg.send("Network.enable")
-    pg.send("Network.setBlockedURLs", {"urls": ["*supabase.co*", "*onrender.com*", "*mrbadmus.com*", "*googleapis*", "*gstatic*", "*unpkg*", "*jsdelivr*", "*cdnjs*"]})
+    pg.send("Network.setBlockedURLs", {"urls": OFF_BOX})
     base = "http://127.0.0.1:%d" % site
     pg.goto(base + "/404.html")
     pg.eval("localStorage.clear(); %s" % ("localStorage.setItem(%s, %s)" % (json.dumps(AUTH_KEY), json.dumps(json.dumps(sess))) if sess else ""))
@@ -1343,7 +1347,7 @@ def run_units(sport, aport, width, only):
         pg = br.attach()
         pg.set_viewport(width, 900)
         pg.send("Network.enable")
-        pg.send("Network.setBlockedURLs", {"urls": ["*supabase.co*", "*onrender.com*", "*mrbadmus.com*", "*googleapis*", "*gstatic*", "*unpkg*", "*jsdelivr*", "*cdnjs*"]})
+        pg.send("Network.setBlockedURLs", {"urls": OFF_BOX})
         fresh = "localStorage.clear(); sessionStorage.clear(); localStorage.setItem(%s, %s)" % (json.dumps(AUTH_KEY), json.dumps(json.dumps(session(True))))
         for k in kinds:
             if only and not re.search(only, k):
@@ -1531,7 +1535,7 @@ def run_units_ks4(sport, aport, width, only):
                 pg = br.attach()
                 pg.set_viewport(width, 900)
                 pg.send("Network.enable")
-                pg.send("Network.setBlockedURLs", {"urls": ["*supabase.co*", "*onrender.com*", "*mrbadmus.com*", "*googleapis*", "*gstatic*", "*unpkg*", "*jsdelivr*", "*cdnjs*"]})
+                pg.send("Network.setBlockedURLs", {"urls": OFF_BOX})
                 while items:
                     slug, page = items.pop(0)
                     LEDGER.reset()
@@ -1596,7 +1600,7 @@ def run_sweep(sport, aport, width, only):
         pg = br.attach()
         pg.set_viewport(width, 900)
         pg.send("Network.enable")
-        pg.send("Network.setBlockedURLs", {"urls": ["*supabase.co*", "*onrender.com*", "*mrbadmus.com*", "*googleapis*", "*gstatic*", "*unpkg*", "*jsdelivr*", "*cdnjs*"]})
+        pg.send("Network.setBlockedURLs", {"urls": OFF_BOX})
         fresh = "localStorage.clear(); sessionStorage.clear(); localStorage.setItem(%s, %s)" % (json.dumps(AUTH_KEY), json.dumps(json.dumps(session(True))))
         def load(page):
             pg.goto(base + "/404.html")

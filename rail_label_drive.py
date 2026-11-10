@@ -32,6 +32,7 @@ Screenshots go to $MRB_SHOTS (ks3_browser.gate_tmp()), never into the repo.
 Run:  python3 rail_label_drive.py [--shots DIR]
 """
 
+import config_env  # the production hosts, read from shared/config.js
 import argparse
 import os
 import sys
@@ -47,7 +48,7 @@ PAGES = [
     ("KS4", "/combined/foundation/biology/ecology/carbon-cycle.html", 0.45),
 ]
 SIZES = [(390, 844), (1280, 900)]
-BLOCK = ["https://*", "wss://*", "http://localhost*", "*supabase.co*", "*onrender.com*"]
+BLOCK = ["https://*", "wss://*", "http://localhost*", "*supabase.co*", "*%s*" % config_env.PROD_BACKEND_PLATFORM]
 
 FAILS = []
 

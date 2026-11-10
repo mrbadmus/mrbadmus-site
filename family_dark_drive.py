@@ -19,6 +19,7 @@ Offline: served from the repo, the backend unreachable, sessions stubbed in stor
 """
 from __future__ import annotations
 
+import config_env  # the production hosts, read from shared/config.js
 import argparse
 import json
 import os
@@ -42,7 +43,7 @@ def check(ok, what, detail=None):
 
 # On localhost config.js reads the TEST project's key. Both, so this cannot pass by
 # simply not finding a session.
-KEYS = ["sb-qeppkiswvclkkwbxmlok-auth-token", "sb-urklkrwevjtlfbwnipjn-auth-token"]
+KEYS = [config_env.TEST["AUTH_STORAGE_KEY"], config_env.PROD["AUTH_STORAGE_KEY"]]
 FUTURE = 4102444800
 CHILD = {"access_token": "x.y.z", "refresh_token": "r", "expires_at": FUTURE, "user": {"id": "kid-ada", "email": "ada.comet@children.mrbadmus.internal"}}
 PUPIL = {"access_token": "x.y.z", "refresh_token": "r", "expires_at": FUTURE, "user": {"id": "pupil-1", "email": "pupil@rainford.example"}}
