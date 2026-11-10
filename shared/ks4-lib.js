@@ -125,14 +125,21 @@ window.KS4 = (function () {
   }
   // ⊕ R23 (ks4_rulings.py): the current section is computed from positions, not from band entries.
   function observe(cmp, list) {
-    var off = false, queued = false, ro = null, tries = 0;
+    var off = false, queued = false, ro = null, tries = 0, seen = [];
+    // Watch the sections and their container, not <body>: a KS4 page's body is one screen tall and the
+    // lesson overflows it, so the body never resizes when an answer opens feedback above the line.
+    function watch(el) {
+      if (!ro || !el || el.nodeType !== 1 || seen.indexOf(el) >= 0) return;
+      if (seen.length > 64) seen = seen.filter(function (e) { if (e.isConnected) return true; ro.unobserve(e); return false; });
+      seen.push(el); ro.observe(el);
+    }
     function pick() {
       var doc = document.documentElement, vh = window.innerHeight || doc.clientHeight || 0;
       var left = Math.max(0, (doc.scrollHeight - vh) - (window.pageYOffset || doc.scrollTop || 0));
       var line = vh * 0.45; if (left < vh * 0.55) line += vh * 0.55 - left;
       var at = -1, atTop = -Infinity, first = -1, firstTop = Infinity, found = 0;
       list.forEach(function (r, k) {
-        var el = document.getElementById(r.id); if (!el) return; found++;
+        var el = document.getElementById(r.id); if (!el) return; found++; watch(el); watch(el.parentNode);
         var b = el.getBoundingClientRect(); if (!b.width && !b.height) return;
         if (b.top < firstTop) { first = k; firstTop = b.top; }
         if (b.top <= line && b.top >= atTop) { at = k; atTop = b.top; }
@@ -150,7 +157,7 @@ window.KS4 = (function () {
     window.addEventListener('resize', soon);
     function later() { setTimeout(soon, 0); }
     document.addEventListener('click', later, true);
-    if (window.ResizeObserver && document.body) { ro = new ResizeObserver(soon); ro.observe(document.body); }
+    if (window.ResizeObserver) { ro = new ResizeObserver(soon); watch(document.body); }
     (function hook() {
       var p = update();
       if (p && p.found < list.length && tries++ < 40) setTimeout(hook, 150);
