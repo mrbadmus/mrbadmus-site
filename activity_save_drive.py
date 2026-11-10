@@ -705,6 +705,8 @@ CASES = [
                 P.logic.renderVals().onRetry(); await H.sleep(300);
                 await check(links); await H.sleep(200); window.__ck = ck[0] + '-' + ck[1];""",
          want=["ks4:heart-blood-vessels:ch#r*"],
+         # ⊕ 10 Nov 2026: the check after Retry is the rung's again, so it names the rung, once.
+         check=lambda b: (lambda ch: len(ch) == 2 and all(x["rung"] for x in ch) and ch[1]["is_correct"] is True)([x for x in b if x["question_id"].endswith("#r3-1")]),
          back="""(function(){ var P = H.block('Ks4Practice'), R = P.logic.props.rungs, ck = null; [R.r1, R.r2, R.r3, R.r4].forEach(function (items, ri) { items.forEach(function (it, i) { if ((it.kind || 'mcq') === 'chain' && !ck) { ck = ri + '-' + i; } }); }); return P.logic.state.q[ck].res === true; })()"""),
     dict(name="ks4-chain-recheck", page="/combined/higher/biology/organisation/heart-blood-vessels.html",
          act="""var P = H.block('Ks4Practice'), R = P.logic.props.rungs, ck = null;
@@ -714,6 +716,7 @@ CASES = [
                 c.logic.setState({ chain: links.slice().reverse(), checked: false }); await H.sleep(90); c.logic.renderVals().onCheck(); await H.sleep(250);
                 c.logic.setState({ chain: links, checked: false }); await H.sleep(90); c.logic.renderVals().onCheck(); await H.sleep(250);""",
          want=["ks4:heart-blood-vessels:ch#r*"],
+         check=lambda b: (lambda ch: len(ch) == 2 and ch[0]["rung"] and not ch[1]["rung"])([x for x in b if x["question_id"].endswith("#r3-1")]),
          back="""(function(){ var P = H.block('Ks4Practice'), R = P.logic.props.rungs, ck = null; [R.r1, R.r2, R.r3, R.r4].forEach(function (items, ri) { items.forEach(function (it, i) { if ((it.kind || 'mcq') === 'chain' && !ck) { ck = ri + '-' + i; } }); }); return P.logic.state.q[ck].res === false; })()"""),
     dict(name="ks4-concord-none", page="/triple/higher/chemistry/chemical-changes/titrations.html",
          act="""var runs = [2500, 2520, 2510, 2470];
@@ -723,6 +726,45 @@ CASES = [
          check=lambda b: [x for x in b if x["question_id"].endswith("#concord")][0]["is_correct"] is False
                          and "oncordant" in ([x for x in b if x["question_id"].endswith("#concord")][0]["correct_answer"] or ""),
          back="(function(){ var s = H.rootState(); return !!s.pick && s.pick.ok === false; })()"),
+    # ── ⊕ 10 Nov 2026: a fourth blind run ──
+    dict(name="ks4-group1-predict", page="/combined/higher/chemistry/atomic-structure/group-1.html",
+         act="""H.click(H.exact('Drop it in')); await H.sleep(300); await H.call(function (v) { return v.metals[1].onClick; }); await H.sleep(200);
+                H.click(H.exact('More gently')); await H.sleep(400);""",
+         want=["ks4:group-1:ch#preds-2"],
+         check=lambda b: [x for x in b if x["question_id"].endswith("#preds-2")][0]["is_correct"] is False
+                         and [x for x in b if x["question_id"].endswith("#preds-2")][0]["correct_answer"] == "More vigorously"
+                         and not any(x.get("answer") == "Drop it in" for x in b),
+         back="H.rootState().shown[1] === true && H.rootState().preds[1] === 'less'"),
+    dict(name="ks4-last-compound", page="/combined/higher/chemistry/bonding/ionic-compounds.html",
+         act="""var vals = ['MgO', 'CaF2', 'Na2O'];
+                for (var i = 0; i < 3; i += 1) { var a = H.rootState().dxVal.slice(); a[i] = vals[i]; await H.set({ dx: i, dxVal: a, dxChecked: false }); await H.call('onDxCheck'); await H.sleep(150); }""",
+         want=["ks4:ionic-compounds:ch#dxval-3"],
+         check=lambda b: [x for x in b if x["question_id"].endswith("#dxval-3")][0]["is_correct"] is False,
+         same="H.rootState().dx === 2 && H.rootState().dxChecked === true && /^Count again/.test(H.v().dxWord)",
+         back="H.rootState().dx === 2 && H.rootState().dxChecked === true && /^Count again/.test(H.v().dxWord)"),
+    dict(name="ks3-live-calc", page="/ks3/physics/forces/moments.html",
+         act="""var g = document.querySelector('.ks3-span-block [data-span-gopt="0"]'); H.click(g); await H.sleep(200);
+                H.click(document.querySelector('[data-span-arm="0.05"]')); await H.sleep(120);
+                var f = document.querySelector('[data-span-force]'); f.value = '40'; f.dispatchEvent(new Event('input', {bubbles: true})); await H.sleep(150);
+                var q = document.querySelector('[data-p4cfa-q="0"]'), ins = q.querySelectorAll('[data-p4cfa-input]'), L = ['nothing', 'M = F x d', 'M = 40 x 0.05', '40 x 0.05 = 2', 'M = 2 N m'];
+                for (var i = 0; i < ins.length; i += 1) { ins[i].value = L[i]; ins[i].dispatchEvent(new Event('input', {bubbles: true})); }
+                await H.sleep(100); H.click(q.querySelector('[data-p4cfa-check]')); await H.sleep(400);""",
+         then="""var f = document.querySelector('[data-span-force]'); f.value = '100'; f.dispatchEvent(new Event('input', {bubbles: true})); await H.sleep(500);""",
+         want=["moments#your-turn-moment-1"],
+         check=lambda b: [x for x in b if x["question_id"] == "moments#your-turn-moment-1"][0]["question_text"].startswith("Your spanner: 40 N at 0.05 m"),
+         same="""(function(){ var q = document.querySelector('[data-p4cfa-q="0"]'); return q.querySelector('[data-p4cfa-head]').textContent.trim() === 'Your spanner: 40 N at 0.05 m from the pivot.' && !q.querySelector('[data-p4cfa-reveal]').hasAttribute('hidden') && document.querySelector('[data-span-force]').value === '40'; })()""",
+         back="""(function(){ var q = document.querySelector('[data-p4cfa-q="0"]'); return q.querySelector('[data-p4cfa-head]').textContent.trim() === 'Your spanner: 40 N at 0.05 m from the pivot.' && !q.querySelector('[data-p4cfa-reveal]').hasAttribute('hidden'); })()"""),
+    dict(name="ks3-bench-runs", page="/ks3/physics/energy-at-home/energy-in-food.html", settle=0, settle_b=7,
+         act="""var s = document.querySelector('.ks3-calor-block'); H.click(s.querySelector('[data-calor-gopt]')); await H.sleep(200);
+                for (var k = 0; k < 2; k += 1) {
+                  H.click(s.querySelectorAll('[data-calor-food]')[k]); await H.sleep(100);
+                  var b = s.querySelector('[data-calor-burn]'); H.click(b);
+                  for (var t = 0; t < 80 && !b.disabled; t += 1) { await H.sleep(100); }
+                  H.click(s.querySelector('[data-calor-record]')); await H.sleep(200);
+                }""",
+         want=["energy-in-food#food-calorimeter-run-1", "energy-in-food#food-calorimeter-run-2"],
+         check=lambda b: all(x["kind"] == "numeric" and x["is_correct"] is None and x["answer"].count(" · ") == 3 for x in b if "-run-" in x["question_id"]),
+         back="""(function(){ var r = document.querySelectorAll('.ks3-calor-block [data-calor-rows] tr'); return r.length === 2 && r[1].children[1].textContent.trim() === document.querySelectorAll('.ks3-calor-block [data-calor-food]')[1].textContent.trim(); })()"""),
     # ── ⊕ 9 Nov 2026: a third blind run ──
     dict(name="ks4-typed-rate", page="/triple/higher/biology/ecology/decomposition.html",
          act="""var L = document.getElementById('ks4-mount').__mrbKs4.logic; L.setState({ own: { 40: 120 } }); await H.sleep(150); L.setState({ rate: '1' }); await H.sleep(100); await H.call('onRateCheck'); await H.sleep(250);""",
@@ -765,7 +807,7 @@ CASES = [
                 await H.call('onClear'); await H.sleep(120);
                 for (var j = 0; j < 2; j += 1) { await H.call('onRecord'); await H.sleep(120); }""",
          want=["ks4:resistors:ch#data-resistor-1", "ks4:resistors:ch#data-resistor-5", "ks4:resistors:ch#data-resistor-cleared"],
-         check=lambda b: all(x["kind"] == "numeric" and x["is_correct"] is None for x in b if "#data-" in x["question_id"]) and [x for x in b if x["question_id"].endswith("gate-resistor")][0]["correct_answer"] == "A",
+         check=lambda b: all(x["kind"] == "numeric" and x["is_correct"] is None and re.match(r"^[-\u2212]?\d+\.\d\d V, \d+\.\d\d A$", x["answer"]) for x in b if "#data-" in x["question_id"] and "cleared" not in x["question_id"]) and [x for x in b if x["question_id"].endswith("gate-resistor")][0]["correct_answer"] == "A",
          back="H.rootState().data.resistor.length === 2 && H.rootState().gate.resistor === 0"),
     dict(name="ks3-rig-build", page="/ks3/chemistry/energy-changes-in-reactions/measuring-a-temperature-change.html",
          act="""var s = document.querySelector('.ks3-rigb-block'); H.click(s.querySelector('[data-rigb-run]')); await H.sleep(400);""",
@@ -849,7 +891,8 @@ CASES = [
                 f.value = 'If a substance gains oxygen it is oxidised, and if a fuel burns in oxygen that is combustion.';
                 f.dispatchEvent(new Event('input', {bubbles: true})); await H.sleep(200); H.click(s.querySelector('[data-rwrite-show]')); await H.sleep(400);""",
          want=["which-reaction-is-this#*-1"],
-         check=lambda b: [x for x in b if x["kind"] == "written"][0].get("self_checked") is False and [x for x in b if x["kind"] == "written"][0].get("is_correct") is None,
+         check=lambda b: [x for x in b if x["kind"] == "written"][0].get("self_checked") is False and [x for x in b if x["kind"] == "written"][0].get("is_correct") is None
+                         and [x for x in b if x["kind"] == "written"][0]["answer"].startswith("If a substance gains oxygen"),
          back="(function(){ var s = document.querySelector('.ks3-rwrite-block'); return /gains oxygen/.test(s.querySelector('[data-rwrite-field]').value) && s.querySelector('[data-rwrite-show]').disabled; })()"),
     dict(name="ks3-order", page="/ks3/chemistry/acids-and-alkalis/making-a-pure-dry-salt.html",
          act="""var s = document.querySelector('.ks3-morder-block'); var st = s.querySelectorAll('[data-morder-step]');
@@ -912,6 +955,11 @@ DRAFTS = [
                  var i = s.querySelector('[data-p12cfa-q="1"] [data-p12cfa-input="1"]'); i.value = 'second question line'; i.dispatchEvent(new Event('input', {bubbles: true}));""",
          back="""(function(){ var q = document.querySelector('[data-activity="your-turn-mass"] [data-p12cfa-q="1"]'); return !q.hasAttribute('hidden') && q.querySelector('[data-p12cfa-input="1"]').value === 'second question line'; })()""",
          blank="""document.querySelector('[data-activity="your-turn-mass"] [data-p12cfa-q="1"] [data-p12cfa-input="1"]').value === ''"""),
+    dict(name="typed, KS3 Question 2 beside a live bench", page="/ks3/physics/forces/moments.html",
+         type="""var s = document.querySelector('[data-activity="your-turn-moment"]'); H.click(s.querySelector('[data-p4cfa-tab="1"]')); await H.sleep(150);
+                 var q = s.querySelector('[data-p4cfa-q="1"]'), i = q.querySelectorAll('[data-p4cfa-input]'); i[0].focus(); i[0].value = 'nothing to convert'; i[0].dispatchEvent(new Event('input', {bubbles: true})); i[1].value = 'M = F x d'; i[1].dispatchEvent(new Event('input', {bubbles: true}));""",
+         back="""(function(){ var q = document.querySelector('[data-activity="your-turn-moment"] [data-p4cfa-q="1"]'); return !q.hasAttribute('hidden') && q.querySelectorAll('[data-p4cfa-input]')[1].value === 'M = F x d'; })()""",
+         blank="""document.querySelector('[data-activity="your-turn-moment"] [data-p4cfa-q="1"] [data-p4cfa-input]').value === ''"""),
     dict(name="a slider", page="/ks3/physics/energy-at-home/reading-a-fuel-bill.html",
          type="""var r = document.querySelector('[data-bill-slider="shower"]'); r.value = '45'; r.dispatchEvent(new Event('input', {bubbles: true}));""",
          back="""document.querySelector('[data-bill-slider="shower"]').value === '45'""",
@@ -1640,7 +1688,20 @@ def main():
                 return
             time.sleep(1.5 + c.get("settle", 0))
             errs = [e for e in pg.console_errors() if "net::ERR_BLOCKED" not in e and "ERR_BLOCKED_BY_CLIENT" not in e and "429" not in e]
-        bodies = list(LEDGER.bodies)
+            # ⊕ 10 Nov 2026: the same device, reloaded: what was saved, not what was left on screen.
+            if c.get("same"):
+                if c.get("then"):
+                    run_act(pg, c["then"])
+                    time.sleep(0.8)
+                n_same = len(LEDGER.bodies)
+                pg.goto("http://127.0.0.1:%d%s?api=http://127.0.0.1:%d" % (sport, c["page"], aport), settle=1.0)
+                pg.eval(HELPERS)
+                wait_saved(pg)
+                time.sleep(0.8 + c.get("settle_b", 0))
+                same = pg.eval("(function(){ try { return !!(%s); } catch (e) { return 'ERR ' + e.message; } })()" % c["same"])
+                ok(same is True, "same device, reloaded: what was saved", same)
+                ok(len(LEDGER.bodies) == n_same, "same device: restoring sent nothing", LEDGER.bodies[n_same:])
+        bodies = [b for b in LEDGER.bodies if not c.get("then") or b in LEDGER.bodies[:n_same]] if c.get("same") else list(LEDGER.bodies)
         all_bodies.extend(bodies)
         ids = [b.get("question_id") or "" for b in bodies]
         for w in c["want"]:
@@ -1662,7 +1723,7 @@ def main():
         with KB.Browser() as br:
             pg = open_page(br, sport, aport, c["page"], session(True), a.width)
             st = wait_saved(pg)
-            time.sleep(0.8)
+            time.sleep(0.8 + c.get("settle_b", 0))
             SLOW["path"] = None
             back = pg.eval("(function(){ try { return !!(%s); } catch (e) { return 'ERR ' + e.message; } })()" % c["back"])
             ok(st == "done" and back is True, "device B (fresh profile): restored from /saved", "state=%s back=%s" % (st, back))

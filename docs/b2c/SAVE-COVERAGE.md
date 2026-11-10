@@ -336,6 +336,31 @@ until the lesson data carries a key.
   parent reads, so no row is sent.
 - **Fuel-bill sliders** come back as drafts. **Device only.**
 
+### A fourth blind run's findings (10 Nov 2026)
+
+- **Group 1 predictions are judged.** "You predicted gentler. It is the other way." is the lesson's verdict:
+  the row carries it and the option the lesson calls right. Lithium's "Drop it in" sends nothing.
+- **A calculation that reads a live bench comes back as it was marked.** The moments "Your turn" takes its
+  numbers from the spanner bench, so on return the bench is set to what the saved question says (the
+  spanner button showing that length, the pull slider that makes the question read that force) before the
+  lines go back. The bench's unsent slider drafts then stand down. If the child moved the bench after the
+  check, the bench comes back at the checked setting.
+- **The question tab** a "Your turn" was on comes back (this device). Unchecked lines on Question 2 come
+  back as drafts, beside a live bench too.
+- **Calorimeter runs** are saved, one numeric row each (`food-calorimeter-run-<n>`), with the table's own
+  cells, and come back by running the same food and mass again through the page (a full burn, then Record).
+  A run recorded part-way through a burn comes back as a full burn of the mass that had gone.
+- **Record presses are no longer replayed by a block's count.** Pressing Record on return recorded the
+  bench as it stood, not as it was. **Same shape, not saved, named:** the light-gate table (`ks3-lgate`),
+  the lever table (`ks3-plever`) and the spring plot readings (`ks3-splot`). Each is a reading of the
+  bench, judged by nothing.
+- **Smalls.** Resistor readings store what the meters showed ("3.00 V, 0.30 A"). A chain checked after
+  "Retry my misses" is the rung's check again and is sent once, with its rung. `own-rule` stores the
+  child's words without the box's label. The ionic-compounds Compound 3 verdict comes back on both
+  devices; pressing a compound's tab clears its verdict, live as well as on return (the lesson's own rule).
+- **Device only, named:** the fuel-bill sliders and the pinhole camera's sliders are exploration with no
+  answer row to carry them, so they come back as drafts on the same device and nowhere else.
+
 ### What these numbers do and do not prove
 
 - **The tables are static:** they say the capture code names a control, not that it was pressed.

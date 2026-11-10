@@ -1827,8 +1827,10 @@ try {
       v = String(v).toLowerCase().replace(/[^a-z0-9:#._-]+/g, '-').slice(0, 200);
       return v || null;
     }
+    var rungSent = {};                         // question id → when a row naming its rung last went
     function post(d) {
       if (muted) { return; }                   // a restored answer, already in the ledger
+      if (d.rung != null && d.question_id) { rungSent[d.question_id] = Date.now(); }
       var t = carried(d, ('__t' in d) ? d.__t : spans(1)[0]);
       var mk = (typeof d.marks === 'number' && isFinite(d.marks)) ? Math.round(d.marks) : null;
       if (mk !== null && (mk < 1 || mk > 20)) { mk = null; }
@@ -2743,10 +2745,14 @@ try {
          the child's own, not an answer: they are kept with the self-ticks on the
          commitment's row, as the position of each control, and pressed again. */
       var countSeen = {};
+      var isRecord = function (b) { return Array.prototype.some.call(b.attributes || [], function (a) { return /^data-[a-z0-9]+-record$/.test(a.name); }); };
       var countTrack = function (sp, sec, t, slug) {
         if (!sp.count) { return; }
         var b = t.closest('button'), cnt = sec.querySelector('[data-count]');
         if (!b || !cnt || !sec.contains(b) || matches(b, sp.opt)) { return; }
+        // ⊕ 10 Nov 2026: a Record press makes a reading from wherever the bench is set, so
+        // pressing it again on return would record the bench as it is now, not as it was.
+        if (isRecord(b)) { return; }
         var id = slug + '#' + (sec.getAttribute('data-activity') || 'block') + '-1';
         var pos = Array.prototype.indexOf.call(sec.querySelectorAll('button'), b) + 1;
         if (pos < 1 || pos > 20) { return; }
@@ -2878,10 +2884,13 @@ try {
         if (sp.opt) {
           Array.prototype.forEach.call(sec.querySelectorAll(sp.opt), function (o) { if (o.getAttribute('aria-pressed') === 'true') { lines.push(optLabel(o)); } });
         }
-        Array.prototype.forEach.call(sec.querySelectorAll(sp.inputs), function (inp) {
+        // ⊕ 10 Nov 2026: one box and nothing else is the child's words alone; the box's
+        // label goes in only where it tells several boxes apart.
+        var tIns = sec.querySelectorAll(sp.inputs), alone = tIns.length === 1 && !sp.opt;
+        Array.prototype.forEach.call(tIns, function (inp) {
           var l = inp.id ? sec.querySelector('label[for="' + inp.id + '"]') : null;
           var v = inp.tagName === 'SELECT' ? (inp.options[inp.selectedIndex] ? txt(inp.options[inp.selectedIndex]) : '') : String(inp.value || '').trim();
-          lines.push((l ? txt(l) + ': ' : '') + v);
+          lines.push((l && !alone ? txt(l) + ': ' : '') + v);
         });
         var ask = askOf(sec, null, chk), before = linesOf(sec);
         later(function () {
@@ -3086,13 +3095,27 @@ try {
             i.value = vals[k] == null ? '' : vals[k];
             try { i.dispatchEvent(new Event('input', { bubbles: true })); } catch (e) { /* old browser */ }
           });
-          // Work typed under "Question 2" must not come back behind an empty "Question 1".
-          if (q.hasAttribute('hidden')) {
-            var open = csec.querySelector('[' + pre + '-q]:not([hidden])');
-            var openEmpty = open && !Array.prototype.some.call(open.querySelectorAll('[' + pre + '-input]'), function (i) { return (i.value || '').trim(); });
-            var tab = openEmpty ? csec.querySelector('[' + pre + '-tab="' + q.getAttribute(pre + '-q') + '"]') : null;
-            if (tab) { tab.click(); }
-          }
+        });
+      });
+      /* ⊕ 10 Nov 2026: the question the child was on, on this device. Restoring answers
+         presses Check on every question, so the tab is put back last of all. */
+      var cfaTabOf = function (el) {
+        var a = el.attributes || [];
+        for (var i = 0; i < a.length; i += 1) { var m = /^(data-p\d+cfa)-tab$/.exec(a[i].name); if (m) { return m[1]; } }
+        return null;
+      };
+      document.addEventListener('click', function (e) {
+        if (muted) { return; }
+        var tb = e.target && e.target.closest ? e.target.closest('button') : null, pre = tb && cfaTabOf(tb), csec = pre && tb.closest('[data-activity]');
+        if (csec) { draftPut(ks3Slug() + '#' + csec.getAttribute('data-activity') + '~tab', tb.getAttribute(pre + '-tab')); }
+      }, true);
+      window.MrBadmusAnswerCapture.afterReplay.push(function () {
+        Array.prototype.forEach.call(document.querySelectorAll('[data-activity]'), function (csec) {
+          var tabs = Array.prototype.filter.call(csec.querySelectorAll('button'), function (b) { return !!cfaTabOf(b); });
+          if (!tabs.length) { return; }
+          var pre = cfaTabOf(tabs[0]), want = draftGet(ks3Slug() + '#' + csec.getAttribute('data-activity') + '~tab');
+          var tab = tabs.filter(function (b) { return b.getAttribute(pre + '-tab') === String(want == null ? tabs[0].getAttribute(pre + '-tab') : want); })[0];
+          if (tab && tab.getAttribute('aria-pressed') !== 'true') { tab.click(); }
         });
       });
 
@@ -3126,6 +3149,7 @@ try {
             var raw = draftGet(k);
             el.__mrbBase = el.value;
             if (!raw || typeof raw !== 'object') { return; }
+            if (benchHeld && el.type === 'range') { draftDrop(k); return; }   // the saved calculation set this bench
             if (el.disabled || el.value !== raw.base) { draftDrop(k); return; }
             el.__mrbBase = raw.base;
             el.value = raw.val;
@@ -3242,6 +3266,114 @@ try {
          throughout, so none of it is sent again. Ids are read the way the
          capture above WRITES them (slug#start, slug#<activity>,
          slug#<activity>-<n>). */
+      /* ⊕ 10 Nov 2026: a run recorded in a bench's results table (the calorimeter). Each
+         is a row of its own, numbered as the table numbers it, with the table's own cells;
+         nothing judges a run. On return the same run is made again through the page:
+         the food, the mass, a full burn, Record. The page's figures depend only on the
+         food and the mass, so the table comes back as it was. A run recorded part-way
+         through a burn comes back as a full burn of the mass that had gone. */
+      var RECORDS = {
+        'ks3-calor-block': { rec: '[data-calor-record]', rows: '[data-calor-rows] tr',
+          put: function (sec, cells, done) {
+            var food = Array.prototype.filter.call(sec.querySelectorAll('[data-calor-food]'), function (b) { return same(txt(b), cells[0]); })[0];
+            var slider = sec.querySelector('[data-calor-mass]'), burn = sec.querySelector('[data-calor-burn]');
+            var mass = parseFloat(String(cells[1] || ''));
+            if (!food || !slider || !burn || isNaN(mass)) { done(); return; }
+            food.click();
+            slider.value = String(mass);
+            try { slider.dispatchEvent(new Event('input', { bubbles: true })); } catch (e) { /* old browser */ }
+            burn.click();
+            var t0 = Date.now();
+            (function wait() {
+              if (burn.disabled || Date.now() - t0 > 8000) {
+                var rec = sec.querySelector('[data-calor-record]');
+                if (rec && !rec.disabled) { rec.click(); }
+                done();
+                return;
+              }
+              setTimeout(wait, 60);
+            })();
+          } }
+      };
+      document.addEventListener('click', function (e) {
+        var b = e.target && e.target.closest ? e.target.closest('button') : null;
+        var rsec = b && !b.disabled ? b.closest('[data-instrument]') : null;
+        var spec = rsec ? RECORDS[kindOf(rsec, RECORDS)] : null;
+        if (!spec || !b.matches(spec.rec)) { return; }
+        var before = rsec.querySelectorAll(spec.rows).length, slug = ks3Slug(), act = rsec.getAttribute('data-activity') || 'block';
+        later(function () {
+          var trs = rsec.querySelectorAll(spec.rows);
+          if (trs.length <= before) { return; }
+          var tr = trs[trs.length - 1], cells = Array.prototype.map.call(tr.children, txt);
+          var heads = Array.prototype.map.call(rsec.querySelectorAll('thead th'), txt);
+          post({ __block: rsec, key_stage: 'KS3', lesson_slug: slug, question_id: slug + '#' + act + '-run-' + cells[0], rung: null, kind: 'numeric',
+                 question_text: (txt(rsec.querySelector('h2')) || act) + ' — ' + (heads[0] || 'Run') + ' ' + cells[0] + ': ' + heads.slice(1).join(', '),
+                 answer: cells.slice(1).join(' · '), correct_answer: null, is_correct: null });
+        });
+      }, true);
+      replay.push(function (rows) {
+        var todo = [];
+        Array.prototype.forEach.call(document.querySelectorAll('[data-instrument]'), function (rsec) {
+          var spec = RECORDS[kindOf(rsec, RECORDS)];
+          if (!spec) { return; }
+          var pre = ks3Slug() + '#' + (rsec.getAttribute('data-activity') || 'block') + '-run-', mine = {};
+          (rows || []).forEach(function (r) { if (String(r.question_id || '').indexOf(pre) === 0) { mine[r.question_id] = r; } });
+          Object.keys(mine).sort(function (a, b) { return parseInt(a.slice(pre.length), 10) - parseInt(b.slice(pre.length), 10); }).forEach(function (q) {
+            todo.push({ sec: rsec, spec: spec, cells: String(mine[q].answer || '').split(' · ') });
+          });
+        });
+        if (!todo.length) { return; }
+        // Runs take the page's own time to burn: the answers they make are held back throughout.
+        var cap = window.MrBadmusAnswerCapture;
+        cap.mute(true);
+        setTimeout(function next() {
+          var one = todo.shift();
+          if (!one) { cap.mute(false); return; }
+          try { one.spec.put(one.sec, one.cells, function () { setTimeout(next, 30); }); } catch (e) { setTimeout(next, 30); }
+        }, 0);
+      });
+
+      /* ⊕ 10 Nov 2026: a "Your turn" that reads its numbers live off a bench on the page
+         ("Your spanner: 40 N at 0.05 m") would otherwise be marked against wherever the
+         bench happens to sit now. Before its lines go back, the bench is set to what the
+         saved question says: a button showing that value is pressed, or a slider that
+         makes the question read it is moved. Nothing else on the bench is touched, and
+         the bench's own unsent slider drafts then stand down (benchHeld). */
+      var benchHeld = false;
+      var benchTo = function (csec, head, want) {
+        var tpl = head && head.getAttribute('data-template');
+        if (!tpl || !want || txt(head) === want) { return; }
+        var keys = [];
+        var re = new RegExp('^' + tpl.replace(/[.*+?^$()|[\]\\]/g, '\\$&').replace(/\{(\w+)\}/g, function (all, k) { keys.push(k); return '(.+?)'; }) + '$');
+        var m = re.exec(want);
+        if (!m) { return; }
+        var root = csec.closest('.ks3-lesson') || document, used = [];
+        var blocks = Array.prototype.filter.call(root.querySelectorAll('[data-instrument]'), function (b) { return b !== csec; });
+        keys.forEach(function (k, i) {
+          var val = m[i + 1];
+          if (head.textContent.indexOf(val) >= 0 && txt(head) === want) { return; }
+          var hit = null;
+          blocks.forEach(function (b) {
+            Array.prototype.forEach.call(b.querySelectorAll('button[aria-pressed]'), function (btn) { if (!hit && txt(btn) === val) { hit = btn; } });
+          });
+          if (hit) { if (hit.getAttribute('aria-pressed') !== 'true') { hit.click(); } return; }
+          var n = parseFloat(String(val).replace('\u2212', '-'));
+          if (isNaN(n)) { return; }
+          blocks.forEach(function (b) {
+            Array.prototype.forEach.call(b.querySelectorAll('input[type="range"]'), function (rg) {
+              if (hit || used.indexOf(rg) >= 0 || n < parseFloat(rg.min) || n > parseFloat(rg.max)) { return; }
+              var old = rg.value;
+              rg.value = String(n);
+              try { rg.dispatchEvent(new Event('input', { bubbles: true })); rg.dispatchEvent(new Event('change', { bubbles: true })); } catch (e) { /* old browser */ }
+              var parts = re.exec(txt(head));
+              if (parts && parts[i + 1] === val) { hit = rg; used.push(rg); return; }
+              rg.value = old;
+              try { rg.dispatchEvent(new Event('input', { bubbles: true })); rg.dispatchEvent(new Event('change', { bubbles: true })); } catch (e) { /* old browser */ }
+            });
+          });
+        });
+        benchHeld = true;
+      };
       /* Saved work for the <ks3-specs> kinds: the same controls pressed
          again, in the unit (or on the tab) the id numbers, then the Check. */
       var specPend = [];
@@ -3281,7 +3413,7 @@ try {
           if (hit && sp.count && ownTicks(r)) {
             var bs0 = sec.querySelectorAll('button'), kept = [];
             ownTicks(r).forEach(function (pos) {
-              if (bs0[pos - 1]) { click(bs0[pos - 1]); kept.push(pos); }
+              if (bs0[pos - 1] && !isRecord(bs0[pos - 1])) { click(bs0[pos - 1]); kept.push(pos); }
             });
             countSeen[slug0(sec) + '-1'] = kept;
           }
@@ -3404,6 +3536,7 @@ try {
               });
             };
             if (rev && !rev.hasAttribute('hidden')) { putTicks(); return; }       // already open
+            benchTo(sec, q.querySelector('[' + pre + '-head]'), String(r.question_text || ''));
             var lines = String(r.answer || '').split('\n');
             var ins = q.querySelectorAll('[' + pre + '-input]');
             for (var k = 0; k < ins.length; k += 1) {
@@ -3867,7 +4000,15 @@ try {
         d2.correct_answer = (r.links || links).join('\n');
         d2.is_correct = ok;
         d2.marks_scored = ok ? d2.marks : 0;
-        post(d2);
+        /* ⊕ 10 Nov 2026: after "Retry my misses" the rung is dealt again, so its next check
+           is the rung's own and goes with the rung (its handler sends it). Only a check the
+           rung did not take is sent here, unscored. The rung's handler runs a moment later. */
+        if (muted) { return; }                   // a restored chain: already in the ledger
+        var qid2 = d2.question_id, at2 = Date.now();
+        setTimeout(function () {
+          if (rungSent[qid2] && rungSent[qid2] >= at2 - 60) { return; }   // this check went with the rung
+          post(d2);
+        }, 120);
       },
       Ks4Write: function (api, s, prev) {
         if (!rootLevel(api) || prev.open || !s.open) { return; }
@@ -5257,6 +5398,38 @@ try {
         /* ⊕ 9 Nov 2026: readings taken on the bench. Each is a row of its own, numbered
            across the whole session, with the meters' figures; Clear is a row too, so
            the list comes back the same on any device. Nothing judges a reading. */
+        /* ⊕ 10 Nov 2026: "You predicted gentler. It is the other way." is the lesson's verdict
+           on the prediction: sent with it, and the option it calls right. Lithium's single
+           "Drop it in" is not a prediction and sends nothing. */
+        'group-1': [
+          { words: 'Predict how vigorously each alkali metal reacts with water', id: 'preds', covers: ['predBtns'],
+            fire: function (s, w, x) {
+              var out = [];
+              (s.shown || []).forEach(function (on, i) {
+                if (!on || (w.shown || [])[i] || i === 0) { return; }
+                var v = x.vals({ at: i }), from = Object.assign(KS4RootActs.clone(w), { at: i });
+                var said = s.preds[i] === 'more' ? 'More vigorously' : (s.preds[i] === 'less' ? 'More gently' : null);
+                (KS4RootActs.valsAt(x.L, from).predBtns || []).forEach(function (b) {
+                  var p = KS4RootActs.patchOf(x.L, KS4RootActs.clone(from), function (t) { return (t.predBtns || []).filter(function (c) { return c.label === b.label; })[0].onClick; });
+                  if (p && p.preds && p.preds[i] === s.preds[i]) { said = b.label; }
+                });
+                out.push({ e: i + 1, a: said, ok: !/other way/i.test(String(v.waterNote || '')),
+                           good: function () { return rightBy(x, from, function (t) { return t.predBtns; }, function (t) { return !/other way/i.test(String(t.waterNote || '')); }); },
+                           q: 'Before it goes in, predict: ' + String(((v.metals || [])[i] || {}).label || '') + ' reacts…' });
+              });
+              return out;
+            },
+            back: function (r, e, st, x) {
+              var i = +e - 1;
+              if (!(i > 0)) { return null; }
+              var sh = (x.L.state.shown || []).slice();
+              for (var k = 0; k < i; k += 1) { sh[k] = true; }
+              x.set({ shown: sh, at: i });
+              var j = find(x.vals().predBtns, r.answer);
+              if (j >= 0) { x.fast(function (v) { return v.predBtns[j].onClick; }); }
+              return null;
+            } }
+        ],
         'resistors': [(function () {
           var lists = {}, taken = {};
           var word = function (x, k) { var c = (x.vals({ comp: k }).simTitle || ''); return c.split(' \u00b7 ')[0] || k; };
@@ -5268,9 +5441,12 @@ try {
                 if (now.length < was.length) {
                   out.push({ e: k + '-cleared', a: 'Cleared ' + was.length + (was.length === 1 ? ' reading' : ' readings'), ok: null, q: word(x, k) + ': readings cleared', kind: 'numeric' });
                 }
+                // ⊕ 10 Nov 2026: the figures the meters showed the child, as the page printed them.
+                var mv = x.vals({ comp: k });
                 now.slice(was.length).forEach(function (p) {
                   taken[k] = (taken[k] || 0) + 1;
-                  out.push({ e: k + '-' + taken[k], a: p.v + ' V, ' + Number(p.i).toPrecision(4) + ' A', ok: null, q: word(x, k) + ': reading ' + taken[k], kind: 'numeric' });
+                  var shown = (mv.vText && mv.iText) ? mv.vText + ', ' + mv.iText : p.v + ' V, ' + Number(p.i).toPrecision(4) + ' A';
+                  out.push({ e: k + '-' + taken[k], a: shown, ok: null, q: word(x, k) + ': reading ' + taken[k], kind: 'numeric' });
                 });
               });
               return out;
@@ -5279,9 +5455,10 @@ try {
               var m = /^([a-z]+)-(\d+|cleared)$/.exec(e || '');
               if (!m) { return null; }
               if (m[2] === 'cleared') { lists[m[1]] = []; } else {
-                var a = /^(-?[\d.]+(?:e[-+]?\d+)?) V, (-?[\d.]+(?:e[-+]?\d+)?) A$/i.exec(String(r.answer || ''));
+                var a = /^([-\u2212]?[\d.]+(?:e[-+]?\d+)?) V, ([-\u2212]?[\d.]+(?:e[-+]?\d+)?) (m?A)$/i.exec(String(r.answer || ''));
                 if (!a) { return null; }
-                lists[m[1]] = (lists[m[1]] || []).concat([{ v: Number(a[1]), i: Number(a[2]) }]);
+                var num = function (t) { return Number(String(t).replace('\u2212', '-')); };
+                lists[m[1]] = (lists[m[1]] || []).concat([{ v: num(a[1]), i: num(a[2]) / (a[3] === 'mA' ? 1000 : 1) }]);
                 taken[m[1]] = Math.max(taken[m[1]] || 0, Number(m[2]));
               }
               var patch = { data: Object.assign({ resistor: [], lamp: [], diode: [] }, lists), comp: m[1] };
