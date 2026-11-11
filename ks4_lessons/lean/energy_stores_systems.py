@@ -1,0 +1,147 @@
+# -*- coding: utf-8 -*-
+"""Energy stores and systems, in the lean shape. Rebuilt from the old format.
+Spec table: docs/lessons/pilot/ks4-energy-stores-systems.md."""
+
+LESSON = {
+    "slug": "energy-stores-systems",
+    "start": {
+        "setup": None,
+        "question": "If you had to guess, what happens to the energy of a ball as you throw it "
+                    "upwards?",
+        "options": [
+            ("It moves to another store",
+             "It moves to another store. The kinetic store empties and the gravitational "
+             "potential store fills."),
+            ("It gets used up as it rises",
+             "It moves to another store. The kinetic store empties and the gravitational "
+             "potential store fills."),
+        ],
+        "answer": 0,
+    },
+    "words": ["system", "energy store", "energy transfer"],
+    "knowledge": [
+        {"kind": "card", "title": "What a system is",
+         "body": ["A system is an object or group of objects.",
+                  "When a system changes, there are changes in the way energy is stored."]},
+        {"kind": "card", "title": "The energy stores",
+         "body": [{"points": ["Kinetic: a moving object.",
+                              "Gravitational potential: an object raised above the ground.",
+                              "Elastic potential: a stretched or compressed object.",
+                              "Thermal: a warm object.",
+                              "Chemical: food, fuel and batteries.",
+                              "Magnetic, electrostatic and nuclear."]}]},
+        {"kind": "reveal", "title": "How energy is stored as a system changes",
+         "cols": ["What changes"],
+         "rows": [
+             ("An object projected upwards",
+              "The kinetic store decreases. The gravitational potential store increases."),
+             ("A moving object hitting an obstacle",
+              "The kinetic store decreases. The thermal stores of the object and the obstacle "
+              "increase."),
+             ("An object accelerated by a constant force",
+              "Work done by the force increases the kinetic store of the object."),
+             ("A vehicle slowing down",
+              "The kinetic store decreases. The thermal store of the brakes increases."),
+             ("Bringing water to a boil in an electric kettle",
+              "Work done by the current increases the thermal store of the water."),
+         ]},
+        {"kind": "card", "title": "How energy is transferred",
+         "body": ["Energy is transferred between stores in three ways you can calculate:",
+                  {"points": ["by heating", "by work done by forces",
+                              "by work done when a current flows"]}]},
+        {"kind": "card", "title": "Showing energy on a common scale",
+         "body": ["A ball leaves your hand with 20 J in its kinetic store.",
+                  "At its highest point it has 18 J in its gravitational potential store.",
+                  "The other 2 J has been dissipated to the surroundings.",
+                  "20 J = 18 J + 2 J. The total is the same before and after."]},
+        {"kind": "card", "title": "Easy mistakes",
+         "body": [{"mistakes": [
+             ("Energy gets used up.",
+              "Energy moves from one store to another."),
+             ("Heating is a store of energy.",
+              "Heating is a way of transferring energy. Thermal is the store."),
+         ]}]},
+    ],
+    "key_fact": "A system is an object or group of objects. When a system changes, energy moves "
+                "between stores by heating, by work done by forces or by work done when a current "
+                "flows.",
+    "deeper": [
+        {"kind": "card", "title": "Other ways energy spreads",
+         "body": ["Energy can also be carried by waves, such as light and sound.",
+                  "You will meet these in the waves topic."]},
+        {"kind": "card", "title": "Command words",
+         "body": [{"points": [
+             "<strong>Describe</strong>: name each store in order as it empties or fills.",
+             "<strong>Calculate</strong>: work out a number and show each line.",
+             "<strong>Explain</strong>: say what happens and why.",
+         ]}]},
+    ],
+    "try": None,
+    "legacy": None,
+    "rungs": {
+        "r1": [
+            {"kind": "mcq", "command": "Define", "marks": 1, "prompt": "Define a system.",
+             "why": "AQA's wording: a system is an object or group of objects.",
+             "options": [
+                 {"text": "A type of energy store", "correct": False, "reply": "A store is where energy is held. A system is what you are studying."},
+                 {"text": "An object or group of objects", "correct": True},
+                 {"text": "A machine that transfers energy", "correct": False, "reply": "A system does not have to be a machine."},
+             ]},
+            {"kind": "mcq", "command": "Name", "marks": 1,
+             "prompt": "A ball is thrown upwards. Name the energy store that increases as it rises.",
+             "why": "The ball gains height, so its gravitational potential store increases.",
+             "options": [
+                 {"text": "Kinetic store", "correct": False, "reply": "The ball slows as it rises, so this store decreases."},
+                 {"text": "Elastic potential store", "correct": False, "reply": "Nothing is being stretched."},
+                 {"text": "Chemical store", "correct": False, "reply": "No reaction is happening in the ball."},
+                 {"text": "Gravitational potential store", "correct": True},
+             ]},
+        ],
+        "r2": [
+            {"kind": "mcq", "command": "Describe", "marks": 2,
+             "prompt": "A car brakes to a stop. Describe the main change in the way energy is stored.",
+             "why": "The kinetic store decreases and the thermal store of the brakes increases.",
+             "options": [
+                 {"text": "The kinetic store decreases and the thermal store of the brakes increases", "correct": True},
+                 {"text": "The chemical store increases and the kinetic store stays the same", "correct": False, "reply": "The car is slowing, so the kinetic store must decrease."},
+                 {"text": "The kinetic store decreases and the energy is destroyed", "correct": False, "reply": "Energy cannot be destroyed."},
+             ]},
+            {"kind": "calc", "command": "Calculate", "marks": 2,
+             "prompt": "A ball leaves a hand with 20 J in its kinetic store. At its highest point it has 18 J in its gravitational potential store. Calculate the energy dissipated to the surroundings.",
+             "convOptions": ["Nothing to convert", "Convert J to kJ: divide by 1000", "Convert J to kJ: multiply by 1000"],
+             "convAnswer": 0, "answer": 2, "tol": 0.01, "unit": "J", "units": ["J", "kJ", "W", "no unit"],
+             "right": "20 − 18 = 2 J.",
+             "wrong": "Nothing to convert. Energy dissipated = 20 − 18 = 2 J.",
+             "model": ["C · Nothing to convert", "F · energy dissipated = energy at start − energy in the store", "I · energy dissipated = 20 − 18", "F · energy dissipated = 2", "A · 2 J"]},
+        ],
+        "r3": [
+            {"kind": "chain", "command": "Describe", "marks": 3,
+             "prompt": "Describe the changes in the way energy is stored when a ball is thrown straight up to its highest point. Put the links in order.",
+             "links": ["The ball leaves the hand with energy in its kinetic store.",
+                       "As the ball rises, its kinetic store decreases and its gravitational potential store increases.",
+                       "At the highest point the kinetic store is empty and the gravitational potential store is at its largest."],
+             "herrings": [{"text": "The energy is used up as the ball rises.", "why": "Energy is not used up. It moves to another store."},
+                          {"text": "Gravity adds energy to the kinetic store on the way up.", "why": "The kinetic store decreases as the ball rises."}]},
+            {"kind": "chain", "command": "Describe", "marks": 3,
+             "prompt": "Describe the changes in the way energy is stored when water is brought to the boil in an electric kettle. Put the links in order.",
+             "links": ["A current flows in the heating element and does work.",
+                       "This transfers energy to the thermal store of the element.",
+                       "Energy is transferred by heating to the thermal store of the water, so its temperature rises."],
+             "herrings": [{"text": "The chemical store of the water increases.", "why": "No chemical reaction happens in the water."},
+                          {"text": "The kinetic store of the kettle increases.", "why": "The kettle does not move."}]},
+        ],
+        "r4": [
+            {"kind": "write", "command": "Describe", "marks": 4,
+             "prompt": "A moving car hits a wall and stops. Describe the changes in the way energy is stored.",
+             "levels": [
+                 {"label": "Level 2 · 3–4", "text": "Names the store that empties and the stores that fill, in order, and says energy is conserved or dissipated.", "max": 4},
+                 {"label": "Level 1 · 1–2", "text": "Names one store correctly or gives one correct change.", "max": 2},
+                 {"label": "No relevant content · 0", "text": "", "max": 0}],
+             "points": ["Before the crash, energy is in the kinetic store of the car.",
+                        "The kinetic store decreases as the car stops.",
+                        "The thermal stores of the car and the wall increase.",
+                        "Energy is dissipated to the surroundings. The total energy stays the same."],
+             "reject": ["“The energy is destroyed in the crash.”", "“The energy is used up.”"]},
+        ],
+    },
+}

@@ -1,0 +1,77 @@
+# -*- coding: utf-8 -*-
+"""Stomata and gas exchange in plants, in the lean shape. Spec table: docs/lessons/pilot/ks3-stomata-and-gas-exchange-in-plants.md."""
+
+LESSON = {
+    "slug": "stomata-and-gas-exchange-in-plants",
+    "start": {
+        "setup": None,
+        "question": "If you had to guess, where are most of the tiny holes in a leaf?",
+        "options": [
+            ("On the top of the leaf",
+             "On the underside. Most stomata are there, where they are shaded."),
+            ("On the underside of the leaf",
+             "On the underside. Most stomata are there, where they are shaded."),
+        ],
+        "answer": 1,
+    },
+    "words": ["stomata", "guard cells", "diffusion"],
+    "knowledge": [
+        {"kind": "card", "title": "How gases get into a leaf",
+         "body": ["Stomata are tiny pores in a leaf. Most are on the underside.",
+                  "Carbon dioxide diffuses in through the stomata.",
+                  "Oxygen and water vapour diffuse out.",
+                  {"figure": "b4-guard-cells-two-state"}]},
+        {"kind": "card", "title": "How guard cells work",
+         "body": ["A pair of guard cells sits around each stoma.",
+                  "Water moves into the guard cells and they swell. They bend apart and the stoma opens.",
+                  "Water moves out and they go limp. The stoma closes."]},
+        {"kind": "reveal", "title": "A leaf through the day",
+         "cols": ["In bright light", "In the dark"],
+         "rows": [
+             ("Stomata", "Mostly open", "Mostly closed"),
+             ("Photosynthesis", "Happens", "Stops"),
+             ("Respiration", "Happens all the time", "Happens all the time"),
+             ("Overall, the leaf takes in", "Carbon dioxide", "Oxygen"),
+             ("Overall, the leaf gives out", "Oxygen", "Carbon dioxide"),
+         ]},
+        {"kind": "card", "title": "How a leaf is adapted for gas exchange",
+         "body": [{"points": ["Air spaces inside the leaf give a large surface for diffusion.",
+                              "The leaf is thin, so gases only travel a short distance.",
+                              "Stomata let gases in and out."]}]},
+        {"kind": "card", "title": "The cost of open stomata",
+         "body": ["Open stomata let water vapour escape.",
+                  "A plant short of water closes its stomata.",
+                  "This saves water, but it also stops carbon dioxide getting in."]},
+        {"kind": "card", "title": "Easy mistakes",
+         "body": [{"mistakes": [
+             ("Plants breathe.",
+              "Plants have no lungs or breathing muscles. Gases move by diffusion."),
+             ("Plants only respire at night.",
+              "Plants respire all the time, day and night."),
+             ("Plants only ever take in carbon dioxide.",
+              "In the dark, a plant gives out carbon dioxide overall."),
+         ]}]},
+    ],
+    "key_fact": "Gases diffuse through stomata, which guard cells open and close. Plants respire "
+                "all the time and photosynthesise only in light.",
+    "deeper": [
+        {"kind": "card", "title": "When the two rates balance",
+         "body": ["In bright light, photosynthesis is faster than respiration.",
+                  "In dim light, the two rates can be equal.",
+                  "Then the gas in the air around the leaf does not change overall.",
+                  "The word for this overall change is net."]},
+    ],
+    "try": None,
+    "ladder_feedback": {
+        "recall": {
+            0: "Plants respire at night and in the day too.",
+            1: "Respiration carries on in the dark, using stored glucose.",
+            2: "Every living cell respires, growing or not.",
+        },
+        "apply": {
+            0: "A flat reading means two processes are balanced.",
+            1: "Respiration never stops, so it cannot be waiting to start.",
+            3: "In dim light, the simplest answer is two equal rates.",
+        },
+    },
+}
