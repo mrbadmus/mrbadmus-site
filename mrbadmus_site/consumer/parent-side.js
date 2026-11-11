@@ -323,7 +323,12 @@
       body += '<span class="k">Next step</span><span class="v">' + esc(last.mark_next_step) + '</span>';
     }
     if (last.feedback) {
-      body += '<span class="k">Feedback</span><span class="v body">' + esc(last.feedback) + '</span>';
+      /* ⊕ 11 Nov 2026 (ruling B): the note is read first; the marker's
+         point-by-point account, inside the stored note, sits behind the toggle. */
+      var note = C.noteWithoutAccount(last.feedback);
+      var acct = C.accountPoints(last.feedback);
+      body += '<span class="k">Feedback</span><span class="v body">' + esc(note) +
+        (acct.length ? C.pointsToggle(C.pointsListHtml(acct)) : '') + '</span>';
     }
     body += '</div>';
     var meta = [];

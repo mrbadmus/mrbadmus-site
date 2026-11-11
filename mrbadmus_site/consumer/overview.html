@@ -17,7 +17,7 @@
   <link rel="stylesheet" href="/shared/tokens.css?v=b111271e"/>
   <link rel="stylesheet" href="/shared/ks3.css?v=fbc85f27"/>
 <link rel="stylesheet" href="/shared/ks3-theme.css?v=a2df0340"/>
-  <link rel="stylesheet" href="/consumer/consumer.css?v=5d8a38a0"/>
+  <link rel="stylesheet" href="/consumer/consumer.css?v=2d65af7b"/>
   <link rel="stylesheet" href="/shared/family-dark.css?v=bb0ce6e6"/>
   <link rel="stylesheet" href="/consumer/topic-picker.css?v=e3aa94e9"/>
   <style>
@@ -417,7 +417,7 @@
 <script src="/shared/config.js?v=fc11de5b"></script>
 <!-- Front door (12 Oct 2026): the one map; consumer-common asks it whether a school pupil has wandered in. -->
 <script src="/shared/account.js?v=e64f3c2a"></script>
-<script src="/consumer/consumer-common.js?v=a8f0270c"></script>
+<script src="/consumer/consumer-common.js?v=6122ad4e"></script>
 <script src="/consumer/topic-picker.js?v=fd0ebee6"></script>
 <script>
 /* ═══════════════════════════════════════════════════════════════════════
@@ -1895,6 +1895,8 @@
           'font-family:var(--ks3-font-mono);font-size:11px">' + esc(String(p.n)) + '</span>' +
         '<span>' + esc(p.text || C.schemePoint(p)) + '</span></li>';
     }).join('');
+    /* ⊕ 11 Nov 2026 (ruling B): the note first, the list behind the toggle. */
+    var note = C.noteWithoutAccount(a.aiFeedback);
 
     return '<div class="dk-narrow" style="max-width:720px">' +
       '<p class="dk-kicker dk-kicker-page">' +
@@ -1915,10 +1917,10 @@
             : 'Instant mark · against the mark scheme') + '</p>' +
           '<span style="font-family:var(--ks3-font-display);font-weight:800;font-size:26px;' +
             'letter-spacing:-.02em">' + esc(a.aiScore || '') + '</span></div>' +
-        (points ? ('<ul style="margin:12px 0 0;padding:0;list-style:none;display:flex;' +
-                   'flex-direction:column;gap:8px">' + points + '</ul>') : '') +
-        (a.aiFeedback ? ('<p style="margin:14px 0 0;font-size:16px;line-height:1.55;' +
-          'color:var(--ks3-ink-body)">' + esc(a.aiFeedback) + '</p>') : '') + '</div>' +
+        (note ? ('<p style="margin:14px 0 0;font-size:16px;line-height:1.55;' +
+          'color:var(--ks3-ink-body)">' + esc(note) + '</p>') : '') +
+        (points ? C.pointsToggle('<ul style="margin:0;padding:0;list-style:none;display:flex;' +
+                   'flex-direction:column;gap:8px">' + points + '</ul>') : '') + '</div>' +
       (a.human
         ? ('<div class="dk-dark" style="margin-top:14px">' +
            '<div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px">' +

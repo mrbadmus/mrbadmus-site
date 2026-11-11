@@ -16,7 +16,7 @@
   <link rel="stylesheet" href="/shared/tokens.css?v=b111271e"/>
   <link rel="stylesheet" href="/shared/ks3.css?v=fbc85f27"/>
   <link rel="stylesheet" href="/shared/ks3-theme.css?v=a2df0340"/>
-  <link rel="stylesheet" href="/consumer/consumer.css?v=5d8a38a0"/>
+  <link rel="stylesheet" href="/consumer/consumer.css?v=2d65af7b"/>
   <link rel="stylesheet" href="/consumer/parent-side.css?v=8effd3e8"/>
   <style>
   /* consumer/family.html — the parent side, rebuilt from Design's
@@ -48,9 +48,9 @@
 
 <script src="/shared/config.js?v=fc11de5b"></script>
 <script src="/shared/account.js?v=e64f3c2a"></script>
-<script src="/consumer/consumer-common.js?v=a8f0270c"></script>
+<script src="/consumer/consumer-common.js?v=6122ad4e"></script>
 <script src="/consumer/option-label.js?v=01eadc79"></script>
-<script src="/consumer/parent-side.js?v=d6fd5839"></script>
+<script src="/consumer/parent-side.js?v=d4281704"></script>
 <script>
 /* ═══════════════════════════════════════════════════════════════════════
    The parent side. Every number below is read from the API:
@@ -542,17 +542,24 @@
       PS.chip(st.chip) +
       '<span class="ps-row-go">' + G('go', 18) + '</span></button>';
   }
-  /* Topics are knowledge points; their labels are learning statements.
-     Within a status they are grouped under the lesson they belong to
-     (`topic.lesson.name`), in the API's order. */
-  function byLesson(ts) {
+  /* Each entry is a knowledge point; its label is a learning statement.
+     Within a status they are grouped under their scheme topic (`topic.topic`),
+     in the API's order. Physics and Chemistry both have an Atomic Structure,
+     so a group is a topic within a subject. */
+  function topicKey(t) { return (t.subject || '') + '|' + (t.topic || (t.lesson && t.lesson.name) || ''); }
+  function byTopic(ts) {
     var out = [], at = {};
     ts.forEach(function (t) {
-      var n = (t.lesson && t.lesson.name) || '';
-      if (!(n in at)) { at[n] = out.length; out.push({ name: n, items: [] }); }
-      out[at[n]].items.push(t);
+      var k = topicKey(t);
+      if (!(k in at)) { at[k] = out.length; out.push({ name: t.topic || (t.lesson && t.lesson.name) || '', items: [] }); }
+      out[at[k]].items.push(t);
     });
     return out;
+  }
+  function topicCount(ts) {
+    var seen = {};
+    ts.forEach(function (t) { seen[topicKey(t)] = 1; });
+    return Object.keys(seen).length;
   }
   function viewChild() {
     var k = kidById(S.childId);
@@ -628,8 +635,7 @@
         : '<p style="margin:12px 0 0;font-size:15px;color:var(--ks3-ink-body)">Nothing set for this week.</p>') +
       (own.length ? '<p class="ps-eyebrow" style="margin:18px 0 0">' + esc(PS.NOT_SET) + '</p><ul class="ps-list" id="ps-own">' +
         own.map(function (it) { return '<li>' + rowHtml(it, today, { cid: k.id, underOwn: true }) + '</li>'; }).join('') + '</ul>' : '') +
-      (A.error ? '<p class="ps-foot">Answers can’t be shown just now. ' + esc(A.error.status === 429 ? C.retryLine(A.error) : 'Try again in a minute.') + '</p>'
-               : (items.length || own.length ? '<p class="ps-foot">Time is shown only where it was measured.</p>' : '')) +
+      (A.error ? '<p class="ps-foot">Answers can’t be shown just now. ' + esc(A.error.status === 429 ? C.retryLine(A.error) : 'Try again in a minute.') + '</p>' : '') +
       (k.paused ? '' : '<button type="button" class="ps-quiet" data-act="pause">Pause work for ' + esc(k.first_name) + '</button>') +
       '</section>';
 
@@ -637,15 +643,15 @@
     if (topics && topics.length) {
       var defs = [
         ['secure', 'Secure', 'Right on the two most recent attempts, different questions, at least a week apart.', 'tick'],
-        ['shaky', 'Shaky', 'A mix of right and wrong recently.', 'tilde'],
+        ['shaky', 'Shaky', 'Right, but not proven yet', 'tilde'],
         ['not_yet', 'Not yet', 'The most recent attempt was wrong, or it has never been right.', 'dot']];
       tp = '<section id="topics"><div class="ps-sec-head"><h2 class="ps-h2">Topic picture</h2>' +
-        '<span class="ps-sec-note">' + PS.plural(topics.length, 'topic') + ' met so far</span></div><div class="ps-topics">' +
+        '<span class="ps-sec-note">' + PS.plural(topicCount(topics), 'topic') + ' met so far</span></div><div class="ps-topics">' +
         defs.map(function (d) {
           var ts = topics.filter(function (t) { return t.status === d[0]; });
           return '<div class="ps-card ps-tgroup"><div class="ps-tgroup-h ps-tg-' + d[0] + '">' + G(d[3]) + '<span>' + d[1] + '</span>' +
             '<span class="ps-mono">' + ts.length + '</span></div><p class="ps-tgroup-def">' + d[2] + '</p><ul>' +
-            (ts.length ? byLesson(ts).map(function (grp) {
+            (ts.length ? byTopic(ts).map(function (grp) {
               return (grp.name ? '<li class="ps-tlesson">' + esc(grp.name) + '</li>' : '') + grp.items.map(function (t) {
               var b = t.basis || {};
               var mk = Number(b.marked) || 0, un = Number(b.unmarked) || 0;
@@ -708,7 +714,7 @@
 
     var tutorN = tutor.length;
     var jumps = [['week', 'This week', items.length]];
-    if (tp) { jumps.push(['topics', 'Topic picture', topics.length]); }
+    if (tp) { jumps.push(['topics', 'Topic picture', topicCount(topics)]); }
     if (rp) { jumps.push(['wrong', 'Keeps getting wrong', repeats.length]); }
     jumps.push(['tutor', 'Tutor questions', tutorN]);
     var pastHref = C.href('/consumer/family.html', { view: 'past', kid: k.id });
@@ -958,6 +964,11 @@
       .catch(function (e) {
         if (e && e.code === 'no_family') { return window.location.replace(C.href('/consumer/signup.html')); }
         if (C.isSignedOut(e)) { return C.signedOutPanel(document.getElementById('c-main'), '/parents/sign-in.html'); }
+        if (e && e.code === 'not_a_parent' && window.MrBadmusAccount) {
+          return window.MrBadmusAccount.guardAudience('parent', { session: ctx.session }).then(function (stay) {
+            if (stay) { var nf = failLine(e); C.fail(document.getElementById('c-main'), nf[0], nf[1]); }
+          });
+        }
         var fl = failLine(e);
         C.fail(document.getElementById('c-main'), fl[0], fl[1]);
       });

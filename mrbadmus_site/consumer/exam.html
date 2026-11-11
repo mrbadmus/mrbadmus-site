@@ -17,7 +17,7 @@
   <link rel="stylesheet" href="/shared/tokens.css?v=b111271e"/>
   <link rel="stylesheet" href="/shared/ks3.css?v=fbc85f27"/>
 <link rel="stylesheet" href="/shared/ks3-theme.css?v=a2df0340"/>
-  <link rel="stylesheet" href="/consumer/consumer.css?v=5d8a38a0"/>
+  <link rel="stylesheet" href="/consumer/consumer.css?v=2d65af7b"/>
   <link rel="stylesheet" href="/shared/family-dark.css?v=bb0ce6e6"/>
   <style>
   /* ── consumer/exam.html — Design's `Child Exam Questions.dc.html`, live ──
@@ -436,7 +436,7 @@
 <script src="/shared/config.js?v=fc11de5b"></script>
 <!-- Front door (12 Oct 2026): the one map; consumer-common asks it whether a school pupil has wandered in. -->
 <script src="/shared/account.js?v=e64f3c2a"></script>
-<script src="/consumer/consumer-common.js?v=a8f0270c"></script>
+<script src="/consumer/consumer-common.js?v=6122ad4e"></script>
 <script>
 /* ═══════════════════════════════════════════════════════════════════════
    consumer/exam.html — write an answer, get it marked. MRB-317 Night 3.
@@ -1218,12 +1218,13 @@
           (r.practice
             ? '<p class="ex-practice">Practice mark — the AI marker didn’t check this one.</p>'
             : '') +
-          (points ? ('<ul class="ks3-ticks">' + points + '</ul>') : '') +
           (note
             ? ('<div class="ks3-feedback ex-note">' +
                '<p class="ex-note-label">' + (r.practice ? 'Note' : 'Examiner’s note') + '</p>' +
                '<p>' + esc(note) + '</p></div>')
             : '') +
+          /* ⊕ 11 Nov 2026 (ruling B): the note first; the list behind the toggle. */
+          (points ? C.pointsToggle('<ul class="ks3-ticks">' + points + '</ul>') : '') +
         '</div>' +
 
         '<div class="ex-wrote">' +
