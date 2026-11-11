@@ -750,13 +750,6 @@ TIMER_MAIN = wrap(TIMER_PRE, r"""
   await tclick('tm-mode-down');
   await tclick('tm-preset-300');                                 // 5 min: out of the warn band
 
-  // ── Space toggles in the full view; not elsewhere ────────────────────
-  out.spaceFullPrevented = key(document.body, ' ', 'Space');    // start
-  await frame(); out.spaceStart = state();
-  key(document.body, ' ', 'Space'); await frame();
-  out.spacePause = state();
-  await tclick('tm-reset');
-
   // ── float: corner, above the page, and Space only with focus inside ──
   await tclick('tm-view');
   out.view1 = view();
@@ -765,12 +758,6 @@ TIMER_MAIN = wrap(TIMER_PRE, r"""
                bottom: Math.round(innerHeight - fr.bottom), w: Math.round(fr.width), h: Math.round(fr.height),
                vw: innerWidth, vh: innerHeight};
   out.floatMinH = Math.round(Math.min.apply(null, Array.prototype.slice.call(tm().querySelectorAll('button')).map(b => b.getBoundingClientRect().height)));
-  document.activeElement && document.activeElement.blur && document.activeElement.blur();
-  out.spaceOutsidePrevented = key(document.body, ' ', 'Space');
-  await frame(); out.spaceOutside = state();
-  const fb = tq('tm-toggle'); fb.focus();
-  out.spaceInsidePrevented = key(fb, ' ', 'Space');
-  await frame(); out.spaceInside = state();
   await tclick('tm-toggle');                                     // pause again
   await tclick('tm-reset');
 
@@ -1128,11 +1115,6 @@ def features(cdp, port, width, height):
                 bad("the stopwatch did not hold when paused")
             if g.get("swReset") != "0:00":
                 bad("stopwatch Reset read %r" % g.get("swReset"))
-            if not g.get("spaceFullPrevented") or g.get("spaceStart") != "running" \
-                    or g.get("spacePause") != "paused":
-                bad("Space in the full view: start %r pause %r (prevented %r)"
-                    % (g.get("spaceStart"), g.get("spacePause"),
-                       g.get("spaceFullPrevented")))
             if g.get("view1") != "float":
                 bad("the shrink control left the view %r" % g.get("view1"))
             fl = g.get("float") or {}
@@ -1144,11 +1126,6 @@ def features(cdp, port, width, height):
             if g.get("floatMinH", 0) < 40:
                 bad("a floating-timer control is %spx tall (floor 40)"
                     % g.get("floatMinH"))
-            if g.get("spaceOutsidePrevented") or g.get("spaceOutside") == "running":
-                bad("Space was taken from outside the floating timer")
-            if not g.get("spaceInsidePrevented") or g.get("spaceInside") != "running":
-                bad("Space did not toggle with focus inside the float (%r)"
-                    % g.get("spaceInside"))
             if not g.get("closedGone"):
                 bad("the timer's close control left it on the page")
             if g.get("pickView") != "float" or g.get("pickPressed1") != "true" \
@@ -1210,6 +1187,259 @@ def secs_of(r):
     for x in parts:
         t = t * 60 + x
     return t
+
+
+# ══ THE CLICKER: real key events through the browser, never dispatchEvent ═
+#
+# A presentation clicker is a keyboard that sends PageDown/PageUp (or arrows,
+# or Space, or B / "."). These scenarios send those keys with CDP's
+# `Input.dispatchKeyEvent`, so the browser itself produces keydown/keyup with
+# a real `repeat` flag and real default actions — which a synthetic
+# `dispatchEvent` would not.
+
+KEYS = {
+    "PageDown": ("PageDown", 34), "PageUp": ("PageUp", 33),
+    "ArrowRight": ("ArrowRight", 39), "ArrowLeft": ("ArrowLeft", 37),
+    " ": ("Space", 32), "b": ("KeyB", 66), ".": ("Period", 190),
+    "Escape": ("Escape", 27), "F5": ("F5", 116),
+}
+
+INSTRUMENT = """
+(function () {
+  window.__AUD = 0; window.__CHEER = 0; window.__F5 = null;
+  [window.AudioScheduledSourceNode, window.AudioBufferSourceNode,
+   window.OscillatorNode].forEach(function (C) {
+    if (!C || !C.prototype || !Object.prototype.hasOwnProperty.call(C.prototype, 'start')) { return; }
+    var o = C.prototype.start;
+    C.prototype.start = function () { window.__AUD++; return o.apply(this, arguments); };
+  });
+  new MutationObserver(function (ms) {
+    ms.forEach(function (m) { m.addedNodes.forEach(function (n) {
+      if (n.getAttribute && n.getAttribute('data-mrb-added') === 'clicker-cheer') { window.__CHEER++; }
+    }); });
+  }).observe(document.body, {childList: true});
+  return 1;
+})()
+"""
+
+import time as _time
+
+
+def _kd(page, key, repeat=False, text=None):
+    code, vk = KEYS.get(key, (key, ord(key.upper()[0])))
+    page.send("Input.dispatchKeyEvent", {
+        "type": "keyDown" if (repeat or text) else "rawKeyDown",
+        "key": key, "code": code, "windowsVirtualKeyCode": vk,
+        "autoRepeat": bool(repeat), **({"text": text} if text else {})})
+
+
+def _ku(page, key):
+    code, vk = KEYS.get(key, (key, ord(key.upper()[0])))
+    page.send("Input.dispatchKeyEvent", {
+        "type": "keyUp", "key": key, "code": code, "windowsVirtualKeyCode": vk})
+
+
+def _tap(page, key, settle=0.35):
+    _kd(page, key); _time.sleep(0.02); _ku(page, key); _time.sleep(settle)
+
+
+def _hold_repeat(page, key, n=30, gap=0.033):
+    """Real auto-repeat: one keyDown, then autoRepeat keyDowns, then keyUp."""
+    _kd(page, key)
+    for _ in range(n):
+        _time.sleep(gap); _kd(page, key, repeat=True)
+    _ku(page, key); _time.sleep(0.45)
+
+
+def _hold_pairs(page, key, secs=1.2, gap=0.04):
+    """Discrete down/up pairs, as some clickers send while a button is held."""
+    t0 = _time.time()
+    while _time.time() - t0 < secs:
+        _kd(page, key); _time.sleep(gap); _ku(page, key); _time.sleep(gap)
+    _time.sleep(0.45)
+
+
+def _J(page, body, timeout=60):
+    return json.loads(page.eval(wrap(TIMER_PRE, body + "\nreturn JSON.stringify(out);"),
+                                timeout=timeout))
+
+
+STATE_JS = """
+  const m = countNow().match(/^Picked (\\d+) of (\\d+)$/);
+  out.n = m ? Number(m[1]) : -1;
+  out.cheers = window.__CHEER; out.aud = window.__AUD;
+  out.tm = tm() ? {view: view(), state: state(), reading: reading(),
+                   hidden: getComputedStyle(tm()).display === 'none',
+                   beeps: Number(tm().getAttribute('data-tm-beeps'))} : null;
+  out.req = (window.__REQ__ || []).length;
+  out.busy = !!host.querySelector('[data-mrb-name][aria-busy]');
+"""
+
+
+def clicker(cdp, port, width, height):
+    P = []
+
+    def bad(m):
+        P.append("%dpx: clicker: %s" % (width, m))
+
+    def snap(page):
+        return _J(page, STATE_JS)
+
+    with cdp.Browser() as br:
+        # ── with motion ON: one gesture, one pick (busy reveal ignored) ──
+        page = _fresh(br, port, width, height, reduce=False)
+        page.eval(INSTRUMENT)
+        _J(page, "await openPicker();")
+        a = snap(page)
+        _kd(page, "PageDown"); _time.sleep(0.02); _ku(page, "PageDown")
+        _time.sleep(0.4)                       # past the gap, mid-reveal
+        mid = snap(page)
+        _tap(page, "ArrowRight", settle=0.1)   # a second press while spinning
+        _time.sleep(1.2)
+        z = snap(page)
+        if not mid["busy"]:
+            bad("a clicker pick did not run the animated reveal (no aria-busy)")
+        if z["n"] - a["n"] != 1:
+            bad("two presses during one reveal made %d pick(s), wanted 1"
+                % (z["n"] - a["n"]))
+
+        # ── 1. each forward key is exactly one pick ──────────────────────
+        _motion(page, True)
+        page = _fresh(br, port, width, height)
+        page.eval(INSTRUMENT)
+        _J(page, "await openPicker();")
+        n0 = snap(page)["n"]
+        for i, k in enumerate(("PageDown", "ArrowRight", " ")):
+            _tap(page, k)
+            n = snap(page)["n"]
+            if n != n0 + i + 1:
+                bad("short press of %r left the count at %d, wanted %d"
+                    % (k, n, n0 + i + 1))
+        base = snap(page)
+
+        # ── 2. real auto-repeat hold: no pick, one cheer, some audio ─────
+        _hold_repeat(page, "PageDown")
+        r = snap(page)
+        if r["n"] != base["n"]:
+            bad("a held forward key (auto-repeat) picked %d name(s)" % (r["n"] - base["n"]))
+        if r["cheers"] - base["cheers"] != 1:
+            bad("auto-repeat hold made %d celebration(s), wanted 1" % (r["cheers"] - base["cheers"]))
+        starts = r["aud"] - base["aud"]
+        if not (0 < starts <= 20):
+            bad("the cheer started %d audio source(s), wanted one cheer's worth" % starts)
+
+        # ── 3. discrete down/up pairs for ~1.2 s ─────────────────────────
+        _hold_pairs(page, "ArrowRight")
+        d = snap(page)
+        if d["n"] != r["n"]:
+            bad("held forward key (down/up pairs) picked %d name(s)" % (d["n"] - r["n"]))
+        if d["cheers"] - r["cheers"] != 1:
+            bad("down/up-pair hold made %d celebration(s), wanted 1" % (d["cheers"] - r["cheers"]))
+
+        # ── 4. back: starts and pauses the timer, never touches the pick ─
+        _tap(page, "PageUp")
+        b1 = snap(page)
+        _tap(page, "ArrowLeft")
+        b2 = snap(page)
+        if not b1["tm"] or b1["tm"]["state"] not in ("running", "warn") or b1["tm"]["view"] != "float":
+            bad("Back did not open the floating timer running: %r" % (b1["tm"],))
+        if not b2["tm"] or b2["tm"]["state"] != "paused":
+            bad("a second Back did not pause it: %r" % (b2["tm"],))
+        _hold_repeat(page, "PageUp")
+        b3 = snap(page)
+        if b3["cheers"] - b2["cheers"] != 1 or b3["tm"]["state"] != "paused":
+            bad("Back held made %d celebration(s) and left the timer %r"
+                % (b3["cheers"] - b2["cheers"], b3["tm"]["state"]))
+        if not (d["n"] == b1["n"] == b2["n"] == b3["n"]):
+            bad("Back changed the pick count: %r"
+                % [d["n"], b1["n"], b2["n"], b3["n"]])
+
+        # ── 8. F5 is never prevented; Escape closes the picker ───────────
+        page.eval("""window.addEventListener('keydown', function (e) {
+            if (e.key === 'F5') { window.__F5 = e.defaultPrevented; e.preventDefault(); }
+          }, true); 1""")
+        _tap(page, "F5", settle=0.1)
+        f5 = page.eval("String(window.__F5)")
+        if f5 != "false":
+            bad("F5 reached a later capture listener with defaultPrevented=%s" % f5)
+        _tap(page, "Escape", settle=0.2)
+        gone = page.eval("!document.querySelector('[data-mrb-picker]')")
+        if not gone:
+            bad("Escape did not close the picker")
+        z = snap(page)
+        if z["req"]:
+            bad("%d request(s) during the clicker run" % z["req"])
+        print("     %-6s clicker: 3 short forwards = 3 picks; held (auto-repeat) "
+              "0 picks, %d cheer, %d audio start(s); held (pairs) 0 picks, "
+              "%d cheer; Back %s then %s, count unchanged"
+              % ("%dpx" % width, r["cheers"] - base["cheers"], starts,
+                 d["cheers"] - r["cheers"], b1["tm"]["state"], b2["tm"]["state"]))
+
+        # ── 5. B and "." show/hide; a hidden countdown still finishes ────
+        page = _fresh(br, port, width, height)
+        page.eval(INSTRUMENT)
+        _J(page, """await openPicker();
+          window.MrBadmusTimer.open({view: 'full'}); await frame();
+          tq('tm-custom-min').value = '0'; tq('tm-custom-sec').value = '4';
+          await tclick('tm-custom-set'); await tclick('tm-toggle');""")
+        _tap(page, "b", settle=0.2)
+        h1 = snap(page)
+        _time.sleep(1.2)
+        h2 = snap(page)
+        _time.sleep(3.6)
+        h3 = snap(page)
+        if not (h1["tm"] and h1["tm"]["hidden"]):
+            bad("B did not hide the timer: %r" % (h1["tm"],))
+        if h1["tm"]["state"] not in ("running", "warn") or \
+                h2["tm"]["reading"] == h1["tm"]["reading"]:
+            bad("hiding stopped the countdown: %r -> %r" % (h1["tm"], h2["tm"]))
+        if h3["tm"]["state"] != "done" or h3["tm"]["beeps"] < 1:
+            bad("a hidden countdown did not finish with its sound: %r" % (h3["tm"],))
+        _tap(page, ".", settle=0.2)
+        h4 = snap(page)
+        if h4["tm"]["hidden"]:
+            bad('"." did not show the hidden timer')
+        _tap(page, ".", settle=0.2)
+        if not snap(page)["tm"]["hidden"]:
+            bad('"." did not hide the timer again')
+
+        # ── 7. typing in the custom-time field is not a clicker ──────────
+        page = _fresh(br, port, width, height)
+        page.eval(INSTRUMENT)
+        _J(page, "await openPicker(); window.MrBadmusTimer.open({view: 'full'}); await frame(); tq('tm-custom-sec').focus();")
+        n0 = snap(page)["n"]
+        for ch in "1", "2", " ", "3":
+            _kd(page, ch, text=ch); _time.sleep(0.02); _ku(page, ch); _time.sleep(0.2)
+        t = snap(page)
+        val = page.eval("document.querySelector('[data-tm=\"overlay\"] "
+                        "[data-mrb-added=\"tm-custom-sec\"]').value")
+        if t["n"] != n0 or (t["tm"] or {}).get("state") != "idle":
+            bad("typing digits and Space in the field picked or toggled: %r" % (t,))
+        if "1" not in str(val):
+            bad("the typed digits did not reach the field (%r)" % val)
+
+        # ── 6. muted: the cheer shows and makes no sound ─────────────────
+        page = _fresh(br, port, width, height)
+        page.eval(INSTRUMENT)
+        _J(page, """await openPicker(); await click('pick-settings');
+          out.line = (q('pick-set-clicker') || {}).textContent;
+          q('pick-set-sound').click(); await frame();
+          out.sw = q('pick-set-sound').getAttribute('aria-checked');
+          await click('pick-settings');""")
+        s0 = snap(page)
+        _hold_repeat(page, "PageDown")
+        s1 = snap(page)
+        if s1["cheers"] - s0["cheers"] != 1:
+            bad("muted hold made %d celebration(s), wanted 1" % (s1["cheers"] - s0["cheers"]))
+        if s1["aud"] != s0["aud"]:
+            bad("muted, the cheer still started %d audio source(s)" % (s1["aud"] - s0["aud"]))
+        if s1["n"] != s0["n"]:
+            bad("a muted hold picked")
+        line = _J(page, "await click('pick-settings'); out.line = (q('pick-set-clicker')||{}).textContent;"
+                        "out.sw = q('pick-set-sound').getAttribute('aria-checked');")
+        if line.get("sw") != "false" or "Clicker keys" not in (line.get("line") or ""):
+            bad("settings: sound switch %r, clicker line %r" % (line.get("sw"), line.get("line")))
+    return P
 
 
 def main(argv):
@@ -1373,6 +1603,7 @@ def main(argv):
 
                 rows.append((width, got, back, len(reqs)))
                 problems.extend(features(cdp, port, width, height))
+                problems.extend(clicker(cdp, port, width, height))
                 here = [p for p in problems if p.startswith("%dpx:" % width)]
                 print("     %-6s %s  %d in the pool · cycle of %d · %s away "
                       "· %d random roll(s) · %d request(s)"
@@ -1400,6 +1631,11 @@ def main(argv):
           "cycle), pick next\n        landed once through the ordinary "
           "reveal, Save kept one per-class key and\n        nothing else, "
           "and the timer counted, warned, finished and wrote nothing.\n"
+          "        A clicker (real key events): each forward key is one pick, a "
+          "held key is one\n        cheer and no pick (auto-repeat and down/up "
+          "pairs), Back only drives the\n        timer, B and . hide and show it "
+          "without stopping it, mute silences the\n        cheer, typing in the "
+          "time fields is left alone, F5 is not prevented.\n"
           % len(WIDTHS))
     return 0
 

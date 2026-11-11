@@ -36,15 +36,18 @@
    `data-tm` overlay the way it reads the Set work sheet's: view and open
    count, never the reading.
 
-   ══ KEYBOARD ═══════════════════════════════════════════════════════════
+   ══ KEYBOARD ══════════════════════════════════════════════════════════
 
-   · Space starts / pauses when the FULL view is open, or when focus is
-     inside the FLOAT. It is never taken anywhere else, and never from a
-     text field: the teacher may be typing or pressing a button.
-   · Escape closes the FULL view — to the float if the timer has been
-     started (so a running countdown is not lost), outright if it has not.
-     It is handled in the window's CAPTURE phase and stopped there, so the
-     same keypress never reaches the picker's own Escape handler beneath.
+   One capture-phase keydown/keyup pair on `window`, attached while the timer
+   exists OR the picker is open (see the CLICKER KEYS note by `onKey`): a
+   presentation clicker's forward key picks (or, with no picker or a
+   full-screen timer covering it, starts/pauses the timer — so Space still
+   drives the full-screen timer), its back key starts/pauses the timer, a
+   hold of about a second cheers, and B or "." shows/hides the timer without
+   stopping it. Nothing is taken while focus is in an input. Escape closes the
+   FULL view — to the float if the timer has been started, outright if not —
+   and is stopped in the capture phase so the same keypress never reaches the
+   picker's own Escape handler beneath. F5 is never touched.
 
    ══ SCREEN READERS ═════════════════════════════════════════════════════
 
@@ -70,6 +73,7 @@
     beeps: 0
   };
   var view = null;                   // null | 'full' | 'float'
+  var hidden = false;                // mounted and running, but not shown
   var root = null, body = null, liveNode = null, digitsNode = null;
   var ticker = null, opens = 0, prevFocus = null, audio = null;
   var lastSaid = null;               // the minute last announced
@@ -396,7 +400,7 @@
     var mute = button('tm-mute', S.muted ? ICON_ON : ICON_BTN,
                       S.muted ? 'off' : 'on', null,
                       S.muted ? 'Turn sound on' : 'Mute sound',
-                      function () { S.muted = !S.muted; render(); });
+                      function () { S.muted = !S.muted; render(); notify(); });
     mute.setAttribute('aria-pressed', S.muted ? 'true' : 'false');
     parent.appendChild(mute);
     parent.appendChild(button('tm-view', ICON_BTN,
@@ -506,12 +510,13 @@
     var act = document.activeElement, marker = null;
     if (act && root.contains(act)) { marker = act.getAttribute('data-mrb-added'); }
 
-    root.setAttribute('style', view === 'full' ? FULL : FLOAT);
+    root.setAttribute('style', (view === 'full' ? FULL : FLOAT) +
+                      (hidden ? ';display:none' : ''));
     root.setAttribute('role', view === 'full' ? 'dialog' : 'region');
     if (view === 'full') { root.setAttribute('aria-modal', 'true'); }
     else { root.removeAttribute('aria-modal'); }
     root.setAttribute('aria-label', 'Timer');
-    root.setAttribute('data-tm-view', view || '');
+    root.setAttribute('data-tm-view', hidden ? 'hidden' : (view || ''));
     root.setAttribute('data-tm-mode', S.mode);
     root.setAttribute('data-tm-muted', S.muted ? '1' : '0');
     root.setAttribute('data-tm-beeps', String(S.beeps));
@@ -607,9 +612,8 @@
       root.appendChild(body);
       root.appendChild(liveNode);
       document.body.appendChild(root);
-      window.addEventListener('keydown', onKey, true);
-      window.addEventListener('keyup', onKeyUp, true);
     }
+    hidden = false;
     opens += 1;
     root.setAttribute('data-tm-opens', String(opens));
     /* A second open never DEMOTES: asking for the float while the full view
@@ -620,18 +624,17 @@
       var f = root.querySelector('[data-mrb-added="tm-toggle"]');
       if (f && f.focus) { try { f.focus(); } catch (e) { /* ok */ } }
     }
+    syncKeys();
     notify();
   }
 
   function close() {
     if (!root) { return; }
     stopTick();
-    window.removeEventListener('keydown', onKey, true);
-    window.removeEventListener('keyup', onKeyUp, true);
     if (root.parentNode) { root.parentNode.removeChild(root); }
     root = body = liveNode = digitsNode = null;
     var wasFull = view === 'full';
-    view = null;
+    view = null; hidden = false;
     /* Back to a clean idle at the same length; mute and the last preset are
        kept, in memory, for the next open. */
     S.status = 'idle';
@@ -641,25 +644,201 @@
       try { prevFocus.focus(); } catch (e) { /* ok */ }
     }
     prevFocus = null;
+    syncKeys();
     notify();
   }
 
-  // ── keyboard ───────────────────────────────────────────────────────────
+  // ── keyboard: the full-screen timer's own keys, and the clicker ────────
+
+  /* ONE capture-phase keydown/keyup pair on `window`, attached while the
+     picker is open OR the timer exists (shown, hidden or running) and
+     detached when neither is. Capture + stopPropagation on the keys it
+     handles is what keeps one keypress from also reaching the picker's own
+     Escape handler or a focused button.
+
+     CLICKER KEYS (a presentation clicker sends keyboard keys):
+       forward  PageDown, ArrowRight, Space   → pick the next name; or, with
+                no picker (or a full-screen timer covering it), start/pause
+                the timer, so Space still drives a full-screen timer.
+       back     PageUp, ArrowLeft             → start/pause the timer (opened
+                floating if it is not showing). NEVER touches the pick.
+       hold either for ~900 ms                → a cheer, once, and nothing else.
+       blank    B or "."                      → show/hide the timer; hiding
+                does not stop it.
+     F5 is never looked at. Escape keeps its old meaning. Nothing is taken
+     while focus is in an input, textarea, select or contenteditable, nor with
+     Ctrl/Meta/Alt held.
+
+     ⚠️ SHORT ACTIONS HAPPEN ON RELEASE. A press can turn into a hold, and a
+     hold must never also pick. Clickers repeat in two styles — real
+     `e.repeat` auto-repeat, or discrete down/up pairs a few tens of ms apart
+     — so a release arms a 150 ms window: a new keydown of the same key inside
+     it is the same hold continuing, otherwise the short action runs once. */
+
+  var HOLD_MS = 900, GAP_MS = 150;
+  var FWD = { 'PageDown': 1, 'ArrowRight': 1, ' ': 1 };
+  var BACK = { 'PageUp': 1, 'ArrowLeft': 1 };
+  var picker = null;                 // {pick(): true|'busy'|'off'} while open
+  var H = {};                        // key -> hold state
+  var keysOn = false, statusNode = null, cheers = 0, cheerNode = null,
+      cheerTimer = null, noise = null;
 
   function typing(t) {
     var tag = t && t.tagName;
     return tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' ||
            !!(t && t.isContentEditable);
   }
-  function isSpace(e) { return e.key === ' ' || e.code === 'Space'; }
-  function spaceIsMine(e) {
-    if (!root || typing(e.target)) { return false; }
-    return view === 'full' || (view === 'float' && root.contains(e.target));
+  function kindOf(e) {
+    var k = e.key;
+    if (k === 'Spacebar' || (k === undefined && e.code === 'Space')) { k = ' '; }
+    if (FWD[k]) { return 'fwd'; }
+    if (BACK[k]) { return 'back'; }
+    if (k === 'b' || k === 'B' || k === '.') { return 'blank'; }
+    return null;
+  }
+  function keyId(e) { return e.key === 'Spacebar' ? ' ' : e.key; }
+
+  function syncKeys() {
+    var want = !!(picker || root);
+    if (want && !keysOn) {
+      keysOn = true;
+      window.addEventListener('keydown', onKey, true);
+      window.addEventListener('keyup', onKeyUp, true);
+      statusNode = el('div', SR, 'clicker-status');
+      statusNode.setAttribute('role', 'status');
+      statusNode.setAttribute('aria-live', 'polite');
+      statusNode.setAttribute('data-cheers', String(cheers));
+      document.body.appendChild(statusNode);
+    } else if (!want && keysOn) {
+      keysOn = false;
+      window.removeEventListener('keydown', onKey, true);
+      window.removeEventListener('keyup', onKeyUp, true);
+      Object.keys(H).forEach(function (k) { clearHold(H[k]); });
+      H = {};
+      if (statusNode && statusNode.parentNode) { statusNode.parentNode.removeChild(statusNode); }
+      statusNode = null;
+      endCheer();
+    }
+  }
+
+  function clearHold(st) {
+    if (st.holdTimer) { clearTimeout(st.holdTimer); }
+    if (st.gapTimer) { clearTimeout(st.gapTimer); }
+  }
+
+  // ── the cheer: a clap in Web Audio and a CSS-only flash ────────────────
+
+  function clap() {
+    ensureAudio();
+    if (!audio) { return; }
+    try {
+      if (!noise) {
+        var n = Math.floor(audio.sampleRate * 0.12);
+        noise = audio.createBuffer(1, n, audio.sampleRate);
+        var d = noise.getChannelData(0);
+        for (var i = 0; i < n; i++) { d[i] = Math.random() * 2 - 1; }
+      }
+      var t0 = audio.currentTime + 0.02;
+      for (var j = 0; j < 14; j++) {
+        var at = t0 + j * 0.075 + Math.random() * 0.04;
+        var src = audio.createBufferSource(), f = audio.createBiquadFilter(),
+            g = audio.createGain();
+        src.buffer = noise;
+        f.type = 'bandpass';
+        f.frequency.value = 1200 + Math.random() * 1800;
+        f.Q.value = 0.9;
+        g.gain.setValueAtTime(0.0001, at);
+        g.gain.exponentialRampToValueAtTime(0.5, at + 0.005);
+        g.gain.exponentialRampToValueAtTime(0.0001, at + 0.11);
+        src.connect(f); f.connect(g); g.connect(audio.destination);
+        src.start(at);
+      }
+    } catch (e) { /* silence beats a broken clicker */ }
+  }
+
+  function endCheer() {
+    if (cheerTimer) { clearTimeout(cheerTimer); cheerTimer = null; }
+    if (cheerNode && cheerNode.parentNode) { cheerNode.parentNode.removeChild(cheerNode); }
+    cheerNode = null;
+  }
+
+  function cheer() {
+    cheers += 1;
+    if (statusNode) {
+      statusNode.setAttribute('data-cheers', String(cheers));
+      statusNode.textContent = 'Well done';
+    }
+    if (!S.muted) { clap(); }
+    endCheer();
+    var still = false;
+    try { still = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches); }
+    catch (e) { /* motion allowed */ }
+    var n = el('div', 'position:fixed;inset:0;z-index:' + (Z + 10) +
+               ';pointer-events:none;overflow:hidden', 'clicker-cheer');
+    n.setAttribute('aria-hidden', 'true');
+    n.setAttribute('data-still', still ? '1' : '0');
+    if (still) {
+      /* Reduced motion: one static flash, no movement. */
+      n.appendChild(el('div', 'position:absolute;inset:0;opacity:.3;' +
+                      'box-shadow:inset 0 0 0 14px var(--st-accent)'));
+    } else {
+      var st = document.createElement('style');
+      st.textContent =
+        '@keyframes mrbCheerRing{from{transform:translate(-50%,-50%) scale(.15);opacity:.9}' +
+        'to{transform:translate(-50%,-50%) scale(1.5);opacity:0}}' +
+        '@keyframes mrbCheerFall{from{transform:translateY(-12vh) rotate(0);opacity:1}' +
+        'to{transform:translateY(112vh) rotate(540deg);opacity:.9}}';
+      n.appendChild(st);
+      for (var r = 0; r < 3; r++) {
+        n.appendChild(el('div', 'position:absolute;left:50%;top:50%;' +
+          'width:80vmin;height:80vmin;border-radius:50%;' +
+          'border:10px solid var(--st-accent);' +
+          'animation:mrbCheerRing 1.3s ease-out ' + (r * 0.22) + 's both'));
+      }
+      var cols = ['var(--st-accent)', 'var(--st-accent-text)', 'var(--st-ink)',
+                  'var(--st-chip-tint-border)'];
+      for (var c = 0; c < 20; c++) {
+        n.appendChild(el('div', 'position:absolute;top:0;left:' + (3 + c * 4.8) +
+          '%;width:10px;height:22px;border-radius:3px;background:' + cols[c % 4] +
+          ';animation:mrbCheerFall ' + (1.1 + (c % 5) * 0.08) + 's ease-in ' +
+          ((c % 7) * 0.06) + 's both'));
+      }
+    }
+    document.body.appendChild(n);
+    cheerNode = n;
+    cheerTimer = setTimeout(endCheer, 1500);
+  }
+
+  // ── what a short press does ────────────────────────────────────────────
+
+  function covering() { return !!(root && view === 'full' && !hidden); }
+
+  function showTimer(v) {
+    if (!root) { open({ view: v || 'float' }); return; }
+    if (hidden) { hidden = false; render(); syncKeys(); notify(); }
+  }
+
+  function toggleHidden() {
+    if (!root) { open({ view: 'float' }); return; }
+    hidden = !hidden;
+    say(hidden ? 'Timer hidden' : 'Timer shown');
+    render(); notify();
+  }
+
+  function shortAction(kind) {
+    if (kind === 'fwd') {
+      if (picker && !covering()) { picker.pick(); return; }
+      if (!root) { return; }
+      showTimer(); toggle(); return;
+    }
+    /* back: the timer, never the pick. */
+    showTimer('float');
+    toggle();
   }
 
   function onKey(e) {
-    if (!root) { return; }
-    if ((e.key === 'Escape' || e.keyCode === 27) && view === 'full') {
+    if (e.key === 'F5') { return; }
+    if ((e.key === 'Escape' || e.keyCode === 27) && root && view === 'full' && !hidden) {
       /* Handled and STOPPED: the picker's own Escape handler is on
          `document`, later in the path, and must not see this keypress. */
       e.stopPropagation(); e.preventDefault();
@@ -667,12 +846,7 @@
       else { close(); }
       return;
     }
-    if (isSpace(e) && spaceIsMine(e)) {
-      e.preventDefault(); e.stopPropagation();
-      if (!e.repeat) { toggle(); }
-      return;
-    }
-    if (e.key === 'Tab' && view === 'full') {
+    if (e.key === 'Tab' && root && view === 'full' && !hidden) {
       var f = root.querySelectorAll('button:not([aria-disabled="true"]),input');
       if (!f.length) { return; }
       var first = f[0], last = f[f.length - 1], a = document.activeElement;
@@ -681,21 +855,54 @@
       } else if (!e.shiftKey && (a === last || !root.contains(a))) {
         e.preventDefault(); first.focus();
       }
+      return;
     }
+    var kind = kindOf(e);
+    if (!kind || typing(e.target) || e.ctrlKey || e.metaKey || e.altKey) { return; }
+    e.preventDefault(); e.stopPropagation();
+    if (kind === 'blank') { if (!e.repeat) { toggleHidden(); } return; }
+    var id = keyId(e), st = H[id];
+    if (e.repeat) { return; }                 // confirms the hold; nothing to do
+    if (st && (st.gapTimer)) {                // same key again inside the gap
+      clearTimeout(st.gapTimer); st.gapTimer = null;
+      return;
+    }
+    if (st) { clearHold(st); }                // a stale entry: start over
+    st = H[id] = { kind: kind, consumed: false, holdTimer: null, gapTimer: null };
+    st.holdTimer = setTimeout(function () {
+      st.holdTimer = null; st.consumed = true; cheer();
+    }, HOLD_MS);
   }
 
-  /* A focused button would otherwise ALSO activate on the Space key's
-     release; the keydown already did the timer's work. */
   function onKeyUp(e) {
-    if (root && isSpace(e) && spaceIsMine(e)) {
-      e.preventDefault(); e.stopPropagation();
-    }
+    if (e.key === 'F5') { return; }
+    var kind = kindOf(e);
+    if (!kind || typing(e.target) || e.ctrlKey || e.metaKey || e.altKey) { return; }
+    e.preventDefault(); e.stopPropagation();
+    if (kind === 'blank') { return; }
+    var id = keyId(e), st = H[id];
+    if (!st) { return; }
+    if (st.gapTimer) { clearTimeout(st.gapTimer); }
+    st.gapTimer = setTimeout(function () {
+      st.gapTimer = null;
+      clearHold(st);
+      delete H[id];
+      if (!st.consumed) { shortAction(st.kind); }
+    }, GAP_MS);
   }
 
   window.MrBadmusTimer = {
     open: open,
     close: close,
     isOpen: function () { return !!root; },
+    isShown: function () { return !!root && !hidden; },
+    /* The picker registers itself while it is open so the clicker's forward
+       keys can pick. `p.pick()` returns true (picked), 'busy' (a reveal is
+       still spinning) or 'off' (the board is not showing). */
+    setPicker: function (p) { picker = p || null; syncKeys(); },
+    /* ONE mute for the picker's cheer and the timer's beeps. Memory only. */
+    muted: function () { return S.muted; },
+    setMuted: function (b) { S.muted = !!b; if (root) { render(); } notify(); },
     /* Subscribe to open / close / view / state changes; returns an
        unsubscribe function. The picker uses it to keep its Timer button's
        pressed state honest. */

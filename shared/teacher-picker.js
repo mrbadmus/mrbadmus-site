@@ -15,6 +15,14 @@
    class" switch. A clock button beside the cog opens `MrBadmusTimer`
    (`shared/teacher-timer.js`) as a floating timer, so the names stay in view.
 
+   PRESENTATION CLICKERS (they send keyboard keys): while the picker is open
+   it registers `clickPick()` with the timer module, which owns the one key
+   listener. Forward (PageDown, ArrowRight, Space) presses the real Pick
+   button, so the reveal and `aria-busy` are exactly a tap's; it is ignored
+   while a reveal is spinning. Back never touches the pick. A one-second hold
+   cheers instead. The settings panel carries the one shared Sound switch
+   (memory only) and a line naming the keys.
+
    ══ WHAT IT KEEPS, WHERE, AND FOR HOW LONG — AND NOTHING ELSE ═══════════
 
    ⛔ NO DATABASE, NO NETWORK, NO COOKIE, NO `sessionStorage`. There is no
@@ -46,7 +54,7 @@
      switch OFF deletes the key.
    - It is per device and per browser. Nothing leaves it.
    - NOTHING ELSE is ever stored: not the pick-next mark, not the absent
-     list, not who was picked, not the mode. Every storage call is inside a
+     list, not who was picked, not the mode, not the Sound switch. Every storage call is inside a
      try/catch; with storage blocked the picker works as if the switch were
      off and says so on the panel.
 
@@ -694,7 +702,7 @@
     var right = el('div', HEAD_RIGHT);
     var T = window.MrBadmusTimer;
     if (T) {
-      var tOpen = T.isOpen();
+      var tOpen = T.isShown();
       var tb = el('button', tOpen ? ICON_BTN_ON : ICON_BTN, 'pick-timer');
       tb.setAttribute('aria-label', 'Timer');
       tb.setAttribute('aria-pressed', tOpen ? 'true' : 'false');
@@ -704,7 +712,7 @@
          here would be a way to lose it by accident. It is closed from its
          own X. */
       tb.addEventListener('click', function () {
-        T.open({ view: T.isOpen() ? 'full' : 'float' });
+        T.open({ view: T.isShown() ? 'full' : 'float' });
         syncTimerBtn();
       });
       live.timerBtn = tb;
@@ -739,7 +747,7 @@
   function syncTimerBtn() {
     var T = window.MrBadmusTimer;
     if (!live || !live.timerBtn || !T) { return; }
-    var on = T.isOpen();
+    var on = T.isShown();
     live.timerBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
     live.timerBtn.setAttribute('style', on ? ICON_BTN_ON : ICON_BTN);
     padPanel();
@@ -818,6 +826,26 @@
                         : 'Weights reset when you close the picker.');
     inner.appendChild(help);
 
+    /* ONE mute, shared with the timer's beeps and the clicker cheer. */
+    var T = window.MrBadmusTimer;
+    if (T && T.muted) {
+      var snd = el('button', SW_ROW, 'pick-set-sound');
+      snd.setAttribute('role', 'switch');
+      var on = !T.muted();
+      snd.setAttribute('aria-checked', on ? 'true' : 'false');
+      var sl = el('span', 'flex:1;min-width:0');
+      text(sl, on ? 'Sound on' : 'Sound off');
+      var st = el('span', on ? SW_TRACK_ON : SW_TRACK_OFF);
+      st.appendChild(el('span', on ? SW_KNOB_ON : SW_KNOB_OFF));
+      snd.appendChild(sl); snd.appendChild(st);
+      snd.addEventListener('click', function () { T.setMuted(on); draw(); });
+      inner.appendChild(snd);
+      var ck = el('div', HELP, 'pick-set-clicker');
+      text(ck, 'Clicker keys: forward picks, back starts or pauses the timer, ' +
+               'hold either to cheer, the blank-screen button shows or hides the timer.');
+      inner.appendChild(ck);
+    }
+
     // The list: name (tap = next pick) and tickets.
     var lh = el('div', LIST_HEAD);
     lh.appendChild(text(el('span'), 'Tap a name to pick them next'));
@@ -883,6 +911,21 @@
     return panel;
   }
 
+  /* A clicker's forward key: press the REAL Pick button, so the reveal, its
+     aria-busy and the count are exactly what a tap would give. Ignored while
+     a reveal is still spinning (one gesture, one pick), with the settings
+     panel up (the board is not showing) and when Pick is spent. */
+  function clickPick() {
+    if (!live) { return 'off'; }
+    if (live.settingsOpen) { return 'off'; }
+    var n = live.el.querySelector('[data-mrb-name]');
+    if (n && n.hasAttribute('aria-busy')) { return 'busy'; }
+    var go = live.el.querySelector('[data-mrb-added="pick-go"]');
+    if (!go || go.getAttribute('aria-disabled') === 'true') { return 'off'; }
+    go.click();
+    return true;
+  }
+
   // ── open / close ───────────────────────────────────────────────────────
 
   function close() {
@@ -903,6 +946,9 @@
     }
     if (live && live.unTimer) { live.unTimer(); }
     live = null;
+    if (window.MrBadmusTimer && window.MrBadmusTimer.setPicker) {
+      window.MrBadmusTimer.setPicker(null);
+    }
   }
 
   function open(opts) {
@@ -959,6 +1005,10 @@
 
     draw();
     padPanel();
+    /* The clicker's forward keys press the real Pick button through this. */
+    if (window.MrBadmusTimer && window.MrBadmusTimer.setPicker) {
+      window.MrBadmusTimer.setPicker({ pick: clickPick });
+    }
     var go = root.querySelector('[data-mrb-added="pick-go"]');
     if (go && go.focus) { try { go.focus(); } catch (e) { /* headless */ } }
   }

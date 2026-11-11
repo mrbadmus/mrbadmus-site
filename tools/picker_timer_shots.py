@@ -14,6 +14,7 @@ weighted panel, the pick-next panel, the full timer and the last-ten-seconds
 digits), which keeps the set to a size a person will actually look at.
 """
 import base64
+import time
 import json
 import os
 import sys
@@ -28,7 +29,7 @@ FIXTURE = D.FIXTURE
 VIEWPORTS = (("390", 390, 844, 2), ("1440", 1440, 900, 1),
              ("1920", 1920, 1080, 1))
 DARK_SCENES = ("settings-weighted", "picknext-panel", "timer-full",
-               "timer-warn")
+               "timer-warn", "settings-clicker-keys", "clicker-celebration")
 
 
 def js(page, body, timeout=60):
@@ -41,7 +42,6 @@ def shot(page, out, name, w, h, dpr):
     page.send("Emulation.setDeviceMetricsOverride",
               {"width": w, "height": h, "deviceScaleFactor": dpr,
                "mobile": False})
-    import time
     time.sleep(0.25)
     res = page.send("Page.captureScreenshot",
                     {"format": "png", "fromSurface": True})
@@ -111,6 +111,23 @@ def main(argv):
                              "await tclick('tm-toggle');")
                     snap("timer-warn")
                     js(page, "await tclick('tm-close');")
+                    # the clicker: its line in the settings panel...
+                    js(page, "await click('pick-settings');")
+                    page.eval("(document.querySelector('[data-mrb-added="
+                              "\"pick-set-clicker\"]')||{scrollIntoView(){}})"
+                              ".scrollIntoView({block:'center'}); 1")
+                    snap("settings-clicker-keys")
+                    js(page, "await click('pick-settings');")
+                    # ...and the celebration, caught mid-animation, motion on
+                    D._motion(page, False)
+                    D._kd(page, "PageDown")
+                    for _ in range(22):
+                        time.sleep(0.033)
+                        D._kd(page, "PageDown", repeat=True)
+                    time.sleep(0.45)
+                    snap("clicker-celebration")
+                    D._ku(page, "PageDown")
+                    time.sleep(1.6)
     finally:
         server.shutdown()
     print("done:", out)
