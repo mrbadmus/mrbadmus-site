@@ -992,6 +992,60 @@
     return String(pt.text || pt.point || pt.criterion || pt.description || '');
   }
 
+  /* ⊕ 11 Nov 2026 (Mide, ruling B): "Marker feedback is at most two short
+     sentences: what was missing and the one next step. The point-by-point
+     list goes behind a 'See each point' toggle." A stored note carries one
+     "Point N: got it — …" line per scheme point after the marker's words
+     (the backend's consumer/point-account.js, the same pattern), so older
+     answers split the same way as new ones. The tail line a key check adds
+     stays with the note. */
+  var ACCOUNT_LINE = /^Point (\d+): (got it|not yet|not needed, you already have full marks) — (.*)$/;
+  function noteWithoutAccount(fb) {
+    return String(fb || '').split('\n').filter(function (l) {
+      return !ACCOUNT_LINE.test(l.trim());
+    }).join('\n').trim();
+  }
+  /* [{ n, ok, verdict, text }] — the account inside a stored note, or []. */
+  function accountPoints(fb) {
+    var out = [];
+    String(fb || '').split('\n').forEach(function (l) {
+      var m = ACCOUNT_LINE.exec(l.trim());
+      if (m) { out.push({ n: Number(m[1]), ok: m[2] === 'got it', verdict: m[2], text: m[3] }); }
+    });
+    return out;
+  }
+  /* The list, for a page with no tick list of its own. */
+  function pointsListHtml(points) {
+    var word = { 'got it': 'Got it', 'not yet': 'Not yet' };
+    return '<ul class="c-points-list">' + (points || []).map(function (p) {
+      return '<li><span class="c-points-word">' +
+        escapeHtml(word[p.verdict] || 'Not needed') + '</span>' +
+        '<span>' + escapeHtml(p.text) + '</span></li>';
+    }).join('') + '</ul>';
+  }
+  /* The one control. `listHtml` is shown only when the button is pressed;
+     closed by default. A native button, so Enter and Space work, and the
+     state is on aria-expanded. Pressing it is handled by one listener below,
+     so a page that re-renders its panel keeps it working. */
+  var pointsSeq = 0;
+  function pointsToggle(listHtml) {
+    if (!listHtml) { return ''; }
+    pointsSeq += 1;
+    var id = 'c-points-' + pointsSeq;
+    return '<button type="button" class="c-points-toggle" data-c-points="' + id + '"' +
+      ' aria-expanded="false" aria-controls="' + id + '">See each point</button>' +
+      '<div id="' + id + '" class="c-points-panel" hidden>' + listHtml + '</div>';
+  }
+  document.addEventListener('click', function (e) {
+    var btn = e.target && e.target.closest && e.target.closest('[data-c-points]');
+    if (!btn) { return; }
+    var panel = document.getElementById(btn.getAttribute('data-c-points'));
+    if (!panel) { return; }
+    var open = btn.getAttribute('aria-expanded') === 'true';
+    btn.setAttribute('aria-expanded', open ? 'false' : 'true');
+    panel.hidden = open;
+  });
+
   /* ── isOperator ────────────────────────────────────────────────
      MRB-317 Night 3 follow-through (admin-ui). The one frontend check for
      "is this signed-in person a platform operator", mirroring the backend's
@@ -1764,6 +1818,10 @@
 
     // Night 2 (MRB-309…315)
     schemePoint: schemePoint,
+    noteWithoutAccount: noteWithoutAccount,
+    accountPoints: accountPoints,
+    pointsListHtml: pointsListHtml,
+    pointsToggle: pointsToggle,
     fmtDate: fmtDate,
     fmtTime: fmtTime,
     // ⊕ B2C fix run (9 Oct 2026): London dates, one place.

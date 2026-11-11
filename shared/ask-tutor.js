@@ -36,6 +36,28 @@
   var restored = null;      // the past talk, once
   var busy = false;
   var pastTalk = false;     // this work has a conversation to come back to
+  /* ⊕ 11 Nov 2026 (Mide): "parent" to a family child, "tutor" to an
+     organisation child, once a tab. "Parent or tutor" only while unknown. */
+  var KIND_KEY = 'mrb.child.org_kind.' + ((session.user && session.user.id) || '');
+  var orgKind = null;
+  try { orgKind = window.sessionStorage.getItem(KIND_KEY); } catch (e) {}
+  function whoReads() {
+    return 'your ' + (orgKind === 'family' ? 'parent' : orgKind === 'organisation' ? 'tutor' : 'parent or tutor') + ' can read this';
+  }
+  function headNote() {
+    return (question() ? 'About this question' : 'About this work') + ' · ' + whoReads();
+  }
+  function lookForKind() {
+    if (orgKind) { return; }
+    fetch(c.BACKEND_URL + '/api/consumer/child/session', {
+      headers: { Authorization: 'Bearer ' + session.access_token }
+    }).then(function (r) { return r.ok ? r.json() : null; }).then(function (b) {
+      if (!b || !b.org_kind) { return; }
+      orgKind = b.org_kind;
+      try { window.sessionStorage.setItem(KIND_KEY, orgKind); } catch (e) {}
+      if (root && root.classList.contains('is-open')) { root.querySelector('.mrb-at-head p').textContent = headNote(); }
+    }).catch(function () {});
+  }
 
   function esc(s) {
     return String(s == null ? '' : s).replace(/[&<>"']/g, function (x) {
@@ -101,7 +123,7 @@
     if (list.children.length) { return; }
     var li = document.createElement('li');
     li.className = 'mrb-at-empty';
-    li.textContent = 'Ask anything about this question. The tutor helps you work it out.';
+    li.textContent = 'Ask anything about this question.';
     list.appendChild(li);
   }
   function bubble(who, html, mine) {
@@ -181,8 +203,7 @@
   }
 
   function open() {
-    root.querySelector('.mrb-at-head p').textContent =
-      (question() ? 'About this question' : 'About this work') + ' · your parent or tutor can read this';
+    root.querySelector('.mrb-at-head p').textContent = headNote();
     root.classList.add('is-open');
     sheet.removeAttribute('hidden');
     document.documentElement.style.overflow = 'hidden';
@@ -231,7 +252,7 @@
       '<div class="mrb-at-scrim" data-at-close></div>' +
       '<aside class="mrb-at-sheet" role="dialog" aria-modal="true" aria-labelledby="mrb-at-h" hidden>' +
         '<header class="mrb-at-head"><div><h2 id="mrb-at-h">Ask the tutor</h2>' +
-          '<p>About this question · your parent or tutor can read this</p></div>' +
+          '<p>About this question · ' + esc(whoReads()) + '</p></div>' +
           '<button type="button" class="mrb-at-x" data-at-close aria-label="Close">' +
             '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"></path></svg>' +
           '</button></header>' +
@@ -272,6 +293,7 @@
     window.addEventListener('resize', soon, { passive: true });
     place();
     lookForTalk();
+    lookForKind();
   }
 
   var link = document.createElement('link');

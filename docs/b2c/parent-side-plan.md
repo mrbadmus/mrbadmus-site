@@ -25,7 +25,7 @@ School (Rainford) pages and behaviour must not change.
   - right = outcome `correct` (a written answer is right only at full marks; `partial` is NOT right).
   - **Secure** = the two most recent marked attempts are both right, on DIFFERENT questions, and at least 7 days apart.
   - **Not yet** = the most recent marked attempt is not right, or it has never been right.
-  - **Shaky** = everything else (a mix recently: most recent right but not yet secure).
+  - **Shaky** = everything else: most recent right but not yet secure. One right answer is Shaky. Shown to parents as "Right, but not proven yet".
   - Always send the basis: how many answers (marked / unmarked / right / wrong / partial) the status is based on.
 - **Keeps getting wrong** = same topic OR same question with `wrong` outcome two or more times; each wrong answer shown (answer text, correct answer, when).
 - Never show an estimate as a measurement: time only where measured (`time_spent_seconds`/session times), else say nothing or "not timed".

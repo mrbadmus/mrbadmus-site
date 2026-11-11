@@ -7,6 +7,8 @@
     python3 tools/kp_classify.py --inventory                 # count what would be classified
     python3 tools/kp_classify.py --cache DIR --top-up         # tag only what the committed JSON
                                                              # does not; renumbers nothing (round 4)
+    python3 tools/kp_classify.py --cache DIR --retag-low      # re-place the ids in low-confidence.json
+                                                             # with the lesson's wording in front of the model
 
 ── WHAT THIS IS (parent truth, 11 Oct 2026) ────────────────────────────
 
@@ -1461,12 +1463,13 @@ Reply with JSON only:
     return p
 
 
-def validate_extras(obj, npts, nent):
+def validate_extras(obj, npts, nent, allow_none=False, max_new=MAX_NEW_POINTS):
+    """`allow_none`: an item may be given 0, "no point fits" (the re-tag only)."""
     if not isinstance(obj, dict) or not isinstance(obj.get("assign"), dict):
         raise ValueError("no 'assign' object")
     newp = obj.get("new_points") or []
-    if not isinstance(newp, list) or len(newp) > MAX_NEW_POINTS:
-        raise ValueError("at most %d new points" % MAX_NEW_POINTS)
+    if not isinstance(newp, list) or len(newp) > max_new:
+        raise ValueError("at most %d new points" % max_new)
     labels = {}
     for p in newp:
         lab = p.get("label") if isinstance(p, dict) else None
@@ -1483,7 +1486,9 @@ def validate_extras(obj, npts, nent):
             # a trailing number past the last item (the model counting on)
             # assigns nothing real; every real item is still checked below
             continue
-        if isinstance(v, int) and 1 <= v <= npts:
+        if allow_none and v in (0, "0"):
+            got[i] = 0
+        elif isinstance(v, int) and 1 <= v <= npts:
             got[i] = v
         elif isinstance(v, str) and v in labels:
             got[i] = v
@@ -1805,8 +1810,235 @@ def top_up(a):
     write_json(os.path.join(KP_DIR, "ks3.json"), data["KS3"])
     write_json(os.path.join(KP_DIR, "ks4.json"), data["KS4"])
     write_json(os.path.join(KP_DIR, "untagged.json"), untagged)
+    # A question that left the data, or came back under a new answer, has no guess left to flag.
+    low = json.load(open(LOW_FILE, encoding="utf-8"))
+    kept = {q: v for q, v in low.items() if q not in {x[0] for x in pruned} and q not in {x[0] for x in changed}}
+    if kept != low:
+        write_json(LOW_FILE, kept)
     print("kp: top-up wrote knowledge_points/*.json — %d id(s) placed, %d still untagged"
           % (len(placed), len(untagged["questions"])))
+    print("kp: this run's model usage — %d call(s), %d input token(s), %d output token(s)"
+          % (USAGE["calls"], USAGE["input_tokens"], USAGE["output_tokens"]))
+    return 0
+
+
+# ── the re-tag (11 Nov 2026): best guesses, placed again with the lesson open ──
+
+LOW_FILE = os.path.join(KP_DIR, "low-confidence.json")
+LESSON_WORDS = 14000     # characters of a lesson's wording the model is shown
+NEAR_WORDS = 700         # characters from around one activity
+# Mide's ruling, 11 Nov 2026: these two tags are correct. Never low-confidence.
+TAGS_RULED_CORRECT = {"ks4q:communicable-diseases-defence:443192e03a",   # antitoxins, lymphocytes
+                      "ks4q:contraception-fertility:01cc7f9eb4"}         # IUD, stopping implantation
+_JS_WORDS = re.compile(r"'((?:[^'\\\n]|\\.)*)'|\"((?:[^\"\\\n]|\\.)*)\"|`((?:[^`\\]|\\.)*)`")
+
+
+def _unescape_js(t):
+    t = re.sub(r"\\u([0-9a-fA-F]{4})", lambda u: chr(int(u.group(1), 16)), t)
+    return t.replace("\\'", "'").replace('\\"', '"').replace("\\n", " ")
+
+
+def _js_words(src):
+    """The strings in a stretch of JavaScript that read as words on a page."""
+    out = []
+    for m in _JS_WORDS.finditer(src):
+        t = plain(_unescape_js(m.group(1) or m.group(2) or m.group(3) or ""))
+        if re.search(r"[A-Za-z]{2}", t) and (" " in t or len(t) <= 24) \
+                and not re.match(r"^[\w.-]+$", t) and "${" not in t and "var(--" not in t:
+            out.append(t)
+    return out
+
+
+def _template_words(tpl):
+    t = re.sub(r"<(script|style)\b.*?</\1>", " ", tpl, flags=re.S)
+    t = re.sub(r"\{\{.*?\}\}", " ", t, flags=re.S)
+    return plain(re.sub(r"<[^>]+>", " ", t))
+
+
+def ks4_wording(slug):
+    """(the lesson's own wording, its logic source). Rulings applied, as the page has them."""
+    import ks4_lessons as K
+    L = next(x for x in K.all_lessons() if x["slug"] == slug)
+    tpl, logic = ks4_lesson_sources(L)
+    return clip(_template_words(tpl) + " — " + " / ".join(dict.fromkeys(_js_words(logic))), LESSON_WORDS), logic
+
+
+def ks4_near(key, logic):
+    """Wording within reach of an activity's state key in the lesson's logic."""
+    words = []
+    for m in list(re.finditer(r"\b%s\b" % re.escape(key), logic))[:6]:
+        words.extend(_js_words(logic[max(0, m.start() - 900): m.end() + 900]))
+    return clip(" / ".join(dict.fromkeys(words)), NEAR_WORDS)
+
+
+def ks3_near(L, tail):
+    """A KS3 activity's own strings (`<activity id>` or `<activity id>-<n>`)."""
+    aid = re.sub(r"(-run)?-\d+$", "", tail)
+    for a in L.get("activities") or []:
+        if a.get("id") in (tail, aid):
+            found = []
+
+            def walk(v):
+                if isinstance(v, str):
+                    if " " in v.strip() or len(v) <= 24:
+                        found.append(plain(v))
+                elif isinstance(v, dict):
+                    for x in v.values():
+                        walk(x)
+                elif isinstance(v, list):
+                    for x in v:
+                        walk(x)
+            walk(a)
+            return clip(" / ".join(dict.fromkeys(x for x in found if x)), NEAR_WORDS * 2)
+    return ""
+
+
+def retag_prompt(ks, title, points, entries, lesson, error=None):
+    pl = "\n".join("%d. %s" % (i, p["label"]) for i, p in enumerate(points, 1))
+    el = "\n".join("%d. [%s] %s → %s%s" % (i, pos.split("#", 1)[-1], clip(stem, 400), clip(ans, 250) or "(no single answer)",
+                                           ("\n   On the page near this activity: " + near) if near else "")
+                    for i, (pos, stem, ans, _ids, near) in enumerate(entries, 1))
+    p = """You are an experienced UK science teacher and examiner. These are the knowledge points already written for one %s, "%s". A knowledge point is one fact, idea or skill a pupil must know or be able to do; parents read the labels.
+
+EXISTING KNOWLEDGE POINTS
+%s
+
+THE LESSON'S OWN WORDING
+%s
+
+ITEMS FROM THE LESSON PAGE (number. [activity] what the page sends → its answer)
+%s
+
+TASK
+These items were first placed from their answer choices alone, so read the lesson's wording to see what each activity really asks the pupil to do. Give every item the number of the ONE existing point it mainly tests. Do not invent points. Answer 0 for an item only if no point fits or the wording still does not show what it asks.
+
+Reply with JSON only:
+{"assign": {"1": <existing point number, or 0>, ..., "%d": ...}}""" % (
+        "Key Stage 3 science lesson" if ks == "KS3" else "GCSE (AQA) science subtopic",
+        title, pl, lesson, el, len(entries))
+    if error:
+        p += "\n\nYour previous reply was rejected: %s. Reply again, correctly." % error
+    return p
+
+
+def classify_retag(key, title, points, items, wording, cache):
+    """One scope's low-confidence ids. {assign: {qid: point number | 0}} or {failed}."""
+    ks, ref = key
+    lesson, near_of = wording
+    entries = [e + (near_of(e[3][0]),) for e in extra_entries(items)]
+    path = os.path.join(cache, "retag__%s__%s.json" % (ks.lower(), ref))
+    h = hashlib.sha256(json.dumps([extras_hash(points, items), lesson, [e[4] for e in entries]],
+                                  ensure_ascii=False).encode("utf-8")).hexdigest()[:16]
+    if os.path.exists(path):
+        c = json.load(open(path, encoding="utf-8"))
+        if c.get("hash") == h and not c.get("failed"):
+            return c
+    error, attempts = None, []
+    for _attempt in range(3):
+        try:
+            text, usage = call_model(retag_prompt(ks, title, points, entries, lesson, error),
+                                     max_tokens=min(8000, 400 + 12 * len(entries)))
+        except RuntimeError as e:
+            attempts.append({"error": str(e)})
+            continue
+        try:
+            got, _new = validate_extras(extract_json(text), len(points), len(entries), allow_none=True, max_new=0)
+            assign = {qid: got[i] for i, e in enumerate(entries, 1) for qid in e[3]}
+            c = {"hash": h, "key": [ks, ref], "assign": assign, "usage": usage, "attempts": attempts, "raw": text[:20000]}
+            json.dump(c, open(path, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+            return c
+        except (ValueError, json.JSONDecodeError) as e:
+            error = str(e)
+            attempts.append({"error": error, "raw": text[:4000]})
+    c = {"hash": h, "key": [ks, ref], "failed": True, "attempts": attempts}
+    json.dump(c, open(path, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+    return c
+
+
+def retag_low(a):
+    """Re-place only the ids in low-confidence.json, each onto an existing point
+    of its own scope, with the lesson's wording in the prompt. A placed id leaves
+    the file; an id the model cannot place keeps its flag and its old tag. Points
+    are never added, renumbered or dropped."""
+    data = {"KS3": json.load(open(os.path.join(KP_DIR, "ks3.json"), encoding="utf-8")),
+            "KS4": json.load(open(os.path.join(KP_DIR, "ks4.json"), encoding="utf-8"))}
+    low = json.load(open(LOW_FILE, encoding="utf-8"))
+    inv = inventory()
+    known = {}
+    for ks in ("KS3", "KS4"):
+        for ref, sc in inv[ks].items():
+            for q in sc["questions"]:
+                known[q[0]] = q
+    for extras in (extras_inventory(), round3_inventory(), round4_inventory(), round5_inventory()):
+        for items in extras.values():
+            for q in items:
+                known[q[0]] = q
+    todo, gone = {}, []
+    for ks in data:
+        for ref, e in data[ks].items():
+            if a.scope and ref not in a.scope:
+                continue
+            for q in e["questions"]:
+                if q in low:
+                    if q in known:
+                        todo.setdefault((ks, ref), []).append(known[q])
+                    else:
+                        gone.append(q)
+    print("kp: re-tag — %d id(s) in %d scope(s), with the lesson's wording, %s (%d flagged id(s) no loader knows)"
+          % (sum(len(v) for v in todo.values()), len(todo), MODEL, len(gone)))
+    os.makedirs(a.cache, exist_ok=True)
+
+    def wording_for(key):
+        ks, ref = key
+        if ks == "KS4":
+            lesson, logic = ks4_wording(ref)
+            return lesson, lambda qid: ks4_near(re.sub(r"(-[a-z0-9]+)*$", "", qid.split("#", 1)[1]), logic)
+        import ks3_data
+        L = ks3_data.lesson_registry()[ref]
+        return inv["KS3"][ref]["content"], lambda qid: ks3_near(L, qid.split("#", 1)[1])
+
+    wordings = {key: wording_for(key) for key in sorted(todo)}
+
+    def run(key):
+        e = data[key[0]][key[1]]
+        return key, classify_retag(key, e["title"], list(e["points"]), todo[key], wordings[key], a.cache)
+
+    out = []
+    placed = 0
+    with cf.ThreadPoolExecutor(max_workers=a.workers) as ex:
+        for key, c in ex.map(run, sorted(todo)):
+            if c.get("failed"):
+                print("  %s %s: FAILED, stays flagged" % key, flush=True)
+                continue
+            e = data[key[0]][key[1]]
+            labels = {p["id"]: p["label"] for p in e["points"]}
+            prefix = key[0].lower()
+            moved = 0
+            for qid, n in c["assign"].items():
+                before = e["questions"][qid]
+                if n == 0:
+                    low[qid] = "re-tag: no point fits, even with the lesson's wording"
+                    out.append({"id": qid, "before": before, "after": None, "before_label": labels[before], "after_label": None})
+                    continue
+                after = "%s.%s.%d" % (prefix, key[1], n)
+                moved += after != before
+                e["questions"][qid] = after
+                low.pop(qid, None)
+                placed += 1
+                out.append({"id": qid, "before": before, "after": after, "before_label": labels[before], "after_label": labels[after]})
+            print("  %s %s: %d id(s), %d moved" % (key[0], key[1], len(c["assign"]), moved), flush=True)
+    for ks in data:
+        for ref, e in data[ks].items():
+            used = set(e["questions"].values())
+            for pt in e["points"]:
+                if pt["id"] not in used:
+                    print("  ⚠️ %s now has no questions (the gate names it)" % pt["id"])
+    write_json(os.path.join(KP_DIR, "ks3.json"), data["KS3"])
+    write_json(os.path.join(KP_DIR, "ks4.json"), data["KS4"])
+    write_json(LOW_FILE, low)
+    json.dump(out, open(os.path.join(a.cache, "retag_report.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=0)
+    print("kp: re-tag wrote knowledge_points/*.json — %d id(s) placed, %d moved point, %d still flagged"
+          % (placed, sum(1 for r in out if r["after"] and r["after"] != r["before"]), len(low)))
     print("kp: this run's model usage — %d call(s), %d input token(s), %d output token(s)"
           % (USAGE["calls"], USAGE["input_tokens"], USAGE["output_tokens"]))
     return 0
@@ -1825,9 +2057,14 @@ def main():
     ap.add_argument("--top-up", action="store_true",
                     help="tag only the ids the committed JSON does not, onto the existing points "
                          "(no cache needed, nothing renumbered); --scope narrows it")
+    ap.add_argument("--retag-low", action="store_true",
+                    help="re-place only the ids in knowledge_points/low-confidence.json, with the "
+                         "lesson's wording in front of the model; --scope narrows it")
     a = ap.parse_args()
     if a.top_up:
         return top_up(a)
+    if a.retag_low:
+        return retag_low(a)
 
     inv = inventory()
     if a.inventory:

@@ -17,7 +17,7 @@
   <link rel="stylesheet" href="/shared/tokens.css?v=b111271e"/>
   <link rel="stylesheet" href="/shared/ks3.css?v=fbc85f27"/>
 <link rel="stylesheet" href="/shared/ks3-theme.css?v=a2df0340"/>
-  <link rel="stylesheet" href="/consumer/consumer.css?v=5d8a38a0"/>
+  <link rel="stylesheet" href="/consumer/consumer.css?v=2d65af7b"/>
   <style>
   /* ═══════════════════════════════════════════════════════════════════════
      consumer/report.html — Claude Design's `Termly Report.dc.html`.
@@ -249,7 +249,7 @@
 <script src="/shared/config.js?v=fc11de5b"></script>
 <!-- Front door (12 Oct 2026): the one map; consumer-common asks it whether a school pupil has wandered in. -->
 <script src="/shared/account.js?v=e64f3c2a"></script>
-<script src="/consumer/consumer-common.js?v=a8f0270c"></script>
+<script src="/consumer/consumer-common.js?v=6122ad4e"></script>
 <script>
 /* ═══════════════════════════════════════════════════════════════════════
    consumer/report.html — the termly report. MRB-317 Night 3.
@@ -351,9 +351,6 @@
     var units = Array.isArray(r.units) ? r.units : [];
     var unitsBlock = units.length
       ? (h2('What was covered') +
-         '<p style="margin:6pt 0 0;font-size:10.5pt;color:#5F564F">Each unit maps to the National ' +
-           'Curriculum science programme of study for Key Stage ' + esc(String(kid.ks)) + '. The ' +
-           'unit check is a timed test taken at the end of the unit.</p>' +
          '<div style="margin-top:10pt;font-size:11pt">' +
          '<div class="rpt-grid-u rpt-kicker" style="padding:5pt 0;border-bottom:1pt solid #221E1B">' +
            '<span>Unit</span><span>Subject</span><span>Lessons</span><span>Check</span>' +
@@ -458,8 +455,7 @@
           '<p style="margin:0;font-size:10pt;color:#5F564F">Science teacher · ' +
           'mrbadmus.com</p></div>' +
         '<p style="margin:0;font-size:9.5pt;color:#5F564F;text-align:right;max-width:46%">' +
-          'Attendance and marks are recorded automatically from ' + esc(kid.name || 'this child') +
-          '’s work on the platform. Written feedback marked MB is the teacher’s own.</p>' +
+          'Written feedback marked MB is the teacher’s own.</p>' +
       '</div></div>';
 
     var headerMeta = [

@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="/shared/tokens.css?v=b111271e"/>
   <link rel="stylesheet" href="/shared/ks3.css?v=fbc85f27"/>
   <link rel="stylesheet" href="/shared/ks3-theme.css?v=a2df0340"/>
-  <link rel="stylesheet" href="/consumer/consumer.css?v=5d8a38a0"/>
+  <link rel="stylesheet" href="/consumer/consumer.css?v=2d65af7b"/>
   <link rel="stylesheet" href="/consumer/parent-side.css?v=8effd3e8"/>
   <style>
   /* consumer/done.html — the child's "Everything you've done", from
@@ -44,9 +44,9 @@
 
 <script src="/shared/config.js?v=fc11de5b"></script>
 <script src="/shared/account.js?v=e64f3c2a"></script>
-<script src="/consumer/consumer-common.js?v=a8f0270c"></script>
+<script src="/consumer/consumer-common.js?v=6122ad4e"></script>
 <script src="/consumer/option-label.js?v=01eadc79"></script>
-<script src="/consumer/parent-side.js?v=d6fd5839"></script>
+<script src="/consumer/parent-side.js?v=d4281704"></script>
 <script>
 (function () {
   var C = window.MrBadmusConsumer;
@@ -123,7 +123,7 @@
       }
     } else {
       html += '<div style="margin-top:22px;display:flex;flex-direction:column;gap:24px">' + groups.map(function (g) {
-        var n = g.items.length;
+        var n = g.items.filter(PS.isDone).length;
         return '<section><h2 class="ps-kid-week-h">Week of ' + esc(g.label) + ' <span>· you did ' + esc(PS.plural(n, 'thing')) + '</span></h2>' +
           '<div class="ps-wgrid">' + g.items.map(card).join('') + '</div></section>';
       }).join('') + '</div>';

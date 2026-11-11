@@ -22,6 +22,7 @@ allowed in. Treat every label and every tag as a draft.
 | `ks3.json` | one entry per KS3 lesson slug |
 | `ks4.json` | one entry per KS4 subtopic slug |
 | `untagged.json` | questions with no point, each with a reason; scopes whose classification failed |
+| `low-confidence.json` | `{question_id: reason}`: tags that are best guesses. The answer is still saved and shown; it counts towards nothing built on the point until `kp_classify.py --retag-low` places it with the lesson's wording in front of the model. Empty is the goal. |
 
 Each entry: `{scope_ref, key_stage, subject, title, points: [{id, label}],
 questions: {question_id: point_id}}`.

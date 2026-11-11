@@ -25,7 +25,12 @@ Shape (one entry per line, so a re-draft diffs as lines):
 
     {"v": 1,
      "points": {"<kp id>": {"label", "key_stage", "scope"}, …},
-     "questions": {"<question id>": ["<kp id>", "<answer key>" | null], …}}
+     "questions": {"<question id>": ["<kp id>", "<answer key>" | null], …},
+     "low": {"<question id>": "<why its tag is a best guess>", …}}
+
+`low` is `knowledge_points/low-confidence.json` (11 Nov 2026): tags that are
+best guesses until `kp_classify.py --retag-low` has placed them with the
+lesson's wording in front of the model.
 
 ── --check ─────────────────────────────────────────────────────────────
 
@@ -99,7 +104,7 @@ CS_ID = re.compile(r"^cs-(bio|chem|phys)-[a-z0-9-]+$")
 
 def load_data():
     out = {}
-    for name in ("ks3", "ks4", "untagged"):
+    for name in ("ks3", "ks4", "untagged", "low-confidence"):
         with open(os.path.join(KP_DIR, name + ".json"), encoding="utf-8") as fh:
             out[name] = json.load(fh)
     return out
@@ -315,6 +320,14 @@ def check(data=None, inv=None, quiet=False):
         if qid not in exp and qid not in bv2 and not CS_ID.match(qid) and qid not in removed:
             errs.append("untagged %s: no loader knows this question id" % qid)
 
+    for qid, why in data["low-confidence"].items():
+        if qid not in where:
+            errs.append("low-confidence %s: not a tagged question" % qid)
+        if not (isinstance(why, str) and why.strip()):
+            errs.append("low-confidence %s has no reason" % qid)
+        if qid in kpc.TAGS_RULED_CORRECT:
+            errs.append("low-confidence %s: Mide ruled this tag correct" % qid)
+
     missing = [q for q in exp if q not in where and q not in unt]
     if missing:
         errs.append("%d question(s) neither tagged nor listed untagged, e.g. %s"
@@ -364,10 +377,10 @@ def check(data=None, inv=None, quiet=False):
 
     if not quiet:
         tagged = len(where)
-        print("knowledge_points_check: %d scope(s), %d point(s), %d question(s) tagged, %d untagged, "
+        print("knowledge_points_check: %d scope(s), %d point(s), %d question(s) tagged, %d low-confidence, %d untagged, "
               "%d answer key(s); %d classic page(s) read, %d card id(s) all known; test vector %s"
-              % (len(data["ks3"]) + len(data["ks4"]), len(kp_scope), tagged, len(unt), len(have_keys),
-                 pages, len(pids), got))
+              % (len(data["ks3"]) + len(data["ks4"]), len(kp_scope), tagged, len(data["low-confidence"]), len(unt),
+                 len(have_keys), pages, len(pids), got))
         for e in errs[:60]:
             print("  ✗ " + e)
         if len(errs) > 60:
@@ -529,7 +542,7 @@ def build_backend_index(data=None):
                 if qid in questions:
                     raise SystemExit("export_knowledge_points: %s is tagged twice" % qid)
                 questions[qid] = [kp, keys.get(qid)]
-    return {"v": 1, "points": points, "questions": questions}
+    return {"v": 1, "points": points, "questions": questions, "low": dict(data["low-confidence"])}
 
 
 def serialise_backend(index):
@@ -540,6 +553,8 @@ def serialise_backend(index):
     out.append(",\n".join("%s:%s" % (dump(k), dump(index["points"][k])) for k in sorted(index["points"])))
     out.append('},\n"questions":{')
     out.append(",\n".join("%s:%s" % (dump(k), dump(index["questions"][k])) for k in sorted(index["questions"])))
+    out.append('},\n"low":{')
+    out.append(",\n".join("%s:%s" % (dump(k), dump(index["low"][k])) for k in sorted(index["low"])))
     out.append("}}")
     return "\n".join(out) + "\n"
 
@@ -557,8 +572,8 @@ def write_backend(arg):
     text = serialise_backend(index)
     with open(path, "w", encoding="utf-8") as fh:
         fh.write(text)
-    print("wrote %s — %d point(s), %d question(s), %d answer key(s), %d bytes"
-          % (path, len(index["points"]), len(index["questions"]),
+    print("wrote %s — %d point(s), %d question(s), %d low-confidence, %d answer key(s), %d bytes"
+          % (path, len(index["points"]), len(index["questions"]), len(index["low"]),
              sum(1 for v in index["questions"].values() if v[1] is not None), len(text.encode("utf-8"))))
     return 0
 
@@ -567,7 +582,7 @@ def check_backend(arg):
     path = os.path.join(backend_dir(arg), BACKEND_NAME)
     index = build_backend_index()
     text = serialise_backend(index)
-    summary = "%d point(s), %d question(s)" % (len(index["points"]), len(index["questions"]))
+    summary = "%d point(s), %d question(s), %d low-confidence" % (len(index["points"]), len(index["questions"]), len(index["low"]))
     if not os.path.isfile(path):
         print("❌ %s does not exist — the backend has no knowledge-point mirror. "
               "Write it: python3 tools/export_knowledge_points.py --backend <backend dir>" % path)
@@ -583,9 +598,11 @@ def check_backend(arg):
                          if old.get("questions", {}).get(q) != index["questions"].get(q))
         moved_p = sorted(p for p in set(old.get("points", {})) | set(index["points"])
                          if old.get("points", {}).get(p) != index["points"].get(p))
-        print("❌ %s has DRIFTED from knowledge_points/*.json: %d question(s) and %d point(s) differ%s"
-              % (path, len(moved_q), len(moved_p),
-                 (" — e.g. " + ", ".join((moved_q + moved_p)[:6])) if moved_q or moved_p else
+        moved_l = sorted(q for q in set(old.get("low", {})) | set(index["low"])
+                         if old.get("low", {}).get(q) != index["low"].get(q))
+        print("❌ %s has DRIFTED from knowledge_points/*.json: %d question(s), %d point(s) and %d low-confidence flag(s) differ%s"
+              % (path, len(moved_q), len(moved_p), len(moved_l),
+                 (" — e.g. " + ", ".join((moved_q + moved_p + moved_l)[:6])) if moved_q or moved_p or moved_l else
                  " (same content, different bytes)"))
     except ValueError:
         print("❌ %s is not valid JSON." % path)

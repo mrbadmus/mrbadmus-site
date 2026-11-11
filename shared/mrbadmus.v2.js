@@ -225,11 +225,11 @@ CURRENT PAGE CONTEXT: AQA GCSE Physics (8463) — but answer ALL science subject
 
 FULL PHYSICS SPECIFICATION TOPICS:
 4.1 Energy: KE=½mv², GPE=mgh, E=mcΔθ, E=½ke², efficiency, energy resources, conduction/convection/radiation. Required practicals: specific heat capacity; insulation.
-4.2 Electricity: Q=It, V=IR, circuit symbols, ohmic/non-ohmic, series and parallel, AC/DC, mains wiring, P=VI, P=I²R, E=Pt, E=QV, National Grid, transformers. Required practicals: resistance of wire; I-V characteristics. Higher: potential dividers. Triple: static electricity, electric fields.
+4.2 Electricity: Q=It, V=IR, circuit symbols, ohmic/non-ohmic, series and parallel, AC/DC, mains wiring, P=VI, P=I²R, E=Pt, E=QV, National Grid, transformers. Required practicals: resistance of wire; I-V characteristics. Triple: static electricity, electric fields.
 4.3 Particle Model: density ρ=m/V, states of matter, changes of state, internal energy, E=mcΔθ, E=mL (latent heat), gas pressure and temperature. Higher: Boyle's law, absolute zero. Required practical: density.
 4.4 Atomic Structure: protons/neutrons/electrons, isotopes, atomic model history, radioactive decay (alpha/beta/gamma), nuclear equations, half-life, background radiation, fission/fusion. Required practical: half-life sim.
-4.5 Forces: scalars/vectors, W=mg, resultant forces, W=Fs, F=ke (Hooke's Law), moments, p=F/A, pressure in fluids, s=vt, v=u+at, s=½(u+v)t, F=ma, Newton's laws, momentum p=mv (Higher only), stopping distances. Higher: impulse=FΔt, terminal velocity. Required practicals: acceleration; spring extension.
-4.6 Waves: v=fλ, T=1/f, transverse/longitudinal, EM spectrum, reflection, refraction, sound. Higher: n=sin(i)/sin(r). Triple: lenses, X-rays, radio waves. Required practicals: waves; light.
+4.5 Forces: scalars/vectors, W=mg, resultant forces, W=Fs, F=ke (Hooke's Law), moments, p=F/A, pressure in fluids, s=vt, v=u+at, s=½(u+v)t, F=ma, Newton's laws, momentum p=mv (Higher only), stopping distances, terminal velocity. Triple Higher only: force = change in momentum ÷ time (the word impulse is not on the AQA spec). Required practicals: acceleration; spring extension.
+4.6 Waves: v=fλ, T=1/f, transverse/longitudinal, EM spectrum, reflection, refraction, sound. Triple: lenses, X-rays, radio waves. Required practicals: waves; light.
 4.7 Magnetism: magnetic fields, electromagnets. Higher only: Fleming's LHR, F=BIL, motors, induction, generators, Vp/Vs=Np/Ns, transformer efficiency. Higher: induced EMF. Required practical: motor effect.
 4.8 Space (TRIPLE ONLY): Solar System, stellar life cycles, orbital motion, red-shift, Big Bang, expanding universe.
 
@@ -257,12 +257,12 @@ FULL CHEMISTRY SPECIFICATION TOPICS:
 CURRENT PAGE CONTEXT: AQA GCSE Biology (8461) — but answer ALL science subjects if asked
 
 FULL BIOLOGY SPECIFICATION TOPICS:
-4.1 Cell Biology: animal/plant/bacterial cells, eukaryotic/prokaryotic, specialised cells, magnification=image÷actual, diffusion/osmosis/active transport, mitosis, stem cells, growth. Higher: meiosis, stem cell ethics. Required practicals: microscopy; osmosis.
+4.1 Cell Biology: animal/plant/bacterial cells, eukaryotic/prokaryotic, specialised cells, magnification=image÷actual, diffusion/osmosis/active transport, mitosis, stem cells, growth. Higher: stem cell ethics. Required practicals: microscopy; osmosis.
 4.2 Organisation: cell→tissue→organ→system, digestive system, enzymes (lock-and-key, active site), effect of temp/pH on enzymes, heart, blood vessels (arteries/veins/capillaries), blood components, respiratory system, health and disease, cancer. Higher: CHD treatments, plant transport. Required practicals: enzyme pH; food tests.
-4.3 Infection & Response: pathogens (bacteria/viruses/fungi/protists), spread of disease, specific diseases (measles, HIV, malaria, TMV, rose black spot, Salmonella), immune system (phagocytosis, antibodies, memory cells), vaccination, antibiotics, drug development. Higher: monoclonal antibodies, plant defences.
+4.3 Infection & Response: pathogens (bacteria/viruses/fungi/protists), spread of disease, specific diseases (measles, HIV, malaria, TMV, rose black spot, Salmonella), immune system (phagocytosis, antibodies, memory cells), vaccination, antibiotics, drug development. Triple Higher only: monoclonal antibodies. Higher: plant defences.
 4.4 Bioenergetics: photosynthesis (6CO₂+6H₂O→C₆H₁₂O₆+6O₂), limiting factors (light, CO₂, temp), uses of glucose, aerobic respiration (C₆H₁₂O₆+6O₂→6CO₂+6H₂O), anaerobic (glucose→lactic acid; glucose→ethanol+CO₂), exercise response (oxygen debt is Higher only). Higher: rate graphs, metabolism. Required practicals: photosynthesis; fermentation.
 4.5 Homeostasis & Response: homeostasis, nervous system (CNS, neurons, synapses), reflex arc, brain, eye, endocrine system, blood glucose (insulin; glucagon and how blood glucose is raised again are Higher only), diabetes Type 1&2, thermoregulation, kidneys/ADH, menstrual cycle (FSH/LH/oestrogen/progesterone; how these hormones interact to control the cycle is Higher only), contraception, fertility treatments (using hormones to treat infertility, including IVF, is Higher only). Higher: negative feedback (adrenaline, thyroxine), IVF ethics. Triple: kidney detail. Required practical: reaction time.
-4.6 Inheritance: DNA structure, genes/alleles/chromosomes, dominant/recessive, Punnett squares, cystic fibrosis, polydactyly, sex determination, variation (genetic/environmental), mutation, natural selection, evolution evidence, classification. Higher: codominance, genetic engineering. Triple: protein synthesis.
+4.6 Inheritance: DNA structure, genes/alleles/chromosomes, meiosis, dominant/recessive, Punnett squares, cystic fibrosis, polydactyly, sex determination, variation (genetic/environmental), mutation, natural selection, evolution evidence, classification. Higher: codominance, genetic engineering. Triple: protein synthesis.
 4.7 Ecology: populations/communities/ecosystems, abiotic/biotic factors, interdependence, food webs, competition, adaptations, quadrats/transects, water/carbon/nitrogen cycles, biodiversity, deforestation, climate change, conservation, mark-recapture formula. Higher: biodiversity index, predator-prey. Required practical: habitat sampling.`
   };
 
@@ -298,7 +298,8 @@ FULL BIOLOGY SPECIFICATION TOPICS:
     if (!box) return null;
     const d = document.createElement('div');
     d.className = `chat-msg chat-msg--${role}`;
-    d.innerHTML = `<div class="chat-msg__avatar">${role==='user'?'🧑':'⚡'}</div><div class="chat-msg__bubble">${html}</div>`;
+    const plain = (function () { try { const c = cfg(); return c && typeof c.isChildSession === 'function' && c.isChildSession(JSON.parse(localStorage.getItem(c.AUTH_STORAGE_KEY) || 'null')); } catch (e) { return false; } })();
+    d.innerHTML = `<div class="chat-msg__avatar">${plain?(role==='user'?'You':'MB'):(role==='user'?'🧑':'⚡')}</div><div class="chat-msg__bubble">${html}</div>`;
     if (before && before.parentNode === box) box.insertBefore(d, before);
     else box.appendChild(d);
     box.scrollTop = box.scrollHeight;
@@ -829,11 +830,16 @@ You are talking to a KS3 student: roughly 11 to 14 years old, two or three years
      reply), so a child must not find that out afterwards. One plain line,
      above the input, in the panel's own body ink (--text on --bg: AA in both
      themes on every page that mounts the panel), tied to the input with
-     aria-describedby so a screen reader says it too. "Parent or tutor": an
-     organisation's child is attached to the organisation's account, not a
-     parent's, and the page cannot tell the two apart without a network call.
+     aria-describedby so a screen reader says it too. ⊕ 11 Nov 2026 (Mide):
+     "parent" to a family child, "tutor" to an organisation child; the kind
+     comes from /api/consumer/child/session, once a tab, and "parent or tutor"
+     stays only while it is unknown.
      ONLY FOR A CHILD SESSION (MrBadmusConfig.isChildSession); a school pupil's
      panel is untouched. */
+  function disclosureText(kind) {
+    const who = kind === 'family' ? 'parent' : kind === 'organisation' ? 'tutor' : 'parent or tutor';
+    return `Your ${who} can see the questions you ask here.`;
+  }
   function childDisclosure() {
     try {
       const c = cfg();
@@ -846,10 +852,23 @@ You are talking to a KS3 student: roughly 11 to 14 years old, two or three years
       p.id = 'chatDisclosure';
       p.className = 'chat-disclosure';
       p.style.cssText = 'margin:0 auto;max-width:860px;width:100%;box-sizing:border-box;padding:10px 24px 6px;font-size:0.875rem;line-height:1.4;font-weight:500;color:var(--text)';
-      p.textContent = 'Your parent or tutor can see the questions you ask here.';
+      const kindKey = 'mrb.child.org_kind.' + ((sess.user && sess.user.id) || '');
+      let known = null;
+      try { known = sessionStorage.getItem(kindKey); } catch (e) {}
+      p.textContent = disclosureText(known);
       row.parentNode.insertBefore(p, row);
       const input = document.getElementById('ci');
       if (input) input.setAttribute('aria-describedby', 'chatDisclosure');
+      if (!known) {
+        childAuth.token(c)
+          .then((tok) => fetch(c.BACKEND_URL + '/api/consumer/child/session', { headers: { Authorization: 'Bearer ' + tok } }))
+          .then((r) => (r.ok ? r.json() : null))
+          .then((b) => {
+            if (!b || !b.org_kind) return;
+            p.textContent = disclosureText(b.org_kind);
+            try { sessionStorage.setItem(kindKey, b.org_kind); } catch (e) {}
+          }).catch(() => {});
+      }
     } catch (e) { /* a missing line never breaks the tutor */ }
   }
 
@@ -985,7 +1004,10 @@ You are talking to a KS3 student: roughly 11 to 14 years old, two or three years
       /* MRB-257 — a KS3 student is not sitting a GCSE. Same sentence, minus a
          qualification they have not started. */
       const subj = currentKeyStage === 'ks3' ? 'Science' : 'GCSE Science';
-      const greet = studentName
+      const plainChild = (function () { try { const c = cfg(); return c && typeof c.isChildSession === 'function' && c.isChildSession(JSON.parse(localStorage.getItem(c.AUTH_STORAGE_KEY) || 'null')); } catch (e) { return false; } })();
+      const greet = plainChild
+        ? (studentName ? 'Hello ' + studentName + '. What are you stuck on?' : 'What are you stuck on?')
+        : studentName
         ? "Hey " + studentName + "! 👋 I'm Mr Badmus, here to help you smash your " + subj + ". What are we stuck on?"
         : "Hey! 👋 I'm Mr Badmus, here to help you smash your " + subj + ". What are we stuck on?";
       addMsg('bot', greet);

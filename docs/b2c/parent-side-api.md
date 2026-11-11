@@ -33,7 +33,7 @@ Topic = **knowledge point**. The rule runs over **marked** attempts only, in ans
 - **not_yet** = the most recent marked attempt is not right, or the topic has never been right. That includes a
   topic with **no marked attempt at all**: `basis.marked === 0`, so the page should say "not marked yet"
   rather than imply the child got it wrong.
-- **shaky** = everything else: the most recent attempt was right, but the topic is not yet secure.
+- **shaky** = everything else: the most recent attempt was right, but the topic is not yet secure. One right answer is shaky. The page words it "Right, but not proven yet".
 - Unmarked and self-checked answers are never right and never in the basis. They are counted beside it in
   `basis.unmarked` and `basis.self_checked`.
 
@@ -139,6 +139,7 @@ question's latest marked attempt; `answers` still lists every attempt. See API-C
     "label": "Energy sits in stores: kinetic, gravitational, elastic, thermal, chemical, magnetic, electrostatic or nuclear",
     "subject": "Physics", "key_stage": "KS3",
     "lesson": { "slug": "energy-stores", "name": "Energy stores" },
+    "topic": "Energy",
     "status": "secure",
     "basis": { "answers": 2, "marked": 2, "unmarked": 0, "self_checked": 0, "right": 2, "wrong": 0, "partial": 0, "questions": 2 },
     "last_seen": "2026-10-15T18:03:00+00:00"
@@ -149,7 +150,7 @@ question's latest marked attempt; `answers` still lists every attempt. See API-C
     "basis": { "answers": 3, "marked": 2, "unmarked": 1, "self_checked": 1, "right": 2, "wrong": 0, "partial": 0, "questions": 3 },
     "last_seen": "2026-10-09T16:40:00+00:00"
   }],
-  "topics_unplaced": { "answers": 0 },
+  "topics_unplaced": { "answers": 0, "low_confidence": 0 },
   "keeps_wrong": [{
     "kind": "topic", "id": "ks3.changes-of-state.3",
     "label": "Temperature stays constant during a change of state while energy breaks particles apart",
@@ -161,9 +162,10 @@ question's latest marked attempt; `answers` still lists every attempt. See API-C
   }]
 }
 ```
-- `topics[]` is one entry per knowledge point (sorted by key stage, lesson, then point). `lesson` lets the page
-  group or name them. `topics_unplaced.answers` counts answers with no knowledge point, so none are dropped
-  silently.
+- `topics[]` is one entry per knowledge point (sorted by key stage, lesson, then point). `topic` is the scheme's
+  topic for the lesson (the lesson's own name if the scheme has no row for it); the page groups under it and counts
+  distinct topics. `topics_unplaced.answers` counts answers with no knowledge point, and
+  `topics_unplaced.low_confidence` answers whose tag is flagged best guess, so none are dropped silently.
 - A question entry in `keeps_wrong` has `kind: "question"`, `id` = the question id, and `label` = its newest
   question text.
 
