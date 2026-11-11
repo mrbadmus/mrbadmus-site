@@ -129,6 +129,23 @@ _MARKER = re.compile(r"data-[a-z0-9-]+")
 SIGNATURE = {}
 _NOT_A_MARKER = ("data-instrument", "data-stage-done")
 
+# ⊕ lean pilot — RETIRED_BY_LEAN: instrument families whose ONLY page became a lean page, and so
+# are registered by ks3_art and emitted by no page (the lean standard removed the bench from the
+# lesson). family -> (the page that carried it, why). Each is excused only while it stays absent
+# everywhere; every OTHER registered family that no page emits still fails below.
+RETIRED_BY_LEAN = {
+    "bell-jar": ("biology/breathing-and-gas-exchange/how-breathing-works.html",
+                 "replaced by the drawn figure b4-bell-jar-model"),
+    "gas-compare": ("biology/breathing-and-gas-exchange/the-gas-exchange-system.html",
+                    "the gas-compare bench is not on the lean page"),
+    "crossing-counter": ("biology/breathing-and-gas-exchange/alveoli-built-for-exchange.html",
+                         "the crossing-counter bench is not on the lean page"),
+    "fault-bench": ("biology/breathing-and-gas-exchange/exercise-asthma-and-smoking.html",
+                    "the fault-bench is not on the lean page"),
+    "two-process-ledger": ("biology/breathing-and-gas-exchange/stomata-and-gas-exchange-in-plants.html",
+                           "the two-process ledger is not on the lean page"),
+}
+
 
 def families():
     """family name -> marker attribute, from the ks3_art registry itself.
@@ -346,6 +363,11 @@ def main():
               "name, and needs a full run.)")
     else:
         for marker in sorted(set(marker_of.values()) - seen_markers):
+            if all(f in RETIRED_BY_LEAN for f in by_marker[marker]):
+                print("       RETIRED_BY_LEAN  %s (%s): %s" % (
+                    "/".join(sorted(by_marker[marker])), marker,
+                    "; ".join(RETIRED_BY_LEAN[f][1] for f in sorted(by_marker[marker]))))
+                continue
             failures.append("%s — marker %s appears on NO built page: the "
                             "instrument is registered and not emitted"
                             % ("/".join(sorted(by_marker[marker])), marker))
