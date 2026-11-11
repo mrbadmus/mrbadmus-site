@@ -41,7 +41,7 @@ def split(page):
     m = re.search(r"(?is)<h1\b", page)
     body = page[m.start():] if m else page
     deeper = 0
-    d = re.search(r'(?is)<section class="lean-sec lean-sec-deeper".*?</section>', body)
+    d = re.search(r'(?is)<section\b[^>]*lean-sec-deeper[^>]*>.*?</section>', body)
     if d:
         deeper = words(d.group(0))
         body = body.replace(d.group(0), " ")

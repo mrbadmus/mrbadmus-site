@@ -74,7 +74,10 @@ def _lesson(slug, rec):
         title, spec, family = _OLD_FORMAT[slug]
         d = dict(slug=slug, subject="physics", topic_id="energy", title=title, spec=spec,
                  family=family, routes=ALL, review_state="examiner-reviewed",
-                 legacy_batch=None)
+                 legacy_batch=None,
+                 # no Design file: the key exists (as None) because tools that walk every
+                 # registered batch index lessons by `source_file`
+                 source_file=None)
     d.update(batch=B, staged=False, lean=rec, unit="Energy",
              block_map=dict(_BLOCK_MAP))
     return d
