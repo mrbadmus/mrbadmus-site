@@ -1218,12 +1218,13 @@
           (r.practice
             ? '<p class="ex-practice">Practice mark — the AI marker didn’t check this one.</p>'
             : '') +
-          (points ? ('<ul class="ks3-ticks">' + points + '</ul>') : '') +
           (note
             ? ('<div class="ks3-feedback ex-note">' +
                '<p class="ex-note-label">' + (r.practice ? 'Note' : 'Examiner’s note') + '</p>' +
                '<p>' + esc(note) + '</p></div>')
             : '') +
+          /* ⊕ 11 Nov 2026 (ruling B): the note first; the list behind the toggle. */
+          (points ? C.pointsToggle('<ul class="ks3-ticks">' + points + '</ul>') : '') +
         '</div>' +
 
         '<div class="ex-wrote">' +
