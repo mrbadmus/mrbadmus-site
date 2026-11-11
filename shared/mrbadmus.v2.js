@@ -1003,7 +1003,10 @@ You are talking to a KS3 student: roughly 11 to 14 years old, two or three years
       /* MRB-257 — a KS3 student is not sitting a GCSE. Same sentence, minus a
          qualification they have not started. */
       const subj = currentKeyStage === 'ks3' ? 'Science' : 'GCSE Science';
-      const greet = studentName
+      const plainChild = (function () { try { const c = cfg(); return c && typeof c.isChildSession === 'function' && c.isChildSession(JSON.parse(localStorage.getItem(c.AUTH_STORAGE_KEY) || 'null')); } catch (e) { return false; } })();
+      const greet = plainChild
+        ? (studentName ? 'Hello ' + studentName + '. What are you stuck on?' : 'What are you stuck on?')
+        : studentName
         ? "Hey " + studentName + "! 👋 I'm Mr Badmus, here to help you smash your " + subj + ". What are we stuck on?"
         : "Hey! 👋 I'm Mr Badmus, here to help you smash your " + subj + ". What are we stuck on?";
       addMsg('bot', greet);

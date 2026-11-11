@@ -123,7 +123,7 @@
       }
     } else {
       html += '<div style="margin-top:22px;display:flex;flex-direction:column;gap:24px">' + groups.map(function (g) {
-        var n = g.items.length;
+        var n = g.items.filter(PS.isDone).length;
         return '<section><h2 class="ps-kid-week-h">Week of ' + esc(g.label) + ' <span>· you did ' + esc(PS.plural(n, 'thing')) + '</span></h2>' +
           '<div class="ps-wgrid">' + g.items.map(card).join('') + '</div></section>';
       }).join('') + '</div>';
