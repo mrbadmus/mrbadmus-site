@@ -1020,9 +1020,9 @@ class Component extends DCLogic {
       ],
       cfQuestions: [
         { tab: 'Question 1', id: 'eff-q1', head: 'A motor has a total power input of 1.2 kW and a useful power output of 900 W. Calculate its efficiency.', close: '900 \u00f7 1.2 = 750 is impossible: convert kW to W first.',
-          steps: [{ letter: 'C', label: 'Convert', placeholder: ph.C, line: '1.2 kW \u00d7 1000 = 1200 W' }, { letter: 'F', label: 'Formula', placeholder: 'as on the equation sheet', line: 'efficiency = useful power output \u00f7 total power input' }, { letter: 'I', label: 'Insert', placeholder: 'efficiency = \u2026 \u00f7 \u2026', line: 'efficiency = 900 \u00f7 1200' }, { letter: 'F', label: 'Fine-tune', placeholder: 'work it out', line: 'efficiency = 0.75' }, { letter: 'A', label: 'Answer', placeholder: 'decimal (and %)', line: 'efficiency = 0.75 (75%)' }] },
+          steps: [{ letter: 'C', label: 'Convert', placeholder: ph.C, line: '1.2 kW \u00d7 1000 = 1200 W' }, { letter: 'F', label: 'Formula', placeholder: 'write the equation', line: 'efficiency = useful power output \u00f7 total power input' }, { letter: 'I', label: 'Insert', placeholder: 'efficiency = \u2026 \u00f7 \u2026', line: 'efficiency = 900 \u00f7 1200' }, { letter: 'F', label: 'Fine-tune', placeholder: 'work it out', line: 'efficiency = 0.75' }, { letter: 'A', label: 'Answer', placeholder: 'decimal (and %)', line: 'efficiency = 0.75 (75%)' }] },
         { tab: 'Question 2', id: 'eff-q2', head: 'A heater is 90% efficient. Its total input energy transfer is 5000 J. Calculate its useful output energy transfer.', close: 'Using 90 instead of 0.90 gives 450 000 J: more out than in.',
-          steps: [{ letter: 'C', label: 'Convert', placeholder: ph.C, line: '90% \u00f7 100 = 0.90' }, { letter: 'F', label: 'Formula', placeholder: 'as on the equation sheet', line: 'efficiency = useful output energy \u00f7 total input energy' }, { letter: 'I', label: 'Insert', placeholder: '\u2026 = useful \u00f7 \u2026', line: '0.90 = useful \u00f7 5000' }, { letter: 'F', label: 'Fine-tune', placeholder: 'rearrange: useful = \u2026', line: 'useful = 0.90 \u00d7 5000 = 4500' }, { letter: 'A', label: 'Answer', placeholder: 'with unit', line: 'useful output energy = 4500 J' }] }
+          steps: [{ letter: 'C', label: 'Convert', placeholder: ph.C, line: '90% \u00f7 100 = 0.90' }, { letter: 'F', label: 'Formula', placeholder: 'write the equation', line: 'efficiency = useful output energy \u00f7 total input energy' }, { letter: 'I', label: 'Insert', placeholder: '\u2026 = useful \u00f7 \u2026', line: '0.90 = useful \u00f7 5000' }, { letter: 'F', label: 'Fine-tune', placeholder: 'rearrange: useful = \u2026', line: 'useful = 0.90 \u00d7 5000 = 4500' }, { letter: 'A', label: 'Answer', placeholder: 'with unit', line: 'useful output energy = 4500 J' }] }
       ],
       onCalc: (n) => this.setState({ calc: n }),
       wSteps: [
@@ -1042,7 +1042,7 @@ class Component extends DCLogic {
       aSteps: [
         { title: 'Find the useful energy', carry: 'useful = 21 000 J', lines: [
           { letter: 'C', label: 'Convert', placeholder: ph.C, line: '35% \u00f7 100 = 0.35; 60 kJ \u00d7 1000 = 60 000 J' },
-          { letter: 'F', label: 'Formula', placeholder: 'as on the equation sheet', line: 'efficiency = useful output energy \u00f7 total input energy' },
+          { letter: 'F', label: 'Formula', placeholder: 'write the equation', line: 'efficiency = useful output energy \u00f7 total input energy' },
           { letter: 'I', label: 'Insert', placeholder: '\u2026 = useful \u00f7 \u2026', line: '0.35 = useful \u00f7 60 000' },
           { letter: 'F', label: 'Fine-tune', placeholder: 'rearrange and work out', line: 'useful = 0.35 \u00d7 60 000 = 21 000' },
           { letter: 'A', label: 'Answer', placeholder: 'useful = \u2026 with unit', line: 'useful output energy = 21 000 J' }] },
@@ -1082,7 +1082,7 @@ class Component extends DCLogic {
           { kind: 'chain', command: 'Explain', marks: 3, prompt: 'A student calculates the efficiency of a kettle as 1.25. Explain why the answer must be wrong. Put the links in order.',
             links: ['Efficiency = useful output energy \u00f7 total input energy.', 'The useful output can never be more than the total input.', 'So efficiency can never be more than 1: the student has divided the wrong way round.'],
             herrings: [{ text: 'Efficiency is measured in joules, so 1.25 J is too small.', why: 'Efficiency has no unit.' }, { text: 'Kettles always have an efficiency of exactly 1.', why: 'No device is perfectly efficient: some energy is always dissipated.' }] },
-          { kind: 'chain', command: 'Explain', marks: 3, prompt: 'Explain why oiling a bicycle chain increases the efficiency of the bicycle. Put the links in order.',
+          { kind: 'chain', command: 'Explain', marks: 3, prompt: 'Explain how oiling a bicycle chain reduces unwanted energy transfers. Put the links in order.',
             links: ['Friction between the moving parts transfers energy to their thermal store.', 'This energy is dissipated to the surroundings and wasted.', 'Oil reduces the friction, so less energy is wasted and a bigger share of the input is useful.'],
             herrings: [{ text: 'Oil adds energy to the chain.', why: 'Oil doesn\u2019t supply energy; it reduces friction.' }, { text: 'Oil destroys the wasted energy.', why: 'Energy is never destroyed. Less is wasted in the first place.' }] }
         ],
