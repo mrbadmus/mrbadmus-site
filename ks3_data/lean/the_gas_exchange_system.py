@@ -72,6 +72,23 @@ LESSON = {
          "body": ["The airways divide about 23 times between the trachea and the alveoli."]},
     ],
     "try": None,
+    # render-only overlays (ks3_data/lean/__init__.py, build_ks3.py): nothing here reaches the question mirror
+    "convention_note": "These are typical values for a person at rest.",
+    "figure_caption": {"b4-gas-exchange-labelled":
+                       "Air travels from 01 to 05. Gas exchange happens only in the air sacs."},
+    "ladder_stem": {
+        "explain": "A student writes: \u201cWe breathe in oxygen and breathe out carbon dioxide.\u201d Explain "
+                   "what is wrong with this statement about the air. Then write a correct version. "
+                   "Use figures.",
+    },
+    "ladder_ticks": [
+        ["Gives the inhaled figures \u2014 about 21% oxygen and 0.04% carbon dioxide.",
+         "Gives the inhaled figures: about 21% oxygen and 0.04% carbon dioxide."],
+        ["Gives the exhaled figures \u2014 about 16% oxygen and 4% carbon dioxide.",
+         "Gives the exhaled figures: about 16% oxygen and 4% carbon dioxide."],
+        ["Correctly assigns the raised rate to breathing, driven by the products of respiration \u2014 not to gas exchange failing.",
+         "Correctly says the raised rate is a change in breathing, driven by the products of respiration. Gas exchange has not failed."],
+    ],
     "ladder_feedback": {
         "recall": {
             0: "Plants have no muscles to move air, so they do not breathe.",

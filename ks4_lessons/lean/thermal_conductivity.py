@@ -54,7 +54,7 @@ LESSON = {
                   "The smaller the temperature drop in the same time, the better the insulator."]},
         {"kind": "card", "title": "Easy mistakes",
          "body": [{"mistakes": [
-             ("The metal bench is at a lower temperature than the wooden bench.",
+             ("A metal bench feels colder than a wooden bench, so it is at a lower temperature.",
               "They are at the same temperature. Metal transfers energy from your hand faster."),
              ("Insulation stops energy transfer.",
               "Insulation slows energy transfer. It does not stop it."),

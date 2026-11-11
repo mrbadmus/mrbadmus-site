@@ -86,6 +86,27 @@ class Cards(unittest.TestCase):
         self.assertIn('class="lean-deeper-btn"', h)
 
 
+class Swipe(unittest.TestCase):
+    def test_a_swipe_never_starts_from_a_control(self):
+        """shared/lean.js ignoresSwipe, in node with fake nodes (tests/lean_swipe_test.js)."""
+        import subprocess
+        r = subprocess.run(["node", os.path.join(os.path.dirname(__file__), "lean_swipe_test.js")],
+                           capture_output=True, text=True)
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+
+
+class Figures(unittest.TestCase):
+    def test_a_figure_is_wrapped_with_its_zoom_button(self):
+        h = lb.fig_wrap("<figure>drawing</figure>")
+        self.assertIn('class="lean-fig" data-lean-fig', h)
+        self.assertIn("<figure>drawing</figure>", h)
+        self.assertIn('<button type="button" class="lean-zoom" data-lean-zoom-btn>', h)
+        self.assertIn("Zoom in", h)
+        self.assertIn("Fit to screen", h)
+        self.assertNotIn("data-lean-needs", h)      # set by lean.js only, never by a template
+        self.assertNotIn("data-lean-zoom ", h)
+
+
 class Routes(unittest.TestCase):
     def test_flags(self):
         self.assertEqual(lb.route_flag(["CH", "TH"]), "isHigher")
@@ -105,6 +126,18 @@ class Routes(unittest.TestCase):
 
 
 class Check(unittest.TestCase):
+    def test_a_repeated_record_key_is_refused(self):
+        import tempfile
+        d = tempfile.mkdtemp()
+        os.makedirs(os.path.join(d, "ks3_data", "lean"))
+        with open(os.path.join(d, "ks3_data", "lean", "x.py"), "w") as fh:
+            fh.write('LESSON = {"ladder_stem": {}, "ladder_stem": {}}\n')
+        old, lc.HERE = lc.HERE, d
+        try:
+            self.assertEqual(len(lc.duplicate_keys()), 1)
+        finally:
+            lc.HERE = old
+
     def probs(self, text, kind="teach", ks=4):
         return lc.check_text("t", text, kind, ks)
 

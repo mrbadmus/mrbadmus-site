@@ -401,6 +401,113 @@ def triangles(d, rec):
         d.check(o["sw"] <= o["cw"], "overflow after tapping the triangles in %r: %s" % (title, o))
 
 
+# ── figures: fitted to the card, a zoom button only where needed ────────
+
+FIG_INFO = """
+return [].map.call(document.querySelectorAll('[data-lean-fig]'), function (f, i) {
+  var svg = f.querySelector('svg'), box = svg && svg.parentNode;
+  var btn = f.querySelector('[data-lean-zoom-btn]'), cs = btn && getComputedStyle(btn);
+  var nat = parseFloat(f.style.getPropertyValue('--lean-nat')) || 0;
+  return {i: i, vb: !!(svg && svg.getAttribute('viewBox')), avail: f.clientWidth, nat: nat,
+          svgw: svg ? Math.round(svg.getBoundingClientRect().width) : 0,
+          over: box ? box.scrollWidth - box.clientWidth : 0,
+          needs: f.hasAttribute('data-lean-needs'), zoom: f.hasAttribute('data-lean-zoom'),
+          btn: !!btn, shown: !!(btn && cs.display !== 'none' && btn.offsetHeight > 0),
+          bh: btn ? Math.round(btn.getBoundingClientRect().height) : 0,
+          label: btn ? btn.innerText.trim() : '', card: !!f.closest('.lean-card')};
+});
+"""
+FIGS = {}
+
+
+def figures(d):
+    info = d.js(FIG_INFO)
+    FIGS[d.tag] = [(f["nat"], f["avail"]) for f in info]
+    for f in info:
+        w = "figure %d (natural %s, room %s)" % (f["i"], f["nat"], f["avail"])
+        d.check(f["vb"], "%s has no viewBox" % w)
+        d.check(f["card"], "%s is not inside a lean card" % w)
+        d.check(f["over"] <= 1 and f["svgw"] <= f["avail"] + 1, "%s overflows its card when fitted: svg %s, scroll over %s" % (w, f["svgw"], f["over"]))
+        want = f["nat"] > f["avail"] * 1.05
+        d.check(f["needs"] == want and f["shown"] == want, "%s: zoom button %s, wanted %s" % (w, "shown" if f["shown"] else "hidden", want))
+        if want:
+            d.check(f["bh"] >= 44, "%s: zoom button is %spx tall" % (w, f["bh"]))
+            d.check(f["label"] == "Zoom in", "%s: label %r" % (w, f["label"]))
+            sel = "document.querySelectorAll('[data-lean-fig]')[%d]" % f["i"]
+            d.js("%s.scrollIntoView({block:'center',behavior:'instant'});%s.querySelector('[data-lean-zoom-btn]').focus();1" % (sel, sel))
+            d.key("Enter")
+            z = d.js("var f=%s,svg=f.querySelector('svg'),box=svg.parentNode;return {z:f.hasAttribute('data-lean-zoom'),"
+                     "over:box.scrollWidth-box.clientWidth,l:f.querySelector('[data-lean-zoom-btn]').innerText.trim(),svgw:Math.round(svg.getBoundingClientRect().width)}" % sel)
+            d.check(z["z"] and z["over"] > 1 and z["l"] == "Fit to screen", "%s: zoom by keyboard did not show it at natural size: %s" % (w, z))
+            d.key("Enter")
+            z = d.js("var f=%s,svg=f.querySelector('svg'),box=svg.parentNode;return {z:f.hasAttribute('data-lean-zoom'),over:box.scrollWidth-box.clientWidth}" % sel)
+            d.check(not z["z"] and z["over"] <= 1, "%s: Fit to screen did not fit it again: %s" % (w, z))
+
+
+def touch_drag_slider(d):
+    """A real touch drag along a slider inside a card moves the slider and leaves the card open."""
+    n = d.js("return document.querySelectorAll('.lean-card input[type=range]').length")
+    if not n:
+        return
+    d.p.send("Emulation.setTouchEmulationEnabled", {"enabled": True, "maxTouchPoints": 1})
+    try:
+        d.js("var i=document.querySelector('.lean-card input[type=range]');var c=i.closest('.lean-card');"
+             "if(!c.hasAttribute('data-lean-open'))c.querySelector('.lean-card-btn').click();"
+             "i.scrollIntoView({block:'center',behavior:'instant'});1")
+        time.sleep(0.4)
+        r = d.js("var i=document.querySelector('.lean-card input[type=range]');var b=i.getBoundingClientRect();"
+                 "return {x:b.left,y:b.top+b.height/2,w:b.width,v:i.value}")
+        y = r["y"]
+        x0, x1 = r["x"] + r["w"] * 0.2, r["x"] + r["w"] * 0.85
+        d.p.send("Input.dispatchTouchEvent", {"type": "touchStart", "touchPoints": [{"x": x0, "y": y}]})
+        for k in range(1, 9):
+            d.p.send("Input.dispatchTouchEvent", {"type": "touchMove", "touchPoints": [{"x": x0 + (x1 - x0) * k / 8, "y": y}]})
+            time.sleep(0.03)
+        d.p.send("Input.dispatchTouchEvent", {"type": "touchEnd", "touchPoints": []})
+        time.sleep(0.4)
+        after = d.js("var i=document.querySelector('.lean-card input[type=range]');"
+                     "return {v:i.value,open:i.closest('.lean-card').hasAttribute('data-lean-open')}")
+        d.check(after["v"] != r["v"], "a touch drag did not move the slider (%s -> %s)" % (r["v"], after["v"]))
+        d.check(after["open"], "a touch drag along the slider closed its card")
+    finally:
+        d.p.send("Emulation.setTouchEmulationEnabled", {"enabled": False})
+
+
+# ── what the page says, after the round-3 findings ──────────────────────
+
+def ks4_words(d, route):
+    h2 = d.js("return [].map.call(document.querySelectorAll('h2'),function(h){return h.textContent.trim()})")
+    d.check("Practice" in h2 and "Exam ladder" not in h2, "practice heading: %s" % h2)
+    d.check("Questions on this lesson" in h2 and not any(x.startswith("Five questions") for x in h2), "quiz heading: %s" % h2)
+    txt = d.js("return document.body.innerText.toLowerCase()")
+    d.check("you write it, then you mark it" not in txt, "the Rung 4 tag line is still there")
+    m = d.js("var s=document.querySelectorAll('#s-ladder .ks3-rung-self');var t=s.length?s[s.length-1].innerText:'';"
+             "return (t.match(/\\b\\d+ marks?\\b/gi)||[]).length")
+    d.check(m <= 1, "Rung 4 shows its marks %d times (once is right)" % m)
+    eb = d.js("return document.querySelector('.ks3-lesson-head .ks3-eyebrow').textContent.trim()")
+    tri = route in ("TF", "TH")
+    d.check(("8463" in eb and " 4.1" in eb and "8464" not in eb) if tri else ("8464" in eb and " 6.1" in eb and "8463" not in eb),
+            "spec eyebrow on %s reads %r" % (route, eb))
+
+
+def tap_targets(d, ks):
+    small = d.js("return [].slice.call(document.querySelectorAll('.ks3-endmatter li > a, .ks3-endmatter .ks3-tutor-cta'))"
+                 ".filter(function(a){return a.getBoundingClientRect().height>0 && a.getBoundingClientRect().height<43.5})"
+                 ".map(function(a){return a.textContent.trim().slice(0,30)+' '+Math.round(a.getBoundingClientRect().height)})")
+    d.check(not small, "links under 44px tall: %s" % small)
+
+
+KS3_BAD = r"(?i)(\bbench\b|\bhook\b|four requirements)"
+
+
+def ks3_words(d):
+    r = d.js("var m=document.querySelector('main').cloneNode(true);"
+             "[].forEach.call(m.querySelectorAll('.ks3-legal,.lean-sr,svg'),function(x){x.remove()});"
+             "var t=m.innerText;return {dash:(t.match(/ \u2014 /g)||[]).length,bad:(t.match(new RegExp(%s.slice(4),'gi'))||[])}" % json.dumps(KS3_BAD))
+    d.check(r["dash"] == 0, "%d spaced em dash(es) left in the page text outside the legal text" % r["dash"])
+    d.check(not r["bad"], "words that belong to removed content: %s" % r["bad"])
+
+
 # ── practice ────────────────────────────────────────────────────────────
 
 def ks3_practice(d, strict=True):
@@ -438,6 +545,10 @@ def ks3_practice(d, strict=True):
             d.check(shown, "self-marked rung %d did not show its success list" % (ri + 3))
         d.js("document.querySelectorAll('.ks3-rung-self')[%d].querySelectorAll('[data-crit]').forEach(function(c){c.click()});1" % ri)
     d.check(d.js("return document.querySelector('[data-score]').textContent.length>0"), "no ladder score line")
+    if strict:
+        ticks = d.js("return [].filter.call(document.querySelectorAll('.ks3-tick label'),function(l){return l.getBoundingClientRect().height>0})"
+                     ".map(function(l){return Math.round(l.getBoundingClientRect().height)})")
+        d.check(ticks and min(ticks) >= 44, "tick rows are under 44px tall: %s" % sorted(set(ticks))[:4])
 
 
 def ks4_click_buttons(d, section_js, skip=("Check", "Tap a link", "Show", "Next", "Retry")):
@@ -558,6 +669,12 @@ def walk_light(page, base, ks, slug, route, path, rec, shots):
     overflow(d)
     if ks == 4:
         triangles(d, rec)
+        ks4_words(d, route)
+    else:
+        ks3_words(d)
+    figures(d)
+    tap_targets(d, ks)
+    touch_drag_slider(d)
     if shots and slug in SHOT_PAGES and route in (None, "CH"):
         page.screenshot(os.path.join(shots, "%s-light-open.png" % tag.replace(" ", "-")), width=W, height=H)
     answer = (lambda: ks3_practice(d)) if ks == 3 else (lambda: ks4_practice(d))
@@ -687,6 +804,7 @@ def main():
     print("\nposted question ids per page: %s" % json.dumps({k: len(v["ids"]) for k, v in sorted(POSTED.items())}))
     allp = sorted({i for v in POSTED.values() for i in v["ids"]})
     print("distinct posted ids: %d (kept or added in the map: %d)" % (len(allp), sum(1 for i in allp if idmap.get(i) in ("kept", "added"))))
+    print("\nfigures (natural width / room) per page: %s" % json.dumps({k: v for k, v in sorted(FIGS.items()) if v}))
     print("\nquiz bank size per page: %s" % json.dumps(QUIZ_SIZES, sort_keys=True))
     print("\n%d page(s), %d checks, %d failure(s). Screenshots: %s" % (n, total, len(FAILS), shots))
     for f in FAILS:

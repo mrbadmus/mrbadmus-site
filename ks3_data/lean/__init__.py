@@ -96,6 +96,15 @@ def _ladder(lesson, rec):
             raise ValueError("lean[%s]: ladder_feedback names rung %r, which has no options"
                              % (rec["slug"], rung))
         q["feedback"] = dict(fb)
+    # exact-text edits to a self-marked rung's success list (render only; the authored list is
+    # untouched). Every [old, new] pair must find its old text exactly once, or the build stops.
+    for old, new in rec.get("ladder_ticks") or []:
+        hits = [(rung, i) for rung, q in lad.items() for i, t in enumerate(q.get("success") or []) if t == old]
+        if len(hits) != 1:
+            raise ValueError("lean[%s]: ladder_ticks old text %r found %d times in the ladder's success lists"
+                             % (rec["slug"], old[:70], len(hits)))
+        rung, i = hits[0]
+        lad[rung]["success"][i] = new
     for rung, stem in (rec.get("ladder_stem") or {}).items():
         if rung not in lad:
             raise ValueError("lean[%s]: ladder_stem names unknown rung %r" % (rec["slug"], rung))
@@ -137,6 +146,11 @@ def apply(lesson):
     lesson["stretch"] = []
     lesson["ladder"] = _ladder(lesson, rec)
     lesson["misconceptions"] = _misconceptions(lesson, rec)
+    # the lean page carries a convention note only when its record sets one
+    if rec.get("convention_note"):
+        lesson["convention_note"] = rec["convention_note"]
+    else:
+        lesson.pop("convention_note", None)
     # the record's own figures join the lesson's (a drawn figure needs its art registered)
     have = {f["id"] for f in lesson.get("figures") or []}
     lesson["figures"] = list(lesson.get("figures") or []) + [

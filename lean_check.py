@@ -106,6 +106,18 @@ def teaching_texts(rec):
             out.append(("ladder_feedback[%s][%s]" % (rung, k), s, "teach"))
     for rung, s in (rec.get("ladder_stem") or {}).items():
         out.append(("ladder_stem[%s]" % rung, s, "stem"))
+    # render-only overlays: wording a pupil reads on the lean page (marking points are quiz items)
+    for k, v in (rec.get("connects") or {}).items():
+        out.append(("connects[%s]" % k, v, "teach"))
+    for k, v in (rec.get("figure_caption") or {}).items():
+        if v:
+            out.append(("figure_caption[%s]" % k, v, "teach"))
+    for k, v in (rec.get("word_defs") or {}).items():
+        out.append(("word_defs[%s]" % k, v, "teach"))
+    for i, (_old, new) in enumerate(rec.get("ladder_ticks") or []):
+        out.append(("ladder_ticks[%d]" % i, new, "stem"))
+    if rec.get("convention_note"):
+        out.append(("convention_note", rec["convention_note"], "teach"))
     return out
 
 
@@ -254,6 +266,30 @@ def spec_table_problems(ks3_slugs, ks4_slugs):
     return missing
 
 
+def duplicate_keys():
+    """A record is one dict literal; Python keeps the LAST of two equal keys and says nothing.
+    Two `"ladder_stem"` entries lost one's words silently, so refuse any repeated top-level key."""
+    import ast
+    import glob
+    problems = []
+    for path in sorted(glob.glob(os.path.join(HERE, "ks3_data", "lean", "*.py"))
+                       + glob.glob(os.path.join(HERE, "ks4_lessons", "lean", "*.py"))):
+        if os.path.basename(path).startswith("_"):
+            continue
+        tree = ast.parse(open(path, encoding="utf-8").read())
+        for node in tree.body:
+            if (isinstance(node, ast.Assign) and any(getattr(t, "id", "") == "LESSON" for t in node.targets)
+                    and isinstance(node.value, ast.Dict)):
+                seen = set()
+                for k in node.value.keys:
+                    name = getattr(k, "value", None)
+                    if name in seen:
+                        problems.append("%s: the record has the key %r twice (the second silently wins)"
+                                        % (os.path.relpath(path, HERE), name))
+                    seen.add(name)
+    return problems
+
+
 def run(strict_spec=None, pages=True, ks=(3, 4)):
     """(problems, warnings). `pages=False` checks the records only; `ks` picks the key stage(s)."""
     if strict_spec is None:
@@ -263,7 +299,7 @@ def run(strict_spec=None, pages=True, ks=(3, 4)):
     import ks4_lessons
     ks3 = k3.records()
     k4_lessons = ks4_lessons.lean_lessons()
-    problems = []
+    problems = list(duplicate_keys())
     ks3 = ks3 if 3 in ks else {}
     k4_lessons = k4_lessons if 4 in ks else []
     for slug, rec in sorted(ks3.items()):

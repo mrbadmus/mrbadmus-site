@@ -65,6 +65,13 @@ LESSON = {
                   "Then the gas in the air around the leaf does not change overall."]},
     ],
     "try": None,
+    # render-only overlays (ks3_data/lean/__init__.py, build_ks3.py): nothing here reaches the question mirror
+    "figure_caption": {"b4-guard-cells-two-state":
+                       "Water moves in, the guard cells curve and the pore opens. Water moves out and it closes."},
+    "ladder_ticks": [
+        ["Proposes a fair test \u2014 identical plants, one on continuous light and one on a day/night cycle, comparing growth against energy used.",
+         "Proposes a fair test: identical plants, one on continuous light and one on a day/night cycle, comparing growth against energy used."],
+    ],
     "ladder_feedback": {
         "recall": {
             0: "Plants respire at night and in the day too.",

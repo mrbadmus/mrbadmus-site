@@ -75,13 +75,34 @@ LESSON = {
                   "The lung collapses, even if it is not damaged."]},
     ],
     "try": None,
+    # render-only overlays (ks3_data/lean/__init__.py, build_ks3.py): nothing here reaches the question mirror
+    "connects": {
+        "Gas pressure": "The same particles in a bigger space hit the walls less often.",
+        "Testing the model": "How to find where a model stops being true.",
+    },
+    "figure_caption": {"b4-bell-jar-model": None},      # the card text already says it
+    "ladder_stem": {
+        "apply": "The balloon starts empty. You seal the tube so no air can get in or out. "
+                 "Then you pull the rubber sheet down. What happens?",
+        "explain": "A small wound between the ribs lets air into the space around a lung. Explain why "
+                   "this can collapse a lung that is not damaged. Use the words volume, pressure and "
+                   "diaphragm. Say why enlarging the chest no longer helps.",
+        "produce": "You lie on the bottom of a pool and breathe through a 2 m snorkel. Water pressure "
+                   "increases with depth. Explain, using pressure, why this is far harder than "
+                   "snorkelling at the surface. Say why the problem is the chest, not the tube.",
+    },
+    "ladder_ticks": [
+        ["Concludes the tube is not the problem \u2014 the pressure difference the muscles must overcome is.",
+         "Concludes the tube is not the problem. The pressure difference the muscles must overcome is."],
+    ],
     "figures": [
         {"id": "b4-bell-jar-model", "kind": "diagram", "status": "drawn", "art": "bell-jar-model",
          "title": "A bell jar model of the chest",
-         "desc": "Two drawings of the same bell jar side by side. Labels name the jar as the chest, "
-                 "the two balloons as the lungs, the tube as the trachea and the rubber sheet as "
-                 "the diaphragm. On the left the sheet is pulled down and the balloons are "
-                 "inflated. On the right the sheet is pushed up and the balloons are small.",
+         "desc": "Two drawings of the same bell jar, one above the other. Labels name the jar as the "
+                 "chest, the two balloons as the lungs, the tube as the trachea and the rubber sheet "
+                 "as the diaphragm. In the top drawing the sheet is pulled down, the balloons are "
+                 "inflated and air goes in. In the bottom drawing the sheet is pushed up, the balloons "
+                 "are small and air goes out.",
          "caption": "Pull the sheet down and the balloons inflate."},
         {"id": "b4-lung-volume-bottle", "kind": "diagram", "status": "drawn", "art": "lung-volume-bottle",
          "title": "Measuring lung volume with an upturned bottle",
@@ -90,10 +111,6 @@ LESSON = {
                  "bottle, pushing the water down. Volume marks run up the side of the bottle.",
          "caption": "The air you breathe out pushes water out of the bottle."},
     ],
-    "ladder_stem": {
-        "apply": "The balloon starts empty. You seal the tube so no air can get in or out. "
-                 "Then you pull the rubber sheet down. What happens?",
-    },
     "ladder_feedback": {
         "recall": {
             1: "The air moving is the last step. The muscles go first.",

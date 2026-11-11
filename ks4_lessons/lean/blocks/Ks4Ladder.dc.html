@@ -21,7 +21,7 @@
   <section class="ks3-ladder" style="margin: 0;">
     <div class="ks3-ladder-head">
       <div>
-        <h2>Exam ladder</h2>
+        <h2>Practice</h2>
       </div>
       <div class="ks3-ladder-score" aria-live="polite">
         <p class="ks3-score">{{ scoreLine }}</p>
@@ -138,7 +138,6 @@
       <section class="ks3-rung ks3-rung-self">
         <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; margin-bottom: 10px;">
           <h3 style="margin: 0; white-space: nowrap; line-height: 1.2;">Rung 4</h3>
-          <span style="font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">you write it, then you mark it</span>
         </div>
         <sc-if value="{{ r4Show }}" hint-placeholder-val="{{ true }}">
           <dc-import name="Ks4Write" id="{{ r4Id }}" eyebrow="Extended response" command="{{ r4Command }}" marks="{{ r4MarksN }}" question="{{ r4Question }}" points="{{ r4Points }}" levels="{{ r4Levels }}" reject="{{ r4Reject }}" figure-svg="{{ r4FigureSvg }}" on-mark="{{ onR4 }}" hint-size="100%,380px"></dc-import>

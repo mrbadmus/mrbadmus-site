@@ -261,6 +261,19 @@ def deeper(ctx, lst, sid=None):
                cid, items(ctx, lst)))
 
 
+def fig_wrap(html_):
+    """A diagram inside a card: the drawing, then its "Zoom in" / "Fit to screen" button.
+
+    shared/lean.js fits the drawing to the card and shows the button only where the drawing's
+    natural width is over the room. The wrapper and button are plain markup; the state
+    (`data-lean-needs`, `data-lean-zoom`) is put on by lean.js, never here, so KS4's runtime
+    leaves it alone."""
+    return ('<div class="lean-fig" data-lean-fig>%s'
+            '<button type="button" class="lean-zoom" data-lean-zoom-btn>'
+            '<span class="lean-zoom-in">Zoom in</span><span class="lean-zoom-out">Fit to screen</span>'
+            '</button></div>' % html_)
+
+
 def try_link(spec):
     """The "Try it" link, or "" when no simulation matches the lesson.
 

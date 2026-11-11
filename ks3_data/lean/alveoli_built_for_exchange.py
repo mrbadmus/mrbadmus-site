@@ -60,6 +60,14 @@ LESSON = {
                   "Breathing faster helps a little, but it cannot make the air denser."]},
     ],
     "try": None,
+    # render-only overlays (ks3_data/lean/__init__.py, build_ks3.py): nothing here reaches the question mirror
+    "connects": {
+        "Absorption and the small intestine": "The same features of a good exchange surface, in a different organ.",
+    },
+    "ladder_ticks": [
+        ["Says the air is thinner \u2014 fewer molecules in the same volume, so a lower oxygen concentration despite the same percentage.",
+         "Says the air is thinner: fewer molecules in the same volume, so a lower oxygen concentration despite the same percentage."],
+    ],
     "ladder_feedback": {
         "recall": {
             0: "The volume is the same in this question. Only the surface is different.",

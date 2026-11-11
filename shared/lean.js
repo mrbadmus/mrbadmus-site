@@ -15,6 +15,19 @@
    redraw, and the controls are given their aria-expanded on load, and again for
    anything the runtime builds later (MutationObserver).
 
+   Swipes never start from a control. A swipe that begins on an input, select, textarea or a
+   button inside the card (a slider, a preset), on anything inside [data-no-swipe], or on an
+   element that scrolls sideways, is the control's or the scroller's own gesture, not a toggle.
+   The card's own header button still starts a swipe.
+
+   Figures. Every diagram inside a lean card (`.lean-fig`, written by lean_blocks.fig_wrap) is
+   FITTED to the card width by default, so the whole drawing shows with no fade. Where its natural
+   width (the width the page used to force, read from the svg's min-width or, in KS4, from
+   --fig-vb / --fig-fs) is more than 5% over the room, `data-lean-needs` is set on the wrapper
+   and its "Zoom in" / "Fit to screen" button appears (lean.css). Only that button changes the
+   size, never a tap on the drawing, so an interactive diagram keeps working. Both attributes are
+   set here, never by a template, so KS4's patch-in-place renderer leaves them alone.
+
    Rail credit. KS3's rail reads `data-stage-done` on a section (shared/ks3.js
    doneByDom), so the Key knowledge section is marked done the first time anything
    in it opens, and `ks3:progress` is announced so the bar repaints. KS4's rail is
@@ -65,7 +78,7 @@
     var btn = card.querySelector(".lean-card-btn");
     var open = !card.hasAttribute("data-lean-open");
     setOpen(card, btn, open);
-    if (open) { creditKnowledge(card, viaSwipe); }
+    if (open) { initFigs(card); creditKnowledge(card, viaSwipe); }
   }
 
   function toggleCell(cell) {
@@ -99,18 +112,37 @@
     if (el) {
       var box = closest(el, "[data-lean-deeper]");
       setOpen(box, el, !box.hasAttribute("data-lean-open"));
+      initFigs(box);
       return;
     }
+    el = closest(t, "[data-lean-zoom-btn]");
+    if (el) { toggleZoom(el); return; }
     el = closest(t, "[data-lean-word]");
     if (el) { el.setAttribute("aria-expanded", el.getAttribute("aria-expanded") === "true" ? "false" : "true"); }
   }, true);
+
+  /* Where a swipe must NOT start: a control's own gesture, or a sideways scroller's. */
+  function ignoresSwipe(target, card) {
+    for (var el = target; el && el !== card; el = el.parentNode) {
+      if (el.nodeType !== 1) { continue; }
+      var tag = el.tagName;
+      if (tag === "INPUT" || tag === "SELECT" || tag === "TEXTAREA") { return true; }
+      if (tag === "BUTTON" && !(el.classList && el.classList.contains("lean-card-btn"))) { return true; }
+      if (el.hasAttribute && el.hasAttribute("data-no-swipe")) { return true; }
+      if (el.scrollWidth > el.clientWidth + 1) {
+        var ox = window.getComputedStyle ? window.getComputedStyle(el).overflowX : "";
+        if (ox === "auto" || ox === "scroll") { return true; }
+      }
+    }
+    return false;
+  }
 
   /* Swipe across a card toggles it. touch-action: pan-y on .lean-card (lean.css) leaves
      the vertical scroll to the browser and sends us the horizontal part. */
   var down = null;
   document.addEventListener("pointerdown", function (e) {
     var card = closest(e.target, ".lean-card");
-    if (!card || (e.pointerType === "mouse" && e.button !== 0)) { down = null; return; }
+    if (!card || (e.pointerType === "mouse" && e.button !== 0) || ignoresSwipe(e.target, card)) { down = null; return; }
     down = { card: card, x: e.clientX, y: e.clientY, id: e.pointerId };
   }, true);
   document.addEventListener("pointerup", function (e) {
@@ -124,6 +156,53 @@
   }, true);
   document.addEventListener("pointercancel", function () { down = null; }, true);
 
+  /* ── figures: fitted by default, a button to see them at natural size ── */
+  var NEEDS_OVER = 1.05;
+  function naturalWidth(svg, box) {
+    var vb = parseFloat(box.style.getPropertyValue("--fig-vb"));
+    var fs = parseFloat(box.style.getPropertyValue("--fig-fs"));
+    if (vb > 0 && fs > 0) { return 11 * vb / fs; }                  // KS4: the width its text floor asked for
+    var mw = parseFloat(svg.style.minWidth);                        // KS3: the min-width the drawer declared
+    if (mw > 0) { return mw; }
+    var v = svg.viewBox && svg.viewBox.baseVal;
+    return v && v.width ? v.width : 0;
+  }
+  function updateFig(fig) {
+    var svg = fig.querySelector("svg");
+    if (!svg) { return; }
+    var box = svg.parentNode;
+    var avail = fig.clientWidth;
+    if (!(avail > 0)) { return; }                                   // inside a closed card: measured when it opens
+    var nat = naturalWidth(svg, box);
+    var needs = nat > avail * NEEDS_OVER;
+    fig.style.setProperty("--lean-nat", Math.round(nat) + "px");
+    if (needs !== fig.hasAttribute("data-lean-needs")) {
+      if (needs) { fig.setAttribute("data-lean-needs", ""); }
+      else { fig.removeAttribute("data-lean-needs"); fig.removeAttribute("data-lean-zoom"); }
+    }
+  }
+  var figRO = (typeof ResizeObserver === "function") ? new ResizeObserver(function (entries) {
+    each(entries, function (en) { updateFig(en.target); });
+  }) : null;
+  function initFigs(root) {
+    each((root || document).querySelectorAll("[data-lean-fig]"), function (fig) {
+      if (!fig.__leanFig) { fig.__leanFig = true; if (figRO) { figRO.observe(fig); } }
+      updateFig(fig);
+    });
+  }
+  function toggleZoom(btn) {
+    var fig = closest(btn, "[data-lean-fig]");
+    if (!fig) { return; }
+    var on = !fig.hasAttribute("data-lean-zoom");
+    if (on) { fig.setAttribute("data-lean-zoom", ""); } else { fig.removeAttribute("data-lean-zoom"); }
+    var svg = fig.querySelector("svg");
+    var box = svg && svg.parentNode;
+    if (box) {
+      if (on) { box.setAttribute("tabindex", "0"); box.scrollLeft = 0; }
+      else if (box.getAttribute("tabindex") === "0" && !box.hasAttribute("data-fig-over")) { box.removeAttribute("tabindex"); }
+    }
+  }
+
   /* Give every control its aria-expanded, now and whenever the page builds more. */
   function init(root) {
     each((root || document).querySelectorAll(
@@ -133,6 +212,7 @@
     each((root || document).querySelectorAll("[data-lean-showall]"), function (b) {
       if (!b.hasAttribute("aria-pressed")) { b.setAttribute("aria-pressed", "false"); }
     });
+    initFigs(root);
   }
   var queued = false;
   function later() {
@@ -149,5 +229,6 @@
   if (document.readyState === "loading") { document.addEventListener("DOMContentLoaded", start); }
   else { start(); }
 
-  window.MrBadmusLean = { init: init, toggleCard: toggleCard };
+  window.addEventListener("resize", function () { initFigs(); });
+  window.MrBadmusLean = { init: init, toggleCard: toggleCard, ignoresSwipe: ignoresSwipe };
 })();

@@ -76,6 +76,26 @@ LESSON = {
                   "But the surface area is much smaller, so gas exchange is poor."]},
     ],
     "try": None,
+    # render-only overlays (ks3_data/lean/__init__.py, build_ks3.py): nothing here reaches the question mirror
+    "connects": {
+        "Antagonistic muscle pairs": "Muscles can only pull, so they work in pairs.",
+    },
+    "word_defs": {
+        "asthma": "A condition in which the bronchioles narrow. The muscle contracts, the lining swells and extra mucus is made.",
+    },
+    "ladder_stem": {
+        "produce": "A patient with emphysema has almost normal lung volume but greatly reduced gas transfer. "
+                   "Explain how both can be true, using what you learnt about alveoli. Say which feature of "
+                   "a good exchange surface has been lost.",
+    },
+    "ladder_ticks": [
+        ["Identifies the problem as narrowed bronchioles \u2014 muscle contraction, swelling and mucus.",
+         "Identifies the problem as narrowed bronchioles: muscle contraction, swelling and mucus."],
+        ["Identifies large surface area as the requirement that has been lost.",
+         "Identifies large surface area as the feature that has been lost."],
+        ["Connects this back to the hook of the alveoli lesson \u2014 the patient has moved partway towards the smooth bag.",
+         "Says the alveoli have joined into fewer, larger spaces, more like one smooth bag."],
+    ],
     "ladder_feedback": {
         "recall": {
             0: "Blood oxygen hardly changes in ordinary exercise. Your body detects carbon dioxide.",

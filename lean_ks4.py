@@ -165,6 +165,15 @@ def js(value):
 
 # ── slots ───────────────────────────────────────────────────────────────
 
+def _wrap_fig_div(markup, prop):
+    """Wrap the bordered div that holds `{{ <prop> }}` in lean_blocks.fig_wrap, in place."""
+    pat = re.compile(r'<div style="border-radius: var\(--ks3-r-panel\); overflow: hidden; '
+                     r'border: 2px solid var\(--ks3-ink\);">\{\{ %s \}\}</div>' % prop)
+    if len(pat.findall(markup)) != 1:
+        raise SystemExit("lean_ks4: the legacy figure div for {{ %s }} is not found once" % prop)
+    return pat.sub(lambda m: lean_blocks.fig_wrap(m.group(0)), markup)
+
+
 def _legacy_slot_sources(tpl):
     """Markup the legacy template already draws, for slots that reuse it unchanged."""
     out = {}
@@ -178,7 +187,8 @@ def _legacy_slot_sources(tpl):
         sec = re.sub(r'\s*<p style="margin: 12px 0 0; max-width: 62ch;">.*?</p>', "", sec,
                      count=1, flags=re.S)
         sec = re.sub(r"^<section[^>]*>", "", sec)
-        out["sankey"] = re.sub(r"</section>$", "", sec).strip()
+        sk = re.sub(r"</section>$", "", sec).strip()
+        out["sankey"] = _wrap_fig_div(sk, "sankeyFig")
     for mode in ("worked", "attempt"):
         m = re.search(r'<dc-import name="Ks4Steps" mode="%s"[^>]*></dc-import>' % mode, tpl)
         if m:
@@ -190,7 +200,7 @@ def _legacy_slot_sources(tpl):
                     r'border: 2px solid var\(--ks3-ink\);">\{\{ mixFig \}\}</div>', tpl)
     line = re.search(r'<p aria-live="polite" style="[^"]*">\{\{ yearLine \}\}</p>', tpl)
     if m and fig and line:
-        out["mix"] = "%s\n%s\n%s" % (m.group(0), fig.group(0), line.group(0))
+        out["mix"] = "%s\n%s\n%s" % (m.group(0), lean_blocks.fig_wrap(fig.group(0)), line.group(0))
     return out
 
 
@@ -206,7 +216,7 @@ class _Slots:
         name = part["slot"]
         self.used.add(name)
         if name in SIMPLE_FIG_SLOTS:
-            return _FIG_DIV % SIMPLE_FIG_SLOTS[name]
+            return lean_blocks.fig_wrap(_FIG_DIV % SIMPLE_FIG_SLOTS[name])
         if name == "triangle-energy":
             return self._triangle("eqEnergy")
         if name == "triangle-power":
@@ -237,6 +247,26 @@ class _Slots:
 
 def _route_wrap(flag, out):
     return '<sc-if value="{{ %s }}">%s</sc-if>' % (flag, out)
+
+
+# ── the spec eyebrow, route-aware ───────────────────────────────────────
+#
+# AQA Combined Science (8464) numbers physics 6.x; AQA Physics (8463) numbers the same sections
+# 4.x with the same sub-numbers. A legacy page that writes the Combined number as a literal would
+# show it on every Triple route, so the literal becomes `{{ leanEyebrow }}`, which the logic
+# resolves from the route (the same mechanism power and changes-in-energy already use).
+
+_EYEBROW_LITERAL = re.compile(r'<p class="ks3-eyebrow">AQA Physics (6\.[\d.]+)</p>')
+
+
+def _eyebrow_js(lesson, spec):
+    if lesson["subject"] != "physics" or not spec.startswith("6."):
+        raise SystemExit("lean_ks4: %s: the 6.x to 4.x eyebrow rule is for physics sections, got %r"
+                         % (lesson["slug"], spec))
+    tail = (" \u00b7 %s" % lesson["family"]) if lesson.get("family") else ""
+    comb = "AQA Combined Science (8464) %s%s" % (spec, tail)
+    tri = "AQA Physics (8463) 4.%s%s" % (spec[2:], tail)
+    return "const LEAN_EYEBROW = %s;\n" % js({"c": comb, "t": tri})
 
 
 # ── the template ────────────────────────────────────────────────────────
@@ -291,6 +321,11 @@ def _legacy_template(lesson, rec, tpl):
         raise SystemExit("lean_ks4: %s: header has %d big question(s), %d draft flag(s)"
                          % (lesson["slug"], n1, n3))
 
+    m = _EYEBROW_LITERAL.search(hdr)
+    slots.spec = m.group(1) if m else None
+    if m:
+        hdr = hdr.replace(m.group(0), '<p class="ks3-eyebrow">{{ leanEyebrow }}</p>', 1)
+
     words_know_fact_try, deeper = _lean_sections(rec, slots)
     end_tag = end.group(0)
     if not (slots.used & LEGAL_SLOTS):
@@ -305,10 +340,10 @@ def _legacy_template(lesson, rec, tpl):
 
 def _generic_template(lesson, rec):
     slots = _Slots(rec, None)
+    slots.spec = str(lesson["spec"])
     title = lesson["title"]
     hdr = ['      <header class="ks3-lesson-head">',
-           '        <p class="ks3-eyebrow">AQA %s %s</p>' % (lesson["subject"].capitalize(),
-                                                              html.escape(str(lesson["spec"]))),
+           '        <p class="ks3-eyebrow">{{ leanEyebrow }}</p>',
            "        <h1>%s</h1>" % html.escape(title), ROUTE_SWITCH]
     if rec.get("equations"):
         hdr.append(EQ_SHEET_LINK)
@@ -366,7 +401,7 @@ def _lean_props_js(rec):
     return "\n".join(lines) + "\n"
 
 
-def _legacy_logic(lesson, rec, logic):
+def _legacy_logic(lesson, rec, logic, spec=None):
     what = lesson["slug"] + " logic"
     m = re.search(r"const RAIL = \[.*?\n\];", logic, re.S)
     if not m or len(re.findall(r"const RAIL = \[", logic)) != 1:
@@ -403,6 +438,11 @@ def _legacy_logic(lesson, rec, logic):
         logic = _once(logic, "return Object.assign({}, R, {",
                       "return Object.assign({}, R, LEAN_PROPS, {", what)
         logic = _lean_props_js(rec) + logic
+    if spec:
+        # the eyebrow literal became {{ leanEyebrow }}: resolve it from the route
+        logic = _once(logic, "return Object.assign({}, R, ",
+                      "return Object.assign({}, R, { leanEyebrow: R.isTriple ? LEAN_EYEBROW.t : LEAN_EYEBROW.c }, ", what)
+        logic = _eyebrow_js(lesson, spec) + logic
     return logic
 
 
@@ -414,7 +454,7 @@ def _generic_logic(lesson, rec):
     flat = ("{ route: 'Triple Higher', routeOptions: [], onRoute: () => {}, isHigher: true, "
             "isTriple: true, isTH: true, notHigher: false, notTriple: false, eqSheetHref: '#', "
             "eqSheetLabel: '' }")
-    return (RAIL_JS + "\n" + _lean_props_js(rec) + """
+    return (RAIL_JS + "\n" + _eyebrow_js(lesson, str(lesson["spec"])) + _lean_props_js(rec) + """
 class Component extends DCLogic {
   state = { active: 0, libReady: false, route: null, hook: null, know: false, calc: 0, ladder: false };
   componentDidMount() {
@@ -430,7 +470,7 @@ class Component extends DCLogic {
     const theme = this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined;
     const slug = %(slug)s;
     return Object.assign({}, R, LEAN_PROPS, {
-      railV, theme, ready,
+      railV, theme, ready, leanEyebrow: R.isTriple ? LEAN_EYEBROW.t : LEAN_EYEBROW.c,
       hookOptions: %(hook)s,
       onHook: (i) => this.setState({ hook: i }),
       onKnow: () => this.setState({ know: true }),
@@ -460,7 +500,7 @@ def source(lesson, legacy=None):
     if legacy is not None:
         tpl, logic, report = legacy
         template, slots = _legacy_template(lesson, rec, tpl)
-        logic = _legacy_logic(lesson, rec, logic)
+        logic = _legacy_logic(lesson, rec, logic, slots.spec)
     else:
         template, slots = _generic_template(lesson, rec)
         logic, report = _generic_logic(lesson, rec), {}

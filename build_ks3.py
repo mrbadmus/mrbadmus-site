@@ -1097,12 +1097,17 @@ def r_figure(lesson, block):
                            % (m.group(1), fid, fid, fid, e(fig["title"]),
                               fid, e(fig["desc"]))),
                 svg, count=1)
+        # ⊕ lean pilot: a lean record may reword (or drop) a figure's caption, at render only.
+        cap = fig["caption"]
+        over = (lesson.get("lean") or {}).get("figure_caption") or {}
+        if fig["id"] in over:
+            cap = over[fig["id"]]
         return ('<figure class="ks3-figure ks3-figure-drawn"%s>'
                 '<div class="ks3-figure-scroll" tabindex="0" role="group" '
                 'aria-label="%s — scrollable diagram">%s</div>'
-                '<figcaption>%s</figcaption></figure>'
+                '%s</figure>'
                 % (_id_attr(block), e(fig["title"]), svg,
-                   t(fig["caption"])))
+                   ("<figcaption>%s</figcaption>" % t(cap)) if cap else ""))
     return ('<figure class="ks3-figure"><img src="/ks3/figures/%s.svg" alt="%s"/>'
             '<figcaption>%s</figcaption></figure>'
             % (e(fig["id"]), e(fig["caption"]), t(fig["caption"])))
@@ -4123,7 +4128,7 @@ def _lean_figure_part(lesson):
             if not out:
                 raise ValueError("lean[%s]: figure %r is not a drawn figure of this lesson"
                                  % (lesson["slug"], p["figure"]))
-            return out
+            return lean_blocks.fig_wrap(out)
         return None
     return part
 
@@ -4135,6 +4140,7 @@ def r_lean_start(lesson, block):
     # unique within the page and the same on every build.
     defs = {v["term"].lower(): v["definition"] for v in lesson.get("vocabulary") or []
             if v.get("term") and v.get("definition")}
+    defs.update({k.lower(): v for k, v in (rec.get("word_defs") or {}).items()})   # the record's own wording wins
     _LEAN_CTX[lesson["slug"]] = lean_blocks.Ctx(
         prefix="lean", fmt=rich, state_attrs=True, part=_lean_figure_part(lesson), defs=defs)
     setup = ('<p class="ks3-hook-prompt">%s</p>' % rich(st["setup"])) if st.get("setup") else ""
@@ -4605,7 +4611,13 @@ def lesson_page(unit, lesson, registry, units_by_code, neighbours=None):
             tgt_unit = units_by_code.get(tgt["_unit"])
         else:
             tgt_unit = units_by_code.get(r["unit"])
-        why = ('<p>%s</p>' % t(r["why"])) if r.get("why") else ""
+        why_text = r.get("why")
+        # ⊕ lean pilot: a lean record may reword what a "Connects to" link says, by its title.
+        over = (lesson.get("lean") or {}).get("connects") or {}
+        _shown = r.get("label") or (tgt["title"] if tgt else r["lesson"])
+        if _shown in over:
+            why_text = over[_shown]
+        why = ('<p>%s</p>' % t(why_text)) if why_text else ""
         # ⊕ MRB-228 — an authored `label` overrides the target's own title.
         #
         # The card printed the TARGET's title, always. Usually right and
@@ -4681,7 +4693,8 @@ def lesson_page(unit, lesson, registry, units_by_code, neighbours=None):
         prereqs = ['<li><span class="ks3-endmatter-prose">%s</span></li>'
                    % t("This follows on from %s." % prev[1]["title"]
                        if same_unit
-                       else "Nothing — this is where the unit starts.")]
+                       else ("This is the first lesson in this unit." if lesson.get("lean")
+                             else "Nothing — this is where the unit starts."))]
     if not ks4 and lesson.get("ks4_becomes"):
         ks4 = ['<li><span class="ks3-endmatter-prose">%s</span></li>'
                % rich(lesson["ks4_becomes"])]
