@@ -148,6 +148,12 @@ def build(base="origin/main"):
                         note = _start_note(ks, ref, lean3)
                     ids[qid] = {"status": "kept", "new": qid, "kp": old_q[qid], "note": note}
                 elif qid in old_q:
+                    if qid.startswith(("cs-", "bv2-")):
+                        # A consumer exam-bank row in the database, never asked on a lesson
+                        # page: rebuilding the page cannot remove it.
+                        ids[qid] = {"status": "kept", "new": qid, "kp": old_q[qid],
+                                    "note": "a B2C exam-bank row, not on any lesson page; untouched"}
+                        continue
                     ids[qid] = {"status": "removed", "new": None, "kp": old_q[qid], "note": _why(qid)}
                 else:
                     kp = tags_now.get(qid)

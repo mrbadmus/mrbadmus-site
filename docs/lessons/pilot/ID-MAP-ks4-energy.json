@@ -3,9 +3,9 @@
  "ids": {
   "cs-phys-bouncing-ball-6": {
    "kp": "ks4.energy-stores-systems.4",
-   "new": null,
-   "note": "the question is not on the lean page",
-   "status": "removed"
+   "new": "cs-phys-bouncing-ball-6",
+   "note": "a B2C exam-bank row, not on any lesson page; untouched",
+   "status": "kept"
   },
   "ks4-changes-in-energy-e01": {
    "kp": "ks4.changes-in-energy.1",

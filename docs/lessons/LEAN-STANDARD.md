@@ -144,6 +144,24 @@ Key fact: "Efficiency compares the useful energy out with the total energy in.
 Wasted energy is dissipated to the surroundings, mostly as heat, so no device is
 100% efficient."
 
+## Question IDs: keep them (Mide's rule, 11 Nov 2026)
+
+B2C tracks pupils by question ID, so a silent change breaks a child's history.
+
+- Keep every existing question ID and activity ID wherever the question survives
+  the rebuild, even if its wording changes.
+- Ship an old-to-new ID map for the unit, `docs/lessons/<wave>/ID-MAP-<unit>.json`:
+  every ID kept, changed, added or removed. Activities that are removed are listed
+  as "removed". Never delete or rewrite saved child answers in the database.
+- Every new question carries a knowledge-point tag, the same way existing questions
+  are tagged.
+- Never describe a diagram in words. Draw it.
+- List every changed ID in the report.
+
+`docs/b2c/LESSON-DEPENDENCIES.md` is the fuller version once it exists. Read it first.
+This section was added from Mide's message because the updated copy of this file
+could not be reached during the pilot. If his copy differs, his copy wins.
+
 ## Before you hand in a lesson, check
 
 - Spec table complete for the right spec and route; nothing missing, nothing extra.
