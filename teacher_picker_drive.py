@@ -427,7 +427,7 @@ WEIGHT_RANDOM = wrap(PRE, r"""
   out.minusOnOne = q('pick-set-minus', rows()[1]).getAttribute('aria-disabled');
   await click('pick-settings');                       // close the panel
   await click('pick-mode-random');
-  const N = 600, tally = {};
+  const N = 1500, tally = {};
   for (let i = 0; i < N; i++) {
     const g = q('pick-go');
     g.click();
@@ -896,10 +896,10 @@ def features(cdp, port, width, height):
             bad("weight 5 was drawn %.2fx as often as the average weight-1 "
                 "pupil over %d picks (%s hit(s) against an average of %.1f) "
                 "— wanted between 3.5x and 6.5x"
-                % (g.get("ratio") or 0, 600, g.get("heavyHits"),
+                % (g.get("ratio") or 0, 1500, g.get("heavyHits"),
                    g.get("avgOther") or 0))
         if g.get("distinct", 0) < (g.get("M") or 0):
-            bad("Random over 600 picks never showed %d of %d pupils"
+            bad("Random over 1500 picks never showed %d of %d pupils"
                 % ((g.get("M") or 0) - g.get("distinct", 0), g.get("M") or 0))
         if g.get("ls"):
             bad("weighting without Save wrote %d localStorage key(s)" % g["ls"])
