@@ -1794,7 +1794,8 @@ GATES = [
          watches=["config_env.py", "ks3_key_audit.py", "ks3_data/**",
                   "!ks3_data/**/questions_*.py", "ks3_art/**",
                   "build_ks3.py", "shared/ks3.js", "shared/ks3.css",
-                  "ks3_parity.py", "verify_ks3.py", "ks3_statutory.py"],
+                  "ks3_parity.py", "verify_ks3.py", "ks3_statutory.py",
+                  "lean_blocks.py"],   # lean pilot: the lean records' renderer is a SOURCE now
          # ⊕ MRB-346 follow-up, 15 Sep 2026. `SOURCES` (this file's own
          # inventory of what it audits) names `build_ks3.py`, `ks3_art/**`
          # and each unit's `__init__.py` — never a `questions_*.py`. A

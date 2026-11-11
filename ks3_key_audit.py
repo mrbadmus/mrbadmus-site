@@ -81,6 +81,11 @@ SOURCES = (
     "ks3_data/b3/__init__.py", "ks3_data/b4/__init__.py",
     "ks3_data/b5/__init__.py", "ks3_data/b6/__init__.py",
     "ks3_data/b7/__init__.py",
+    # ⊕ lean pilot (Nov 2026) — a lean lesson's record (ks3_data/lean/<slug>.py)
+    # is merged in by ks3_data/lean/__init__.py and drawn by lean_blocks.py, the
+    # renderer KS3 shares with KS4. Leaving them out reported the lean records'
+    # `mistakes` lists as dead on every B4 lesson: the false positive above.
+    "lean_blocks.py", "ks3_data/lean/__init__.py",
 )
 
 
@@ -210,17 +215,21 @@ def indirect_reads(node, out):
 # Proved by the two keys this does NOT free: `c2-04`'s `origin` and `c2-02`'s
 # `element` are flagged dead-by-intent in their own source, sit in dicts that
 # are only ever reached by literal key, and stay red.
+# ⊕ lean pilot (Nov 2026) — `%` joins the refused first characters. A subscript
+# that opens with `%` is never code; it is a format string in a message, e.g.
+# `"lean[%s]: figure %r is not drawn"`, and counting it made the lean record a
+# "dereferenced map", which silently freed EVERY key authored inside it.
 _DEREF_PATTERNS = (
     # `NAME[` followed by something that is not a quote, a digit or a sign —
     # i.e. an expression, not a literal key and not a list index.
-    re.compile(r"\b([A-Za-z_][A-Za-z0-9_]*)\s*\[\s*(?![\"'\d\-:\]])"),
+    re.compile(r"\b([A-Za-z_][A-Za-z0-9_]*)\s*\[\s*(?![\"'\d\-:\]%])"),
     # `["NAME"][` — the map reached by literal key, then dereferenced.
-    re.compile(r"[\"']([A-Za-z_][A-Za-z0-9_]*)[\"']\s*\]\s*\[\s*(?![\"'\d\-:\]])"),
+    re.compile(r"[\"']([A-Za-z_][A-Za-z0-9_]*)[\"']\s*\]\s*\[\s*(?![\"'\d\-:\]%])"),
     # `.NAME[` and the runtime's guarded spelling `(cfg.NAME || {})[k]`, which
     # reaches the map through a member access and an empty-object default. The
     # name is still written down; only the punctuation around it differs.
     re.compile(r"\.([A-Za-z_][A-Za-z0-9_]*)\s*(?:\|\|\s*\{\s*\}\s*)?\)?\s*"
-               r"\[\s*(?![\"'\d\-:\]])"),
+               r"\[\s*(?![\"'\d\-:\]%])"),
 )
 
 # A map can be RENAMED as it crosses into the payload, and then dereferenced
@@ -234,6 +243,26 @@ _DEREF_PATTERNS = (
 _ALIAS = re.compile(
     r"[\"']([A-Za-z_][A-Za-z0-9_]*)[\"']\s*:\s*"
     r"[A-Za-z_][A-Za-z0-9_]*\s*(?:\.get\(\s*|\[\s*)[\"']([A-Za-z_][A-Za-z0-9_]*)[\"']")
+
+# ⊕ lean pilot (Nov 2026). A map ITERATED by its literal name reads every key it
+# has: `(rec.get("word_defs") or {}).items()`. Only `.items()`, the spelling
+# that hands the renderer the key as well as the value, and only when the map
+# is reached by a literal name on the same expression.
+_ITEMS = re.compile(
+    r"(?:\.get\(\s*|\[\s*)[\"']([A-Za-z_][A-Za-z0-9_]*)[\"']\s*[\])]\s*"
+    r"(?:or\s*\{\s*\}\s*\)\s*)?\.items\(\)")
+
+# ⊕ lean pilot (Nov 2026). A lean record's render-only overlays (`connects`,
+# `figure_caption`) are taken into a local and looked up by a computed key:
+#     over = (lesson.get("lean") or {}).get("connects") or {}
+#     ... over[_shown]
+# Only THIS spelling — a map read straight out of the lean record — is followed.
+# A general "any local assigned from .get()" rule was tried and refused: it
+# aliased about a hundred locals across ks3_art/ and freed a B1 key (pairs_with)
+# that nothing reads.
+_LEAN_OVERLAY = re.compile(
+    r"\b([A-Za-z_][A-Za-z0-9_]*)\s*=\s*\(\s*[A-Za-z_][A-Za-z0-9_]*\.get\(\s*[\"']lean[\"']\s*\)"
+    r"\s*or\s*\{\s*\}\s*\)\s*\.get\(\s*[\"']([A-Za-z_][A-Za-z0-9_]*)[\"']\s*\)")
 
 
 def deref_maps(reads):
@@ -251,8 +280,9 @@ def deref_maps(reads):
             continue
         for pat in _DEREF_PATTERNS:
             found |= set(pat.findall(src))
-        for new, old in _ALIAS.findall(src):
+        for new, old in _ALIAS.findall(src) + _LEAN_OVERLAY.findall(src):
             alias.setdefault(new, set()).add(old)
+        found |= set(_ITEMS.findall(src))
     # One hop, and only INTO the set: a name that is dereferenced frees the
     # authored name it was renamed from, never the other way round.
     for new in list(found):
