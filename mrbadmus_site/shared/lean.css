@@ -1,0 +1,175 @@
+/* shared/lean.css: the lean lesson shape (Key words, Key knowledge, Key fact, Dive deeper).
+   Loaded ONLY by lean pages (KS3 and KS4). Markup: lean_blocks.py. Behaviour: lean.js.
+
+   Colours are the --ks3-* tokens, which KS4 pages inherit too, so light and dark
+   both follow html[data-theme] with nothing here that mentions a theme. Nothing
+   raw: a colour in this file is a token or it is a fallback for a missing token.
+
+   OPEN STATE IS [data-lean-open] ON THE WRAPPER, set by lean.js. It is never a
+   `hidden` attribute: KS4's runtime rewrites any attribute its template names
+   (see lean_blocks.py), and print needs one rule that opens everything. */
+
+.lean-sec { margin: 28px 0 0; scroll-margin-top: 92px; }
+.lean-h {
+  margin: 0 0 12px;
+  font-size: 26px;
+  line-height: 1.2;
+  letter-spacing: -.02em;
+  color: var(--ks3-ink);
+}
+.lean-sr {
+  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+  overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; border: 0;
+}
+.lean-p { margin: 0; font-size: 18px; line-height: 1.6; color: var(--ks3-ink-body, var(--ks3-ink)); }
+.lean-p + .lean-p, .lean-p + .lean-list, .lean-list + .lean-p,
+.lean-mistakes + .lean-p, .lean-p + .lean-mistakes { margin-top: 12px; }
+.lean-list { margin: 0; padding-left: 1.2em; font-size: 18px; line-height: 1.6; color: var(--ks3-ink-body, var(--ks3-ink)); }
+.lean-list li + li { margin-top: 6px; }
+.lean-mark { width: 1em; height: 1em; flex: 0 0 auto; fill: none; stroke: currentColor;
+  stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; vertical-align: -.12em; }
+
+/* focus: one visible ring on every control, as the rest of the lesson */
+.lean-card-btn:focus-visible, .lean-cell:focus-visible, .lean-showall:focus-visible,
+.lean-deeper-btn:focus-visible, .lean-chip-btn:focus-visible, .lean-try-link:focus-visible {
+  outline: 3px solid var(--ks3-accent, var(--ks3-accent-text));
+  outline-offset: 2px;
+}
+
+/* Key words */
+.lean-words { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.lean-word { margin: 0; }
+.lean-chip {
+  display: inline-block; min-height: 40px; box-sizing: border-box; padding: 8px 14px;
+  border: 2px solid var(--ks3-ink); border-radius: 99px;
+  background: var(--ks3-card); color: var(--ks3-ink);
+  font: inherit; font-size: 17px; font-weight: 700; line-height: 1.3;
+}
+.lean-chip-btn { cursor: pointer; }
+.lean-chip-btn[aria-expanded="true"] { background: var(--ks3-accent-tint); border-color: var(--ks3-accent); }
+.lean-word-def { display: none; margin: 8px 0 0; font-size: 17px; line-height: 1.55; color: var(--ks3-ink-body, var(--ks3-ink)); }
+.lean-word:has(.lean-chip-btn[aria-expanded="true"]) { flex: 1 0 100%; }
+.lean-word-def { max-width: 60ch; }
+.lean-chip-btn[aria-expanded="true"] + .lean-word-def { display: block; }
+
+/* Cards */
+.lean-stack { display: flex; flex-direction: column; gap: 12px; }
+.lean-card {
+  background: var(--ks3-card); color: var(--ks3-ink);
+  border: 2px solid var(--ks3-ink); border-radius: var(--ks3-r-panel, 14px);
+  touch-action: pan-y;               /* a horizontal swipe is ours, a vertical one scrolls */
+  -webkit-tap-highlight-color: transparent;
+}
+.lean-card[data-lean-open] { box-shadow: 4px 4px 0 var(--ks3-accent); }
+.lean-card-h { margin: 0; font-size: inherit; }
+.lean-card-btn {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  width: 100%; min-height: 52px; box-sizing: border-box; padding: 12px 16px;
+  margin: 0; border: 0; background: none; color: inherit; cursor: pointer; text-align: left;
+  font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px; line-height: 1.25;
+  letter-spacing: -.01em; border-radius: calc(var(--ks3-r-panel, 14px) - 2px);
+}
+.lean-card-title { min-width: 0; overflow-wrap: anywhere; }
+.lean-chev { width: 24px; height: 24px; flex: 0 0 auto; fill: none; stroke: currentColor;
+  stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; transition: transform .15s ease; }
+[data-lean-open] > h3 .lean-chev, [data-lean-open] > h2 .lean-chev { transform: rotate(180deg); }
+.lean-card-body { display: none; padding: 0 16px 16px; }
+.lean-card[data-lean-open] > .lean-card-body { display: block; }
+.lean-card-body > * + * { margin-top: 12px; }
+.lean-card-body .lean-p + .lean-p { margin-top: 10px; }
+
+/* Easy mistakes: a wrong line then a right line, each with a drawn mark and a hidden word */
+.lean-mistakes { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px; }
+.lean-mistake { margin: 0; position: relative; }
+.lean-wrong, .lean-right { display: flex; gap: 10px; align-items: flex-start; margin: 0;
+  font-size: 18px; line-height: 1.5; color: var(--ks3-ink-body, var(--ks3-ink)); }
+.lean-wrong + .lean-right { margin-top: 4px; }
+.lean-wrong .lean-mark { color: var(--ks3-alert-border, var(--ks3-accent-text)); margin-top: .3em; }
+.lean-right .lean-mark { color: var(--ks3-ok-text, var(--ks3-ink)); margin-top: .3em; }
+.lean-wrong { text-decoration: none; }
+
+/* Reveal table. A real <table>, fixed layout so it never scrolls sideways at 390px. */
+.lean-reveal { background: var(--ks3-card); border: 2px solid var(--ks3-ink);
+  border-radius: var(--ks3-r-panel, 14px); padding: 14px 12px 12px; }
+.lean-reveal-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+  gap: 10px; margin: 0 4px 10px; }
+.lean-reveal-h { margin: 0; font-family: var(--ks3-font-display); font-weight: 800;
+  font-size: 20px; line-height: 1.25; letter-spacing: -.01em; }
+.lean-showall {
+  min-height: 44px; box-sizing: border-box; padding: 8px 16px; cursor: pointer;
+  font: inherit; font-size: 16px; font-weight: 700; color: var(--ks3-ink);
+  background: var(--ks3-card); border: 2px solid var(--ks3-ink); border-radius: var(--ks3-r-control, 12px);
+}
+.lean-showall[aria-pressed="true"] { background: var(--ks3-accent-tint); border-color: var(--ks3-accent); }
+.lean-table { width: 100%; table-layout: fixed; border-collapse: separate; border-spacing: 0 6px; }
+.lean-table th, .lean-table td { padding: 0; vertical-align: top; text-align: left; }
+.lean-table thead th { font-family: var(--ks3-font-display); font-weight: 800; font-size: 15px;
+  line-height: 1.25; padding: 0 3px 4px; color: var(--ks3-ink-muted); overflow-wrap: anywhere; }
+.lean-table tbody th { width: 27%; font-family: var(--ks3-font-body); font-weight: 700; font-size: 15px;
+  line-height: 1.3; padding: 8px 6px 8px 4px; overflow-wrap: anywhere; color: var(--ks3-ink); }
+.lean-table td { padding: 0 3px; }
+.lean-cell {
+  display: block; width: 100%; height: 100%; min-height: 44px; box-sizing: border-box;
+  margin: 0; padding: 8px 8px; text-align: left; cursor: pointer; font: inherit;
+  font-size: 15px; line-height: 1.35; overflow-wrap: anywhere; color: var(--ks3-ink);
+  background: var(--ks3-inset, var(--ks3-band)); border: 2px dashed var(--ks3-option-border, var(--ks3-rule-strong));
+  border-radius: 10px;
+}
+.lean-cell-text { display: none; }
+.lean-cell-hint { color: var(--ks3-ink-muted); font-weight: 700; }
+.lean-cell[aria-expanded="true"], .lean-reveal[data-lean-all] .lean-cell {
+  background: var(--ks3-card); border-style: solid; border-color: var(--ks3-ink);
+}
+.lean-cell[aria-expanded="true"] .lean-cell-text, .lean-reveal[data-lean-all] .lean-cell .lean-cell-text { display: block; }
+.lean-cell[aria-expanded="true"] .lean-cell-hint, .lean-reveal[data-lean-all] .lean-cell .lean-cell-hint { display: none; }
+
+/* Key fact */
+.lean-fact {
+  padding: 16px 18px; background: var(--ks3-card); color: var(--ks3-ink);
+  border: 2px solid var(--ks3-ink); border-radius: var(--ks3-r-panel, 14px);
+  box-shadow: 5px 5px 0 var(--ks3-accent);
+}
+.lean-fact-label { margin: 0; font-family: var(--ks3-font-mono); font-weight: 500; font-size: 13px;
+  letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text); }
+.lean-fact-body { margin: 8px 0 0; font-family: var(--ks3-font-display); font-weight: 700;
+  font-size: 21px; line-height: 1.4; letter-spacing: -.01em; }
+
+/* Try it */
+.lean-try { margin: 16px 0 0; }
+.lean-try-link { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; box-sizing: border-box;
+  padding: 8px 16px; font-weight: 700; font-size: 17px; text-decoration: none; color: var(--ks3-ink);
+  border: 2px solid var(--ks3-ink); border-radius: var(--ks3-r-control, 12px); background: var(--ks3-card); }
+.lean-try-link:hover { background: var(--ks3-accent-tint); border-color: var(--ks3-accent); }
+
+/* Dive deeper */
+.lean-deeper { border: 2px dashed var(--ks3-rule-strong, var(--ks3-ink)); border-radius: var(--ks3-r-panel, 14px);
+  background: var(--ks3-inset, var(--ks3-band)); }
+.lean-deeper-h { margin: 0; font-size: inherit; }
+.lean-deeper-btn {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  width: 100%; min-height: 56px; box-sizing: border-box; padding: 12px 16px; margin: 0;
+  border: 0; background: none; color: var(--ks3-ink); cursor: pointer; text-align: left;
+  font-family: var(--ks3-font-display); font-weight: 800; font-size: 22px; line-height: 1.2;
+  border-radius: calc(var(--ks3-r-panel, 14px) - 2px);
+}
+.lean-deeper-body { display: none; padding: 0 12px 14px; }
+.lean-deeper[data-lean-open] > .lean-deeper-body { display: block; }
+
+/* One card at the narrowest widths: the page gutter is only 24px */
+@media (max-width: 420px) {
+  .lean-h { font-size: 24px; }
+  .lean-card-btn { font-size: 19px; }
+  .lean-card-body { padding: 0 14px 14px; }
+  .lean-p, .lean-list, .lean-wrong, .lean-right { font-size: 17px; }
+}
+@media (prefers-reduced-motion: reduce) { .lean-chev { transition: none; } }
+
+/* Print: everything open, no hover-only or tap-only content */
+@media print {
+  .lean-card-body, .lean-deeper-body { display: block !important; }
+  .lean-cell-text { display: block !important; }
+  .lean-cell-hint, .lean-showall { display: none !important; }
+  .lean-word-def { display: block !important; }
+  .lean-chev { display: none; }
+  .lean-card, .lean-fact, .lean-reveal { box-shadow: none; break-inside: avoid; }
+}
