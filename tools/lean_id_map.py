@@ -55,6 +55,54 @@ def render_b2c(m):
 # old id -> (new id, reason). Empty on purpose: the pilot keeps every surviving id.
 CHANGED = {}
 
+_ROUTE_DIRS = {"cf": "combined/foundation", "ch": "combined/higher", "tf": "triple/foundation", "th": "triple/higher"}
+
+
+def root_covers():
+    """{slug: {activity id: [the lesson values its controls are drawn from]}}, read from
+    ROOT_FORMS in shared/mrbadmus.v2.js (the `covers` each entry names)."""
+    src = open(os.path.join(REPO, "shared", "mrbadmus.v2.js"), encoding="utf-8").read()
+    start = src.index("var ROOT_FORMS")
+    end = src.index("<ks4-root-drafts>", start)
+    body = src[start:end]
+    keys = list(re.finditer(r"\n {8}'([a-z0-9-]+)': \[", body))
+    out = {}
+    for i, k in enumerate(keys):
+        chunk = body[k.end():keys[i + 1].start() if i + 1 < len(keys) else len(body)]
+        forms = {}
+        for m in re.finditer(r"(?:\bid|\bpick): '(\w+)'(?:(?!\bid: ').)*?covers: \[([^\]]*)\]", chunk, re.S):
+            forms.setdefault(m.group(1), re.findall(r"'(\w+)'", m.group(2)))
+        out[k.group(1)] = forms
+    return out
+
+
+def drawn(slug, route):
+    """The lesson values the built lean page's template draws a list of controls from."""
+    import glob
+    hits = glob.glob(os.path.join(REPO, "mrbadmus_site", _ROUTE_DIRS[route], "*", "*", slug + ".html"))
+    if len(hits) != 1:
+        raise SystemExit("lean_id_map: expected one %s page for %s, found %d" % (route, slug, len(hits)))
+    return set(re.findall(r'"e": "(\w+)', open(hits[0], encoding="utf-8").read()))
+
+
+def undrawn_root_activity(qid, covers):
+    """For a KS4 lesson's own activity id (a ROOT_FORMS entry): the values it covers when
+    none of them is drawn on the lean page any more, else None. The old logic stays bundled
+    (the lean page reuses some of it), so an inventory that reads the logic still lists the
+    id; only the template says whether a child can press it."""
+    m = re.match(r"ks4:([^:]+):(\w\w)#([A-Za-z]\w*)", qid)
+    if not m:
+        return None
+    slug, route, key = m.groups()
+    cov = (covers.get(slug) or {}).get(key)
+    if cov is None:
+        return None
+    if not cov:
+        raise SystemExit("lean_id_map: ROOT_FORMS %s.%s names no covers; cannot tell if it is drawn" % (slug, key))
+    if drawn(slug, route) & set(cov):
+        return None
+    return cov
+
 # Why an id was removed, by the shape of the id.
 _WHY = [
     (r"#sort-", "the sorting activity is not on the lean page"),
@@ -144,6 +192,16 @@ def build(base="origin/main"):
     now = {"KS3": json.load(open(os.path.join(REPO, "knowledge_points", "ks3.json"))),
            "KS4": json.load(open(os.path.join(REPO, "knowledge_points", "ks4.json")))}
     sc = scopes()
+    covers = root_covers()
+    # Every ROOT_FORMS activity of a lean lesson must have been read with its covers, or a
+    # later batch could keep an id the page can no longer send without anyone noticing.
+    forms = json.loads(subprocess.run(["node", os.path.join(REPO, "tools", "kp_root_forms.js"), REPO],
+                                      capture_output=True, text=True, check=True).stdout)
+    for slug in sc["KS4"]:
+        for f in forms.get(slug) or []:
+            if f["id"] not in (covers.get(slug) or {}):
+                raise SystemExit("lean_id_map: cannot read the covers of ROOT_FORMS %s.%s; teach "
+                                 "root_covers() its shape before mapping this lesson" % (slug, f["id"]))
     maps, problems = {}, []
     for ks in ("KS3", "KS4"):
         ids = {}
@@ -155,6 +213,10 @@ def build(base="origin/main"):
                 if qid in CHANGED:
                     new_id, why = CHANGED[qid]
                     ids[qid] = {"status": "changed", "new": new_id, "kp": old_q[qid], "note": why}
+                elif qid in old_q and qid in new_q and ks == "KS4" and undrawn_root_activity(qid, covers):
+                    ids[qid] = {"status": "removed", "new": None, "kp": old_q[qid],
+                                "note": "the lesson's own activity (%s) is not drawn on the lean page"
+                                        % ", ".join(undrawn_root_activity(qid, covers))}
                 elif qid in old_q and qid in new_q and not (ks == "KS4" and qid.startswith("ks4c:")):
                     # (a ks4c: matching card belongs to the classic page; a lean page never
                     # sends one, though the inventory still lists the lesson's old pairs)

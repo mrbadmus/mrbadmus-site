@@ -398,10 +398,14 @@ CASES = [
          want=["ks4:temperature-changes-shc:th#order", "ks4:temperature-changes-shc:th#offpick", "ks4:temperature-changes-shc:th#ctext"],
          back="(function(){ var s = H.rootState(); return s.order.length === 4 && s.raceDone === true && s.offPick === 0 && s.phase === 'done' && s.cText === '500' && s.cCode !== null; })()"),
     dict(name="ks4-form-round", page="/triple/higher/physics/energy/changes-in-energy.html", forms=True,
+         retired="the lean rebuild (Wave 0) took the practice round off the page",
+         absent=['"e": "roundOpts"'],
          act="await H.call(function (v) { return v.roundOpts[1].onClick; }); await H.call('onReveal'); await H.sleep(200);",
          want=["ks4:changes-in-energy:th#picks-1"],
          back="(function(){ var s = H.rootState(); return s.picks[0] === 1 && s.revealed[0] === true; })()"),
     dict(name="ks4-form-power", page="/triple/higher/physics/energy/power.html", forms=True,
+         retired="the lean rebuild (Wave 0) took the practice round off the page",
+         absent=['"e": "roundOpts"'],
          act="await H.call(function (v) { return v.roundOpts[0].onClick; }); await H.set({ revealed: { 0: true } }); await H.sleep(200);",
          want=["ks4:power:th#picks-1"],
          back="(function(){ var s = H.rootState(); return s.picks[0] === 0 && s.revealed[0] === true; })()"),
@@ -483,6 +487,8 @@ CASES = [
          check=lambda b: [x for x in b if x["question_id"].endswith("#gate")][0]["is_correct"] is True,
          back="(function(){ var s = H.rootState(); return s.gate === 0 && s.order.length === 4 && s.rankChecked === true; })()"),
     dict(name="ks4-predict-wall", page="/triple/higher/physics/energy/thermal-conductivity.html", forms=True,
+         retired="the lean rebuild (Wave 0) took the wall prediction off the page",
+         absent=['"e": "changes"', '"e": "predictions"'],
          act="await H.call(function (v) { return v.changes[0].onClick; }); await H.call(function (v) { return v.predictions[0].onClick; }); await H.sleep(200);",
          want=["ks4:thermal-conductivity:th#tries-1-1"],
          check=lambda b: isinstance(b[-1]["is_correct"], bool),
@@ -578,6 +584,8 @@ CASES = [
          check=lambda b: isinstance(b[-1]["is_correct"], bool) and b[-1]["answer"] and b[-1]["question_text"],
          back="""(function(){ var s = H.rootState(); return s.gate[0] === 0 && s.pending === null; })()"""),
     dict(name="ks4-read-zones", page="/triple/higher/physics/energy/energy-resources.html", forms=True,
+         retired="the lean rebuild (Wave 0) took the resource cards off the page",
+         absent=['"e": "zones"'],
          act="""var z = H.v().zones; for (var i = 0; i < z.length && !H.rootState().flip; i += 1) { H.click(H.exact(z[i].label)); await H.sleep(200); }""",
          want=["ks4:energy-resources:th#placed-1"],
          check=lambda b: b[-1]["is_correct"] is True,
@@ -641,6 +649,8 @@ CASES = [
          back="""(function(){ var w = H.write(); var s = w.logic.state; return s.open === true && typeof s.level === 'number' && /Level 1/.test(w.logic.props.levels[s.level].label) && !!s.ticks[0] && !s.ticks[1] && !!s.ticks[2]; })()"""),
     # Every unit of a multi-unit kind gets its own id, and every one comes back.
     dict(name="ks3-units-fault", page="/ks3/biology/breathing-and-gas-exchange/exercise-asthma-and-smoking.html",
+         retired="the lean rebuild (Wave 0) took the locate-the-fault bench off the page",
+         absent=["ks3-fault-block", "data-fault"],
          act="""var s = document.querySelector('.ks3-fault-block'); var t = s.querySelectorAll('.ks3-fault-tab');
                 for (var i = 0; i < 2; i += 1) { H.click(t[i]); await H.sleep(100); H.click(s.querySelectorAll('[data-fault] .ks3-option')[i]); await H.sleep(100); H.click(s.querySelector('[data-fault-open]')); await H.sleep(150); }""",
          want=["exercise-asthma-and-smoking#locate-the-fault-1", "exercise-asthma-and-smoking#locate-the-fault-2"],
@@ -941,7 +951,24 @@ CASES = [
          back="H.pressed(H.sec('microscope-bench').querySelectorAll('.ks3-option')[1])"),
 ]
 # One school-pupil (non-child) run per page type: the same presses.
-PUPIL = ["ks4-flag-pick", "ks4-level-pick", "ks4-form-round", "ks4-list-features", "ks3-gate", "ks3-parts-check", "ks3-typed"]
+# ⊕ 11 Nov 2026: ks4-form-internal stands in for ks4-form-round (the same stepPick form kind),
+# because the lean rebuild retired the round on changes-in-energy.
+PUPIL = ["ks4-flag-pick", "ks4-level-pick", "ks4-form-internal", "ks4-list-features", "ks3-gate", "ks3-parts-check", "ks3-typed"]
+
+
+def retired_proof(c):
+    """A case whose activity a lesson rebuild removed: prove the controls are gone from the
+    built page and every id it used to send is retired (null) in docs/b2c/id-maps, so a
+    child's saved rows are listed, not lost (docs/b2c/LESSON-DEPENDENCIES.md section 5)."""
+    import glob
+    html = open(os.path.join(REPO, "mrbadmus_site", c["page"].lstrip("/")), encoding="utf-8").read()
+    still = [s for s in c["absent"] if s in html]
+    maps = {}
+    for p in sorted(glob.glob(os.path.join(REPO, "docs", "b2c", "id-maps", "*.json"))):
+        maps.update(json.load(open(p, encoding="utf-8")))
+    unmapped = [w for w in c["want"]
+                if not any(k in maps and maps[k] is None for k in (w, re.sub(r"(-\d+)+$", "", w)))]
+    return (not still and not unmapped), {"still drawn": still, "not retired in the id map": unmapped}
 
 
 # Typed and not sent: back on the same device, nowhere else, and gone once sent.
@@ -1691,6 +1718,10 @@ def main():
 
     def one_case(c):
         print("\n── %s  (%s, %dpx)" % (c["name"], c["page"], a.width))
+        if c.get("retired"):
+            good, why = retired_proof(c)
+            ok(good, "retired: %s; its controls are gone and its ids are retired in docs/b2c/id-maps" % c["retired"], why)
+            return
         LEDGER.reset()
         LEGACY["on"] = False
         THROTTLE["ticks"] = c.get("ticks429", 0)

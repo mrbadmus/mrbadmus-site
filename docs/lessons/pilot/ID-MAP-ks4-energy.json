@@ -3135,9 +3135,9 @@
   },
   "ks4:changes-in-energy:cf#picks": {
    "kp": "ks4.changes-in-energy.4",
-   "new": "ks4:changes-in-energy:cf#picks",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the lesson's own activity (roundOpts) is not drawn on the lean page",
+   "status": "removed"
   },
   "ks4:changes-in-energy:cf#r1": {
    "kp": "ks4.changes-in-energy.2",
@@ -3237,9 +3237,9 @@
   },
   "ks4:changes-in-energy:ch#picks": {
    "kp": "ks4.changes-in-energy.4",
-   "new": "ks4:changes-in-energy:ch#picks",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the lesson's own activity (roundOpts) is not drawn on the lean page",
+   "status": "removed"
   },
   "ks4:changes-in-energy:ch#r1": {
    "kp": "ks4.changes-in-energy.2",
@@ -3339,9 +3339,9 @@
   },
   "ks4:changes-in-energy:tf#picks": {
    "kp": "ks4.changes-in-energy.4",
-   "new": "ks4:changes-in-energy:tf#picks",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the lesson's own activity (roundOpts) is not drawn on the lean page",
+   "status": "removed"
   },
   "ks4:changes-in-energy:tf#r1": {
    "kp": "ks4.changes-in-energy.2",
@@ -3441,9 +3441,9 @@
   },
   "ks4:changes-in-energy:th#picks": {
    "kp": "ks4.changes-in-energy.4",
-   "new": "ks4:changes-in-energy:th#picks",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the lesson's own activity (roundOpts) is not drawn on the lean page",
+   "status": "removed"
   },
   "ks4:changes-in-energy:th#r1": {
    "kp": "ks4.changes-in-energy.2",
@@ -4035,9 +4035,9 @@
   },
   "ks4:energy-resources:cf#placed": {
    "kp": "ks4.energy-resources.7",
-   "new": "ks4:energy-resources:cf#placed",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the lesson's own activity (zones) is not drawn on the lean page",
+   "status": "removed"
   },
   "ks4:energy-resources:cf#r1-1": {
    "kp": "ks4.energy-resources.5",
@@ -4149,9 +4149,9 @@
   },
   "ks4:energy-resources:ch#placed": {
    "kp": "ks4.energy-resources.7",
-   "new": "ks4:energy-resources:ch#placed",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the lesson's own activity (zones) is not drawn on the lean page",
+   "status": "removed"
   },
   "ks4:energy-resources:ch#r1-1": {
    "kp": "ks4.energy-resources.5",
@@ -4263,9 +4263,9 @@
   },
   "ks4:energy-resources:tf#placed": {
    "kp": "ks4.energy-resources.7",
-   "new": "ks4:energy-resources:tf#placed",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the lesson's own activity (zones) is not drawn on the lean page",
+   "status": "removed"
   },
   "ks4:energy-resources:tf#r1-1": {
    "kp": "ks4.energy-resources.5",
@@ -4377,9 +4377,9 @@
   },
   "ks4:energy-resources:th#placed": {
    "kp": "ks4.energy-resources.7",
-   "new": "ks4:energy-resources:th#placed",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the lesson's own activity (zones) is not drawn on the lean page",
+   "status": "removed"
   },
   "ks4:energy-resources:th#r1-1": {
    "kp": "ks4.energy-resources.5",
@@ -4887,9 +4887,9 @@
   },
   "ks4:power:cf#picks": {
    "kp": "ks4.power.8",
-   "new": "ks4:power:cf#picks",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the lesson's own activity (roundOpts) is not drawn on the lean page",
+   "status": "removed"
   },
   "ks4:power:cf#r1": {
    "kp": "ks4.power.1",
@@ -4989,9 +4989,9 @@
   },
   "ks4:power:ch#picks": {
    "kp": "ks4.power.8",
-   "new": "ks4:power:ch#picks",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the lesson's own activity (roundOpts) is not drawn on the lean page",
+   "status": "removed"
   },
   "ks4:power:ch#r1": {
    "kp": "ks4.power.1",
@@ -5091,9 +5091,9 @@
   },
   "ks4:power:tf#picks": {
    "kp": "ks4.power.8",
-   "new": "ks4:power:tf#picks",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the lesson's own activity (roundOpts) is not drawn on the lean page",
+   "status": "removed"
   },
   "ks4:power:tf#r1": {
    "kp": "ks4.power.1",
@@ -5193,9 +5193,9 @@
   },
   "ks4:power:th#picks": {
    "kp": "ks4.power.8",
-   "new": "ks4:power:th#picks",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the lesson's own activity (roundOpts) is not drawn on the lean page",
+   "status": "removed"
   },
   "ks4:power:th#r1": {
    "kp": "ks4.power.1",
@@ -5367,9 +5367,9 @@
   },
   "ks4:thermal-conductivity:cf#tries": {
    "kp": "ks4.thermal-conductivity.4",
-   "new": "ks4:thermal-conductivity:cf#tries",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the lesson's own activity (changes, predictions) is not drawn on the lean page",
+   "status": "removed"
   },
   "ks4:thermal-conductivity:ch#choice-1": {
    "kp": "ks4.thermal-conductivity.1",
@@ -5463,9 +5463,9 @@
   },
   "ks4:thermal-conductivity:ch#tries": {
    "kp": "ks4.thermal-conductivity.4",
-   "new": "ks4:thermal-conductivity:ch#tries",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the lesson's own activity (changes, predictions) is not drawn on the lean page",
+   "status": "removed"
   },
   "ks4:thermal-conductivity:tf#choice-1": {
    "kp": "ks4.thermal-conductivity.1",
@@ -5559,9 +5559,9 @@
   },
   "ks4:thermal-conductivity:tf#tries": {
    "kp": "ks4.thermal-conductivity.4",
-   "new": "ks4:thermal-conductivity:tf#tries",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the lesson's own activity (changes, predictions) is not drawn on the lean page",
+   "status": "removed"
   },
   "ks4:thermal-conductivity:th#choice-1": {
    "kp": "ks4.thermal-conductivity.1",
@@ -5655,9 +5655,9 @@
   },
   "ks4:thermal-conductivity:th#tries": {
    "kp": "ks4.thermal-conductivity.4",
-   "new": "ks4:thermal-conductivity:th#tries",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the lesson's own activity (changes, predictions) is not drawn on the lean page",
+   "status": "removed"
   },
   "ks4c:changes-in-energy:match-1": {
    "kp": "ks4.changes-in-energy.3",
