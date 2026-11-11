@@ -4504,7 +4504,7 @@ def lesson_page(unit, lesson, registry, units_by_code, neighbours=None):
             '<p class="ks3-eyebrow">%s · %s</p>'
             % (t(unit["title"]), e(family_label(lesson["family"]))),
             "<h1>%s</h1>" % t(lesson["title"])]
-    if lesson.get("big_question"):
+    if lesson.get("big_question") and not lesson.get("lean"):   # a lean page has no big question
         head.append('<p class="ks3-bigq">%s</p>' % t(lesson["big_question"]))
     # ⊕ MRB-221 (Mide, 16 Aug 2026) — the under-review marker is GONE. The
     # content has been reviewed, architecture §5.10.1's carve-out is revoked,

@@ -13,7 +13,9 @@ authored LESSON, which export_ks3_questions.py reads for the database mirror):
                 the existing ladder, deeper)
     rail        three stops: Start here, Key knowledge, Practice
     stretch     emptied (Dive deeper replaces it)
-    big_question  removed from the page; kept as meta_description for search
+    big_question  kept on the lesson; left off the lean page itself (build_ks3.lesson_page)
+    misconceptions  elicited_by / confronted_by point at the Easy mistakes card
+    figures     the record's own figures are added
     ladder      options' feedback and stems overlaid from the record. The ladder's
                 questions, options and answers are never touched.
 
@@ -79,7 +81,6 @@ CORE = [
     {"type": "lean-words", "anchor": "s-words"},
     {"type": "lean-knowledge", "anchor": "s-knowledge"},
     {"type": "lean-fact", "anchor": "s-fact"},
-    {"type": "lean-try"},
     {"type": "quiz", "ref": "ladder", "anchor": "s-ladder"},
     {"type": "lean-deeper", "anchor": "s-deeper"},
 ]
@@ -102,17 +103,43 @@ def _ladder(lesson, rec):
     return lad
 
 
+def _misconceptions(lesson, rec):
+    """The misconceptions as the lean page can honour them: a COPY whose `elicited_by`
+    and `confronted_by` name a real element on the lean page (the Easy mistakes card, or
+    the Key knowledge section when a lesson has none). Ids and statements are kept."""
+    import lean_blocks
+    has_card = any(lean_blocks.card_id(c) == lean_blocks.EASY_MISTAKES_ID
+                   for c in rec["knowledge"] + rec["deeper"] if c.get("kind") == "card")
+    target = lean_blocks.EASY_MISTAKES_ID if has_card else "s-knowledge"
+    out = []
+    for m in lesson.get("misconceptions") or []:
+        m = dict(m)
+        if m.get("confronted_by"):
+            m["confronted_by"] = target
+        if m.get("elicited_by"):
+            m["elicited_by"] = target
+        out.append(m)
+    return out
+
+
 def apply(lesson):
     rec = records().get(lesson.get("slug"))
     if rec is None:
         return lesson
     lesson = dict(lesson)
-    if lesson.get("big_question") and not lesson.get("meta_description"):
-        lesson["meta_description"] = lesson["big_question"]
-    lesson.pop("big_question", None)
+    # `big_question` stays on the lesson (the browse pages print it as a card blurb);
+    # build_ks3.lesson_page leaves it off a lean lesson's own page.
     lesson["core"] = copy.deepcopy(CORE)
+    if rec.get("try"):          # `lean-try` is in core only when a record names a simulation
+        at = next(i for i, b in enumerate(lesson["core"]) if b["type"] == "lean-fact") + 1
+        lesson["core"].insert(at, {"type": "lean-try"})
     lesson["rail"] = copy.deepcopy(RAIL)
     lesson["stretch"] = []
     lesson["ladder"] = _ladder(lesson, rec)
+    lesson["misconceptions"] = _misconceptions(lesson, rec)
+    # the record's own figures join the lesson's (a drawn figure needs its art registered)
+    have = {f["id"] for f in lesson.get("figures") or []}
+    lesson["figures"] = list(lesson.get("figures") or []) + [
+        copy.deepcopy(f) for f in rec.get("figures") or [] if f["id"] not in have]
     lesson["lean"] = rec
     return lesson

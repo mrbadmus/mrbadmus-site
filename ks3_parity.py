@@ -6490,6 +6490,46 @@ COMPONENTS = [
          sel=".ks3-catb-result",
          props={"background-color": "#221E1B",
                 "border-top-left-radius": "20px"}),
+
+    # ⊕ lean pilot — the lean block types (docs/ks3/architecture.md §5.1.1, 10 Nov 2026).
+    # Measured on the one lean page that carries every one of them. Light theme, the harness's.
+    # `lean-try` has NO component here on purpose: no pilot lesson names a simulation, so the
+    # link is drawn on no page, and a component registered against a page that does not draw it
+    # fails "C · every registered component is still ON its page". It gets its component with
+    # the first record that has a `try`.
+    dict(name="lean Start here is the ink hook with the accent shadow", on=B4_JAR,
+         sel=".ks3-keyed-block.ks3-hook",
+         props={"background-color": "#221E1B", "border-top-left-radius": "30px",
+                "box-shadow": "rgb(228, 87, 46) 6px 6px 0px 0px"}),
+    dict(name="lean key word is a 2px pill chip", on=B4_JAR,
+         sel=".lean-chip",
+         props={"font-size": "17px", "font-weight": "700", "border-top-left-radius": "99px",
+                "border-top-width": "2px", "color": "#221E1B"}),
+    dict(name="lean card is a 2px ink card on the card ground", on=B4_JAR,
+         sel=".lean-card",
+         props={"background-color": "#FFFCF5", "border-top-width": "2px",
+                "border-top-left-radius": "20px", "border-top-color": "#221E1B"}),
+    dict(name="lean card title is display 800", on=B4_JAR,
+         sel=".lean-card-title",
+         props={"font-family": "Bricolage Grotesque", "font-size": "20px", "font-weight": "800"}),
+    dict(name="lean key fact box is the card on an ACCENT shadow", on=B4_JAR,
+         sel=".lean-fact",
+         props={"background-color": "#FFFCF5", "border-top-width": "2px",
+                "box-shadow": "rgb(228, 87, 46) 5px 5px 0px 0px"}),
+    dict(name="lean key fact label is mono accent-text", on=B4_JAR,
+         sel=".lean-fact-label",
+         props={"font-family": "DM Mono", "font-size": "13px",
+                "text-transform": "uppercase", "color": "#A93411"}),
+    dict(name="lean key fact statement is display 700", on=B4_JAR,
+         sel=".lean-fact-body",
+         props={"font-family": "Bricolage Grotesque", "font-size": "21px", "font-weight": "700"}),
+    dict(name="lean Dive deeper is a dashed box with a display 800 button", on=B4_JAR,
+         sel=".lean-deeper",
+         props={"border-top-style": "dashed", "border-top-width": "2px",
+                "border-top-left-radius": "20px"}),
+    dict(name="lean Dive deeper button is display 800", on=B4_JAR,
+         sel=".lean-deeper-btn",
+         props={"font-family": "Bricolage Grotesque", "font-size": "22px", "font-weight": "800"}),
 ]
 
 
@@ -7430,6 +7470,52 @@ def check_rail_reachable(ks3_root):
 
 
 
+# ⊕ lean pilot — the rail every lean lesson must carry (ks3_data/lean RAIL, built by build_ks3).
+LEAN_RAIL = ["s-hook", "s-knowledge", "s-ladder"]
+
+
+# ⊕ lean pilot — RETIRED_BY_LEAN: components whose ONLY page became a lean page, and so no
+# longer draws the element they measure (the instrument was cut from the page by the lean
+# standard, docs/lessons/LEAN-STANDARD.md). One entry per component: (component, page, reason).
+# An entry excuses a component only on a page that carries the lean Key knowledge section;
+# anything else registered and not rendered still fails "C · every registered component is
+# still ON its page". A component is added here only when its element is removed on purpose.
+_BELL = "the bell-jar instrument was replaced by a drawn figure (b4-bell-jar-model)"
+_GAS = "the gas-compare instrument is not on the lean page"
+_CROSS = "the crossing-counter instrument is not on the lean page"
+_FAULT = "the fault-bench instrument is not on the lean page"
+_TPL = "the two-process-ledger instrument is not on the lean page"
+RETIRED_BY_LEAN = [(n, "biology/breathing-and-gas-exchange/how-breathing-works.html", _BELL) for n in (
+    "the chain label is the accent eyebrow, not on-dark body",
+    "the resting chain is muted, and only the resting one",
+    "the pressure readout is mono on ink",
+    "the chain steps are ink on the cream panel",
+    "the chain panel is the page ground on an ink block")] + [
+    (n, "biology/breathing-and-gas-exchange/the-gas-exchange-system.html", _GAS) for n in (
+    "the closing paragraph is ink on the cream panel",
+    "the exhaled figure is alert and the inhaled one is not",
+    "the inhaled figure stays on-dark",
+    "the narrow-screen cell caption takes the head row's own colour",
+    "a chosen gas prediction takes the accent border on the dark panel")] + [
+    (n, "biology/breathing-and-gas-exchange/alveoli-built-for-exchange.html", _CROSS) for n in (
+    "the net tile is the alert figure and the other two are not",
+    "the alveolar tile stays on-dark",
+    "the state note is ink on the cream panel",
+    "the outward bar is drawn in on-dark-muted, in every state",
+    "the inward bar is alert")] + [
+    (n, "biology/breathing-and-gas-exchange/exercise-asthma-and-smoking.html", _FAULT) for n in (
+    "the reveal headline is ink on the cream panel",
+    "the reveal rows read in ink body, not on-dark body",
+    "the reveal panel is the page ground on an ink block",
+    "the verdict is the accent eyebrow, not a marking colour")] + [
+    (n, "biology/breathing-and-gas-exchange/stomata-and-gas-exchange-in-plants.html", _TPL) for n in (
+    "the respiration bar is on-dark-muted, never the photo green",
+    "the net bar is blue at the compensation point",
+    "the verdict panel is ink on cream at the compensation point",
+    "the photosynthesis bar is the ok green")]
+_RETIRED_KEYS = {(n, p_) for n, p_, _r in RETIRED_BY_LEAN}
+
+
 def check_rail_matches_design(ks3_root, repo_root):
     """⊕ MRB-249 — the built rail is the rail DESIGN DREW, stop for stop.
 
@@ -7482,6 +7568,17 @@ def check_rail_matches_design(ks3_root, repo_root):
         except ValueError:
             continue                      # check_rail_anchors owns this failure
         total += 1
+
+        # ⊕ lean pilot — a LEAN lesson (it carries the lean Key knowledge section) is held to
+        # the lean contract instead of Design's drawn rail: exactly these three stops, in this
+        # order, none of them mirroring another. Every other lesson is asserted below, unchanged.
+        if 'data-lean-sec="knowledge"' in html:
+            got = [st.get("anchor") for st in stages]
+            if got != LEAN_RAIL or any(st.get("mirrors") for st in stages):
+                problems.append("%s: a lean lesson's rail is %s (mirrors %s), the lean contract is "
+                                "exactly %s with no mirrors" % (name, got,
+                                [st.get("mirrors") for st in stages], LEAN_RAIL))
+            continue
 
         drawn = rails.get(slug)
         if drawn is None:
@@ -17971,6 +18068,10 @@ def run_browser_layers(ks3_root, browser_mod):
                 continue
             sel = spec["sel"]
             if not page.eval("!!window.__ks3.q(%r)" % sel):
+                if (spec["name"], rel) in _RETIRED_KEYS and page.eval(
+                        "!!document.querySelector('[data-lean-sec=\"knowledge\"]')"):
+                    style_rows.append((spec["name"], "—", "RETIRED_BY_LEAN", "not drawn on a lean page", True))
+                    continue
                 problems.append("PARITY: %s — selector %s not present on /%s%s"
                                 % (spec["name"], sel, rel,
                                    " after driving %s" % drive if drive else ""))
@@ -18175,6 +18276,12 @@ def run_browser_layers(ks3_root, browser_mod):
                     except browser_mod.JSError as exc:
                         err = ("the drive itself threw, so it never reached "
                                "the state it was written to measure: %s" % exc)
+                    if err and all((c["name"], rel) in _RETIRED_KEYS for c in COMPONENTS
+                                   if c["on"] == rel and c.get("drive") == drive) \
+                            and page.eval("!!document.querySelector('[data-lean-sec=\"knowledge\"]')"):
+                        style_rows.append(("drive " + drive, "—", "RETIRED_BY_LEAN",
+                                           "every component it drives is retired on a lean page", True))
+                        continue
                     if err:
                         problems.append(
                             "DRIVE: %s could not reach its state on /%s — %s. "

@@ -85,7 +85,9 @@ def teaching_texts(rec):
     st = rec.get("start") or {}
     if st.get("setup"):
         out.append(("start.setup", st["setup"], "start"))
-    out.append(("start.question", st.get("question", ""), "start"))
+    # the Start here question is an existing question kept as it was (Mide, 11 Nov): its
+    # id and wording stay, so the 15-word sentence limit does not apply to it
+    out.append(("start.question", st.get("question", ""), "startq"))
     for i, o in enumerate(st.get("options") or []):
         out.append(("start.options[%d] label" % i, o[0], "start"))
         out.append(("start.options[%d] reply" % i, o[1], "start"))
@@ -132,7 +134,7 @@ def check_text(where, text, kind, ks):
         probs.append("%s: spaced hyphen used as a dash in %r" % (where, t[:90]))
     if "?" in t and kind == "teach":
         probs.append("%s: question mark in teaching text: %r" % (where, t[:90]))
-    if ks == 3:
+    if ks == 3 and kind != "startq":
         for sent in re.split(r"(?<=[.!?])\s+", t):
             n = len(sent.split())
             if n > 15:
@@ -188,7 +190,14 @@ def check_ks3_pages(records):
         if bad:
             probs.append("ks3 %s: core still holds %s (a lean page has only lean blocks and the ladder)"
                          % (slug, bad))
-        if l.get("big_question"):
+        # the big question stays on the lesson data (browse pages print it) but not on the lean page
+        units = ks3_data.build_units()
+        reg2 = ks3_data.lesson_registry(units)
+        ubc = {u["code"]: u for u in units}
+        for x in reg2.values():
+            x["_disc"] = ubc[x["_unit"]]["discipline"]
+        page = build_ks3.lesson_page(ubc[l["_unit"]], reg2[slug], reg2, ubc, build_ks3.lesson_neighbours(units))
+        if "ks3-bigq" in page:
             probs.append("ks3 %s: a big question is still on the page" % slug)
         html = build_ks3.render_blocks(l, core)
         if html.count("data-instrument") != 1:

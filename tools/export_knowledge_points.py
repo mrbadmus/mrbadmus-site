@@ -234,6 +234,21 @@ def sender_reads_full_errors():
     return errs
 
 
+def removed_ids():
+    """Ids the lean pilot retired from their pages (docs/lessons/pilot/ID-MAP-*.json,
+    status "removed"; tools/lean_id_map.py writes them). A child's saved answer to one of
+    these still resolves, so the tag stays in knowledge_points/*.json and the check below
+    accepts it. It accepts NOTHING else that no loader knows."""
+    import glob
+    out = set()
+    for path in glob.glob(os.path.join(REPO, "docs", "lessons", "pilot", "ID-MAP-*.json")):
+        with open(path, encoding="utf-8") as fh:
+            for qid, e in (json.load(fh).get("ids") or {}).items():
+                if e.get("status") == "removed":
+                    out.add(qid)
+    return out
+
+
 def check(data=None, inv=None, quiet=False):
     data = data or load_data()
     inv = inv or kpc.inventory()
@@ -244,6 +259,7 @@ def check(data=None, inv=None, quiet=False):
         errs.append("ks4_quiz_id test vector: got %s, the contract says %s" % (got, kpc.TEST_VECTOR_ID))
 
     exp = expected(inv)
+    removed = removed_ids()
     bv2 = kpc.bv2_subtopic_of()
     where = {}                   # question id → (ks, scope)
     kp_scope = {}                # kp id → (ks, scope)
@@ -282,6 +298,8 @@ def check(data=None, inv=None, quiet=False):
                 elif kpc.source_of(qid) == "ks4_rung":
                     errs.append("%s: a retired route-less KS4 ladder id (the page sends "
                                 "ks4:<slug>:<route>#rN now)" % qid)
+                elif qid in removed:
+                    pass        # retired by the lean pilot; listed "removed" in an ID-MAP file
                 elif not (ks == "KS4" and CS_ID.match(qid)):
                     errs.append("%s: no loader knows this question id" % qid)
             for p in pts:
@@ -294,7 +312,7 @@ def check(data=None, inv=None, quiet=False):
             errs.append("%s is both tagged and listed as untagged" % qid)
         if not (isinstance(info, dict) and info.get("reason")):
             errs.append("untagged %s has no reason" % qid)
-        if qid not in exp and qid not in bv2 and not CS_ID.match(qid):
+        if qid not in exp and qid not in bv2 and not CS_ID.match(qid) and qid not in removed:
             errs.append("untagged %s: no loader knows this question id" % qid)
 
     missing = [q for q in exp if q not in where and q not in unt]
@@ -325,6 +343,8 @@ def check(data=None, inv=None, quiet=False):
     for q, k in have_keys.items():
         w = want_keys.get(q)
         if w is None:
+            if q in removed:
+                continue        # the key stays so a saved answer to a retired question still marks
             errs.append("%s: answer key %r, but the sources name no single right option" % (q, k))
         elif k != w[0]:
             errs.append("%s: answer key %r, the sources say %r" % (q, k, w[0]))

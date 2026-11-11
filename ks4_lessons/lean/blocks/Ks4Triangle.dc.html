@@ -147,7 +147,7 @@ class Component extends DCLogic {
       lineStyle: 'margin:4px 0 0;display:flex;flex-wrap:wrap;align-items:stretch;font-family:var(--ks3-font-mono);font-weight:500;font-size:' + (full ? (k ? 21 : 24) : 19) + 'px;line-height:1.35;color:var(--ks3-ink);'
     }));
     const chips = [];
-    if (eq.source !== 'none') chips.push('On the sheet');
+    /* lean: AQA makes these equations recall, so a lean triangle never claims the sheet gives them */
     if (eq.route) chips.push(eq.route);
     return {
       isFull: full, isCompact: !full,

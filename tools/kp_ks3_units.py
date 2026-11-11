@@ -418,6 +418,14 @@ def page_choice_keys(slug):
                 rep = keyed.select_one('.ks3-keyed-reply[data-reply="%s"] strong' % o.get("data-i"))
                 if rep is not None and txt(rep).startswith("Good guess"):
                     good = o
+            # ⊕ lean pilot: a lean Start here carries no "Good guess" word (the standard
+            # forbids it), so its right option is read from the lean record instead.
+            from ks3_data import lean as _lean_records
+            rec = _lean_records.records().get(slug)
+            if rec is not None:
+                st = rec["start"]
+                want = st["options"][st["answer"]][0]
+                good = next((o for o in opts if opt_label(o) == want), None)
             out["%s#start" % slug] = {"options": [opt_label(o) for o in opts],
                                       "key": opt_label(good) if good is not None else None}
         else:

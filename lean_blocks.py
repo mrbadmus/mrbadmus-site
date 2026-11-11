@@ -64,6 +64,17 @@ ROUTE_FLAG = {
 }
 
 
+EASY_MISTAKES_ID = "easy-mistakes"
+
+
+def card_id(c):
+    """A card's stable page id: the record's own `id`, or `easy-mistakes` for the Easy
+    mistakes card, so misconceptions can point at a real element."""
+    if c.get("id"):
+        return c["id"]
+    return EASY_MISTAKES_ID if str(c.get("title", "")).strip().lower() == "easy mistakes" else None
+
+
 def route_flag(routes):
     """The template flag for a record's `routes`, or None for every route."""
     if not routes:
@@ -142,11 +153,12 @@ def card(ctx, c):
         raise ValueError("lean record: expected a card, got %r" % (c.get("kind"),))
     bid, cid = ctx.nid("b"), ctx.nid("c")
     body = "".join(_part(ctx, p) for p in c["body"])
-    out = ('<div class="lean-card" data-lean-card>'
+    cid_attr = (' id="%s"' % esc(card_id(c))) if card_id(c) else ""
+    out = ('<div class="lean-card"%s data-lean-card>'
            '<h3 class="lean-card-h"><button type="button" class="lean-card-btn" id="%s" '
            'aria-controls="%s"%s><span class="lean-card-title">%s</span>%s</button></h3>'
            '<div class="lean-card-body" id="%s">%s</div></div>'
-           % (bid, cid, ctx.expanded(), ctx.fmt(c["title"]), CHEVRON, cid, body))
+           % (cid_attr, bid, cid, ctx.expanded(), ctx.fmt(c["title"]), CHEVRON, cid, body))
     return _routed(ctx, c, out)
 
 

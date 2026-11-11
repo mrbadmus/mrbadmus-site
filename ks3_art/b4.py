@@ -1914,10 +1914,152 @@ def _gas_exchange_bars(fig):
     return "".join(out)
 
 
+# ── ⊕ lean pilot (Nov 2026) · the two figures how-breathing-works draws ──
+#
+# The lean lesson no longer carries the bell-jar instrument or the lung-volume
+# description, so both become DRAWINGS (Mide, 11 Nov: never describe a diagram
+# in words, draw it). Each matches the `desc` its figure declares in
+# ks3_data/lean/how_breathing_works.py. Flat paint from the --ks3-* tokens, so
+# light and dark both follow; labels at 13px or more on a 580-unit plate, which
+# the figure scroll container shows at its own width.
+
+_B4_BLUE_TINT = "var(--ks3-blue-tint)"
+_B4_BLUE = "var(--ks3-blue)"
+
+
+def _b4_arrow(x1, y1, x2, y2, stroke=None, w=3, head=10, **data):
+    """A line and a drawn triangle head ending exactly at (x2, y2)."""
+    ang = math.atan2(y2 - y1, x2 - x1)
+    dx, dy = math.cos(ang), math.sin(ang)
+    px, py = -dy, dx
+    paint = stroke or _SVG_INK
+    tri = _path("M %s,%s L %s,%s L %s,%s Z"
+                % (_n(x2), _n(y2),
+                   _n(x2 - dx * head + px * head * 0.55), _n(y2 - dy * head + py * head * 0.55),
+                   _n(x2 - dx * head - px * head * 0.55), _n(y2 - dy * head - py * head * 0.55)),
+                fill=paint, **data)
+    return _line(x1, y1, x2 - dx * head * 0.6, y2 - dy * head * 0.6, stroke=paint, w=w, **data) + tri
+
+
+def _bell_jar_panel(cx, pulled):
+    """One bell jar. The same jar, tube and balloons in both panels: only the sheet
+    and the balloons change, which is the whole claim."""
+    state = "pulled" if pulled else "pushed"
+    x0, x1 = cx - 70, cx + 70
+    out = []
+    # the glass: open at the bottom, where the rubber sheet seals it
+    out.append(_path("M %s,300 L %s,100 Q %s,70 %s,70 L %s,70 Q %s,70 %s,100 L %s,300"
+                     % (x0, x0, x0, x0 + 30, x1 - 30, x1, x1, x1),
+                     fill=_SVG_INSET, stroke=_SVG_INK, w=3, data_part="jar", data_state=state))
+    # the balloons (lungs): big when the sheet is down, small when it is up
+    if pulled:
+        bx, by, rx, ry, fx = 36, 178, 32, 44, 36
+    else:
+        bx, by, rx, ry, fx = 30, 166, 15, 20, 30
+    for side in (-1, 1):
+        out.append(_ellipse_path(cx + side * bx, by, rx, ry, data_state=state))
+    # the tube (trachea) through the stopper, forking to the balloons
+    out.append(_rect(cx - 17, 58, 34, 16, rx=3, fill=_SVG_BAND, stroke=_SVG_INK, w=2, data_part="stopper"))
+    out.append(_line(cx, 22, cx, 126, stroke=_SVG_INK, w=5, data_part="tube", data_state=state))
+    for side in (-1, 1):
+        out.append(_line(cx, 126, cx + side * fx, 150, stroke=_SVG_INK, w=4, data_part="tube", data_state=state))
+    # the rubber sheet (diaphragm), with its knob and the rod that moves it
+    depth = 372 if pulled else 228
+    mid = 336 if pulled else 264
+    out.append(_path("M %s,300 Q %s,%s %s,300" % (x0, cx, depth, x1), stroke=_SVG_ACCENT_TEXT, w=5,
+                     data_part="sheet", data_state=state))
+    out.append(_line(cx, mid, cx, 352, stroke=_SVG_INK, w=3, data_part="rod", data_state=state))
+    out.append(_circle(cx, mid, 7, fill=_SVG_CARD, stroke=_SVG_INK, w=3, data_part="knob", data_state=state))
+    if pulled:
+        out.append(_b4_arrow(cx, 358, cx, 392, w=3, data_part="move", data_state=state))
+        out.append(_b4_arrow(cx - 26, 10, cx - 26, 46, stroke=_SVG_ACCENT_TEXT, w=3, data_part="air", data_state=state))
+        out.append(_mono(cx - 38, 34, "air in", size=13, fill=_SVG_ACCENT_TEXT, weight="500", anchor="end", data_state=state))
+    else:
+        out.append(_b4_arrow(cx, 392, cx, 358, w=3, data_part="move", data_state=state))
+        out.append(_b4_arrow(cx - 26, 46, cx - 26, 10, stroke=_SVG_ACCENT_TEXT, w=3, data_part="air", data_state=state))
+        out.append(_mono(cx - 38, 34, "air out", size=13, fill=_SVG_ACCENT_TEXT, weight="500", anchor="end", data_state=state))
+    out.append(_label(cx, 420, "Sheet pulled down" if pulled else "Sheet pushed up",
+                      size=15, weight="700", data_state=state))
+    return "".join(out)
+
+
+def _ellipse_path(cx, cy, rx, ry, **data):
+    from ks3_art.kit import _ellipse
+    return _ellipse(cx, cy, rx, ry, fill=_SVG_ACCENT_TINT, stroke=_SVG_INK, w=2.5, data_part="lung", **data)
+
+
+def _bell_jar_model(fig):
+    """The bell jar model of the chest, drawn twice: sheet pulled down (balloons inflated)
+    and sheet pushed up (balloons small). Labels: jar = chest, balloons = lungs, tube =
+    trachea, rubber sheet = diaphragm."""
+    W, H = 610, 436
+    out = [_svg_open(fig, W, H)]
+    out.append('<g stroke-linecap="round" stroke-linejoin="round">')
+    out.append(_bell_jar_panel(300, True))
+    out.append(_bell_jar_panel(520, False))
+    # the key, with a leader to each part of the left-hand jar
+    leader = dict(stroke=_SVG_INK_FAINT, w=1.5, dash="4 3")
+    for y, text, tx, ty in ((92, "Trachea (tube)", 296, 92),
+                            (178, "Lungs (balloons)", 262, 178),
+                            (252, "Chest (jar)", 230, 252),
+                            (330, "Diaphragm (rubber sheet)", 266, 327)):
+        out.append(_label(8, y + 5, text, size=15, weight="700", anchor="start", data_key=text))
+        out.append(_line(8 + len(text) * 9.8 + 8, y, tx, ty, **leader))
+    out.append('</g></svg>')
+    return "".join(out)
+
+
+def _lung_volume_bottle(fig):
+    """An upturned bottle of water in a tub, with a tube from the mouth: the air breathed
+    out collects at the top and pushes water down and out. Volume marks run up the side."""
+    W, H = 590, 430
+    out = [_svg_open(fig, W, H)]
+    out.append('<g stroke-linecap="round" stroke-linejoin="round">')
+    # the tub and its water
+    out.append(_rect(90, 230, 440, 170, rx=10, fill=_SVG_INSET, stroke=_SVG_INK, w=3, data_part="tub"))
+    out.append(_rect(93, 250, 434, 147, fill=_B4_BLUE_TINT, data_part="tub-water"))
+    out.append(_line(93, 250, 527, 250, stroke=_B4_BLUE, w=2, data_part="tub-water"))
+    # the bottle: closed at the top, open at the neck under the water
+    outline = ("M 232,300 L 232,236 Q 170,222 170,190 L 170,54 Q 170,30 194,30 L 306,30 "
+               "Q 330,30 330,54 L 330,190 Q 330,222 268,236 L 268,300")
+    out.append(_path(outline + " Z", fill=_SVG_CARD, data_part="bottle-air"))
+    out.append(_path("M 170,120 L 330,120 L 330,190 Q 330,222 268,236 L 268,300 L 232,300 "
+                     "L 232,236 Q 170,222 170,190 Z", fill=_B4_BLUE_TINT, data_part="bottle-water"))
+    out.append(_line(170, 120, 330, 120, stroke=_B4_BLUE, w=2.5, data_part="water-level"))
+    out.append(_path(outline, stroke=_SVG_INK, w=3, data_part="bottle"))
+    # volume marks up the side
+    for i, y in enumerate(range(60, 181, 20)):
+        long_ = i % 2 == 0
+        out.append(_line(152 if long_ else 160, y, 170, y, stroke=_SVG_INK, w=2, data_part="volume-mark"))
+    # the tube from the mouth, down into the tub, along and up into the neck
+    out.append(_path("M 500,62 L 500,340 L 250,340 L 250,262", stroke=_SVG_INK, w=5, data_part="tube"))
+    out.append(_b4_arrow(250, 262, 250, 214, stroke=_SVG_ACCENT_TEXT, w=3, data_part="air"))
+    out.append(_b4_arrow(500, 22, 500, 58, stroke=_SVG_ACCENT_TEXT, w=3, data_part="air"))
+    out.append(_b4_arrow(200, 130, 200, 176, stroke=_B4_BLUE, w=3, data_part="water-pushed"))
+    # labels, each with a leader
+    leader = dict(stroke=_SVG_INK_FAINT, w=1.5, dash="4 3")
+    for text, x, y, anchor, lx1, ly1, lx2, ly2 in (
+            ("Bottle,", 8, 46, "start", 80, 42, 172, 44),
+            ("Volume marks", 8, 105, "start", 118, 101, 156, 100),
+            ("Water", 8, 158, "start", 56, 154, 172, 156),
+            ("Air breathed out", 348, 66, "start", 344, 62, 322, 70),
+            ("Water pushed down", 348, 150, "start", 344, 146, 326, 150),
+            ("Tube from mouth", 488, 205, "end", 492, 201, 497, 201)):
+        out.append(_label(x, y, text, size=15, weight="700", anchor=anchor, data_key=text))
+        out.append(_line(lx1, ly1, lx2, ly2, **leader))
+    out.append(_label(8, 64, "upside down", size=15, weight="700", anchor="start", data_key="Bottle,"))
+    out.append(_label(488, 34, "Breathe out", size=15, weight="700", anchor="end", data_key="mouth"))
+    out.append(_label(108, 384, "Tub of water", size=15, weight="700", anchor="start", data_key="tub"))
+    out.append('</g></svg>')
+    return "".join(out)
+
+
 # ── registrations ────────────────────────────────────────────────────────
 ART = {
+    'bell-jar-model': _bell_jar_model,
     'gas-exchange-bars': _gas_exchange_bars,
     'guard-cells': _guard_cells,
+    'lung-volume-bottle': _lung_volume_bottle,
     'thorax': _thorax,
 }
 

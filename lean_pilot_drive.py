@@ -29,6 +29,7 @@ import sys
 import time
 
 import config_env
+import glob
 import ks3_browser as cdp
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -45,9 +46,11 @@ FLAG_ROUTES = {"isHigher": {"CH", "TH"}, "isTriple": {"TF", "TH"}, "notHigher": 
                "notTriple": {"CF", "CH"}, "isTH": {"TH"}}
 SHOT_PAGES = ("how-breathing-works", "efficiency")
 
+CAPTURING = False
 FAILS = []
 PASSED = []
 QUIZ_SIZES = {}
+POSTED = {}
 
 
 def fail(page, msg):
@@ -69,6 +72,12 @@ class Drive:
         if not cond:
             fail(self.tag, msg)
         return cond
+
+    def harvest(self):
+        """Move what the page has posted so far into self.posted (the page keeps none after a reload)."""
+        time.sleep(0.7)                   # a post goes out after its token promise resolves
+        got = self.js("var p=window.__posted||[];window.__posted=[];return p")
+        self.posted = getattr(self, "posted", []) + (got or [])
 
     def key(self, k):
         code = {"Enter": (13, "\r"), " ": (32, " ")}[k]
@@ -138,8 +147,9 @@ def structure(d, rec, ks, route, slug):
     d.check(s["words"] in (3, 4), "%d key words" % s["words"])
     d.check("Good guess" not in s["text"] and "Fair guess" not in s["text"],
             "'Good guess' / 'Fair guess' on the page")
-    d.check("Learn it" not in s["text"] and "As on the equation sheet" not in s["text"].split("Practice")[0],
-            "'Learn it' or 'As on the equation sheet' in the lesson body")
+    low = s["text"].lower()
+    d.check("learn it" not in low and "as on the equation sheet" not in low and "on the sheet" not in low,
+            "'Learn it', 'As on the equation sheet' or an 'On the sheet' chip on the page")
     if ks == 3 or s["rungs"]:
         d.check(all(r in ("Rung 1", "Rung 2", "Rung 3", "Rung 4") for r in s["rungs"]) and len(s["rungs"]) == 4,
                 "rung labels %s" % s["rungs"])
@@ -185,6 +195,8 @@ def start_here(d, rec, ks, route):
         seen = []
         for visit in range(2):
             if visit == 1:
+                if hasattr(d, "posted") or CAPTURING:
+                    d.harvest()
                 load(d.p, d.url)
             labs = d.js("return [].map.call(document.querySelectorAll('#s-hook button'),function(b){"
                         "return b.textContent.replace(/^(This|Or this|Your guess)/,'').trim()})")
@@ -313,6 +325,80 @@ def open_everything(d):
 def overflow(d, label="everything open"):
     o = d.js(OVERFLOW)
     d.check(o["sw"] <= o["cw"] and o["bw"] <= o["cw"], "horizontal overflow with %s: %s" % (label, o))
+
+
+# ── formula triangles ───────────────────────────────────────────────────
+
+def triangle_cards(rec):
+    """[(card title, [cells per triangle, ...], [equation dict or None, ...])] in page order."""
+    out = []
+    for it in rec["knowledge"] + rec["deeper"]:
+        if it.get("kind") != "card":
+            continue
+        groups, eqs = [], []
+        for p in it["body"]:
+            slot = p.get("slot", "") if isinstance(p, dict) else ""
+            if slot.startswith("triangle:"):
+                eq = (rec.get("equations") or {})[slot.split(":", 1)[1]]
+                groups.append(1 + len(eq["bottom"]))
+                eqs.append(eq)
+            elif slot in ("triangle-energy", "triangle-power"):
+                groups.append(3)          # the legacy EQ_E / EQ_P: one top, two bottom
+                eqs.append(None)
+        if groups:
+            out.append((it["title"], groups, eqs))
+    return out
+
+
+CELLS = "button[aria-label^='Find '], button[aria-label^='One half']"
+
+
+def triangles(d, rec):
+    """Tap every cell of every triangle: the line under it changes, with the half and root
+    extra steps where the equation has them, and a triangle never says it is on the sheet."""
+    for title, groups, eqs in triangle_cards(rec):
+        i = d.js("var t=[].map.call(document.querySelectorAll('.lean-card-title'),function(x){return x.textContent.trim()});"
+                 "return t.indexOf(%s)" % json.dumps(title))
+        d.check(i >= 0, "card %r not found" % title)
+        if i < 0:
+            continue
+        labels = d.js("var c=document.querySelectorAll('.lean-card')[%d];"
+                      "return [].map.call(c.querySelectorAll(%s),function(b){return b.getAttribute('aria-label')})" % (i, json.dumps(CELLS)))
+        d.check(len(labels) == sum(groups), "card %r has %d triangle cells, want %d" % (title, len(labels), sum(groups)))
+        at = 0
+        for g, eq in zip(groups, eqs):
+            lo = at
+            at += g
+            d.check("written out" in d.js("var c=document.querySelectorAll('.lean-card')[%d];"
+                                          "var b=c.querySelectorAll(%s)[%d];var e=b;"
+                                          "while(e.parentElement&&e.parentElement.querySelectorAll(%s).length<=%d){e=e.parentElement}"
+                                          "return e.innerText.toLowerCase()" % (i, json.dumps(CELLS), lo, json.dumps(CELLS), g)),
+                    "triangle in %r does not start on 'Written out'" % title)
+            for k in range(g):
+                lab = labels[lo + k]
+                scope = ("var c=document.querySelectorAll('.lean-card')[%d];var b=c.querySelectorAll(%s)[%d];"
+                         "var e=b;while(e.parentElement&&e.parentElement.querySelectorAll(%s).length<=%d){e=e.parentElement}"
+                         % (i, json.dumps(CELLS), lo + k, json.dumps(CELLS), g))
+                if lab.startswith("One half"):
+                    d.check(d.js(scope + "return b.disabled"), "the one-half cell in %r is tappable" % title)
+                    continue
+                d.js(scope + "b.click();1")
+                time.sleep(0.12)
+                txt = d.js(scope + "return e.innerText.toLowerCase()")
+                is_top = (k == 0)
+                want = ["side by side"] if is_top else ["one over the other"]
+                if eq is not None and not is_top:
+                    item = eq["bottom"][k - 1]
+                    if any(x.get("half") for x in eq["bottom"] if x is not item):
+                        want.append("is the same as")
+                    if item.get("root"):
+                        want.append("square-root both sides")
+                for w in want:
+                    d.check(w in txt, "triangle %r, cell %r: %r missing after the tap" % (title, lab, w))
+                d.check("on the sheet" not in txt and "as on the equation sheet" not in txt,
+                        "triangle %r still claims the equation sheet" % title)
+        o = d.js(OVERFLOW)
+        d.check(o["sw"] <= o["cw"], "overflow after tapping the triangles in %r: %s" % (title, o))
 
 
 # ── practice ────────────────────────────────────────────────────────────
@@ -469,6 +555,8 @@ def walk_light(page, base, ks, slug, route, path, rec, shots):
     deeper(d)
     open_everything(d)
     overflow(d)
+    if ks == 4:
+        triangles(d, rec)
     if shots and slug in SHOT_PAGES and route in (None, "CH"):
         page.screenshot(os.path.join(shots, "%s-light-open.png" % tag.replace(" ", "-")), width=W, height=H)
     answer = (lambda: ks3_practice(d)) if ks == 3 else (lambda: ks4_practice(d))
@@ -502,16 +590,81 @@ def walk_dark(page, base, ks, slug, route, path, rec, shots):
     return d.checks
 
 
+# ── the ids a page really posts ─────────────────────────────────────────
+
+CAPTURE_JS = r"""
+(function () {
+  try { localStorage.setItem(%(key)s, JSON.stringify({access_token: 'drive', refresh_token: 'drive',
+        expires_at: 4102444800, user: {id: 'drive-child', email: 'drive@children.mrbadmus.internal'}})); } catch (e) {}
+  window.__posted = window.__posted || [];
+  var real = window.fetch;
+  window.fetch = function (u, o) {
+    try {
+      if (String(u).indexOf('/api/consumer/child/answer') >= 0 && o && o.body) {
+        window.__posted.push(JSON.parse(o.body));           // recorded, never sent
+        return Promise.resolve({ ok: true, status: 204, json: function () { return Promise.resolve({}); } });
+      }
+    } catch (e) {}
+    return real.apply(this, arguments);
+  };
+})();
+"""
+
+
+def id_map():
+    out = {}
+    for f in glob.glob(os.path.join(ROOT, "docs", "lessons", "pilot", "ID-MAP-*.json")):
+        with open(f, encoding="utf-8") as fh:
+            for qid, e in json.load(fh)["ids"].items():
+                out[qid] = e["status"]
+    return out
+
+
+def walk_ids(page, base, ks, slug, route, path, rec, idmap):
+    """A child session whose answer sends are recorded, not sent: every question_id the page
+    posts when it is answered must be in the ID map as kept or added."""
+    global CAPTURING
+    tag = "ks%d %s%s ids" % (ks, slug, (" " + route) if route else "")
+    CAPTURING = True
+    theme(page, "light")
+    key = "sb-%s-auth-token" % config_env.TEST_REF
+    r = page.send("Page.addScriptToEvaluateOnNewDocument", {"source": CAPTURE_JS % {"key": json.dumps(key)}})
+    try:
+        d = Drive(page, tag)
+        d.posted = []
+        d.url = base + path
+        load(page, d.url)
+        page.console_errors()
+        start_here(d, rec, ks, route)
+        (ks3_practice if ks == 3 else ks4_practice)(d)
+        d.harvest()
+    finally:
+        page.send("Page.removeScriptToEvaluateOnNewDocument", {"identifier": r.get("identifier")})
+        CAPTURING = False
+    ids = [b.get("question_id") for b in d.posted]
+    named = [i for i in ids if i]
+    d.check(len(named) >= 3, "only %d answer(s) with an id were posted" % len(named))
+    for i in sorted(set(named)):
+        st = idmap.get(i)
+        d.check(st in ("kept", "added"), "posted question_id %r is %s in the ID map (need kept or added)"
+                % (i, "listed " + st if st else "NOT in it"))
+    d.check(all(b.get("lesson_slug") == slug for b in d.posted), "a post names the wrong lesson")
+    POSTED[tag] = {"ids": sorted(set(named)), "no_id": len(ids) - len(named)}
+    return d.checks
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--only", default="")
     ap.add_argument("--no-dark", action="store_true")
+    ap.add_argument("--no-ids", action="store_true", help="skip the posted-question-id pass")
     a = ap.parse_args()
     shots = os.environ.get("MRB_SHOTS") or cdp.gate_tmp()
     os.makedirs(shots, exist_ok=True)
     server, port = cdp.serve(os.path.join(ROOT, "mrbadmus_site"))
     base = "http://127.0.0.1:%d" % port
     total = n = 0
+    idmap = id_map()
     try:
         todo = [p for p in pages() if a.only in p[1] and True]
         with cdp.Browser() as b:
@@ -522,12 +675,17 @@ def main():
                 c = walk_light(light, base, ks, slug, route, path, rec, shots)
                 if not a.no_dark:
                     c += walk_dark(dark, base, ks, slug, route, path, rec, shots)
+                if not a.no_ids:
+                    c += walk_ids(light, base, ks, slug, route, path, rec, idmap)
                 total += c
                 n += 1
                 print("  %s  %s%s: %d checks" % ("ok  " if len(FAILS) == before else "FAIL", slug,
                                                 (" " + route) if route else "", c), flush=True)
     finally:
         server.shutdown()
+    print("\nposted question ids per page: %s" % json.dumps({k: len(v["ids"]) for k, v in sorted(POSTED.items())}))
+    allp = sorted({i for v in POSTED.values() for i in v["ids"]})
+    print("distinct posted ids: %d (kept or added in the map: %d)" % (len(allp), sum(1 for i in allp if idmap.get(i) in ("kept", "added"))))
     print("\nquiz bank size per page: %s" % json.dumps(QUIZ_SIZES, sort_keys=True))
     print("\n%d page(s), %d checks, %d failure(s). Screenshots: %s" % (n, total, len(FAILS), shots))
     for f in FAILS:

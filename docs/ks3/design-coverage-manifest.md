@@ -1059,6 +1059,18 @@ Every block type the generator can emit must map to at least one component regis
 | rule | `statement panel is band on a 3px ink border`, `statement is display 800 at the ruled clamp`, `statement cards take the option border`, `badged card is one column of full-width rows, not the auto grid`, `badged card is a two-column grid`, `initials badge is a 44px accent square`, `badged card's name is display 800 at 22px`, `badged card's role is accent-TEXT mono under the name`, `card limit is muted prose, not the mono example line` |
 | formula | `formula panel is centred`, `formula statement takes the FORMULA clamp, not the rule's`, `formula triangle is drawn, not typed`, `triangle cover is ink and starts invisible` |
 | comparison | `comparison rows are flex, not grid`, `comparison label stacks below 820`, `comparison content cells shrink to zero` |
+| lean-start | `lean Start here is the ink hook with the accent shadow` |
+| lean-words | `lean key word is a 2px pill chip` |
+| lean-knowledge | `lean card is a 2px ink card on the card ground`, `lean card title is display 800` |
+| lean-fact | `lean key fact box is the card on an ACCENT shadow`, `lean key fact label is mono accent-text`, `lean key fact statement is display 700` |
+| lean-deeper | `lean Dive deeper is a dashed box with a display 800 button`, `lean Dive deeper button is display 800` |
+
+⊕ **The five `lean-*` rows (lean pilot, 10 Nov 2026).** The lean lesson shape (see §5.1.1) has six
+block types. Five are registered here, each against components measured on the one lean page that
+draws them. **`lean-try` has no row yet, deliberately**: it renders nothing unless a lesson's record
+names a matching simulation, so it is not in a lesson's `core` and no page draws it. A component
+registered against a page that does not draw it fails "C · every registered component is still ON
+its page", so the row and its component arrive with the first record that has a `try` link.
 
 ⊕ **The four rows above are B1 round two's (13 Aug 2026).** Each block type is a
 distinct SHELL, and every component registered against it pins the property that

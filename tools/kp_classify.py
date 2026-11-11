@@ -252,6 +252,13 @@ def ks4_lesson_sources(L):
     import ks4_lessons as K
     import ks4_rulings as R
     import ks4_science_rulings as S
+    if L.get("lean"):
+        # ⊕ lean pilot: the page a lean lesson ships is built from its record
+        # (lean_ks4.py), starting from the legacy page's post-ruling text if it has one.
+        import lean_ks4
+        legacy = B.legacy_texts(L["legacy_batch"], L) if L.get("legacy_batch") else None
+        tpl, logic, _ = lean_ks4.source(L, legacy)
+        return tpl, logic
     if L["batch"] == "pilot":
         tpl, logic = B.template_and_logic(os.path.join(REPO, B.DESIGN_DIR, L["design_file"]))
         df, slug = L["design_file"], L["slug"]
@@ -321,7 +328,12 @@ def ks4_pilot_eval():
     import subprocess
     import ks4_lessons as K
     lessons = []
-    for L in K.all_lessons():
+    # ⊕ lean pilot: a slug the lean batch owns is read from its LEAN page (the ids the page
+    # now sends), and the lean-only lessons (no legacy page) are part of the inventory too.
+    lean = {L["slug"]: L for L in K.lean_lessons()}
+    every = [lean.get(L["slug"], L) for L in K.all_lessons()]
+    every += [L for slug, L in lean.items() if slug not in {x["slug"] for x in every}]
+    for L in every:
         tpl, logic = ks4_lesson_sources(L)
         lessons.append({"slug": L["slug"], "logic": logic,
                         "routes": [r.lower() for r in L["routes"]],
@@ -514,6 +526,11 @@ def ks3_extras():
     for slug, L in reg.items():
         items = []
         sh = START_HERE.get(slug)
+        from ks3_data import lean as _lean_records
+        rec = _lean_records.records().get(slug)
+        if rec is not None:
+            st = rec["start"]
+            sh = {"question": st["question"], "options": st["options"], "answer": st["answer"]}
         if sh:
             opts = sh.get("options") or []
             ans = opts[sh["answer"]][0] if isinstance(sh.get("answer"), int) and opts else ""

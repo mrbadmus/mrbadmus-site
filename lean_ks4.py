@@ -378,6 +378,13 @@ def _legacy_logic(lesson, rec, logic):
         raise SystemExit("lean_ks4: %s: cannot find the rail done[] array" % what)
     logic = logic.replace(ms[0], DONE_JS)
 
+    # the record's own exact-match edits to the legacy logic (placeholders, one prompt): each
+    # `old` must be in the logic; every occurrence is replaced
+    for old, new in (rec.get("legacy") or {}).get("logic_edits") or []:
+        if old not in logic:
+            raise SystemExit("lean_ks4: %s: logic_edits target %r is not in the legacy logic"
+                             % (what, old[:70]))
+        logic = logic.replace(old, new)
     logic = _once(logic, "onLadder: () => this.setState({ ladder: true }),",
                   "onLadder: () => this.setState({ ladder: true }),\n"
                   "      onKnow: () => this.setState({ know: true }),", what)

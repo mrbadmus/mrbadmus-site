@@ -129,6 +129,10 @@ def check_freeze(name, errors):
         frozen = json.load(fh)
 
     lessons = ks4_lessons.lessons_for_batch(name)
+    # ⊕ lean pilot: a slug the lean batch owns is no longer built by this batch, so its freeze
+    # is verified under batch-lean (frozen_batch-lean.json comes after the examiner pass).
+    if not getattr(ks4_lessons.batch_modules()[name], "LEAN", False):
+        lessons = [L for L in lessons if L["slug"] not in ks4_lessons.lean_owned_slugs()]
     reviewed = [L for L in lessons if L["review_state"] in ("examiner-reviewed", "frozen")]
     if not reviewed:
         return
