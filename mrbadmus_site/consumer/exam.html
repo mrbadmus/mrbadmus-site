@@ -1223,7 +1223,8 @@
                '<p>' + esc(note) + '</p></div>')
             : '') +
           /* ⊕ 11 Nov 2026 (ruling B): the note first; the list behind the toggle. */
-          (points ? C.pointsToggle('<ul class="ks3-ticks">' + points + '</ul>') : '') +
+          /* ⊕ a levelled mark is judged as a whole and has no point-by-point account. */
+          (points && level == null ? C.pointsToggle('<ul class="ks3-ticks">' + points + '</ul>') : '') +
         '</div>' +
 
         '<div class="ex-wrote">' +

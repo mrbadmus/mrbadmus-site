@@ -298,7 +298,8 @@ FULL BIOLOGY SPECIFICATION TOPICS:
     if (!box) return null;
     const d = document.createElement('div');
     d.className = `chat-msg chat-msg--${role}`;
-    d.innerHTML = `<div class="chat-msg__avatar">${role==='user'?'🧑':'⚡'}</div><div class="chat-msg__bubble">${html}</div>`;
+    const plain = (function () { try { const c = cfg(); return c && typeof c.isChildSession === 'function' && c.isChildSession(JSON.parse(localStorage.getItem(c.AUTH_STORAGE_KEY) || 'null')); } catch (e) { return false; } })();
+    d.innerHTML = `<div class="chat-msg__avatar">${plain?(role==='user'?'You':'MB'):(role==='user'?'🧑':'⚡')}</div><div class="chat-msg__bubble">${html}</div>`;
     if (before && before.parentNode === box) box.insertBefore(d, before);
     else box.appendChild(d);
     box.scrollTop = box.scrollHeight;
