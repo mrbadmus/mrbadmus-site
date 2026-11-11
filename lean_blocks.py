@@ -175,10 +175,11 @@ def reveal(ctx, t):
         rows.append('<tr><th scope="row">%s</th>%s</tr>' % (ctx.fmt(label), "".join(tds)))
     out = ('<div class="lean-reveal" data-lean-reveal>'
            '<div class="lean-reveal-head"><h3 class="lean-reveal-h">%s</h3>'
-           '<button type="button" class="lean-showall" data-lean-showall aria-pressed="false">'
+           '<button type="button" class="lean-showall" data-lean-showall%s>'
            'Show all</button></div>'
            '<table class="lean-table"><thead>%s</thead><tbody>%s</tbody></table></div>'
-           % (ctx.fmt(t["title"]), head, "".join(rows)))
+           % (ctx.fmt(t["title"]), ' aria-pressed="false"' if ctx.state_attrs else "",
+              head, "".join(rows)))
     return _routed(ctx, t, out)
 
 

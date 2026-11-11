@@ -51,6 +51,13 @@ class Cards(unittest.TestCase):
         self.assertNotIn("aria-expanded", h)
         self.assertNotRegex(h, r"\shidden[\s>=]")
 
+    def test_ks4_reveal_carries_no_state_attribute(self):
+        t = {"kind": "reveal", "title": "T", "cols": ["In"], "rows": [("Ribs", "Up")]}
+        h = lb.reveal(lb.Ctx(state_attrs=False), t)
+        self.assertNotIn("aria-pressed", h)
+        self.assertNotIn("aria-expanded", h)
+        self.assertIn('aria-pressed="false"', lb.reveal(lb.Ctx(), t))
+
     def test_ids_are_unique_and_controls_resolve(self):
         ctx = lb.Ctx()
         reveal = {"kind": "reveal", "title": "In and out", "cols": ["In", "Out"],
