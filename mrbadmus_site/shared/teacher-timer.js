@@ -583,7 +583,22 @@
   // ── views, open, close ─────────────────────────────────────────────────
 
   function notify() {
+    syncModal();
     listeners.slice().forEach(function (fn) { try { fn(); } catch (e) { /* ok */ } });
+  }
+
+  /* ⚠️ THE FLOAT LIVES ON `document.body`, OUTSIDE THE PICKER'S DIALOG, and
+     an `aria-modal="true"` dialog tells a screen reader that everything
+     outside it is inert. So while the float is showing over an open picker,
+     the picker stops claiming to be modal — otherwise the one control a
+     teacher started from inside the picker is the one a screen reader
+     cannot reach. Full view is itself modal; hidden or closed hands the
+     claim back to the picker. */
+  function syncModal() {
+    var p = document.querySelector('[data-mrb-picker]');
+    if (!p) { return; }
+    var floatUp = !!root && !hidden && view === 'float';
+    p.setAttribute('aria-modal', floatUp ? 'false' : 'true');
   }
 
   function setView(v) {
@@ -687,6 +702,21 @@
     var tag = t && t.tagName;
     return tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' ||
            !!(t && t.isContentEditable);
+  }
+  /* ⚠️ SPACE ON SOMEBODY ELSE'S BUTTON IS THAT BUTTON'S. With the picker
+     closed and a timer floating, the teacher is using the PAGE: a focused
+     link or button on it must still activate with Space, as it does with no
+     timer at all. Only Space is given back — it is the key that presses a
+     focused control; the arrow and Page keys a clicker sends stay the
+     clicker's. Inside the picker or the timer, Space stays a clicker key
+     (its keyup is swallowed, so a focused control there is not also
+     pressed). */
+  function pageControl(e) {
+    if (picker || e.key !== ' ') { return false; }
+    var t = e.target;
+    if (!t || !t.closest || (root && root.contains(t))) { return false; }
+    return !!t.closest('button,a[href],summary,[role="button"],[role="link"],' +
+                       '[role="tab"],[role="checkbox"],[role="switch"]');
   }
   function kindOf(e) {
     var k = e.key;
@@ -858,7 +888,8 @@
       return;
     }
     var kind = kindOf(e);
-    if (!kind || typing(e.target) || e.ctrlKey || e.metaKey || e.altKey) { return; }
+    if (!kind || typing(e.target) || pageControl(e) ||
+        e.ctrlKey || e.metaKey || e.altKey) { return; }
     e.preventDefault(); e.stopPropagation();
     if (kind === 'blank') { if (!e.repeat) { toggleHidden(); } return; }
     var id = keyId(e), st = H[id];
@@ -877,7 +908,8 @@
   function onKeyUp(e) {
     if (e.key === 'F5') { return; }
     var kind = kindOf(e);
-    if (!kind || typing(e.target) || e.ctrlKey || e.metaKey || e.altKey) { return; }
+    if (!kind || typing(e.target) || pageControl(e) ||
+        e.ctrlKey || e.metaKey || e.altKey) { return; }
     e.preventDefault(); e.stopPropagation();
     if (kind === 'blank') { return; }
     var id = keyId(e), st = H[id];
@@ -899,7 +931,7 @@
     /* The picker registers itself while it is open so the clicker's forward
        keys can pick. `p.pick()` returns true (picked), 'busy' (a reveal is
        still spinning) or 'off' (the board is not showing). */
-    setPicker: function (p) { picker = p || null; syncKeys(); },
+    setPicker: function (p) { picker = p || null; syncKeys(); syncModal(); },
     /* ONE mute for the picker's cheer and the timer's beeps. Memory only. */
     muted: function () { return S.muted; },
     setMuted: function (b) { S.muted = !!b; if (root) { render(); } notify(); },
