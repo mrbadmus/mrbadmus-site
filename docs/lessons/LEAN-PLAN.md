@@ -81,8 +81,12 @@ move their units up.
 3. Pages still in the old pre-Design format (capital-letter headings, emojis, no
    Start here) are rebuilt into the new shape, not just trimmed.
 4. Opus examiner pass on the science; independent pupil walk at 390 px on every route.
-5. Push, check live, then update the progress log below and commit it.
-6. List anything the standard didn't cover, so the platform chat can add it.
+5. Keep question IDs (`docs/b2c/LESSON-DEPENDENCIES.md`). Run `tools/lean_id_map.py`
+   (writes `docs/lessons/<wave>/ID-MAP-*.json` and `docs/b2c/id-maps/<unit>.json`), then
+   `tools/lesson_contract_check.py --unit <unit>` static and `--drive`: both must say SAFE.
+   Push the backend's `knowledge-points.json` before the site if any tag changed.
+6. Push, check live, then update the progress log below and commit it.
+7. List anything the standard didn't cover, so the platform chat can add it.
 
 Design batches (new KS4 lessons) follow the same standard and the same curriculum check.
 
