@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<style>
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none !important; } }
+</style>
+</helmet>
+<div class="rd" data-mode="ks3" style="font-family: var(--ks3-font-body); color: var(--ks3-ink);">
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="README.md"><span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="README.md" style="text-decoration: none; font-weight: 600;">GCSE</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-ink-muted);">›</li>
+      <li><a href="README.md" style="text-decoration: none; font-weight: 600;">{{ subject }}</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-ink-muted);">›</li>
+      <li><a href="README.md" style="text-decoration: none; font-weight: 600;">{{ unit }}</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-ink-muted);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">{{ title }}</li>
+    </ol>
+  </nav>
+  <sc-if value="{{ showTop }}">
+    <nav data-rail="top" aria-label="Lesson progress" style="position: fixed; top: 0; left: 0; right: 0; z-index: 30; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+      <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+        <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ countLabel }}</span>
+        <a href="{{ currentHref }}" style="font-size: 16px; font-weight: 700; flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--ks3-ink); text-decoration: none;">{{ currentLabel }}</a>
+        <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ barStyle }}"></span></span>
+      </div>
+    </nav>
+  </sc-if>
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ nodes }}" as="node" hint-placeholder-count="5">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+            <span style="position: absolute; left: -9999px;">{{ node.srState }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:200},&quot;subject&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Chemistry&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;unit&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;title&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;rv&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;object&quot;}}">
+class Component extends DCLogic {
+  state = { scrolled: false };
+  componentDidMount() {
+    this.onScroll = () => { const s = window.scrollY > 140; if (s !== this.state.scrolled) this.setState({ scrolled: s }); };
+    window.addEventListener('scroll', this.onScroll, { passive: true });
+    this.onScroll();
+  }
+  componentWillUnmount() { window.removeEventListener('scroll', this.onScroll); }
+  renderVals() {
+    const rv = this.props.rv || {};
+    const nodes = (rv.rail || []).map((n) => Object.assign({}, n, { srState: n.done ? ' (done)' : '' }));
+    const cur = nodes.find((n) => n.linkStyle && rv.railCurrentLabel && false);
+    return {
+      subject: this.props.subject || 'Chemistry', unit: this.props.unit || '', title: this.props.title || '',
+      showTop: this.state.scrolled,
+      countLabel: rv.railCountLabel || '', currentLabel: rv.railCurrentLabel || '', currentHref: rv.railCurrentHref || '#',
+      barStyle: rv.railBarStyle || '',
+      nodes
+    };
+  }
+}
+</script>
+</body>
+</html>

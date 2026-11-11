@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+</helmet>
+<sc-if value="{{ has }}">
+  <div class="rd" data-mode="ks3" style="font-family: var(--ks3-font-body); color: var(--ks3-ink); text-wrap: pretty;">
+    <section aria-label="Lesson video" style="margin-top: 20px; padding: 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+      <div style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 14px;">
+        <p class="ks3-eyebrow" style="margin: 0; color: var(--ks3-accent-text);">Watch the explanation</p>
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">Optional · {{ duration }}</p>
+      </div>
+      <p style="margin: 6px 0 12px; font-size: 18px; font-weight: 700;">{{ title }}</p>
+      <sc-if value="{{ idle }}">
+        <button type="button" onClick="{{ onPlay }}" aria-label="{{ playLabel }}" style="position: relative; display: block; width: 100%; aspect-ratio: 16 / 9; padding: 0; border: 0; border-radius: 14px; overflow: hidden; background: #15110C; cursor: pointer;">
+          <img src="{{ poster }}" alt="" style="display: block; width: 100%; height: 100%; object-fit: cover;">
+          <span aria-hidden="true" style="position: absolute; left: 50%; top: 50%; width: 76px; height: 76px; margin: -38px 0 0 -38px; border-radius: 50%; background: var(--ks3-accent); display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 20px rgba(0,0,0,.35);">
+            <svg width="30" height="30" viewBox="0 0 30 30"><path d="M10 6.5v17l14-8.5z" fill="#FFFDF8"></path></svg>
+          </span>
+        </button>
+      </sc-if>
+      <sc-if value="{{ playing }}">
+        <video controls="{{ true }}" autoPlay="{{ true }}" playsInline="{{ true }}" src="{{ src }}" poster="{{ poster }}" style="display: block; width: 100%; aspect-ratio: 16 / 9; border-radius: 14px; background: #15110C;">
+          <track kind="captions" src="{{ captions }}" srcLang="en" label="English" default="{{ true }}"></track>
+        </video>
+      </sc-if>
+      <details style="margin-top: 12px;">
+        <summary style="cursor: pointer; min-height: 44px; display: flex; align-items: center; font-weight: 700;">Read the transcript</summary>
+        <div style="padding: 4px 0 2px; display: flex; flex-direction: column; gap: 10px; max-width: 68ch;">
+          <sc-for list="{{ transcript }}" as="line" hint-placeholder-count="3"><p style="margin: 0; font-size: 17px; line-height: 1.6; color: var(--ks3-ink-body);">{{ line }}</p></sc-for>
+        </div>
+      </details>
+    </section>
+  </div>
+</sc-if>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:720},&quot;video&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;{src:string,poster:string,captions:string,title:string,duration:string,transcript:string[]}|null&quot;}}">
+class Component extends DCLogic {
+  state = { playing: false };
+  renderVals() {
+    const v = this.props.video || null;
+    const has = !!(v && v.src);
+    return {
+      has, idle: has && !this.state.playing, playing: has && this.state.playing,
+      src: has ? v.src : '', poster: (v && v.poster) || '', captions: (v && v.captions) || '',
+      title: (v && v.title) || '', duration: (v && v.duration) || '',
+      transcript: (v && v.transcript) || [],
+      playLabel: 'Play the video' + (v && v.title ? ': ' + v.title : ''),
+      onPlay: () => this.setState({ playing: true })
+    };
+  }
+}
+</script>
+</body>
+</html>

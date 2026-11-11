@@ -184,6 +184,19 @@ GATES = [
          why="garbage strings in the built key stage — unsubstituted "
              "placeholders, stray markup, `undefined` reaching a page."),
 
+    dict(name="lean_check",
+         cmd=["python3", "lean_check.py"],
+         speed="fast",
+         watches=["lean_check.py", "lean_blocks.py", "lean_ks4.py", "ks3_data/lean/**",
+                  "ks3_data/__init__.py", "ks4_lessons/lean/**", "ks4_lessons/batch_lean.py",
+                  "ks4_lessons/__init__.py", "build_ks3.py", "build_ks4.py",
+                  "ks4_batch_rulings.py", "ks4_science_rulings.py", "tests/test_lean.py"],
+         why="the lean lesson standard (docs/lessons/LEAN-STANDARD.md): no phrase from the "
+             "'Never use' list, no 'not X, it's Y' contrast, no dash for drama, no rhetorical "
+             "question outside Start here, KS3 sentences of 15 words or fewer, 3 or 4 key "
+             "words, two Start here options, plain 'Rung N' labels, no embedded bench, and "
+             "(a warning until every table is in) a spec table per lesson."),
+
     dict(name="brand_one_mark",
          cmd=["python3", "brand_one_mark.py"],
          speed="fast",
@@ -3254,6 +3267,16 @@ EXCLUDED = {
         "System on every page). A library; asserts nothing. "
         "`theme_wiring_check` is the gate that proves every page carries it.",
     # ── ⊕ one-mark run, 27 Sep 2026 · the brand's tools ──────────────────────
+    "lean_blocks.py":
+        "Import-only library (lean pilot, Nov 2026): the HTML for the lean lesson shape "
+        "(key words, cards, reveal tables, key fact, Dive deeper, Try it) that KS3 and KS4 "
+        "both render through. Asserts nothing; `lean_check` and tests/test_lean.py prove "
+        "its output and every gate whose script imports it watches it.",
+    "lean_ks4.py":
+        "Import-only library (lean pilot, Nov 2026): builds a KS4 lean lesson's page "
+        "source (template and logic) from its record for build_ks4.py. Asserts nothing "
+        "itself (its edits fail the build by SystemExit); `lean_check` builds every "
+        "lean page source and checks it.",
     "brand.py":
         "the ONE brand partial (Mide's ruling, 13 Sep 2026) — a library every "
         "generator imports, plus `python3 brand.py` to rewrite "

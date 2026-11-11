@@ -25,11 +25,12 @@ import pkgutil
 from . import structure
 from .default_sequence import DEFAULT_SEQUENCE_V1
 from . import start_here
+from . import lean as lean_records
 
 # Modules in this package that are NOT unit modules.
 _NON_UNIT_MODULES = {"structure", "default_sequence", "half_terms",
                      "school_schemes", "substatements", "quantities",
-                     "start_here"}
+                     "start_here", "lean"}
 
 
 def _authored_modules():
@@ -83,6 +84,9 @@ def build_units():
             if lesson is not None:
                 # The "Start here" guess, where one is written (start_here.py).
                 lesson = start_here.apply(dict(lesson))
+                # A lean record (ks3_data/lean/), where one is written. AFTER the
+                # start_here merge, so the record's own Start here wins.
+                lesson = lean_records.apply(lesson)
                 lesson["authored"] = True
                 # Slot title/family are the skeleton's record; an authored
                 # lesson may legitimately refine the title but never the slug.
@@ -139,6 +143,11 @@ def build_units():
     if stray:
         raise ValueError("start_here.py names lesson(s) that are not authored: "
                          "%s." % sorted(stray))
+    lean_stray = set(lean_records.records()) - {
+        l["slug"] for u in units for l in u["lessons"] if l["authored"]}
+    if lean_stray:
+        raise ValueError("ks3_data/lean names lesson(s) that are not authored: %s."
+                         % sorted(lean_stray))
     return units
 
 

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<style>
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .3s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+</style>
+</helmet>
+<div class="rd" data-mode="ks3" style="font-family: var(--ks3-font-body); color: var(--ks3-ink); text-wrap: pretty;">
+  <sc-if value="{{ showHead }}" hint-placeholder-val="{{ true }}">
+    <p class="ks3-eyebrow" style="margin: 0; color: var(--ks3-accent-text);">{{ eyebrow }}</p>
+    <h3 style="margin: 6px 0 0; font-size: 26px; line-height: 1.15; letter-spacing: -.02em;">{{ title }}</h3>
+  </sc-if>
+  <p style="margin: 10px 0 0; font-size: 19px; line-height: 1.6; max-width: 62ch;">{{ prompt }}</p>
+  <p style="margin: 6px 0 0; font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">{{ hint }}</p>
+
+  <div style="margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 18px;">
+    <div>
+      <p style="margin: 0 0 8px; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-ink-muted);">The links</p>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <sc-for list="{{ pool }}" as="c" hint-placeholder-count="5">
+          <button type="button" onClick="{{ c.onClick }}" disabled="{{ c.disabled }}" style="{{ c.style }}">{{ c.text }}</button>
+        </sc-for>
+        <sc-if value="{{ poolEmpty }}"><p style="margin: 0; font-size: 17px; color: var(--ks3-ink-muted);">Every card is placed.</p></sc-if>
+      </div>
+    </div>
+    <div>
+      <p style="margin: 0 0 8px; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-ink-muted);">Your chain · {{ chainCount }}</p>
+      <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px;">
+        <sc-for list="{{ slots }}" as="s" hint-placeholder-count="4">
+          <li style="display: flex; gap: 10px; align-items: stretch;">
+            <span aria-hidden="true" style="flex: 0 0 34px; display: grid; place-items: center; border-radius: 10px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); font-family: var(--ks3-font-mono); font-weight: 500; font-size: 16px;">{{ s.num }}</span>
+            <div style="flex: 1 1 auto; min-width: 0;">
+              <button type="button" onClick="{{ s.onClick }}" disabled="{{ s.disabled }}" aria-label="{{ s.aria }}" style="{{ s.style }}">
+                <span style="flex: 1 1 auto;">{{ s.text }}</span>
+                <sc-if value="{{ s.isOk }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true" style="width: 22px; height: 22px; color: var(--ks3-ok-text);"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                <sc-if value="{{ s.isBad }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true" style="width: 22px; height: 22px; color: var(--ks3-alert-text);"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+              </button>
+              <sc-if value="{{ s.hasNote }}"><p data-arrive="1" style="margin: 6px 0 0; padding: 10px 14px; border-radius: 12px; background: var(--ks3-alert-tint); border: 2px solid var(--ks3-alert-border); font-size: 17px; line-height: 1.5; color: var(--ks3-ink);">{{ s.note }}</p></sc-if>
+            </div>
+          </li>
+        </sc-for>
+      </ol>
+    </div>
+  </div>
+
+  <div style="margin-top: 18px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap;">
+    <button type="button" class="ks3-reveal-btn" onClick="{{ onCheck }}" disabled="{{ checkLocked }}" style="{{ checkStyle }}">{{ checkLabel }}</button>
+    <span role="status" style="font-size: 18px; font-weight: 700; color: var(--ks3-ink-body);">{{ status }}</span>
+  </div>
+  <sc-if value="{{ solved }}">
+    <div data-arrive="1" style="margin-top: 16px; padding: 18px 20px; border-radius: 18px; background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+      <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-ink-muted);">The linked answer, as one paragraph</p>
+      <p style="margin: 8px 0 0; font-size: 19px; line-height: 1.6;">{{ paragraph }}</p>
+      <sc-if value="{{ hasDoneNote }}"><p style="margin: 12px 0 0; font-size: 18px; line-height: 1.55; color: var(--ks3-ink-body);">{{ doneNote }}</p></sc-if>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:900},&quot;eyebrow&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Build the chain&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;title&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;prompt&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;links&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;string[]&quot;},&quot;herrings&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;Array&lt;{text:string,why:string}&gt;&quot;},&quot;scored&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;},&quot;doneNote&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;onDone&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;(r:{correct:boolean})=&gt;void&quot;}}">
+class Component extends DCLogic {
+  state = { chain: [], checked: false, attempts: 0, reported: false };
+  cards() {
+    const p = this.props;
+    const links = (p.links || []).map((t, i) => ({ id: 'L' + i, text: t, pos: i }));
+    const herr = (p.herrings || []).map((h, i) => ({ id: 'H' + i, text: h.text, why: h.why, pos: -1 }));
+    const all = links.concat(herr);
+    const H = (s) => { let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; };
+    return all.sort((a, b) => H(a.text + 'x') - H(b.text + 'x'));
+  }
+  renderVals() {
+    const p = this.props;
+    const s = this.state;
+    const cards = this.cards();
+    const byId = {}; cards.forEach((c) => { byId[c.id] = c; });
+    const n = (p.links || []).length;
+    const scored = !!p.scored;
+    const results = s.chain.map((id, k) => byId[id] && byId[id].pos === k);
+    const solved = s.checked && s.chain.length === n && results.every(Boolean);
+    const lock = solved;
+    const btn = (on) => 'display:flex;align-items:center;gap:10px;width:100%;text-align:left;font:inherit;font-size:17px;font-weight:600;line-height:1.4;padding:12px 14px;min-height:48px;border-radius:14px;cursor:pointer;color:var(--ks3-ink);' +
+      'background:' + (on ? 'var(--ks3-card)' : 'var(--ks3-ground)') + ';border:2px solid ' + (on ? 'var(--ks3-ink)' : 'var(--ks3-option-border)') + ';';
+    const slots = [];
+    for (let k = 0; k < n; k++) {
+      const id = s.chain[k];
+      const c = id ? byId[id] : null;
+      const ok = s.checked && c && results[k];
+      const bad = s.checked && c && !results[k];
+      slots.push({
+        num: String(k + 1),
+        text: c ? c.text : 'Tap a link to place it here',
+        aria: c ? 'Remove: ' + c.text : 'Empty place ' + (k + 1),
+        disabled: !c || lock,
+        style: c ? btn(true) + (bad ? 'border-color:var(--ks3-alert-border);' : '') : btn(false) + 'color:var(--ks3-ink-muted);font-weight:500;border-style:dashed;cursor:default;',
+        isOk: ok && scored, isBad: bad && scored,
+        hasNote: !!(bad && c && (c.pos < 0 || !scored)),
+        note: bad && c ? (c.pos < 0 ? c.why : 'This link belongs in the chain, but not at this step.') : '',
+        onClick: () => { if (!c || lock) return; this.setState((st) => ({ chain: st.chain.filter((x) => x !== id), checked: false })); }
+      });
+    }
+    const pool = cards.filter((c) => s.chain.indexOf(c.id) < 0);
+    const full = s.chain.length >= n;
+    const wrongCount = results.filter((r) => !r).length;
+    return {
+      showHead: !!p.title,
+      eyebrow: p.eyebrow || 'Build the chain',
+      title: p.title || '',
+      prompt: p.prompt || '',
+      hint: n + ' links belong. ' + ((p.herrings || []).length) + ' do not.',
+      pool: pool.map((c) => ({
+        text: c.text, disabled: full || lock,
+        style: btn(false) + ((full || lock) ? 'opacity:.55;cursor:default;' : ''),
+        onClick: () => { if (full || lock) return; this.setState((st) => ({ chain: st.chain.concat(c.id), checked: false })); }
+      })),
+      poolEmpty: pool.length === 0,
+      chainCount: s.chain.length + ' of ' + n,
+      slots,
+      checkLocked: !full || lock || s.checked,
+      checkStyle: (!full || lock || s.checked) ? 'opacity:.45;cursor:default;' : '',
+      checkLabel: s.attempts ? 'Check again' : 'Check my chain',
+      status: solved ? (scored && s.attempts > 1 ? 'Linked now. The rung scores your first attempt.' : 'Every link in order.')
+        : (s.checked ? (wrongCount === 1 ? 'One card needs to move. Tap it to take it out.' : wrongCount + ' cards need to move. Tap them to take them out.') : ''),
+      onCheck: () => {
+        if (!full || lock) return;
+        const first = !s.reported;
+        const ok = results.every(Boolean);
+        this.setState((st) => ({ checked: true, attempts: st.attempts + 1, reported: true }));
+        if (first && typeof p.onDone === 'function') p.onDone({ correct: ok });
+      },
+      solved,
+      paragraph: (p.links || []).join(' '),
+      hasDoneNote: !!p.doneNote,
+      doneNote: p.doneNote || ''
+    };
+  }
+}
+
+</script>
+</body>
+</html>

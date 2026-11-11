@@ -244,8 +244,26 @@ def all_lessons():
     resolve to a batch lesson and vice versa."""
     out = list(LESSONS)
     for name in sorted(batch_modules()):
+        # ⊕ lean pilot: the lean batch is NOT part of NAV. It re-builds slugs the
+        # legacy batches already list (so NAV has them), and its old-format lessons
+        # were never in NAV; adding them would change shared/ks4-lib.js, and with it
+        # the cache-bust stamp on every KS4 page.
+        if getattr(batch_modules()[name], "LEAN", False):
+            continue
         out.extend(lessons_for_batch(name))
     return out
+
+
+def lean_lessons():
+    """The lessons the lean batch builds (batch_lean.LESSONS, none staged)."""
+    return [L for name, mod in sorted(batch_modules().items())
+            if getattr(mod, "LEAN", False) for L in lessons_for_batch(name)]
+
+
+def lean_owned_slugs():
+    """Slugs the lean batch owns. A legacy batch never writes a page for one,
+    whichever batch runs first."""
+    return {L["slug"] for L in lean_lessons()}
 
 
 _ALL_LESSON_BY_SLUG = None
@@ -274,6 +292,24 @@ def verify_no_slug_collisions():
                 "slug %r is registered by both batch %r and batch %r"
                 % (L["slug"], prior["batch"], L["batch"]))
         seen[L["slug"]] = L
+    # ⊕ lean pilot — the lean batch may re-build a legacy slug, but only the one
+    # its record names (`legacy.batch`), and a lean slug with no legacy must not
+    # be registered by any batch.
+    lean_seen = set()
+    for L in lean_lessons():
+        slug = L["slug"]
+        if slug in lean_seen:
+            problems.append("slug %r is registered twice by the lean batch" % slug)
+        lean_seen.add(slug)
+        prior = seen.get(slug)
+        want = (L["lean"].get("legacy") or {}).get("batch")
+        if want is None and prior is not None:
+            problems.append("lean slug %r has no legacy batch in its record but batch %r "
+                            "registers it" % (slug, prior["batch"]))
+        elif want is not None and (prior is None or prior["batch"] != want):
+            problems.append("lean slug %r names legacy batch %r but %s"
+                            % (slug, want, "no batch registers it" if prior is None
+                               else "batch %r registers it" % prior["batch"]))
     if problems:
         raise SystemExit(
             "ks4_lessons.verify_no_slug_collisions: %d problem(s):\n  %s"
@@ -296,7 +332,10 @@ def site_url(slug, route):
     Resolves against EVERY registered batch (`_all_lesson_by_slug()`), not
     just the pilot's 14 — a prev/next or connects link may point out of one
     batch and into another."""
-    L = _all_lesson_by_slug()[slug]
+    L = _all_lesson_by_slug().get(slug) or next(
+        (x for x in lean_lessons() if x["slug"] == slug), None)
+    if L is None:
+        raise KeyError(slug)
     pathway, tier = ROUTE_URL[route]
     return "/%s/%s/%s/%s/%s.html" % (pathway, tier, L["subject"], L["topic_id"], slug)
 

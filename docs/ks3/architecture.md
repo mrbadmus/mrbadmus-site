@@ -813,6 +813,21 @@ Code renders, and the registry (MRB-203) fails the build on a type with no regis
 - **`comparison`** is the CONTRAST family's spine and 18 lessons inherit it. It is flex, never grid:
   a grid cannot produce the 820px stack without a second query.
 
+⊕ **Amendment, 10 Nov 2026 — six lean block types added (lean pilot).** A lesson that carries a
+lean record (`ks3_data/lean/<slug>.py`, format in `docs/lessons/LEAN-RECORD.md`) is assembled from
+these instead of its authored `core`. They are drawn by `lean_blocks.py` (shared with KS4) and
+styled by `shared/lean.css` / `shared/lean.js`, which only lean pages load. A lesson with no record
+never uses them and is byte-identical.
+
+| Segment | What it is |
+|---|---|
+| `lean-start` | Start here: one keyed-commit guess, two options, no title, no scene, no bridge. |
+| `lean-words` | Key words: three or four chips. |
+| `lean-knowledge` | Key knowledge: cards tapped or swiped open, and tap-to-reveal tables. |
+| `lean-fact` | Key fact: the one or two sentences an examiner wants written. |
+| `lean-try` | A "Try it" link to a matching simulation. Renders nothing when there is none. |
+| `lean-deeper` | Dive deeper: closed until tapped. |
+
 **The grammar** — the seven families (§6) decide **which** segments a lesson uses, **how many**, and
 **in what order** the middle runs. The families are unchanged.
 

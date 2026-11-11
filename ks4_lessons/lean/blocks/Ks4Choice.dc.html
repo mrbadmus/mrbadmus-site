@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<style>
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+</style>
+</helmet>
+<div class="rd" data-mode="ks3" style="font-family: var(--ks3-font-body); color: var(--ks3-ink); text-wrap: pretty;">
+  <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+    <p class="ks3-eyebrow" style="margin: 0; color: var(--ks3-accent-text);">{{ eyebrow }}</p>
+    <sc-if value="{{ hasCommand }}"><span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 3px 10px; border-radius: 99px; border: 2px solid var(--ks3-ink); color: var(--ks3-ink);">{{ command }}</span></sc-if>
+  </div>
+  <sc-if value="{{ hasFigure }}"><div style="margin: 14px 0 4px;">{{ figure }}</div></sc-if>
+  <p class="ks3-commit" style="color: var(--ks3-ink); margin: 10px 0 4px;">{{ prompt }}</p>
+  <ul class="ks3-options">
+    <sc-for list="{{ options }}" as="opt" hint-placeholder-count="4">
+      <li>
+        <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" disabled="{{ opt.disabled }}" onClick="{{ opt.onClick }}" style="{{ opt.style }}">
+          <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+          <span class="ks3-opt-label">{{ opt.text }}</span>
+        </button>
+      </li>
+    </sc-for>
+  </ul>
+  <sc-if value="{{ committed }}">
+    <div data-arrive="1" role="status" style="{{ replyStyle }}">
+      <p style="margin: 0; font-size: 19px; line-height: 1.6;"><strong>{{ verdict }}</strong> {{ reply }}</p>
+      <sc-if value="{{ hasReveal }}"><p style="margin: 12px 0 0; font-size: 19px; line-height: 1.6;">{{ reveal }}</p></sc-if>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:760},&quot;eyebrow&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Commit first&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;prompt&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;options&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;Array&lt;{text:string,reply?:string,correct?:boolean}&gt;&quot;},&quot;reveal&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;command&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;figureSvg&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;string&quot;},&quot;onCommit&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;(i:number)=&gt;void&quot;}}">
+const LETTERS = ['A', 'B', 'C', 'D', 'E', 'F'];
+class Component extends DCLogic {
+  state = { pick: null };
+  renderVals() {
+    const p = this.props;
+    const opts = p.options || [];
+    const pick = this.state.pick;
+    const committed = pick !== null;
+    const chosen = committed ? opts[pick] : null;
+    const graded = opts.some((o) => o.correct !== undefined);
+    const wrongIdea = graded && chosen && !chosen.correct;
+    return {
+      eyebrow: p.eyebrow || 'Commit first',
+      command: p.command || '', hasCommand: !!p.command,
+      prompt: p.prompt || '',
+      hasFigure: !!p.figureSvg,
+      figure: p.figureSvg ? React.createElement('div', { role: 'img', 'aria-label': p.figureAlt || '', style: { maxWidth: p.figureMax || '640px' }, dangerouslySetInnerHTML: { __html: p.figureSvg } }) : null,
+      options: opts.map((o, i) => ({
+        letter: LETTERS[i], text: o.text, pressed: pick === i,
+        disabled: committed && pick !== i,
+        style: committed && pick !== i ? 'opacity:.62;cursor:default;' : '',
+        onClick: () => {
+          if (committed) return;
+          this.setState({ pick: i });
+          if (typeof p.onCommit === 'function') p.onCommit(i, o);
+        }
+      })),
+      committed,
+      verdict: chosen ? (graded ? (chosen.correct ? (p.rightWord || 'Yes.') : (p.wrongWord || 'Not quite.')) : (p.lockedWord || 'Locked in.')) : '',
+      reply: chosen ? (chosen.reply || '') : '',
+      hasReveal: committed && !!p.reveal,
+      reveal: p.reveal || '',
+      replyStyle: 'margin-top:18px;padding:18px 20px;border-radius:18px;border:2px solid ' +
+        (wrongIdea ? 'var(--ks3-alert-border);background:var(--ks3-alert-tint);' : 'var(--ks3-accent);background:var(--ks3-accent-tint);')
+    };
+  }
+}
+
+</script>
+</body>
+</html>

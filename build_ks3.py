@@ -78,6 +78,7 @@ KS4_BRIDGE_PATHWAY = "combined"
 KS4_BRIDGE_TIER = "foundation"
 
 import brand
+import lean_blocks  # the lean lesson shape (KS3 and KS4), docs/lessons/LEAN-RECORD.md
 import option_labels  # fix 2 (Oct 2026): a ladder option shows its label, never its reason
 import topbar  # the ONE pupil top bar (Stage B, phone run 28 Sep 2026)
 import ks3_art
@@ -197,6 +198,9 @@ _KS3_ART = ks3_art.load()
 # generator hashes its own output copy, and the copy is written verbatim from
 # `shared/mrbadmus.v2.js`, so the two hashes are the same eight characters.
 VERSIONED_ASSETS = ("tokens.css", "styles.css", "nav.css", "ks3.css", "ks3.js",
+                     # ⊕ lean pilot (Nov 2026) — loaded ONLY by pages that carry a
+                     # lean record, so no other page's bytes change.
+                     "lean.css", "lean.js",
                      "class-entry.js", "mrbadmus.v2.js",
                      # ⊕ Front door (12 Oct 2026) — the one map of who goes where;
                      # class-entry.js asks it. A stale copy would route a person
@@ -3178,7 +3182,14 @@ def _rung_title(name, q):
     return _RUNG_PREFIX.sub("", q.get("title") or name).strip() or name
 
 
-def _rung_marked(key, num, name, q):
+def _rung_heading(num, name, q, plain):
+    """"Rung 2 · The one that catches people", or just "Rung 2" on a lean page."""
+    if plain:
+        return "Rung %d" % num
+    return "Rung %d · %s" % (num, e(_rung_title(name, q)))
+
+
+def _rung_marked(key, num, name, q, plain=False):
     """Rungs the PAGE marks: options, one right answer, per-option correction.
 
     This is the only place in the whole generator where `data-correct` appears.
@@ -3205,15 +3216,15 @@ def _rung_marked(key, num, name, q):
             i, lp["labels"][i],
             ' data-correct="%s" data-feedback="%s"%s' % (correct, e(fb), full)))
     return ('<div class="ks3-rung" data-rung="%s" data-mode="marked">'
-            '<h3 tabindex="-1">Rung %d · %s</h3>'
+            '<h3 tabindex="-1">%s</h3>'
             '<p class="ks3-rung-q">%s</p>'
             '<ul class="ks3-options" role="list">%s</ul>'
             '</div>'
-            % (e(key), num, e(_rung_title(name, q)), sci(q.get("q", "")),
+            % (e(key), _rung_heading(num, name, q, plain), sci(q.get("q", "")),
                "".join(opts)))
 
 
-def _rung_self(slug, key, num, name, q):
+def _rung_self(slug, key, num, name, q, plain=False):
     """Rungs the STUDENT marks (R8): write, then check, then mark.
 
     The criteria are not on the page yet — they arrive when ks3.js unhides
@@ -3233,7 +3244,7 @@ def _rung_self(slug, key, num, name, q):
             '</li>' % (e(cid), e(cid), i + 1, rich(s)))
     aid = "ks3-ans-%s-%s" % (slug, key)
     return ('<div class="ks3-rung ks3-rung-self" data-rung="%s" data-mode="self">'
-            '<h3 tabindex="-1">Rung %d · %s</h3>'
+            '<h3 tabindex="-1">%s</h3>'
             '<p class="ks3-rung-q">%s</p>'
             '<label class="ks3-answer-label" for="%s">%s</label>'
             '<textarea class="ks3-answer" id="%s" data-answer rows="5"%s>'
@@ -3265,7 +3276,7 @@ def _rung_self(slug, key, num, name, q):
             # scaffold — reached no student at all. Exactly the defect R5
             # exists to catch, found by the byte-identity sweep rather than by
             # the lint. The generic label stays as the fallback.
-            % (e(key), num, e(_rung_title(name, q)), sci(q.get("q", "")), e(aid),
+            % (e(key), _rung_heading(num, name, q, plain), sci(q.get("q", "")), e(aid),
                t(q.get("field_label") or "Write your answer"), e(aid),
                (' placeholder="%s"' % e(q["placeholder"])
                 if q.get("placeholder") else ""),
@@ -3289,15 +3300,16 @@ def r_ladder(lesson, block=None):
     """
     lad = lesson.get("ladder") or {}
     slug = lesson["slug"]
+    plain = bool(lesson.get("lean"))   # lean pages: "Rung 1", no label after it
     rungs, self_marked = [], []
     for key, num, name in LADDER_RUNGS:
         q = lad.get(key)
         if not q:
             continue
         if q.get("options"):
-            rungs.append(_rung_marked(key, num, name, q))
+            rungs.append(_rung_marked(key, num, name, q, plain))
         elif q.get("success"):
-            rungs.append(_rung_self(slug, key, num, name, q))
+            rungs.append(_rung_self(slug, key, num, name, q, plain))
             self_marked.append(num)
 
     # ⊕ MRB-257 · audit C7 — THE SUB-LINE IS GONE, and only one line survives.
@@ -3327,14 +3339,15 @@ def r_ladder(lesson, block=None):
 
     return ('<section class="ks3-block ks3-ladder" data-lesson="%s"%s>'
             '<div class="ks3-ladder-head">'
-            '<div><h2>Mastery ladder</h2></div>'
+            '<div><h2>%s</h2></div>'
             '<div class="ks3-ladder-score" aria-live="polite">'
             '<p class="ks3-score" data-score>Not started yet.</p>'
             '<p class="ks3-score-note" data-score-note>%s</p></div>'
             '</div>'
             '<div class="ks3-rungs">%s</div>'
             '</section>'
-            % (e(slug), _id_attr(block or {}), e(note),
+            % (e(slug), _id_attr(block or {}),
+               "Practice" if plain else "Mastery ladder", e(note),
                "".join(rungs)))
 
 
@@ -4084,7 +4097,95 @@ def _require_slug(entry):
     return entry
 
 
+# ── the lean lesson shape (lean pilot, Nov 2026) ─────────────────────────
+#
+# Six block types, drawn only when a lesson carries a lean record
+# (ks3_data/lean/<slug>.py, merged by ks3_data.build_units()). The HTML for
+# words, cards, reveal tables, key fact and Dive deeper is lean_blocks.py's,
+# shared with KS4; look and behaviour are shared/lean.css and shared/lean.js.
+# Start here is NOT drawn by lean_blocks: it is KS3's own keyed-commit, so
+# wireKeyedCommit in shared/ks3.js drives it and ks3_instrument_liveness finds
+# the shell. It differs from r_hook's guess in what it leaves out: no title, no
+# scene (only the record's one `setup` line), no "Good guess."/"Fair guess."
+# prefix, no bridge.
+
+_LEAN_CTX = {}
+
+
+def _lean_ctx(lesson):
+    return _LEAN_CTX[lesson["slug"]]
+
+
+def _lean_figure_part(lesson):
+    def part(p):
+        if "figure" in p:
+            out = r_figure(lesson, {"ref": p["figure"]})
+            if not out:
+                raise ValueError("lean[%s]: figure %r is not a drawn figure of this lesson"
+                                 % (lesson["slug"], p["figure"]))
+            return out
+        return None
+    return part
+
+
+def r_lean_start(lesson, block):
+    rec = lesson["lean"]
+    st = rec["start"]
+    # A fresh context per page, built at the first lean block, so ids are
+    # unique within the page and the same on every build.
+    defs = {v["term"].lower(): v["definition"] for v in lesson.get("vocabulary") or []
+            if v.get("term") and v.get("definition")}
+    _LEAN_CTX[lesson["slug"]] = lean_blocks.Ctx(
+        prefix="lean", fmt=rich, state_attrs=True, part=_lean_figure_part(lesson), defs=defs)
+    setup = ('<p class="ks3-hook-prompt">%s</p>' % rich(st["setup"])) if st.get("setup") else ""
+    buttons = "".join(_option_li(i, o[0], ' aria-pressed="false"')
+                      for i, o in enumerate(st["options"]))
+    replies = "".join('<p class="ks3-keyed-reply" data-reply="%d" hidden>%s</p>'
+                      % (i, rich(o[1])) for i, o in enumerate(st["options"]))
+    return ('<section class="ks3-block ks3-dark ks3-hook ks3-keyed-block"%s aria-label="Start here"'
+            ' data-activity="hook" data-instrument data-keyedblock data-stage-done="0">'
+            '<p class="ks3-eyebrow">Start here</p>%s'
+            '<div class="ks3-hook-commit"><p class="ks3-commit">%s</p>'
+            '<div class="ks3-keyed" data-keyed>'
+            '<ul class="ks3-options ks3-keyed-options" role="list" data-shuffle>%s</ul>'
+            '<div class="ks3-keyed-reveal" hidden data-reveal>%s</div></div></div></section>'
+            % (_id_attr(block or {}), setup, sci(st["question"]), buttons, replies))
+
+
+def r_lean_words(lesson, block):
+    return lean_blocks.key_words(_lean_ctx(lesson), lesson["lean"]["words"],
+                                 sid=(block or {}).get("anchor"))
+
+
+def r_lean_knowledge(lesson, block):
+    # `data-stage-done="0"` makes the rail's Key knowledge stop authoritative
+    # (doneByDom); shared/lean.js sets it to "1" when a card or cell first opens.
+    return lean_blocks.knowledge(_lean_ctx(lesson), lesson["lean"]["knowledge"],
+                                 sid=(block or {}).get("anchor"),
+                                 extra=' data-stage-done="0"')
+
+
+def r_lean_fact(lesson, block):
+    return lean_blocks.key_fact(_lean_ctx(lesson), lesson["lean"]["key_fact"],
+                                sid=(block or {}).get("anchor"))
+
+
+def r_lean_try(lesson, block):
+    return lean_blocks.try_link(lesson["lean"].get("try"))
+
+
+def r_lean_deeper(lesson, block):
+    return lean_blocks.deeper(_lean_ctx(lesson), lesson["lean"]["deeper"],
+                              sid=(block or {}).get("anchor"))
+
+
 BLOCK_RENDERERS = {
+    "lean-start": r_lean_start,
+    "lean-words": r_lean_words,
+    "lean-knowledge": r_lean_knowledge,
+    "lean-fact": r_lean_fact,
+    "lean-try": r_lean_try,
+    "lean-deeper": r_lean_deeper,
     "hook": r_hook,
     "key-fact": r_key_fact,
     "rule": r_rule,
@@ -4717,6 +4818,13 @@ def lesson_page(unit, lesson, registry, units_by_code, neighbours=None):
         head_links += '<link rel="prev" href="%s"/>\n' % e(canon(
             _lesson_href(prev_n[0], prev_n[1])))
 
+    # ⊕ lean pilot: a lean page, and only a lean page, loads shared/lean.css and
+    # shared/lean.js. Every other page's head and tail are exactly as they were.
+    tail = tutor_mount(disc, "%s — %s" % (unit["title"], lesson["title"]))
+    if lesson.get("lean"):
+        head_links += '<link rel="stylesheet" href="/shared/lean.css"/>\n'
+        tail += '<script src="/shared/lean.js" defer></script>\n'
+
     return shell(lesson["title"], "\n".join(x for x in body if x), trail, disc,
                  lesson.get("meta_description")
                  or lesson.get("big_question", ""),
@@ -4725,8 +4833,7 @@ def lesson_page(unit, lesson, registry, units_by_code, neighbours=None):
                  canonical=_lesson_href(unit, lesson),
                  head_links=head_links,
                  og_type="article",
-                 tail_html=tutor_mount(
-                     disc, "%s — %s" % (unit["title"], lesson["title"])))
+                 tail_html=tail)
 
 
 def coming_soon_page(unit, lesson):
@@ -5844,6 +5951,15 @@ def build_ks3(output_dir=OUT_ROOT, mirror_to_root=True, repo_root="."):
         raise SystemExit(1)
     print("  ✅ validation passed (acyclic graph, exactly-once coverage, Law 3, "
           "support slots, references)")
+
+    # ⊕ lean pilot: a lean record that breaks the standard stops the build (lean_check.py).
+    import lean_check
+    lean_problems, _warn = lean_check.run(ks=(3,))
+    if lean_problems:
+        print("\n❌ BUILD FAILED — lean_check, %d problem(s):\n" % len(lean_problems))
+        for p in lean_problems:
+            print("   • %s" % p)
+        raise SystemExit(1)
 
     missing = check_ks4_links(units, repo_root)
     if missing:
