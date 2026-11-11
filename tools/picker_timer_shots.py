@@ -9,9 +9,9 @@ Writes PNGs to docs/picker-timer/shots/ (default) at 390x844 (device scale 2),
 way `teacher_picker_drive.py` does (served by `ks3_browser.serve`, pressed by
 `data-mrb-added` marker) and borrows that file's page-side helpers.
 
-Light gets every scene; dark gets the four that carry the most colour (the
-weighted panel, the pick-next panel, the full timer and the last-ten-seconds
-digits), which keeps the set to a size a person will actually look at.
+Every scene is taken in both themes, at every viewport: the brief asks for
+light and dark of each, and a scene left out of one theme is a scene nobody
+has seen in it.
 """
 import base64
 import time
@@ -28,8 +28,7 @@ import teacher_picker_drive as D                            # noqa: E402
 FIXTURE = D.FIXTURE
 VIEWPORTS = (("390", 390, 844, 2), ("1440", 1440, 900, 1),
              ("1920", 1920, 1080, 1))
-DARK_SCENES = ("settings-weighted", "picknext-panel", "timer-full",
-               "timer-warn", "settings-clicker-keys", "clicker-celebration")
+
 
 
 def js(page, body, timeout=60):
@@ -72,7 +71,7 @@ def main(argv):
                     scenes = []
 
                     def want(name):
-                        return theme == "light" or name in DARK_SCENES
+                        return True
 
                     def snap(name):
                         if want(name):
