@@ -1,0 +1,6051 @@
+{
+ "base": "origin/main",
+ "ids": {
+  "cs-phys-bouncing-ball-6": {
+   "kp": "ks4.energy-stores-systems.4",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "ks4-changes-in-energy-e01": {
+   "kp": "ks4.changes-in-energy.1",
+   "new": "ks4-changes-in-energy-e01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-changes-in-energy-e02": {
+   "kp": "ks4.changes-in-energy.2",
+   "new": "ks4-changes-in-energy-e02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-changes-in-energy-e03": {
+   "kp": "ks4.changes-in-energy.4",
+   "new": "ks4-changes-in-energy-e03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-changes-in-energy-e04": {
+   "kp": "ks4.changes-in-energy.3",
+   "new": "ks4-changes-in-energy-e04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-changes-in-energy-e05": {
+   "kp": "ks4.changes-in-energy.3",
+   "new": "ks4-changes-in-energy-e05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-changes-in-energy-e06": {
+   "kp": "ks4.changes-in-energy.3",
+   "new": "ks4-changes-in-energy-e06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-changes-in-energy-e07": {
+   "kp": "ks4.changes-in-energy.1",
+   "new": "ks4-changes-in-energy-e07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-changes-in-energy-e08": {
+   "kp": "ks4.changes-in-energy.1",
+   "new": "ks4-changes-in-energy-e08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-changes-in-energy-e09": {
+   "kp": "ks4.changes-in-energy.4",
+   "new": "ks4-changes-in-energy-e09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-changes-in-energy-e10": {
+   "kp": "ks4.changes-in-energy.2",
+   "new": "ks4-changes-in-energy-e10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-changes-in-energy-e11": {
+   "kp": "ks4.changes-in-energy.3",
+   "new": "ks4-changes-in-energy-e11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-changes-in-energy-e12": {
+   "kp": "ks4.changes-in-energy.3",
+   "new": "ks4-changes-in-energy-e12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-changes-in-energy-h01": {
+   "kp": "ks4.changes-in-energy.5",
+   "new": "ks4-changes-in-energy-h01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-changes-in-energy-h02": {
+   "kp": "ks4.changes-in-energy.4",
+   "new": "ks4-changes-in-energy-h02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-changes-in-energy-h03": {
+   "kp": "ks4.changes-in-energy.5",
+   "new": "ks4-changes-in-energy-h03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-changes-in-energy-h04": {
+   "kp": "ks4.changes-in-energy.7",
+   "new": "ks4-changes-in-energy-h04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-changes-in-energy-h05": {
+   "kp": "ks4.changes-in-energy.5",
+   "new": "ks4-changes-in-energy-h05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-changes-in-energy-h06": {
+   "kp": "ks4.changes-in-energy.5",
+   "new": "ks4-changes-in-energy-h06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-changes-in-energy-h07": {
+   "kp": "ks4.changes-in-energy.5",
+   "new": "ks4-changes-in-energy-h07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-changes-in-energy-h08": {
+   "kp": "ks4.changes-in-energy.6",
+   "new": "ks4-changes-in-energy-h08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-changes-in-energy-h09": {
+   "kp": "ks4.changes-in-energy.4",
+   "new": "ks4-changes-in-energy-h09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-changes-in-energy-h10": {
+   "kp": "ks4.changes-in-energy.5",
+   "new": "ks4-changes-in-energy-h10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-changes-in-energy-h11": {
+   "kp": "ks4.changes-in-energy.4",
+   "new": "ks4-changes-in-energy-h11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-changes-in-energy-h12": {
+   "kp": "ks4.changes-in-energy.6",
+   "new": "ks4-changes-in-energy-h12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-changes-in-energy-h13": {
+   "kp": "ks4.changes-in-energy.5",
+   "new": "ks4-changes-in-energy-h13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-changes-in-energy-h14": {
+   "kp": "ks4.changes-in-energy.7",
+   "new": "ks4-changes-in-energy-h14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-changes-in-energy-h15": {
+   "kp": "ks4.changes-in-energy.5",
+   "new": "ks4-changes-in-energy-h15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-changes-in-energy-h16": {
+   "kp": "ks4.changes-in-energy.6",
+   "new": "ks4-changes-in-energy-h16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-changes-in-energy-h17": {
+   "kp": "ks4.changes-in-energy.6",
+   "new": "ks4-changes-in-energy-h17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-changes-in-energy-h18": {
+   "kp": "ks4.changes-in-energy.5",
+   "new": "ks4-changes-in-energy-h18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-changes-in-energy-h19": {
+   "kp": "ks4.changes-in-energy.2",
+   "new": "ks4-changes-in-energy-h19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-changes-in-energy-h20": {
+   "kp": "ks4.changes-in-energy.7",
+   "new": "ks4-changes-in-energy-h20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-changes-in-energy-h21": {
+   "kp": "ks4.changes-in-energy.4",
+   "new": "ks4-changes-in-energy-h21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-changes-in-energy-h22": {
+   "kp": "ks4.changes-in-energy.4",
+   "new": "ks4-changes-in-energy-h22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-changes-in-energy-h23": {
+   "kp": "ks4.changes-in-energy.4",
+   "new": "ks4-changes-in-energy-h23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-changes-in-energy-h24": {
+   "kp": "ks4.changes-in-energy.1",
+   "new": "ks4-changes-in-energy-h24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-changes-in-energy-h25": {
+   "kp": "ks4.changes-in-energy.2",
+   "new": "ks4-changes-in-energy-h25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-changes-in-energy-h26": {
+   "kp": "ks4.changes-in-energy.3",
+   "new": "ks4-changes-in-energy-h26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-changes-in-energy-s01": {
+   "kp": "ks4.changes-in-energy.7",
+   "new": "ks4-changes-in-energy-s01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-changes-in-energy-s02": {
+   "kp": "ks4.changes-in-energy.7",
+   "new": "ks4-changes-in-energy-s02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-changes-in-energy-s03": {
+   "kp": "ks4.changes-in-energy.6",
+   "new": "ks4-changes-in-energy-s03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-changes-in-energy-s04": {
+   "kp": "ks4.changes-in-energy.6",
+   "new": "ks4-changes-in-energy-s04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-changes-in-energy-s05": {
+   "kp": "ks4.changes-in-energy.7",
+   "new": "ks4-changes-in-energy-s05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-changes-in-energy-s06": {
+   "kp": "ks4.changes-in-energy.7",
+   "new": "ks4-changes-in-energy-s06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-changes-in-energy-s07": {
+   "kp": "ks4.changes-in-energy.7",
+   "new": "ks4-changes-in-energy-s07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-changes-in-energy-s08": {
+   "kp": "ks4.changes-in-energy.7",
+   "new": "ks4-changes-in-energy-s08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-changes-in-energy-s09": {
+   "kp": "ks4.changes-in-energy.7",
+   "new": "ks4-changes-in-energy-s09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-changes-in-energy-s10": {
+   "kp": "ks4.changes-in-energy.1",
+   "new": "ks4-changes-in-energy-s10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-changes-in-energy-s11": {
+   "kp": "ks4.changes-in-energy.4",
+   "new": "ks4-changes-in-energy-s11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-changes-in-energy-s12": {
+   "kp": "ks4.changes-in-energy.4",
+   "new": "ks4-changes-in-energy-s12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-changes-in-energy-s13": {
+   "kp": "ks4.changes-in-energy.4",
+   "new": "ks4-changes-in-energy-s13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-changes-in-energy-s14": {
+   "kp": "ks4.changes-in-energy.4",
+   "new": "ks4-changes-in-energy-s14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-changes-in-energy-s15": {
+   "kp": "ks4.changes-in-energy.3",
+   "new": "ks4-changes-in-energy-s15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-changes-in-energy-s16": {
+   "kp": "ks4.changes-in-energy.1",
+   "new": "ks4-changes-in-energy-s16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-changes-in-energy-s17": {
+   "kp": "ks4.changes-in-energy.1",
+   "new": "ks4-changes-in-energy-s17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-changes-in-energy-s18": {
+   "kp": "ks4.changes-in-energy.1",
+   "new": "ks4-changes-in-energy-s18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-changes-in-energy-s19": {
+   "kp": "ks4.changes-in-energy.1",
+   "new": "ks4-changes-in-energy-s19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-changes-in-energy-s20": {
+   "kp": "ks4.changes-in-energy.3",
+   "new": "ks4-changes-in-energy-s20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-changes-in-energy-s21": {
+   "kp": "ks4.changes-in-energy.1",
+   "new": "ks4-changes-in-energy-s21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-changes-in-energy-s22": {
+   "kp": "ks4.changes-in-energy.3",
+   "new": "ks4-changes-in-energy-s22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-changes-in-energy-s23": {
+   "kp": "ks4.changes-in-energy.2",
+   "new": "ks4-changes-in-energy-s23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-changes-in-energy-s24": {
+   "kp": "ks4.changes-in-energy.2",
+   "new": "ks4-changes-in-energy-s24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-changes-in-energy-s25": {
+   "kp": "ks4.changes-in-energy.6",
+   "new": "ks4-changes-in-energy-s25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-changes-in-energy-s26": {
+   "kp": "ks4.changes-in-energy.1",
+   "new": "ks4-changes-in-energy-s26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-efficiency-e01": {
+   "kp": "ks4.efficiency.1",
+   "new": "ks4-efficiency-e01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-efficiency-e02": {
+   "kp": "ks4.efficiency.2",
+   "new": "ks4-efficiency-e02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-efficiency-e03": {
+   "kp": "ks4.efficiency.3",
+   "new": "ks4-efficiency-e03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-efficiency-e04": {
+   "kp": "ks4.efficiency.4",
+   "new": "ks4-efficiency-e04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-efficiency-e05": {
+   "kp": "ks4.efficiency.1",
+   "new": "ks4-efficiency-e05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-efficiency-e06": {
+   "kp": "ks4.efficiency.2",
+   "new": "ks4-efficiency-e06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-efficiency-e07": {
+   "kp": "ks4.efficiency.6",
+   "new": "ks4-efficiency-e07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-efficiency-e08": {
+   "kp": "ks4.efficiency.6",
+   "new": "ks4-efficiency-e08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-efficiency-e09": {
+   "kp": "ks4.efficiency.2",
+   "new": "ks4-efficiency-e09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-efficiency-e10": {
+   "kp": "ks4.efficiency.3",
+   "new": "ks4-efficiency-e10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-efficiency-e11": {
+   "kp": "ks4.efficiency.1",
+   "new": "ks4-efficiency-e11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-efficiency-e12": {
+   "kp": "ks4.efficiency.2",
+   "new": "ks4-efficiency-e12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-efficiency-h01": {
+   "kp": "ks4.efficiency.4",
+   "new": "ks4-efficiency-h01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-efficiency-h02": {
+   "kp": "ks4.efficiency.2",
+   "new": "ks4-efficiency-h02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-efficiency-h03": {
+   "kp": "ks4.efficiency.7",
+   "new": "ks4-efficiency-h03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-efficiency-h04": {
+   "kp": "ks4.efficiency.4",
+   "new": "ks4-efficiency-h04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-efficiency-h05": {
+   "kp": "ks4.efficiency.2",
+   "new": "ks4-efficiency-h05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-efficiency-h06": {
+   "kp": "ks4.efficiency.2",
+   "new": "ks4-efficiency-h06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-efficiency-h07": {
+   "kp": "ks4.efficiency.7",
+   "new": "ks4-efficiency-h07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-efficiency-h08": {
+   "kp": "ks4.efficiency.2",
+   "new": "ks4-efficiency-h08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-efficiency-h09": {
+   "kp": "ks4.efficiency.3",
+   "new": "ks4-efficiency-h09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-efficiency-h10": {
+   "kp": "ks4.efficiency.1",
+   "new": "ks4-efficiency-h10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-efficiency-h11": {
+   "kp": "ks4.efficiency.2",
+   "new": "ks4-efficiency-h11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-efficiency-h12": {
+   "kp": "ks4.efficiency.2",
+   "new": "ks4-efficiency-h12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-efficiency-h13": {
+   "kp": "ks4.efficiency.4",
+   "new": "ks4-efficiency-h13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-efficiency-h14": {
+   "kp": "ks4.efficiency.7",
+   "new": "ks4-efficiency-h14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-efficiency-h15": {
+   "kp": "ks4.efficiency.4",
+   "new": "ks4-efficiency-h15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-efficiency-h16": {
+   "kp": "ks4.efficiency.2",
+   "new": "ks4-efficiency-h16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-efficiency-h17": {
+   "kp": "ks4.efficiency.1",
+   "new": "ks4-efficiency-h17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-efficiency-h18": {
+   "kp": "ks4.efficiency.2",
+   "new": "ks4-efficiency-h18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-efficiency-h19": {
+   "kp": "ks4.efficiency.2",
+   "new": "ks4-efficiency-h19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-efficiency-h20": {
+   "kp": "ks4.efficiency.3",
+   "new": "ks4-efficiency-h20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-efficiency-h21": {
+   "kp": "ks4.efficiency.4",
+   "new": "ks4-efficiency-h21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-efficiency-h22": {
+   "kp": "ks4.efficiency.7",
+   "new": "ks4-efficiency-h22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-efficiency-h23": {
+   "kp": "ks4.efficiency.2",
+   "new": "ks4-efficiency-h23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-efficiency-h24": {
+   "kp": "ks4.efficiency.7",
+   "new": "ks4-efficiency-h24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-efficiency-h25": {
+   "kp": "ks4.efficiency.4",
+   "new": "ks4-efficiency-h25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-efficiency-h26": {
+   "kp": "ks4.efficiency.6",
+   "new": "ks4-efficiency-h26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-efficiency-s01": {
+   "kp": "ks4.efficiency.2",
+   "new": "ks4-efficiency-s01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-efficiency-s02": {
+   "kp": "ks4.efficiency.2",
+   "new": "ks4-efficiency-s02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-efficiency-s03": {
+   "kp": "ks4.efficiency.2",
+   "new": "ks4-efficiency-s03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-efficiency-s04": {
+   "kp": "ks4.efficiency.7",
+   "new": "ks4-efficiency-s04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-efficiency-s05": {
+   "kp": "ks4.efficiency.2",
+   "new": "ks4-efficiency-s05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-efficiency-s06": {
+   "kp": "ks4.efficiency.2",
+   "new": "ks4-efficiency-s06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-efficiency-s07": {
+   "kp": "ks4.efficiency.2",
+   "new": "ks4-efficiency-s07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-efficiency-s08": {
+   "kp": "ks4.efficiency.2",
+   "new": "ks4-efficiency-s08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-efficiency-s09": {
+   "kp": "ks4.efficiency.4",
+   "new": "ks4-efficiency-s09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-efficiency-s10": {
+   "kp": "ks4.efficiency.6",
+   "new": "ks4-efficiency-s10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-efficiency-s11": {
+   "kp": "ks4.efficiency.7",
+   "new": "ks4-efficiency-s11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-efficiency-s12": {
+   "kp": "ks4.efficiency.5",
+   "new": "ks4-efficiency-s12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-efficiency-s13": {
+   "kp": "ks4.efficiency.3",
+   "new": "ks4-efficiency-s13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-efficiency-s14": {
+   "kp": "ks4.efficiency.6",
+   "new": "ks4-efficiency-s14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-efficiency-s15": {
+   "kp": "ks4.efficiency.2",
+   "new": "ks4-efficiency-s15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-efficiency-s16": {
+   "kp": "ks4.efficiency.1",
+   "new": "ks4-efficiency-s16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-efficiency-s17": {
+   "kp": "ks4.efficiency.2",
+   "new": "ks4-efficiency-s17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-efficiency-s18": {
+   "kp": "ks4.efficiency.5",
+   "new": "ks4-efficiency-s18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-efficiency-s19": {
+   "kp": "ks4.efficiency.2",
+   "new": "ks4-efficiency-s19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-efficiency-s20": {
+   "kp": "ks4.efficiency.6",
+   "new": "ks4-efficiency-s20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-efficiency-s21": {
+   "kp": "ks4.efficiency.2",
+   "new": "ks4-efficiency-s21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-efficiency-s22": {
+   "kp": "ks4.efficiency.1",
+   "new": "ks4-efficiency-s22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-efficiency-s23": {
+   "kp": "ks4.efficiency.2",
+   "new": "ks4-efficiency-s23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-efficiency-s24": {
+   "kp": "ks4.efficiency.4",
+   "new": "ks4-efficiency-s24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-efficiency-s25": {
+   "kp": "ks4.efficiency.1",
+   "new": "ks4-efficiency-s25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-efficiency-s26": {
+   "kp": "ks4.efficiency.4",
+   "new": "ks4-efficiency-s26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-changes-in-systems-e01": {
+   "kp": "ks4.energy-changes-in-systems.1",
+   "new": "ks4-energy-changes-in-systems-e01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-changes-in-systems-e02": {
+   "kp": "ks4.energy-changes-in-systems.3",
+   "new": "ks4-energy-changes-in-systems-e02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-changes-in-systems-e03": {
+   "kp": "ks4.energy-changes-in-systems.3",
+   "new": "ks4-energy-changes-in-systems-e03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-changes-in-systems-e04": {
+   "kp": "ks4.energy-changes-in-systems.7",
+   "new": "ks4-energy-changes-in-systems-e04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-changes-in-systems-e05": {
+   "kp": "ks4.energy-changes-in-systems.1",
+   "new": "ks4-energy-changes-in-systems-e05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-changes-in-systems-e06": {
+   "kp": "ks4.energy-changes-in-systems.2",
+   "new": "ks4-energy-changes-in-systems-e06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-changes-in-systems-e07": {
+   "kp": "ks4.energy-changes-in-systems.3",
+   "new": "ks4-energy-changes-in-systems-e07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-changes-in-systems-e08": {
+   "kp": "ks4.energy-changes-in-systems.3",
+   "new": "ks4-energy-changes-in-systems-e08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-changes-in-systems-e09": {
+   "kp": "ks4.energy-changes-in-systems.1",
+   "new": "ks4-energy-changes-in-systems-e09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-changes-in-systems-e10": {
+   "kp": "ks4.energy-changes-in-systems.2",
+   "new": "ks4-energy-changes-in-systems-e10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-changes-in-systems-e11": {
+   "kp": "ks4.energy-changes-in-systems.6",
+   "new": "ks4-energy-changes-in-systems-e11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-changes-in-systems-e12": {
+   "kp": "ks4.energy-changes-in-systems.5",
+   "new": "ks4-energy-changes-in-systems-e12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-changes-in-systems-h01": {
+   "kp": "ks4.energy-changes-in-systems.4",
+   "new": "ks4-energy-changes-in-systems-h01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-changes-in-systems-h02": {
+   "kp": "ks4.energy-changes-in-systems.7",
+   "new": "ks4-energy-changes-in-systems-h02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-changes-in-systems-h03": {
+   "kp": "ks4.energy-changes-in-systems.3",
+   "new": "ks4-energy-changes-in-systems-h03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-changes-in-systems-h04": {
+   "kp": "ks4.energy-changes-in-systems.3",
+   "new": "ks4-energy-changes-in-systems-h04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-changes-in-systems-h05": {
+   "kp": "ks4.energy-changes-in-systems.4",
+   "new": "ks4-energy-changes-in-systems-h05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-changes-in-systems-h06": {
+   "kp": "ks4.energy-changes-in-systems.4",
+   "new": "ks4-energy-changes-in-systems-h06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-changes-in-systems-h07": {
+   "kp": "ks4.energy-changes-in-systems.7",
+   "new": "ks4-energy-changes-in-systems-h07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-changes-in-systems-h08": {
+   "kp": "ks4.energy-changes-in-systems.6",
+   "new": "ks4-energy-changes-in-systems-h08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-changes-in-systems-h09": {
+   "kp": "ks4.energy-changes-in-systems.6",
+   "new": "ks4-energy-changes-in-systems-h09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-changes-in-systems-h10": {
+   "kp": "ks4.energy-changes-in-systems.4",
+   "new": "ks4-energy-changes-in-systems-h10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-changes-in-systems-h11": {
+   "kp": "ks4.energy-changes-in-systems.3",
+   "new": "ks4-energy-changes-in-systems-h11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-changes-in-systems-h12": {
+   "kp": "ks4.energy-changes-in-systems.3",
+   "new": "ks4-energy-changes-in-systems-h12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-changes-in-systems-h13": {
+   "kp": "ks4.energy-changes-in-systems.3",
+   "new": "ks4-energy-changes-in-systems-h13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-changes-in-systems-h14": {
+   "kp": "ks4.energy-changes-in-systems.6",
+   "new": "ks4-energy-changes-in-systems-h14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-changes-in-systems-h15": {
+   "kp": "ks4.energy-changes-in-systems.5",
+   "new": "ks4-energy-changes-in-systems-h15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-changes-in-systems-h16": {
+   "kp": "ks4.energy-changes-in-systems.3",
+   "new": "ks4-energy-changes-in-systems-h16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-changes-in-systems-h17": {
+   "kp": "ks4.energy-changes-in-systems.4",
+   "new": "ks4-energy-changes-in-systems-h17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-changes-in-systems-h18": {
+   "kp": "ks4.energy-changes-in-systems.7",
+   "new": "ks4-energy-changes-in-systems-h18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-changes-in-systems-h19": {
+   "kp": "ks4.energy-changes-in-systems.3",
+   "new": "ks4-energy-changes-in-systems-h19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-changes-in-systems-h20": {
+   "kp": "ks4.energy-changes-in-systems.6",
+   "new": "ks4-energy-changes-in-systems-h20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-changes-in-systems-h21": {
+   "kp": "ks4.energy-changes-in-systems.4",
+   "new": "ks4-energy-changes-in-systems-h21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-changes-in-systems-h22": {
+   "kp": "ks4.energy-changes-in-systems.4",
+   "new": "ks4-energy-changes-in-systems-h22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-changes-in-systems-h23": {
+   "kp": "ks4.energy-changes-in-systems.7",
+   "new": "ks4-energy-changes-in-systems-h23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-changes-in-systems-h24": {
+   "kp": "ks4.energy-changes-in-systems.4",
+   "new": "ks4-energy-changes-in-systems-h24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-changes-in-systems-h25": {
+   "kp": "ks4.energy-changes-in-systems.3",
+   "new": "ks4-energy-changes-in-systems-h25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-changes-in-systems-h26": {
+   "kp": "ks4.energy-changes-in-systems.7",
+   "new": "ks4-energy-changes-in-systems-h26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-changes-in-systems-s01": {
+   "kp": "ks4.energy-changes-in-systems.3",
+   "new": "ks4-energy-changes-in-systems-s01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-changes-in-systems-s02": {
+   "kp": "ks4.energy-changes-in-systems.4",
+   "new": "ks4-energy-changes-in-systems-s02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-changes-in-systems-s03": {
+   "kp": "ks4.energy-changes-in-systems.4",
+   "new": "ks4-energy-changes-in-systems-s03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-changes-in-systems-s04": {
+   "kp": "ks4.energy-changes-in-systems.6",
+   "new": "ks4-energy-changes-in-systems-s04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-changes-in-systems-s05": {
+   "kp": "ks4.energy-changes-in-systems.3",
+   "new": "ks4-energy-changes-in-systems-s05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-changes-in-systems-s06": {
+   "kp": "ks4.energy-changes-in-systems.3",
+   "new": "ks4-energy-changes-in-systems-s06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-changes-in-systems-s07": {
+   "kp": "ks4.energy-changes-in-systems.4",
+   "new": "ks4-energy-changes-in-systems-s07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-changes-in-systems-s08": {
+   "kp": "ks4.energy-changes-in-systems.4",
+   "new": "ks4-energy-changes-in-systems-s08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-changes-in-systems-s09": {
+   "kp": "ks4.energy-changes-in-systems.4",
+   "new": "ks4-energy-changes-in-systems-s09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-changes-in-systems-s10": {
+   "kp": "ks4.energy-changes-in-systems.5",
+   "new": "ks4-energy-changes-in-systems-s10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-changes-in-systems-s11": {
+   "kp": "ks4.energy-changes-in-systems.5",
+   "new": "ks4-energy-changes-in-systems-s11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-changes-in-systems-s12": {
+   "kp": "ks4.energy-changes-in-systems.7",
+   "new": "ks4-energy-changes-in-systems-s12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-changes-in-systems-s13": {
+   "kp": "ks4.energy-changes-in-systems.6",
+   "new": "ks4-energy-changes-in-systems-s13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-changes-in-systems-s14": {
+   "kp": "ks4.energy-changes-in-systems.6",
+   "new": "ks4-energy-changes-in-systems-s14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-changes-in-systems-s15": {
+   "kp": "ks4.energy-changes-in-systems.6",
+   "new": "ks4-energy-changes-in-systems-s15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-changes-in-systems-s16": {
+   "kp": "ks4.energy-changes-in-systems.3",
+   "new": "ks4-energy-changes-in-systems-s16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-changes-in-systems-s17": {
+   "kp": "ks4.energy-changes-in-systems.3",
+   "new": "ks4-energy-changes-in-systems-s17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-changes-in-systems-s18": {
+   "kp": "ks4.energy-changes-in-systems.7",
+   "new": "ks4-energy-changes-in-systems-s18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-changes-in-systems-s19": {
+   "kp": "ks4.energy-changes-in-systems.3",
+   "new": "ks4-energy-changes-in-systems-s19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-changes-in-systems-s20": {
+   "kp": "ks4.energy-changes-in-systems.3",
+   "new": "ks4-energy-changes-in-systems-s20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-changes-in-systems-s21": {
+   "kp": "ks4.energy-changes-in-systems.3",
+   "new": "ks4-energy-changes-in-systems-s21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-changes-in-systems-s22": {
+   "kp": "ks4.energy-changes-in-systems.3",
+   "new": "ks4-energy-changes-in-systems-s22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-changes-in-systems-s23": {
+   "kp": "ks4.energy-changes-in-systems.3",
+   "new": "ks4-energy-changes-in-systems-s23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-changes-in-systems-s24": {
+   "kp": "ks4.energy-changes-in-systems.3",
+   "new": "ks4-energy-changes-in-systems-s24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-changes-in-systems-s25": {
+   "kp": "ks4.energy-changes-in-systems.3",
+   "new": "ks4-energy-changes-in-systems-s25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-changes-in-systems-s26": {
+   "kp": "ks4.energy-changes-in-systems.6",
+   "new": "ks4-energy-changes-in-systems-s26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-resources-e01": {
+   "kp": "ks4.energy-resources.1",
+   "new": "ks4-energy-resources-e01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-resources-e02": {
+   "kp": "ks4.energy-resources.3",
+   "new": "ks4-energy-resources-e02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-resources-e03": {
+   "kp": "ks4.energy-resources.4",
+   "new": "ks4-energy-resources-e03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-resources-e04": {
+   "kp": "ks4.energy-resources.6",
+   "new": "ks4-energy-resources-e04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-resources-e05": {
+   "kp": "ks4.energy-resources.2",
+   "new": "ks4-energy-resources-e05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-resources-e06": {
+   "kp": "ks4.energy-resources.2",
+   "new": "ks4-energy-resources-e06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-resources-e07": {
+   "kp": "ks4.energy-resources.3",
+   "new": "ks4-energy-resources-e07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-resources-e08": {
+   "kp": "ks4.energy-resources.1",
+   "new": "ks4-energy-resources-e08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-resources-e09": {
+   "kp": "ks4.energy-resources.8",
+   "new": "ks4-energy-resources-e09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-resources-e10": {
+   "kp": "ks4.energy-resources.4",
+   "new": "ks4-energy-resources-e10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-resources-e11": {
+   "kp": "ks4.energy-resources.5",
+   "new": "ks4-energy-resources-e11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-resources-e12": {
+   "kp": "ks4.energy-resources.6",
+   "new": "ks4-energy-resources-e12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-resources-h01": {
+   "kp": "ks4.energy-resources.6",
+   "new": "ks4-energy-resources-h01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-resources-h02": {
+   "kp": "ks4.energy-resources.4",
+   "new": "ks4-energy-resources-h02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-resources-h03": {
+   "kp": "ks4.energy-resources.7",
+   "new": "ks4-energy-resources-h03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-resources-h04": {
+   "kp": "ks4.energy-resources.6",
+   "new": "ks4-energy-resources-h04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-resources-h05": {
+   "kp": "ks4.energy-resources.6",
+   "new": "ks4-energy-resources-h05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-resources-h06": {
+   "kp": "ks4.energy-resources.7",
+   "new": "ks4-energy-resources-h06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-resources-h07": {
+   "kp": "ks4.energy-resources.7",
+   "new": "ks4-energy-resources-h07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-resources-h08": {
+   "kp": "ks4.energy-resources.7",
+   "new": "ks4-energy-resources-h08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-resources-h09": {
+   "kp": "ks4.energy-resources.7",
+   "new": "ks4-energy-resources-h09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-resources-h10": {
+   "kp": "ks4.energy-resources.2",
+   "new": "ks4-energy-resources-h10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-resources-h11": {
+   "kp": "ks4.energy-resources.7",
+   "new": "ks4-energy-resources-h11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-resources-h12": {
+   "kp": "ks4.energy-resources.7",
+   "new": "ks4-energy-resources-h12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-resources-h13": {
+   "kp": "ks4.energy-resources.6",
+   "new": "ks4-energy-resources-h13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-resources-h14": {
+   "kp": "ks4.energy-resources.7",
+   "new": "ks4-energy-resources-h14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-resources-h15": {
+   "kp": "ks4.energy-resources.7",
+   "new": "ks4-energy-resources-h15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-resources-h16": {
+   "kp": "ks4.energy-resources.7",
+   "new": "ks4-energy-resources-h16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-resources-h17": {
+   "kp": "ks4.energy-resources.6",
+   "new": "ks4-energy-resources-h17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-resources-h18": {
+   "kp": "ks4.energy-resources.6",
+   "new": "ks4-energy-resources-h18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-resources-h19": {
+   "kp": "ks4.energy-resources.4",
+   "new": "ks4-energy-resources-h19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-resources-h20": {
+   "kp": "ks4.energy-resources.5",
+   "new": "ks4-energy-resources-h20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-resources-h21": {
+   "kp": "ks4.energy-resources.2",
+   "new": "ks4-energy-resources-h21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-resources-h22": {
+   "kp": "ks4.energy-resources.7",
+   "new": "ks4-energy-resources-h22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-resources-h23": {
+   "kp": "ks4.energy-resources.7",
+   "new": "ks4-energy-resources-h23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-resources-h24": {
+   "kp": "ks4.energy-resources.4",
+   "new": "ks4-energy-resources-h24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-resources-h25": {
+   "kp": "ks4.energy-resources.6",
+   "new": "ks4-energy-resources-h25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-resources-h26": {
+   "kp": "ks4.energy-resources.6",
+   "new": "ks4-energy-resources-h26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-resources-s01": {
+   "kp": "ks4.energy-resources.1",
+   "new": "ks4-energy-resources-s01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-resources-s02": {
+   "kp": "ks4.energy-resources.3",
+   "new": "ks4-energy-resources-s02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-resources-s03": {
+   "kp": "ks4.energy-resources.8",
+   "new": "ks4-energy-resources-s03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-resources-s04": {
+   "kp": "ks4.energy-resources.6",
+   "new": "ks4-energy-resources-s04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-resources-s05": {
+   "kp": "ks4.energy-resources.2",
+   "new": "ks4-energy-resources-s05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-resources-s06": {
+   "kp": "ks4.energy-resources.1",
+   "new": "ks4-energy-resources-s06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-resources-s07": {
+   "kp": "ks4.energy-resources.3",
+   "new": "ks4-energy-resources-s07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-resources-s08": {
+   "kp": "ks4.energy-resources.6",
+   "new": "ks4-energy-resources-s08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-resources-s09": {
+   "kp": "ks4.energy-resources.5",
+   "new": "ks4-energy-resources-s09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-resources-s10": {
+   "kp": "ks4.energy-resources.3",
+   "new": "ks4-energy-resources-s10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-resources-s11": {
+   "kp": "ks4.energy-resources.4",
+   "new": "ks4-energy-resources-s11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-resources-s12": {
+   "kp": "ks4.energy-resources.4",
+   "new": "ks4-energy-resources-s12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-resources-s13": {
+   "kp": "ks4.energy-resources.6",
+   "new": "ks4-energy-resources-s13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-resources-s14": {
+   "kp": "ks4.energy-resources.6",
+   "new": "ks4-energy-resources-s14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-resources-s15": {
+   "kp": "ks4.energy-resources.7",
+   "new": "ks4-energy-resources-s15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-resources-s16": {
+   "kp": "ks4.energy-resources.6",
+   "new": "ks4-energy-resources-s16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-resources-s17": {
+   "kp": "ks4.energy-resources.3",
+   "new": "ks4-energy-resources-s17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-resources-s18": {
+   "kp": "ks4.energy-resources.1",
+   "new": "ks4-energy-resources-s18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-resources-s19": {
+   "kp": "ks4.energy-resources.7",
+   "new": "ks4-energy-resources-s19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-resources-s20": {
+   "kp": "ks4.energy-resources.8",
+   "new": "ks4-energy-resources-s20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-resources-s21": {
+   "kp": "ks4.energy-resources.5",
+   "new": "ks4-energy-resources-s21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-resources-s22": {
+   "kp": "ks4.energy-resources.7",
+   "new": "ks4-energy-resources-s22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-resources-s23": {
+   "kp": "ks4.energy-resources.8",
+   "new": "ks4-energy-resources-s23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-resources-s24": {
+   "kp": "ks4.energy-resources.6",
+   "new": "ks4-energy-resources-s24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-resources-s25": {
+   "kp": "ks4.energy-resources.4",
+   "new": "ks4-energy-resources-s25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-resources-s26": {
+   "kp": "ks4.energy-resources.6",
+   "new": "ks4-energy-resources-s26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-stores-systems-e01": {
+   "kp": "ks4.energy-stores-systems.2",
+   "new": "ks4-energy-stores-systems-e01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-stores-systems-e02": {
+   "kp": "ks4.energy-stores-systems.2",
+   "new": "ks4-energy-stores-systems-e02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-stores-systems-e03": {
+   "kp": "ks4.energy-stores-systems.3",
+   "new": "ks4-energy-stores-systems-e03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-stores-systems-e04": {
+   "kp": "ks4.energy-stores-systems.2",
+   "new": "ks4-energy-stores-systems-e04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-stores-systems-e05": {
+   "kp": "ks4.energy-stores-systems.1",
+   "new": "ks4-energy-stores-systems-e05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-stores-systems-e06": {
+   "kp": "ks4.energy-stores-systems.2",
+   "new": "ks4-energy-stores-systems-e06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-stores-systems-e07": {
+   "kp": "ks4.energy-stores-systems.2",
+   "new": "ks4-energy-stores-systems-e07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-stores-systems-e08": {
+   "kp": "ks4.energy-stores-systems.2",
+   "new": "ks4-energy-stores-systems-e08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-stores-systems-e09": {
+   "kp": "ks4.energy-stores-systems.3",
+   "new": "ks4-energy-stores-systems-e09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-stores-systems-e10": {
+   "kp": "ks4.energy-stores-systems.3",
+   "new": "ks4-energy-stores-systems-e10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-stores-systems-e11": {
+   "kp": "ks4.energy-stores-systems.5",
+   "new": "ks4-energy-stores-systems-e11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-stores-systems-e12": {
+   "kp": "ks4.energy-stores-systems.7",
+   "new": "ks4-energy-stores-systems-e12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-stores-systems-h01": {
+   "kp": "ks4.energy-stores-systems.5",
+   "new": "ks4-energy-stores-systems-h01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-stores-systems-h02": {
+   "kp": "ks4.energy-stores-systems.4",
+   "new": "ks4-energy-stores-systems-h02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-stores-systems-h03": {
+   "kp": "ks4.energy-stores-systems.5",
+   "new": "ks4-energy-stores-systems-h03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-stores-systems-h04": {
+   "kp": "ks4.energy-stores-systems.4",
+   "new": "ks4-energy-stores-systems-h04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-stores-systems-h05": {
+   "kp": "ks4.energy-stores-systems.4",
+   "new": "ks4-energy-stores-systems-h05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-stores-systems-h06": {
+   "kp": "ks4.energy-stores-systems.5",
+   "new": "ks4-energy-stores-systems-h06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-stores-systems-h07": {
+   "kp": "ks4.energy-stores-systems.5",
+   "new": "ks4-energy-stores-systems-h07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-stores-systems-h08": {
+   "kp": "ks4.energy-stores-systems.5",
+   "new": "ks4-energy-stores-systems-h08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-stores-systems-h09": {
+   "kp": "ks4.energy-stores-systems.5",
+   "new": "ks4-energy-stores-systems-h09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-stores-systems-h10": {
+   "kp": "ks4.energy-stores-systems.4",
+   "new": "ks4-energy-stores-systems-h10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-stores-systems-h11": {
+   "kp": "ks4.energy-stores-systems.7",
+   "new": "ks4-energy-stores-systems-h11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-stores-systems-h12": {
+   "kp": "ks4.energy-stores-systems.2",
+   "new": "ks4-energy-stores-systems-h12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-stores-systems-h13": {
+   "kp": "ks4.energy-stores-systems.5",
+   "new": "ks4-energy-stores-systems-h13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-stores-systems-h14": {
+   "kp": "ks4.energy-stores-systems.4",
+   "new": "ks4-energy-stores-systems-h14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-stores-systems-h15": {
+   "kp": "ks4.energy-stores-systems.5",
+   "new": "ks4-energy-stores-systems-h15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-stores-systems-h16": {
+   "kp": "ks4.energy-stores-systems.4",
+   "new": "ks4-energy-stores-systems-h16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-stores-systems-h17": {
+   "kp": "ks4.energy-stores-systems.4",
+   "new": "ks4-energy-stores-systems-h17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-stores-systems-h18": {
+   "kp": "ks4.energy-stores-systems.4",
+   "new": "ks4-energy-stores-systems-h18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-stores-systems-h19": {
+   "kp": "ks4.energy-stores-systems.6",
+   "new": "ks4-energy-stores-systems-h19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-stores-systems-h20": {
+   "kp": "ks4.energy-stores-systems.4",
+   "new": "ks4-energy-stores-systems-h20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-stores-systems-h21": {
+   "kp": "ks4.energy-stores-systems.5",
+   "new": "ks4-energy-stores-systems-h21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-stores-systems-h22": {
+   "kp": "ks4.energy-stores-systems.4",
+   "new": "ks4-energy-stores-systems-h22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-stores-systems-h23": {
+   "kp": "ks4.energy-stores-systems.5",
+   "new": "ks4-energy-stores-systems-h23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-stores-systems-h24": {
+   "kp": "ks4.energy-stores-systems.7",
+   "new": "ks4-energy-stores-systems-h24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-stores-systems-h25": {
+   "kp": "ks4.energy-stores-systems.7",
+   "new": "ks4-energy-stores-systems-h25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-stores-systems-h26": {
+   "kp": "ks4.energy-stores-systems.7",
+   "new": "ks4-energy-stores-systems-h26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-stores-systems-s01": {
+   "kp": "ks4.energy-stores-systems.4",
+   "new": "ks4-energy-stores-systems-s01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-stores-systems-s02": {
+   "kp": "ks4.energy-stores-systems.4",
+   "new": "ks4-energy-stores-systems-s02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-stores-systems-s03": {
+   "kp": "ks4.energy-stores-systems.2",
+   "new": "ks4-energy-stores-systems-s03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-stores-systems-s04": {
+   "kp": "ks4.energy-stores-systems.4",
+   "new": "ks4-energy-stores-systems-s04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-stores-systems-s05": {
+   "kp": "ks4.energy-stores-systems.4",
+   "new": "ks4-energy-stores-systems-s05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-stores-systems-s06": {
+   "kp": "ks4.energy-stores-systems.4",
+   "new": "ks4-energy-stores-systems-s06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-stores-systems-s07": {
+   "kp": "ks4.energy-stores-systems.4",
+   "new": "ks4-energy-stores-systems-s07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-stores-systems-s08": {
+   "kp": "ks4.energy-stores-systems.4",
+   "new": "ks4-energy-stores-systems-s08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-stores-systems-s09": {
+   "kp": "ks4.energy-stores-systems.5",
+   "new": "ks4-energy-stores-systems-s09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-stores-systems-s10": {
+   "kp": "ks4.energy-stores-systems.2",
+   "new": "ks4-energy-stores-systems-s10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-stores-systems-s11": {
+   "kp": "ks4.energy-stores-systems.6",
+   "new": "ks4-energy-stores-systems-s11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-stores-systems-s12": {
+   "kp": "ks4.energy-stores-systems.4",
+   "new": "ks4-energy-stores-systems-s12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-stores-systems-s13": {
+   "kp": "ks4.energy-stores-systems.7",
+   "new": "ks4-energy-stores-systems-s13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-stores-systems-s14": {
+   "kp": "ks4.energy-stores-systems.5",
+   "new": "ks4-energy-stores-systems-s14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-stores-systems-s15": {
+   "kp": "ks4.energy-stores-systems.2",
+   "new": "ks4-energy-stores-systems-s15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-stores-systems-s16": {
+   "kp": "ks4.energy-stores-systems.4",
+   "new": "ks4-energy-stores-systems-s16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-stores-systems-s17": {
+   "kp": "ks4.energy-stores-systems.5",
+   "new": "ks4-energy-stores-systems-s17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-stores-systems-s18": {
+   "kp": "ks4.energy-stores-systems.4",
+   "new": "ks4-energy-stores-systems-s18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-stores-systems-s19": {
+   "kp": "ks4.energy-stores-systems.4",
+   "new": "ks4-energy-stores-systems-s19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-stores-systems-s20": {
+   "kp": "ks4.energy-stores-systems.4",
+   "new": "ks4-energy-stores-systems-s20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-stores-systems-s21": {
+   "kp": "ks4.energy-stores-systems.6",
+   "new": "ks4-energy-stores-systems-s21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-stores-systems-s22": {
+   "kp": "ks4.energy-stores-systems.2",
+   "new": "ks4-energy-stores-systems-s22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-stores-systems-s23": {
+   "kp": "ks4.energy-stores-systems.4",
+   "new": "ks4-energy-stores-systems-s23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-stores-systems-s24": {
+   "kp": "ks4.energy-stores-systems.4",
+   "new": "ks4-energy-stores-systems-s24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-stores-systems-s25": {
+   "kp": "ks4.energy-stores-systems.5",
+   "new": "ks4-energy-stores-systems-s25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-stores-systems-s26": {
+   "kp": "ks4.energy-stores-systems.5",
+   "new": "ks4-energy-stores-systems-s26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-transfers-in-a-system-e01": {
+   "kp": "ks4.energy-transfers-in-a-system.2",
+   "new": "ks4-energy-transfers-in-a-system-e01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-transfers-in-a-system-e02": {
+   "kp": "ks4.energy-transfers-in-a-system.2",
+   "new": "ks4-energy-transfers-in-a-system-e02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-transfers-in-a-system-e03": {
+   "kp": "ks4.energy-transfers-in-a-system.3",
+   "new": "ks4-energy-transfers-in-a-system-e03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-transfers-in-a-system-e04": {
+   "kp": "ks4.energy-transfers-in-a-system.2",
+   "new": "ks4-energy-transfers-in-a-system-e04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-transfers-in-a-system-e05": {
+   "kp": "ks4.energy-transfers-in-a-system.4",
+   "new": "ks4-energy-transfers-in-a-system-e05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-transfers-in-a-system-e06": {
+   "kp": "ks4.energy-transfers-in-a-system.5",
+   "new": "ks4-energy-transfers-in-a-system-e06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-transfers-in-a-system-e07": {
+   "kp": "ks4.energy-transfers-in-a-system.6",
+   "new": "ks4-energy-transfers-in-a-system-e07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-transfers-in-a-system-e08": {
+   "kp": "ks4.energy-transfers-in-a-system.3",
+   "new": "ks4-energy-transfers-in-a-system-e08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-transfers-in-a-system-e09": {
+   "kp": "ks4.energy-transfers-in-a-system.3",
+   "new": "ks4-energy-transfers-in-a-system-e09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-transfers-in-a-system-e10": {
+   "kp": "ks4.energy-transfers-in-a-system.2",
+   "new": "ks4-energy-transfers-in-a-system-e10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-transfers-in-a-system-e11": {
+   "kp": "ks4.energy-transfers-in-a-system.2",
+   "new": "ks4-energy-transfers-in-a-system-e11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-transfers-in-a-system-e12": {
+   "kp": "ks4.energy-transfers-in-a-system.7",
+   "new": "ks4-energy-transfers-in-a-system-e12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-transfers-in-a-system-h01": {
+   "kp": "ks4.energy-transfers-in-a-system.1",
+   "new": "ks4-energy-transfers-in-a-system-h01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-transfers-in-a-system-h02": {
+   "kp": "ks4.energy-transfers-in-a-system.1",
+   "new": "ks4-energy-transfers-in-a-system-h02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-transfers-in-a-system-h03": {
+   "kp": "ks4.energy-transfers-in-a-system.4",
+   "new": "ks4-energy-transfers-in-a-system-h03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-transfers-in-a-system-h04": {
+   "kp": "ks4.energy-transfers-in-a-system.8",
+   "new": "ks4-energy-transfers-in-a-system-h04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-transfers-in-a-system-h05": {
+   "kp": "ks4.energy-transfers-in-a-system.4",
+   "new": "ks4-energy-transfers-in-a-system-h05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-transfers-in-a-system-h06": {
+   "kp": "ks4.energy-transfers-in-a-system.5",
+   "new": "ks4-energy-transfers-in-a-system-h06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-transfers-in-a-system-h07": {
+   "kp": "ks4.energy-transfers-in-a-system.3",
+   "new": "ks4-energy-transfers-in-a-system-h07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-transfers-in-a-system-h08": {
+   "kp": "ks4.energy-transfers-in-a-system.4",
+   "new": "ks4-energy-transfers-in-a-system-h08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-transfers-in-a-system-h09": {
+   "kp": "ks4.energy-transfers-in-a-system.8",
+   "new": "ks4-energy-transfers-in-a-system-h09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-transfers-in-a-system-h10": {
+   "kp": "ks4.energy-transfers-in-a-system.4",
+   "new": "ks4-energy-transfers-in-a-system-h10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-transfers-in-a-system-h11": {
+   "kp": "ks4.energy-transfers-in-a-system.2",
+   "new": "ks4-energy-transfers-in-a-system-h11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-transfers-in-a-system-h12": {
+   "kp": "ks4.energy-transfers-in-a-system.3",
+   "new": "ks4-energy-transfers-in-a-system-h12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-transfers-in-a-system-h13": {
+   "kp": "ks4.energy-transfers-in-a-system.8",
+   "new": "ks4-energy-transfers-in-a-system-h13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-transfers-in-a-system-h14": {
+   "kp": "ks4.energy-transfers-in-a-system.4",
+   "new": "ks4-energy-transfers-in-a-system-h14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-transfers-in-a-system-h15": {
+   "kp": "ks4.energy-transfers-in-a-system.3",
+   "new": "ks4-energy-transfers-in-a-system-h15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-transfers-in-a-system-h16": {
+   "kp": "ks4.energy-transfers-in-a-system.2",
+   "new": "ks4-energy-transfers-in-a-system-h16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-transfers-in-a-system-h17": {
+   "kp": "ks4.energy-transfers-in-a-system.2",
+   "new": "ks4-energy-transfers-in-a-system-h17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-transfers-in-a-system-h18": {
+   "kp": "ks4.energy-transfers-in-a-system.5",
+   "new": "ks4-energy-transfers-in-a-system-h18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-transfers-in-a-system-h19": {
+   "kp": "ks4.energy-transfers-in-a-system.3",
+   "new": "ks4-energy-transfers-in-a-system-h19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-transfers-in-a-system-h20": {
+   "kp": "ks4.energy-transfers-in-a-system.5",
+   "new": "ks4-energy-transfers-in-a-system-h20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-transfers-in-a-system-h21": {
+   "kp": "ks4.energy-transfers-in-a-system.4",
+   "new": "ks4-energy-transfers-in-a-system-h21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-transfers-in-a-system-h22": {
+   "kp": "ks4.energy-transfers-in-a-system.4",
+   "new": "ks4-energy-transfers-in-a-system-h22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-transfers-in-a-system-h23": {
+   "kp": "ks4.energy-transfers-in-a-system.7",
+   "new": "ks4-energy-transfers-in-a-system-h23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-transfers-in-a-system-h24": {
+   "kp": "ks4.energy-transfers-in-a-system.2",
+   "new": "ks4-energy-transfers-in-a-system-h24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-transfers-in-a-system-h25": {
+   "kp": "ks4.energy-transfers-in-a-system.8",
+   "new": "ks4-energy-transfers-in-a-system-h25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-transfers-in-a-system-h26": {
+   "kp": "ks4.energy-transfers-in-a-system.3",
+   "new": "ks4-energy-transfers-in-a-system-h26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-transfers-in-a-system-s01": {
+   "kp": "ks4.energy-transfers-in-a-system.2",
+   "new": "ks4-energy-transfers-in-a-system-s01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-transfers-in-a-system-s02": {
+   "kp": "ks4.energy-transfers-in-a-system.5",
+   "new": "ks4-energy-transfers-in-a-system-s02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-transfers-in-a-system-s03": {
+   "kp": "ks4.energy-transfers-in-a-system.1",
+   "new": "ks4-energy-transfers-in-a-system-s03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-transfers-in-a-system-s04": {
+   "kp": "ks4.energy-transfers-in-a-system.7",
+   "new": "ks4-energy-transfers-in-a-system-s04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-transfers-in-a-system-s05": {
+   "kp": "ks4.energy-transfers-in-a-system.4",
+   "new": "ks4-energy-transfers-in-a-system-s05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-transfers-in-a-system-s06": {
+   "kp": "ks4.energy-transfers-in-a-system.5",
+   "new": "ks4-energy-transfers-in-a-system-s06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-transfers-in-a-system-s07": {
+   "kp": "ks4.energy-transfers-in-a-system.6",
+   "new": "ks4-energy-transfers-in-a-system-s07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-transfers-in-a-system-s08": {
+   "kp": "ks4.energy-transfers-in-a-system.3",
+   "new": "ks4-energy-transfers-in-a-system-s08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-transfers-in-a-system-s09": {
+   "kp": "ks4.energy-transfers-in-a-system.2",
+   "new": "ks4-energy-transfers-in-a-system-s09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-transfers-in-a-system-s10": {
+   "kp": "ks4.energy-transfers-in-a-system.7",
+   "new": "ks4-energy-transfers-in-a-system-s10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-transfers-in-a-system-s11": {
+   "kp": "ks4.energy-transfers-in-a-system.4",
+   "new": "ks4-energy-transfers-in-a-system-s11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-transfers-in-a-system-s12": {
+   "kp": "ks4.energy-transfers-in-a-system.2",
+   "new": "ks4-energy-transfers-in-a-system-s12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-transfers-in-a-system-s13": {
+   "kp": "ks4.energy-transfers-in-a-system.4",
+   "new": "ks4-energy-transfers-in-a-system-s13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-transfers-in-a-system-s14": {
+   "kp": "ks4.energy-transfers-in-a-system.5",
+   "new": "ks4-energy-transfers-in-a-system-s14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-transfers-in-a-system-s15": {
+   "kp": "ks4.energy-transfers-in-a-system.2",
+   "new": "ks4-energy-transfers-in-a-system-s15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-transfers-in-a-system-s16": {
+   "kp": "ks4.energy-transfers-in-a-system.6",
+   "new": "ks4-energy-transfers-in-a-system-s16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-transfers-in-a-system-s17": {
+   "kp": "ks4.energy-transfers-in-a-system.4",
+   "new": "ks4-energy-transfers-in-a-system-s17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-transfers-in-a-system-s18": {
+   "kp": "ks4.energy-transfers-in-a-system.1",
+   "new": "ks4-energy-transfers-in-a-system-s18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-transfers-in-a-system-s19": {
+   "kp": "ks4.energy-transfers-in-a-system.6",
+   "new": "ks4-energy-transfers-in-a-system-s19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-transfers-in-a-system-s20": {
+   "kp": "ks4.energy-transfers-in-a-system.2",
+   "new": "ks4-energy-transfers-in-a-system-s20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-transfers-in-a-system-s21": {
+   "kp": "ks4.energy-transfers-in-a-system.4",
+   "new": "ks4-energy-transfers-in-a-system-s21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-transfers-in-a-system-s22": {
+   "kp": "ks4.energy-transfers-in-a-system.2",
+   "new": "ks4-energy-transfers-in-a-system-s22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-transfers-in-a-system-s23": {
+   "kp": "ks4.energy-transfers-in-a-system.3",
+   "new": "ks4-energy-transfers-in-a-system-s23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-transfers-in-a-system-s24": {
+   "kp": "ks4.energy-transfers-in-a-system.4",
+   "new": "ks4-energy-transfers-in-a-system-s24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-transfers-in-a-system-s25": {
+   "kp": "ks4.energy-transfers-in-a-system.4",
+   "new": "ks4-energy-transfers-in-a-system-s25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-energy-transfers-in-a-system-s26": {
+   "kp": "ks4.energy-transfers-in-a-system.4",
+   "new": "ks4-energy-transfers-in-a-system-s26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-power-e01": {
+   "kp": "ks4.power.1",
+   "new": "ks4-power-e01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-power-e02": {
+   "kp": "ks4.power.3",
+   "new": "ks4-power-e02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-power-e03": {
+   "kp": "ks4.power.2",
+   "new": "ks4-power-e03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-power-e04": {
+   "kp": "ks4.power.4",
+   "new": "ks4-power-e04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-power-e05": {
+   "kp": "ks4.power.1",
+   "new": "ks4-power-e05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-power-e06": {
+   "kp": "ks4.power.3",
+   "new": "ks4-power-e06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-power-e07": {
+   "kp": "ks4.power.4",
+   "new": "ks4-power-e07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-power-e08": {
+   "kp": "ks4.power.5",
+   "new": "ks4-power-e08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-power-e09": {
+   "kp": "ks4.power.2",
+   "new": "ks4-power-e09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-power-e10": {
+   "kp": "ks4.power.2",
+   "new": "ks4-power-e10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-power-e11": {
+   "kp": "ks4.power.6",
+   "new": "ks4-power-e11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-power-e12": {
+   "kp": "ks4.power.8",
+   "new": "ks4-power-e12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-power-h01": {
+   "kp": "ks4.power.7",
+   "new": "ks4-power-h01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-power-h02": {
+   "kp": "ks4.power.5",
+   "new": "ks4-power-h02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-power-h03": {
+   "kp": "ks4.power.8",
+   "new": "ks4-power-h03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-power-h04": {
+   "kp": "ks4.power.6",
+   "new": "ks4-power-h04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-power-h05": {
+   "kp": "ks4.power.7",
+   "new": "ks4-power-h05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-power-h06": {
+   "kp": "ks4.power.7",
+   "new": "ks4-power-h06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-power-h07": {
+   "kp": "ks4.power.5",
+   "new": "ks4-power-h07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-power-h08": {
+   "kp": "ks4.power.8",
+   "new": "ks4-power-h08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-power-h09": {
+   "kp": "ks4.power.7",
+   "new": "ks4-power-h09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-power-h10": {
+   "kp": "ks4.power.7",
+   "new": "ks4-power-h10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-power-h11": {
+   "kp": "ks4.power.4",
+   "new": "ks4-power-h11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-power-h12": {
+   "kp": "ks4.power.8",
+   "new": "ks4-power-h12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-power-h13": {
+   "kp": "ks4.power.4",
+   "new": "ks4-power-h13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-power-h14": {
+   "kp": "ks4.power.5",
+   "new": "ks4-power-h14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-power-h15": {
+   "kp": "ks4.power.2",
+   "new": "ks4-power-h15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-power-h16": {
+   "kp": "ks4.power.8",
+   "new": "ks4-power-h16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-power-h17": {
+   "kp": "ks4.power.3",
+   "new": "ks4-power-h17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-power-h18": {
+   "kp": "ks4.power.3",
+   "new": "ks4-power-h18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-power-h19": {
+   "kp": "ks4.power.4",
+   "new": "ks4-power-h19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-power-h20": {
+   "kp": "ks4.power.5",
+   "new": "ks4-power-h20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-power-h21": {
+   "kp": "ks4.power.2",
+   "new": "ks4-power-h21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-power-h22": {
+   "kp": "ks4.power.7",
+   "new": "ks4-power-h22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-power-h23": {
+   "kp": "ks4.power.7",
+   "new": "ks4-power-h23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-power-h24": {
+   "kp": "ks4.power.4",
+   "new": "ks4-power-h24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-power-h25": {
+   "kp": "ks4.power.1",
+   "new": "ks4-power-h25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-power-h26": {
+   "kp": "ks4.power.4",
+   "new": "ks4-power-h26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-power-s01": {
+   "kp": "ks4.power.6",
+   "new": "ks4-power-s01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-power-s02": {
+   "kp": "ks4.power.6",
+   "new": "ks4-power-s02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-power-s03": {
+   "kp": "ks4.power.7",
+   "new": "ks4-power-s03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-power-s04": {
+   "kp": "ks4.power.3",
+   "new": "ks4-power-s04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-power-s05": {
+   "kp": "ks4.power.6",
+   "new": "ks4-power-s05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-power-s06": {
+   "kp": "ks4.power.6",
+   "new": "ks4-power-s06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-power-s07": {
+   "kp": "ks4.power.4",
+   "new": "ks4-power-s07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-power-s08": {
+   "kp": "ks4.power.6",
+   "new": "ks4-power-s08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-power-s09": {
+   "kp": "ks4.power.5",
+   "new": "ks4-power-s09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-power-s10": {
+   "kp": "ks4.power.2",
+   "new": "ks4-power-s10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-power-s11": {
+   "kp": "ks4.power.3",
+   "new": "ks4-power-s11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-power-s12": {
+   "kp": "ks4.power.7",
+   "new": "ks4-power-s12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-power-s13": {
+   "kp": "ks4.power.8",
+   "new": "ks4-power-s13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-power-s14": {
+   "kp": "ks4.power.1",
+   "new": "ks4-power-s14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-power-s15": {
+   "kp": "ks4.power.4",
+   "new": "ks4-power-s15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-power-s16": {
+   "kp": "ks4.power.3",
+   "new": "ks4-power-s16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-power-s17": {
+   "kp": "ks4.power.4",
+   "new": "ks4-power-s17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-power-s18": {
+   "kp": "ks4.power.7",
+   "new": "ks4-power-s18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-power-s19": {
+   "kp": "ks4.power.5",
+   "new": "ks4-power-s19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-power-s20": {
+   "kp": "ks4.power.8",
+   "new": "ks4-power-s20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-power-s21": {
+   "kp": "ks4.power.4",
+   "new": "ks4-power-s21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-power-s22": {
+   "kp": "ks4.power.3",
+   "new": "ks4-power-s22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-power-s23": {
+   "kp": "ks4.power.2",
+   "new": "ks4-power-s23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-power-s24": {
+   "kp": "ks4.power.6",
+   "new": "ks4-power-s24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-power-s25": {
+   "kp": "ks4.power.4",
+   "new": "ks4-power-s25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-power-s26": {
+   "kp": "ks4.power.3",
+   "new": "ks4-power-s26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-thermal-conductivity-e01": {
+   "kp": "ks4.thermal-conductivity.1",
+   "new": "ks4-thermal-conductivity-e01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-thermal-conductivity-e02": {
+   "kp": "ks4.thermal-conductivity.4",
+   "new": "ks4-thermal-conductivity-e02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-thermal-conductivity-e03": {
+   "kp": "ks4.thermal-conductivity.1",
+   "new": "ks4-thermal-conductivity-e03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-thermal-conductivity-e04": {
+   "kp": "ks4.thermal-conductivity.4",
+   "new": "ks4-thermal-conductivity-e04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-thermal-conductivity-e05": {
+   "kp": "ks4.thermal-conductivity.2",
+   "new": "ks4-thermal-conductivity-e05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-thermal-conductivity-e06": {
+   "kp": "ks4.thermal-conductivity.2",
+   "new": "ks4-thermal-conductivity-e06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-thermal-conductivity-e07": {
+   "kp": "ks4.thermal-conductivity.3",
+   "new": "ks4-thermal-conductivity-e07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-thermal-conductivity-e08": {
+   "kp": "ks4.thermal-conductivity.3",
+   "new": "ks4-thermal-conductivity-e08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-thermal-conductivity-e09": {
+   "kp": "ks4.thermal-conductivity.1",
+   "new": "ks4-thermal-conductivity-e09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-thermal-conductivity-e10": {
+   "kp": "ks4.thermal-conductivity.4",
+   "new": "ks4-thermal-conductivity-e10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-thermal-conductivity-e11": {
+   "kp": "ks4.thermal-conductivity.3",
+   "new": "ks4-thermal-conductivity-e11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-thermal-conductivity-e12": {
+   "kp": "ks4.thermal-conductivity.5",
+   "new": "ks4-thermal-conductivity-e12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-thermal-conductivity-e13": {
+   "kp": "ks4.thermal-conductivity.7",
+   "new": "ks4-thermal-conductivity-e13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-thermal-conductivity-e14": {
+   "kp": "ks4.thermal-conductivity.5",
+   "new": "ks4-thermal-conductivity-e14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-thermal-conductivity-e15": {
+   "kp": "ks4.thermal-conductivity.6",
+   "new": "ks4-thermal-conductivity-e15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-thermal-conductivity-e16": {
+   "kp": "ks4.thermal-conductivity.4",
+   "new": "ks4-thermal-conductivity-e16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-thermal-conductivity-e17": {
+   "kp": "ks4.thermal-conductivity.5",
+   "new": "ks4-thermal-conductivity-e17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-thermal-conductivity-e18": {
+   "kp": "ks4.thermal-conductivity.4",
+   "new": "ks4-thermal-conductivity-e18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-thermal-conductivity-h01": {
+   "kp": "ks4.thermal-conductivity.4",
+   "new": "ks4-thermal-conductivity-h01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-thermal-conductivity-h02": {
+   "kp": "ks4.thermal-conductivity.5",
+   "new": "ks4-thermal-conductivity-h02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-thermal-conductivity-h03": {
+   "kp": "ks4.thermal-conductivity.7",
+   "new": "ks4-thermal-conductivity-h03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-thermal-conductivity-h04": {
+   "kp": "ks4.thermal-conductivity.6",
+   "new": "ks4-thermal-conductivity-h04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-thermal-conductivity-h05": {
+   "kp": "ks4.thermal-conductivity.4",
+   "new": "ks4-thermal-conductivity-h05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-thermal-conductivity-h06": {
+   "kp": "ks4.thermal-conductivity.4",
+   "new": "ks4-thermal-conductivity-h06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-thermal-conductivity-h07": {
+   "kp": "ks4.thermal-conductivity.6",
+   "new": "ks4-thermal-conductivity-h07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-thermal-conductivity-h08": {
+   "kp": "ks4.thermal-conductivity.5",
+   "new": "ks4-thermal-conductivity-h08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-thermal-conductivity-h09": {
+   "kp": "ks4.thermal-conductivity.8",
+   "new": "ks4-thermal-conductivity-h09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-thermal-conductivity-h10": {
+   "kp": "ks4.thermal-conductivity.8",
+   "new": "ks4-thermal-conductivity-h10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-thermal-conductivity-h11": {
+   "kp": "ks4.thermal-conductivity.2",
+   "new": "ks4-thermal-conductivity-h11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-thermal-conductivity-h12": {
+   "kp": "ks4.thermal-conductivity.4",
+   "new": "ks4-thermal-conductivity-h12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-thermal-conductivity-h13": {
+   "kp": "ks4.thermal-conductivity.6",
+   "new": "ks4-thermal-conductivity-h13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-thermal-conductivity-h14": {
+   "kp": "ks4.thermal-conductivity.8",
+   "new": "ks4-thermal-conductivity-h14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-thermal-conductivity-h15": {
+   "kp": "ks4.thermal-conductivity.4",
+   "new": "ks4-thermal-conductivity-h15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-thermal-conductivity-h16": {
+   "kp": "ks4.thermal-conductivity.5",
+   "new": "ks4-thermal-conductivity-h16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-thermal-conductivity-h17": {
+   "kp": "ks4.thermal-conductivity.4",
+   "new": "ks4-thermal-conductivity-h17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-thermal-conductivity-h18": {
+   "kp": "ks4.thermal-conductivity.2",
+   "new": "ks4-thermal-conductivity-h18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-thermal-conductivity-h19": {
+   "kp": "ks4.thermal-conductivity.4",
+   "new": "ks4-thermal-conductivity-h19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-thermal-conductivity-h20": {
+   "kp": "ks4.thermal-conductivity.2",
+   "new": "ks4-thermal-conductivity-h20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-thermal-conductivity-h21": {
+   "kp": "ks4.thermal-conductivity.7",
+   "new": "ks4-thermal-conductivity-h21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-thermal-conductivity-h22": {
+   "kp": "ks4.thermal-conductivity.4",
+   "new": "ks4-thermal-conductivity-h22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-thermal-conductivity-h23": {
+   "kp": "ks4.thermal-conductivity.6",
+   "new": "ks4-thermal-conductivity-h23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-thermal-conductivity-h24": {
+   "kp": "ks4.thermal-conductivity.4",
+   "new": "ks4-thermal-conductivity-h24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-thermal-conductivity-h25": {
+   "kp": "ks4.thermal-conductivity.4",
+   "new": "ks4-thermal-conductivity-h25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-thermal-conductivity-h26": {
+   "kp": "ks4.thermal-conductivity.4",
+   "new": "ks4-thermal-conductivity-h26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-thermal-conductivity-s01": {
+   "kp": "ks4.thermal-conductivity.2",
+   "new": "ks4-thermal-conductivity-s01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-thermal-conductivity-s02": {
+   "kp": "ks4.thermal-conductivity.5",
+   "new": "ks4-thermal-conductivity-s02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-thermal-conductivity-s03": {
+   "kp": "ks4.thermal-conductivity.6",
+   "new": "ks4-thermal-conductivity-s03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-thermal-conductivity-s04": {
+   "kp": "ks4.thermal-conductivity.8",
+   "new": "ks4-thermal-conductivity-s04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-thermal-conductivity-s05": {
+   "kp": "ks4.thermal-conductivity.2",
+   "new": "ks4-thermal-conductivity-s05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-thermal-conductivity-s06": {
+   "kp": "ks4.thermal-conductivity.5",
+   "new": "ks4-thermal-conductivity-s06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-thermal-conductivity-s07": {
+   "kp": "ks4.thermal-conductivity.6",
+   "new": "ks4-thermal-conductivity-s07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-thermal-conductivity-s08": {
+   "kp": "ks4.thermal-conductivity.5",
+   "new": "ks4-thermal-conductivity-s08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-thermal-conductivity-s09": {
+   "kp": "ks4.thermal-conductivity.5",
+   "new": "ks4-thermal-conductivity-s09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-thermal-conductivity-s10": {
+   "kp": "ks4.thermal-conductivity.2",
+   "new": "ks4-thermal-conductivity-s10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-thermal-conductivity-s11": {
+   "kp": "ks4.thermal-conductivity.8",
+   "new": "ks4-thermal-conductivity-s11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-thermal-conductivity-s12": {
+   "kp": "ks4.thermal-conductivity.7",
+   "new": "ks4-thermal-conductivity-s12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-thermal-conductivity-s13": {
+   "kp": "ks4.thermal-conductivity.5",
+   "new": "ks4-thermal-conductivity-s13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-thermal-conductivity-s14": {
+   "kp": "ks4.thermal-conductivity.5",
+   "new": "ks4-thermal-conductivity-s14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-thermal-conductivity-s15": {
+   "kp": "ks4.thermal-conductivity.3",
+   "new": "ks4-thermal-conductivity-s15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-thermal-conductivity-s16": {
+   "kp": "ks4.thermal-conductivity.5",
+   "new": "ks4-thermal-conductivity-s16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-thermal-conductivity-s17": {
+   "kp": "ks4.thermal-conductivity.5",
+   "new": "ks4-thermal-conductivity-s17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-thermal-conductivity-s18": {
+   "kp": "ks4.thermal-conductivity.5",
+   "new": "ks4-thermal-conductivity-s18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-thermal-conductivity-s19": {
+   "kp": "ks4.thermal-conductivity.5",
+   "new": "ks4-thermal-conductivity-s19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-thermal-conductivity-s20": {
+   "kp": "ks4.thermal-conductivity.6",
+   "new": "ks4-thermal-conductivity-s20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-thermal-conductivity-s21": {
+   "kp": "ks4.thermal-conductivity.6",
+   "new": "ks4-thermal-conductivity-s21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-thermal-conductivity-s22": {
+   "kp": "ks4.thermal-conductivity.8",
+   "new": "ks4-thermal-conductivity-s22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-thermal-conductivity-s23": {
+   "kp": "ks4.thermal-conductivity.8",
+   "new": "ks4-thermal-conductivity-s23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-thermal-conductivity-s24": {
+   "kp": "ks4.thermal-conductivity.3",
+   "new": "ks4-thermal-conductivity-s24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-thermal-conductivity-s25": {
+   "kp": "ks4.thermal-conductivity.1",
+   "new": "ks4-thermal-conductivity-s25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-thermal-conductivity-s26": {
+   "kp": "ks4.thermal-conductivity.5",
+   "new": "ks4-thermal-conductivity-s26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:changes-in-energy:cf#cfifa-1-1": {
+   "kp": "ks4.changes-in-energy.1",
+   "new": "ks4:changes-in-energy:cf#cfifa-1-1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:changes-in-energy:cf#cfifa-1-2": {
+   "kp": "ks4.changes-in-energy.3",
+   "new": "ks4:changes-in-energy:cf#cfifa-1-2",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:changes-in-energy:cf#choice-1": {
+   "kp": "ks4.changes-in-energy.8",
+   "new": null,
+   "note": "the Think again question is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:changes-in-energy:cf#picks": {
+   "kp": "ks4.changes-in-energy.4",
+   "new": "ks4:changes-in-energy:cf#picks",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:changes-in-energy:cf#r1": {
+   "kp": "ks4.changes-in-energy.2",
+   "new": "ks4:changes-in-energy:cf#r1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:changes-in-energy:cf#r2": {
+   "kp": "ks4.changes-in-energy.3",
+   "new": "ks4:changes-in-energy:cf#r2",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:changes-in-energy:cf#r3": {
+   "kp": "ks4.changes-in-energy.5",
+   "new": "ks4:changes-in-energy:cf#r3",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:changes-in-energy:cf#r4": {
+   "kp": "ks4.changes-in-energy.5",
+   "new": "ks4:changes-in-energy:cf#r4",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:changes-in-energy:cf#sort-1-1": {
+   "kp": "ks4.changes-in-energy.7",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:changes-in-energy:cf#sort-1-2": {
+   "kp": "ks4.changes-in-energy.7",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:changes-in-energy:cf#sort-1-3": {
+   "kp": "ks4.changes-in-energy.7",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:changes-in-energy:cf#sort-1-4": {
+   "kp": "ks4.changes-in-energy.7",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:changes-in-energy:cf#sort-1-5": {
+   "kp": "ks4.changes-in-energy.7",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:changes-in-energy:cf#sort-1-6": {
+   "kp": "ks4.changes-in-energy.7",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:changes-in-energy:cf#sort-1-7": {
+   "kp": "ks4.changes-in-energy.7",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:changes-in-energy:cf#sort-1-8": {
+   "kp": "ks4.changes-in-energy.7",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:changes-in-energy:cf#start": {
+   "kp": "ks4.changes-in-energy.4",
+   "new": "ks4:changes-in-energy:cf#start",
+   "note": "Start here, asked on the lean page",
+   "status": "kept"
+  },
+  "ks4:changes-in-energy:ch#cfifa-1-1": {
+   "kp": "ks4.changes-in-energy.6",
+   "new": "ks4:changes-in-energy:ch#cfifa-1-1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:changes-in-energy:ch#cfifa-1-2": {
+   "kp": "ks4.changes-in-energy.6",
+   "new": "ks4:changes-in-energy:ch#cfifa-1-2",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:changes-in-energy:ch#choice-1": {
+   "kp": "ks4.changes-in-energy.8",
+   "new": null,
+   "note": "the Think again question is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:changes-in-energy:ch#picks": {
+   "kp": "ks4.changes-in-energy.4",
+   "new": "ks4:changes-in-energy:ch#picks",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:changes-in-energy:ch#r1": {
+   "kp": "ks4.changes-in-energy.2",
+   "new": "ks4:changes-in-energy:ch#r1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:changes-in-energy:ch#r2": {
+   "kp": "ks4.changes-in-energy.6",
+   "new": "ks4:changes-in-energy:ch#r2",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:changes-in-energy:ch#r3": {
+   "kp": "ks4.changes-in-energy.5",
+   "new": "ks4:changes-in-energy:ch#r3",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:changes-in-energy:ch#r4": {
+   "kp": "ks4.changes-in-energy.5",
+   "new": "ks4:changes-in-energy:ch#r4",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:changes-in-energy:ch#sort-1-1": {
+   "kp": "ks4.changes-in-energy.7",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:changes-in-energy:ch#sort-1-2": {
+   "kp": "ks4.changes-in-energy.7",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:changes-in-energy:ch#sort-1-3": {
+   "kp": "ks4.changes-in-energy.7",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:changes-in-energy:ch#sort-1-4": {
+   "kp": "ks4.changes-in-energy.7",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:changes-in-energy:ch#sort-1-5": {
+   "kp": "ks4.changes-in-energy.7",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:changes-in-energy:ch#sort-1-6": {
+   "kp": "ks4.changes-in-energy.7",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:changes-in-energy:ch#sort-1-7": {
+   "kp": "ks4.changes-in-energy.7",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:changes-in-energy:ch#sort-1-8": {
+   "kp": "ks4.changes-in-energy.7",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:changes-in-energy:ch#start": {
+   "kp": "ks4.changes-in-energy.4",
+   "new": "ks4:changes-in-energy:ch#start",
+   "note": "Start here, asked on the lean page",
+   "status": "kept"
+  },
+  "ks4:changes-in-energy:tf#cfifa-1-1": {
+   "kp": "ks4.changes-in-energy.1",
+   "new": "ks4:changes-in-energy:tf#cfifa-1-1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:changes-in-energy:tf#cfifa-1-2": {
+   "kp": "ks4.changes-in-energy.3",
+   "new": "ks4:changes-in-energy:tf#cfifa-1-2",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:changes-in-energy:tf#choice-1": {
+   "kp": "ks4.changes-in-energy.8",
+   "new": null,
+   "note": "the Think again question is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:changes-in-energy:tf#picks": {
+   "kp": "ks4.changes-in-energy.4",
+   "new": "ks4:changes-in-energy:tf#picks",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:changes-in-energy:tf#r1": {
+   "kp": "ks4.changes-in-energy.2",
+   "new": "ks4:changes-in-energy:tf#r1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:changes-in-energy:tf#r2": {
+   "kp": "ks4.changes-in-energy.3",
+   "new": "ks4:changes-in-energy:tf#r2",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:changes-in-energy:tf#r3": {
+   "kp": "ks4.changes-in-energy.5",
+   "new": "ks4:changes-in-energy:tf#r3",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:changes-in-energy:tf#r4": {
+   "kp": "ks4.changes-in-energy.5",
+   "new": "ks4:changes-in-energy:tf#r4",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:changes-in-energy:tf#sort-1-1": {
+   "kp": "ks4.changes-in-energy.7",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:changes-in-energy:tf#sort-1-2": {
+   "kp": "ks4.changes-in-energy.7",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:changes-in-energy:tf#sort-1-3": {
+   "kp": "ks4.changes-in-energy.7",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:changes-in-energy:tf#sort-1-4": {
+   "kp": "ks4.changes-in-energy.7",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:changes-in-energy:tf#sort-1-5": {
+   "kp": "ks4.changes-in-energy.7",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:changes-in-energy:tf#sort-1-6": {
+   "kp": "ks4.changes-in-energy.7",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:changes-in-energy:tf#sort-1-7": {
+   "kp": "ks4.changes-in-energy.7",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:changes-in-energy:tf#sort-1-8": {
+   "kp": "ks4.changes-in-energy.7",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:changes-in-energy:tf#start": {
+   "kp": "ks4.changes-in-energy.4",
+   "new": "ks4:changes-in-energy:tf#start",
+   "note": "Start here, asked on the lean page",
+   "status": "kept"
+  },
+  "ks4:changes-in-energy:th#cfifa-1-1": {
+   "kp": "ks4.changes-in-energy.6",
+   "new": "ks4:changes-in-energy:th#cfifa-1-1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:changes-in-energy:th#cfifa-1-2": {
+   "kp": "ks4.changes-in-energy.6",
+   "new": "ks4:changes-in-energy:th#cfifa-1-2",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:changes-in-energy:th#choice-1": {
+   "kp": "ks4.changes-in-energy.8",
+   "new": null,
+   "note": "the Think again question is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:changes-in-energy:th#picks": {
+   "kp": "ks4.changes-in-energy.4",
+   "new": "ks4:changes-in-energy:th#picks",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:changes-in-energy:th#r1": {
+   "kp": "ks4.changes-in-energy.2",
+   "new": "ks4:changes-in-energy:th#r1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:changes-in-energy:th#r2": {
+   "kp": "ks4.changes-in-energy.6",
+   "new": "ks4:changes-in-energy:th#r2",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:changes-in-energy:th#r3": {
+   "kp": "ks4.changes-in-energy.5",
+   "new": "ks4:changes-in-energy:th#r3",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:changes-in-energy:th#r4": {
+   "kp": "ks4.changes-in-energy.5",
+   "new": "ks4:changes-in-energy:th#r4",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:changes-in-energy:th#sort-1-1": {
+   "kp": "ks4.changes-in-energy.7",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:changes-in-energy:th#sort-1-2": {
+   "kp": "ks4.changes-in-energy.7",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:changes-in-energy:th#sort-1-3": {
+   "kp": "ks4.changes-in-energy.7",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:changes-in-energy:th#sort-1-4": {
+   "kp": "ks4.changes-in-energy.7",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:changes-in-energy:th#sort-1-5": {
+   "kp": "ks4.changes-in-energy.7",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:changes-in-energy:th#sort-1-6": {
+   "kp": "ks4.changes-in-energy.7",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:changes-in-energy:th#sort-1-7": {
+   "kp": "ks4.changes-in-energy.7",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:changes-in-energy:th#sort-1-8": {
+   "kp": "ks4.changes-in-energy.7",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:changes-in-energy:th#start": {
+   "kp": "ks4.changes-in-energy.4",
+   "new": "ks4:changes-in-energy:th#start",
+   "note": "Start here, asked on the lean page",
+   "status": "kept"
+  },
+  "ks4:efficiency:cf#cfifa-1-1": {
+   "kp": "ks4.efficiency.2",
+   "new": "ks4:efficiency:cf#cfifa-1-1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:efficiency:cf#cfifa-1-2": {
+   "kp": "ks4.efficiency.2",
+   "new": "ks4:efficiency:cf#cfifa-1-2",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:efficiency:cf#choice-1": {
+   "kp": "ks4.efficiency.2",
+   "new": null,
+   "note": "the Think again question is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:efficiency:cf#r1-1": {
+   "kp": "ks4.efficiency.8",
+   "new": "ks4:efficiency:cf#r1-1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:efficiency:cf#r1-2": {
+   "kp": "ks4.efficiency.9",
+   "new": "ks4:efficiency:cf#r1-2",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:efficiency:cf#r2-1": {
+   "kp": "ks4.efficiency.2",
+   "new": "ks4:efficiency:cf#r2-1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:efficiency:cf#r2-2": {
+   "kp": "ks4.efficiency.2",
+   "new": "ks4:efficiency:cf#r2-2",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:efficiency:cf#r3-1": {
+   "kp": "ks4.efficiency.3",
+   "new": "ks4:efficiency:cf#r3-1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:efficiency:cf#r3-2": {
+   "kp": "ks4.efficiency.7",
+   "new": "ks4:efficiency:cf#r3-2",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:efficiency:cf#r4-1": {
+   "kp": "ks4.efficiency.2",
+   "new": "ks4:efficiency:cf#r4-1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:efficiency:cf#start": {
+   "kp": "ks4.efficiency.6",
+   "new": "ks4:efficiency:cf#start",
+   "note": "Start here, asked on the lean page",
+   "status": "kept"
+  },
+  "ks4:efficiency:cf#steps-1": {
+   "kp": "ks4.efficiency.4",
+   "new": "ks4:efficiency:cf#steps-1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:efficiency:cf#steps-2": {
+   "kp": "ks4.efficiency.4",
+   "new": "ks4:efficiency:cf#steps-2",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:efficiency:ch#cfifa-1-1": {
+   "kp": "ks4.efficiency.2",
+   "new": "ks4:efficiency:ch#cfifa-1-1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:efficiency:ch#cfifa-1-2": {
+   "kp": "ks4.efficiency.2",
+   "new": "ks4:efficiency:ch#cfifa-1-2",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:efficiency:ch#choice-1": {
+   "kp": "ks4.efficiency.2",
+   "new": null,
+   "note": "the Think again question is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:efficiency:ch#r1-1": {
+   "kp": "ks4.efficiency.8",
+   "new": "ks4:efficiency:ch#r1-1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:efficiency:ch#r1-2": {
+   "kp": "ks4.efficiency.9",
+   "new": "ks4:efficiency:ch#r1-2",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:efficiency:ch#r2-1": {
+   "kp": "ks4.efficiency.2",
+   "new": "ks4:efficiency:ch#r2-1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:efficiency:ch#r2-2": {
+   "kp": "ks4.efficiency.2",
+   "new": "ks4:efficiency:ch#r2-2",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:efficiency:ch#r3-1": {
+   "kp": "ks4.efficiency.3",
+   "new": "ks4:efficiency:ch#r3-1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:efficiency:ch#r3-2": {
+   "kp": "ks4.efficiency.7",
+   "new": "ks4:efficiency:ch#r3-2",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:efficiency:ch#r4-1": {
+   "kp": "ks4.efficiency.2",
+   "new": "ks4:efficiency:ch#r4-1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:efficiency:ch#start": {
+   "kp": "ks4.efficiency.6",
+   "new": "ks4:efficiency:ch#start",
+   "note": "Start here, asked on the lean page",
+   "status": "kept"
+  },
+  "ks4:efficiency:ch#steps-1": {
+   "kp": "ks4.efficiency.4",
+   "new": "ks4:efficiency:ch#steps-1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:efficiency:ch#steps-2": {
+   "kp": "ks4.efficiency.4",
+   "new": "ks4:efficiency:ch#steps-2",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:efficiency:tf#cfifa-1-1": {
+   "kp": "ks4.efficiency.2",
+   "new": "ks4:efficiency:tf#cfifa-1-1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:efficiency:tf#cfifa-1-2": {
+   "kp": "ks4.efficiency.2",
+   "new": "ks4:efficiency:tf#cfifa-1-2",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:efficiency:tf#choice-1": {
+   "kp": "ks4.efficiency.2",
+   "new": null,
+   "note": "the Think again question is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:efficiency:tf#r1-1": {
+   "kp": "ks4.efficiency.8",
+   "new": "ks4:efficiency:tf#r1-1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:efficiency:tf#r1-2": {
+   "kp": "ks4.efficiency.9",
+   "new": "ks4:efficiency:tf#r1-2",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:efficiency:tf#r2-1": {
+   "kp": "ks4.efficiency.2",
+   "new": "ks4:efficiency:tf#r2-1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:efficiency:tf#r2-2": {
+   "kp": "ks4.efficiency.2",
+   "new": "ks4:efficiency:tf#r2-2",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:efficiency:tf#r3-1": {
+   "kp": "ks4.efficiency.3",
+   "new": "ks4:efficiency:tf#r3-1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:efficiency:tf#r3-2": {
+   "kp": "ks4.efficiency.7",
+   "new": "ks4:efficiency:tf#r3-2",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:efficiency:tf#r4-1": {
+   "kp": "ks4.efficiency.2",
+   "new": "ks4:efficiency:tf#r4-1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:efficiency:tf#start": {
+   "kp": "ks4.efficiency.6",
+   "new": "ks4:efficiency:tf#start",
+   "note": "Start here, asked on the lean page",
+   "status": "kept"
+  },
+  "ks4:efficiency:tf#steps-1": {
+   "kp": "ks4.efficiency.4",
+   "new": "ks4:efficiency:tf#steps-1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:efficiency:tf#steps-2": {
+   "kp": "ks4.efficiency.4",
+   "new": "ks4:efficiency:tf#steps-2",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:efficiency:th#cfifa-1-1": {
+   "kp": "ks4.efficiency.2",
+   "new": "ks4:efficiency:th#cfifa-1-1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:efficiency:th#cfifa-1-2": {
+   "kp": "ks4.efficiency.2",
+   "new": "ks4:efficiency:th#cfifa-1-2",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:efficiency:th#choice-1": {
+   "kp": "ks4.efficiency.2",
+   "new": null,
+   "note": "the Think again question is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:efficiency:th#r1-1": {
+   "kp": "ks4.efficiency.8",
+   "new": "ks4:efficiency:th#r1-1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:efficiency:th#r1-2": {
+   "kp": "ks4.efficiency.9",
+   "new": "ks4:efficiency:th#r1-2",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:efficiency:th#r2-1": {
+   "kp": "ks4.efficiency.2",
+   "new": "ks4:efficiency:th#r2-1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:efficiency:th#r2-2": {
+   "kp": "ks4.efficiency.2",
+   "new": "ks4:efficiency:th#r2-2",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:efficiency:th#r3-1": {
+   "kp": "ks4.efficiency.3",
+   "new": "ks4:efficiency:th#r3-1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:efficiency:th#r3-2": {
+   "kp": "ks4.efficiency.7",
+   "new": "ks4:efficiency:th#r3-2",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:efficiency:th#r4-1": {
+   "kp": "ks4.efficiency.2",
+   "new": "ks4:efficiency:th#r4-1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:efficiency:th#start": {
+   "kp": "ks4.efficiency.6",
+   "new": "ks4:efficiency:th#start",
+   "note": "Start here, asked on the lean page",
+   "status": "kept"
+  },
+  "ks4:efficiency:th#steps-1": {
+   "kp": "ks4.efficiency.4",
+   "new": "ks4:efficiency:th#steps-1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:efficiency:th#steps-2": {
+   "kp": "ks4.efficiency.4",
+   "new": "ks4:efficiency:th#steps-2",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:energy-changes-in-systems:cf#r1-1": {
+   "kp": "ks4.energy-changes-in-systems.1",
+   "new": "ks4:energy-changes-in-systems:cf#r1-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-changes-in-systems:cf#r1-2": {
+   "kp": "ks4.energy-changes-in-systems.1",
+   "new": "ks4:energy-changes-in-systems:cf#r1-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-changes-in-systems:cf#r2-1": {
+   "kp": "ks4.energy-changes-in-systems.3",
+   "new": "ks4:energy-changes-in-systems:cf#r2-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-changes-in-systems:cf#r2-2": {
+   "kp": "ks4.energy-changes-in-systems.3",
+   "new": "ks4:energy-changes-in-systems:cf#r2-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-changes-in-systems:cf#r3-1": {
+   "kp": "ks4.energy-changes-in-systems.6",
+   "new": "ks4:energy-changes-in-systems:cf#r3-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-changes-in-systems:cf#r3-2": {
+   "kp": "ks4.energy-changes-in-systems.7",
+   "new": "ks4:energy-changes-in-systems:cf#r3-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-changes-in-systems:cf#r4-1": {
+   "kp": "ks4.energy-changes-in-systems.6",
+   "new": "ks4:energy-changes-in-systems:cf#r4-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-changes-in-systems:cf#start": {
+   "kp": "ks4.energy-changes-in-systems.7",
+   "new": "ks4:energy-changes-in-systems:cf#start",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-changes-in-systems:ch#r1-1": {
+   "kp": "ks4.energy-changes-in-systems.1",
+   "new": "ks4:energy-changes-in-systems:ch#r1-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-changes-in-systems:ch#r1-2": {
+   "kp": "ks4.energy-changes-in-systems.1",
+   "new": "ks4:energy-changes-in-systems:ch#r1-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-changes-in-systems:ch#r2-1": {
+   "kp": "ks4.energy-changes-in-systems.3",
+   "new": "ks4:energy-changes-in-systems:ch#r2-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-changes-in-systems:ch#r2-2": {
+   "kp": "ks4.energy-changes-in-systems.3",
+   "new": "ks4:energy-changes-in-systems:ch#r2-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-changes-in-systems:ch#r3-1": {
+   "kp": "ks4.energy-changes-in-systems.6",
+   "new": "ks4:energy-changes-in-systems:ch#r3-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-changes-in-systems:ch#r3-2": {
+   "kp": "ks4.energy-changes-in-systems.7",
+   "new": "ks4:energy-changes-in-systems:ch#r3-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-changes-in-systems:ch#r4-1": {
+   "kp": "ks4.energy-changes-in-systems.6",
+   "new": "ks4:energy-changes-in-systems:ch#r4-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-changes-in-systems:ch#start": {
+   "kp": "ks4.energy-changes-in-systems.7",
+   "new": "ks4:energy-changes-in-systems:ch#start",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-changes-in-systems:tf#r1-1": {
+   "kp": "ks4.energy-changes-in-systems.1",
+   "new": "ks4:energy-changes-in-systems:tf#r1-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-changes-in-systems:tf#r1-2": {
+   "kp": "ks4.energy-changes-in-systems.1",
+   "new": "ks4:energy-changes-in-systems:tf#r1-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-changes-in-systems:tf#r2-1": {
+   "kp": "ks4.energy-changes-in-systems.3",
+   "new": "ks4:energy-changes-in-systems:tf#r2-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-changes-in-systems:tf#r2-2": {
+   "kp": "ks4.energy-changes-in-systems.3",
+   "new": "ks4:energy-changes-in-systems:tf#r2-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-changes-in-systems:tf#r3-1": {
+   "kp": "ks4.energy-changes-in-systems.6",
+   "new": "ks4:energy-changes-in-systems:tf#r3-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-changes-in-systems:tf#r3-2": {
+   "kp": "ks4.energy-changes-in-systems.7",
+   "new": "ks4:energy-changes-in-systems:tf#r3-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-changes-in-systems:tf#r4-1": {
+   "kp": "ks4.energy-changes-in-systems.6",
+   "new": "ks4:energy-changes-in-systems:tf#r4-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-changes-in-systems:tf#start": {
+   "kp": "ks4.energy-changes-in-systems.7",
+   "new": "ks4:energy-changes-in-systems:tf#start",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-changes-in-systems:th#r1-1": {
+   "kp": "ks4.energy-changes-in-systems.1",
+   "new": "ks4:energy-changes-in-systems:th#r1-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-changes-in-systems:th#r1-2": {
+   "kp": "ks4.energy-changes-in-systems.1",
+   "new": "ks4:energy-changes-in-systems:th#r1-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-changes-in-systems:th#r2-1": {
+   "kp": "ks4.energy-changes-in-systems.3",
+   "new": "ks4:energy-changes-in-systems:th#r2-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-changes-in-systems:th#r2-2": {
+   "kp": "ks4.energy-changes-in-systems.3",
+   "new": "ks4:energy-changes-in-systems:th#r2-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-changes-in-systems:th#r3-1": {
+   "kp": "ks4.energy-changes-in-systems.6",
+   "new": "ks4:energy-changes-in-systems:th#r3-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-changes-in-systems:th#r3-2": {
+   "kp": "ks4.energy-changes-in-systems.7",
+   "new": "ks4:energy-changes-in-systems:th#r3-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-changes-in-systems:th#r4-1": {
+   "kp": "ks4.energy-changes-in-systems.6",
+   "new": "ks4:energy-changes-in-systems:th#r4-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-changes-in-systems:th#start": {
+   "kp": "ks4.energy-changes-in-systems.7",
+   "new": "ks4:energy-changes-in-systems:th#start",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-resources:cf#choice-1": {
+   "kp": "ks4.energy-resources.2",
+   "new": null,
+   "note": "the Think again question is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:energy-resources:cf#placed": {
+   "kp": "ks4.energy-resources.7",
+   "new": "ks4:energy-resources:cf#placed",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:energy-resources:cf#r1-1": {
+   "kp": "ks4.energy-resources.5",
+   "new": "ks4:energy-resources:cf#r1-1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:energy-resources:cf#r1-2": {
+   "kp": "ks4.energy-resources.6",
+   "new": "ks4:energy-resources:cf#r1-2",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:energy-resources:cf#r2-1": {
+   "kp": "ks4.energy-resources.10",
+   "new": "ks4:energy-resources:cf#r2-1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:energy-resources:cf#r2-2": {
+   "kp": "ks4.energy-resources.7",
+   "new": "ks4:energy-resources:cf#r2-2",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:energy-resources:cf#r3-1": {
+   "kp": "ks4.energy-resources.11",
+   "new": "ks4:energy-resources:cf#r3-1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:energy-resources:cf#r3-2": {
+   "kp": "ks4.energy-resources.4",
+   "new": "ks4:energy-resources:cf#r3-2",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:energy-resources:cf#r4-1": {
+   "kp": "ks4.energy-resources.7",
+   "new": "ks4:energy-resources:cf#r4-1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:energy-resources:cf#sort-1-1": {
+   "kp": "ks4.energy-resources.4",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:energy-resources:cf#sort-1-2": {
+   "kp": "ks4.energy-resources.4",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:energy-resources:cf#sort-1-3": {
+   "kp": "ks4.energy-resources.5",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:energy-resources:cf#sort-1-4": {
+   "kp": "ks4.energy-resources.5",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:energy-resources:cf#sort-1-5": {
+   "kp": "ks4.energy-resources.6",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:energy-resources:cf#sort-1-6": {
+   "kp": "ks4.energy-resources.6",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:energy-resources:cf#sort-1-7": {
+   "kp": "ks4.energy-resources.6",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:energy-resources:cf#sort-1-8": {
+   "kp": "ks4.energy-resources.9",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:energy-resources:cf#start": {
+   "kp": "ks4.energy-resources.8",
+   "new": "ks4:energy-resources:cf#start",
+   "note": "Start here, asked on the lean page",
+   "status": "kept"
+  },
+  "ks4:energy-resources:cf#tried": {
+   "kp": "ks4.energy-resources.2",
+   "new": null,
+   "note": "the resource cards activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:energy-resources:ch#choice-1": {
+   "kp": "ks4.energy-resources.2",
+   "new": null,
+   "note": "the Think again question is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:energy-resources:ch#placed": {
+   "kp": "ks4.energy-resources.7",
+   "new": "ks4:energy-resources:ch#placed",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:energy-resources:ch#r1-1": {
+   "kp": "ks4.energy-resources.5",
+   "new": "ks4:energy-resources:ch#r1-1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:energy-resources:ch#r1-2": {
+   "kp": "ks4.energy-resources.6",
+   "new": "ks4:energy-resources:ch#r1-2",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:energy-resources:ch#r2-1": {
+   "kp": "ks4.energy-resources.10",
+   "new": "ks4:energy-resources:ch#r2-1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:energy-resources:ch#r2-2": {
+   "kp": "ks4.energy-resources.7",
+   "new": "ks4:energy-resources:ch#r2-2",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:energy-resources:ch#r3-1": {
+   "kp": "ks4.energy-resources.11",
+   "new": "ks4:energy-resources:ch#r3-1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:energy-resources:ch#r3-2": {
+   "kp": "ks4.energy-resources.4",
+   "new": "ks4:energy-resources:ch#r3-2",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:energy-resources:ch#r4-1": {
+   "kp": "ks4.energy-resources.7",
+   "new": "ks4:energy-resources:ch#r4-1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:energy-resources:ch#sort-1-1": {
+   "kp": "ks4.energy-resources.4",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:energy-resources:ch#sort-1-2": {
+   "kp": "ks4.energy-resources.4",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:energy-resources:ch#sort-1-3": {
+   "kp": "ks4.energy-resources.5",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:energy-resources:ch#sort-1-4": {
+   "kp": "ks4.energy-resources.5",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:energy-resources:ch#sort-1-5": {
+   "kp": "ks4.energy-resources.6",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:energy-resources:ch#sort-1-6": {
+   "kp": "ks4.energy-resources.6",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:energy-resources:ch#sort-1-7": {
+   "kp": "ks4.energy-resources.6",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:energy-resources:ch#sort-1-8": {
+   "kp": "ks4.energy-resources.9",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:energy-resources:ch#start": {
+   "kp": "ks4.energy-resources.8",
+   "new": "ks4:energy-resources:ch#start",
+   "note": "Start here, asked on the lean page",
+   "status": "kept"
+  },
+  "ks4:energy-resources:ch#tried": {
+   "kp": "ks4.energy-resources.2",
+   "new": null,
+   "note": "the resource cards activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:energy-resources:tf#choice-1": {
+   "kp": "ks4.energy-resources.2",
+   "new": null,
+   "note": "the Think again question is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:energy-resources:tf#placed": {
+   "kp": "ks4.energy-resources.7",
+   "new": "ks4:energy-resources:tf#placed",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:energy-resources:tf#r1-1": {
+   "kp": "ks4.energy-resources.5",
+   "new": "ks4:energy-resources:tf#r1-1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:energy-resources:tf#r1-2": {
+   "kp": "ks4.energy-resources.6",
+   "new": "ks4:energy-resources:tf#r1-2",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:energy-resources:tf#r2-1": {
+   "kp": "ks4.energy-resources.10",
+   "new": "ks4:energy-resources:tf#r2-1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:energy-resources:tf#r2-2": {
+   "kp": "ks4.energy-resources.7",
+   "new": "ks4:energy-resources:tf#r2-2",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:energy-resources:tf#r3-1": {
+   "kp": "ks4.energy-resources.11",
+   "new": "ks4:energy-resources:tf#r3-1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:energy-resources:tf#r3-2": {
+   "kp": "ks4.energy-resources.4",
+   "new": "ks4:energy-resources:tf#r3-2",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:energy-resources:tf#r4-1": {
+   "kp": "ks4.energy-resources.7",
+   "new": "ks4:energy-resources:tf#r4-1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:energy-resources:tf#sort-1-1": {
+   "kp": "ks4.energy-resources.4",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:energy-resources:tf#sort-1-2": {
+   "kp": "ks4.energy-resources.4",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:energy-resources:tf#sort-1-3": {
+   "kp": "ks4.energy-resources.5",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:energy-resources:tf#sort-1-4": {
+   "kp": "ks4.energy-resources.5",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:energy-resources:tf#sort-1-5": {
+   "kp": "ks4.energy-resources.6",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:energy-resources:tf#sort-1-6": {
+   "kp": "ks4.energy-resources.6",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:energy-resources:tf#sort-1-7": {
+   "kp": "ks4.energy-resources.6",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:energy-resources:tf#sort-1-8": {
+   "kp": "ks4.energy-resources.9",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:energy-resources:tf#start": {
+   "kp": "ks4.energy-resources.8",
+   "new": "ks4:energy-resources:tf#start",
+   "note": "Start here, asked on the lean page",
+   "status": "kept"
+  },
+  "ks4:energy-resources:tf#tried": {
+   "kp": "ks4.energy-resources.2",
+   "new": null,
+   "note": "the resource cards activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:energy-resources:th#choice-1": {
+   "kp": "ks4.energy-resources.2",
+   "new": null,
+   "note": "the Think again question is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:energy-resources:th#placed": {
+   "kp": "ks4.energy-resources.7",
+   "new": "ks4:energy-resources:th#placed",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:energy-resources:th#r1-1": {
+   "kp": "ks4.energy-resources.5",
+   "new": "ks4:energy-resources:th#r1-1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:energy-resources:th#r1-2": {
+   "kp": "ks4.energy-resources.6",
+   "new": "ks4:energy-resources:th#r1-2",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:energy-resources:th#r2-1": {
+   "kp": "ks4.energy-resources.10",
+   "new": "ks4:energy-resources:th#r2-1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:energy-resources:th#r2-2": {
+   "kp": "ks4.energy-resources.7",
+   "new": "ks4:energy-resources:th#r2-2",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:energy-resources:th#r3-1": {
+   "kp": "ks4.energy-resources.11",
+   "new": "ks4:energy-resources:th#r3-1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:energy-resources:th#r3-2": {
+   "kp": "ks4.energy-resources.4",
+   "new": "ks4:energy-resources:th#r3-2",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:energy-resources:th#r4-1": {
+   "kp": "ks4.energy-resources.7",
+   "new": "ks4:energy-resources:th#r4-1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:energy-resources:th#sort-1-1": {
+   "kp": "ks4.energy-resources.4",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:energy-resources:th#sort-1-2": {
+   "kp": "ks4.energy-resources.4",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:energy-resources:th#sort-1-3": {
+   "kp": "ks4.energy-resources.5",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:energy-resources:th#sort-1-4": {
+   "kp": "ks4.energy-resources.5",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:energy-resources:th#sort-1-5": {
+   "kp": "ks4.energy-resources.6",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:energy-resources:th#sort-1-6": {
+   "kp": "ks4.energy-resources.6",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:energy-resources:th#sort-1-7": {
+   "kp": "ks4.energy-resources.6",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:energy-resources:th#sort-1-8": {
+   "kp": "ks4.energy-resources.9",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:energy-resources:th#start": {
+   "kp": "ks4.energy-resources.8",
+   "new": "ks4:energy-resources:th#start",
+   "note": "Start here, asked on the lean page",
+   "status": "kept"
+  },
+  "ks4:energy-resources:th#tried": {
+   "kp": "ks4.energy-resources.2",
+   "new": null,
+   "note": "the resource cards activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:energy-stores-systems:cf#r1-1": {
+   "kp": "ks4.energy-stores-systems.7",
+   "new": "ks4:energy-stores-systems:cf#r1-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-stores-systems:cf#r1-2": {
+   "kp": "ks4.energy-stores-systems.2",
+   "new": "ks4:energy-stores-systems:cf#r1-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-stores-systems:cf#r2-1": {
+   "kp": "ks4.energy-stores-systems.4",
+   "new": "ks4:energy-stores-systems:cf#r2-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-stores-systems:cf#r2-2": {
+   "kp": "ks4.energy-stores-systems.5",
+   "new": "ks4:energy-stores-systems:cf#r2-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-stores-systems:cf#r3-1": {
+   "kp": "ks4.energy-stores-systems.4",
+   "new": "ks4:energy-stores-systems:cf#r3-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-stores-systems:cf#r3-2": {
+   "kp": "ks4.energy-stores-systems.4",
+   "new": "ks4:energy-stores-systems:cf#r3-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-stores-systems:cf#r4-1": {
+   "kp": "ks4.energy-stores-systems.4",
+   "new": "ks4:energy-stores-systems:cf#r4-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-stores-systems:cf#start": {
+   "kp": "ks4.energy-stores-systems.4",
+   "new": "ks4:energy-stores-systems:cf#start",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-stores-systems:ch#r1-1": {
+   "kp": "ks4.energy-stores-systems.7",
+   "new": "ks4:energy-stores-systems:ch#r1-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-stores-systems:ch#r1-2": {
+   "kp": "ks4.energy-stores-systems.2",
+   "new": "ks4:energy-stores-systems:ch#r1-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-stores-systems:ch#r2-1": {
+   "kp": "ks4.energy-stores-systems.4",
+   "new": "ks4:energy-stores-systems:ch#r2-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-stores-systems:ch#r2-2": {
+   "kp": "ks4.energy-stores-systems.5",
+   "new": "ks4:energy-stores-systems:ch#r2-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-stores-systems:ch#r3-1": {
+   "kp": "ks4.energy-stores-systems.4",
+   "new": "ks4:energy-stores-systems:ch#r3-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-stores-systems:ch#r3-2": {
+   "kp": "ks4.energy-stores-systems.4",
+   "new": "ks4:energy-stores-systems:ch#r3-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-stores-systems:ch#r4-1": {
+   "kp": "ks4.energy-stores-systems.4",
+   "new": "ks4:energy-stores-systems:ch#r4-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-stores-systems:ch#start": {
+   "kp": "ks4.energy-stores-systems.4",
+   "new": "ks4:energy-stores-systems:ch#start",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-stores-systems:tf#r1-1": {
+   "kp": "ks4.energy-stores-systems.7",
+   "new": "ks4:energy-stores-systems:tf#r1-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-stores-systems:tf#r1-2": {
+   "kp": "ks4.energy-stores-systems.2",
+   "new": "ks4:energy-stores-systems:tf#r1-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-stores-systems:tf#r2-1": {
+   "kp": "ks4.energy-stores-systems.4",
+   "new": "ks4:energy-stores-systems:tf#r2-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-stores-systems:tf#r2-2": {
+   "kp": "ks4.energy-stores-systems.5",
+   "new": "ks4:energy-stores-systems:tf#r2-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-stores-systems:tf#r3-1": {
+   "kp": "ks4.energy-stores-systems.4",
+   "new": "ks4:energy-stores-systems:tf#r3-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-stores-systems:tf#r3-2": {
+   "kp": "ks4.energy-stores-systems.4",
+   "new": "ks4:energy-stores-systems:tf#r3-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-stores-systems:tf#r4-1": {
+   "kp": "ks4.energy-stores-systems.4",
+   "new": "ks4:energy-stores-systems:tf#r4-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-stores-systems:tf#start": {
+   "kp": "ks4.energy-stores-systems.4",
+   "new": "ks4:energy-stores-systems:tf#start",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-stores-systems:th#r1-1": {
+   "kp": "ks4.energy-stores-systems.7",
+   "new": "ks4:energy-stores-systems:th#r1-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-stores-systems:th#r1-2": {
+   "kp": "ks4.energy-stores-systems.2",
+   "new": "ks4:energy-stores-systems:th#r1-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-stores-systems:th#r2-1": {
+   "kp": "ks4.energy-stores-systems.4",
+   "new": "ks4:energy-stores-systems:th#r2-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-stores-systems:th#r2-2": {
+   "kp": "ks4.energy-stores-systems.5",
+   "new": "ks4:energy-stores-systems:th#r2-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-stores-systems:th#r3-1": {
+   "kp": "ks4.energy-stores-systems.4",
+   "new": "ks4:energy-stores-systems:th#r3-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-stores-systems:th#r3-2": {
+   "kp": "ks4.energy-stores-systems.4",
+   "new": "ks4:energy-stores-systems:th#r3-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-stores-systems:th#r4-1": {
+   "kp": "ks4.energy-stores-systems.4",
+   "new": "ks4:energy-stores-systems:th#r4-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-stores-systems:th#start": {
+   "kp": "ks4.energy-stores-systems.4",
+   "new": "ks4:energy-stores-systems:th#start",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-transfers-in-a-system:cf#r1-1": {
+   "kp": "ks4.energy-transfers-in-a-system.1",
+   "new": "ks4:energy-transfers-in-a-system:cf#r1-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-transfers-in-a-system:cf#r1-2": {
+   "kp": "ks4.energy-transfers-in-a-system.2",
+   "new": "ks4:energy-transfers-in-a-system:cf#r1-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-transfers-in-a-system:cf#r2-1": {
+   "kp": "ks4.energy-transfers-in-a-system.4",
+   "new": "ks4:energy-transfers-in-a-system:cf#r2-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-transfers-in-a-system:cf#r2-2": {
+   "kp": "ks4.energy-transfers-in-a-system.3",
+   "new": "ks4:energy-transfers-in-a-system:cf#r2-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-transfers-in-a-system:cf#r3-1": {
+   "kp": "ks4.energy-transfers-in-a-system.2",
+   "new": "ks4:energy-transfers-in-a-system:cf#r3-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-transfers-in-a-system:cf#r3-2": {
+   "kp": "ks4.energy-transfers-in-a-system.6",
+   "new": "ks4:energy-transfers-in-a-system:cf#r3-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-transfers-in-a-system:cf#r4-1": {
+   "kp": "ks4.energy-transfers-in-a-system.1",
+   "new": "ks4:energy-transfers-in-a-system:cf#r4-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-transfers-in-a-system:cf#start": {
+   "kp": "ks4.energy-transfers-in-a-system.2",
+   "new": "ks4:energy-transfers-in-a-system:cf#start",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-transfers-in-a-system:ch#r1-1": {
+   "kp": "ks4.energy-transfers-in-a-system.1",
+   "new": "ks4:energy-transfers-in-a-system:ch#r1-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-transfers-in-a-system:ch#r1-2": {
+   "kp": "ks4.energy-transfers-in-a-system.2",
+   "new": "ks4:energy-transfers-in-a-system:ch#r1-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-transfers-in-a-system:ch#r2-1": {
+   "kp": "ks4.energy-transfers-in-a-system.4",
+   "new": "ks4:energy-transfers-in-a-system:ch#r2-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-transfers-in-a-system:ch#r2-2": {
+   "kp": "ks4.energy-transfers-in-a-system.3",
+   "new": "ks4:energy-transfers-in-a-system:ch#r2-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-transfers-in-a-system:ch#r3-1": {
+   "kp": "ks4.energy-transfers-in-a-system.2",
+   "new": "ks4:energy-transfers-in-a-system:ch#r3-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-transfers-in-a-system:ch#r3-2": {
+   "kp": "ks4.energy-transfers-in-a-system.6",
+   "new": "ks4:energy-transfers-in-a-system:ch#r3-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-transfers-in-a-system:ch#r4-1": {
+   "kp": "ks4.energy-transfers-in-a-system.1",
+   "new": "ks4:energy-transfers-in-a-system:ch#r4-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-transfers-in-a-system:ch#start": {
+   "kp": "ks4.energy-transfers-in-a-system.2",
+   "new": "ks4:energy-transfers-in-a-system:ch#start",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-transfers-in-a-system:tf#r1-1": {
+   "kp": "ks4.energy-transfers-in-a-system.1",
+   "new": "ks4:energy-transfers-in-a-system:tf#r1-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-transfers-in-a-system:tf#r1-2": {
+   "kp": "ks4.energy-transfers-in-a-system.2",
+   "new": "ks4:energy-transfers-in-a-system:tf#r1-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-transfers-in-a-system:tf#r2-1": {
+   "kp": "ks4.energy-transfers-in-a-system.4",
+   "new": "ks4:energy-transfers-in-a-system:tf#r2-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-transfers-in-a-system:tf#r2-2": {
+   "kp": "ks4.energy-transfers-in-a-system.3",
+   "new": "ks4:energy-transfers-in-a-system:tf#r2-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-transfers-in-a-system:tf#r3-1": {
+   "kp": "ks4.energy-transfers-in-a-system.2",
+   "new": "ks4:energy-transfers-in-a-system:tf#r3-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-transfers-in-a-system:tf#r3-2": {
+   "kp": "ks4.energy-transfers-in-a-system.6",
+   "new": "ks4:energy-transfers-in-a-system:tf#r3-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-transfers-in-a-system:tf#r4-1": {
+   "kp": "ks4.energy-transfers-in-a-system.1",
+   "new": "ks4:energy-transfers-in-a-system:tf#r4-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-transfers-in-a-system:tf#start": {
+   "kp": "ks4.energy-transfers-in-a-system.2",
+   "new": "ks4:energy-transfers-in-a-system:tf#start",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-transfers-in-a-system:th#r1-1": {
+   "kp": "ks4.energy-transfers-in-a-system.1",
+   "new": "ks4:energy-transfers-in-a-system:th#r1-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-transfers-in-a-system:th#r1-2": {
+   "kp": "ks4.energy-transfers-in-a-system.2",
+   "new": "ks4:energy-transfers-in-a-system:th#r1-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-transfers-in-a-system:th#r2-1": {
+   "kp": "ks4.energy-transfers-in-a-system.4",
+   "new": "ks4:energy-transfers-in-a-system:th#r2-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-transfers-in-a-system:th#r2-2": {
+   "kp": "ks4.energy-transfers-in-a-system.3",
+   "new": "ks4:energy-transfers-in-a-system:th#r2-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-transfers-in-a-system:th#r3-1": {
+   "kp": "ks4.energy-transfers-in-a-system.2",
+   "new": "ks4:energy-transfers-in-a-system:th#r3-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-transfers-in-a-system:th#r3-2": {
+   "kp": "ks4.energy-transfers-in-a-system.6",
+   "new": "ks4:energy-transfers-in-a-system:th#r3-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-transfers-in-a-system:th#r4-1": {
+   "kp": "ks4.energy-transfers-in-a-system.1",
+   "new": "ks4:energy-transfers-in-a-system:th#r4-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:energy-transfers-in-a-system:th#start": {
+   "kp": "ks4.energy-transfers-in-a-system.2",
+   "new": "ks4:energy-transfers-in-a-system:th#start",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:power:cf#cfifa-1-1": {
+   "kp": "ks4.power.3",
+   "new": "ks4:power:cf#cfifa-1-1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:power:cf#cfifa-1-2": {
+   "kp": "ks4.power.6",
+   "new": "ks4:power:cf#cfifa-1-2",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:power:cf#choice-1": {
+   "kp": "ks4.power.1",
+   "new": null,
+   "note": "the Think again question is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:power:cf#picks": {
+   "kp": "ks4.power.8",
+   "new": "ks4:power:cf#picks",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:power:cf#r1": {
+   "kp": "ks4.power.1",
+   "new": "ks4:power:cf#r1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:power:cf#r2": {
+   "kp": "ks4.power.10",
+   "new": "ks4:power:cf#r2",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:power:cf#r3": {
+   "kp": "ks4.power.8",
+   "new": "ks4:power:cf#r3",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:power:cf#r4": {
+   "kp": "ks4.power.7",
+   "new": "ks4:power:cf#r4",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:power:cf#sort-1-1": {
+   "kp": "ks4.power.9",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:power:cf#sort-1-2": {
+   "kp": "ks4.power.9",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:power:cf#sort-1-3": {
+   "kp": "ks4.power.9",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:power:cf#sort-1-4": {
+   "kp": "ks4.power.9",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:power:cf#sort-1-5": {
+   "kp": "ks4.power.9",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:power:cf#sort-1-6": {
+   "kp": "ks4.power.9",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:power:cf#sort-1-7": {
+   "kp": "ks4.power.9",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:power:cf#sort-1-8": {
+   "kp": "ks4.power.9",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:power:cf#start": {
+   "kp": "ks4.power.8",
+   "new": "ks4:power:cf#start",
+   "note": "Start here, asked on the lean page",
+   "status": "kept"
+  },
+  "ks4:power:ch#cfifa-1-1": {
+   "kp": "ks4.power.7",
+   "new": "ks4:power:ch#cfifa-1-1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:power:ch#cfifa-1-2": {
+   "kp": "ks4.power.10",
+   "new": "ks4:power:ch#cfifa-1-2",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:power:ch#choice-1": {
+   "kp": "ks4.power.1",
+   "new": null,
+   "note": "the Think again question is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:power:ch#picks": {
+   "kp": "ks4.power.8",
+   "new": "ks4:power:ch#picks",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:power:ch#r1": {
+   "kp": "ks4.power.1",
+   "new": "ks4:power:ch#r1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:power:ch#r2": {
+   "kp": "ks4.power.4",
+   "new": "ks4:power:ch#r2",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:power:ch#r3": {
+   "kp": "ks4.power.8",
+   "new": "ks4:power:ch#r3",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:power:ch#r4": {
+   "kp": "ks4.power.7",
+   "new": "ks4:power:ch#r4",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:power:ch#sort-1-1": {
+   "kp": "ks4.power.9",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:power:ch#sort-1-2": {
+   "kp": "ks4.power.9",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:power:ch#sort-1-3": {
+   "kp": "ks4.power.9",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:power:ch#sort-1-4": {
+   "kp": "ks4.power.9",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:power:ch#sort-1-5": {
+   "kp": "ks4.power.9",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:power:ch#sort-1-6": {
+   "kp": "ks4.power.9",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:power:ch#sort-1-7": {
+   "kp": "ks4.power.9",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:power:ch#sort-1-8": {
+   "kp": "ks4.power.9",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:power:ch#start": {
+   "kp": "ks4.power.8",
+   "new": "ks4:power:ch#start",
+   "note": "Start here, asked on the lean page",
+   "status": "kept"
+  },
+  "ks4:power:tf#cfifa-1-1": {
+   "kp": "ks4.power.3",
+   "new": "ks4:power:tf#cfifa-1-1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:power:tf#cfifa-1-2": {
+   "kp": "ks4.power.6",
+   "new": "ks4:power:tf#cfifa-1-2",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:power:tf#choice-1": {
+   "kp": "ks4.power.1",
+   "new": null,
+   "note": "the Think again question is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:power:tf#picks": {
+   "kp": "ks4.power.8",
+   "new": "ks4:power:tf#picks",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:power:tf#r1": {
+   "kp": "ks4.power.1",
+   "new": "ks4:power:tf#r1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:power:tf#r2": {
+   "kp": "ks4.power.10",
+   "new": "ks4:power:tf#r2",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:power:tf#r3": {
+   "kp": "ks4.power.8",
+   "new": "ks4:power:tf#r3",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:power:tf#r4": {
+   "kp": "ks4.power.7",
+   "new": "ks4:power:tf#r4",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:power:tf#sort-1-1": {
+   "kp": "ks4.power.9",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:power:tf#sort-1-2": {
+   "kp": "ks4.power.9",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:power:tf#sort-1-3": {
+   "kp": "ks4.power.9",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:power:tf#sort-1-4": {
+   "kp": "ks4.power.9",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:power:tf#sort-1-5": {
+   "kp": "ks4.power.9",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:power:tf#sort-1-6": {
+   "kp": "ks4.power.9",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:power:tf#sort-1-7": {
+   "kp": "ks4.power.9",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:power:tf#sort-1-8": {
+   "kp": "ks4.power.9",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:power:tf#start": {
+   "kp": "ks4.power.8",
+   "new": "ks4:power:tf#start",
+   "note": "Start here, asked on the lean page",
+   "status": "kept"
+  },
+  "ks4:power:th#cfifa-1-1": {
+   "kp": "ks4.power.7",
+   "new": "ks4:power:th#cfifa-1-1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:power:th#cfifa-1-2": {
+   "kp": "ks4.power.10",
+   "new": "ks4:power:th#cfifa-1-2",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:power:th#choice-1": {
+   "kp": "ks4.power.1",
+   "new": null,
+   "note": "the Think again question is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:power:th#picks": {
+   "kp": "ks4.power.8",
+   "new": "ks4:power:th#picks",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:power:th#r1": {
+   "kp": "ks4.power.1",
+   "new": "ks4:power:th#r1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:power:th#r2": {
+   "kp": "ks4.power.4",
+   "new": "ks4:power:th#r2",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:power:th#r3": {
+   "kp": "ks4.power.8",
+   "new": "ks4:power:th#r3",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:power:th#r4": {
+   "kp": "ks4.power.7",
+   "new": "ks4:power:th#r4",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:power:th#sort-1-1": {
+   "kp": "ks4.power.9",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:power:th#sort-1-2": {
+   "kp": "ks4.power.9",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:power:th#sort-1-3": {
+   "kp": "ks4.power.9",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:power:th#sort-1-4": {
+   "kp": "ks4.power.9",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:power:th#sort-1-5": {
+   "kp": "ks4.power.9",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:power:th#sort-1-6": {
+   "kp": "ks4.power.9",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:power:th#sort-1-7": {
+   "kp": "ks4.power.9",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:power:th#sort-1-8": {
+   "kp": "ks4.power.9",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:power:th#start": {
+   "kp": "ks4.power.8",
+   "new": "ks4:power:th#start",
+   "note": "Start here, asked on the lean page",
+   "status": "kept"
+  },
+  "ks4:thermal-conductivity:cf#choice-1": {
+   "kp": "ks4.thermal-conductivity.1",
+   "new": null,
+   "note": "the Think again question is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:thermal-conductivity:cf#r1-1": {
+   "kp": "ks4.thermal-conductivity.1",
+   "new": "ks4:thermal-conductivity:cf#r1-1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:thermal-conductivity:cf#r1-2": {
+   "kp": "ks4.thermal-conductivity.9",
+   "new": "ks4:thermal-conductivity:cf#r1-2",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:thermal-conductivity:cf#r2-1": {
+   "kp": "ks4.thermal-conductivity.4",
+   "new": "ks4:thermal-conductivity:cf#r2-1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:thermal-conductivity:cf#r2-2": {
+   "kp": "ks4.thermal-conductivity.4",
+   "new": "ks4:thermal-conductivity:cf#r2-2",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:thermal-conductivity:cf#r3-1": {
+   "kp": "ks4.thermal-conductivity.2",
+   "new": "ks4:thermal-conductivity:cf#r3-1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:thermal-conductivity:cf#r3-2": {
+   "kp": "ks4.thermal-conductivity.5",
+   "new": "ks4:thermal-conductivity:cf#r3-2",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:thermal-conductivity:cf#r4-1": {
+   "kp": "ks4.thermal-conductivity.4",
+   "new": "ks4:thermal-conductivity:cf#r4-1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:thermal-conductivity:cf#sort-1-1": {
+   "kp": "ks4.thermal-conductivity.4",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:thermal-conductivity:cf#sort-1-2": {
+   "kp": "ks4.thermal-conductivity.4",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:thermal-conductivity:cf#sort-1-3": {
+   "kp": "ks4.thermal-conductivity.4",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:thermal-conductivity:cf#sort-1-4": {
+   "kp": "ks4.thermal-conductivity.4",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:thermal-conductivity:cf#sort-1-5": {
+   "kp": "ks4.thermal-conductivity.5",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:thermal-conductivity:cf#sort-1-6": {
+   "kp": "ks4.thermal-conductivity.6",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:thermal-conductivity:cf#start": {
+   "kp": "ks4.thermal-conductivity.2",
+   "new": "ks4:thermal-conductivity:cf#start",
+   "note": "Start here, asked on the lean page",
+   "status": "kept"
+  },
+  "ks4:thermal-conductivity:cf#tries": {
+   "kp": "ks4.thermal-conductivity.4",
+   "new": "ks4:thermal-conductivity:cf#tries",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:thermal-conductivity:ch#choice-1": {
+   "kp": "ks4.thermal-conductivity.1",
+   "new": null,
+   "note": "the Think again question is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:thermal-conductivity:ch#r1-1": {
+   "kp": "ks4.thermal-conductivity.1",
+   "new": "ks4:thermal-conductivity:ch#r1-1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:thermal-conductivity:ch#r1-2": {
+   "kp": "ks4.thermal-conductivity.9",
+   "new": "ks4:thermal-conductivity:ch#r1-2",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:thermal-conductivity:ch#r2-1": {
+   "kp": "ks4.thermal-conductivity.4",
+   "new": "ks4:thermal-conductivity:ch#r2-1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:thermal-conductivity:ch#r2-2": {
+   "kp": "ks4.thermal-conductivity.4",
+   "new": "ks4:thermal-conductivity:ch#r2-2",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:thermal-conductivity:ch#r3-1": {
+   "kp": "ks4.thermal-conductivity.2",
+   "new": "ks4:thermal-conductivity:ch#r3-1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:thermal-conductivity:ch#r3-2": {
+   "kp": "ks4.thermal-conductivity.5",
+   "new": "ks4:thermal-conductivity:ch#r3-2",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:thermal-conductivity:ch#r4-1": {
+   "kp": "ks4.thermal-conductivity.4",
+   "new": "ks4:thermal-conductivity:ch#r4-1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:thermal-conductivity:ch#sort-1-1": {
+   "kp": "ks4.thermal-conductivity.4",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:thermal-conductivity:ch#sort-1-2": {
+   "kp": "ks4.thermal-conductivity.4",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:thermal-conductivity:ch#sort-1-3": {
+   "kp": "ks4.thermal-conductivity.4",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:thermal-conductivity:ch#sort-1-4": {
+   "kp": "ks4.thermal-conductivity.4",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:thermal-conductivity:ch#sort-1-5": {
+   "kp": "ks4.thermal-conductivity.5",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:thermal-conductivity:ch#sort-1-6": {
+   "kp": "ks4.thermal-conductivity.6",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:thermal-conductivity:ch#start": {
+   "kp": "ks4.thermal-conductivity.2",
+   "new": "ks4:thermal-conductivity:ch#start",
+   "note": "Start here, asked on the lean page",
+   "status": "kept"
+  },
+  "ks4:thermal-conductivity:ch#tries": {
+   "kp": "ks4.thermal-conductivity.4",
+   "new": "ks4:thermal-conductivity:ch#tries",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:thermal-conductivity:tf#choice-1": {
+   "kp": "ks4.thermal-conductivity.1",
+   "new": null,
+   "note": "the Think again question is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:thermal-conductivity:tf#r1-1": {
+   "kp": "ks4.thermal-conductivity.1",
+   "new": "ks4:thermal-conductivity:tf#r1-1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:thermal-conductivity:tf#r1-2": {
+   "kp": "ks4.thermal-conductivity.9",
+   "new": "ks4:thermal-conductivity:tf#r1-2",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:thermal-conductivity:tf#r2-1": {
+   "kp": "ks4.thermal-conductivity.4",
+   "new": "ks4:thermal-conductivity:tf#r2-1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:thermal-conductivity:tf#r2-2": {
+   "kp": "ks4.thermal-conductivity.4",
+   "new": "ks4:thermal-conductivity:tf#r2-2",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:thermal-conductivity:tf#r3-1": {
+   "kp": "ks4.thermal-conductivity.2",
+   "new": "ks4:thermal-conductivity:tf#r3-1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:thermal-conductivity:tf#r3-2": {
+   "kp": "ks4.thermal-conductivity.5",
+   "new": "ks4:thermal-conductivity:tf#r3-2",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:thermal-conductivity:tf#r4-1": {
+   "kp": "ks4.thermal-conductivity.4",
+   "new": "ks4:thermal-conductivity:tf#r4-1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:thermal-conductivity:tf#sort-1-1": {
+   "kp": "ks4.thermal-conductivity.4",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:thermal-conductivity:tf#sort-1-2": {
+   "kp": "ks4.thermal-conductivity.4",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:thermal-conductivity:tf#sort-1-3": {
+   "kp": "ks4.thermal-conductivity.4",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:thermal-conductivity:tf#sort-1-4": {
+   "kp": "ks4.thermal-conductivity.4",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:thermal-conductivity:tf#sort-1-5": {
+   "kp": "ks4.thermal-conductivity.5",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:thermal-conductivity:tf#sort-1-6": {
+   "kp": "ks4.thermal-conductivity.6",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:thermal-conductivity:tf#start": {
+   "kp": "ks4.thermal-conductivity.2",
+   "new": "ks4:thermal-conductivity:tf#start",
+   "note": "Start here, asked on the lean page",
+   "status": "kept"
+  },
+  "ks4:thermal-conductivity:tf#tries": {
+   "kp": "ks4.thermal-conductivity.4",
+   "new": "ks4:thermal-conductivity:tf#tries",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:thermal-conductivity:th#choice-1": {
+   "kp": "ks4.thermal-conductivity.1",
+   "new": null,
+   "note": "the Think again question is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:thermal-conductivity:th#r1-1": {
+   "kp": "ks4.thermal-conductivity.1",
+   "new": "ks4:thermal-conductivity:th#r1-1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:thermal-conductivity:th#r1-2": {
+   "kp": "ks4.thermal-conductivity.9",
+   "new": "ks4:thermal-conductivity:th#r1-2",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:thermal-conductivity:th#r2-1": {
+   "kp": "ks4.thermal-conductivity.4",
+   "new": "ks4:thermal-conductivity:th#r2-1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:thermal-conductivity:th#r2-2": {
+   "kp": "ks4.thermal-conductivity.4",
+   "new": "ks4:thermal-conductivity:th#r2-2",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:thermal-conductivity:th#r3-1": {
+   "kp": "ks4.thermal-conductivity.2",
+   "new": "ks4:thermal-conductivity:th#r3-1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:thermal-conductivity:th#r3-2": {
+   "kp": "ks4.thermal-conductivity.5",
+   "new": "ks4:thermal-conductivity:th#r3-2",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:thermal-conductivity:th#r4-1": {
+   "kp": "ks4.thermal-conductivity.4",
+   "new": "ks4:thermal-conductivity:th#r4-1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:thermal-conductivity:th#sort-1-1": {
+   "kp": "ks4.thermal-conductivity.4",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:thermal-conductivity:th#sort-1-2": {
+   "kp": "ks4.thermal-conductivity.4",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:thermal-conductivity:th#sort-1-3": {
+   "kp": "ks4.thermal-conductivity.4",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:thermal-conductivity:th#sort-1-4": {
+   "kp": "ks4.thermal-conductivity.4",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:thermal-conductivity:th#sort-1-5": {
+   "kp": "ks4.thermal-conductivity.5",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:thermal-conductivity:th#sort-1-6": {
+   "kp": "ks4.thermal-conductivity.6",
+   "new": null,
+   "note": "the sorting activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks4:thermal-conductivity:th#start": {
+   "kp": "ks4.thermal-conductivity.2",
+   "new": "ks4:thermal-conductivity:th#start",
+   "note": "Start here, asked on the lean page",
+   "status": "kept"
+  },
+  "ks4:thermal-conductivity:th#tries": {
+   "kp": "ks4.thermal-conductivity.4",
+   "new": "ks4:thermal-conductivity:th#tries",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4c:changes-in-energy:match-1": {
+   "kp": "ks4.changes-in-energy.3",
+   "new": "ks4c:changes-in-energy:match-1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4c:changes-in-energy:match-2": {
+   "kp": "ks4.changes-in-energy.1",
+   "new": "ks4c:changes-in-energy:match-2",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4c:changes-in-energy:match-3": {
+   "kp": "ks4.changes-in-energy.2",
+   "new": "ks4c:changes-in-energy:match-3",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4c:changes-in-energy:match-4": {
+   "kp": "ks4.changes-in-energy.1",
+   "new": "ks4c:changes-in-energy:match-4",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4c:efficiency:match-1": {
+   "kp": "ks4.efficiency.2",
+   "new": "ks4c:efficiency:match-1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4c:efficiency:match-2": {
+   "kp": "ks4.efficiency.2",
+   "new": "ks4c:efficiency:match-2",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4c:efficiency:match-3": {
+   "kp": "ks4.efficiency.2",
+   "new": "ks4c:efficiency:match-3",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4c:efficiency:match-4": {
+   "kp": "ks4.efficiency.2",
+   "new": "ks4c:efficiency:match-4",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4c:energy-changes-in-systems:match-1": {
+   "kp": "ks4.energy-changes-in-systems.5",
+   "new": "ks4c:energy-changes-in-systems:match-1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4c:energy-changes-in-systems:match-2": {
+   "kp": "ks4.energy-changes-in-systems.7",
+   "new": "ks4c:energy-changes-in-systems:match-2",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4c:energy-changes-in-systems:match-3": {
+   "kp": "ks4.energy-changes-in-systems.2",
+   "new": "ks4c:energy-changes-in-systems:match-3",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4c:energy-changes-in-systems:match-4": {
+   "kp": "ks4.energy-changes-in-systems.3",
+   "new": "ks4c:energy-changes-in-systems:match-4",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4c:energy-resources:match-1": {
+   "kp": "ks4.energy-resources.2",
+   "new": "ks4c:energy-resources:match-1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4c:energy-resources:match-2": {
+   "kp": "ks4.energy-resources.2",
+   "new": "ks4c:energy-resources:match-2",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4c:energy-resources:match-3": {
+   "kp": "ks4.energy-resources.6",
+   "new": "ks4c:energy-resources:match-3",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4c:energy-resources:match-4": {
+   "kp": "ks4.energy-resources.6",
+   "new": "ks4c:energy-resources:match-4",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4c:energy-resources:match-5": {
+   "kp": "ks4.energy-resources.6",
+   "new": "ks4c:energy-resources:match-5",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4c:energy-stores-systems:match-1": {
+   "kp": "ks4.energy-stores-systems.2",
+   "new": "ks4c:energy-stores-systems:match-1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4c:energy-stores-systems:match-2": {
+   "kp": "ks4.energy-stores-systems.2",
+   "new": "ks4c:energy-stores-systems:match-2",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4c:energy-stores-systems:match-3": {
+   "kp": "ks4.energy-stores-systems.2",
+   "new": "ks4c:energy-stores-systems:match-3",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4c:energy-stores-systems:match-4": {
+   "kp": "ks4.energy-stores-systems.6",
+   "new": "ks4c:energy-stores-systems:match-4",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4c:energy-stores-systems:match-5": {
+   "kp": "ks4.energy-stores-systems.6",
+   "new": "ks4c:energy-stores-systems:match-5",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4c:energy-stores-systems:match-6": {
+   "kp": "ks4.energy-stores-systems.6",
+   "new": "ks4c:energy-stores-systems:match-6",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4c:energy-transfers-in-a-system:match-1": {
+   "kp": "ks4.energy-transfers-in-a-system.4",
+   "new": "ks4c:energy-transfers-in-a-system:match-1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4c:energy-transfers-in-a-system:match-2": {
+   "kp": "ks4.energy-transfers-in-a-system.5",
+   "new": "ks4c:energy-transfers-in-a-system:match-2",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4c:energy-transfers-in-a-system:match-3": {
+   "kp": "ks4.energy-transfers-in-a-system.6",
+   "new": "ks4c:energy-transfers-in-a-system:match-3",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4c:energy-transfers-in-a-system:match-4": {
+   "kp": "ks4.energy-transfers-in-a-system.7",
+   "new": "ks4c:energy-transfers-in-a-system:match-4",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4c:power:match-1": {
+   "kp": "ks4.power.3",
+   "new": "ks4c:power:match-1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4c:power:match-2": {
+   "kp": "ks4.power.6",
+   "new": "ks4c:power:match-2",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4c:power:match-3": {
+   "kp": "ks4.power.6",
+   "new": "ks4c:power:match-3",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4c:power:match-4": {
+   "kp": "ks4.power.2",
+   "new": "ks4c:power:match-4",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4c:thermal-conductivity:match-1": {
+   "kp": "ks4.thermal-conductivity.2",
+   "new": "ks4c:thermal-conductivity:match-1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4c:thermal-conductivity:match-2": {
+   "kp": "ks4.thermal-conductivity.5",
+   "new": "ks4c:thermal-conductivity:match-2",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4c:thermal-conductivity:match-3": {
+   "kp": "ks4.thermal-conductivity.5",
+   "new": "ks4c:thermal-conductivity:match-3",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4c:thermal-conductivity:match-4": {
+   "kp": "ks4.thermal-conductivity.9",
+   "new": "ks4c:thermal-conductivity:match-4",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4q:changes-in-energy:8dbad3a749": {
+   "kp": "ks4.changes-in-energy.2",
+   "new": "ks4q:changes-in-energy:8dbad3a749",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4q:changes-in-energy:cc86a3c9cf": {
+   "kp": "ks4.changes-in-energy.3",
+   "new": "ks4q:changes-in-energy:cc86a3c9cf",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4q:efficiency:31fab94e56": {
+   "kp": "ks4.efficiency.2",
+   "new": "ks4q:efficiency:31fab94e56",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4q:efficiency:503517ad85": {
+   "kp": "ks4.efficiency.1",
+   "new": "ks4q:efficiency:503517ad85",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4q:efficiency:559b302737": {
+   "kp": "ks4.efficiency.5",
+   "new": "ks4q:efficiency:559b302737",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4q:efficiency:b4bf7dce27": {
+   "kp": "ks4.efficiency.4",
+   "new": "ks4q:efficiency:b4bf7dce27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4q:efficiency:dcfa51e5b6": {
+   "kp": "ks4.efficiency.7",
+   "new": "ks4q:efficiency:dcfa51e5b6",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4q:energy-changes-in-systems:7a7dc5f801": {
+   "kp": "ks4.energy-changes-in-systems.5",
+   "new": "ks4q:energy-changes-in-systems:7a7dc5f801",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4q:energy-changes-in-systems:ac2f6bb387": {
+   "kp": "ks4.energy-changes-in-systems.3",
+   "new": "ks4q:energy-changes-in-systems:ac2f6bb387",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4q:energy-resources:37eb74cddb": {
+   "kp": "ks4.energy-resources.6",
+   "new": "ks4q:energy-resources:37eb74cddb",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4q:energy-resources:3fcc4ae540": {
+   "kp": "ks4.energy-resources.1",
+   "new": "ks4q:energy-resources:3fcc4ae540",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4q:energy-resources:49c3e8de7d": {
+   "kp": "ks4.energy-resources.11",
+   "new": "ks4q:energy-resources:49c3e8de7d",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4q:energy-resources:5efbcb9ae1": {
+   "kp": "ks4.energy-resources.1",
+   "new": "ks4q:energy-resources:5efbcb9ae1",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4q:energy-resources:af1a6fa9de": {
+   "kp": "ks4.energy-resources.7",
+   "new": "ks4q:energy-resources:af1a6fa9de",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4q:energy-resources:e4efeead52": {
+   "kp": "ks4.energy-resources.6",
+   "new": "ks4q:energy-resources:e4efeead52",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4q:energy-stores-systems:8d24adae65": {
+   "kp": "ks4.energy-stores-systems.6",
+   "new": "ks4q:energy-stores-systems:8d24adae65",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4q:energy-stores-systems:96ecb8f33b": {
+   "kp": "ks4.energy-stores-systems.4",
+   "new": "ks4q:energy-stores-systems:96ecb8f33b",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4q:energy-transfers-in-a-system:104445b023": {
+   "kp": "ks4.energy-transfers-in-a-system.6",
+   "new": "ks4q:energy-transfers-in-a-system:104445b023",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4q:energy-transfers-in-a-system:f6a10f9dfc": {
+   "kp": "ks4.energy-transfers-in-a-system.2",
+   "new": "ks4q:energy-transfers-in-a-system:f6a10f9dfc",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4q:power:129c49676c": {
+   "kp": "ks4.power.8",
+   "new": "ks4q:power:129c49676c",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4q:power:5e8d75ecad": {
+   "kp": "ks4.power.6",
+   "new": "ks4q:power:5e8d75ecad",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4q:thermal-conductivity:031f1059d6": {
+   "kp": "ks4.thermal-conductivity.6",
+   "new": "ks4q:thermal-conductivity:031f1059d6",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4q:thermal-conductivity:24f2f4de46": {
+   "kp": "ks4.thermal-conductivity.5",
+   "new": "ks4q:thermal-conductivity:24f2f4de46",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4q:thermal-conductivity:99a9b7a5ab": {
+   "kp": "ks4.thermal-conductivity.7",
+   "new": "ks4q:thermal-conductivity:99a9b7a5ab",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4q:thermal-conductivity:9c8bdd273b": {
+   "kp": "ks4.thermal-conductivity.1",
+   "new": "ks4q:thermal-conductivity:9c8bdd273b",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4q:thermal-conductivity:a7016c77e4": {
+   "kp": "ks4.thermal-conductivity.7",
+   "new": "ks4q:thermal-conductivity:a7016c77e4",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4q:thermal-conductivity:c8ed4a9880": {
+   "kp": "ks4.thermal-conductivity.4",
+   "new": "ks4q:thermal-conductivity:c8ed4a9880",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4q:thermal-conductivity:cbe8f4dcf3": {
+   "kp": "ks4.thermal-conductivity.3",
+   "new": "ks4q:thermal-conductivity:cbe8f4dcf3",
+   "note": "the id is unchanged",
+   "status": "kept"
+  }
+ },
+ "scope": [
+  "changes-in-energy",
+  "efficiency",
+  "energy-changes-in-systems",
+  "energy-resources",
+  "energy-stores-systems",
+  "energy-transfers-in-a-system",
+  "power",
+  "thermal-conductivity"
+ ]
+}

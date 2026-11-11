@@ -1,0 +1,3120 @@
+{
+ "base": "origin/main",
+ "ids": {
+  "alveoli-built-for-exchange#apply": {
+   "kp": "ks3.alveoli-built-for-exchange.3",
+   "new": "alveoli-built-for-exchange#apply",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "alveoli-built-for-exchange#explain": {
+   "kp": "ks3.alveoli-built-for-exchange.4",
+   "new": "alveoli-built-for-exchange#explain",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "alveoli-built-for-exchange#produce": {
+   "kp": "ks3.alveoli-built-for-exchange.3",
+   "new": "alveoli-built-for-exchange#produce",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "alveoli-built-for-exchange#recall": {
+   "kp": "ks3.alveoli-built-for-exchange.1",
+   "new": "alveoli-built-for-exchange#recall",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "alveoli-built-for-exchange#start": {
+   "kp": "ks3.alveoli-built-for-exchange.1",
+   "new": "alveoli-built-for-exchange#start",
+   "note": "Start here, the same question as before",
+   "status": "kept"
+  },
+  "b4-01-e01": {
+   "kp": "ks3.the-gas-exchange-system.2",
+   "new": "b4-01-e01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-e02": {
+   "kp": "ks3.the-gas-exchange-system.3",
+   "new": "b4-01-e02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-e03": {
+   "kp": "ks3.the-gas-exchange-system.4",
+   "new": "b4-01-e03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-e04": {
+   "kp": "ks3.the-gas-exchange-system.4",
+   "new": "b4-01-e04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-e05": {
+   "kp": "ks3.the-gas-exchange-system.2",
+   "new": "b4-01-e05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-e06": {
+   "kp": "ks3.the-gas-exchange-system.3",
+   "new": "b4-01-e06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-e07": {
+   "kp": "ks3.the-gas-exchange-system.6",
+   "new": "b4-01-e07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-e08": {
+   "kp": "ks3.the-gas-exchange-system.5",
+   "new": "b4-01-e08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-e09": {
+   "kp": "ks3.the-gas-exchange-system.5",
+   "new": "b4-01-e09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-e10": {
+   "kp": "ks3.the-gas-exchange-system.1",
+   "new": "b4-01-e10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-e11": {
+   "kp": "ks3.the-gas-exchange-system.2",
+   "new": "b4-01-e11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-e12": {
+   "kp": "ks3.the-gas-exchange-system.2",
+   "new": "b4-01-e12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-e13": {
+   "kp": "ks3.the-gas-exchange-system.2",
+   "new": "b4-01-e13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-e14": {
+   "kp": "ks3.the-gas-exchange-system.2",
+   "new": "b4-01-e14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-e15": {
+   "kp": "ks3.the-gas-exchange-system.4",
+   "new": "b4-01-e15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-e16": {
+   "kp": "ks3.the-gas-exchange-system.4",
+   "new": "b4-01-e16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-e17": {
+   "kp": "ks3.the-gas-exchange-system.3",
+   "new": "b4-01-e17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-e18": {
+   "kp": "ks3.the-gas-exchange-system.5",
+   "new": "b4-01-e18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-e19": {
+   "kp": "ks3.the-gas-exchange-system.5",
+   "new": "b4-01-e19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-e20": {
+   "kp": "ks3.the-gas-exchange-system.3",
+   "new": "b4-01-e20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-e21": {
+   "kp": "ks3.the-gas-exchange-system.1",
+   "new": "b4-01-e21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-e22": {
+   "kp": "ks3.the-gas-exchange-system.4",
+   "new": "b4-01-e22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-e23": {
+   "kp": "ks3.the-gas-exchange-system.2",
+   "new": "b4-01-e23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-e24": {
+   "kp": "ks3.the-gas-exchange-system.6",
+   "new": "b4-01-e24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-e25": {
+   "kp": "ks3.the-gas-exchange-system.5",
+   "new": "b4-01-e25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-e26": {
+   "kp": "ks3.the-gas-exchange-system.5",
+   "new": "b4-01-e26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-e27": {
+   "kp": "ks3.the-gas-exchange-system.2",
+   "new": "b4-01-e27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-e28": {
+   "kp": "ks3.the-gas-exchange-system.4",
+   "new": "b4-01-e28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-e29": {
+   "kp": "ks3.the-gas-exchange-system.5",
+   "new": "b4-01-e29",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-e30": {
+   "kp": "ks3.the-gas-exchange-system.5",
+   "new": "b4-01-e30",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-e31": {
+   "kp": "ks3.the-gas-exchange-system.1",
+   "new": "b4-01-e31",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-e32": {
+   "kp": "ks3.the-gas-exchange-system.2",
+   "new": "b4-01-e32",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-h01": {
+   "kp": "ks3.the-gas-exchange-system.6",
+   "new": "b4-01-h01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-h02": {
+   "kp": "ks3.the-gas-exchange-system.3",
+   "new": "b4-01-h02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-h03": {
+   "kp": "ks3.the-gas-exchange-system.5",
+   "new": "b4-01-h03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-h04": {
+   "kp": "ks3.the-gas-exchange-system.4",
+   "new": "b4-01-h04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-h05": {
+   "kp": "ks3.the-gas-exchange-system.1",
+   "new": "b4-01-h05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-h06": {
+   "kp": "ks3.the-gas-exchange-system.4",
+   "new": "b4-01-h06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-h07": {
+   "kp": "ks3.the-gas-exchange-system.7",
+   "new": "b4-01-h07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-h08": {
+   "kp": "ks3.the-gas-exchange-system.5",
+   "new": "b4-01-h08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-h09": {
+   "kp": "ks3.the-gas-exchange-system.5",
+   "new": "b4-01-h09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-h10": {
+   "kp": "ks3.the-gas-exchange-system.5",
+   "new": "b4-01-h10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-h11": {
+   "kp": "ks3.the-gas-exchange-system.5",
+   "new": "b4-01-h11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-h12": {
+   "kp": "ks3.the-gas-exchange-system.3",
+   "new": "b4-01-h12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-h13": {
+   "kp": "ks3.the-gas-exchange-system.3",
+   "new": "b4-01-h13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-h14": {
+   "kp": "ks3.the-gas-exchange-system.6",
+   "new": "b4-01-h14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-h15": {
+   "kp": "ks3.the-gas-exchange-system.6",
+   "new": "b4-01-h15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-h16": {
+   "kp": "ks3.the-gas-exchange-system.7",
+   "new": "b4-01-h16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-h17": {
+   "kp": "ks3.the-gas-exchange-system.7",
+   "new": "b4-01-h17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-h18": {
+   "kp": "ks3.the-gas-exchange-system.6",
+   "new": "b4-01-h18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-h19": {
+   "kp": "ks3.the-gas-exchange-system.7",
+   "new": "b4-01-h19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-h20": {
+   "kp": "ks3.the-gas-exchange-system.7",
+   "new": "b4-01-h20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-h21": {
+   "kp": "ks3.the-gas-exchange-system.3",
+   "new": "b4-01-h21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-h22": {
+   "kp": "ks3.the-gas-exchange-system.5",
+   "new": "b4-01-h22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-h23": {
+   "kp": "ks3.the-gas-exchange-system.6",
+   "new": "b4-01-h23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-h24": {
+   "kp": "ks3.the-gas-exchange-system.6",
+   "new": "b4-01-h24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-h25": {
+   "kp": "ks3.the-gas-exchange-system.5",
+   "new": "b4-01-h25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-h26": {
+   "kp": "ks3.the-gas-exchange-system.3",
+   "new": "b4-01-h26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-h27": {
+   "kp": "ks3.the-gas-exchange-system.5",
+   "new": "b4-01-h27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-h28": {
+   "kp": "ks3.the-gas-exchange-system.7",
+   "new": "b4-01-h28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-h29": {
+   "kp": "ks3.the-gas-exchange-system.5",
+   "new": "b4-01-h29",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-h30": {
+   "kp": "ks3.the-gas-exchange-system.6",
+   "new": "b4-01-h30",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-h31": {
+   "kp": "ks3.the-gas-exchange-system.5",
+   "new": "b4-01-h31",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-h32": {
+   "kp": "ks3.the-gas-exchange-system.1",
+   "new": "b4-01-h32",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-s01": {
+   "kp": "ks3.the-gas-exchange-system.1",
+   "new": "b4-01-s01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-s02": {
+   "kp": "ks3.the-gas-exchange-system.2",
+   "new": "b4-01-s02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-s03": {
+   "kp": "ks3.the-gas-exchange-system.5",
+   "new": "b4-01-s03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-s04": {
+   "kp": "ks3.the-gas-exchange-system.5",
+   "new": "b4-01-s04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-s05": {
+   "kp": "ks3.the-gas-exchange-system.4",
+   "new": "b4-01-s05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-s06": {
+   "kp": "ks3.the-gas-exchange-system.6",
+   "new": "b4-01-s06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-s07": {
+   "kp": "ks3.the-gas-exchange-system.1",
+   "new": "b4-01-s07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-s08": {
+   "kp": "ks3.the-gas-exchange-system.5",
+   "new": "b4-01-s08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-s09": {
+   "kp": "ks3.the-gas-exchange-system.5",
+   "new": "b4-01-s09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-s10": {
+   "kp": "ks3.the-gas-exchange-system.1",
+   "new": "b4-01-s10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-s11": {
+   "kp": "ks3.the-gas-exchange-system.4",
+   "new": "b4-01-s11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-s12": {
+   "kp": "ks3.the-gas-exchange-system.3",
+   "new": "b4-01-s12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-s13": {
+   "kp": "ks3.the-gas-exchange-system.4",
+   "new": "b4-01-s13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-s14": {
+   "kp": "ks3.the-gas-exchange-system.4",
+   "new": "b4-01-s14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-s15": {
+   "kp": "ks3.the-gas-exchange-system.4",
+   "new": "b4-01-s15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-s16": {
+   "kp": "ks3.the-gas-exchange-system.5",
+   "new": "b4-01-s16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-s17": {
+   "kp": "ks3.the-gas-exchange-system.2",
+   "new": "b4-01-s17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-s18": {
+   "kp": "ks3.the-gas-exchange-system.3",
+   "new": "b4-01-s18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-s19": {
+   "kp": "ks3.the-gas-exchange-system.7",
+   "new": "b4-01-s19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-s20": {
+   "kp": "ks3.the-gas-exchange-system.7",
+   "new": "b4-01-s20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-s21": {
+   "kp": "ks3.the-gas-exchange-system.5",
+   "new": "b4-01-s21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-s22": {
+   "kp": "ks3.the-gas-exchange-system.3",
+   "new": "b4-01-s22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-s23": {
+   "kp": "ks3.the-gas-exchange-system.6",
+   "new": "b4-01-s23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-s24": {
+   "kp": "ks3.the-gas-exchange-system.5",
+   "new": "b4-01-s24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-s25": {
+   "kp": "ks3.the-gas-exchange-system.4",
+   "new": "b4-01-s25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-s26": {
+   "kp": "ks3.the-gas-exchange-system.4",
+   "new": "b4-01-s26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-s27": {
+   "kp": "ks3.the-gas-exchange-system.2",
+   "new": "b4-01-s27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-s28": {
+   "kp": "ks3.the-gas-exchange-system.4",
+   "new": "b4-01-s28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-s29": {
+   "kp": "ks3.the-gas-exchange-system.4",
+   "new": "b4-01-s29",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-s30": {
+   "kp": "ks3.the-gas-exchange-system.5",
+   "new": "b4-01-s30",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-s31": {
+   "kp": "ks3.the-gas-exchange-system.2",
+   "new": "b4-01-s31",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-01-s32": {
+   "kp": "ks3.the-gas-exchange-system.2",
+   "new": "b4-01-s32",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-e01": {
+   "kp": "ks3.how-breathing-works.2",
+   "new": "b4-02-e01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-e02": {
+   "kp": "ks3.how-breathing-works.1",
+   "new": "b4-02-e02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-e03": {
+   "kp": "ks3.how-breathing-works.6",
+   "new": "b4-02-e03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-e04": {
+   "kp": "ks3.how-breathing-works.3",
+   "new": "b4-02-e04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-e05": {
+   "kp": "ks3.how-breathing-works.2",
+   "new": "b4-02-e05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-e06": {
+   "kp": "ks3.how-breathing-works.4",
+   "new": "b4-02-e06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-e07": {
+   "kp": "ks3.how-breathing-works.4",
+   "new": "b4-02-e07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-e08": {
+   "kp": "ks3.how-breathing-works.2",
+   "new": "b4-02-e08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-e09": {
+   "kp": "ks3.how-breathing-works.1",
+   "new": "b4-02-e09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-e10": {
+   "kp": "ks3.how-breathing-works.5",
+   "new": "b4-02-e10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-e11": {
+   "kp": "ks3.how-breathing-works.3",
+   "new": "b4-02-e11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-e12": {
+   "kp": "ks3.how-breathing-works.6",
+   "new": "b4-02-e12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-e13": {
+   "kp": "ks3.how-breathing-works.3",
+   "new": "b4-02-e13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-e14": {
+   "kp": "ks3.how-breathing-works.5",
+   "new": "b4-02-e14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-e15": {
+   "kp": "ks3.how-breathing-works.5",
+   "new": "b4-02-e15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-e16": {
+   "kp": "ks3.how-breathing-works.5",
+   "new": "b4-02-e16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-e17": {
+   "kp": "ks3.how-breathing-works.2",
+   "new": "b4-02-e17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-e18": {
+   "kp": "ks3.how-breathing-works.2",
+   "new": "b4-02-e18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-e19": {
+   "kp": "ks3.how-breathing-works.3",
+   "new": "b4-02-e19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-e20": {
+   "kp": "ks3.how-breathing-works.7",
+   "new": "b4-02-e20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-e21": {
+   "kp": "ks3.how-breathing-works.7",
+   "new": "b4-02-e21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-e22": {
+   "kp": "ks3.how-breathing-works.6",
+   "new": "b4-02-e22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-e23": {
+   "kp": "ks3.how-breathing-works.6",
+   "new": "b4-02-e23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-e24": {
+   "kp": "ks3.how-breathing-works.6",
+   "new": "b4-02-e24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-e25": {
+   "kp": "ks3.how-breathing-works.4",
+   "new": "b4-02-e25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-e26": {
+   "kp": "ks3.how-breathing-works.3",
+   "new": "b4-02-e26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-e27": {
+   "kp": "ks3.how-breathing-works.4",
+   "new": "b4-02-e27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-e28": {
+   "kp": "ks3.how-breathing-works.6",
+   "new": "b4-02-e28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-e29": {
+   "kp": "ks3.how-breathing-works.7",
+   "new": "b4-02-e29",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-e30": {
+   "kp": "ks3.how-breathing-works.6",
+   "new": "b4-02-e30",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-e31": {
+   "kp": "ks3.how-breathing-works.2",
+   "new": "b4-02-e31",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-e32": {
+   "kp": "ks3.how-breathing-works.4",
+   "new": "b4-02-e32",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-h01": {
+   "kp": "ks3.how-breathing-works.4",
+   "new": "b4-02-h01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-h02": {
+   "kp": "ks3.how-breathing-works.1",
+   "new": "b4-02-h02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-h03": {
+   "kp": "ks3.how-breathing-works.2",
+   "new": "b4-02-h03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-h04": {
+   "kp": "ks3.how-breathing-works.4",
+   "new": "b4-02-h04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-h05": {
+   "kp": "ks3.how-breathing-works.4",
+   "new": "b4-02-h05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-h06": {
+   "kp": "ks3.how-breathing-works.4",
+   "new": "b4-02-h06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-h07": {
+   "kp": "ks3.how-breathing-works.2",
+   "new": "b4-02-h07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-h08": {
+   "kp": "ks3.how-breathing-works.6",
+   "new": "b4-02-h08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-h09": {
+   "kp": "ks3.how-breathing-works.4",
+   "new": "b4-02-h09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-h10": {
+   "kp": "ks3.how-breathing-works.1",
+   "new": "b4-02-h10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-h11": {
+   "kp": "ks3.how-breathing-works.3",
+   "new": "b4-02-h11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-h12": {
+   "kp": "ks3.how-breathing-works.6",
+   "new": "b4-02-h12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-h13": {
+   "kp": "ks3.how-breathing-works.6",
+   "new": "b4-02-h13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-h14": {
+   "kp": "ks3.how-breathing-works.4",
+   "new": "b4-02-h14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-h15": {
+   "kp": "ks3.how-breathing-works.4",
+   "new": "b4-02-h15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-h16": {
+   "kp": "ks3.how-breathing-works.5",
+   "new": "b4-02-h16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-h17": {
+   "kp": "ks3.how-breathing-works.1",
+   "new": "b4-02-h17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-h18": {
+   "kp": "ks3.how-breathing-works.6",
+   "new": "b4-02-h18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-h19": {
+   "kp": "ks3.how-breathing-works.6",
+   "new": "b4-02-h19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-h20": {
+   "kp": "ks3.how-breathing-works.2",
+   "new": "b4-02-h20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-h21": {
+   "kp": "ks3.how-breathing-works.1",
+   "new": "b4-02-h21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-h22": {
+   "kp": "ks3.how-breathing-works.4",
+   "new": "b4-02-h22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-h23": {
+   "kp": "ks3.how-breathing-works.2",
+   "new": "b4-02-h23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-h24": {
+   "kp": "ks3.how-breathing-works.6",
+   "new": "b4-02-h24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-h25": {
+   "kp": "ks3.how-breathing-works.3",
+   "new": "b4-02-h25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-h26": {
+   "kp": "ks3.how-breathing-works.6",
+   "new": "b4-02-h26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-h27": {
+   "kp": "ks3.how-breathing-works.5",
+   "new": "b4-02-h27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-h28": {
+   "kp": "ks3.how-breathing-works.6",
+   "new": "b4-02-h28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-h29": {
+   "kp": "ks3.how-breathing-works.4",
+   "new": "b4-02-h29",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-h30": {
+   "kp": "ks3.how-breathing-works.6",
+   "new": "b4-02-h30",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-h31": {
+   "kp": "ks3.how-breathing-works.7",
+   "new": "b4-02-h31",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-h32": {
+   "kp": "ks3.how-breathing-works.4",
+   "new": "b4-02-h32",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-s01": {
+   "kp": "ks3.how-breathing-works.5",
+   "new": "b4-02-s01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-s02": {
+   "kp": "ks3.how-breathing-works.1",
+   "new": "b4-02-s02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-s03": {
+   "kp": "ks3.how-breathing-works.1",
+   "new": "b4-02-s03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-s04": {
+   "kp": "ks3.how-breathing-works.5",
+   "new": "b4-02-s04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-s05": {
+   "kp": "ks3.how-breathing-works.1",
+   "new": "b4-02-s05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-s06": {
+   "kp": "ks3.how-breathing-works.1",
+   "new": "b4-02-s06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-s07": {
+   "kp": "ks3.how-breathing-works.3",
+   "new": "b4-02-s07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-s08": {
+   "kp": "ks3.how-breathing-works.4",
+   "new": "b4-02-s08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-s09": {
+   "kp": "ks3.how-breathing-works.5",
+   "new": "b4-02-s09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-s10": {
+   "kp": "ks3.how-breathing-works.1",
+   "new": "b4-02-s10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-s11": {
+   "kp": "ks3.how-breathing-works.4",
+   "new": "b4-02-s11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-s12": {
+   "kp": "ks3.how-breathing-works.7",
+   "new": "b4-02-s12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-s13": {
+   "kp": "ks3.how-breathing-works.6",
+   "new": "b4-02-s13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-s14": {
+   "kp": "ks3.how-breathing-works.7",
+   "new": "b4-02-s14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-s15": {
+   "kp": "ks3.how-breathing-works.7",
+   "new": "b4-02-s15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-s16": {
+   "kp": "ks3.how-breathing-works.7",
+   "new": "b4-02-s16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-s17": {
+   "kp": "ks3.how-breathing-works.6",
+   "new": "b4-02-s17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-s18": {
+   "kp": "ks3.how-breathing-works.6",
+   "new": "b4-02-s18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-s19": {
+   "kp": "ks3.how-breathing-works.3",
+   "new": "b4-02-s19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-s20": {
+   "kp": "ks3.how-breathing-works.3",
+   "new": "b4-02-s20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-s21": {
+   "kp": "ks3.how-breathing-works.3",
+   "new": "b4-02-s21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-s22": {
+   "kp": "ks3.how-breathing-works.1",
+   "new": "b4-02-s22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-s23": {
+   "kp": "ks3.how-breathing-works.2",
+   "new": "b4-02-s23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-s24": {
+   "kp": "ks3.how-breathing-works.5",
+   "new": "b4-02-s24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-s25": {
+   "kp": "ks3.how-breathing-works.5",
+   "new": "b4-02-s25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-s26": {
+   "kp": "ks3.how-breathing-works.1",
+   "new": "b4-02-s26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-s27": {
+   "kp": "ks3.how-breathing-works.1",
+   "new": "b4-02-s27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-s28": {
+   "kp": "ks3.how-breathing-works.1",
+   "new": "b4-02-s28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-s29": {
+   "kp": "ks3.how-breathing-works.6",
+   "new": "b4-02-s29",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-s30": {
+   "kp": "ks3.how-breathing-works.4",
+   "new": "b4-02-s30",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-s31": {
+   "kp": "ks3.how-breathing-works.6",
+   "new": "b4-02-s31",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-02-s32": {
+   "kp": "ks3.how-breathing-works.7",
+   "new": "b4-02-s32",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-e01": {
+   "kp": "ks3.alveoli-built-for-exchange.1",
+   "new": "b4-03-e01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-e02": {
+   "kp": "ks3.alveoli-built-for-exchange.1",
+   "new": "b4-03-e02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-e03": {
+   "kp": "ks3.alveoli-built-for-exchange.1",
+   "new": "b4-03-e03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-e04": {
+   "kp": "ks3.alveoli-built-for-exchange.1",
+   "new": "b4-03-e04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-e05": {
+   "kp": "ks3.alveoli-built-for-exchange.2",
+   "new": "b4-03-e05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-e06": {
+   "kp": "ks3.alveoli-built-for-exchange.1",
+   "new": "b4-03-e06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-e07": {
+   "kp": "ks3.alveoli-built-for-exchange.6",
+   "new": "b4-03-e07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-e08": {
+   "kp": "ks3.alveoli-built-for-exchange.3",
+   "new": "b4-03-e08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-e09": {
+   "kp": "ks3.alveoli-built-for-exchange.3",
+   "new": "b4-03-e09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-e10": {
+   "kp": "ks3.alveoli-built-for-exchange.1",
+   "new": "b4-03-e10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-e11": {
+   "kp": "ks3.alveoli-built-for-exchange.1",
+   "new": "b4-03-e11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-e12": {
+   "kp": "ks3.alveoli-built-for-exchange.1",
+   "new": "b4-03-e12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-e13": {
+   "kp": "ks3.alveoli-built-for-exchange.3",
+   "new": "b4-03-e13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-e14": {
+   "kp": "ks3.alveoli-built-for-exchange.1",
+   "new": "b4-03-e14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-e15": {
+   "kp": "ks3.alveoli-built-for-exchange.4",
+   "new": "b4-03-e15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-e16": {
+   "kp": "ks3.alveoli-built-for-exchange.2",
+   "new": "b4-03-e16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-e17": {
+   "kp": "ks3.alveoli-built-for-exchange.1",
+   "new": "b4-03-e17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-e18": {
+   "kp": "ks3.alveoli-built-for-exchange.2",
+   "new": "b4-03-e18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-e19": {
+   "kp": "ks3.alveoli-built-for-exchange.6",
+   "new": "b4-03-e19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-e20": {
+   "kp": "ks3.alveoli-built-for-exchange.6",
+   "new": "b4-03-e20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-e21": {
+   "kp": "ks3.alveoli-built-for-exchange.2",
+   "new": "b4-03-e21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-e22": {
+   "kp": "ks3.alveoli-built-for-exchange.6",
+   "new": "b4-03-e22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-e23": {
+   "kp": "ks3.alveoli-built-for-exchange.2",
+   "new": "b4-03-e23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-e24": {
+   "kp": "ks3.alveoli-built-for-exchange.3",
+   "new": "b4-03-e24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-e25": {
+   "kp": "ks3.alveoli-built-for-exchange.2",
+   "new": "b4-03-e25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-e26": {
+   "kp": "ks3.alveoli-built-for-exchange.1",
+   "new": "b4-03-e26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-e27": {
+   "kp": "ks3.alveoli-built-for-exchange.4",
+   "new": "b4-03-e27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-e28": {
+   "kp": "ks3.alveoli-built-for-exchange.1",
+   "new": "b4-03-e28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-e29": {
+   "kp": "ks3.alveoli-built-for-exchange.1",
+   "new": "b4-03-e29",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-e30": {
+   "kp": "ks3.alveoli-built-for-exchange.1",
+   "new": "b4-03-e30",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-e31": {
+   "kp": "ks3.alveoli-built-for-exchange.4",
+   "new": "b4-03-e31",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-h01": {
+   "kp": "ks3.alveoli-built-for-exchange.6",
+   "new": "b4-03-h01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-h02": {
+   "kp": "ks3.alveoli-built-for-exchange.6",
+   "new": "b4-03-h02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-h03": {
+   "kp": "ks3.alveoli-built-for-exchange.3",
+   "new": "b4-03-h03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-h04": {
+   "kp": "ks3.alveoli-built-for-exchange.4",
+   "new": "b4-03-h04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-h05": {
+   "kp": "ks3.alveoli-built-for-exchange.3",
+   "new": "b4-03-h05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-h06": {
+   "kp": "ks3.alveoli-built-for-exchange.1",
+   "new": "b4-03-h06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-h07": {
+   "kp": "ks3.alveoli-built-for-exchange.6",
+   "new": "b4-03-h07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-h08": {
+   "kp": "ks3.alveoli-built-for-exchange.5",
+   "new": "b4-03-h08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-h09": {
+   "kp": "ks3.alveoli-built-for-exchange.4",
+   "new": "b4-03-h09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-h10": {
+   "kp": "ks3.alveoli-built-for-exchange.4",
+   "new": "b4-03-h10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-h11": {
+   "kp": "ks3.alveoli-built-for-exchange.5",
+   "new": "b4-03-h11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-h12": {
+   "kp": "ks3.alveoli-built-for-exchange.1",
+   "new": "b4-03-h12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-h13": {
+   "kp": "ks3.alveoli-built-for-exchange.4",
+   "new": "b4-03-h13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-h14": {
+   "kp": "ks3.alveoli-built-for-exchange.5",
+   "new": "b4-03-h14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-h15": {
+   "kp": "ks3.alveoli-built-for-exchange.1",
+   "new": "b4-03-h15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-h16": {
+   "kp": "ks3.alveoli-built-for-exchange.3",
+   "new": "b4-03-h16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-h17": {
+   "kp": "ks3.alveoli-built-for-exchange.5",
+   "new": "b4-03-h17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-h18": {
+   "kp": "ks3.alveoli-built-for-exchange.6",
+   "new": "b4-03-h18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-h19": {
+   "kp": "ks3.alveoli-built-for-exchange.1",
+   "new": "b4-03-h19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-h20": {
+   "kp": "ks3.alveoli-built-for-exchange.6",
+   "new": "b4-03-h20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-h21": {
+   "kp": "ks3.alveoli-built-for-exchange.6",
+   "new": "b4-03-h21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-h22": {
+   "kp": "ks3.alveoli-built-for-exchange.1",
+   "new": "b4-03-h22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-h23": {
+   "kp": "ks3.alveoli-built-for-exchange.1",
+   "new": "b4-03-h23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-h24": {
+   "kp": "ks3.alveoli-built-for-exchange.3",
+   "new": "b4-03-h24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-h25": {
+   "kp": "ks3.alveoli-built-for-exchange.4",
+   "new": "b4-03-h25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-h26": {
+   "kp": "ks3.alveoli-built-for-exchange.3",
+   "new": "b4-03-h26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-h27": {
+   "kp": "ks3.alveoli-built-for-exchange.5",
+   "new": "b4-03-h27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-h28": {
+   "kp": "ks3.alveoli-built-for-exchange.5",
+   "new": "b4-03-h28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-h29": {
+   "kp": "ks3.alveoli-built-for-exchange.4",
+   "new": "b4-03-h29",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-h30": {
+   "kp": "ks3.alveoli-built-for-exchange.6",
+   "new": "b4-03-h30",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-h31": {
+   "kp": "ks3.alveoli-built-for-exchange.4",
+   "new": "b4-03-h31",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-h32": {
+   "kp": "ks3.alveoli-built-for-exchange.6",
+   "new": "b4-03-h32",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-s01": {
+   "kp": "ks3.alveoli-built-for-exchange.1",
+   "new": "b4-03-s01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-s02": {
+   "kp": "ks3.alveoli-built-for-exchange.5",
+   "new": "b4-03-s02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-s03": {
+   "kp": "ks3.alveoli-built-for-exchange.4",
+   "new": "b4-03-s03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-s04": {
+   "kp": "ks3.alveoli-built-for-exchange.2",
+   "new": "b4-03-s04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-s05": {
+   "kp": "ks3.alveoli-built-for-exchange.3",
+   "new": "b4-03-s05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-s06": {
+   "kp": "ks3.alveoli-built-for-exchange.4",
+   "new": "b4-03-s06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-s07": {
+   "kp": "ks3.alveoli-built-for-exchange.2",
+   "new": "b4-03-s07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-s08": {
+   "kp": "ks3.alveoli-built-for-exchange.3",
+   "new": "b4-03-s08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-s09": {
+   "kp": "ks3.alveoli-built-for-exchange.4",
+   "new": "b4-03-s09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-s10": {
+   "kp": "ks3.alveoli-built-for-exchange.4",
+   "new": "b4-03-s10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-s11": {
+   "kp": "ks3.alveoli-built-for-exchange.1",
+   "new": "b4-03-s11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-s12": {
+   "kp": "ks3.alveoli-built-for-exchange.6",
+   "new": "b4-03-s12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-s13": {
+   "kp": "ks3.alveoli-built-for-exchange.6",
+   "new": "b4-03-s13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-s14": {
+   "kp": "ks3.alveoli-built-for-exchange.5",
+   "new": "b4-03-s14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-s15": {
+   "kp": "ks3.alveoli-built-for-exchange.5",
+   "new": "b4-03-s15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-s16": {
+   "kp": "ks3.alveoli-built-for-exchange.2",
+   "new": "b4-03-s16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-s17": {
+   "kp": "ks3.alveoli-built-for-exchange.1",
+   "new": "b4-03-s17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-s18": {
+   "kp": "ks3.alveoli-built-for-exchange.4",
+   "new": "b4-03-s18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-s19": {
+   "kp": "ks3.alveoli-built-for-exchange.5",
+   "new": "b4-03-s19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-s20": {
+   "kp": "ks3.alveoli-built-for-exchange.4",
+   "new": "b4-03-s20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-s21": {
+   "kp": "ks3.alveoli-built-for-exchange.5",
+   "new": "b4-03-s21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-s22": {
+   "kp": "ks3.alveoli-built-for-exchange.6",
+   "new": "b4-03-s22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-s23": {
+   "kp": "ks3.alveoli-built-for-exchange.6",
+   "new": "b4-03-s23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-s24": {
+   "kp": "ks3.alveoli-built-for-exchange.4",
+   "new": "b4-03-s24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-s25": {
+   "kp": "ks3.alveoli-built-for-exchange.4",
+   "new": "b4-03-s25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-s26": {
+   "kp": "ks3.alveoli-built-for-exchange.3",
+   "new": "b4-03-s26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-s27": {
+   "kp": "ks3.alveoli-built-for-exchange.2",
+   "new": "b4-03-s27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-s28": {
+   "kp": "ks3.alveoli-built-for-exchange.6",
+   "new": "b4-03-s28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-s29": {
+   "kp": "ks3.alveoli-built-for-exchange.1",
+   "new": "b4-03-s29",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-s30": {
+   "kp": "ks3.alveoli-built-for-exchange.4",
+   "new": "b4-03-s30",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-03-s31": {
+   "kp": "ks3.alveoli-built-for-exchange.3",
+   "new": "b4-03-s31",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-e01": {
+   "kp": "ks3.exercise-asthma-and-smoking.2",
+   "new": "b4-04-e01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-e02": {
+   "kp": "ks3.exercise-asthma-and-smoking.3",
+   "new": "b4-04-e02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-e03": {
+   "kp": "ks3.exercise-asthma-and-smoking.1",
+   "new": "b4-04-e03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-e04": {
+   "kp": "ks3.exercise-asthma-and-smoking.4",
+   "new": "b4-04-e04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-e05": {
+   "kp": "ks3.exercise-asthma-and-smoking.2",
+   "new": "b4-04-e05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-e06": {
+   "kp": "ks3.exercise-asthma-and-smoking.5",
+   "new": "b4-04-e06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-e07": {
+   "kp": "ks3.exercise-asthma-and-smoking.1",
+   "new": "b4-04-e07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-e08": {
+   "kp": "ks3.exercise-asthma-and-smoking.2",
+   "new": "b4-04-e08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-e09": {
+   "kp": "ks3.exercise-asthma-and-smoking.4",
+   "new": "b4-04-e09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-e10": {
+   "kp": "ks3.exercise-asthma-and-smoking.3",
+   "new": "b4-04-e10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-e11": {
+   "kp": "ks3.exercise-asthma-and-smoking.6",
+   "new": "b4-04-e11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-e12": {
+   "kp": "ks3.exercise-asthma-and-smoking.2",
+   "new": "b4-04-e12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-e13": {
+   "kp": "ks3.exercise-asthma-and-smoking.4",
+   "new": "b4-04-e13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-e14": {
+   "kp": "ks3.exercise-asthma-and-smoking.4",
+   "new": "b4-04-e14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-e15": {
+   "kp": "ks3.exercise-asthma-and-smoking.3",
+   "new": "b4-04-e15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-e16": {
+   "kp": "ks3.exercise-asthma-and-smoking.4",
+   "new": "b4-04-e16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-e17": {
+   "kp": "ks3.exercise-asthma-and-smoking.3",
+   "new": "b4-04-e17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-e18": {
+   "kp": "ks3.exercise-asthma-and-smoking.2",
+   "new": "b4-04-e18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-e19": {
+   "kp": "ks3.exercise-asthma-and-smoking.6",
+   "new": "b4-04-e19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-e20": {
+   "kp": "ks3.exercise-asthma-and-smoking.5",
+   "new": "b4-04-e20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-e21": {
+   "kp": "ks3.exercise-asthma-and-smoking.1",
+   "new": "b4-04-e21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-e22": {
+   "kp": "ks3.exercise-asthma-and-smoking.2",
+   "new": "b4-04-e22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-e23": {
+   "kp": "ks3.exercise-asthma-and-smoking.7",
+   "new": "b4-04-e23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-e24": {
+   "kp": "ks3.exercise-asthma-and-smoking.7",
+   "new": "b4-04-e24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-e25": {
+   "kp": "ks3.exercise-asthma-and-smoking.7",
+   "new": "b4-04-e25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-e26": {
+   "kp": "ks3.exercise-asthma-and-smoking.1",
+   "new": "b4-04-e26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-e27": {
+   "kp": "ks3.exercise-asthma-and-smoking.4",
+   "new": "b4-04-e27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-e28": {
+   "kp": "ks3.exercise-asthma-and-smoking.6",
+   "new": "b4-04-e28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-e29": {
+   "kp": "ks3.exercise-asthma-and-smoking.5",
+   "new": "b4-04-e29",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-e30": {
+   "kp": "ks3.exercise-asthma-and-smoking.1",
+   "new": "b4-04-e30",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-e31": {
+   "kp": "ks3.exercise-asthma-and-smoking.5",
+   "new": "b4-04-e31",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-e32": {
+   "kp": "ks3.exercise-asthma-and-smoking.6",
+   "new": "b4-04-e32",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-h01": {
+   "kp": "ks3.exercise-asthma-and-smoking.1",
+   "new": "b4-04-h01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-h02": {
+   "kp": "ks3.exercise-asthma-and-smoking.7",
+   "new": "b4-04-h02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-h03": {
+   "kp": "ks3.exercise-asthma-and-smoking.6",
+   "new": "b4-04-h03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-h04": {
+   "kp": "ks3.exercise-asthma-and-smoking.5",
+   "new": "b4-04-h04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-h05": {
+   "kp": "ks3.exercise-asthma-and-smoking.4",
+   "new": "b4-04-h05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-h06": {
+   "kp": "ks3.exercise-asthma-and-smoking.4",
+   "new": "b4-04-h06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-h07": {
+   "kp": "ks3.exercise-asthma-and-smoking.7",
+   "new": "b4-04-h07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-h08": {
+   "kp": "ks3.exercise-asthma-and-smoking.1",
+   "new": "b4-04-h08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-h09": {
+   "kp": "ks3.exercise-asthma-and-smoking.1",
+   "new": "b4-04-h09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-h10": {
+   "kp": "ks3.exercise-asthma-and-smoking.2",
+   "new": "b4-04-h10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-h11": {
+   "kp": "ks3.exercise-asthma-and-smoking.4",
+   "new": "b4-04-h11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-h12": {
+   "kp": "ks3.exercise-asthma-and-smoking.4",
+   "new": "b4-04-h12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-h13": {
+   "kp": "ks3.exercise-asthma-and-smoking.4",
+   "new": "b4-04-h13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-h14": {
+   "kp": "ks3.exercise-asthma-and-smoking.6",
+   "new": "b4-04-h14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-h15": {
+   "kp": "ks3.exercise-asthma-and-smoking.7",
+   "new": "b4-04-h15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-h16": {
+   "kp": "ks3.exercise-asthma-and-smoking.4",
+   "new": "b4-04-h16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-h17": {
+   "kp": "ks3.exercise-asthma-and-smoking.2",
+   "new": "b4-04-h17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-h18": {
+   "kp": "ks3.exercise-asthma-and-smoking.7",
+   "new": "b4-04-h18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-h19": {
+   "kp": "ks3.exercise-asthma-and-smoking.4",
+   "new": "b4-04-h19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-h20": {
+   "kp": "ks3.exercise-asthma-and-smoking.5",
+   "new": "b4-04-h20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-h21": {
+   "kp": "ks3.exercise-asthma-and-smoking.4",
+   "new": "b4-04-h21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-h22": {
+   "kp": "ks3.exercise-asthma-and-smoking.2",
+   "new": "b4-04-h22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-h23": {
+   "kp": "ks3.exercise-asthma-and-smoking.1",
+   "new": "b4-04-h23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-h24": {
+   "kp": "ks3.exercise-asthma-and-smoking.4",
+   "new": "b4-04-h24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-h25": {
+   "kp": "ks3.exercise-asthma-and-smoking.6",
+   "new": "b4-04-h25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-h26": {
+   "kp": "ks3.exercise-asthma-and-smoking.5",
+   "new": "b4-04-h26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-h27": {
+   "kp": "ks3.exercise-asthma-and-smoking.5",
+   "new": "b4-04-h27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-h28": {
+   "kp": "ks3.exercise-asthma-and-smoking.7",
+   "new": "b4-04-h28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-h29": {
+   "kp": "ks3.exercise-asthma-and-smoking.7",
+   "new": "b4-04-h29",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-h30": {
+   "kp": "ks3.exercise-asthma-and-smoking.4",
+   "new": "b4-04-h30",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-h31": {
+   "kp": "ks3.exercise-asthma-and-smoking.5",
+   "new": "b4-04-h31",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-h32": {
+   "kp": "ks3.exercise-asthma-and-smoking.7",
+   "new": "b4-04-h32",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-s01": {
+   "kp": "ks3.exercise-asthma-and-smoking.1",
+   "new": "b4-04-s01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-s02": {
+   "kp": "ks3.exercise-asthma-and-smoking.2",
+   "new": "b4-04-s02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-s03": {
+   "kp": "ks3.exercise-asthma-and-smoking.3",
+   "new": "b4-04-s03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-s04": {
+   "kp": "ks3.exercise-asthma-and-smoking.1",
+   "new": "b4-04-s04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-s05": {
+   "kp": "ks3.exercise-asthma-and-smoking.3",
+   "new": "b4-04-s05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-s06": {
+   "kp": "ks3.exercise-asthma-and-smoking.3",
+   "new": "b4-04-s06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-s07": {
+   "kp": "ks3.exercise-asthma-and-smoking.1",
+   "new": "b4-04-s07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-s08": {
+   "kp": "ks3.exercise-asthma-and-smoking.6",
+   "new": "b4-04-s08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-s09": {
+   "kp": "ks3.exercise-asthma-and-smoking.4",
+   "new": "b4-04-s09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-s10": {
+   "kp": "ks3.exercise-asthma-and-smoking.2",
+   "new": "b4-04-s10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-s11": {
+   "kp": "ks3.exercise-asthma-and-smoking.4",
+   "new": "b4-04-s11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-s12": {
+   "kp": "ks3.exercise-asthma-and-smoking.4",
+   "new": "b4-04-s12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-s13": {
+   "kp": "ks3.exercise-asthma-and-smoking.4",
+   "new": "b4-04-s13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-s14": {
+   "kp": "ks3.exercise-asthma-and-smoking.4",
+   "new": "b4-04-s14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-s15": {
+   "kp": "ks3.exercise-asthma-and-smoking.1",
+   "new": "b4-04-s15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-s16": {
+   "kp": "ks3.exercise-asthma-and-smoking.3",
+   "new": "b4-04-s16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-s17": {
+   "kp": "ks3.exercise-asthma-and-smoking.6",
+   "new": "b4-04-s17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-s18": {
+   "kp": "ks3.exercise-asthma-and-smoking.1",
+   "new": "b4-04-s18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-s19": {
+   "kp": "ks3.exercise-asthma-and-smoking.6",
+   "new": "b4-04-s19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-s20": {
+   "kp": "ks3.exercise-asthma-and-smoking.2",
+   "new": "b4-04-s20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-s21": {
+   "kp": "ks3.exercise-asthma-and-smoking.6",
+   "new": "b4-04-s21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-s22": {
+   "kp": "ks3.exercise-asthma-and-smoking.5",
+   "new": "b4-04-s22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-s23": {
+   "kp": "ks3.exercise-asthma-and-smoking.2",
+   "new": "b4-04-s23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-s24": {
+   "kp": "ks3.exercise-asthma-and-smoking.5",
+   "new": "b4-04-s24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-s25": {
+   "kp": "ks3.exercise-asthma-and-smoking.4",
+   "new": "b4-04-s25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-s26": {
+   "kp": "ks3.exercise-asthma-and-smoking.4",
+   "new": "b4-04-s26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-s27": {
+   "kp": "ks3.exercise-asthma-and-smoking.4",
+   "new": "b4-04-s27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-s28": {
+   "kp": "ks3.exercise-asthma-and-smoking.3",
+   "new": "b4-04-s28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-s29": {
+   "kp": "ks3.exercise-asthma-and-smoking.5",
+   "new": "b4-04-s29",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-s30": {
+   "kp": "ks3.exercise-asthma-and-smoking.6",
+   "new": "b4-04-s30",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-s31": {
+   "kp": "ks3.exercise-asthma-and-smoking.4",
+   "new": "b4-04-s31",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-04-s32": {
+   "kp": "ks3.exercise-asthma-and-smoking.4",
+   "new": "b4-04-s32",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-e01": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.1",
+   "new": "b4-05-e01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-e02": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.2",
+   "new": "b4-05-e02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-e03": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.3",
+   "new": "b4-05-e03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-e04": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.6",
+   "new": "b4-05-e04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-e05": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.2",
+   "new": "b4-05-e05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-e06": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.3",
+   "new": "b4-05-e06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-e07": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.7",
+   "new": "b4-05-e07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-e08": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.5",
+   "new": "b4-05-e08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-e09": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.1",
+   "new": "b4-05-e09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-e10": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.6",
+   "new": "b4-05-e10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-e11": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.7",
+   "new": "b4-05-e11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-e12": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.2",
+   "new": "b4-05-e12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-e13": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.2",
+   "new": "b4-05-e13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-e14": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.4",
+   "new": "b4-05-e14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-e15": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.5",
+   "new": "b4-05-e15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-e16": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.3",
+   "new": "b4-05-e16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-e17": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.6",
+   "new": "b4-05-e17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-e18": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.8",
+   "new": "b4-05-e18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-e19": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.8",
+   "new": "b4-05-e19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-e20": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.2",
+   "new": "b4-05-e20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-e21": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.5",
+   "new": "b4-05-e21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-e22": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.7",
+   "new": "b4-05-e22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-e23": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.6",
+   "new": "b4-05-e23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-e24": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.1",
+   "new": "b4-05-e24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-e25": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.2",
+   "new": "b4-05-e25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-e26": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.1",
+   "new": "b4-05-e26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-e27": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.3",
+   "new": "b4-05-e27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-e28": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.4",
+   "new": "b4-05-e28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-e29": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.8",
+   "new": "b4-05-e29",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-e30": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.3",
+   "new": "b4-05-e30",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-h01": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.8",
+   "new": "b4-05-h01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-h02": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.7",
+   "new": "b4-05-h02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-h03": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.3",
+   "new": "b4-05-h03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-h04": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.6",
+   "new": "b4-05-h04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-h05": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.7",
+   "new": "b4-05-h05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-h06": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.1",
+   "new": "b4-05-h06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-h07": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.6",
+   "new": "b4-05-h07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-h08": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.6",
+   "new": "b4-05-h08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-h09": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.4",
+   "new": "b4-05-h09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-h10": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.6",
+   "new": "b4-05-h10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-h11": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.7",
+   "new": "b4-05-h11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-h12": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.4",
+   "new": "b4-05-h12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-h13": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.7",
+   "new": "b4-05-h13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-h14": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.7",
+   "new": "b4-05-h14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-h15": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.6",
+   "new": "b4-05-h15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-h16": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.5",
+   "new": "b4-05-h16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-h17": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.6",
+   "new": "b4-05-h17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-h18": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.7",
+   "new": "b4-05-h18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-h19": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.3",
+   "new": "b4-05-h19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-h20": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.4",
+   "new": "b4-05-h20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-h21": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.8",
+   "new": "b4-05-h21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-h22": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.8",
+   "new": "b4-05-h22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-h23": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.4",
+   "new": "b4-05-h23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-h24": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.1",
+   "new": "b4-05-h24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-h25": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.5",
+   "new": "b4-05-h25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-h26": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.6",
+   "new": "b4-05-h26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-h27": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.5",
+   "new": "b4-05-h27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-h28": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.7",
+   "new": "b4-05-h28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-h29": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.6",
+   "new": "b4-05-h29",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-h30": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.6",
+   "new": "b4-05-h30",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-h31": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.4",
+   "new": "b4-05-h31",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-h32": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.6",
+   "new": "b4-05-h32",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-s01": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.3",
+   "new": "b4-05-s01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-s02": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.4",
+   "new": "b4-05-s02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-s03": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.4",
+   "new": "b4-05-s03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-s04": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.3",
+   "new": "b4-05-s04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-s05": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.3",
+   "new": "b4-05-s05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-s06": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.6",
+   "new": "b4-05-s06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-s07": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.2",
+   "new": "b4-05-s07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-s08": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.3",
+   "new": "b4-05-s08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-s09": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.2",
+   "new": "b4-05-s09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-s10": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.3",
+   "new": "b4-05-s10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-s11": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.6",
+   "new": "b4-05-s11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-s12": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.6",
+   "new": "b4-05-s12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-s13": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.6",
+   "new": "b4-05-s13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-s14": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.7",
+   "new": "b4-05-s14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-s15": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.7",
+   "new": "b4-05-s15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-s16": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.7",
+   "new": "b4-05-s16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-s17": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.6",
+   "new": "b4-05-s17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-s18": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.5",
+   "new": "b4-05-s18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-s19": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.5",
+   "new": "b4-05-s19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-s20": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.6",
+   "new": "b4-05-s20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-s21": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.7",
+   "new": "b4-05-s21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-s22": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.6",
+   "new": "b4-05-s22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-s23": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.7",
+   "new": "b4-05-s23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-s24": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.7",
+   "new": "b4-05-s24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-s25": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.2",
+   "new": "b4-05-s25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-s26": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.2",
+   "new": "b4-05-s26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-s27": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.8",
+   "new": "b4-05-s27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-s28": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.8",
+   "new": "b4-05-s28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-s29": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.8",
+   "new": "b4-05-s29",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-s30": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.8",
+   "new": "b4-05-s30",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-s31": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.3",
+   "new": "b4-05-s31",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "b4-05-s32": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.3",
+   "new": "b4-05-s32",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "exercise-asthma-and-smoking#apply": {
+   "kp": "ks3.exercise-asthma-and-smoking.5",
+   "new": "exercise-asthma-and-smoking#apply",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "exercise-asthma-and-smoking#explain": {
+   "kp": "ks3.exercise-asthma-and-smoking.6",
+   "new": "exercise-asthma-and-smoking#explain",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "exercise-asthma-and-smoking#locate-the-fault-1": {
+   "kp": "ks3.exercise-asthma-and-smoking.9",
+   "new": null,
+   "note": "the instrument was removed from the lean page",
+   "status": "removed"
+  },
+  "exercise-asthma-and-smoking#locate-the-fault-2": {
+   "kp": "ks3.exercise-asthma-and-smoking.2",
+   "new": null,
+   "note": "the instrument was removed from the lean page",
+   "status": "removed"
+  },
+  "exercise-asthma-and-smoking#locate-the-fault-3": {
+   "kp": "ks3.exercise-asthma-and-smoking.9",
+   "new": null,
+   "note": "the instrument was removed from the lean page",
+   "status": "removed"
+  },
+  "exercise-asthma-and-smoking#produce": {
+   "kp": "ks3.exercise-asthma-and-smoking.5",
+   "new": "exercise-asthma-and-smoking#produce",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "exercise-asthma-and-smoking#recall": {
+   "kp": "ks3.exercise-asthma-and-smoking.1",
+   "new": "exercise-asthma-and-smoking#recall",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "exercise-asthma-and-smoking#start": {
+   "kp": "ks3.exercise-asthma-and-smoking.8",
+   "new": "exercise-asthma-and-smoking#start",
+   "note": "Start here, the same question as before",
+   "status": "kept"
+  },
+  "how-breathing-works#apply": {
+   "kp": "ks3.how-breathing-works.5",
+   "new": "how-breathing-works#apply",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "how-breathing-works#explain": {
+   "kp": "ks3.how-breathing-works.1",
+   "new": "how-breathing-works#explain",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "how-breathing-works#produce": {
+   "kp": "ks3.how-breathing-works.4",
+   "new": "how-breathing-works#produce",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "how-breathing-works#recall": {
+   "kp": "ks3.how-breathing-works.1",
+   "new": "how-breathing-works#recall",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "how-breathing-works#start": {
+   "kp": "ks3.how-breathing-works.1",
+   "new": "how-breathing-works#start",
+   "note": "Start here, the same question as before",
+   "status": "kept"
+  },
+  "ks3-b4-alveoli-built-for-exchange-explain": {
+   "kp": "ks3.alveoli-built-for-exchange.4",
+   "new": "ks3-b4-alveoli-built-for-exchange-explain",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks3-b4-alveoli-built-for-exchange-produce": {
+   "kp": "ks3.alveoli-built-for-exchange.3",
+   "new": "ks3-b4-alveoli-built-for-exchange-produce",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks3-b4-exercise-asthma-and-smoking-explain": {
+   "kp": "ks3.exercise-asthma-and-smoking.6",
+   "new": "ks3-b4-exercise-asthma-and-smoking-explain",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks3-b4-exercise-asthma-and-smoking-produce": {
+   "kp": "ks3.exercise-asthma-and-smoking.5",
+   "new": "ks3-b4-exercise-asthma-and-smoking-produce",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks3-b4-how-breathing-works-explain": {
+   "kp": "ks3.how-breathing-works.1",
+   "new": "ks3-b4-how-breathing-works-explain",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks3-b4-how-breathing-works-produce": {
+   "kp": "ks3.how-breathing-works.4",
+   "new": "ks3-b4-how-breathing-works-produce",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks3-b4-stomata-and-gas-exchange-in-plants-explain": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.6",
+   "new": "ks3-b4-stomata-and-gas-exchange-in-plants-explain",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks3-b4-stomata-and-gas-exchange-in-plants-produce": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.5",
+   "new": "ks3-b4-stomata-and-gas-exchange-in-plants-produce",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks3-b4-the-gas-exchange-system-explain": {
+   "kp": "ks3.the-gas-exchange-system.5",
+   "new": "ks3-b4-the-gas-exchange-system-explain",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks3-b4-the-gas-exchange-system-produce": {
+   "kp": "ks3.the-gas-exchange-system.1",
+   "new": "ks3-b4-the-gas-exchange-system-produce",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "stomata-and-gas-exchange-in-plants#apply": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.7",
+   "new": "stomata-and-gas-exchange-in-plants#apply",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "stomata-and-gas-exchange-in-plants#explain": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.6",
+   "new": "stomata-and-gas-exchange-in-plants#explain",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "stomata-and-gas-exchange-in-plants#produce": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.5",
+   "new": "stomata-and-gas-exchange-in-plants#produce",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "stomata-and-gas-exchange-in-plants#recall": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.4",
+   "new": "stomata-and-gas-exchange-in-plants#recall",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "stomata-and-gas-exchange-in-plants#start": {
+   "kp": "ks3.stomata-and-gas-exchange-in-plants.6",
+   "new": "stomata-and-gas-exchange-in-plants#start",
+   "note": "Start here, the same question as before",
+   "status": "kept"
+  },
+  "the-gas-exchange-system#apply": {
+   "kp": "ks3.the-gas-exchange-system.5",
+   "new": "the-gas-exchange-system#apply",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "the-gas-exchange-system#explain": {
+   "kp": "ks3.the-gas-exchange-system.5",
+   "new": "the-gas-exchange-system#explain",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "the-gas-exchange-system#produce": {
+   "kp": "ks3.the-gas-exchange-system.1",
+   "new": "the-gas-exchange-system#produce",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "the-gas-exchange-system#recall": {
+   "kp": "ks3.the-gas-exchange-system.1",
+   "new": "the-gas-exchange-system#recall",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "the-gas-exchange-system#start": {
+   "kp": "ks3.the-gas-exchange-system.5",
+   "new": "the-gas-exchange-system#start",
+   "note": "Start here, the same question as before",
+   "status": "kept"
+  },
+  "the-gas-exchange-system#two-bags-1": {
+   "kp": "ks3.the-gas-exchange-system.5",
+   "new": null,
+   "note": "the instrument was removed from the lean page",
+   "status": "removed"
+  },
+  "the-gas-exchange-system#two-bags-2": {
+   "kp": "ks3.the-gas-exchange-system.5",
+   "new": null,
+   "note": "the instrument was removed from the lean page",
+   "status": "removed"
+  },
+  "the-gas-exchange-system#two-bags-3": {
+   "kp": "ks3.the-gas-exchange-system.5",
+   "new": null,
+   "note": "the instrument was removed from the lean page",
+   "status": "removed"
+  },
+  "the-gas-exchange-system#two-bags-4": {
+   "kp": "ks3.the-gas-exchange-system.5",
+   "new": null,
+   "note": "the instrument was removed from the lean page",
+   "status": "removed"
+  }
+ },
+ "scope": [
+  "alveoli-built-for-exchange",
+  "exercise-asthma-and-smoking",
+  "how-breathing-works",
+  "stomata-and-gas-exchange-in-plants",
+  "the-gas-exchange-system"
+ ]
+}

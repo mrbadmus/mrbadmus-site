@@ -129,7 +129,7 @@
   border: 2px solid var(--ks3-ink); border-radius: var(--ks3-r-panel, 14px);
   box-shadow: 5px 5px 0 var(--ks3-accent);
 }
-.lean-fact-label { margin: 0; font-family: var(--ks3-font-mono); font-weight: 500; font-size: 13px;
+.lean-fact .lean-fact-label { margin: 0; font-family: var(--ks3-font-mono); font-weight: 500; font-size: 13px;
   letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text); }
 .lean-fact-body { margin: 8px 0 0; font-family: var(--ks3-font-display); font-weight: 700;
   font-size: 21px; line-height: 1.4; letter-spacing: -.01em; }

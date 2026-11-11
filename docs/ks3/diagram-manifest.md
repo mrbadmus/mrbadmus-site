@@ -19,11 +19,11 @@ MRB-103 also flagged an **anatomical/structural diagram gap** (cells, organs) an
 | Status | Figures |
 |---|---|
 | `drafted` | 1 |
-| `drawn` | 33 |
+| `drawn` | 35 |
 | `final` | 1 |
 | `needed` | 3 |
 | `retired` | 6 |
-| **Total** | **44** |
+| **Total** | **46** |
 
 `needed` = declared by a lesson, not yet drawn. A lesson may ship with figures at `needed` — it is not a build blocker — but the need is then counted here rather than invisible.
 
@@ -43,6 +43,8 @@ MRB-103 also flagged an **anatomical/structural diagram gap** (cells, organs) an
 | B3 | `absorption-and-the-small-intestine` | `b3-villus-labelled` | diagram | `drawn` | Each frame is drawn from a callout of the frame before it, so the folding is one thing at three sizes rather than three separate facts: the tube is ridged, every ridge is covered in villi, and every cell of every villus is covered in microvilli. The panel underneath shows why it is worth doing. Count the cells across the wall of the villus — there is one. On the far side of that single cell is a capillary, which is why a glucose molecule in the gut is in the bloodstream a moment later. |
 | B3 | `the-digestive-system` | `b3-digestion-timing` | diagram | `drawn` | Hours spent in each organ, to scale. |
 | B3 | `the-digestive-system` | `b3-gut-labelled` | diagram | `drawn` | One tube, from 01 at the top to 07 at the bottom, with the orange line running down the middle of it the whole way. The small intestine is the long narrow coiled run; the large intestine below it is visibly wider and shorter. Stop 05 — pancreas, liver and gall bladder — sits inside the dashed boundary, with ducts leading out of it into the tube. That is the distinction the bench’s own stop 05 rests on: those three send juices in, and food never passes through them. Put a finger on 01 and follow the orange line down: it does not stop, branch or start again anywhere between there and 07, and it never once goes into the dashed boundary. |
+| B4 | `how-breathing-works` | `b4-bell-jar-model` | diagram | `drawn` | Pull the sheet down and the balloons inflate. |
+| B4 | `how-breathing-works` | `b4-lung-volume-bottle` | diagram | `drawn` | The air you breathe out pushes water out of the bottle. |
 | B4 | `stomata-and-gas-exchange-in-plants` | `b4-gas-exchange-bars` | diagram | `drawn` | Respiration, photosynthesis, and what a sensor outside the leaf actually measures, in bright light. |
 | B4 | `stomata-and-gas-exchange-in-plants` | `b4-guard-cells-two-state` | diagram | `drawn` | Nothing opens the pore but the shape of the two cells beside it. Water moves into the pair and each cell bows away from its partner — the wall along the inside is thick and stiff while the outer wall stretches, so the cell can only curve, and curving pulls the gap open. Water moves out, the cells go limp and straighten, and the two inner walls meet: no gap left. The pair is drawn the same length and the same thickness in both states, so the only thing that has changed is the bend. And the slice underneath says where the pores are: every one of them is in the underside of the leaf, and the top surface has none. |
 | B4 | `the-gas-exchange-system` | `b4-gas-exchange-labelled` | diagram | `drawn` | The route in runs 01 to 05 and stops there: gas exchange happens at the sacs and nowhere earlier along the tubes. Each lung is drawn full of branching — four divisions, each branch narrower than the last — because a lung is not a hollow bag. The circled cluster is magnified on the right, where one capillary crosses the sacs and the wall between air and blood is a single cell thick. The ribs, the muscles between them and the diaphragm are drawn outside the lungs: 06 is the only part of this figure that is not the airway. |
