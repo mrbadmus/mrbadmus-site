@@ -65,6 +65,12 @@
     font-size: 20px; letter-spacing: -.02em;
     overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
   }
+  /* ⊕ 11 Nov 2026: the lockup joins the row; on a phone the title gives way
+     so the header stays one row (the exam page does the same below 440px). */
+  .uc-head .mrb-brand { flex: 0 0 auto; }
+  @media (max-width: 439px) {
+    .uc-title { visibility: hidden; }
+  }
   .uc-timer {
     display: flex; align-items: center; gap: 8px; padding: 6px 12px;
     border-radius: 99px; border: 2px solid var(--ks3-ink);
@@ -300,6 +306,10 @@
     background: var(--ks3-alert-tint); font-size: 17px;
   }
   .uc-oops p { margin: 0; }
+  .uc-oops a {
+    color: var(--ks3-ink); font-weight: 700;
+    text-decoration-thickness: 2px; text-underline-offset: 3px;
+  }
   .uc-oops p + p { margin-top: 6px; font-size: 16px; color: var(--ks3-ink-body); }
   </style>
 </head>
@@ -311,6 +321,8 @@
     <a class="uc-back" id="uc-back" href="/consumer/today.html" aria-label="Back to today">
       <svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
     </a>
+    <!-- ⊕ 11 Nov 2026: the one mark, as on the exam page (blind recheck R7). -->
+    <!--mrb:brand href=/consumer/today.html--><a class="mrb-brand" href="/consumer/today.html" aria-label="MrBadmus home"><svg class="mrb-brand__mark" data-mrb-mark viewBox="0 0 22 22" aria-hidden="true" focusable="false"><path d="M3.5 3.5 L11 11 L3.5 18.5" stroke="#E4572E" stroke-opacity="0.34" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path><path d="M12 3.5 L19.5 11 L12 18.5" stroke="#E4572E" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg><span class="mrb-brand__word">MrBadmus</span></a><!--/mrb:brand-->
     <span class="uc-title">Unit check</span>
     <span class="uc-timer" id="uc-timer" hidden>
       <svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true">
