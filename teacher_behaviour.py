@@ -453,6 +453,18 @@ _DRIVE_JS = r"""
      `host` (shared/flashcard-breakdown.js), opened by the same Breakdown
      control on a deck row. Same instrument, same reason. */
   function fcBreakdown() { return document.querySelector('[data-fb="overlay"]'); }
+  /* ⊕ The classroom timer (`shared/teacher-timer.js`) is a FOURTH sibling of
+     `host`, mounted on `document.body` for the reason its own header gives:
+     the runtime empties the host on every redraw, and a ticking clock inside
+     it would also put text that changes every second into this probe, which
+     is exactly the thing that could make a dead control look alive. So the
+     timer is read the way the Set work sheet is: by its VIEW and its OPEN
+     COUNT (`data-tm-view`, `data-tm-opens`), never by its reading. The
+     class screen's "Timer" and the picker's clock button each move one of
+     those, so each press is seen to do something and nothing else is let
+     through. The timer's own controls are outside the host and are driven by
+     `teacher_picker_drive.py`. */
+  function timer() { return document.querySelector('[data-tm="overlay"]'); }
   function snap() {
     var sw = sheet();
     var swOpen = !!(sw && !sw.hidden);
@@ -473,6 +485,11 @@ _DRIVE_JS = r"""
              (fbOpen ? fb.querySelectorAll('*').length + 1 : 0),
       fb: fb ? ((fb.hidden ? '0' : '1') + ':' +
                 (fb.getAttribute('data-fb-opens') || '')) : '',
+      tm: (function () {
+        var t = timer();
+        return t ? ((t.getAttribute('data-tm-view') || '') + ':' +
+                    (t.getAttribute('data-tm-opens') || '')) : '';
+      })(),
       /* ⊕ MRB-335 — THE SHEET'S OWN `data-mrb-renders`. Four buttons open
          one sheet, so the second one pressed in a sweep re-opens a sheet
          that is already on screen, for a different class, before the new
@@ -647,7 +664,7 @@ _DRIVE_JS = r"""
     var moved = after.text !== before.text ||
                 after.renders !== before.renders ||
                 after.nodes !== before.nodes ||
-                after.sw !== before.sw ||
+                after.sw !== before.sw || after.tm !== before.tm ||
                 after.bd !== before.bd || after.fb !== before.fb ||
                 navs.length > navsBefore;
     if (!moved) {
@@ -771,7 +788,7 @@ _DRIVE_JS = r"""
     if (aAfter.text === aBefore.text && aAfter.renders === aBefore.renders &&
         aAfter.nodes === aBefore.nodes && aAfter.sw === aBefore.sw &&
         aAfter.bd === aBefore.bd && aAfter.fb === aBefore.fb &&
-        navs.length === aNavs) {
+        aAfter.tm === aBefore.tm && navs.length === aNavs) {
       addedDead.push({i: want, label: aLabel,
                       tag: el.tagName.toLowerCase()});
     }

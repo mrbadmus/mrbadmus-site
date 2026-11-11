@@ -159,6 +159,10 @@ TOPBAR_CSS_NAME = "teacher-topbar.css"
 
 # ⊕ MRB-323 — the random name picker. See `picker` in page_html.
 PICKER_JS_NAME = "teacher-picker.js"
+# The classroom timer rides with the picker: the picker's header has a Timer
+# button that opens it, and the class screen's own "Timer" entry sits beside
+# "Pick a student". Same pages, same fixtures, same reasons.
+TIMER_JS_NAME = "teacher-timer.js"
 
 # ⊕ MRB-335 — the Set work sheet, which is no longer a compiled overlay.
 # See `setwork` in page_html, and the note on node 581 in teacher_rulings.DEAD.
@@ -314,7 +318,7 @@ _REFUSED = {"import.html"}
 # year-long pin on the control's own bytes.
 STAMPED_DEPS = ("config.js", "account.js", "class-entry.js", "teacher-guard.js",
                 "teacher-data.js", "shoutouts.js", "teacher-admin-nav.js",
-                "teacher-picker.js", "rum.js",
+                "teacher-picker.js", TIMER_JS_NAME, "rum.js",
                 SETWORK_CSS_NAME, SETWORK_JS_NAME, CSV_JS_NAME,
                 WRAPPED_CSS_NAME, WRAPPED_JS_NAME,
                 "figures-ks3.js", "figures-ks4.js",
@@ -5493,7 +5497,9 @@ def page_html(spec, roots, table, logic, imports, fixture, versions, regions):
     # fixtures are classes with no roster, `<if hasRoster>` is false, and
     # there is no button to press. `AMENDED_ADDITIONS` carries `needs_data`
     # for exactly that state.
-    picker = ("<script src=\"/shared/%s\"></script>\n" % PICKER_JS_NAME
+    picker = (("<script src=\"/shared/%s\"></script>\n"
+               "<script src=\"/shared/%s\"></script>\n")
+              % (PICKER_JS_NAME, TIMER_JS_NAME)
               if spec.get("picker") else "")
     # ⊕ MRB-335 — the Set work sheet, on the two pages that open it.
     #

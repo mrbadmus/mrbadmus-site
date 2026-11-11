@@ -4843,8 +4843,18 @@ INSERT_AT = {
             "hov": "border-color:var(--st-edge)",
             "on": "pickStudent",
             "c": [{"t": "#", "v": "Pick a student"}],
+        }, {
+            "t": "button",
+            "a": {"style": _PICK_ENTRY_BTN, "type": "button",
+                  "data-mrb-added": "timer-open"},
+            "hov": "border-color:var(--st-edge)",
+            "on": "openTimer",
+            "c": [{"t": "#", "v": "Timer"}],
         }]},
-        "the class screen's entry to the random name picker (MRB-323). "
+        "the class screen's entry to the random name picker (MRB-323), and "
+        "beside it the classroom timer's (`shared/teacher-timer.js`), as the "
+        "second child of the same `<if hasRoster>` and in the same style "
+        "string. "
         "Design drew no counterpart: her row has Set work, Shoutouts, "
         "Charts and Print report, and the picker is a fifth thing a teacher "
         "does at the front of a room. Node 216's style string verbatim, "
@@ -6105,8 +6115,11 @@ AMENDED_ADDITIONS = (
     # this register says it means. The entry button is wrapped in `<if
     # hasRoster>`, so on `class-detail-empty-fixture` (a class with no
     # roster) it is legitimately not on the page: there is nobody to pick.
-    # It is NOT `needs_write`. Picking a name writes nothing anywhere — no
-    # table, no `localStorage`, no request — so a finished, read-only
+    # It is NOT `needs_write`. Picking a name writes nothing to any table
+    # and makes no request. Its one opt-in keep is the teacher's "Save for
+    # this class" switch (OFF by default), which stores ticket weights in
+    # this browser's `localStorage` under `mrb.picker.weights.v1.<classId>`
+    # and nothing else — see the header of `shared/teacher-picker.js`. So a finished, read-only
     # academic year offers it exactly as a live one does, and claiming
     # otherwise would take a harmless tool off last year's classes for a
     # rule it does not touch.
@@ -6122,7 +6135,24 @@ AMENDED_ADDITIONS = (
          why="the random name picker's entry point (MRB-323). Design drew "
              "no counterpart; the control opens shared/teacher-picker.js "
              "over the class screen, on the roster `renderVals` has already "
-             "computed. It reads and never writes."),
+             "computed. It reads and never writes to the database or the network; "
+             "the only thing it can keep is ticket weights, in this "
+             "browser's localStorage, when the teacher turns Save on."),
+
+    # ⊕ The classroom timer's entry, beside the picker's. Same `<if
+    # hasRoster>` parent, so `needs_data` for the same reason; it opens
+    # `shared/teacher-timer.js`, which mounts on `document.body` (a sibling
+    # of the host) and writes nothing. `teacher_behaviour`'s `snap()` reads
+    # the timer's own `data-tm` overlay, as it reads the Set work sheet's, so
+    # the press is seen to do something.
+    dict(marker="timer-open", pages=("class-detail.html",),
+         node=216, needs_data=True,
+         label="Timer",
+         why="the classroom timer's entry point. Design drew no "
+             "counterpart; the control opens shared/teacher-timer.js, a "
+             "countdown and stopwatch that lives on document.body so the "
+             "class screen's redraws cannot wipe a running timer. It keeps "
+             "nothing anywhere."),
 
     # ⊕ MRB-322 — the way into a class's seating plan.
     #
@@ -12502,7 +12532,8 @@ componentDidUpdate() {
      "      hasRoster: kRoster.length > 0,\n"
      "      pickStudent: () => window.MrBadmusPicker.open({\n"
      "        id: k.id, code: k.code, students: kRoster\n"
-     "      }),\n",
+     "      }),\n"
+     "      openTimer: () => window.MrBadmusTimer.open({ view: 'full' }),\n",
      "the two keys MRB-323's entry button needs: the `<if>` that keeps a "
      "picker off a class with nobody on it, and the handler that opens it "
      "on the roster this screen has already read."),
