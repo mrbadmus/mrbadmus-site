@@ -4,13 +4,11 @@
 LESSON = {
     "slug": "stomata-and-gas-exchange-in-plants",
     "start": {
-        "setup": None,
-        "question": "If you had to guess, where are most of the tiny holes in a leaf?",
+        "setup": "A plant sealed in a jar shows a steady carbon dioxide reading at dawn.",
+        "question": "If you had to guess, during those steady minutes, is the plant making or using any carbon dioxide at all?",
         "options": [
-            ("On the top of the leaf",
-             "On the underside. Most stomata are there, where they are shaded."),
-            ("On the underside of the leaf",
-             "On the underside. Most stomata are there, where they are shaded."),
+            ("No, it is doing neither", "Yes, it is doing both. Photosynthesis uses carbon dioxide as fast as respiration makes it."),
+            ("Yes, it is doing both", "Yes, it is doing both. Photosynthesis uses carbon dioxide as fast as respiration makes it."),
         ],
         "answer": 1,
     },

@@ -4,13 +4,11 @@
 LESSON = {
     "slug": "changes-in-energy",
     "start": {
-        "setup": "A car doubles its speed.",
-        "question": "If you had to guess, how much more kinetic energy does it have?",
+        "setup": "To stop a car, the brakes transfer away all its kinetic energy. The car now goes twice as fast.",
+        "question": "If you had to guess, do the brakes now have to transfer twice as much energy, or more than twice as much?",
         "options": [
-            ("Twice as much",
-             "Four times as much. Speed is squared in the equation, so 2 × 2 = 4."),
-            ("Four times as much",
-             "Four times as much. Speed is squared in the equation, so 2 × 2 = 4."),
+            ("Twice as much", "More than twice as much. It is four times as much, because speed is squared."),
+            ("More than twice as much", "More than twice as much. It is four times as much, because speed is squared."),
         ],
         "answer": 1,
     },

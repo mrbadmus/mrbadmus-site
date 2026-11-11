@@ -4,15 +4,13 @@
 LESSON = {
     "slug": "power",
     "start": {
-        "setup": "Two motors lift the same load to the same height. One takes twice as long.",
-        "question": "If you had to guess, which motor has more power?",
+        "setup": "A 3000 W kettle and a 1500 W kettle each heat 0.5 kg of water from 20 °C to 100 °C.",
+        "question": "If you had to guess, does the 3000 W kettle transfer more energy to the water, or the same energy, faster?",
         "options": [
-            ("The faster motor",
-             "The faster motor. It transfers the same energy in less time."),
-            ("They have equal power",
-             "The faster motor. It transfers the same energy in less time."),
+            ("More energy", "The same energy, faster. The same water through the same temperature rise takes the same energy."),
+            ("The same energy, faster", "The same energy, faster. The same water through the same temperature rise takes the same energy."),
         ],
-        "answer": 0,
+        "answer": 1,
     },
     "words": ["power", "watt", "energy transferred", "work done"],
     "knowledge": [
@@ -53,10 +51,6 @@ LESSON = {
     "key_fact": "Power is the rate at which energy is transferred or the rate at which work is "
                 "done. One watt is an energy transfer of one joule per second.",
     "deeper": [
-        {"kind": "card", "title": "Two kettles",
-         "body": ["A 3000 W kettle transfers 3000 J each second.",
-                  "A 1500 W kettle transfers 1500 J each second.",
-                  "To transfer the same energy, the 1500 W kettle takes twice as long."]},
         {"kind": "card", "title": "Command words",
          "body": [{"points": [
              "<strong>Define</strong>: give the exact meaning in one sentence.",

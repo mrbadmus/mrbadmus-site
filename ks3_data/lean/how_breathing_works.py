@@ -5,12 +5,10 @@ LESSON = {
     "slug": "how-breathing-works",
     "start": {
         "setup": None,
-        "question": "If you had to guess, what makes air move into your lungs?",
+        "question": "If you had to guess, how does a healthy lung normally fill with air?",
         "options": [
-            ("Your chest gets bigger",
-             "Your chest gets bigger. Lungs have no muscle, so they cannot pull air in."),
-            ("Your lungs pull it in",
-             "Your chest gets bigger. Lungs have no muscle, so they cannot pull air in."),
+            ("The chest stretches it open", "The chest stretches it open. Lungs have no muscle, so they cannot open themselves."),
+            ("It stretches itself open", "The chest stretches it open. Lungs have no muscle, so they cannot open themselves."),
         ],
         "answer": 0,
     },
@@ -39,16 +37,13 @@ LESSON = {
                   "In a smaller space, they hit the walls more often. So the pressure rises."]},
         {"kind": "card", "title": "The bell jar model",
          "body": ["A bell jar is a model of the chest.",
-                  {"points": ["The jar is the chest.",
-                              "The balloons are the lungs.",
-                              "The rubber sheet is the diaphragm."]},
+                  {"figure": "b4-bell-jar-model"},
                   "Pull the sheet down. The volume in the jar increases and the pressure falls.",
                   "Air moves in and the balloons inflate.",
                   "Push the sheet up. The pressure rises, air moves out and the balloons deflate."]},
         {"kind": "card", "title": "Measuring lung volume",
-         "body": ["Fill a large bottle with water. Turn it upside down in a tub of water.",
-                  "Breathe out fully through a tube into the bottle.",
-                  "Your breath pushes water out of the bottle.",
+         "body": [{"figure": "b4-lung-volume-bottle"},
+                  "Breathe out fully through the tube into the bottle.",
                   "The volume of water pushed out equals the volume of air you breathed out."]},
         {"kind": "card", "title": "Easy mistakes",
          "body": [{"mistakes": [
@@ -78,6 +73,21 @@ LESSON = {
                   "The lung collapses, even if it is not damaged."]},
     ],
     "try": None,
+    "figures": [
+        {"id": "b4-bell-jar-model", "kind": "diagram", "status": "drawn", "art": "bell-jar-model",
+         "title": "A bell jar model of the chest",
+         "desc": "Two drawings of the same bell jar side by side. Labels name the jar as the chest, "
+                 "the two balloons as the lungs, the tube as the trachea and the rubber sheet as "
+                 "the diaphragm. On the left the sheet is pulled down and the balloons are "
+                 "inflated. On the right the sheet is pushed up and the balloons are small.",
+         "caption": "Pull the sheet down and the balloons inflate."},
+        {"id": "b4-lung-volume-bottle", "kind": "diagram", "status": "drawn", "art": "lung-volume-bottle",
+         "title": "Measuring lung volume with an upturned bottle",
+         "desc": "A large bottle full of water stands upside down in a tub of water. A tube runs "
+                 "from a person's mouth up into the bottle, and air collects at the top of the "
+                 "bottle, pushing the water down. Volume marks run up the side of the bottle.",
+         "caption": "The air you breathe out pushes water out of the bottle."},
+    ],
     "ladder_feedback": {
         "recall": {
             1: "The air moving is the last step. The muscles go first.",

@@ -4,13 +4,11 @@
 LESSON = {
     "slug": "alveoli-built-for-exchange",
     "start": {
-        "setup": None,
-        "question": "If you had to guess, how big is the inside surface of your lungs?",
+        "setup": "Imagine swapping all 500 million alveoli for one smooth bag of the same volume.",
+        "question": "If you had to guess, could you stay alive with the bag instead?",
         "options": [
-            ("About the size of a desk",
-             "About half a tennis court. Millions of tiny air sacs make a huge surface."),
-            ("About half a tennis court",
-             "About half a tennis court. Millions of tiny air sacs make a huge surface."),
+            ("Yes, just as well", "No, not for long. A smooth bag has far too little surface for gas exchange."),
+            ("No, not for long", "No, not for long. A smooth bag has far too little surface for gas exchange."),
         ],
         "answer": 1,
     },

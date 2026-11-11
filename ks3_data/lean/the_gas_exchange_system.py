@@ -5,14 +5,12 @@ LESSON = {
     "slug": "the-gas-exchange-system",
     "start": {
         "setup": None,
-        "question": "If you had to guess, where does oxygen get into your blood?",
+        "question": "If you had to guess, how much of the oxygen in a breath is still there when you breathe it out?",
         "options": [
-            ("In the windpipe",
-             "In tiny air sacs in your lungs. They are called alveoli."),
-            ("In tiny air sacs",
-             "In tiny air sacs in your lungs. They are called alveoli."),
+            ("Most of it", "Most of it. Air you breathe out is still about 16% oxygen."),
+            ("Hardly any of it", "Most of it. Air you breathe out is still about 16% oxygen."),
         ],
-        "answer": 1,
+        "answer": 0,
     },
     "words": ["trachea", "bronchioles", "alveoli", "gas exchange"],
     "knowledge": [

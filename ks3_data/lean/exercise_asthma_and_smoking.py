@@ -6,17 +6,13 @@ Tone rule carried over from the old page: factual. No advice, no doses, no warni
 LESSON = {
     "slug": "exercise-asthma-and-smoking",
     "start": {
-        "setup": None,
-        "question": "If you had to guess, what does a reliever inhaler do?",
+        "setup": "A reliever inhaler helps someone having an asthma attack.",
+        "question": "If you had to guess, does the puff from the inhaler contain extra oxygen?",
         "options": [
-            ("It opens up the airways",
-             "It opens up the airways. In an asthma attack the bronchioles narrow, and the "
-             "inhaler relaxes their muscle."),
-            ("It adds oxygen to the air",
-             "It opens up the airways. In an asthma attack the bronchioles narrow, and the "
-             "inhaler relaxes their muscle."),
+            ("Yes, extra oxygen", "No oxygen at all. The inhaler relaxes the muscle in the bronchioles, so the airways open."),
+            ("No oxygen at all", "No oxygen at all. The inhaler relaxes the muscle in the bronchioles, so the airways open."),
         ],
-        "answer": 0,
+        "answer": 1,
     },
     "words": ["asthma", "bronchioles", "cilia", "carbon monoxide"],
     "knowledge": [

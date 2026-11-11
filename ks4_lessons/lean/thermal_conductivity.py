@@ -6,17 +6,13 @@ Combined pages use 8464 6.1.2.1. Triple pages use 8463 4.1.2.1, which adds Requi
 LESSON = {
     "slug": "thermal-conductivity",
     "start": {
-        "setup": "A metal bench and a wooden bench sit side by side in the cold.",
-        "question": "If you had to guess, which one is colder?",
+        "setup": "A metal spoon and a wooden spoon are put into the same pan of hot soup.",
+        "question": "If you had to guess, which handle gets hot first?",
         "options": [
-            ("The metal bench",
-             "Neither. They are at the same temperature. Metal feels colder because it "
-             "transfers energy from your hand faster."),
-            ("Neither of them",
-             "Neither. They are at the same temperature. Metal feels colder because it "
-             "transfers energy from your hand faster."),
+            ("The metal spoon", "The metal spoon. Metal has a higher thermal conductivity, so energy is conducted up it faster."),
+            ("The wooden spoon", "The metal spoon. Metal has a higher thermal conductivity, so energy is conducted up it faster."),
         ],
-        "answer": 1,
+        "answer": 0,
     },
     "words": ["thermal conductivity", "conduction", "thermal insulator", "rate of cooling"],
     "knowledge": [

@@ -4,13 +4,11 @@
 LESSON = {
     "slug": "energy-resources",
     "start": {
-        "setup": "Nuclear power stations release no carbon dioxide while they run.",
-        "question": "If you had to guess, is nuclear fuel renewable?",
+        "setup": "It is the middle of the night, dark and completely still. A phone plugged into the wall is charging.",
+        "question": "If you had to guess, where is most of that electricity coming from?",
         "options": [
-            ("Yes, it is renewable",
-             "No. Nuclear fuel is finite and will run out."),
-            ("No, it will run out",
-             "No. Nuclear fuel is finite and will run out."),
+            ("Wind turbines and solar panels", "Power stations that can run whenever they are needed. With no wind and no daylight, wind turbines and solar panels produce nothing."),
+            ("Power stations that can run whenever they are needed", "Power stations that can run whenever they are needed. With no wind and no daylight, wind turbines and solar panels produce nothing."),
         ],
         "answer": 1,
     },
