@@ -27,7 +27,7 @@ OUT = "/private/tmp/claude-501/sims-shortlist"
 RESULTS = os.path.join(OUT, "results.json")
 W, H, DPR = 390, 844, 2
 MAX_BLOCK_H = 1100
-BLOCK = ["https://*", "wss://*", "http://localhost*", "*supabase.co*", "*onrender.com*"]
+BLOCK = ["https://*", "wss://*", "http://localhost*"]   # every outside host, the live backend and database included
 
 FIND = r"""
 function find(id, cls, idx){
