@@ -78,6 +78,13 @@ LESSON = {
     "try": None,
     "legacy": {
         "batch": "batch-4",
+        "logic_edits": [
+            ("as on the equation sheet", "write the equation"),
+            # Spec fix: "ways to increase the efficiency" is Higher only (8464 6.1.2.2).
+            # The physics of the chain is all-tier. Same question id, same links.
+            ("Explain why oiling a bicycle chain increases the efficiency of the bicycle.",
+             "Explain how oiling a bicycle chain reduces unwanted energy transfers."),
+        ],
         # The first worked example is Mide's. The other two stay as they were.
         "cfifa_first": {
             "tab": "Nothing to convert", "eq": "EQ_E", "find": "eff",

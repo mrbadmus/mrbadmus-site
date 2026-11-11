@@ -47,7 +47,7 @@ LESSON = {
              ("Exercise", "Faster, deeper breathing", "Yes, soon after you stop"),
              ("Asthma attack", "Narrowed bronchioles", "Yes, with treatment"),
              ("Carbon monoxide", "Less oxygen carried", "Yes, within about a day of stopping smoking"),
-             ("Cilia", "Damaged by tar", "Yes, over weeks to months after stopping smoking"),
+             ("Cilia", "Damaged by tar", "Mostly, over weeks to months after stopping smoking"),
              ("Alveoli walls", "Destroyed by smoking", "No, this is permanent"),
          ]},
         {"kind": "card", "title": "Easy mistakes",
@@ -58,27 +58,28 @@ LESSON = {
               "The air is the same. The airways have narrowed."),
          ]}]},
     ],
-    "key_fact": "Exercise raises breathing rate and asthma narrows the airways, and both can be "
-                "reversed. Smoking destroys the walls of the alveoli, which permanently reduces "
-                "gas exchange.",
+    "key_fact": "Exercise raises breathing rate, and this reverses after you stop. In an asthma "
+                "attack the airways narrow, and treatment can open them again. Smoking destroys "
+                "the walls of the alveoli, which permanently reduces gas exchange.",
     "deeper": [
         {"kind": "card", "title": "Why you keep panting after you stop",
          "body": ["Your blood still holds extra carbon dioxide when you stop.",
-                  "You keep breathing hard until it has been removed."]},
-        {"kind": "card", "title": "Why oxygen does not fix an asthma attack",
+                  "After hard exercise, your body also needs oxygen to break down lactic acid.",
+                  "You keep breathing hard until this is done."]},
+        {"kind": "card", "title": "Why the air is not the problem in an asthma attack",
          "body": ["The air already holds plenty of oxygen.",
-                  "The problem is the narrow airways, so air cannot get through.",
+                  "The problem is the narrow airways, so less air can get through.",
                   "A reliever inhaler treats that by opening the airways."]},
         {"kind": "card", "title": "Emphysema and lung volume",
          "body": ["In emphysema, the walls between alveoli break down.",
-                  "The lungs still hold nearly as much air.",
+                  "The lungs still hold about as much air.",
                   "But the surface area is much smaller, so gas exchange is poor."]},
     ],
     "try": None,
     "ladder_feedback": {
         "recall": {
             0: "Blood oxygen hardly changes in ordinary exercise. Your body detects carbon dioxide.",
-            2: "Your body does not measure how full the lungs are.",
+            2: "Your lungs do not empty during exercise. Your body detects carbon dioxide.",
             3: "Breathing speeds up before you feel tired. It follows carbon dioxide in the blood.",
         },
         "apply": {

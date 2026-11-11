@@ -61,7 +61,7 @@ LESSON = {
          ]}]},
     ],
     "try": None,
-    "legacy": {"batch": "batch-3"},
+    "legacy": {"batch": "batch-3", "logic_edits": [("as on the equation sheet", "write the equation")]},
     "equations": {
         "EQ_PE": {"name": "Power from energy", "written": "power = energy transferred ÷ time",
                   "source": "none",

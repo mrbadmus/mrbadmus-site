@@ -68,7 +68,7 @@ LESSON = {
          "body": ["Metals have free electrons. These carry energy through the metal quickly.",
                   {"slot": "particle-fig"}]},
         {"kind": "card", "title": "Why trapped air insulates",
-         "body": ["Air particles are far apart, so they rarely collide.",
+         "body": ["Air particles are far apart, so energy is passed on slowly.",
                   "Trapped in small pockets, air also cannot form convection currents."]},
         {"kind": "card", "title": "Command words",
          "body": [{"points": [

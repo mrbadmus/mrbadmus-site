@@ -23,7 +23,7 @@ LESSON = {
         {"kind": "card", "title": "Closed systems",
          "body": ["In a closed system, there is no net change to the total energy.",
                   "Energy moves between stores, but the total stays the same.",
-                  "For example, a swinging pendulum with no air resistance moves energy between "
+                  "For example, a swinging pendulum with no air resistance or friction at the pivot moves energy between "
                   "its kinetic and gravitational potential stores. The total stays the same."]},
         {"kind": "card", "title": "Dissipation",
          "body": ["In all system changes, energy is dissipated, so that it is stored in less "
@@ -33,7 +33,7 @@ LESSON = {
          "cols": ["Useful", "Wasted"],
          "rows": [
              ("Car engine", "Kinetic store of the car", "Thermal stores of the engine and surroundings"),
-             ("Filament lamp", "Light", "Heating the surroundings"),
+             ("Filament lamp", "Light", "Thermal stores of the lamp and surroundings"),
              ("Phone charging", "Chemical store of the battery", "Thermal store of the phone"),
              ("Electric kettle", "Thermal store of the water", "Thermal stores of the kettle and surroundings"),
          ]},
@@ -41,8 +41,8 @@ LESSON = {
          "body": [{"points": [
              "<strong>Lubrication</strong>: oil reduces friction between moving parts, so less "
              "energy is dissipated.",
-             "<strong>Thermal insulation</strong>: reduces the energy transferred to the "
-             "surroundings.",
+             "<strong>Thermal insulation</strong>: has a low thermal conductivity, so it reduces "
+             "the rate of energy transfer by conduction to the surroundings.",
          ]}]},
         {"kind": "card", "title": "Easy mistakes",
          "body": [{"mistakes": [

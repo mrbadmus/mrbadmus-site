@@ -12,4 +12,4 @@ Sources: AQA spec 6.1.1.4 / 4.1.1.4, read from the 8464 and 8463 PDFs. Rainford 
 
 **Gaps and mismatches.** None.
 
-**Removed or moved.** Removed: the lift-test simulation. Moved to Dive deeper: two kettles, command words.
+**Removed or moved.** Removed: the lift-test simulation. Moved to Dive deeper: command words.

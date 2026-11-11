@@ -6,8 +6,8 @@ LESSON = {
     "slug": "energy-stores-systems",
     "start": {
         "setup": None,
-        "question": "If you had to guess, what happens to the energy of a ball as you throw it "
-                    "upwards?",
+        "question": "If you had to guess, what happens to the energy of a ball as it rises after "
+                    "you throw it?",
         "options": [
             ("It moves to another store",
              "It moves to another store. The kinetic store empties and the gravitational "
@@ -27,7 +27,7 @@ LESSON = {
          "body": [{"points": ["Kinetic: a moving object.",
                               "Gravitational potential: an object raised above the ground.",
                               "Elastic potential: a stretched or compressed object.",
-                              "Thermal: a warm object.",
+                              "Thermal: any object. Hotter objects store more.",
                               "Chemical: food, fuel and batteries.",
                               "Magnetic, electrostatic and nuclear."]}]},
         {"kind": "reveal", "title": "How energy is stored as a system changes",
@@ -39,11 +39,11 @@ LESSON = {
               "The kinetic store decreases. The thermal stores of the object and the obstacle "
               "increase."),
              ("An object accelerated by a constant force",
-              "Work done by the force increases the kinetic store of the object."),
+              "Work done by the force increases the kinetic store of the object. The store supplying the force decreases, for example the chemical store of the fuel."),
              ("A vehicle slowing down",
-              "The kinetic store decreases. The thermal store of the brakes increases."),
+              "The kinetic store decreases. The thermal stores of the brakes and the surroundings increase."),
              ("Bringing water to a boil in an electric kettle",
-              "Work done by the current increases the thermal store of the water."),
+              "Work done by the current increases the thermal store of the heating element. Energy is then transferred by heating to the thermal store of the water."),
          ]},
         {"kind": "card", "title": "How energy is transferred",
          "body": ["Energy is transferred between stores in three ways you can calculate:",

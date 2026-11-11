@@ -51,7 +51,7 @@ LESSON = {
                 "diffuses into the blood and carbon dioxide diffuses out.",
     "deeper": [
         {"kind": "card", "title": "The same features in the gut",
-         "body": ["The small intestine absorbs food in the same way.",
+         "body": ["The small intestine absorbs digested food.",
                   "It also has a large surface area, thin walls and a good blood supply."]},
         {"kind": "card", "title": "High up a mountain",
          "body": ["Air on a mountain is still 21% oxygen.",
@@ -64,7 +64,7 @@ LESSON = {
         "recall": {
             0: "The volume is the same in this question. Only the surface is different.",
             1: "Mass does not matter here. Surface area does.",
-            2: "Air is replaced about twelve times a minute, so it is not stored.",
+            2: "Some of the air is replaced with every breath, so it is not stored.",
         },
         "apply": {
             0: "The particles keep moving and keep crossing the wall.",
@@ -73,8 +73,10 @@ LESSON = {
         },
     },
     "ladder_stem": {
+        "apply": "You hold your breath. Blood keeps flowing. After a while, oxygen almost "
+                 "stops entering the blood overall. Why?",
         "produce": "At the top of a high mountain the air still contains 21% oxygen, yet climbers "
-                   "become short of oxygen. Using what you have learnt, explain why — and why "
-                   "breathing faster helps a little but does not solve it.",
+                   "become short of oxygen. Using what you have learnt, explain why. Then explain "
+                   "why breathing faster helps a little but does not solve it.",
     },
 }

@@ -8,7 +8,7 @@ _RP_STEPS = [
     "Measure the mass of the block.",
     "Put a heater and a thermometer in the block and wrap it in insulation.",
     "Record the starting temperature.",
-    "Switch on the heater and measure the energy transferred.",
+    "Switch on the heater. Measure the energy transferred with a joulemeter, or use power × time.",
     "Record the final temperature and work out the temperature change.",
     "Use c = ΔE ÷ (m × Δθ) to find the specific heat capacity.",
 ]

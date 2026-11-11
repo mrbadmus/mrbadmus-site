@@ -24,7 +24,7 @@ LESSON = {
          "cols": ["Renewable", "Reliable"],
          "rows": [
              ("Fossil fuels (coal, oil, gas)", "No. They will run out.", "Yes. They can be burned whenever needed."),
-             ("Nuclear fuel", "No. Uranium is finite.", "Yes. Power stations run on demand."),
+             ("Nuclear fuel", "No. Uranium is finite.", "Yes. Power stations run steadily all the time."),
              ("Bio-fuel", "Yes. The plants regrow.", "Yes. It can be burned whenever needed."),
              ("Wind", "Yes.", "No. There is no output when the wind drops."),
              ("Hydro-electricity", "Yes. Rain refills the reservoir.", "Yes. Water can be released when needed."),
@@ -37,7 +37,7 @@ LESSON = {
          "cols": ["Main resources"],
          "rows": [
              ("Transport", "Mostly oil-based fuels, some bio-fuel and electricity"),
-             ("Electricity generation", "A mix of all the resources"),
+             ("Electricity generation", "A mix of many resources"),
              ("Heating", "Mostly gas, some electricity, some geothermal and solar"),
          ]},
         {"kind": "reveal", "title": "Environmental impact",
@@ -48,7 +48,7 @@ LESSON = {
              ("Bio-fuel", "Growing fuel crops uses land that could grow food."),
              ("Wind", "Turbines can be noisy and change the look of the landscape."),
              ("Hydro-electricity", "Building a dam floods a valley and destroys habitats."),
-             ("Geothermal", "Only available where hot rocks lie near the surface."),
+             ("Geothermal", "Drilling can release gases from underground, and the power station takes up land."),
              ("The tides", "A tidal barrage changes the habitat of estuary wildlife."),
              ("The Sun", "Making solar panels uses energy and materials."),
              ("Water waves", "Wave machines can disturb marine habitats."),
