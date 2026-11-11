@@ -38,6 +38,19 @@ sys.path.insert(0, REPO)
 sys.path.insert(0, os.path.join(REPO, "tools"))
 OUT_DIR = os.path.join(REPO, "docs", "lessons", "pilot")
 FILES = {"KS3": "ID-MAP-ks3-breathing-and-gas-exchange.json", "KS4": "ID-MAP-ks4-energy.json"}
+# The same maps in the shape docs/b2c/LESSON-DEPENDENCIES.md asks for, read by
+# tools/lesson_contract_check.py: one key per id that moved or went, null = retired.
+B2C_DIR = os.path.join(REPO, "docs", "b2c", "id-maps")
+B2C_FILES = {"KS3": "B4.json", "KS4": "physics-energy.json"}
+
+
+def b2c_map(m):
+    return {q: e["new"] for q, e in sorted(m["ids"].items())
+            if e["status"] in ("removed", "changed")}
+
+
+def render_b2c(m):
+    return json.dumps(b2c_map(m), indent=1, sort_keys=True, ensure_ascii=False) + "\n"
 
 # old id -> (new id, reason). Empty on purpose: the pilot keeps every surviving id.
 CHANGED = {}
@@ -142,7 +155,9 @@ def build(base="origin/main"):
                 if qid in CHANGED:
                     new_id, why = CHANGED[qid]
                     ids[qid] = {"status": "changed", "new": new_id, "kp": old_q[qid], "note": why}
-                elif qid in old_q and qid in new_q:
+                elif qid in old_q and qid in new_q and not (ks == "KS4" and qid.startswith("ks4c:")):
+                    # (a ks4c: matching card belongs to the classic page; a lean page never
+                    # sends one, though the inventory still lists the lesson's old pairs)
                     note = "the id is unchanged"
                     if qid.endswith("#start"):
                         note = _start_note(ks, ref, lean3)
@@ -205,16 +220,23 @@ def main(argv):
         counts = {}
         for e in m["ids"].values():
             counts[e["status"]] = counts.get(e["status"], 0) + 1
+        bpath = os.path.join(B2C_DIR, B2C_FILES[ks])
+        btext = render_b2c(m)
         if "--check" in argv:
-            cur = open(path, encoding="utf-8").read() if os.path.exists(path) else None
-            if cur != text:
-                print("lean_id_map: %s is stale" % FILES[ks])
-                bad += 1
+            for p, t in ((path, text), (bpath, btext)):
+                cur = open(p, encoding="utf-8").read() if os.path.exists(p) else None
+                if cur != t:
+                    print("lean_id_map: %s is stale" % os.path.relpath(p, REPO))
+                    bad += 1
             continue
         os.makedirs(OUT_DIR, exist_ok=True)
+        os.makedirs(B2C_DIR, exist_ok=True)
         with open(path, "w", encoding="utf-8") as fh:
             fh.write(text)
-        print("wrote %s: %d ids %s" % (os.path.relpath(path, REPO), len(m["ids"]), counts))
+        with open(bpath, "w", encoding="utf-8") as fh:
+            fh.write(btext)
+        print("wrote %s: %d ids %s; %s: %d moved or retired"
+              % (os.path.relpath(path, REPO), len(m["ids"]), counts, os.path.relpath(bpath, REPO), len(b2c_map(m))))
     return 1 if bad else 0
 
 

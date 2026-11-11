@@ -20,13 +20,11 @@
    element that scrolls sideways, is the control's or the scroller's own gesture, not a toggle.
    The card's own header button still starts a swipe.
 
-   Figures. Every diagram inside a lean card (`.lean-fig`, written by lean_blocks.fig_wrap) is
-   FITTED to the card width by default, so the whole drawing shows with no fade. Where its natural
-   width (the width the page used to force, read from the svg's min-width or, in KS4, from
-   --fig-vb / --fig-fs) is more than 5% over the room, `data-lean-needs` is set on the wrapper
-   and its "Zoom in" / "Fit to screen" button appears (lean.css). Only that button changes the
-   size, never a tap on the drawing, so an interactive diagram keeps working. Both attributes are
-   set here, never by a template, so KS4's patch-in-place renderer leaves them alone.
+   Figures. A diagram inside a lean card (`.lean-fig`, written by lean_blocks.fig_wrap) is FITTED
+   to the card width (`data-lean-fits`) only when its smallest label still draws at 11px or more
+   there. A drawing that would read smaller keeps the page's own sideways-scrolling frame, at the
+   width where its labels reach 11px. The attribute is set here, never by a template, so KS4's
+   patch-in-place renderer leaves it alone.
 
    Rail credit. KS3's rail reads `data-stage-done` on a section (shared/ks3.js
    doneByDom), so the Key knowledge section is marked done the first time anything
@@ -115,8 +113,6 @@
       initFigs(box);
       return;
     }
-    el = closest(t, "[data-lean-zoom-btn]");
-    if (el) { toggleZoom(el); return; }
     el = closest(t, "[data-lean-word]");
     if (el) { el.setAttribute("aria-expanded", el.getAttribute("aria-expanded") === "true" ? "false" : "true"); }
   }, true);
@@ -156,29 +152,40 @@
   }, true);
   document.addEventListener("pointercancel", function () { down = null; }, true);
 
-  /* ── figures: fitted by default, a button to see them at natural size ── */
-  var NEEDS_OVER = 1.05;
-  function naturalWidth(svg, box) {
-    var vb = parseFloat(box.style.getPropertyValue("--fig-vb"));
-    var fs = parseFloat(box.style.getPropertyValue("--fig-fs"));
-    if (vb > 0 && fs > 0) { return 11 * vb / fs; }                  // KS4: the width its text floor asked for
-    var mw = parseFloat(svg.style.minWidth);                        // KS3: the min-width the drawer declared
-    if (mw > 0) { return mw; }
+  /* ── figures: fitted to the card only where the text stays readable ──
+     A drawing is fitted (data-lean-fits) when its smallest label still draws at 11px or more at
+     the card's width. Otherwise nothing here touches it, and the page's own frame applies: KS4's
+     text floor (figFit, a sideways scroller with an edge fade) or KS3's .ks3-figure-scroll. There
+     is no button that shrinks a drawing below 11px text (gate ks4_figure_text presses every one). */
+  var FLOOR_PX = 11;
+  function smallestFont(svg) {                                     // in viewBox units, as the audit reads it
+    var min = Infinity;
+    each(svg.querySelectorAll("text, tspan"), function (t) {
+      if (t.tagName.toLowerCase() === "text" && t.querySelector("tspan")) { return; }
+      if (t.hasAttribute("baseline-shift") || !(t.textContent || "").trim()) { return; }
+      var fs = parseFloat(window.getComputedStyle(t).fontSize);
+      if (fs > 0 && fs < min) { min = fs; }
+    });
+    return min;
+  }
+  function readableWidth(svg, box) {                               // narrowest width at which every label is >= 11px
     var v = svg.viewBox && svg.viewBox.baseVal;
-    return v && v.width ? v.width : 0;
+    var vbw = (v && v.width) || parseFloat(box.style.getPropertyValue("--fig-vb")) || 0;
+    var fs = parseFloat(box.style.getPropertyValue("--fig-fs"));
+    if (!(fs > 0)) { fs = smallestFont(svg); }
+    if (!(vbw > 0) || !(fs > 0) || fs === Infinity) { return 0; } // no text: it reads at any width
+    return FLOOR_PX * vbw / fs;
   }
   function updateFig(fig) {
     var svg = fig.querySelector("svg");
     if (!svg) { return; }
     var box = svg.parentNode;
-    var avail = fig.clientWidth;
-    if (!(avail > 0)) { return; }                                   // inside a closed card: measured when it opens
-    var nat = naturalWidth(svg, box);
-    var needs = nat > avail * NEEDS_OVER;
-    fig.style.setProperty("--lean-nat", Math.round(nat) + "px");
-    if (needs !== fig.hasAttribute("data-lean-needs")) {
-      if (needs) { fig.setAttribute("data-lean-needs", ""); }
-      else { fig.removeAttribute("data-lean-needs"); fig.removeAttribute("data-lean-zoom"); }
+    var cs = window.getComputedStyle(box);
+    var room = box.clientWidth - (parseFloat(cs.paddingLeft) || 0) - (parseFloat(cs.paddingRight) || 0);
+    if (!(room > 0)) { return; }                                    // inside a closed card: measured when it opens
+    var fits = readableWidth(svg, box) <= room;
+    if (fits !== fig.hasAttribute("data-lean-fits")) {
+      if (fits) { fig.setAttribute("data-lean-fits", ""); } else { fig.removeAttribute("data-lean-fits"); }
     }
   }
   var figRO = (typeof ResizeObserver === "function") ? new ResizeObserver(function (entries) {
@@ -189,18 +196,6 @@
       if (!fig.__leanFig) { fig.__leanFig = true; if (figRO) { figRO.observe(fig); } }
       updateFig(fig);
     });
-  }
-  function toggleZoom(btn) {
-    var fig = closest(btn, "[data-lean-fig]");
-    if (!fig) { return; }
-    var on = !fig.hasAttribute("data-lean-zoom");
-    if (on) { fig.setAttribute("data-lean-zoom", ""); } else { fig.removeAttribute("data-lean-zoom"); }
-    var svg = fig.querySelector("svg");
-    var box = svg && svg.parentNode;
-    if (box) {
-      if (on) { box.setAttribute("tabindex", "0"); box.scrollLeft = 0; }
-      else if (box.getAttribute("tabindex") === "0" && !box.hasAttribute("data-fig-over")) { box.removeAttribute("tabindex"); }
-    }
   }
 
   /* Give every control its aria-expanded, now and whenever the page builds more. */

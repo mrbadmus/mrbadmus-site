@@ -401,20 +401,25 @@ def triangles(d, rec):
         d.check(o["sw"] <= o["cw"], "overflow after tapping the triangles in %r: %s" % (title, o))
 
 
-# ── figures: fitted to the card, a zoom button only where needed ────────
+# ── figures: fitted to the card only where every label stays at 11px or more ────────
 
 FIG_INFO = """
 return [].map.call(document.querySelectorAll('[data-lean-fig]'), function (f, i) {
   var svg = f.querySelector('svg'), box = svg && svg.parentNode;
-  var btn = f.querySelector('[data-lean-zoom-btn]'), cs = btn && getComputedStyle(btn);
-  var nat = parseFloat(f.style.getPropertyValue('--lean-nat')) || 0;
-  return {i: i, vb: !!(svg && svg.getAttribute('viewBox')), avail: f.clientWidth, nat: nat,
+  var min = Infinity;
+  if (svg) [].forEach.call(svg.querySelectorAll('text, tspan'), function (t) {
+    if (t.tagName.toLowerCase() === 'text' && t.querySelector('tspan')) return;
+    if (t.hasAttribute('baseline-shift') || !(t.textContent || '').trim() || !t.getClientRects().length) return;
+    var m = t.getScreenCTM && t.getScreenCTM(); if (!m) return;
+    var px = parseFloat(getComputedStyle(t).fontSize) * Math.hypot(m.a, m.b);
+    if (px >= 0.05 && px < min) min = px;
+  });
+  return {i: i, vb: !!(svg && svg.getAttribute('viewBox')), avail: box ? box.clientWidth : 0,
           svgw: svg ? Math.round(svg.getBoundingClientRect().width) : 0,
           over: box ? box.scrollWidth - box.clientWidth : 0,
-          needs: f.hasAttribute('data-lean-needs'), zoom: f.hasAttribute('data-lean-zoom'),
-          btn: !!btn, shown: !!(btn && cs.display !== 'none' && btn.offsetHeight > 0),
-          bh: btn ? Math.round(btn.getBoundingClientRect().height) : 0,
-          label: btn ? btn.innerText.trim() : '', card: !!f.closest('.lean-card')};
+          fits: f.hasAttribute('data-lean-fits'), btn: !!f.querySelector('button'),
+          minpx: min === Infinity ? null : Math.round(min * 100) / 100,
+          ks4: !!f.closest('#ks4-mount'), card: !!f.closest('.lean-card')};
 });
 """
 FIGS = {}
@@ -422,26 +427,16 @@ FIGS = {}
 
 def figures(d):
     info = d.js(FIG_INFO)
-    FIGS[d.tag] = [(f["nat"], f["avail"]) for f in info]
+    FIGS[d.tag] = [(f["svgw"], f["avail"], f["fits"], f["minpx"]) for f in info]
     for f in info:
-        w = "figure %d (natural %s, room %s)" % (f["i"], f["nat"], f["avail"])
+        w = "figure %d (svg %s, room %s, smallest text %spx)" % (f["i"], f["svgw"], f["avail"], f["minpx"])
         d.check(f["vb"], "%s has no viewBox" % w)
         d.check(f["card"], "%s is not inside a lean card" % w)
-        d.check(f["over"] <= 1 and f["svgw"] <= f["avail"] + 1, "%s overflows its card when fitted: svg %s, scroll over %s" % (w, f["svgw"], f["over"]))
-        want = f["nat"] > f["avail"] * 1.05
-        d.check(f["needs"] == want and f["shown"] == want, "%s: zoom button %s, wanted %s" % (w, "shown" if f["shown"] else "hidden", want))
-        if want:
-            d.check(f["bh"] >= 44, "%s: zoom button is %spx tall" % (w, f["bh"]))
-            d.check(f["label"] == "Zoom in", "%s: label %r" % (w, f["label"]))
-            sel = "document.querySelectorAll('[data-lean-fig]')[%d]" % f["i"]
-            d.js("%s.scrollIntoView({block:'center',behavior:'instant'});%s.querySelector('[data-lean-zoom-btn]').focus();1" % (sel, sel))
-            d.key("Enter")
-            z = d.js("var f=%s,svg=f.querySelector('svg'),box=svg.parentNode;return {z:f.hasAttribute('data-lean-zoom'),"
-                     "over:box.scrollWidth-box.clientWidth,l:f.querySelector('[data-lean-zoom-btn]').innerText.trim(),svgw:Math.round(svg.getBoundingClientRect().width)}" % sel)
-            d.check(z["z"] and z["over"] > 1 and z["l"] == "Fit to screen", "%s: zoom by keyboard did not show it at natural size: %s" % (w, z))
-            d.key("Enter")
-            z = d.js("var f=%s,svg=f.querySelector('svg'),box=svg.parentNode;return {z:f.hasAttribute('data-lean-zoom'),over:box.scrollWidth-box.clientWidth}" % sel)
-            d.check(not z["z"] and z["over"] <= 1, "%s: Fit to screen did not fit it again: %s" % (w, z))
+        d.check(not f["btn"], "%s carries a button" % w)
+        if f["fits"]:
+            d.check(f["over"] <= 1 and f["svgw"] <= f["avail"] + 1, "%s overflows its card when fitted: scroll over %s" % (w, f["over"]))
+        if f["minpx"] is not None and (f["fits"] or f["ks4"]):
+            d.check(f["minpx"] >= 10.99, "%s draws text under 11px" % w)
 
 
 def touch_drag_slider(d):

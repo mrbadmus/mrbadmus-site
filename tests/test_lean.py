@@ -96,15 +96,12 @@ class Swipe(unittest.TestCase):
 
 
 class Figures(unittest.TestCase):
-    def test_a_figure_is_wrapped_with_its_zoom_button(self):
+    def test_a_figure_is_wrapped_with_no_button(self):
         h = lb.fig_wrap("<figure>drawing</figure>")
         self.assertIn('class="lean-fig" data-lean-fig', h)
         self.assertIn("<figure>drawing</figure>", h)
-        self.assertIn('<button type="button" class="lean-zoom" data-lean-zoom-btn>', h)
-        self.assertIn("Zoom in", h)
-        self.assertIn("Fit to screen", h)
-        self.assertNotIn("data-lean-needs", h)      # set by lean.js only, never by a template
-        self.assertNotIn("data-lean-zoom ", h)
+        self.assertNotIn("<button", h)              # no control may shrink a drawing below 11px text
+        self.assertNotIn("data-lean-fits", h)       # set by lean.js only, never by a template
 
 
 class Routes(unittest.TestCase):

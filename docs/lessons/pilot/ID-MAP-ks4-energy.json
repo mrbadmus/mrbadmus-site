@@ -5661,213 +5661,213 @@
   },
   "ks4c:changes-in-energy:match-1": {
    "kp": "ks4.changes-in-energy.3",
-   "new": "ks4c:changes-in-energy:match-1",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the classic matching card is not on the lean page",
+   "status": "removed"
   },
   "ks4c:changes-in-energy:match-2": {
    "kp": "ks4.changes-in-energy.1",
-   "new": "ks4c:changes-in-energy:match-2",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the classic matching card is not on the lean page",
+   "status": "removed"
   },
   "ks4c:changes-in-energy:match-3": {
    "kp": "ks4.changes-in-energy.2",
-   "new": "ks4c:changes-in-energy:match-3",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the classic matching card is not on the lean page",
+   "status": "removed"
   },
   "ks4c:changes-in-energy:match-4": {
    "kp": "ks4.changes-in-energy.1",
-   "new": "ks4c:changes-in-energy:match-4",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the classic matching card is not on the lean page",
+   "status": "removed"
   },
   "ks4c:efficiency:match-1": {
    "kp": "ks4.efficiency.2",
-   "new": "ks4c:efficiency:match-1",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the classic matching card is not on the lean page",
+   "status": "removed"
   },
   "ks4c:efficiency:match-2": {
    "kp": "ks4.efficiency.2",
-   "new": "ks4c:efficiency:match-2",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the classic matching card is not on the lean page",
+   "status": "removed"
   },
   "ks4c:efficiency:match-3": {
    "kp": "ks4.efficiency.2",
-   "new": "ks4c:efficiency:match-3",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the classic matching card is not on the lean page",
+   "status": "removed"
   },
   "ks4c:efficiency:match-4": {
    "kp": "ks4.efficiency.2",
-   "new": "ks4c:efficiency:match-4",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the classic matching card is not on the lean page",
+   "status": "removed"
   },
   "ks4c:energy-changes-in-systems:match-1": {
    "kp": "ks4.energy-changes-in-systems.5",
-   "new": "ks4c:energy-changes-in-systems:match-1",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the classic matching card is not on the lean page",
+   "status": "removed"
   },
   "ks4c:energy-changes-in-systems:match-2": {
    "kp": "ks4.energy-changes-in-systems.7",
-   "new": "ks4c:energy-changes-in-systems:match-2",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the classic matching card is not on the lean page",
+   "status": "removed"
   },
   "ks4c:energy-changes-in-systems:match-3": {
    "kp": "ks4.energy-changes-in-systems.2",
-   "new": "ks4c:energy-changes-in-systems:match-3",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the classic matching card is not on the lean page",
+   "status": "removed"
   },
   "ks4c:energy-changes-in-systems:match-4": {
    "kp": "ks4.energy-changes-in-systems.3",
-   "new": "ks4c:energy-changes-in-systems:match-4",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the classic matching card is not on the lean page",
+   "status": "removed"
   },
   "ks4c:energy-resources:match-1": {
    "kp": "ks4.energy-resources.2",
-   "new": "ks4c:energy-resources:match-1",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the classic matching card is not on the lean page",
+   "status": "removed"
   },
   "ks4c:energy-resources:match-2": {
    "kp": "ks4.energy-resources.2",
-   "new": "ks4c:energy-resources:match-2",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the classic matching card is not on the lean page",
+   "status": "removed"
   },
   "ks4c:energy-resources:match-3": {
    "kp": "ks4.energy-resources.6",
-   "new": "ks4c:energy-resources:match-3",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the classic matching card is not on the lean page",
+   "status": "removed"
   },
   "ks4c:energy-resources:match-4": {
    "kp": "ks4.energy-resources.6",
-   "new": "ks4c:energy-resources:match-4",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the classic matching card is not on the lean page",
+   "status": "removed"
   },
   "ks4c:energy-resources:match-5": {
    "kp": "ks4.energy-resources.6",
-   "new": "ks4c:energy-resources:match-5",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the classic matching card is not on the lean page",
+   "status": "removed"
   },
   "ks4c:energy-stores-systems:match-1": {
    "kp": "ks4.energy-stores-systems.2",
-   "new": "ks4c:energy-stores-systems:match-1",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the classic matching card is not on the lean page",
+   "status": "removed"
   },
   "ks4c:energy-stores-systems:match-2": {
    "kp": "ks4.energy-stores-systems.2",
-   "new": "ks4c:energy-stores-systems:match-2",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the classic matching card is not on the lean page",
+   "status": "removed"
   },
   "ks4c:energy-stores-systems:match-3": {
    "kp": "ks4.energy-stores-systems.2",
-   "new": "ks4c:energy-stores-systems:match-3",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the classic matching card is not on the lean page",
+   "status": "removed"
   },
   "ks4c:energy-stores-systems:match-4": {
    "kp": "ks4.energy-stores-systems.6",
-   "new": "ks4c:energy-stores-systems:match-4",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the classic matching card is not on the lean page",
+   "status": "removed"
   },
   "ks4c:energy-stores-systems:match-5": {
    "kp": "ks4.energy-stores-systems.6",
-   "new": "ks4c:energy-stores-systems:match-5",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the classic matching card is not on the lean page",
+   "status": "removed"
   },
   "ks4c:energy-stores-systems:match-6": {
    "kp": "ks4.energy-stores-systems.6",
-   "new": "ks4c:energy-stores-systems:match-6",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the classic matching card is not on the lean page",
+   "status": "removed"
   },
   "ks4c:energy-transfers-in-a-system:match-1": {
    "kp": "ks4.energy-transfers-in-a-system.4",
-   "new": "ks4c:energy-transfers-in-a-system:match-1",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the classic matching card is not on the lean page",
+   "status": "removed"
   },
   "ks4c:energy-transfers-in-a-system:match-2": {
    "kp": "ks4.energy-transfers-in-a-system.5",
-   "new": "ks4c:energy-transfers-in-a-system:match-2",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the classic matching card is not on the lean page",
+   "status": "removed"
   },
   "ks4c:energy-transfers-in-a-system:match-3": {
    "kp": "ks4.energy-transfers-in-a-system.6",
-   "new": "ks4c:energy-transfers-in-a-system:match-3",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the classic matching card is not on the lean page",
+   "status": "removed"
   },
   "ks4c:energy-transfers-in-a-system:match-4": {
    "kp": "ks4.energy-transfers-in-a-system.7",
-   "new": "ks4c:energy-transfers-in-a-system:match-4",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the classic matching card is not on the lean page",
+   "status": "removed"
   },
   "ks4c:power:match-1": {
    "kp": "ks4.power.3",
-   "new": "ks4c:power:match-1",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the classic matching card is not on the lean page",
+   "status": "removed"
   },
   "ks4c:power:match-2": {
    "kp": "ks4.power.6",
-   "new": "ks4c:power:match-2",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the classic matching card is not on the lean page",
+   "status": "removed"
   },
   "ks4c:power:match-3": {
    "kp": "ks4.power.6",
-   "new": "ks4c:power:match-3",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the classic matching card is not on the lean page",
+   "status": "removed"
   },
   "ks4c:power:match-4": {
    "kp": "ks4.power.2",
-   "new": "ks4c:power:match-4",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the classic matching card is not on the lean page",
+   "status": "removed"
   },
   "ks4c:thermal-conductivity:match-1": {
    "kp": "ks4.thermal-conductivity.2",
-   "new": "ks4c:thermal-conductivity:match-1",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the classic matching card is not on the lean page",
+   "status": "removed"
   },
   "ks4c:thermal-conductivity:match-2": {
    "kp": "ks4.thermal-conductivity.5",
-   "new": "ks4c:thermal-conductivity:match-2",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the classic matching card is not on the lean page",
+   "status": "removed"
   },
   "ks4c:thermal-conductivity:match-3": {
    "kp": "ks4.thermal-conductivity.5",
-   "new": "ks4c:thermal-conductivity:match-3",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the classic matching card is not on the lean page",
+   "status": "removed"
   },
   "ks4c:thermal-conductivity:match-4": {
    "kp": "ks4.thermal-conductivity.9",
-   "new": "ks4c:thermal-conductivity:match-4",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the classic matching card is not on the lean page",
+   "status": "removed"
   },
   "ks4q:changes-in-energy:8dbad3a749": {
    "kp": "ks4.changes-in-energy.2",

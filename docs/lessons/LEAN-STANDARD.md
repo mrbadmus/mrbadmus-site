@@ -153,14 +153,22 @@ B2C tracks pupils by question ID, so a silent change breaks a child's history.
 - Ship an old-to-new ID map for the unit, `docs/lessons/<wave>/ID-MAP-<unit>.json`:
   every ID kept, changed, added or removed. Activities that are removed are listed
   as "removed". Never delete or rewrite saved child answers in the database.
+- Also ship the short map the contract check reads, `docs/b2c/id-maps/<unit>.json`
+  (KS3 unit code such as `B4.json`, KS4 `physics-energy.json`): one key per ID that
+  moved or went, `null` for retired. `tools/lean_id_map.py` writes both from one source.
 - Every new question carries a knowledge-point tag, the same way existing questions
   are tagged.
 - Never describe a diagram in words. Draw it.
 - List every changed ID in the report.
+- Before pushing, `python3 tools/lesson_contract_check.py --unit <unit>` must say SAFE,
+  static and with `--drive`.
 
-`docs/b2c/LESSON-DEPENDENCIES.md` is the fuller version once it exists. Read it first.
-This section was added from Mide's message because the updated copy of this file
-could not be reached during the pilot. If his copy differs, his copy wins.
+`docs/b2c/LESSON-DEPENDENCIES.md` is the full rule; read it first. Two traps it names:
+a KS4 practice-set ID (`ks4q:`) is a hash of the question's wording, so rewording one
+gives it a new ID; and the KS4 lesson only ticks done for a family child while the
+"Score N of 4" line under the four-rung ladder is on the page.
+This section was added from Mide's message during the pilot, because his updated copy
+of this file could not be reached. If his copy differs, his copy wins.
 
 ## Before you hand in a lesson, check
 
