@@ -1439,6 +1439,44 @@ def clicker(cdp, port, width, height):
                         "out.sw = q('pick-set-sound').getAttribute('aria-checked');")
         if line.get("sw") != "false" or "Clicker keys" not in (line.get("line") or ""):
             bad("settings: sound switch %r, clicker line %r" % (line.get("sw"), line.get("line")))
+
+        # ── 8. picker closed, timer floating: Space on a PAGE button is
+        #       still that button's, and Back still drives the timer ─────
+        page = _fresh(br, port, width, height)
+        page.eval(INSTRUMENT)
+        _J(page, """window.MrBadmusTimer.open({view: 'float'}); await frame();
+          const b = document.createElement('button'); b.type = 'button';
+          b.id = '__pagebtn'; b.textContent = 'page'; window.__PB = 0;
+          b.addEventListener('click', () => { window.__PB++; });
+          document.body.appendChild(b); b.focus();""")
+        p0 = snap(page)
+        _kd(page, " ", text=" "); _time.sleep(0.02); _ku(page, " "); _time.sleep(0.4)
+        p1 = snap(page)
+        pb = page.eval("window.__PB")
+        if pb != 1:
+            bad("Space on a focused page button pressed it %r time(s), wanted 1" % pb)
+        if (p1["tm"] or {}).get("state") != (p0["tm"] or {}).get("state"):
+            bad("Space on a page button also toggled the timer: %r -> %r"
+                % (p0["tm"], p1["tm"]))
+        _tap(page, "PageUp")
+        p2 = snap(page)
+        if (p2["tm"] or {}).get("state") == (p1["tm"] or {}).get("state"):
+            bad("Back no longer drives the timer with a page button focused")
+
+        # ── 9. the float over the picker is reachable by a screen reader:
+        #       the picker stops claiming aria-modal while it shows ───────
+        page = _fresh(br, port, width, height)
+        m = _J(page, """await openPicker();
+          const pk = document.querySelector('[data-mrb-picker]');
+          out.a = pk.getAttribute('aria-modal');
+          window.MrBadmusTimer.open({view: 'float'}); await frame();
+          out.b = pk.getAttribute('aria-modal');
+          window.MrBadmusTimer.open({view: 'full'}); await frame();
+          out.c = pk.getAttribute('aria-modal');
+          window.MrBadmusTimer.close(); await frame();
+          out.d = pk.getAttribute('aria-modal');""")
+        if (m.get("a"), m.get("b"), m.get("c"), m.get("d")) != ("true", "false", "true", "true"):
+            bad("picker aria-modal with the float: %r" % (m,))
     return P
 
 
