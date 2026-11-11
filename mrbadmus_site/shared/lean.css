@@ -164,11 +164,42 @@
 }
 @media (prefers-reduced-motion: reduce) { .lean-chev { transition: none; } }
 
+/* Figures: fitted to the card by default; a button shows them at natural size.
+   lean.js sets data-lean-needs (button appears) and data-lean-zoom (natural width, own scroller)
+   on .lean-fig. Nothing here reads a tap on the drawing, so an interactive diagram keeps working.
+   The !importants beat the width a drawer wrote into the svg's own style (KS3's min-width) and
+   KS4's phone text-floor rule ([data-fig-fit] > svg). */
+.lean-fig { display: block; max-width: 100%; }
+.lean-fig .ks3-figure-scroll, .lean-fig [data-fig-fit] { overflow-x: hidden; }
+.lean-fig svg { min-width: 0 !important; max-width: 100% !important; width: 100% !important; height: auto; }
+.lean-fig[data-lean-zoom] .ks3-figure-scroll, .lean-fig[data-lean-zoom] [data-fig-fit] { overflow-x: auto; }
+.lean-fig[data-lean-zoom] svg { min-width: var(--lean-nat) !important; width: var(--lean-nat) !important; max-width: none !important; }
+.lean-zoom {
+  display: none; align-items: center; justify-content: center; gap: 6px;
+  min-height: 44px; min-width: 44px; box-sizing: border-box; margin: 8px 0 0; padding: 8px 16px; cursor: pointer;
+  font: inherit; font-size: 16px; font-weight: 700; color: var(--ks3-ink);
+  background: var(--ks3-card); border: 2px solid var(--ks3-ink); border-radius: var(--ks3-r-control, 12px);
+}
+.lean-fig[data-lean-needs] .lean-zoom { display: inline-flex; }
+.lean-zoom .lean-zoom-out { display: none; }
+.lean-fig[data-lean-zoom] .lean-zoom .lean-zoom-in { display: none; }
+.lean-fig[data-lean-zoom] .lean-zoom .lean-zoom-out { display: inline; }
+.lean-zoom:focus-visible { outline: 3px solid var(--ks3-accent, var(--ks3-accent-text)); outline-offset: 2px; }
+
+/* Tap targets on a lean page: the previous/next and "Connects to" links, and the tick rows,
+   are at least 44px tall. (lean.css loads only on lean pages, so nothing else moves.) */
+.ks3-endmatter li > a, .ks3-endmatter .ks3-tutor-cta {
+  display: inline-flex; align-items: center; gap: 6px; min-height: 44px; box-sizing: border-box;
+}
+.ks3-tick { align-items: center; }
+.ks3-tick input[type="checkbox"] { width: 28px; height: 28px; }
+.ks3-tick label { display: flex; align-items: center; flex: 1 1 auto; min-height: 44px; box-sizing: border-box; }
+
 /* Print: everything open, no hover-only or tap-only content */
 @media print {
   .lean-card-body, .lean-deeper-body { display: block !important; }
   .lean-cell-text { display: block !important; }
-  .lean-cell-hint, .lean-showall { display: none !important; }
+  .lean-cell-hint, .lean-showall, .lean-zoom { display: none !important; }
   .lean-word-def { display: block !important; }
   .lean-chev { display: none; }
   .lean-card, .lean-fact, .lean-reveal { box-shadow: none; break-inside: avoid; }

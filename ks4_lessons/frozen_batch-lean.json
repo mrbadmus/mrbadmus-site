@@ -4,23 +4,23 @@
   "review_state": "examiner-reviewed"
  },
  "efficiency": {
-  "hash": "c3ca0227b92de15e933e14ed97cfedf2cb76ac7a3bf4d365126d1a062d9e2faa",
+  "hash": "f85bb90f6a144001dcc2b467fff768b02f9f30d503a7a37f34848bdc6a4b6552",
   "review_state": "examiner-reviewed"
  },
  "energy-changes-in-systems": {
-  "hash": "3182290dbe2991ca70aa3d32b10408ac2cdfe5ca5f5e7d6e7c17e12c21dff8a9",
+  "hash": "6e2013a66e4454fca83147a6d409ea49685a177237a705201c6f71cd11dffa53",
   "review_state": "examiner-reviewed"
  },
  "energy-resources": {
-  "hash": "b88e4a680e6e4007d733cdb4c8a9d4a2d6f41f164dceb797921224dcebdd51dc",
+  "hash": "ec767c79846696d7e0e7d762f9c0c3777da642cb1b3321a8768412ab0554ef5f",
   "review_state": "examiner-reviewed"
  },
  "energy-stores-systems": {
-  "hash": "04390261be592056d2c64ef469f8668cfd7a29fb0017d048badae7702d80c14e",
+  "hash": "7ceb65c4ab61c8e207e04f0a69edbf2a72dfb55b4909855d03668be236a479a1",
   "review_state": "examiner-reviewed"
  },
  "energy-transfers-in-a-system": {
-  "hash": "d07a4c9296689aa6c1763b4327a018d02e22795d375fd5bdee307a4a7edb3ad3",
+  "hash": "c451e9d14ca8dfb2bd2788f958a4bb9a2e938409d81cbbb5c11c01c22ed5616e",
   "review_state": "examiner-reviewed"
  },
  "power": {
@@ -28,7 +28,7 @@
   "review_state": "examiner-reviewed"
  },
  "thermal-conductivity": {
-  "hash": "fe917a249a2d44fcfdcbc3af6c4662ee2daa294029ebe25adff5cb3266121a11",
+  "hash": "7f30c74dff76ef05fe48e9eb662cf640b3e7e34cccbcab4eb5ddd7335bd2894a",
   "review_state": "examiner-reviewed"
  }
 }
