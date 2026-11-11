@@ -403,7 +403,7 @@ def triangles(d, rec):
 
 # ── practice ────────────────────────────────────────────────────────────
 
-def ks3_practice(d):
+def ks3_practice(d, strict=True):
     """Every option of both marked rungs is clicked; the rung locks on the first, so the
     wrong option of rung 1 and the right option of rung 2 carry the feedback check."""
     info = d.js("return [].map.call(document.querySelectorAll('.ks3-rung[data-mode=marked]'),function(r){"
@@ -434,7 +434,8 @@ def ks3_practice(d):
         time.sleep(0.15)
         d.js("var r=document.querySelectorAll('.ks3-rung-self')[%d];var b=r.querySelector('[data-check]');b.disabled=false;b.click();1" % ri)
         shown = d.js("return !document.querySelectorAll('.ks3-rung-self')[%d].querySelector('[data-ticks]').hidden" % ri)
-        d.check(shown, "self-marked rung %d did not show its success list" % (ri + 3))
+        if strict:      # a child session marks a written answer on the server first, so only the plain walk asserts it
+            d.check(shown, "self-marked rung %d did not show its success list" % (ri + 3))
         d.js("document.querySelectorAll('.ks3-rung-self')[%d].querySelectorAll('[data-crit]').forEach(function(c){c.click()});1" % ri)
     d.check(d.js("return document.querySelector('[data-score]').textContent.length>0"), "no ladder score line")
 
@@ -636,7 +637,7 @@ def walk_ids(page, base, ks, slug, route, path, rec, idmap):
         load(page, d.url)
         page.console_errors()
         start_here(d, rec, ks, route)
-        (ks3_practice if ks == 3 else ks4_practice)(d)
+        (lambda x: ks3_practice(x, strict=False) if ks == 3 else ks4_practice(x))(d)
         d.harvest()
     finally:
         page.send("Page.removeScriptToEvaluateOnNewDocument", {"identifier": r.get("identifier")})

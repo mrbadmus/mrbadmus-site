@@ -17471,7 +17471,13 @@ def check_derived_side_labels(browser_mod, url_for, rel):
     })()
     """
     with browser_mod.Browser() as b:
-        got = b.page(url_for(rel)).eval(JS)
+        pg = b.page(url_for(rel))
+        got = pg.eval(JS)
+        lean = pg.eval("!!document.querySelector('[data-lean-sec=\"knowledge\"]')")
+    if not got and lean:
+        # ⊕ lean pilot — RETIRED_BY_LEAN: the crossing-counter bench is not on a lean page, so there
+        # is no comparative tile label left to derive. Any NON-lean page without the bench still fails.
+        return problems
     if not got:
         problems.append(
             "CONTENT TRUTH: /%s has no two-switch `[data-cross]` bench, so the "

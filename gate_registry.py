@@ -197,6 +197,20 @@ GATES = [
              "words, two Start here options, plain 'Rung N' labels, no embedded bench, and "
              "(a warning until every table is in) a spec table per lesson."),
 
+    dict(name="lean_pilot_drive",
+         cmd=["python3", "lean_pilot_drive.py"],
+         speed="slow",
+         watches=["lean_pilot_drive.py", "ks3_browser.py", "lean_blocks.py", "lean_ks4.py",
+                  "shared/lean.css", "shared/lean.js", "ks3_data/lean/**", "ks4_lessons/lean/**",
+                  "ks4_lessons/batch_lean.py", "ks3_art/b4.py", "build_ks3.py", "build_ks4.py",
+                  "shared/ks4-lib.js", "shared/ks4-runtime.js", "shared/mrbadmus.v2.js",
+                  "mrbadmus_site/ks3/biology/breathing-and-gas-exchange/**",
+                  "mrbadmus_site/combined/*/physics/energy/**", "mrbadmus_site/triple/*/physics/energy/**"],
+         why="the lean pilot pages walked at 390px in headless Chrome, light and dark: Start here, "
+             "every card by tap, keyboard and swipe, reveal tables, Dive deeper, every triangle cell, "
+             "practice and quiz answers, route cards, no overflow, no console error, and every "
+             "question_id the page posts must be kept or added in the ID map."),
+
     dict(name="brand_one_mark",
          cmd=["python3", "brand_one_mark.py"],
          speed="fast",
