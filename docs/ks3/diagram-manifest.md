@@ -19,11 +19,11 @@ MRB-103 also flagged an **anatomical/structural diagram gap** (cells, organs) an
 | Status | Figures |
 |---|---|
 | `drafted` | 1 |
-| `drawn` | 35 |
+| `drawn` | 41 |
 | `final` | 1 |
 | `needed` | 3 |
 | `retired` | 6 |
-| **Total** | **46** |
+| **Total** | **52** |
 
 `needed` = declared by a lesson, not yet drawn. A lesson may ship with figures at `needed` — it is not a build blocker — but the need is then counted here rather than invisible.
 
@@ -62,6 +62,12 @@ MRB-103 also flagged an **anatomical/structural diagram gap** (cells, organs) an
 | B5 | `seed-dispersal` | `b5-dispersal-specimens` | diagram | `drawn` | Eight fruits and seeds on one ground line at one scale, smallest first, numbered and named — and nothing else. The hooks, the hairs, the ring of holes under the rim, the flesh around a hard pip, the off-centre wing, the fibrous layer full of voids: all of it is drawn, none of it is captioned with a method. The scale is real, which is why the coconut is that size and the goosegrass is that size, and why one of them was never going to be moved by wind. The goosegrass detail is magnified four times and says so on the drawing. Measure any of them against the bar under the ground line: the coconut is 250 mm across, husk and all, the goosegrass pair is 9 mm, and both are drawn against that same bar. Then work out, from what is drawn and from nothing else, how each one gets away from the plant it grew on. |
 | B5 | `the-menstrual-cycle` | `b5-cycle-timeline` | diagram | `retired` | One cycle drawn as a timeline for each of the three lengths, 21, 28 and 35 days: the bleeding window at the start, the building phase, release a fortnight before the end, and the fortnight in which the lining is held ready — with the release marker landing on a different day in each of the three. |
 | B7 | `leaves-built-for-the-job` | `b7-leaf-section` | diagram | `drawn` | The whole slice is less than half a millimetre from top to bottom. Two of its features are claims you can check by looking: the palisade cells are the layer nearest the light, and they hold most of the chloroplasts — count them against the spongy cells below. The only break in either surface is the one pore, and it is underneath. Follow the arrow to see why that still works: carbon dioxide goes in through the pore, up through the air spaces, and into a palisade cell, without anything having to carry it. |
+| B7 | `the-photosynthesis-reaction` | `b7-word-summary` | diagram | `drawn` | The word summary for photosynthesis. |
+| B7 | `why-almost-all-life-depends-on-it` | `b7-food-chain-grass` | diagram | `drawn` | A food chain starts with a producer. |
+| B8 | `aerobic-respiration` | `b8-word-aerobic` | diagram | `drawn` | The word summary for aerobic respiration. |
+| B8 | `anaerobic-respiration-in-humans` | `b8-word-anaerobic` | diagram | `drawn` | The word summary for anaerobic respiration in humans. |
+| B8 | `fermentation` | `b8-word-fermentation` | diagram | `drawn` | The word summary for fermentation. |
+| B8 | `fermentation` | `b8-yeast-limewater` | diagram | `drawn` | Yeast and sugar solution, with a delivery tube into limewater. |
 | B9 | `disturbing-a-food-web` | `b9-oak-wood-web` | diagram | `drawn` | The wood, before anything is taken out of it. Count the arrows into and out of each organism before you choose one to remove — the ones with a single line are not always the ones that matter least. |
 | B9 | `food-chains-and-food-webs` | `b9-oak-wood-web-thread` | diagram | `drawn` | One oak wood.  The numbered orange chain is one route through it — the same four steps the bench above climbs. |
 | B9 | `predator-and-prey` | `b9-predator-prey-cycle` | diagram | `drawn` | The fox line is still going up while the rabbit line is already coming down, and it does not turn over until years later. That gap is the whole idea: foxes cannot become more foxes the moment there is more to eat — breeding takes time — so the fox peak always follows the rabbit peak rather than arriving with it. Look at when each peak happens, not how high it is: the two are counted on their own scales. |
