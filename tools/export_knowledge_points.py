@@ -246,7 +246,7 @@ def removed_ids():
     accepts it. It accepts NOTHING else that no loader knows."""
     import glob
     out = set()
-    for path in glob.glob(os.path.join(REPO, "docs", "lessons", "pilot", "ID-MAP-*.json")):
+    for path in glob.glob(os.path.join(REPO, "docs", "lessons", "*", "ID-MAP-*.json")):
         with open(path, encoding="utf-8") as fh:
             for qid, e in (json.load(fh).get("ids") or {}).items():
                 if e.get("status") == "removed":

@@ -9,11 +9,13 @@ units at once without editing the same file.
 import json
 import re
 from ks3_art.kit import (
+    _SVG_ACCENT_TEXT,
     _SVG_BAND,
     _SVG_CARD,
     _SVG_GROUND,
     _SVG_INK,
     _SVG_INK_BODY,
+    _SVG_INK_FAINT,
     _circle,
     _dial_block,
     _dials,
@@ -1049,9 +1051,130 @@ def r_trace_it_back(a, act_id):
                "".join(panels), t(a["step_label"]), t(a["reset_label"])))
 
 
+# ── lean wave 1 · a generic word equation ─────────────────────────────────
+#
+# One drawer for every "word summary": reads fig["eq"] = {"left": [...], "right": [...],
+# "over": "...", "under": "..."} and draws it VERTICALLY (reactants, a drawn arrow, products)
+# so it reads at full size in a 326-unit card on a phone. The arrow is a line plus a drawn
+# triangle, never a typed arrow character.
+_WE_CHAR = 9.6          # estimated units per character at 17px bold
+_WE_MAX = 300
+
+
+def _we_side_lines(parts):
+    """Join with ' + '; if too wide, split at a ' + ' boundary (the '+' leads line two)."""
+    one = " + ".join(parts)
+    if len(one) * _WE_CHAR <= _WE_MAX or len(parts) < 2:
+        return [one]
+    best, best_gap = 1, None
+    for i in range(1, len(parts)):
+        a = " + ".join(parts[:i])
+        b = "+ " + " + ".join(parts[i:])
+        gap = abs(len(a) - len(b))
+        if best_gap is None or gap < best_gap:
+            best, best_gap = i, gap
+    return [" + ".join(parts[:best]), "+ " + " + ".join(parts[best:])]
+
+
+def _we_wrap(text):
+    """Two lines at the space nearest the middle, when there is more than one word."""
+    words = text.split()
+    if len(words) < 2:
+        return [text]
+    best, best_gap = 1, None
+    for i in range(1, len(words)):
+        gap = abs(len(" ".join(words[:i])) - len(" ".join(words[i:])))
+        if best_gap is None or gap < best_gap:
+            best, best_gap = i, gap
+    return [" ".join(words[:best]), " ".join(words[best:])]
+
+
+def _word_equation(fig):
+    from ks3_art.b4 import _b4_arrow
+    eq = fig.get("eq") or {}
+    left, right = list(eq.get("left") or []), list(eq.get("right") or [])
+    if not left or not right:
+        raise ValueError("figure %r: word-equation needs eq.left and eq.right" % fig.get("id"))
+    W, cx = 326, 163
+    LH = 24
+    L, R = _we_side_lines(left), _we_side_lines(right)
+    out_parts = []
+    y = 20
+    out_parts.append(_mono(cx, y, "REACTANTS" if len(eq["left"]) > 1 else "REACTANT", size=13, fill=_SVG_INK_FAINT, weight="600",
+                           anchor="middle", spacing="1.5", data_key="REACTANTS", data_part="tag"))
+    y += 28
+    for ln in L:
+        out_parts.append(_label(cx, y, ln, size=17, weight="700", data_part="reactants", data_key=ln))
+        y += LH
+    y -= LH
+    ay0 = y + 14
+    ay1 = ay0 + 70
+    out_parts.append(_b4_arrow(cx, ay0, cx, ay1, w=3, head=12, data_part="arrow"))
+    mid = (ay0 + ay1) / 2
+    over, under = eq.get("over"), eq.get("under")
+    if over:
+        ol = _we_wrap(over)
+        y0 = mid - (len(ol) - 1) * 8 + 5
+        for i, ln in enumerate(ol):
+            out_parts.append(_label(cx + 16, y0 + i * 17, ln, size=14, fill=_SVG_ACCENT_TEXT,
+                                    weight="600", anchor="start", data_part="over", data_key=over))
+    if under:
+        ul = _we_wrap(under)
+        y0 = mid - (len(ul) - 1) * 8 + 5
+        for i, ln in enumerate(ul):
+            out_parts.append(_label(cx - 16, y0 + i * 17, ln, size=14, fill=_SVG_ACCENT_TEXT,
+                                    weight="600", anchor="end", data_part="under", data_key=under))
+    y = ay1 + 28
+    for ln in R:
+        out_parts.append(_label(cx, y, ln, size=17, weight="700", data_part="products", data_key=ln))
+        y += LH
+    y -= LH
+    y += 24
+    out_parts.append(_mono(cx, y, "PRODUCTS" if len(eq["right"]) > 1 else "PRODUCT", size=13, fill=_SVG_INK_FAINT, weight="600",
+                           anchor="middle", spacing="1.5", data_key="PRODUCTS", data_part="tag"))
+    H = y + 10
+    return (_svg_open(fig, W, H) + '<g stroke-linecap="round" stroke-linejoin="round">'
+            + "".join(out_parts) + '</g></svg>')
+
+
+def _food_chain(fig):
+    """A food chain drawn top to bottom: a rounded box per organism, its role in mono under the
+    name, and a drawn arrow between consecutive boxes. fig["chain"] = [[name, tag], ...];
+    optional fig["arrow_label"] is written once beside the first arrow."""
+    from ks3_art.b4 import _b4_arrow
+    chain = fig.get("chain") or []
+    if len(chain) < 2:
+        raise ValueError("figure %r: food-chain needs at least two organisms" % fig.get("id"))
+    W, cx = 326, 163
+    BH, GAP = 52, 44
+    y = 6
+    out = []
+    for i, (name, tag) in enumerate(chain):
+        bw = max(120, min(300, len(name) * 10.4 + 40))
+        out.append(_rect(cx - bw / 2, y, bw, BH, rx=12, fill=_SVG_CARD, stroke=_SVG_INK, w=2.5,
+                         data_part="organism", data_key=name))
+        out.append(_label(cx, y + 24, name, size=17, weight="700", data_part="name", data_key=name))
+        paint = _SVG_ACCENT_TEXT if str(tag).lower() == "producer" else _SVG_INK_FAINT
+        out.append(_mono(cx, y + 42, tag, size=13, fill=paint, weight="600", anchor="middle",
+                         data_part="tag", data_key=name))
+        y += BH
+        if i < len(chain) - 1:
+            out.append(_b4_arrow(cx, y + 2, cx, y + GAP - 2, w=3, head=12, data_part="arrow"))
+            if i == 0 and fig.get("arrow_label"):
+                out.append(_label(cx + 16, y + GAP / 2 + 5, fig["arrow_label"], size=14,
+                                  fill=_SVG_ACCENT_TEXT, weight="600", anchor="start",
+                                  data_part="arrow-label", data_key=fig["arrow_label"]))
+            y += GAP
+    H = y + 6
+    return (_svg_open(fig, W, H) + '<g stroke-linecap="round" stroke-linejoin="round">'
+            + "".join(out) + '</g></svg>')
+
+
 # ── registrations ────────────────────────────────────────────────────────
 ART = {
     'leaf-section': _leaf_section,
+    'word-equation': _word_equation,
+    'food-chain': _food_chain,
 }
 
 KIND_SHELL = {

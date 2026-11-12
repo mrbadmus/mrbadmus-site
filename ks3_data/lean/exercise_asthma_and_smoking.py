@@ -19,7 +19,6 @@ LESSON = {
         {"kind": "card", "title": "What exercise does",
          "body": ["When you exercise, your muscles respire faster.",
                   "They need more oxygen and make more carbon dioxide.",
-                  "Your brain detects the rising carbon dioxide in your blood.",
                   "Your breathing gets faster and deeper. Your heart rate rises too.",
                   "This delivers more oxygen and removes more carbon dioxide.",
                   "These changes reverse after you stop."]},
@@ -53,7 +52,7 @@ LESSON = {
         {"kind": "card", "title": "Easy mistakes",
          "body": [{"mistakes": [
              ("Being out of breath means your lungs cannot hold enough air.",
-              "Your body is responding to rising carbon dioxide."),
+              "Your muscles need more oxygen and make more carbon dioxide."),
              ("In an asthma attack there is not enough oxygen in the air.",
               "The air is the same. The airways have narrowed."),
          ]}]},
@@ -84,6 +83,7 @@ LESSON = {
         "asthma": "A condition in which the bronchioles narrow. The muscle contracts, the lining swells and extra mucus is made.",
     },
     "ladder_stem": {
+        "recall": "During exercise, your muscles respire faster. Which of these builds up in your blood?",
         "produce": "A patient with emphysema has almost normal lung volume but greatly reduced gas transfer. "
                    "Explain how both can be true, using what you learnt about alveoli. Say which feature of "
                    "a good exchange surface has been lost.",
@@ -98,9 +98,9 @@ LESSON = {
     ],
     "ladder_feedback": {
         "recall": {
-            0: "Blood oxygen hardly changes in ordinary exercise. Your body detects carbon dioxide.",
-            2: "Your lungs do not empty during exercise. Your body detects carbon dioxide.",
-            3: "Breathing speeds up before you feel tired. It follows carbon dioxide in the blood.",
+            0: "Oxygen is used up by respiration. It does not build up.",
+            2: "Your lungs do not empty. Respiring muscles make more carbon dioxide.",
+            3: "Tiredness is not something in your blood. Respiration makes carbon dioxide.",
         },
         "apply": {
             0: "This clears about a day after the last cigarette.",

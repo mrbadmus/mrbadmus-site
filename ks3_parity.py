@@ -7513,6 +7513,24 @@ RETIRED_BY_LEAN = [(n, "biology/breathing-and-gas-exchange/how-breathing-works.h
     "the net bar is blue at the compensation point",
     "the verdict panel is ink on cream at the compensation point",
     "the photosynthesis bar is the ok green")]
+# ⊕ lean wave 1 (B7 photosynthesis, B8 respiration): all nine lessons became lean pages, so EVERY
+# component and contrast row registered on one of these pages measures an element the lean standard
+# removed (the nine benches and the .ks3-eqn equation block; the page now carries drawn figures).
+# Derived from the registry rather than listed, so a row added later for these pages is retired
+# too; each is still excused only on a page that carries the lean Key knowledge section.
+_W1_WHY = {
+    B7_BENCH: "the reactant-remover bench and equation block are not on the lean page (figure b7-word-summary)",
+    B7_TUNER: "the leaf-tuner bench is not on the lean page",
+    B7_METHOD: "the method-breaker bench is not on the lean page",
+    B7_TRACE: "the trace-it-back bench is not on the lean page (figure b7-food-chain-grass)",
+    B8_LEDGER: "the mass-ledger bench and equation block are not on the lean page (figure b8-word-aerobic)",
+    B8_DEMAND: "the cell-demand bench is not on the lean page",
+    B8_DEBT: "the oxygen-debt bench is not on the lean page (figure b8-word-anaerobic)",
+    B8_FERM: "the fermenter bench is not on the lean page (figures b8-word-fermentation, b8-yeast-limewater)",
+    B8_ROUTE: "the route-decider bench is not on the lean page",
+}
+RETIRED_BY_LEAN += [(c["name"], c["on"], _W1_WHY[c["on"]])
+                    for c in COMPONENTS + CONTRAST if c.get("on") in _W1_WHY]
 _RETIRED_KEYS = {(n, p_) for n, p_, _r in RETIRED_BY_LEAN}
 
 
@@ -18116,6 +18134,11 @@ def run_browser_layers(ks3_root, browser_mod):
                 continue
             fg_sel, bg_sel = spec["fg"], spec["bg"]
             if not page.eval("!!window.__ks3.q(%r)" % fg_sel):
+                if (spec["name"], rel) in _RETIRED_KEYS and page.eval(
+                        "!!document.querySelector('[data-lean-sec=\"knowledge\"]')"):
+                    contrast_rows.append(("%s [RETIRED_BY_LEAN]" % spec["name"],
+                                          None, None, None, spec.get("need"), True))
+                    continue
                 problems.append("CONTRAST: %s — selector %s not present on /%s%s"
                                 % (spec["name"], fg_sel, rel,
                                    " after driving %s" % drive if drive else ""))
@@ -18282,7 +18305,7 @@ def run_browser_layers(ks3_root, browser_mod):
                     except browser_mod.JSError as exc:
                         err = ("the drive itself threw, so it never reached "
                                "the state it was written to measure: %s" % exc)
-                    if err and all((c["name"], rel) in _RETIRED_KEYS for c in COMPONENTS
+                    if err and all((c["name"], rel) in _RETIRED_KEYS for c in COMPONENTS + CONTRAST
                                    if c["on"] == rel and c.get("drive") == drive) \
                             and page.eval("!!document.querySelector('[data-lean-sec=\"knowledge\"]')"):
                         style_rows.append(("drive " + drive, "—", "RETIRED_BY_LEAN",

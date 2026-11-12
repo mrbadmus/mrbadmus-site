@@ -7,6 +7,9 @@ question carries a knowledge-point tag.
 
     python3 tools/lean_id_map.py            write the two maps
     python3 tools/lean_id_map.py --check    exit 1 if a committed map differs from a fresh one
+    python3 tools/lean_id_map.py --wave wave1            the KS3 wave's map only, into
+                                            docs/lessons/wave1/ID-MAP-ks3-wave1.json and
+                                            docs/b2c/id-maps/ks3-wave1.json (add --check too)
 
 OLD set: the ids in knowledge_points/{ks3,ks4}.json at --base (default origin/main), one scope
 per lesson. NEW set: every id the lean pages can send, from tools/kp_classify's inventory
@@ -42,6 +45,17 @@ FILES = {"KS3": "ID-MAP-ks3-breathing-and-gas-exchange.json", "KS4": "ID-MAP-ks4
 # tools/lesson_contract_check.py: one key per id that moved or went, null = retired.
 B2C_DIR = os.path.join(REPO, "docs", "b2c", "id-maps")
 B2C_FILES = {"KS3": "B4.json", "KS4": "physics-energy.json"}
+
+
+# The pilot's KS3 scope is frozen at B4's five lessons; a wave names its own lessons, so a later
+# wave never rewrites an earlier map. A wave writes KS3 only (no KS4 scope).
+PILOT_KS3 = ["alveoli-built-for-exchange", "exercise-asthma-and-smoking", "how-breathing-works",
+             "stomata-and-gas-exchange-in-plants", "the-gas-exchange-system"]
+WAVES = {
+    "wave1": ["the-photosynthesis-reaction", "leaves-built-for-the-job", "testing-a-leaf-for-starch",
+              "why-almost-all-life-depends-on-it", "aerobic-respiration", "why-every-cell-respires",
+              "anaerobic-respiration-in-humans", "fermentation", "aerobic-vs-anaerobic"],
+}
 
 
 def b2c_map(m):
@@ -176,13 +190,21 @@ def _git_json(base, rel):
     return json.loads(r.stdout)
 
 
-def scopes():
+def scopes(wave=None):
     import ks3_data.lean as k3
+    if wave:
+        if wave not in WAVES:
+            raise SystemExit("lean_id_map: unknown wave %r; known: %s" % (wave, ", ".join(sorted(WAVES))))
+        missing = [s for s in WAVES[wave] if s not in k3.records()]
+        if missing:
+            raise SystemExit("lean_id_map: no lean record for %s" % ", ".join(missing))
+        return {"KS3": sorted(WAVES[wave]), "KS4": []}
     import ks4_lessons
-    return {"KS3": sorted(k3.records()), "KS4": sorted(L["slug"] for L in ks4_lessons.lean_lessons())}
+    return {"KS3": sorted(s for s in k3.records() if s in PILOT_KS3),
+            "KS4": sorted(L["slug"] for L in ks4_lessons.lean_lessons())}
 
 
-def build(base="origin/main"):
+def build(base="origin/main", wave=None):
     import kp_classify as kpc
     import export_knowledge_points as ekp
     from ks3_data import lean as lean3
@@ -191,19 +213,20 @@ def build(base="origin/main"):
     old = {"KS3": _git_json(base, "knowledge_points/ks3.json"), "KS4": _git_json(base, "knowledge_points/ks4.json")}
     now = {"KS3": json.load(open(os.path.join(REPO, "knowledge_points", "ks3.json"))),
            "KS4": json.load(open(os.path.join(REPO, "knowledge_points", "ks4.json")))}
-    sc = scopes()
+    sc = scopes(wave)
     covers = root_covers()
     # Every ROOT_FORMS activity of a lean lesson must have been read with its covers, or a
     # later batch could keep an id the page can no longer send without anyone noticing.
-    forms = json.loads(subprocess.run(["node", os.path.join(REPO, "tools", "kp_root_forms.js"), REPO],
-                                      capture_output=True, text=True, check=True).stdout)
+    forms = ({} if not sc["KS4"] else
+             json.loads(subprocess.run(["node", os.path.join(REPO, "tools", "kp_root_forms.js"), REPO],
+                                       capture_output=True, text=True, check=True).stdout))
     for slug in sc["KS4"]:
         for f in forms.get(slug) or []:
             if f["id"] not in (covers.get(slug) or {}):
                 raise SystemExit("lean_id_map: cannot read the covers of ROOT_FORMS %s.%s; teach "
                                  "root_covers() its shape before mapping this lesson" % (slug, f["id"]))
     maps, problems = {}, []
-    for ks in ("KS3", "KS4"):
+    for ks in (("KS3",) if wave else ("KS3", "KS4")):
         ids = {}
         for ref in sc[ks]:
             old_q = (old[ks].get(ref) or {}).get("questions") or {}
@@ -269,7 +292,8 @@ def render(m):
 def main(argv):
     if "--tag" in argv:
         print("lean_id_map: %d tag(s) written to knowledge_points/ks4.json" % apply_tags())
-    maps, problems = build()
+    wave = argv[argv.index("--wave") + 1] if "--wave" in argv else None
+    maps, problems = build(wave=wave)
     if problems:
         print("lean_id_map: %d problem(s)" % len(problems))
         for p in problems[:20]:
@@ -277,12 +301,13 @@ def main(argv):
         return 1
     bad = 0
     for ks, m in maps.items():
-        path = os.path.join(OUT_DIR, FILES[ks])
+        out_dir = os.path.join(REPO, "docs", "lessons", wave) if wave else OUT_DIR
+        path = os.path.join(out_dir, "ID-MAP-ks3-%s.json" % wave if wave else FILES[ks])
         text = render(m)
         counts = {}
         for e in m["ids"].values():
             counts[e["status"]] = counts.get(e["status"], 0) + 1
-        bpath = os.path.join(B2C_DIR, B2C_FILES[ks])
+        bpath = os.path.join(B2C_DIR, "ks3-%s.json" % wave if wave else B2C_FILES[ks])
         btext = render_b2c(m)
         if "--check" in argv:
             for p, t in ((path, text), (bpath, btext)):
@@ -291,7 +316,7 @@ def main(argv):
                     print("lean_id_map: %s is stale" % os.path.relpath(p, REPO))
                     bad += 1
             continue
-        os.makedirs(OUT_DIR, exist_ok=True)
+        os.makedirs(out_dir, exist_ok=True)
         os.makedirs(B2C_DIR, exist_ok=True)
         with open(path, "w", encoding="utf-8") as fh:
             fh.write(text)

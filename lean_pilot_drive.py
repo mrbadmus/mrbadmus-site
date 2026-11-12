@@ -726,7 +726,7 @@ CAPTURE_JS = r"""
 
 def id_map():
     out = {}
-    for f in glob.glob(os.path.join(ROOT, "docs", "lessons", "pilot", "ID-MAP-*.json")):
+    for f in glob.glob(os.path.join(ROOT, "docs", "lessons", "*", "ID-MAP-*.json")):
         with open(f, encoding="utf-8") as fh:
             for qid, e in json.load(fh)["ids"].items():
                 out[qid] = e["status"]

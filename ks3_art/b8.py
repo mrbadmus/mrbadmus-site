@@ -9,6 +9,19 @@ units at once without editing the same file.
 import json
 import re
 from ks3_art.kit import (
+    _SVG_ACCENT_TEXT,
+    _SVG_ACCENT_TINT,
+    _SVG_BAND,
+    _SVG_CARD,
+    _SVG_INK,
+    _SVG_INK_FAINT,
+    _SVG_INSET,
+    _circle,
+    _label,
+    _line,
+    _path,
+    _rect,
+    _svg_open,
     _attr_safe,
     _dial_block,
     _dials,
@@ -1179,7 +1192,86 @@ def r_route_decider(a, act_id):
                _self_check(a, act_id)))
 
 
+def _yeast_limewater(fig):
+    """The standard apparatus for yeast respiring without air: a tube of yeast and sugar solution
+    under a layer of oil, a bung, and a delivery tube bending into limewater, where bubbles of
+    gas rise from its end. Both stand in a warm water bath. Every label is on the drawing."""
+    from ks3_art.b4 import _B4_BLUE, _B4_BLUE_TINT, _B4_LEADER
+    W, H = 326, 336
+    lx0, lx1 = 44, 96           # left tube walls
+    rx0, rx1 = 252, 306         # right tube walls
+    rcx = (rx0 + rx1) / 2
+    top_l, top_r, bot = 76, 126, 276
+    out = [_svg_open(fig, W, H)]
+    out.append('<g stroke-linecap="round" stroke-linejoin="round">')
+    # water bath behind both tubes
+    out.append(_rect(16, 218, 294, 70, rx=8, fill=_B4_BLUE_TINT, stroke=_B4_BLUE, w=2, data_part="water-bath"))
+
+    def tube(x0, x1, top, name):
+        return ("M %s,%s L %s,%s L %s,%s Q %s,%s %s,%s Q %s,%s %s,%s Z"
+                % (x0, top, x0, bot - 26, x0, bot - 26, x0, bot, (x0 + x1) / 2, bot,
+                   x1, bot, x1, bot - 26)).replace(" Z", " L %s,%s Z" % (x1, top))
+    # left tube: solution, oil, glass
+    sol_top, oil_top = 156, 138
+    out.append(_path("M %s,%s L %s,%s Q %s,%s %s,%s Q %s,%s %s,%s L %s,%s Z"
+                     % (lx0 + 1, sol_top, lx0 + 1, bot - 24, lx0 + 1, bot - 1, (lx0 + lx1) / 2, bot - 1,
+                        lx1 - 1, bot - 1, lx1 - 1, bot - 24, lx1 - 1, sol_top),
+                     fill=_SVG_ACCENT_TINT, data_part="solution"))
+    out.append(_rect(lx0 + 1, oil_top, lx1 - lx0 - 2, sol_top - oil_top, fill=_SVG_BAND, data_part="oil"))
+    out.append(_line(lx0 + 1, oil_top, lx1 - 1, oil_top, stroke=_SVG_INK_FAINT, w=1.5, data_part="oil"))
+    for dx, dy in ((12, 188), (30, 206), (20, 232), (38, 178), (40, 250), (10, 260)):
+        out.append(_circle(lx0 + dx, dy, 3, fill=_SVG_INK, data_part="yeast"))
+    out.append(_path("M %s,%s L %s,%s Q %s,%s %s,%s Q %s,%s %s,%s L %s,%s"
+                     % (lx0, top_l, lx0, bot - 24, lx0, bot, (lx0 + lx1) / 2, bot,
+                        lx1, bot, lx1, bot - 24, lx1, top_l),
+                     stroke=_SVG_INK, w=3, data_part="tube-left"))
+    # bung
+    out.append(_rect(lx0 - 4, top_l - 16, lx1 - lx0 + 8, 20, rx=3, fill=_SVG_BAND, stroke=_SVG_INK, w=2.5, data_part="bung"))
+    # right tube: limewater and glass
+    lw_top = 176
+    out.append(_path("M %s,%s L %s,%s Q %s,%s %s,%s Q %s,%s %s,%s L %s,%s Z"
+                     % (rx0 + 1, lw_top, rx0 + 1, bot - 24, rx0 + 1, bot - 1, rcx, bot - 1,
+                        rx1 - 1, bot - 1, rx1 - 1, bot - 24, rx1 - 1, lw_top),
+                     fill=_SVG_INSET, data_part="limewater"))
+    out.append(_line(rx0 + 1, lw_top, rx1 - 1, lw_top, stroke=_B4_BLUE, w=2, data_part="limewater"))
+    out.append(_path("M %s,%s L %s,%s Q %s,%s %s,%s Q %s,%s %s,%s L %s,%s"
+                     % (rx0, top_r, rx0, bot - 24, rx0, bot, rcx, bot,
+                        rx1, bot, rx1, bot - 24, rx1, top_r),
+                     stroke=_SVG_INK, w=3, data_part="tube-right"))
+    # delivery tube: out of the bung, over, and down below the limewater surface
+    end_y = 244
+    out.append(_path("M %s,%s L %s,%s Q %s,%s %s,%s L %s,%s Q %s,%s %s,%s L %s,%s"
+                     % ((lx0 + lx1) / 2, top_l - 14, (lx0 + lx1) / 2, 50, (lx0 + lx1) / 2, 40, (lx0 + lx1) / 2 + 12, 40,
+                        rcx - 12, 40, rcx, 40, rcx, 52, rcx, end_y),
+                     stroke=_SVG_INK, w=5, data_part="delivery-tube"))
+    for bx, by, r in ((rcx - 11, 226, 3.5), (rcx + 11, 212, 3), (rcx - 10, 198, 3.5), (rcx + 11, 186, 3)):
+        out.append(_circle(bx, by, r, fill=_SVG_CARD, stroke=_SVG_ACCENT_TEXT, w=2, data_part="bubble"))
+    # labels with leaders, all in the gap between the tubes
+    def lab(x, lines, y, anchor, key):
+        r = ""
+        for i, ln in enumerate(lines):
+            r += _label(x, y + i * 16, ln, size=14, weight="700", anchor=anchor, data_key=key)
+        return r
+    out.append(lab(108, ["Layer of oil", "(keeps air out)"], 106, "start", "Layer of oil"))
+    out.append(_line(112, 124, lx1 + 1, oil_top + 6, **_B4_LEADER))
+    out.append(lab(108, ["Yeast and", "sugar solution"], 166, "start", "Yeast and sugar solution"))
+    out.append(_line(112, 186, lx1 - 8, 200, **_B4_LEADER))
+    out.append(lab(rcx - 20, ["Delivery tube"], 24, "middle", "Delivery tube"))
+    out.append(_line(rcx - 4, 29, rcx - 4, 36, **_B4_LEADER))
+    out.append(lab(238, ["Bubbles", "of gas"], 200, "end", "Bubbles of gas"))
+    out.append(_line(242, 204, rcx - 15, 205, **_B4_LEADER))
+    out.append(lab(238, ["Limewater"], 256, "end", "Limewater"))
+    out.append(_line(242, 251, rx0 + 8, 256, **_B4_LEADER))
+    out.append(lab(163, ["Warm water bath"], 308, "middle", "Warm water bath"))
+    out.append('</g></svg>')
+    return "".join(out)
+
+
 # ── registrations ────────────────────────────────────────────────────────
+ART = {
+    'yeast-limewater': _yeast_limewater,
+}
+
 KIND_SHELL = {
     'mass-ledger': ("ks3-ml-block",
                       ' data-instrument data-mlblock data-stage-done="0"'),
