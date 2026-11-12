@@ -7,9 +7,10 @@ question carries a knowledge-point tag.
 
     python3 tools/lean_id_map.py            write the two maps
     python3 tools/lean_id_map.py --check    exit 1 if a committed map differs from a fresh one
-    python3 tools/lean_id_map.py --wave wave1            the KS3 wave's map only, into
-                                            docs/lessons/wave1/ID-MAP-ks3-wave1.json and
-                                            docs/b2c/id-maps/ks3-wave1.json (add --check too)
+    python3 tools/lean_id_map.py --wave wave1            the KS3 wave's maps only, one per UNIT:
+                                            docs/lessons/wave1/ID-MAP-ks3-<unit name>.json
+                                            (photosynthesis, respiration) and
+                                            docs/b2c/id-maps/B7.json, B8.json (add --check too)
 
 OLD set: the ids in knowledge_points/{ks3,ks4}.json at --base (default origin/main), one scope
 per lesson. NEW set: every id the lean pages can send, from tools/kp_classify's inventory
@@ -51,10 +52,14 @@ B2C_FILES = {"KS3": "B4.json", "KS4": "physics-energy.json"}
 # wave never rewrites an earlier map. A wave writes KS3 only (no KS4 scope).
 PILOT_KS3 = ["alveoli-built-for-exchange", "exercise-asthma-and-smoking", "how-breathing-works",
              "stomata-and-gas-exchange-in-plants", "the-gas-exchange-system"]
+# wave -> [(unit code, unit name, [lesson slugs])]; a unit's maps are named by it.
 WAVES = {
-    "wave1": ["the-photosynthesis-reaction", "leaves-built-for-the-job", "testing-a-leaf-for-starch",
-              "why-almost-all-life-depends-on-it", "aerobic-respiration", "why-every-cell-respires",
-              "anaerobic-respiration-in-humans", "fermentation", "aerobic-vs-anaerobic"],
+    "wave1": [
+        ("B7", "photosynthesis", ["the-photosynthesis-reaction", "leaves-built-for-the-job",
+                                  "testing-a-leaf-for-starch", "why-almost-all-life-depends-on-it"]),
+        ("B8", "respiration", ["aerobic-respiration", "why-every-cell-respires",
+                               "anaerobic-respiration-in-humans", "fermentation", "aerobic-vs-anaerobic"]),
+    ],
 }
 
 
@@ -195,10 +200,11 @@ def scopes(wave=None):
     if wave:
         if wave not in WAVES:
             raise SystemExit("lean_id_map: unknown wave %r; known: %s" % (wave, ", ".join(sorted(WAVES))))
-        missing = [s for s in WAVES[wave] if s not in k3.records()]
+        slugs = [x for _c, _n, ss in WAVES[wave] for x in ss]
+        missing = [x for x in slugs if x not in k3.records()]
         if missing:
             raise SystemExit("lean_id_map: no lean record for %s" % ", ".join(missing))
-        return {"KS3": sorted(WAVES[wave]), "KS4": []}
+        return {"KS3": sorted(slugs), "KS4": []}
     import ks4_lessons
     return {"KS3": sorted(s for s in k3.records() if s in PILOT_KS3),
             "KS4": sorted(L["slug"] for L in ks4_lessons.lean_lessons())}
@@ -226,9 +232,11 @@ def build(base="origin/main", wave=None):
                 raise SystemExit("lean_id_map: cannot read the covers of ROOT_FORMS %s.%s; teach "
                                  "root_covers() its shape before mapping this lesson" % (slug, f["id"]))
     maps, problems = {}, []
-    for ks in (("KS3",) if wave else ("KS3", "KS4")):
+    runs = ([(code, "KS3", ss) for code, _n, ss in WAVES[wave]] if wave
+            else [("KS3", "KS3", sc["KS3"]), ("KS4", "KS4", sc["KS4"])])
+    for key, ks, refs in runs:
         ids = {}
-        for ref in sc[ks]:
+        for ref in refs:
             old_q = (old[ks].get(ref) or {}).get("questions") or {}
             new_q = {q for q, (_s, k, r) in exp.items() if k == ks and r == ref}
             tags_now = (now[ks].get(ref) or {}).get("questions") or {}
@@ -261,7 +269,7 @@ def build(base="origin/main", wave=None):
                         problems.append("%s: new id %s has no knowledge-point tag in knowledge_points/%s.json"
                                         % (ref, qid, ks.lower()))
                     ids[qid] = {"status": "added", "new": qid, "kp": kp, "note": "a new question on the lean page"}
-        maps[ks] = {"scope": sc[ks], "base": base, "ids": ids}
+        maps[key] = {"scope": sorted(refs), "base": base, "ids": ids}
     return maps, problems
 
 
@@ -302,12 +310,13 @@ def main(argv):
     bad = 0
     for ks, m in maps.items():
         out_dir = os.path.join(REPO, "docs", "lessons", wave) if wave else OUT_DIR
-        path = os.path.join(out_dir, "ID-MAP-ks3-%s.json" % wave if wave else FILES[ks])
+        uname = {c: n for c, n, _s in WAVES[wave]}.get(ks) if wave else None
+        path = os.path.join(out_dir, "ID-MAP-ks3-%s.json" % uname if wave else FILES[ks])
         text = render(m)
         counts = {}
         for e in m["ids"].values():
             counts[e["status"]] = counts.get(e["status"], 0) + 1
-        bpath = os.path.join(B2C_DIR, "ks3-%s.json" % wave if wave else B2C_FILES[ks])
+        bpath = os.path.join(B2C_DIR, "%s.json" % ks if wave else B2C_FILES[ks])
         btext = render_b2c(m)
         if "--check" in argv:
             for p, t in ((path, text), (bpath, btext)):
