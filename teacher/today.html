@@ -657,6 +657,7 @@
          would both fail that gate and offer a second door to a page the
          prompt right beside it is already offering. -->
     <div class="head-actions" id="head-actions" style="display:none;">
+      <button class="btn" type="button" id="open-timer" data-mrb-added="timer-open">Timer</button>
       <a class="btn" href="/teacher/digest.html">Weekly digest</a>
       <!-- Both timetable intents stay reachable: this is the fresh-CSV door,
            and `Edit timetable` beside the h2 is the change-one-lesson door.
@@ -749,9 +750,13 @@
 <script src="/shared/teacher-admin-nav.js?v=d48cc15e"></script>
 <!-- ⊕ MRB-323 — the name picker. Defines `window.MrBadmusPicker` and does
      nothing until a lesson row's picker button is pressed. It makes no
-     request and touches no storage, so its position in this list carries no
-     load-order rule of its own. -->
-<script src="/shared/teacher-picker.js?v=8f2365b7"></script>
+     request; its one optional keep is the teacher's "Save for this class"
+     weights switch (this browser's localStorage, off by default), so its
+     position in this list carries no load-order rule of its own.
+     `teacher-timer.js` is the classroom timer behind the head-actions
+     "Timer" button: it mounts on document.body and writes nothing. -->
+<script src="/shared/teacher-picker.js?v=26bded79"></script>
+<script src="/shared/teacher-timer.js?v=6a3742b8"></script>
 <script>
 /* ══════════════════════════════════════════════════════════════════════════
    MRB-306 — TODAY
@@ -1582,6 +1587,17 @@ MrBadmusTeacherGuard.requireTeacherRole({
           code: btn.getAttribute('data-pick-name') || '',
           students: pack.members || []
         });
+      });
+    }
+
+    /* The classroom timer: ONE button in the head-actions row, not one per
+       lesson (the same control five times would be the redundancy Mide's
+       rule rules out). It opens the full-screen view; the timer mounts on
+       document.body and writes nothing. */
+    const timerBtn = el('open-timer');
+    if (timerBtn) {
+      timerBtn.addEventListener('click', function () {
+        if (window.MrBadmusTimer) { window.MrBadmusTimer.open({ view: 'full' }); }
       });
     }
 

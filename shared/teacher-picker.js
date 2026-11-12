@@ -9,16 +9,54 @@
    a no-repeats cycle with a visible count, a pure-random alternative, and a
    session-only absent list.
 
-   ══ WHAT IT IS NOT ═════════════════════════════════════════════════════
+   A small cog in the header opens a settings panel: one row per pupil with a
+   TICKET count (the weighting: `−` / `+`, minimum 1, no maximum), a tap on a
+   pupil's name to make them the NEXT pick, a Reset, and a "Save for this
+   class" switch. A clock button beside the cog opens `MrBadmusTimer`
+   (`shared/teacher-timer.js`) as a floating timer, so the names stay in view.
 
-   ⛔ IT WRITES NOTHING. Not to the database, not to `localStorage`, not to
-   `sessionStorage`, not to a cookie. There is no `fetch`, no Supabase
-   client and no storage API anywhere in this file, deliberately and
-   checkably: who was picked and who was away is a fact about one lesson in
-   one room, and a platform that recorded it would be keeping an attendance
-   register nobody asked it to keep and no teacher had a chance to correct.
-   `STATE` below is a plain object in this closure. Reload the page and it
-   is gone, which is the intended lifetime.
+   PRESENTATION CLICKERS (they send keyboard keys): while the picker is open
+   it registers `clickPick()` with the timer module, which owns the one key
+   listener. Forward (PageDown, ArrowRight, Space) presses the real Pick
+   button, so the reveal and `aria-busy` are exactly a tap's; it is ignored
+   while a reveal is spinning. Back never touches the pick. A one-second hold
+   cheers instead. The settings panel carries the one shared Sound switch
+   (memory only) and a line naming the keys.
+
+   ══ WHAT IT KEEPS, WHERE, AND FOR HOW LONG — AND NOTHING ELSE ═══════════
+
+   ⛔ NO DATABASE, NO NETWORK, NO COOKIE, NO `sessionStorage`. There is no
+   `fetch`, no Supabase client and no cookie anywhere in this file,
+   deliberately and checkably: who was picked and who was away is a fact
+   about one lesson in one room, and a platform that recorded it would be
+   keeping an attendance register nobody asked it to keep and no teacher had
+   a chance to correct.
+
+   Everything is in `STATE` below, a plain object in this closure, and
+   `STATE` dies with the page load. That covers the mode, the cycle's
+   picked-counts, the absent list, the last name shown and the pick-next
+   mark. Reload the page and all of it is gone, which is the intended
+   lifetime.
+
+   THE ONE EXCEPTION, AND IT IS THE TEACHER'S OWN SWITCH: ticket WEIGHTS.
+   - "Save for this class" is OFF by default. While it is off, weights live
+     in `STATE` only and go back to 1 when the picker is closed (or the page
+     reloads).
+   - While it is ON, this class's weights are written to this browser's
+     `localStorage`, under ONE key per class —
+     `mrb.picker.weights.v1.<classId>` — as `{"weights":{"<pupilId>":n}}`,
+     holding only the pupils whose weight is above 1 and only pupils who are
+     on the roster being shown. It is rewritten on every weight change and on
+     Reset (Reset leaves `{"weights":{}}` in place rather than deleting the
+     key, because the key's presence IS the switch's state and a Reset must
+     not silently turn saving off). Opening the picker for a class whose key
+     exists shows the switch ON and loads the weights from it. Turning the
+     switch OFF deletes the key.
+   - It is per device and per browser. Nothing leaves it.
+   - NOTHING ELSE is ever stored: not the pick-next mark, not the absent
+     list, not who was picked, not the mode, not the Sound switch. Every storage call is inside a
+     try/catch; with storage blocked the picker works as if the switch were
+     off and says so on the panel.
 
    ⛔ IT READS NO ROSTER OF ITS OWN. The caller hands it the students it has
    already loaded and already shown — `rosterFor(klass())` on the generated
@@ -76,9 +114,16 @@
   'use strict';
 
   /* ── session state, in memory, for the life of this page load ──────────
-     `{classId: {mode, absent:{id:1}, picked:{id:1}, last:{id,name}}}`.
-     No serialisation, no persistence, no key anywhere outside this line. */
+     `{classId: {mode, absent:{id:1}, picked:{id:n}, last:{id,name},
+                 weights:{id:n}, next:id|null, save:bool}}`.
+     `picked` is a COUNT per pupil (tickets drawn), not a 0/1 flag; `weights`
+     holds only ids above 1. The only part of this that is ever written
+     anywhere is `weights`, and only while `save` is true — see the header
+     and `store*()` below. */
   var STATE = {};
+
+  /* The one storage key family. One key per class; nothing else is stored. */
+  var KEY = 'mrb.picker.weights.v1.';
 
   var live = null;      // {el, opts, pool, timer} while open, else null
   var keyHandler = null;
@@ -172,6 +217,81 @@
                  'font:600 14.5px/1.2 var(--st-ui);color:var(--st-muted);' +
                  'background:none;border:none;cursor:pointer';
 
+  /* The header's two quiet icon buttons (timer, settings): the close X's
+     40px box with no border, in the caption colour, so they are findable and
+     never compete with the name. Pressed/expanded = the seg trough. */
+  var ICON_BTN = 'flex:none;width:40px;height:40px;display:flex;' +
+                 'align-items:center;justify-content:center;' +
+                 'background:transparent;border:1px solid transparent;' +
+                 'border-radius:9px;cursor:pointer;color:var(--st-caption)';
+  var ICON_BTN_ON = 'flex:none;width:40px;height:40px;display:flex;' +
+                    'align-items:center;justify-content:center;' +
+                    'background:var(--st-seg-bg);' +
+                    'border:1px solid var(--st-rule-strong);' +
+                    'border-radius:9px;cursor:pointer;color:var(--st-ink)';
+  var HEAD_RIGHT = 'flex:none;display:flex;align-items:center;gap:6px';
+
+  /* The settings panel takes the stage's place while it is open. */
+  var PANEL = 'order:2;flex:1;min-height:0;overflow:auto;padding:16px 20px 28px';
+  var PANEL_IN = 'width:100%;max-width:640px;margin:0 auto;display:flex;' +
+                 'flex-direction:column;gap:14px';
+  var SW_ROW = 'display:flex;align-items:center;gap:14px;width:100%;' +
+               'min-height:52px;padding:0 4px;background:none;border:none;' +
+               'cursor:pointer;text-align:left;color:var(--st-ink);' +
+               'font:600 16px/1.2 var(--st-ui)';
+  var SW_TRACK_OFF = 'flex:none;position:relative;width:46px;height:28px;' +
+                     'border-radius:14px;background:var(--st-seg-bg);' +
+                     'border:1px solid var(--st-rule-strong)';
+  var SW_TRACK_ON = 'flex:none;position:relative;width:46px;height:28px;' +
+                    'border-radius:14px;background:var(--st-accent-text);' +
+                    'border:1px solid var(--st-accent-text)';
+  var SW_KNOB_OFF = 'position:absolute;top:2px;left:2px;width:22px;' +
+                    'height:22px;border-radius:50%;background:var(--st-paper);' +
+                    'border:1px solid var(--st-rule-strong)';
+  var SW_KNOB_ON = 'position:absolute;top:2px;left:20px;width:22px;' +
+                   'height:22px;border-radius:50%;background:var(--st-paper)';
+  var RESET_BTN = 'flex:none;min-height:44px;padding:0 20px;' +
+                  'font:600 16px/1.2 var(--st-ui);color:var(--st-ink);' +
+                  'background:var(--st-paper);' +
+                  'border:1px solid var(--st-btn-border);border-radius:10px;' +
+                  'cursor:pointer';
+  var RESET_OFF = 'flex:none;min-height:44px;padding:0 20px;' +
+                  'font:600 16px/1.2 var(--st-ui);color:var(--st-caption);' +
+                  'background:var(--st-paper);' +
+                  'border:1px solid var(--st-btn-border);border-radius:10px;' +
+                  'cursor:not-allowed';
+  var HELP = 'font:500 14px/1.4 var(--st-ui);color:var(--st-caption)';
+  var LIST_HEAD = 'display:flex;justify-content:space-between;gap:12px;' +
+                  'font:500 12px/1.2 var(--st-mono);letter-spacing:.14em;' +
+                  'text-transform:uppercase;color:var(--st-caption);' +
+                  'margin-top:6px';
+  var ROW = 'display:flex;align-items:center;gap:8px;min-height:52px;' +
+            'border-top:1px solid var(--st-rule-soft)';
+  var ROW_NAME = 'flex:1;min-width:0;min-height:48px;display:flex;' +
+                 'align-items:center;gap:10px;padding:0 6px;background:none;' +
+                 'border:none;border-radius:9px;cursor:pointer;' +
+                 'text-align:left;font:500 17px/1.2 var(--st-ui);' +
+                 'color:var(--st-ink)';
+  var ROW_NAME_NEXT = ROW_NAME + ';background:var(--st-chip-tint);' +
+                      'box-shadow:inset 0 0 0 1px var(--st-chip-tint-border)';
+  var ROW_NAME_OUT = ROW_NAME + ';color:var(--st-caption);' +
+                     'text-decoration:line-through;cursor:not-allowed';
+  var STEP_BTN = 'flex:none;width:40px;height:40px;display:flex;' +
+                 'align-items:center;justify-content:center;' +
+                 'background:var(--st-paper);' +
+                 'border:1px solid var(--st-btn-border);border-radius:9px;' +
+                 'cursor:pointer;color:var(--st-ink)';
+  var STEP_BTN_OFF = 'flex:none;width:40px;height:40px;display:flex;' +
+                     'align-items:center;justify-content:center;' +
+                     'background:transparent;' +
+                     'border:1px solid var(--st-rule);border-radius:9px;' +
+                     'cursor:not-allowed;color:var(--st-ghost)';
+  var STEP_N = 'flex:none;min-width:34px;text-align:center;' +
+               'font:600 18px/1 var(--st-mono);color:var(--st-ink)';
+  var NEXT_TAG = 'flex:none;display:inline-flex;align-items:center;gap:5px;' +
+                 'font:500 12px/1.2 var(--st-mono);letter-spacing:.12em;' +
+                 'text-transform:uppercase;color:var(--st-accent-text)';
+
   var CHIPS = 'display:flex;flex-wrap:wrap;gap:8px;margin-top:12px';
   var CHIP_IN = 'min-height:40px;padding:0 13px;font:500 15px/1.2 ' +
                 'var(--st-ui);color:var(--st-ink);background:var(--st-paper);' +
@@ -194,6 +314,98 @@
   }
 
   function text(node, s) { node.textContent = s; return node; }
+
+  /* House-style icons: the close X's recipe — stroke is currentColor, round
+     caps, ~1.6 wide, aria-hidden. No glyph characters stand in for any of
+     them. `innerHTML` here is a constant string, never a name. */
+  var ICONS = {
+    cog: '<svg width="19" height="19" viewBox="0 0 24 24" fill="none" ' +
+         'aria-hidden="true" stroke="currentColor" stroke-width="1.6" ' +
+         'stroke-linecap="round" stroke-linejoin="round"><circle cx="12" ' +
+         'cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 ' +
+         '2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 ' +
+         '1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 ' +
+         '1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 ' +
+         '0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 ' +
+         '0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 ' +
+         '9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 ' +
+         '2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 ' +
+         '2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 ' +
+         '0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 ' +
+         '1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 ' +
+         '0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>',
+    clock: '<svg width="19" height="19" viewBox="0 0 18 18" fill="none" ' +
+           'aria-hidden="true" stroke="currentColor" stroke-width="1.6" ' +
+           'stroke-linecap="round" stroke-linejoin="round"><circle cx="9" ' +
+           'cy="10.2" r="6"/><path d="M9 10.2V7M7 1.8h4"/></svg>',
+    minus: '<svg width="14" height="14" viewBox="0 0 14 14" fill="none" ' +
+           'aria-hidden="true"><path d="M3 7h8" stroke="currentColor" ' +
+           'stroke-width="1.6" stroke-linecap="round"/></svg>',
+    plus: '<svg width="14" height="14" viewBox="0 0 14 14" fill="none" ' +
+          'aria-hidden="true"><path d="M3 7h8M7 3v8" stroke="currentColor" ' +
+          'stroke-width="1.6" stroke-linecap="round"/></svg>',
+    next: '<svg width="12" height="12" viewBox="0 0 12 12" fill="none" ' +
+          'aria-hidden="true"><path d="M4 2l4 4-4 4" stroke="currentColor" ' +
+          'stroke-width="1.6" stroke-linecap="round" ' +
+          'stroke-linejoin="round"/></svg>'
+  };
+  function icon(node, name) { node.innerHTML = ICONS[name]; return node; }
+
+  // ── the one opt-in store: ticket weights, per class ────────────────────
+
+  /* ⚠️ EVERY ACCESS IS INSIDE try/catch. `localStorage` throws in a private
+     window, with site data blocked, and in some embedded previews; the
+     picker has to work, switch off, without it. */
+  function storeRead(classId) {
+    try {
+      var raw = window.localStorage.getItem(KEY + classId);
+      if (raw === null || raw === undefined) { return null; }
+      var out = {};
+      try {
+        var w = (JSON.parse(raw) || {}).weights || {};
+        Object.keys(w).forEach(function (id) {
+          var n = Math.floor(Number(w[id]));
+          if (n > 1) { out[id] = Math.min(n, 999); }
+        });
+      } catch (e) { /* a corrupt value is still "saved, with nothing in it" */ }
+      return out;
+    } catch (e) { return null; }
+  }
+
+  function storeWrite(classId, weights) {
+    try {
+      window.localStorage.setItem(KEY + classId,
+                                  JSON.stringify({ weights: weights }));
+      return true;
+    } catch (e) { return false; }
+  }
+
+  function storeRemove(classId) {
+    try { window.localStorage.removeItem(KEY + classId); } catch (e) { /* ok */ }
+  }
+
+  /* Written weights: above 1 only, and only for pupils on THIS roster, so a
+     key never holds an id the roster no longer shows. */
+  function persist(s) {
+    if (!live || !s.save) { return; }
+    var out = {};
+    live.pool.forEach(function (p) {
+      if ((s.weights[p.id] || 1) > 1) { out[p.id] = s.weights[p.id]; }
+    });
+    s.saveFailed = !storeWrite(live.opts.id, out);
+  }
+
+  function wOf(s, id) { return s.weights[id] || 1; }
+
+  function setWeight(s, id, n) {
+    n = Math.max(1, Math.floor(n) || 1);
+    if (n === 1) { delete s.weights[id]; } else { s.weights[id] = n; }
+    persist(s);
+  }
+
+  function anyWeight(s) {
+    return Object.keys(s.weights).some(function (k) { return s.weights[k] > 1; });
+  }
 
   /* ⚠️ NEVER `innerHTML` WITH A CHILD'S NAME. Every name on this surface
      arrives from `profiles.first_name` / `last_name`, which is user-entered
@@ -224,20 +436,73 @@
 
   function sessionFor(classId) {
     if (!STATE[classId]) {
-      STATE[classId] = { mode: 'cycle', absent: {}, picked: {}, last: null };
+      STATE[classId] = { mode: 'cycle', absent: {}, picked: {}, last: null,
+                         weights: {}, next: null, save: false,
+                         saveFailed: false };
     }
     return STATE[classId];
   }
 
-  /* The three sets every line on this screen is derived from. Recomputed on
-     every draw rather than cached, because a student can be marked absent
-     after being picked and the count has to stay honest when they are:
-     `done` is intersected with `present`, so N can never exceed M. */
+  /* The sets every line on this screen is derived from. Recomputed on every
+     draw rather than cached, because a student can be marked absent after
+     being picked, and a weight can change mid-cycle, and the count has to
+     stay honest when either happens.
+
+     TICKETS: a pupil of weight w holds w tickets. `total` (M) is the tickets
+     held by present pupils; `doneN` (N) is the tickets already drawn,
+     `min(picked, w)` per present pupil — the `min` is what keeps N from ever
+     exceeding M when a weight is lowered after a draw. `left` is the present
+     pupils with a ticket still in the hat, and `leftN` the tickets. With
+     every weight 1 this is the old 0/1 arithmetic exactly. */
   function sets(pool, s) {
     var present = pool.filter(function (p) { return !s.absent[p.id]; });
-    var done = present.filter(function (p) { return s.picked[p.id]; });
-    var left = present.filter(function (p) { return !s.picked[p.id]; });
-    return { present: present, done: done, left: left };
+    var total = 0, doneN = 0, leftN = 0, left = [];
+    present.forEach(function (p) {
+      var w = wOf(s, p.id), d = Math.min(s.picked[p.id] || 0, w);
+      total += w; doneN += d; leftN += w - d;
+      if (d < w) { left.push(p); }
+    });
+    return { present: present, left: left, total: total, doneN: doneN,
+             leftN: leftN };
+  }
+
+  /* Draw one ticket. `ticketsOf(p)` is how many a pupil holds in this draw. */
+  function drawTicket(list, ticketsOf) {
+    var sum = 0;
+    list.forEach(function (p) { sum += ticketsOf(p); });
+    var r = Math.random() * sum;
+    for (var i = 0; i < list.length; i++) {
+      r -= ticketsOf(list[i]);
+      if (r < 0) { return list[i]; }
+    }
+    return list[list.length - 1];
+  }
+
+  /* ⚠️ THE WINNER IS DECIDED HERE, BEFORE ANY ANIMATION. Pick-next is a
+     one-off: it is consumed by the press that lands it. In the cycle it spends
+     one of the pupil's tickets if one is left, and is still honoured if none
+     is — the teacher's choice wins — without pushing `picked` above the
+     weight. */
+  function chooseWinner(s, g, cycling) {
+    var nx = null;
+    if (s.next) {
+      g.present.forEach(function (p) { if (p.id === s.next) { nx = p; } });
+      s.next = null;
+    }
+    if (nx) {
+      if (cycling && (s.picked[nx.id] || 0) < wOf(s, nx.id)) {
+        s.picked[nx.id] = (s.picked[nx.id] || 0) + 1;
+      }
+      return nx;
+    }
+    if (cycling) {
+      var w = drawTicket(g.left, function (p) {
+        return wOf(s, p.id) - Math.min(s.picked[p.id] || 0, wOf(s, p.id));
+      });
+      s.picked[w.id] = (s.picked[w.id] || 0) + 1;
+      return w;
+    }
+    return drawTicket(g.present, function (p) { return wOf(s, p.id); });
   }
 
   // ── the reveal ─────────────────────────────────────────────────────────
@@ -305,11 +570,16 @@
     var s = sessionFor(opts.id);
     var g = sets(pool, s);
     var cycling = s.mode === 'cycle';
+    var settings = !!live.settingsOpen;
+    /* While the settings panel is up the board is not shown, and not merely
+       covered: a hidden stage cannot be read by a screen reader or reached
+       by Tab behind the panel. */
+    var hideBoard = settings ? ';display:none' : '';
 
     root.textContent = '';
 
     // ── stage (first in the DOM, second on the screen) ─────────────────
-    var stage = el('div', STAGE);
+    var stage = el('div', STAGE + hideBoard);
     var nameNode = el('div', NAME);
     nameNode.setAttribute('data-mrb-name', '1');
     nameNode.setAttribute('aria-live', 'polite');
@@ -321,7 +591,9 @@
     if (s.last) { text(nameNode, s.last.name); }
     stage.appendChild(nameNode);
 
-    var exhausted = cycling ? g.left.length === 0 : g.present.length === 0;
+    /* A pick-next mark that points at nobody present is no mark. */
+    var nextOk = !!(s.next && g.present.some(function (p) { return p.id === s.next; }));
+    var exhausted = (cycling ? g.leftN === 0 : g.present.length === 0) && !nextOk;
     var pick = el('button', exhausted ? PICK_OFF : PICK, 'pick-go');
     /* ⚠️ A SPENT BUTTON SAYS SO. Dimming it and leaving it reading "Pick
        again" makes the reader join two things up — a greyed control here and
@@ -334,10 +606,8 @@
       pick.setAttribute('aria-disabled', 'true');
     } else {
       pick.addEventListener('click', function () {
-        var from = cycling ? g.left : g.present;
-        if (!from.length) { return; }
-        var winner = from[Math.floor(Math.random() * from.length)];
-        if (cycling) { s.picked[winner.id] = 1; }
+        if (!g.present.length) { return; }
+        var winner = chooseWinner(s, g, cycling);
         s.last = winner;
         draw();
         reveal(root.querySelector('[data-mrb-name]') || nameNode,
@@ -348,14 +618,14 @@
     root.appendChild(stage);
 
     // ── footer ─────────────────────────────────────────────────────────
-    var foot = el('div', FOOT);
+    var foot = el('div', FOOT + hideBoard);
     var row = el('div', FOOT_ROW);
 
     var count = el('div', COUNT);
     if (!g.present.length) {
       text(count, 'Nobody in the pool');
     } else if (cycling) {
-      text(count, 'Picked ' + g.done.length + ' of ' + g.present.length);
+      text(count, 'Picked ' + g.doneN + ' of ' + g.total);
     } else {
       text(count, g.present.length + ' in the pool');
     }
@@ -376,7 +646,7 @@
        screen before it can do anything is a control whose first press does
        nothing — which is both a worse surface and, on this port, a gate
        failure with an accurate name for it. */
-    if (cycling && g.done.length) {
+    if (cycling && g.doneN) {
       var reset = el('button', TEXT_BTN, 'pick-reset');
       text(reset, 'Start again');
       reset.addEventListener('click', function () { s.picked = {}; draw(); });
@@ -406,7 +676,11 @@
         c.setAttribute('aria-pressed', out ? 'true' : 'false');
         c.addEventListener('click', function () {
           if (s.absent[p.id]) { delete s.absent[p.id]; }
-          else { s.absent[p.id] = 1; }
+          else {
+            s.absent[p.id] = 1;
+            /* Absent pupils cannot be the next pick. */
+            if (s.next === p.id) { s.next = null; }
+          }
           draw();
         });
         chips.appendChild(c);
@@ -415,12 +689,47 @@
     }
     root.appendChild(foot);
 
+    // ── settings panel (after the footer, before the header) ───────────
+    if (settings) { root.appendChild(buildPanel(s, pool)); }
+
     // ── header (last in the DOM, first on the screen — see the note up top)
     var head = el('div', HEAD);
     var code = el('div', HEAD_CODE);
     code.setAttribute('data-mrb-code', '1');
     text(code, opts.code || 'Class');
     head.appendChild(code);
+
+    var right = el('div', HEAD_RIGHT);
+    var T = window.MrBadmusTimer;
+    if (T) {
+      var tOpen = T.isShown();
+      var tb = el('button', tOpen ? ICON_BTN_ON : ICON_BTN, 'pick-timer');
+      tb.setAttribute('aria-label', 'Timer');
+      tb.setAttribute('aria-pressed', tOpen ? 'true' : 'false');
+      icon(tb, 'clock');
+      /* Closed: open it FLOATING, so the names stay in view. Already open:
+         bring it to the full-screen view — closing a running timer from
+         here would be a way to lose it by accident. It is closed from its
+         own X. */
+      tb.addEventListener('click', function () {
+        T.open({ view: T.isShown() ? 'full' : 'float' });
+        syncTimerBtn();
+      });
+      live.timerBtn = tb;
+      right.appendChild(tb);
+    }
+    var cog = el('button', settings ? ICON_BTN_ON : ICON_BTN, 'pick-settings');
+    cog.setAttribute('aria-label', 'Settings');
+    cog.setAttribute('aria-expanded', settings ? 'true' : 'false');
+    icon(cog, 'cog');
+    cog.addEventListener('click', function () {
+      live.settingsOpen = !live.settingsOpen;
+      draw();
+      var again = root.querySelector('[data-mrb-added="pick-settings"]');
+      if (again && again.focus) { try { again.focus(); } catch (e) { /* ok */ } }
+    });
+    right.appendChild(cog);
+
     var x = el('button', HEAD_X, 'pick-close');
     x.setAttribute('aria-label', 'Close');
     x.innerHTML = '<svg width="14" height="14" viewBox="0 0 14 14" ' +
@@ -428,8 +737,193 @@
                   'L2 12" stroke="currentColor" stroke-width="1.6" ' +
                   'stroke-linecap="round"/></svg>';
     x.addEventListener('click', close);
-    head.appendChild(x);
+    right.appendChild(x);
+    head.appendChild(right);
     root.appendChild(head);
+  }
+
+  /* The timer button reflects whether the timer is showing — in place, never
+     by a redraw, because a redraw would cut a reveal short. */
+  function syncTimerBtn() {
+    var T = window.MrBadmusTimer;
+    if (!live || !live.timerBtn || !T) { return; }
+    var on = T.isShown();
+    live.timerBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    live.timerBtn.setAttribute('style', on ? ICON_BTN_ON : ICON_BTN);
+    padPanel();
+  }
+
+  /* ⚠️ THE FLOATING TIMER IS A CARD IN THE BOTTOM-RIGHT CORNER, and what
+     is in that corner is the picker's own footer — the mode toggle and
+     "Start again" on the board, the `+` buttons of the last rows in the
+     settings panel. `teacher_reach` found the second at 390px, and the
+     first is the same defect with a bigger target. So while the float is
+     showing, the overlay reserves room for it at the bottom (bottom
+     padding = the float's measured height), and everything the picker draws
+     sits above it instead of under it. Not showing, or full-screen (which
+     covers the page by design), it reserves nothing. */
+  function padPanel() {
+    if (!live) { return; }
+    var t = document.querySelector('[data-tm="overlay"]'), pad = '';
+    if (t && t.getAttribute('data-tm-view') === 'float') {
+      pad = (Math.ceil(t.getBoundingClientRect().height) + 12) + 'px';
+    }
+    live.el.style.paddingBottom = pad;
+    live.el.style.boxSizing = 'border-box';
+  }
+
+  // ── the settings panel ─────────────────────────────────────────────────
+
+  function buildPanel(s, pool) {
+    var panel = el('div', PANEL, 'pick-set-panel');
+    var inner = el('div', PANEL_IN);
+
+    /* Reset, TOP of the panel. Rendered always, and dead-looking
+       (`aria-disabled`, not-allowed) when there is nothing to reset — see the
+       note on `PICK_OFF`: a control that does nothing must say so. */
+    var nothing = !anyWeight(s) && !s.next;
+    var rs = el('button', (nothing ? RESET_OFF : RESET_BTN) +
+                ';align-self:flex-start', 'pick-set-reset');
+    text(rs, 'Reset');
+    if (nothing) {
+      rs.setAttribute('aria-disabled', 'true');
+    } else {
+      rs.addEventListener('click', function () {
+        s.weights = {};
+        s.next = null;
+        persist(s);
+        draw();
+      });
+    }
+    inner.appendChild(rs);
+
+    // Save for this class — a switch, off by default.
+    var sw = el('button', SW_ROW, 'pick-set-save');
+    sw.setAttribute('role', 'switch');
+    sw.setAttribute('aria-checked', s.save ? 'true' : 'false');
+    var lab = el('span', 'flex:1;min-width:0');
+    text(lab, 'Save for this class');
+    var track = el('span', s.save ? SW_TRACK_ON : SW_TRACK_OFF);
+    track.appendChild(el('span', s.save ? SW_KNOB_ON : SW_KNOB_OFF));
+    sw.appendChild(lab);
+    sw.appendChild(track);
+    sw.addEventListener('click', function () {
+      if (s.save) {
+        s.save = false;
+        storeRemove(live.opts.id);
+      } else {
+        s.save = true;
+        persist(s);
+        if (s.saveFailed) { s.save = false; }
+      }
+      draw();
+    });
+    inner.appendChild(sw);
+    var help = el('div', HELP);
+    help.setAttribute('data-mrb-added', 'pick-set-help');
+    text(help, s.saveFailed ? 'This browser would not save. Weights reset when you close.'
+               : s.save ? 'Weights are kept on this device for this class.'
+                        : 'Weights reset when you close the picker.');
+    inner.appendChild(help);
+
+    /* ONE mute, shared with the timer's beeps and the clicker cheer. */
+    var T = window.MrBadmusTimer;
+    if (T && T.muted) {
+      var snd = el('button', SW_ROW, 'pick-set-sound');
+      snd.setAttribute('role', 'switch');
+      var on = !T.muted();
+      snd.setAttribute('aria-checked', on ? 'true' : 'false');
+      var sl = el('span', 'flex:1;min-width:0');
+      text(sl, on ? 'Sound on' : 'Sound off');
+      var st = el('span', on ? SW_TRACK_ON : SW_TRACK_OFF);
+      st.appendChild(el('span', on ? SW_KNOB_ON : SW_KNOB_OFF));
+      snd.appendChild(sl); snd.appendChild(st);
+      snd.addEventListener('click', function () { T.setMuted(on); draw(); });
+      inner.appendChild(snd);
+      var ck = el('div', HELP, 'pick-set-clicker');
+      text(ck, 'Clicker keys: forward picks, back starts or pauses the timer, ' +
+               'hold either to cheer, the blank-screen button shows or hides the timer.');
+      inner.appendChild(ck);
+    }
+
+    // The list: name (tap = next pick) and tickets.
+    var lh = el('div', LIST_HEAD);
+    lh.appendChild(text(el('span'), 'Tap a name to pick them next'));
+    lh.appendChild(text(el('span'), 'Tickets'));
+    inner.appendChild(lh);
+
+    pool.forEach(function (p) {
+      var w = wOf(s, p.id);
+      var out = !!s.absent[p.id];
+      var isNext = s.next === p.id && !out;
+      var row = el('div', ROW, 'pick-set-row');
+
+      var nb = el('button', out ? ROW_NAME_OUT : (isNext ? ROW_NAME_NEXT : ROW_NAME),
+                  'pick-set-name');
+      nb.appendChild(text(el('span', 'min-width:0;overflow:hidden;' +
+                                     'text-overflow:ellipsis;white-space:nowrap'),
+                          p.name));
+      if (isNext) {
+        var tag = el('span', NEXT_TAG, 'pick-set-next');
+        tag.appendChild(el('span', 'display:inline-flex')).innerHTML = ICONS.next;
+        tag.appendChild(text(el('span'), 'Next'));
+        nb.appendChild(tag);
+      }
+      nb.setAttribute('aria-pressed', isNext ? 'true' : 'false');
+      if (out) {
+        nb.setAttribute('aria-disabled', 'true');
+      } else {
+        nb.addEventListener('click', function () {
+          s.next = isNext ? null : p.id;
+          draw();
+        });
+      }
+      row.appendChild(nb);
+
+      var minus = el('button', w > 1 ? STEP_BTN : STEP_BTN_OFF, 'pick-set-minus');
+      minus.setAttribute('aria-label', 'Fewer tickets for ' + p.name);
+      icon(minus, 'minus');
+      if (w > 1) {
+        minus.addEventListener('click', function () {
+          setWeight(s, p.id, w - 1); draw();
+        });
+      } else {
+        minus.setAttribute('aria-disabled', 'true');
+      }
+      row.appendChild(minus);
+
+      var n = el('div', STEP_N, 'pick-set-count');
+      text(n, String(w));
+      row.appendChild(n);
+
+      var plus = el('button', STEP_BTN, 'pick-set-plus');
+      plus.setAttribute('aria-label', 'More tickets for ' + p.name);
+      icon(plus, 'plus');
+      plus.addEventListener('click', function () {
+        setWeight(s, p.id, w + 1); draw();
+      });
+      row.appendChild(plus);
+
+      inner.appendChild(row);
+    });
+
+    panel.appendChild(inner);
+    return panel;
+  }
+
+  /* A clicker's forward key: press the REAL Pick button, so the reveal, its
+     aria-busy and the count are exactly what a tap would give. Ignored while
+     a reveal is still spinning (one gesture, one pick), with the settings
+     panel up (the board is not showing) and when Pick is spent. */
+  function clickPick() {
+    if (!live) { return 'off'; }
+    if (live.settingsOpen) { return 'off'; }
+    var n = live.el.querySelector('[data-mrb-name]');
+    if (n && n.hasAttribute('aria-busy')) { return 'busy'; }
+    var go = live.el.querySelector('[data-mrb-added="pick-go"]');
+    if (!go || go.getAttribute('aria-disabled') === 'true') { return 'off'; }
+    go.click();
+    return true;
   }
 
   // ── open / close ───────────────────────────────────────────────────────
@@ -443,7 +937,18 @@
     if (live && live.el && live.el.parentNode) {
       live.el.parentNode.removeChild(live.el);
     }
+    /* Weights live only as long as the picker is open unless the teacher
+       turned "Save for this class" on. (Pick-next, the cycle and the absent
+       list stay in `STATE` for the page load, as they always did.) */
+    if (live) {
+      var s = STATE[live.opts.id];
+      if (s && !s.save) { s.weights = {}; }
+    }
+    if (live && live.unTimer) { live.unTimer(); }
     live = null;
+    if (window.MrBadmusTimer && window.MrBadmusTimer.setPicker) {
+      window.MrBadmusTimer.setPicker(null);
+    }
   }
 
   function open(opts) {
@@ -477,7 +982,21 @@
     host.appendChild(root);
 
     live = { el: root, opts: opts, pool: pool, timer: null,
-             absentOpen: false };
+             absentOpen: false, settingsOpen: false, timerBtn: null,
+             unTimer: null };
+
+    /* The saved weights, if this class has a key: the switch reads ON and the
+       weights load from it. No key means OFF. */
+    var s = sessionFor(opts.id);
+    var saved = storeRead(opts.id);
+    if (saved) { s.save = true; s.weights = saved; }
+    else { s.save = false; }
+    s.saveFailed = false;
+
+    /* The timer button follows the timer's own open/close. */
+    if (window.MrBadmusTimer && window.MrBadmusTimer.onChange) {
+      live.unTimer = window.MrBadmusTimer.onChange(syncTimerBtn);
+    }
 
     keyHandler = function (e) {
       if (e.key === 'Escape' || e.keyCode === 27) { close(); }
@@ -485,6 +1004,11 @@
     document.addEventListener('keydown', keyHandler);
 
     draw();
+    padPanel();
+    /* The clicker's forward keys press the real Pick button through this. */
+    if (window.MrBadmusTimer && window.MrBadmusTimer.setPicker) {
+      window.MrBadmusTimer.setPicker({ pick: clickPick });
+    }
     var go = root.querySelector('[data-mrb-added="pick-go"]');
     if (go && go.focus) { try { go.focus(); } catch (e) { /* headless */ } }
   }
