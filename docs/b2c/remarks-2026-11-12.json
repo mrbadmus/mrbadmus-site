@@ -1,0 +1,28 @@
+{
+ "what": "Re-mark ruled by Mide, 12 Nov 2026. The curling-stone answer (question what-forces-do-to-motion#explain) was already 2 marks out of 4: marks_available was 4 throughout, and 6 is the number of scheme points after the 11 Nov split (the 11 Nov report wrote this as '2/6', which was wrong). Mide's rule now pins it: marks available never change when points are split. The only change here is the note: one next step in plain words, no point numbers and no list of gaps (the new marker, run three times on the same answer, gave 2/4 with points 4 and 5 every time). Old values kept so the change can be undone. The child's own answer is deliberately not copied into this public repo.",
+ "project": "production urklkrwevjtlfbwnipjn",
+ "table": "child_answers",
+ "id": "72f4454f-7d33-4083-ab1d-e10173b64567",
+ "old": {
+  "marks_scored": 2,
+  "marks_available": 4,
+  "points_hit": [
+   4,
+   5
+  ],
+  "points_total": 6,
+  "feedback": "The idea that no force is needed to keep something moving, and that a force is only needed to change motion, are missing. Adding those ideas would make your explanation of why the stone keeps going much clearer.\nPoint 1: not yet — Says no force is needed to keep something moving.\nPoint 2: not yet — Says the forces on the stone are very nearly balanced, so the resultant is close to 0 N.\nPoint 3: not yet — Says a resultant force is only needed to change the motion.\nPoint 4: got it — Names friction with the ice, or air resistance, as a small backwards force.\nPoint 5: got it — Says that small backwards resultant force is what slows the stone.\nPoint 6: not yet — Says that on perfectly smooth ice it would not stop."
+ },
+ "new": {
+  "marks_scored": 2,
+  "marks_available": 4,
+  "points_hit": [
+   4,
+   5
+  ],
+  "points_total": 6,
+  "feedback": "Next, say that no force is needed to keep something moving at a steady speed.\nPoint 1: not yet — Says no force is needed to keep something moving.\nPoint 2: not yet — Says the forces on the stone are very nearly balanced, so the resultant is close to 0 N.\nPoint 3: not yet — Says a resultant force is only needed to change the motion.\nPoint 4: got it — Names friction with the ice, or air resistance, as a small backwards force.\nPoint 5: got it — Says that small backwards resultant force is what slows the stone.\nPoint 6: not yet — Says that on perfectly smooth ice it would not stop."
+ },
+ "apply_sql": "update child_answers set feedback=$n1$Next, say that no force is needed to keep something moving at a steady speed.\nPoint 1: not yet — Says no force is needed to keep something moving.\nPoint 2: not yet — Says the forces on the stone are very nearly balanced, so the resultant is close to 0 N.\nPoint 3: not yet — Says a resultant force is only needed to change the motion.\nPoint 4: got it — Names friction with the ice, or air resistance, as a small backwards force.\nPoint 5: got it — Says that small backwards resultant force is what slows the stone.\nPoint 6: not yet — Says that on perfectly smooth ice it would not stop.$n1$ where id='72f4454f-7d33-4083-ab1d-e10173b64567' and marks_scored=2 and marks_available=4 and feedback=$o1$The idea that no force is needed to keep something moving, and that a force is only needed to change motion, are missing. Adding those ideas would make your explanation of why the stone keeps going much clearer.\nPoint 1: not yet — Says no force is needed to keep something moving.\nPoint 2: not yet — Says the forces on the stone are very nearly balanced, so the resultant is close to 0 N.\nPoint 3: not yet — Says a resultant force is only needed to change the motion.\nPoint 4: got it — Names friction with the ice, or air resistance, as a small backwards force.\nPoint 5: got it — Says that small backwards resultant force is what slows the stone.\nPoint 6: not yet — Says that on perfectly smooth ice it would not stop.$o1$;",
+ "undo_sql": "update child_answers set feedback=$o1$The idea that no force is needed to keep something moving, and that a force is only needed to change motion, are missing. Adding those ideas would make your explanation of why the stone keeps going much clearer.\nPoint 1: not yet — Says no force is needed to keep something moving.\nPoint 2: not yet — Says the forces on the stone are very nearly balanced, so the resultant is close to 0 N.\nPoint 3: not yet — Says a resultant force is only needed to change the motion.\nPoint 4: got it — Names friction with the ice, or air resistance, as a small backwards force.\nPoint 5: got it — Says that small backwards resultant force is what slows the stone.\nPoint 6: not yet — Says that on perfectly smooth ice it would not stop.$o1$ where id='72f4454f-7d33-4083-ab1d-e10173b64567' and feedback=$n1$Next, say that no force is needed to keep something moving at a steady speed.\nPoint 1: not yet — Says no force is needed to keep something moving.\nPoint 2: not yet — Says the forces on the stone are very nearly balanced, so the resultant is close to 0 N.\nPoint 3: not yet — Says a resultant force is only needed to change the motion.\nPoint 4: got it — Names friction with the ice, or air resistance, as a small backwards force.\nPoint 5: got it — Says that small backwards resultant force is what slows the stone.\nPoint 6: not yet — Says that on perfectly smooth ice it would not stop.$n1$;"
+}
