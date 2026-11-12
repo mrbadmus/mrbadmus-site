@@ -1477,6 +1477,101 @@ def clicker(cdp, port, width, height):
           out.d = pk.getAttribute('aria-modal');""")
         if (m.get("a"), m.get("b"), m.get("c"), m.get("d")) != ("true", "false", "true", "true"):
             bad("picker aria-modal with the float: %r" % (m,))
+
+        # ── 10. settings has a Back button: it is the way out, it keeps
+        #        every change, and the X is not the first thing seen ──────
+        page = _fresh(br, port, width, height)
+        page.eval(INSTRUMENT)
+        bk = _J(page, """await openPicker(); await click('pick-settings');
+          q('pick-set-plus', rows()[0]).click(); await frame();
+          q('pick-set-name', rows()[1]).click(); await frame();
+          q('pick-set-save').click(); await frame();
+          const b = q('pick-set-back'), x = q('pick-close');
+          out.back = !!b; out.backText = b ? b.textContent.trim() : null;
+          out.backLeftOfX = !!(b && x) &&
+            b.getBoundingClientRect().left < x.getBoundingClientRect().left;
+          out.timerBtnInSettings = !!q('pick-timer');
+          if (b) { b.click(); } else { await click('pick-settings'); }
+          await frame();
+          out.board = !!q('pick-go') && !q('pick-set-panel') && !q('pick-set-back');
+          out.focus = document.activeElement === q('pick-go');
+          out.timerBtnOnBoard = !!q('pick-timer');
+          await click('pick-settings');
+          out.w = q('pick-set-count', rows()[0]).textContent.trim();
+          out.next = !!q('pick-set-next', rows()[1]);
+          out.save = q('pick-set-save').getAttribute('aria-checked');
+          out.timer = window.MrBadmusTimer.isOpen();""")
+        if not bk.get("back") or bk.get("backText") != "Back":
+            bad("settings has no Back button (%r)" % (bk.get("backText"),))
+        if not bk.get("backLeftOfX"):
+            bad("Back does not come before the X in settings")
+        if bk.get("timerBtnInSettings") or not bk.get("timerBtnOnBoard"):
+            bad("timer button in settings %r / on the board %r"
+                % (bk.get("timerBtnInSettings"), bk.get("timerBtnOnBoard")))
+        if not bk.get("board") or not bk.get("focus"):
+            bad("Back did not return to the board with Pick focused: %r" % (bk,))
+        if (bk.get("w"), bk.get("next"), bk.get("save")) != ("2", True, "true"):
+            bad("Back lost a change: weight %r, pick next %r, save %r"
+                % (bk.get("w"), bk.get("next"), bk.get("save")))
+        if bk.get("timer"):
+            bad("the settings round-trip opened the timer")
+
+        # ── 11. the timer appears only when the teacher opens it: real
+        #        mouse clicks on the cog and Back, many times, never open
+        #        it; an open timer stays shown, a hidden one stays hidden ─
+        def real_click(marker):
+            r = json.loads(page.eval(
+                "(function(){var e=document.querySelector('[data-mrb-added=\"%s\"]');"
+                "if(!e){return 'null';}var b=e.getBoundingClientRect();"
+                "return JSON.stringify([b.left+b.width/2,b.top+b.height/2]);})()" % marker))
+            if not r:
+                bad("no %s to press" % marker)
+                return
+            for t in ("mousePressed", "mouseReleased"):
+                page.send("Input.dispatchMouseEvent", {"type": t, "x": r[0], "y": r[1],
+                                                       "button": "left", "clickCount": 1})
+            _time.sleep(0.15)
+
+        def tstate():
+            return json.loads(page.eval(
+                "JSON.stringify({open: window.MrBadmusTimer.isOpen(),"
+                " shown: window.MrBadmusTimer.isShown()})"))
+
+        page = _fresh(br, port, width, height)
+        page.eval(INSTRUMENT)
+        _J(page, "await openPicker();")
+        seen = []
+        for _ in range(3):
+            real_click("pick-settings"); real_click("pick-settings"); seen.append(tstate())
+            real_click("pick-settings")
+            real_click("pick-set-back" if page.eval(
+                "!!document.querySelector('[data-mrb-added=\"pick-set-back\"]')")
+                else "pick-settings")
+            seen.append(tstate())
+        real_click("pick-settings"); real_click("pick-set-sound"); real_click("pick-set-sound")
+        real_click("pick-set-reset"); real_click("pick-settings"); seen.append(tstate())
+        if any(x["open"] for x in seen):
+            bad("opening/closing settings opened the timer: %r" % (seen,))
+        # the teacher opens it: it shows, and stays shown through settings
+        real_click("pick-timer")
+        a = tstate()
+        real_click("pick-settings"); b1 = tstate()
+        real_click("pick-set-back"); b2 = tstate()
+        real_click("pick-settings"); real_click("pick-settings"); b3 = tstate()
+        if not (a["shown"] and b1["shown"] and b2["shown"] and b3["shown"]):
+            bad("an open timer did not stay shown through settings: %r"
+                % ([a, b1, b2, b3],))
+        # hidden with the clicker's B: stays hidden through settings
+        _tap(page, "b", settle=0.2)
+        h0 = tstate()
+        real_click("pick-settings"); real_click("pick-set-back"); h1 = tstate()
+        real_click("pick-settings"); real_click("pick-settings"); h2 = tstate()
+        if not (h0["open"] and not h0["shown"]) or h1 != h0 or h2 != h0:
+            bad("a hidden timer did not stay hidden through settings: %r"
+                % ([h0, h1, h2],))
+        print("     %-6s settings: Back keeps weight/next/save and returns to the "
+              "board; %d settings round-trips, timer never opened; open stays "
+              "shown, hidden stays hidden" % ("%dpx" % width, 7))
     return P
 
 
@@ -1674,6 +1769,9 @@ def main(argv):
           "pairs), Back only drives the\n        timer, B and . hide and show it "
           "without stopping it, mute silences the\n        cheer, typing in the "
           "time fields is left alone, F5 is not prevented.\n"
+          "        Settings: Back returns to the board keeping every change, the X\n"
+          "        is not first, and opening or closing settings never opens the\n"
+          "        timer; an open timer stays shown and a hidden one stays hidden.\n"
           % len(WIDTHS))
     return 0
 
