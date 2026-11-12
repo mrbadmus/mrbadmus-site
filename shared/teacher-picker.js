@@ -12,8 +12,12 @@
    A small cog in the header opens a settings panel: one row per pupil with a
    TICKET count (the weighting: `−` / `+`, minimum 1, no maximum), a tap on a
    pupil's name to make them the NEXT pick, a Reset, and a "Save for this
-   class" switch. A clock button beside the cog opens `MrBadmusTimer`
-   (`shared/teacher-timer.js`) as a floating timer, so the names stay in view.
+   class" switch. While the panel is open, a "Back" button takes the class
+   code's place in the header and returns to the board, keeping every change;
+   the X still closes the whole picker. A clock button beside the cog opens
+   `MrBadmusTimer` (`shared/teacher-timer.js`) as a floating timer, so the
+   names stay in view — on the board only: it is not drawn while settings is
+   open, so opening or closing settings can never open the timer.
 
    PRESENTATION CLICKERS (they send keyboard keys): while the picker is open
    it registers `clickPick()` with the timer module, which owns the one key
@@ -231,6 +235,18 @@
                     'border-radius:9px;cursor:pointer;color:var(--st-ink)';
   var HEAD_RIGHT = 'flex:none;display:flex;align-items:center;gap:6px';
 
+  /* ⊕ 12 Nov 2026 (Mide) — the settings panel's way out. It takes the class
+     code's place, top LEFT, because that is where the eye lands first: the
+     X in the opposite corner closes the whole picker, and a teacher who
+     only wanted to change a weight should not meet that first. Weight and
+     border of the panel's own Reset, so it reads as a button, not a link. */
+  var BACK_BTN = 'flex:none;display:inline-flex;align-items:center;gap:8px;' +
+                 'min-height:44px;padding:0 18px 0 14px;' +
+                 'font:600 16px/1.2 var(--st-ui);color:var(--st-ink);' +
+                 'background:var(--st-paper);' +
+                 'border:1px solid var(--st-btn-border);border-radius:10px;' +
+                 'cursor:pointer';
+
   /* The settings panel takes the stage's place while it is open. */
   var PANEL = 'order:2;flex:1;min-height:0;overflow:auto;padding:16px 20px 28px';
   var PANEL_IN = 'width:100%;max-width:640px;margin:0 auto;display:flex;' +
@@ -344,6 +360,10 @@
     plus: '<svg width="14" height="14" viewBox="0 0 14 14" fill="none" ' +
           'aria-hidden="true"><path d="M3 7h8M7 3v8" stroke="currentColor" ' +
           'stroke-width="1.6" stroke-linecap="round"/></svg>',
+    back: '<svg width="14" height="14" viewBox="0 0 14 14" fill="none" ' +
+          'aria-hidden="true"><path d="M8.5 2.5L4 7l4.5 4.5" ' +
+          'stroke="currentColor" stroke-width="1.6" stroke-linecap="round" ' +
+          'stroke-linejoin="round"/></svg>',
     next: '<svg width="12" height="12" viewBox="0 0 12 12" fill="none" ' +
           'aria-hidden="true"><path d="M4 2l4 4-4 4" stroke="currentColor" ' +
           'stroke-width="1.6" stroke-linecap="round" ' +
@@ -694,14 +714,41 @@
 
     // ── header (last in the DOM, first on the screen — see the note up top)
     var head = el('div', HEAD);
-    var code = el('div', HEAD_CODE);
-    code.setAttribute('data-mrb-code', '1');
-    text(code, opts.code || 'Class');
-    head.appendChild(code);
+    if (settings) {
+      /* Back closes the panel and returns to the board. Every change made
+         in the panel is already in `s` (and, with Save on, in storage), so
+         there is nothing to keep or discard here — it only stops showing
+         the panel. The class code is still in the dialog's name. */
+      var back = el('button', BACK_BTN, 'pick-set-back');
+      back.innerHTML = ICONS.back;
+      back.appendChild(document.createTextNode('Back'));
+      back.setAttribute('aria-label', 'Back to the board');
+      back.addEventListener('click', function () {
+        live.settingsOpen = false;
+        draw();
+        var go = root.querySelector('[data-mrb-added="pick-go"]');
+        if (go && go.focus) { try { go.focus(); } catch (e) { /* ok */ } }
+      });
+      head.appendChild(back);
+    } else {
+      var code = el('div', HEAD_CODE);
+      code.setAttribute('data-mrb-code', '1');
+      text(code, opts.code || 'Class');
+      head.appendChild(code);
+    }
 
     var right = el('div', HEAD_RIGHT);
     var T = window.MrBadmusTimer;
-    if (T) {
+    live.timerBtn = null;
+    /* ⚠️ NO TIMER BUTTON WHILE SETTINGS IS OPEN (12 Nov 2026, Mide). It sat
+       6px from the cog, and on a phone a tap meant to close settings could
+       land on it — touch adjustment picks the nearer target — so the
+       floating timer appeared "on its own" when the teacher went back to
+       the board. The panel is not a place anyone starts a timer from; the
+       board, the class page, Today and the clicker's Back key still are.
+       A timer that is already open stays exactly as it was: this only
+       stops drawing the button. */
+    if (T && !settings) {
       var tOpen = T.isShown();
       var tb = el('button', tOpen ? ICON_BTN_ON : ICON_BTN, 'pick-timer');
       tb.setAttribute('aria-label', 'Timer');
