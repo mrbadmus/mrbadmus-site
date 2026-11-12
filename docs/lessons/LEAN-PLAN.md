@@ -48,6 +48,7 @@ of work.
 - Sims shortlist page for Mide
 
 **Wave 1: autumn units (being taught now)**
+- First: Year 11 Physics Unit 7 Magnetism and electromagnetism (moved up from Wave 2 on 12 Nov 2026: Mide teaches it to Year 11 on Monday 16 Nov)
 - Year 11: Biology Unit 7 Ecology · Chemistry Unit 3 Quantitative chemistry · Physics Unit 6 Waves
 - Year 10: Biology Unit 2 Organisation · Chemistry Unit 8 Chemical analysis · Physics Unit 3 Particle model of matter
 - Year 9: Biology Unit 1 Cell biology · Chemistry Unit 1 Atomic structure and the periodic table
@@ -55,7 +56,7 @@ of work.
 - Year 7 KS3: Bio 1 Cells and organisation · Chem 1 States of matter · Phys 1 Forces and motion
 
 **Wave 2: next units (spring term)**
-- Year 11: Chemistry Unit 2 Bonding, structure and properties · Physics Unit 8 Space · Chemistry Unit 4 Chemical changes · Physics Unit 7 Magnetism and electromagnetism
+- Year 11: Chemistry Unit 2 Bonding, structure and properties · Physics Unit 8 Space · Chemistry Unit 4 Chemical changes
 - Year 10: Chemistry Unit 9 Atmosphere · Physics Unit 4 Atomic structure · Chemistry Unit 10 Using resources · Biology Unit 3 Infection and response
 - Year 8 KS3: Bio 5 Genetics and evolution · Chem 5 Acids and alkalis · Phys 5 Waves
 - Year 7 KS3: Bio 2 Diet and digestion · Chem 2 Chemical reactions · Phys 2 Electricity and magnetism
