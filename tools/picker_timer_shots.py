@@ -88,8 +88,15 @@ def main(argv):
                     js(page, "q('pick-set-name', rows()[3]).click();"
                              "await frame();")
                     snap("picknext-panel")
-                    js(page, "await click('pick-settings');"
-                             "await click('pick-go'); await wait(100);")
+                    # ⊕ 12 Nov 2026 — Back, top left, is the way out of
+                    # settings; the board it returns to has no timer on it
+                    # (nobody opened one), and the changes are kept.
+                    page.eval("(document.querySelector('[data-mrb-added="
+                              "\"pick-set-panel\"]')||{}).scrollTop = 0; 1")
+                    snap("settings-back")
+                    js(page, "await click('pick-set-back'); await wait(150);")
+                    snap("board-after-back")
+                    js(page, "await click('pick-go'); await wait(100);")
                     snap("picknext-board")
                     # timer floating over the picker
                     js(page, "q('pick-timer').click(); await frame();"
