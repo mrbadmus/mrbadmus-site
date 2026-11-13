@@ -1036,9 +1036,9 @@ def _particle_boxes(fig):
                             data_part="box-label", data_key=label))
         top = y + 24
         if tag:
-            out.append(_mono(BX, y + 32, tag, size=13, fill=_SVG_INK_FAINT, weight="600", anchor="start",
+            out.append(_mono(BX, y + 37, tag, size=13, fill=_SVG_INK_FAINT, weight="600", anchor="start",
                              data_part="box-tag", data_key=label))
-            top = y + 42
+            top = y + 47
         lay = b.get("layout")
         body, h = [], 0
         if lay == "grid":

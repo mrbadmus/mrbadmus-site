@@ -113,7 +113,7 @@ LESSON = {
     "ks4_becomes": "Bonding: what holds the atoms of a compound together, and why it changes the substance.",
     "ladder_stem": {
         "apply": "Iron and sulfur react in a fixed ratio of 7 g to 4 g. A student heats 7 g of iron "
-                 "with 8 g of sulfur in a tube. What is in the tube at the end, and how much of each?",
+                 "with 8 g of sulfur in a tube. Which best describes what is in the tube at the end?",
         "explain": "A tube holds either iron and sulfur mixed, or iron sulfide. Describe two "
                    "tests to tell which. Say what each test shows for each one.",
         "produce": "A mixture of hydrogen and oxygen can explode with a spark. Water is made of the same "
@@ -174,7 +174,7 @@ LESSON = {
         "apply": {
             0: "The ratio in a compound is fixed. Extra sulfur has no iron left to join.",
             1: "The iron runs out. More sulfur cannot make more iron sulfide.",
-            2: "The 7 g of iron still reacts with 4 g of sulfur. The other 4 g is left over.",
+            2: "The iron still reacted. There is 11 g of iron sulfide, with 4 g of sulfur left over.",
         },
     },
 }

@@ -77,8 +77,8 @@ LESSON = {
          "body": [{"mistakes": [
              ("The small number shows how much of the substance there is.",
               "It counts atoms in one molecule. Changing it makes a different substance."),
-             ("2H2O and H2O2 are the same thing.",
-              "2H2O is two water molecules. H2O2 is one molecule of a different substance."),
+             ("A big number in front means the same as a small number.",
+              "A big number counts molecules. A small number counts atoms in one molecule."),
              ("NaCl is one molecule with one sodium and one chlorine.",
               "Salt is a giant structure. NaCl gives the ratio, one to one."),
          ]}]},
@@ -93,6 +93,7 @@ LESSON = {
     ],
     "try": None,
     "ladder_stem": {
+        "recall": "How many atoms are there altogether in one molecule of H2SO4?",
         "explain": "Explain why H2O and H2O2 are different substances, and not different amounts of one "
                    "substance. Say what it takes to make water from hydrogen peroxide by removing an oxygen atom.",
         "produce": "A student writes salt as Na1Cl1. They say it means one particle with one sodium and "

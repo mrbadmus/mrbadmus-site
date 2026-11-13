@@ -117,7 +117,7 @@ LESSON = {
         "apply": {
             0: "Chemists still use it. It gives the right answers for reactions.",
             2: "It has been replaced for some questions. For reactions, it still works.",
-            3: "Atoms can be split, so Dalton was wrong.",
+            3: "That is not why. The model is kept because it still works for reactions.",
         },
     },
 }

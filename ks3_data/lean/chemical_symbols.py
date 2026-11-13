@@ -128,7 +128,7 @@ LESSON = {
     "ladder_feedback": {
         "recall": {
             1: "Mg and O are two different symbols, so two elements. Mg is magnesium.",
-            2: "The small g belongs to the M before it. Each capital letter starts a new symbol.",
+            2: "The lower-case g belongs to the M before it. Each capital letter starts a new symbol.",
             3: "Count the different symbols to count the elements. Amounts do not change this.",
         },
         "apply": {
