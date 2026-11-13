@@ -634,7 +634,8 @@ def pages():
         disc = ks3_data.structure.unit_index()[l["_unit"]]["discipline"]
         yield (3, slug, None, "/ks3/%s/%s/%s.html" % (disc, l["_unit_slug"], slug), k3.records()[slug])
     for L in ks4_lessons.lean_lessons():
-        for r in ROUTES:
+        # a lesson exists only on its own routes (Fleming's rule: CH and TH; transformers: TH)
+        for r in [r for r in ROUTES if r in (L.get("routes") or ROUTES)]:
             yield (4, L["slug"], r, "/%s/%s/%s/%s.html" % (ROUTE_DIR[r], L["subject"], L["topic_id"], L["slug"]), L["lean"])
 
 
