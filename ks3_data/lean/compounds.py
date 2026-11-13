@@ -110,6 +110,7 @@ LESSON = {
                   "Carbon dioxide is a compound. It is always one carbon atom to two oxygen atoms."]},
     ],
     "try": None,
+    "ks4_becomes": "Bonding: what holds the atoms of a compound together, and why it changes the substance.",
     "ladder_stem": {
         "apply": "Iron and sulfur react in a fixed ratio of 7 g to 4 g. A student heats 7 g of iron "
                  "with 8 g of sulfur in a tube. What is in the tube at the end, and how much of each?",
