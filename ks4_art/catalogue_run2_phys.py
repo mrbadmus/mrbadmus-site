@@ -428,6 +428,22 @@ CATALOGUE = [
                 "Compass A is beyond the S end and compass B beyond the N "
                 "end.",
     },
+    # ks4-electromagnetism-h19 (QUESTION-AUDIT 11 Nov 2026: the stem described
+    # the set-up in words). Two coils end to end, poles given: coil A S..N,
+    # coil B S..N, so A's N faces B's S. NEVER drawn: current, field, force.
+    {
+        "id": "ks4-fig-solenoid-pair-attracting",
+        "art": "solenoid-pair",
+        "params": {},
+        "title": "Two coils of wire end to end on one horizontal axis, "
+                 "labelled coil A and coil B, with their poles marked.",
+        "desc": "Coil A is on the left: its left end is marked S and its "
+                "right end N. Coil B is on the right, a short gap away: its "
+                "left end is marked S and its right end N. So coil A's north "
+                "pole faces coil B's south pole across the gap. The front of "
+                "each turn is a solid line and the back a dashed line, as the "
+                "key says.",
+    },
     # ── space ─────────────────────────────────────────────────────────────
     {
         "id": "ks4-fig-graph-hubble-two-galaxies",
