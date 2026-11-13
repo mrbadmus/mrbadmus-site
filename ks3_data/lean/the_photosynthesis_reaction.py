@@ -15,8 +15,8 @@ LESSON = {
     "words": ["photosynthesis", "reactant", "product", "chlorophyll"],
     "word_defs": {
         "photosynthesis": "How plants make glucose from carbon dioxide and water, using light energy.",
-        "reactant": "A substance used up in a reaction. It goes on the left of the arrow.",
-        "product": "A substance made in a reaction. It goes on the right of the arrow.",
+        "reactant": "A substance used up in a reaction. It is written before the arrow.",
+        "product": "A substance made in a reaction. It is written after the arrow.",
         "chlorophyll": "The green pigment in chloroplasts. It absorbs light energy.",
     },
     "knowledge": [
@@ -24,7 +24,7 @@ LESSON = {
          "body": [{"figure": "b7-word-summary"},
                   "Carbon dioxide and water are the reactants.",
                   "Glucose and oxygen are the products.",
-                  "Light is not a reactant. It gives the energy, so it goes above the arrow."]},
+                  "Light is not a reactant. It gives the energy, so it is written beside the arrow."]},
         {"kind": "card", "title": "Where photosynthesis happens",
          "body": ["Photosynthesis happens mainly in the leaves, inside chloroplasts.",
                   "Chloroplasts contain chlorophyll, a green pigment.",
@@ -72,7 +72,7 @@ LESSON = {
              ("Plants get their food from the soil.",
               "Plants make their own food, glucose, by photosynthesis."),
              ("Light is a reactant.",
-              "Light gives the energy. It is written above the arrow."),
+              "Light gives the energy. It is written beside the arrow."),
              ("Photosynthesis makes energy.",
               "Energy cannot be made. Energy from light is stored in glucose."),
          ]}]},
@@ -144,7 +144,7 @@ LESSON = {
     "ladder_feedback": {
         "recall": {
             0: "That is respiration. It has the same substances, the other way round.",
-            1: "Light is needed, but it is not a reactant. It goes above the arrow.",
+            1: "Light is needed, but it is not a reactant. It is written beside the arrow.",
             2: "Minerals are not a reactant. The reactants are carbon dioxide and water.",
         },
         "apply": {

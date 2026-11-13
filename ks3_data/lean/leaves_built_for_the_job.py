@@ -31,7 +31,7 @@ LESSON = {
              ("Broad, flat shape", "The whole leaf", "Gives a large surface area to absorb light"),
              ("Waxy cuticle", "The outer surface, thickest on top", "Reduces water loss"),
              ("Upper epidermis", "Top layer of cells, under the cuticle", "See-through, so light reaches the palisade cells"),
-             ("Palisade cells", "Just under the upper epidermis", "Do most of the photosynthesis. Packed with chloroplasts, near the light."),
+             ("Palisade cells", "Just under the upper epidermis", "Do most of the photo­synthesis. Packed with chloro­plasts, near the light."),
              ("Spongy layer", "Below the palisade cells", "Air spaces let carbon dioxide reach the cells and oxygen get out"),
              ("Stomata", "Mostly on the underside", "Let carbon dioxide in, and oxygen and water vapour out"),
              ("Guard cells", "Around each stoma", "Open and close the stoma"),
@@ -56,6 +56,10 @@ LESSON = {
                               "Hot, dry places: small leaves, a thick cuticle and few stomata.",
                               "A cactus has spines instead of leaves. Its green stem photosynthesises."]},
                   "Leaves that save water photosynthesise more slowly. So these plants grow slowly."]},
+        {"kind": "card", "title": "Why leaves look green",
+         "body": ["Chlorophyll absorbs mostly red and blue light.",
+                  "It reflects much of the green light, so leaves look green.",
+                  "So under green light alone, a plant photosynthesises slowly."]},
         {"kind": "card", "title": "Easy mistakes",
          "body": [{"mistakes": [
              ("Stomata only let oxygen out.",
@@ -70,10 +74,6 @@ LESSON = {
                 "diffuse quickly. Palisade cells full of chloroplasts sit near the top surface. Stomata "
                 "on the underside let carbon dioxide in.",
     "deeper": [
-        {"kind": "card", "title": "Why leaves look green",
-         "body": ["Chlorophyll absorbs mostly red and blue light.",
-                  "It reflects much of the green light, so leaves look green.",
-                  "So under green light alone, a plant photosynthesises slowly."]},
         {"kind": "card", "title": "Why leaves change colour in autumn",
          "body": ["In autumn, many trees break down their chlorophyll.",
                   "Yellow and orange pigments were in the leaf all summer.",
@@ -84,6 +84,7 @@ LESSON = {
                   "So a pine tree can keep its leaves all year."]},
     ],
     "try": None,
+    "tutor_body": "Want to check which leaf features suit a habitat?",
     "figure_caption": {"b7-leaf-section": "Most leaves are less than half a millimetre thick."},
     "ladder_stem": {
         "apply": "Pondweed is put under a green filter, then a red filter. Both let through the same "

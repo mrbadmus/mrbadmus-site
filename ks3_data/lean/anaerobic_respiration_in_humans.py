@@ -61,6 +61,7 @@ LESSON = {
                   "The liver turns it back into glucose."]},
     ],
     "try": None,
+    "tutor_body": "Want to check what the oxygen debt is?",
     "figure_caption": {"b8-word-anaerobic": None},      # the card text already says it
     "ladder_stem": {
         "apply": "You finish a sprint and stand still. You go on breathing hard for two minutes. Why?",

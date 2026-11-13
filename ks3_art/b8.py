@@ -1197,7 +1197,7 @@ def _yeast_limewater(fig):
     under a layer of oil, a bung, and a delivery tube bending into limewater, where bubbles of
     gas rise from its end. Both stand in a warm water bath. Every label is on the drawing."""
     from ks3_art.b4 import _B4_BLUE, _B4_BLUE_TINT, _B4_LEADER
-    W, H = 326, 336
+    W, H = 326, 322
     lx0, lx1 = 44, 96           # left tube walls
     rx0, rx1 = 252, 306         # right tube walls
     rcx = (rx0 + rx1) / 2
@@ -1205,7 +1205,12 @@ def _yeast_limewater(fig):
     out = [_svg_open(fig, W, H)]
     out.append('<g stroke-linecap="round" stroke-linejoin="round">')
     # water bath behind both tubes
-    out.append(_rect(16, 218, 294, 70, rx=8, fill=_B4_BLUE_TINT, stroke=_B4_BLUE, w=2, data_part="water-bath"))
+    # the water bath is a beaker round the lower part of the YEAST tube only
+    out.append(_path("M 18,206 L 18,282 Q 18,292 28,292 L 112,292 Q 122,292 122,282 L 122,206 Z",
+                     fill=_B4_BLUE_TINT, data_part="water-bath"))
+    out.append(_line(18, 206, 122, 206, stroke=_B4_BLUE, w=2, data_part="water-bath"))
+    out.append(_path("M 18,196 L 18,282 Q 18,292 28,292 L 112,292 Q 122,292 122,282 L 122,196",
+                     stroke=_B4_BLUE, w=2.5, data_part="water-bath"))
 
     def tube(x0, x1, top, name):
         return ("M %s,%s L %s,%s L %s,%s Q %s,%s %s,%s Q %s,%s %s,%s Z"
@@ -1262,7 +1267,7 @@ def _yeast_limewater(fig):
     out.append(_line(242, 204, rcx - 15, 205, **_B4_LEADER))
     out.append(lab(238, ["Limewater"], 256, "end", "Limewater"))
     out.append(_line(242, 251, rx0 + 8, 256, **_B4_LEADER))
-    out.append(lab(163, ["Warm water bath"], 308, "middle", "Warm water bath"))
+    out.append(lab(70, ["Warm water bath"], 312, "middle", "Warm water bath"))
     out.append('</g></svg>')
     return "".join(out)
 

@@ -29,7 +29,7 @@ LESSON = {
               "Lactic acid in humans. Ethanol and carbon dioxide in yeast and plants."),
              ("Energy from each glucose", "Much more", "Much less"),
              ("How fast energy is released", "Slower", "Faster"),
-             ("Where in the cell", "In the mitochondria", "In the cytoplasm"),
+             ("Where in the cell", "In the mito­chondria", "In the cytoplasm"),
          ]},
         {"kind": "card", "title": "What they have in common",
          "body": ["Both are respiration.",
@@ -74,6 +74,7 @@ LESSON = {
                   "So red blood cells, which have none, still release energy this way."]},
     ],
     "try": None,
+    "tutor_body": "Want to check which kind of respiration is running?",
     "ladder_stem": {
         "explain": "A sprinter and a marathon runner both respire aerobically and anaerobically. Explain "
                    "why their races depend on these so differently. Explain why the marathon runner "

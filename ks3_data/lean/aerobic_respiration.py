@@ -43,7 +43,7 @@ LESSON = {
          "rows": [
              ("What it is", "Moving air in and out of the lungs",
               "A chemical reaction that releases energy from glucose"),
-             ("Where it happens", "In the lungs", "In the mitochondria of cells"),
+             ("Where it happens", "In the lungs", "In the mito­chondria of cells"),
              ("What does it", "The diaphragm and intercostal muscles", "Almost every living cell"),
              ("Which organisms", "Animals with lungs", "All living organisms"),
          ]},
@@ -87,9 +87,12 @@ LESSON = {
                   "They carry oxygen, but cannot use it for aerobic respiration."]},
     ],
     "try": None,
+    "tutor_body": "Want to check where the atoms in lost fat end up?",
     "ks4_becomes": "The balanced symbol equation, and how respiration links to metabolism.",
     "figure_caption": {"b8-word-aerobic": None},      # the card text already says it
     "ladder_stem": {
+        "apply": "A cyclist burns off 200 g of body fat on a long ride. Where does almost all of "
+                 "that mass go?",
         "produce": "Germinating peas are sealed in a flask with a thermometer. A second flask holds peas "
                    "that were boiled, cooled and disinfected. Both are left overnight. Predict what happens to the "
                    "temperature, oxygen and carbon dioxide in each flask. Explain why the boiled peas "

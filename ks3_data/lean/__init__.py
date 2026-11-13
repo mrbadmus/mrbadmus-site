@@ -148,6 +148,9 @@ def apply(lesson):
     lesson["stretch"] = []
     lesson["ladder"] = _ladder(lesson, rec)
     lesson["misconceptions"] = _misconceptions(lesson, rec)
+    # the "Ask MrBadmus" prompt, reworded when the old one names something the lean page dropped
+    if rec.get("tutor_body") and lesson.get("tutor"):
+        lesson["tutor"] = dict(lesson["tutor"], body=rec["tutor_body"])
     # render-only rewording of two endmatter lines; a None value drops the line
     for key in ("ks4_becomes", "safety_note"):
         if key in rec:

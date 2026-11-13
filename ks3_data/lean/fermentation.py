@@ -83,6 +83,7 @@ LESSON = {
                   "Ethanol builds up and harms the roots."]},
     ],
     "try": None,
+    "tutor_body": "Want to check what yeast makes with and without oxygen?",
     "figure_caption": {"b8-word-fermentation": None,      # the card text already says it
                        "b8-yeast-limewater": None},
     "ladder_stem": {

@@ -33,7 +33,7 @@ LESSON = {
               "A plant joining glucose into starch"),
              ("Active transport", "Moving substances where diffusion cannot",
               "A root hair cell taking in minerals"),
-             ("Keeping warm", "Keeping body temperature steady in mammals and birds",
+             ("Keeping warm", "Keeping body tempera­ture steady in mammals and birds",
               "Your body staying at about 37 °C"),
          ]},
         {"kind": "card", "title": "Active transport needs energy",
@@ -80,8 +80,8 @@ LESSON = {
     "try": None,
     "ladder_stem": {
         "recall": "Which of these processes needs energy released by respiration to make it happen?",
-        "apply": "A potted plant has been in a dark cupboard for a day. Which statement about its cells "
-                 "is fully correct?",
+        "apply": "A potted plant has been in a dark cupboard for a day. What is happening in its "
+                 "cells? Choose the fully correct answer.",
         "explain": "A root hair cell takes in minerals from the soil. The soil has a lower concentration "
                    "of these minerals than the cell. Explain why this needs respiration. Explain why a "
                    "root hair cell has many mitochondria.",
@@ -92,6 +92,8 @@ LESSON = {
     "ladder_ticks": [
         ["Says the mineral ions are more concentrated inside the cell than in the soil water.",
          "Says the minerals must move into the cell from a low to a high concentration."],
+        ["Names active transport as the process that moves substances against the concentration gradient.",
+         "Names active transport as the process that moves substances from low to high concentration."],
         ["Says diffusion moves substances the other way, from high to low, so it cannot do this job.",
          "Says diffusion only moves substances from high to low, so it cannot do this."],
         ["Concludes that the cell holds many mitochondria because active transport is its main and continuous "
