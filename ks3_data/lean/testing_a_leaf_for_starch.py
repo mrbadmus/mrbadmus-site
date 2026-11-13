@@ -80,6 +80,11 @@ LESSON = {
                   "They contain starch that a plant made and stored."]},
     ],
     "try": None,
+    "connects": {"Substance misuse and decisions": "The same fault in evidence about people: no comparison group."},
+    "ks4_becomes": "Required practicals on photosynthesis, limiting factors, and writing a method others can follow.",
+    "safety_note": "Ethanol is highly flammable. Heat it only in a water bath, with no flame nearby. "
+                   "Iodine solution irritates skin and eyes. Wear eye protection. Follow your school's "
+                   "risk assessment.",
     "ladder_stem": {
         "apply": "A leaf is picked from a plant on a windowsill. The plant was not destarched. The "
                  "leaf is tested and goes blue-black. What does this show about when the starch was made?",

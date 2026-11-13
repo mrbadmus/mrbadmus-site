@@ -19,11 +19,11 @@ MRB-103 also flagged an **anatomical/structural diagram gap** (cells, organs) an
 | Status | Figures |
 |---|---|
 | `drafted` | 1 |
-| `drawn` | 41 |
+| `drawn` | 40 |
 | `final` | 1 |
 | `needed` | 3 |
 | `retired` | 6 |
-| **Total** | **52** |
+| **Total** | **51** |
 
 `needed` = declared by a lesson, not yet drawn. A lesson may ship with figures at `needed` — it is not a build blocker — but the need is then counted here rather than invisible.
 
@@ -63,7 +63,6 @@ MRB-103 also flagged an **anatomical/structural diagram gap** (cells, organs) an
 | B5 | `the-menstrual-cycle` | `b5-cycle-timeline` | diagram | `retired` | One cycle drawn as a timeline for each of the three lengths, 21, 28 and 35 days: the bleeding window at the start, the building phase, release a fortnight before the end, and the fortnight in which the lining is held ready — with the release marker landing on a different day in each of the three. |
 | B7 | `leaves-built-for-the-job` | `b7-leaf-section` | diagram | `drawn` | The whole slice is less than half a millimetre from top to bottom. Two of its features are claims you can check by looking: the palisade cells are the layer nearest the light, and they hold most of the chloroplasts — count them against the spongy cells below. The only break in either surface is the one pore, and it is underneath. Follow the arrow to see why that still works: carbon dioxide goes in through the pore, up through the air spaces, and into a palisade cell, without anything having to carry it. |
 | B7 | `the-photosynthesis-reaction` | `b7-word-summary` | diagram | `drawn` | The word summary for photosynthesis. |
-| B7 | `why-almost-all-life-depends-on-it` | `b7-food-chain-grass` | diagram | `drawn` | A food chain starts with a producer. |
 | B8 | `aerobic-respiration` | `b8-word-aerobic` | diagram | `drawn` | The word summary for aerobic respiration. |
 | B8 | `anaerobic-respiration-in-humans` | `b8-word-anaerobic` | diagram | `drawn` | The word summary for anaerobic respiration in humans. |
 | B8 | `fermentation` | `b8-word-fermentation` | diagram | `drawn` | The word summary for fermentation. |

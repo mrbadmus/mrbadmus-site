@@ -1137,44 +1137,10 @@ def _word_equation(fig):
             + "".join(out_parts) + '</g></svg>')
 
 
-def _food_chain(fig):
-    """A food chain drawn top to bottom: a rounded box per organism, its role in mono under the
-    name, and a drawn arrow between consecutive boxes. fig["chain"] = [[name, tag], ...];
-    optional fig["arrow_label"] is written once beside the first arrow."""
-    from ks3_art.b4 import _b4_arrow
-    chain = fig.get("chain") or []
-    if len(chain) < 2:
-        raise ValueError("figure %r: food-chain needs at least two organisms" % fig.get("id"))
-    W, cx = 326, 163
-    BH, GAP = 52, 44
-    y = 6
-    out = []
-    for i, (name, tag) in enumerate(chain):
-        bw = max(120, min(300, len(name) * 10.4 + 40))
-        out.append(_rect(cx - bw / 2, y, bw, BH, rx=12, fill=_SVG_CARD, stroke=_SVG_INK, w=2.5,
-                         data_part="organism", data_key=name))
-        out.append(_label(cx, y + 24, name, size=17, weight="700", data_part="name", data_key=name))
-        paint = _SVG_ACCENT_TEXT if str(tag).lower() == "producer" else _SVG_INK_FAINT
-        out.append(_mono(cx, y + 42, tag, size=13, fill=paint, weight="600", anchor="middle",
-                         data_part="tag", data_key=name))
-        y += BH
-        if i < len(chain) - 1:
-            out.append(_b4_arrow(cx, y + 2, cx, y + GAP - 2, w=3, head=12, data_part="arrow"))
-            if i == 0 and fig.get("arrow_label"):
-                out.append(_label(cx + 16, y + GAP / 2 + 5, fig["arrow_label"], size=14,
-                                  fill=_SVG_ACCENT_TEXT, weight="600", anchor="start",
-                                  data_part="arrow-label", data_key=fig["arrow_label"]))
-            y += GAP
-    H = y + 6
-    return (_svg_open(fig, W, H) + '<g stroke-linecap="round" stroke-linejoin="round">'
-            + "".join(out) + '</g></svg>')
-
-
 # ── registrations ────────────────────────────────────────────────────────
 ART = {
     'leaf-section': _leaf_section,
     'word-equation': _word_equation,
-    'food-chain': _food_chain,
 }
 
 KIND_SHELL = {

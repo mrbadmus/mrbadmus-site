@@ -18,6 +18,8 @@ authored LESSON, which export_ks3_questions.py reads for the database mirror):
     figures     the record's own figures are added
     ladder      options' feedback and stems overlaid from the record. The ladder's
                 questions, options and answers are never touched.
+    ks4_becomes, safety_note   replaced by the record's own wording when it gives one
+                (None drops the line), so a lean page's endmatter meets the standard too.
 
 Every other field stays (vocabulary, covers, misconceptions, figures, activities,
 key_note...) so the data-reading gates and the flashcards are unaffected.
@@ -146,6 +148,13 @@ def apply(lesson):
     lesson["stretch"] = []
     lesson["ladder"] = _ladder(lesson, rec)
     lesson["misconceptions"] = _misconceptions(lesson, rec)
+    # render-only rewording of two endmatter lines; a None value drops the line
+    for key in ("ks4_becomes", "safety_note"):
+        if key in rec:
+            if rec[key]:
+                lesson[key] = rec[key]
+            else:
+                lesson.pop(key, None)
     # the lean page carries a convention note only when its record sets one
     if rec.get("convention_note"):
         lesson["convention_note"] = rec["convention_note"]

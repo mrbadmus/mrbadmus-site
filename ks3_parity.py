@@ -7513,7 +7513,8 @@ RETIRED_BY_LEAN = [(n, "biology/breathing-and-gas-exchange/how-breathing-works.h
     "the net bar is blue at the compensation point",
     "the verdict panel is ink on cream at the compensation point",
     "the photosynthesis bar is the ok green")]
-# ⊕ lean wave 1 (B7 photosynthesis, B8 respiration): all nine lessons became lean pages, so EVERY
+# ⊕ lean wave 1 (B7 photosynthesis, B8 respiration): eight of the nine lessons became lean pages
+# (why-almost-all-life-depends-on-it is held back, so its trace-it-back rows still run), so EVERY
 # component and contrast row registered on one of these pages measures an element the lean standard
 # removed (the nine benches and the .ks3-eqn equation block; the page now carries drawn figures).
 # Derived from the registry rather than listed, so a row added later for these pages is retired
@@ -7522,7 +7523,6 @@ _W1_WHY = {
     B7_BENCH: "the reactant-remover bench and equation block are not on the lean page (figure b7-word-summary)",
     B7_TUNER: "the leaf-tuner bench is not on the lean page",
     B7_METHOD: "the method-breaker bench is not on the lean page",
-    B7_TRACE: "the trace-it-back bench is not on the lean page (figure b7-food-chain-grass)",
     B8_LEDGER: "the mass-ledger bench and equation block are not on the lean page (figure b8-word-aerobic)",
     B8_DEMAND: "the cell-demand bench is not on the lean page",
     B8_DEBT: "the oxygen-debt bench is not on the lean page (figure b8-word-anaerobic)",
@@ -17419,7 +17419,14 @@ def check_figure_truth(browser_mod, url_for, spec, ks3_root):
                 "encoding assertion did not run."
                 % (spec["page"], spec["fig"])]
     with browser_mod.Browser() as b:
-        got = b.page(url_for(spec["page"])).eval(spec["js"])
+        pg = b.page(url_for(spec["page"]))
+        # ⊕ lean wave 1 — on a lean page a drawn figure sits inside a Key knowledge card that is
+        # closed (display: none) until the pupil taps it, and a closed card's SVG measures 0 x 0.
+        # Open every lean card first, as a pupil does, so the geometry this row asserts is the
+        # drawing the pupil sees. Pages with no lean card are unchanged.
+        pg.eval("document.querySelectorAll('.lean-card').forEach(function(c){"
+                "c.setAttribute('data-lean-open','')}),1")
+        got = pg.eval(spec["js"])
     if got is None:
         return ["CONTENT TRUTH: /%s draws none of %s's hooks, so the "
                 "assertion did not run. A row that finds nothing does not "

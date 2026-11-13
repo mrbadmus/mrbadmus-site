@@ -87,6 +87,7 @@ LESSON = {
                   "They carry oxygen, but cannot use it for aerobic respiration."]},
     ],
     "try": None,
+    "ks4_becomes": "The balanced symbol equation, and how respiration links to metabolism.",
     "figure_caption": {"b8-word-aerobic": None},      # the card text already says it
     "ladder_stem": {
         "produce": "Germinating peas are sealed in a flask with a thermometer. A second flask holds peas "

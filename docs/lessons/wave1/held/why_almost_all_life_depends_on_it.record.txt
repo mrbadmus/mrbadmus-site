@@ -78,6 +78,7 @@ LESSON = {
                   "So not quite all life depends on photosynthesis."]},
     ],
     "try": None,
+    "ks4_becomes": "Trophic levels, biomass, the carbon cycle, and how humans change carbon dioxide levels.",
     "figure_caption": {"b7-food-chain-grass": None},      # the card text already says it
     "ladder_stem": {
         "produce": "People call coal “ancient sunlight”. Explain what that means. Say where the "

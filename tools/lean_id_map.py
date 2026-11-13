@@ -56,7 +56,7 @@ PILOT_KS3 = ["alveoli-built-for-exchange", "exercise-asthma-and-smoking", "how-b
 WAVES = {
     "wave1": [
         ("B7", "photosynthesis", ["the-photosynthesis-reaction", "leaves-built-for-the-job",
-                                  "testing-a-leaf-for-starch", "why-almost-all-life-depends-on-it"]),
+                                  "testing-a-leaf-for-starch"]),
         ("B8", "respiration", ["aerobic-respiration", "why-every-cell-respires",
                                "anaerobic-respiration-in-humans", "fermentation", "aerobic-vs-anaerobic"]),
     ],

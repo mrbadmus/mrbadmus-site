@@ -151,8 +151,6 @@ RETIRED_BY_LEAN = {
                    "the leaf-tuner bench is not on the lean page"),
     "method-breaker": ("biology/photosynthesis/testing-a-leaf-for-starch.html",
                        "the method-breaker bench is not on the lean page"),
-    "trace-it-back": ("biology/photosynthesis/why-almost-all-life-depends-on-it.html",
-                      "replaced by the drawn figure b7-food-chain-grass"),
     "mass-ledger": ("biology/respiration/aerobic-respiration.html",
                     "replaced by the drawn figure b8-word-aerobic"),
     "cell-demand": ("biology/respiration/why-every-cell-respires.html",
