@@ -240,7 +240,7 @@ def sender_reads_full_errors():
 
 
 def removed_ids():
-    """Ids the lean pilot retired from their pages (docs/lessons/pilot/ID-MAP-*.json,
+    """Ids the lean pilot retired from their pages (docs/lessons/<pilot or wave>/ID-MAP-*.json,
     status "removed"; tools/lean_id_map.py writes them). A child's saved answer to one of
     these still resolves, so the tag stays in knowledge_points/*.json and the check below
     accepts it. It accepts NOTHING else that no loader knows."""

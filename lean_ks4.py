@@ -215,6 +215,10 @@ class _Slots:
             raise ValueError("lean KS4 record: {'figure': ...} is KS3 only")
         name = part["slot"]
         self.used.add(name)
+        if name.startswith("fig:"):
+            # a drawn figure for a card (figlib/ks4lean.py): inline SVG, checked, unknown names raise
+            from figlib import ks4lean
+            return lean_blocks.fig_wrap(ks4lean.svg(name[4:]))
         if name in SIMPLE_FIG_SLOTS:
             return lean_blocks.fig_wrap(_FIG_DIV % SIMPLE_FIG_SLOTS[name])
         if name == "triangle-energy":
@@ -226,6 +230,9 @@ class _Slots:
             if eq not in (self.rec.get("equations") or {}):
                 raise ValueError("lean KS4 record %r: slot %r names an equation the record "
                                  "does not define" % (self.rec["slug"], name))
+            if not self.rec["equations"][eq].get("top"):
+                raise ValueError("lean KS4 record %r: slot %r names a sheet equation (no top/bottom), "
+                                 "which cannot be a triangle" % (self.rec["slug"], name))
             return self._triangle("leanEq_" + eq)
         if name == "cfifa":
             ex, qs = (("leanCfExamples", "leanCfQuestions") if self.rec.get("cfifa")
@@ -495,6 +502,12 @@ def source(lesson, legacy=None):
     `legacy` is `(tpl, logic, port_report)` after ks4_batch_rulings.port_lesson and
     ks4_science_rulings, from build_ks4.legacy_texts(); None for a lesson with no legacy page."""
     rec = lesson["lean"]
+    for k, e in (rec.get("equations") or {}).items():
+        # an equation is a triangle (top and bottom) or a sheet equation: name, written, source "sheet"
+        if bool(e.get("top")) != bool(e.get("bottom")) or (not e.get("top") and (
+                e.get("source") != "sheet" or not e.get("written"))):
+            raise ValueError("lean KS4 record %r: equation %s needs top+bottom (a triangle) or "
+                             "source 'sheet' with name and written" % (rec["slug"], k))
     for it in rec["knowledge"] + rec["deeper"]:
         lean_blocks.route_flag(it.get("routes"))          # rejects any route set we cannot gate
     if legacy is not None:

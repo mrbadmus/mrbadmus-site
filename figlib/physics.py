@@ -2325,12 +2325,14 @@ def current_wire_field():
             f'<circle cx="{cx}" cy="{cy}" r="{r}" fill="none" '
             f'stroke="{ACC}" stroke-width="2.5"/>')
         if has_arrow:
-            # arrowhead at top of circle pointing right (anticlockwise
-            # field when current comes out of page — right-hand rule)
+            # arrowhead at top of circle pointing LEFT: current out of the
+            # page gives an anticlockwise field (right-hand grip rule), and
+            # anticlockwise runs right-to-left across the top. (Fixed 13 Nov
+            # 2026: it pointed right, which is clockwise.)
             ax, ay = cx, cy-r
             c.S.append(
-                f'<polygon points="{ax+10},{ay} {ax-2},{ay-8} '
-                f'{ax-2},{ay+8}" fill="{ACC}"/>')
+                f'<polygon points="{ax-10},{ay} {ax+2},{ay-8} '
+                f'{ax+2},{ay+8}" fill="{ACC}"/>')
     _clabel(c, W/2, H-40,
             "Right-hand grip rule: thumb = current direction, "
             "fingers curl in field direction.", 21, RED, "bold")
@@ -2374,13 +2376,15 @@ def solenoid_field():
         c.S.append(
             f'<polygon points="{ax2-12},{ay2-8} {ax2+4},{ay2} '
             f'{ax2+4},{ay2-18}" fill="{ACC}"/>')
-    # inside: straight line N->S (drawn going right -> left)
+    # inside: straight line, field S -> N (left -> right) inside the coil.
+    # (Fixed 13 Nov 2026: the arrowhead pointed N -> S, which is the
+    # direction OUTSIDE a magnet, never inside.)
     c.S.append(
         f'<line x1="{sx2-30}" y1="{cy}" x2="{sx1+30}" y2="{cy}" '
         f'stroke="{ACC}" stroke-width="2.5"/>')
     c.S.append(
-        f'<polygon points="{sx1+30},{cy} {sx1+50},{cy-9} '
-        f'{sx1+50},{cy+9}" fill="{ACC}"/>')
+        f'<polygon points="{sx2-30},{cy} {sx2-50},{cy-9} '
+        f'{sx2-50},{cy+9}" fill="{ACC}"/>')
     _clabel(c, W/2, H-40,
             "A current-carrying solenoid produces a field like a bar "
             "magnet \u2014 strong, uniform inside.", 21, RED, "bold")

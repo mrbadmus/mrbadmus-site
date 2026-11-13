@@ -17,6 +17,7 @@ arrive.
 """
 import importlib
 import os
+import re
 
 from . import lean as _lean
 
@@ -28,13 +29,98 @@ SLUGS = ["efficiency", "changes-in-energy", "power", "thermal-conductivity",
          "energy-resources", "energy-stores-systems", "energy-changes-in-systems",
          "energy-transfers-in-a-system"]
 
+# Slugs the lean batch registers when their record exists: the eight above first (their order
+# is part of the Energy pages' bytes), then every other record in ks4_lessons/lean/, by slug.
+# Wave 1 (docs/lessons/LEAN-PLAN.md): Physics Magnetism, ten old-format lessons.
+
 # Lessons that have no legacy page: identity comes from here (the subtopic data's own
-# title and spec, 6.1.1.1 / 6.1.1.3 / 6.1.2.1).
+# title and spec, 6.1.1.1 / 6.1.1.3 / 6.1.2.1). The three Energy ones are written out so
+# their pages stay byte-identical; every OTHER old-format lesson is derived from the subtopic
+# data by _derive() below.
 _OLD_FORMAT = {
     "energy-stores-systems": ("Energy stores and systems", "6.1.1.1", "Model"),
     "energy-changes-in-systems": ("Energy changes in systems", "6.1.1.3", "Quantitative"),
     "energy-transfers-in-a-system": ("Energy transfers in a system", "6.1.2.1", "Model"),
 }
+
+# ── old-format lessons beyond Energy: identity derived from all_subtopics_<subject>*.py ──
+# Subject and topic of each unit whose old-format lessons are derived, and the unit name the
+# header chrome shows. A unit is added here when its first record lands.
+_UNITS = {
+    ("physics", "magnetism"): "Magnetism and electromagnetism",
+}
+# The family label (the eyebrow's last word) is a ruled choice per lesson, drawn from the
+# labels the existing batches use: Model, Quantitative, Process, Classify, Contrast,
+# Investigation, Required practical. Magnetism: poles are sorted (Classify), the two field
+# lessons and electromagnetism are about drawing the field (Model), the motor effect, motors,
+# loudspeakers, the generator effect and microphones are cause-and-effect chains (Process),
+# transformers is the one with a calculation (Quantitative).
+_FAMILY = {
+    "poles-of-a-magnet": "Classify",
+    "magnetic-fields": "Model",
+    "electromagnetism": "Model",
+    "flemings-left-hand-rule": "Process",
+    "electric-motors": "Process",
+    "loudspeakers-headphones": "Process",
+    "induced-potential": "Process",
+    "uses-generator-effect": "Process",
+    "microphones": "Process",
+    "transformers": "Quantitative",
+}
+# Words kept capitalised by sentence_case() beyond the first word.
+_KEEP_CAPS = {"Fleming's"}
+
+_SUBTOPIC_MODULES = {
+    "physics": {"CF": "all_subtopics_physics", "CH": "all_subtopics_physics_higher",
+                "TF": "all_subtopics_physics_triple_foundation",
+                "TH": "all_subtopics_physics_triple_higher"},
+}
+_SUBTOPIC_ATTR = {"physics": "PHYSICS_SUBTOPICS_ALL"}
+_DATA = {}
+
+
+def _subtopics(subject):
+    """{route: {topic_id: [subtopic dict]}} for one subject (cached)."""
+    if subject not in _DATA:
+        _DATA[subject] = {r: getattr(importlib.import_module(m), _SUBTOPIC_ATTR[subject])
+                          for r, m in _SUBTOPIC_MODULES[subject].items()}
+    return _DATA[subject]
+
+
+def sentence_case(title):
+    """'Magnetic Fields' -> 'Magnetic fields', as the pilot titled its lessons."""
+    words = title.split()
+    return " ".join([words[0]] + [w if w in _KEEP_CAPS else w.lower() for w in words[1:]])
+
+
+def clean_spec(spec):
+    """'6.7.2.4 (HT only, physics only)' -> '6.7.2.4'."""
+    return re.sub(r"\s*\([^)]*\)", "", str(spec)).strip()
+
+
+def _derive(slug):
+    """Identity of an old-format lesson (no legacy page, not one of the Energy three) from the
+    subtopic data: subject, topic, unit, sentence-case title, clean spec, and ROUTES = only
+    the routes the subtopic exists on. Fails loudly if the slug is not in a known unit."""
+    for (subject, topic), unit in _UNITS.items():
+        found = {}
+        for route, tree in _subtopics(subject).items():
+            for st in tree.get(topic, []):
+                if st["id"] == slug:
+                    found[route] = st
+        if not found:
+            continue
+        if slug not in _FAMILY:
+            raise ValueError("batch_lean: %r has no family label in _FAMILY" % slug)
+        canon = found.get("TH") or next(iter(found.values()))   # TH is the 'everything' tier
+        return dict(slug=slug, subject=subject, topic_id=topic,
+                    title=sentence_case(canon["title"]), spec=clean_spec(canon["spec"]),
+                    family=_FAMILY[slug], routes=[r for r in ALL if r in found],
+                    review_state="examiner-reviewed", legacy_batch=None, source_file=None,
+                    unit=unit)
+    raise ValueError("batch_lean: %r is not a subtopic of any unit in _UNITS (%s)"
+                     % (slug, ", ".join("%s/%s" % k for k in _UNITS)))
+
 
 BLOCKS_DIR = os.path.join("ks4_lessons", "lean", "blocks")
 BLOCK_NAMES = ["Ks4Chrome", "Ks4Choice", "Ks4Sort", "Ks4Chain", "Ks4Write",
@@ -70,17 +156,27 @@ def _lesson(slug, rec):
     if legacy:
         d = dict(_legacy(slug, legacy))
         d["legacy_batch"] = legacy
-    else:
+        unit = "Energy"
+    elif slug in _OLD_FORMAT:
         title, spec, family = _OLD_FORMAT[slug]
+        unit = "Energy"
         d = dict(slug=slug, subject="physics", topic_id="energy", title=title, spec=spec,
                  family=family, routes=ALL, review_state="examiner-reviewed",
                  legacy_batch=None,
                  # no Design file: the key exists (as None) because tools that walk every
                  # registered batch index lessons by `source_file`
                  source_file=None)
-    d.update(batch=B, staged=False, lean=rec, unit="Energy",
+    else:
+        d = _derive(slug)
+        unit = d.pop("unit")
+    d.update(batch=B, staged=False, lean=rec, unit=unit,
              block_map=dict(_BLOCK_MAP))
     return d
 
 
-LESSONS = [_lesson(s, _lean.records()[s]) for s in SLUGS if s in _lean.records()]
+def _slugs():
+    recs = _lean.records()
+    return [s for s in SLUGS if s in recs] + sorted(s for s in recs if s not in SLUGS)
+
+
+LESSONS = [_lesson(s, _lean.records()[s]) for s in _slugs()]

@@ -470,7 +470,13 @@ def touch_drag_slider(d):
 
 # ── what the page says, after the round-3 findings ──────────────────────
 
-def ks4_words(d, route):
+# AQA numbers a subject's sections from 4 in its own Triple spec, and from 4 (biology), 5 (chemistry)
+# or 6 (physics) in Combined Science 8464; a lean page's eyebrow names only its own route's spec.
+SPEC_TRIPLE = {"biology": "8461", "chemistry": "8462", "physics": "8463"}
+SPEC_COMBINED_PART = {"biology": "4", "chemistry": "5", "physics": "6"}
+
+
+def ks4_words(d, route, subject):
     h2 = d.js("return [].map.call(document.querySelectorAll('h2'),function(h){return h.textContent.trim()})")
     d.check("Practice" in h2 and "Exam ladder" not in h2, "practice heading: %s" % h2)
     d.check("Questions on this lesson" in h2 and not any(x.startswith("Five questions") for x in h2), "quiz heading: %s" % h2)
@@ -481,7 +487,10 @@ def ks4_words(d, route):
     d.check(m <= 1, "Rung 4 shows its marks %d times (once is right)" % m)
     eb = d.js("return document.querySelector('.ks3-lesson-head .ks3-eyebrow').textContent.trim()")
     tri = route in ("TF", "TH")
-    d.check(("8463" in eb and " 4.1" in eb and "8464" not in eb) if tri else ("8464" in eb and " 6.1" in eb and "8463" not in eb),
+    others = [c for c in SPEC_TRIPLE.values()] + ["8464"]
+    want = ("(%s) 4." % SPEC_TRIPLE[subject]) if tri else ("(8464) %s." % SPEC_COMBINED_PART[subject])
+    mine = SPEC_TRIPLE[subject] if tri else "8464"
+    d.check(want in eb and not any(c in eb for c in others if c != mine),
             "spec eyebrow on %s reads %r" % (route, eb))
 
 
@@ -634,7 +643,8 @@ def pages():
         disc = ks3_data.structure.unit_index()[l["_unit"]]["discipline"]
         yield (3, slug, None, "/ks3/%s/%s/%s.html" % (disc, l["_unit_slug"], slug), k3.records()[slug])
     for L in ks4_lessons.lean_lessons():
-        for r in ROUTES:
+        # a lesson exists only on its own routes (Fleming's rule: CH and TH; transformers: TH)
+        for r in [r for r in ROUTES if r in (L.get("routes") or ROUTES)]:
             yield (4, L["slug"], r, "/%s/%s/%s/%s.html" % (ROUTE_DIR[r], L["subject"], L["topic_id"], L["slug"]), L["lean"])
 
 
@@ -664,7 +674,7 @@ def walk_light(page, base, ks, slug, route, path, rec, shots):
     overflow(d)
     if ks == 4:
         triangles(d, rec)
-        ks4_words(d, route)
+        ks4_words(d, route, next(p for p in path.split("/") if p in SPEC_TRIPLE))
     else:
         ks3_words(d)
     figures(d)
