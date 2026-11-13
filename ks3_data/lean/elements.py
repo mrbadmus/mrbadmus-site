@@ -4,7 +4,7 @@
 LESSON = {
     "slug": "elements",
     "start": {
-        "setup": None,
+        "setup": "There are about 118 elements. Everything around you is made from them.",
         "question": "If you had to guess, how would you test if a sample is an element?",
         "options": [
             ("Try to break it down", "Try to break it down. If anything simpler comes out, it is not an element."),
