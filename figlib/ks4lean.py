@@ -4,7 +4,8 @@
 A record writes `{"slot": "fig:bar-magnet-field"}` as a card part (docs/lessons/LEAN-RECORD.md).
 lean_ks4.py asks `svg(name)` for the inline markup and wraps it in lean_blocks.fig_wrap.
 
-The drawings live in figlib/ks4lean_mag.py (the lean Magnetism lesson; REGISTRY name -> drawer).
+The drawings live in figlib/ks4lean_mag.py (the lean Magnetism lesson) and figlib/ks4lean_eco.py
+(the lean Ecology lesson); each REGISTRY maps name -> drawer, and the names are unique across them.
 Each carries its own #FFFDF8 background and an aria-label. Here each one goes through:
     figlib.web.to_manifest_svg   viewBox only, role="img", <title>/<desc>, flat paint, ids prefixed
                                  (it insists on the library's cream paper rect, so the drawing's own
@@ -28,8 +29,13 @@ BG = "#FFFDF8"
 
 
 def _registry():
-    from . import ks4lean_mag
-    return ks4lean_mag.REGISTRY
+    from . import ks4lean_eco, ks4lean_mag
+    reg = dict(ks4lean_mag.REGISTRY)
+    for name, fn in ks4lean_eco.REGISTRY.items():
+        if name in reg:
+            raise ValueError("figlib.ks4lean: figure name %r is in two lean registries" % name)
+        reg[name] = fn
+    return reg
 
 
 _CACHE = {}

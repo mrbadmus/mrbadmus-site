@@ -303,6 +303,12 @@ def verify_no_slug_collisions():
         lean_seen.add(slug)
         prior = seen.get(slug)
         want = (L["lean"].get("legacy") or {}).get("batch")
+        # a lean record with no `legacy` may REPLACE a live legacy lesson outright (its page is
+        # rebuilt from the record alone, the legacy batch writes none): batch_lean.SUPERSEDES
+        # names the one batch it replaces, and only that exact batch passes
+        sup = batch_modules()["batch-lean"].SUPERSEDES.get(slug)
+        if want is None and sup is not None and prior is not None and prior["batch"] == sup:
+            continue
         if want is None and prior is not None:
             problems.append("lean slug %r has no legacy batch in its record but batch %r "
                             "registers it" % (slug, prior["batch"]))

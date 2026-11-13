@@ -325,11 +325,13 @@ CASES = [
     # ── ⊕ 8 Nov 2026: what the option-group classifier cannot see (ROOT_FORMS) ──
     # Typed, through the page's real input and real button.
     dict(name="ks4-typed-rate", page="/triple/higher/biology/ecology/decomposition.html", forms=True,
+         retired="the lean rebuild (Wave 1, Ecology) took the decay-rate bench and its typed rate off the page",
+         absent=['dec-rate', '"e": "rateWord"'],
          act="""H.click(document.querySelector('#ks4-mount [aria-label^="Graph A"]')); await H.sleep(200);
                 await H.set({ own: { 20: 300, 30: 180, 40: 100, 50: 150, 60: null } });
                 await H.type(document.getElementById('dec-rate'), '0.01');
                 H.click(H.exact('Check')); await H.sleep(300);""",
-         want=["ks4:decomposition:th#rate", "ks4:decomposition:th#own-40", "ks4:decomposition:th#own-60"],
+         want=["ks4:decomposition:th#rate", "ks4:decomposition:th#own-40", "ks4:decomposition:th#own-60"],  # own-N retire under the map's #own
          check=lambda b: [x for x in b if x["question_id"].endswith("#rate")][0]["kind"] == "numeric"
                          and [x for x in b if x["question_id"].endswith("#rate")][0]["is_correct"] is True
                          and [x for x in b if x["question_id"].endswith("#own-60")][0]["answer"] == "Over 600 s",
@@ -377,9 +379,11 @@ CASES = [
          check=lambda b: [x for x in b if "#formula-" in x["question_id"]][-1]["is_correct"] is True,
          back="(function(){ var s = H.rootState(); return s.f === 1 && s.fm > 0 && s.fx > 0 && /^Formula:/.test(String(H.v().fDone)); })()"),
     dict(name="ks4-select-labels", page="/triple/higher/biology/ecology/carbon-cycle.html", forms=True,
+         retired="the lean rebuild (Wave 1, Ecology) took the carbon-cycle labelling activity off the page",
+         absent=['"e": "lRows"'],
          act="""var rows = H.v().lRows; for (var i = 0; i < rows.length; i += 1) { var el = document.getElementById(rows[i].id); await H.type(el, el.options[1].value); }
                 await H.call('onLCheck'); await H.sleep(200);""",
-         want=["ks4:carbon-cycle:th#labels-a", "ks4:carbon-cycle:th#labels-i"],
+         want=["ks4:carbon-cycle:th#labels"],  # the map retires the activity as #labels, not per letter
          back="(function(){ var s = H.rootState(); return s.lChecked === true && Object.keys(s.labels).length === 9 && document.getElementById(H.v().lRows[0].id).value === s.labels[H.v().lRows[0].letter]; })()"),
     dict(name="ks4-form-pan", page="/triple/higher/chemistry/quantitative/relative-formula-mass.html", forms=True,
          act="""await H.call(function (v) { return v.panOpts[0].onClick; }); await H.call('onPanL', H.val('10')); await H.call('onPanR', H.val('20')); await H.call('onLoad'); await H.sleep(200);""",
@@ -793,6 +797,8 @@ CASES = [
          back="""(function(){ return document.querySelectorAll('.ks3-calor-block [data-calor-rows] tr').length === 0; })()"""),
     # ── ⊕ 9 Nov 2026: a third blind run ──
     dict(name="ks4-typed-rate", page="/triple/higher/biology/ecology/decomposition.html",
+         retired="the lean rebuild (Wave 1, Ecology) took the decay-rate bench and its typed rate off the page",
+         absent=['dec-rate', '"e": "rateWord"'],
          act="""var L = document.getElementById('ks4-mount').__mrbKs4.logic; L.setState({ own: { 40: 120 } }); await H.sleep(150); L.setState({ rate: '1' }); await H.sleep(100); await H.call('onRateCheck'); await H.sleep(250);""",
          want=["ks4:decomposition:th#rate"],
          check=lambda b: [x for x in b if x["question_id"].endswith("#rate")][0]["correct_answer"] == "0.0083",
@@ -844,6 +850,8 @@ CASES = [
          want=[],
          back="(function(){ var s = document.querySelector('.ks3-hcurve-block'); return !!s; })()"),
     dict(name="ks4-steps-wrong", page="/combined/higher/biology/ecology/decomposition.html",
+         retired="the lean rebuild (Wave 1, Ecology) took the decay-cycle steps off the page",
+         absent=['"e": "cycOptions"'],
          act="""var settle = async function () { for (var t = 0; t < 40 && H.rootState().cycAnim; t += 1) { await H.sleep(200); } };
                 for (var i = 0; i < 3; i += 1) { var o = H.v().cycOptions; H.click(H.rootBtn(o[i === 1 ? 1 : 0].text)); await H.sleep(150); await settle(); if (i < 2) { await H.call('onCycNext'); } }""",
          want=["ks4:decomposition:ch#cycpick-1", "ks4:decomposition:ch#cycpick-2", "ks4:decomposition:ch#cycpick-3"],
@@ -970,6 +978,11 @@ def retired_proof(c):
                 if not any(k in maps and maps[k] is None for k in (w, re.sub(r"(-\d+)+$", "", w)))]
     return (not still and not unmapped), {"still drawn": still, "not retired in the id map": unmapped}
 
+
+# Draft keys whose activity a lean rebuild removed: ROOT_DRAFT in shared/mrbadmus.v2.js still names
+# them (editing that file would restamp every page on the site), the page no longer has the state
+# key, and the draft simply never finds anything to restore. Wave 1, Ecology.
+RETIRED_DRAFTS = {"decomposition": ("rate",), "carbon-cycle": ("labels",)}
 
 # Typed and not sent: back on the same device, nowhere else, and gone once sent.
 DRAFTS = [
@@ -1489,6 +1502,8 @@ def run_commits():
         j = h.rfind("class Component extends DCLogic")
         head = h[j:h.find("renderVals", j)]
         for k in re.findall(r"'(\w+)'", keys):
+            if k in RETIRED_DRAFTS.get(slug, ()):
+                continue
             if not re.search(r"\b%s\s*:" % k, head):
                 print("   draft: %s has no %s in its state" % (slug, k))
                 bad += 1
