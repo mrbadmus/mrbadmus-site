@@ -144,6 +144,23 @@ RETIRED_BY_LEAN = {
                     "the fault-bench is not on the lean page"),
     "two-process-ledger": ("biology/breathing-and-gas-exchange/stomata-and-gas-exchange-in-plants.html",
                            "the two-process ledger is not on the lean page"),
+    # ⊕ lean wave 1 (B7 photosynthesis, B8 respiration): each family had exactly one lesson.
+    "reactant-remover": ("biology/photosynthesis/the-photosynthesis-reaction.html",
+                         "replaced by the drawn figure b7-word-summary"),
+    "leaf-tuner": ("biology/photosynthesis/leaves-built-for-the-job.html",
+                   "the leaf-tuner bench is not on the lean page"),
+    "method-breaker": ("biology/photosynthesis/testing-a-leaf-for-starch.html",
+                       "the method-breaker bench is not on the lean page"),
+    "mass-ledger": ("biology/respiration/aerobic-respiration.html",
+                    "replaced by the drawn figure b8-word-aerobic"),
+    "cell-demand": ("biology/respiration/why-every-cell-respires.html",
+                    "the cell-demand bench is not on the lean page"),
+    "oxygen-debt": ("biology/respiration/anaerobic-respiration-in-humans.html",
+                    "replaced by the drawn figure b8-word-anaerobic"),
+    "fermenter": ("biology/respiration/fermentation.html",
+                  "replaced by the drawn figures b8-word-fermentation and b8-yeast-limewater"),
+    "route-decider": ("biology/respiration/aerobic-vs-anaerobic.html",
+                      "the route-decider bench is not on the lean page"),
 }
 
 

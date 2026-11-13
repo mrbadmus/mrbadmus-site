@@ -7,6 +7,10 @@ question carries a knowledge-point tag.
 
     python3 tools/lean_id_map.py            write the two maps
     python3 tools/lean_id_map.py --check    exit 1 if a committed map differs from a fresh one
+    python3 tools/lean_id_map.py --wave wave1            the KS3 wave's maps only, one per UNIT:
+                                            docs/lessons/wave1/ID-MAP-ks3-<unit name>.json
+                                            (photosynthesis, respiration) and
+                                            docs/b2c/id-maps/B7.json, B8.json (add --check too)
 
 OLD set: the ids in knowledge_points/{ks3,ks4}.json at --base (default origin/main), one scope
 per lesson. NEW set: every id the lean pages can send, from tools/kp_classify's inventory
@@ -71,6 +75,20 @@ def render_b2c(m):
 # holds those tags, every pilot "added" id would turn "kept" and --check would go red for a reason
 # that is not drift. The map still labels its base "origin/main"; this is the ref it reads.
 PILOT_BASE_REF = "654ff891c^"
+
+# The pilot's KS3 scope is frozen at B4's five lessons; a wave names its own lessons, so a later
+# wave never rewrites an earlier map. A wave writes KS3 only (no KS4 scope).
+PILOT_KS3 = ["alveoli-built-for-exchange", "exercise-asthma-and-smoking", "how-breathing-works",
+             "stomata-and-gas-exchange-in-plants", "the-gas-exchange-system"]
+# wave -> [(unit code, unit name, [lesson slugs])]; a unit's maps are named by it.
+WAVES = {
+    "wave1": [
+        ("B7", "photosynthesis", ["the-photosynthesis-reaction", "leaves-built-for-the-job",
+                                  "testing-a-leaf-for-starch"]),
+        ("B8", "respiration", ["aerobic-respiration", "why-every-cell-respires",
+                               "anaerobic-respiration-in-humans", "fermentation", "aerobic-vs-anaerobic"]),
+    ],
+}
 
 # old id -> (new id, reason). Empty on purpose: the pilot keeps every surviving id.
 CHANGED = {}
@@ -196,14 +214,19 @@ def _git_json(base, rel):
     return json.loads(r.stdout)
 
 
-# The pilot maps cover the pilot's own lessons and nothing else. Later lean units (KS3 records the
-# KS3 session adds, KS4 units such as Magnetism) have their own unit maps, so the pilot scope is
-# pinned here rather than read from whatever lean records exist today.
-PILOT_KS3 = ["alveoli-built-for-exchange", "exercise-asthma-and-smoking", "how-breathing-works",
-             "stomata-and-gas-exchange-in-plants", "the-gas-exchange-system"]
-
-
-def scopes():
+# The pilot maps cover the pilot's own lessons and nothing else. Later lean units (a KS3 wave's
+# units, KS4 units such as Magnetism) have their own unit maps, so the pilot scope is pinned here
+# rather than read from whatever lean records exist today.
+def scopes(wave=None):
+    import ks3_data.lean as k3
+    if wave:
+        if wave not in WAVES:
+            raise SystemExit("lean_id_map: unknown wave %r; known: %s" % (wave, ", ".join(sorted(WAVES))))
+        slugs = [x for _c, _n, ss in WAVES[wave] for x in ss]
+        missing = [x for x in slugs if x not in k3.records()]
+        if missing:
+            raise SystemExit("lean_id_map: no lean record for %s" % ", ".join(missing))
+        return {"KS3": sorted(slugs), "KS4": []}
     from ks4_lessons import batch_lean
     return {"KS3": sorted(PILOT_KS3), "KS4": sorted(batch_lean.SLUGS)}
 
@@ -228,7 +251,8 @@ def unit_scopes(unit):
     return {"KS3": [], "KS4": slugs}
 
 
-def build(base="origin/main", unit=None, ref=None):
+def build(base="origin/main", unit=None, ref=None, wave=None):
+    """unit: a KS4 unit map. wave without unit: a KS3 wave's maps, one per unit. Neither: the pilot."""
     import kp_classify as kpc
     import export_knowledge_points as ekp
     from ks3_data import lean as lean3
@@ -238,25 +262,29 @@ def build(base="origin/main", unit=None, ref=None):
     old = {"KS3": _git_json(ref, "knowledge_points/ks3.json"), "KS4": _git_json(ref, "knowledge_points/ks4.json")}
     now = {"KS3": json.load(open(os.path.join(REPO, "knowledge_points", "ks3.json"))),
            "KS4": json.load(open(os.path.join(REPO, "knowledge_points", "ks4.json")))}
-    sc = unit_scopes(unit) if unit else scopes()
+    wave = None if unit else wave
+    sc = unit_scopes(unit) if unit else scopes(wave)
     import ks4_lessons
     lean_slugs = {L["slug"] for L in ks4_lessons.lean_lessons()}
     covers = root_covers()
     # Every ROOT_FORMS activity of a lean lesson must have been read with its covers, or a
     # later batch could keep an id the page can no longer send without anyone noticing.
-    forms = json.loads(subprocess.run(["node", os.path.join(REPO, "tools", "kp_root_forms.js"), REPO],
-                                      capture_output=True, text=True, check=True).stdout)
+    forms = ({} if not sc["KS4"] else
+             json.loads(subprocess.run(["node", os.path.join(REPO, "tools", "kp_root_forms.js"), REPO],
+                                       capture_output=True, text=True, check=True).stdout))
     for slug in sc["KS4"]:
         for f in forms.get(slug) or []:
             if f["id"] not in (covers.get(slug) or {}):
                 raise SystemExit("lean_id_map: cannot read the covers of ROOT_FORMS %s.%s; teach "
                                  "root_covers() its shape before mapping this lesson" % (slug, f["id"]))
     maps, problems = {}, []
-    for ks in ("KS3", "KS4"):
-        if not sc[ks]:
+    runs = ([(code, "KS3", ss) for code, _n, ss in WAVES[wave]] if wave
+            else [("KS3", "KS3", sc["KS3"]), ("KS4", "KS4", sc["KS4"])])
+    for key, ks, refs in runs:
+        if not refs:
             continue
         ids = {}
-        for ref in sc[ks]:
+        for ref in refs:
             old_q = (old[ks].get(ref) or {}).get("questions") or {}
             new_q = {q for q, (_s, k, r) in exp.items() if k == ks and r == ref}
             tags_now = (now[ks].get(ref) or {}).get("questions") or {}
@@ -291,7 +319,7 @@ def build(base="origin/main", unit=None, ref=None):
                         problems.append("%s: new id %s has no knowledge-point tag in knowledge_points/%s.json"
                                         % (ref, qid, ks.lower()))
                     ids[qid] = {"status": "added", "new": qid, "kp": kp, "note": "a new question on the lean page"}
-        maps[ks] = {"scope": sc[ks], "base": base, "ids": ids}
+        maps[key] = {"scope": sorted(refs), "base": base, "ids": ids}
     return maps, problems
 
 
@@ -334,6 +362,8 @@ def _base_args(unit, wave, argv):
     """The `build()` arguments. The pilot reads PILOT_BASE_REF. A unit map records the commit SHA
     it was written against (`--base`, default origin/main) and --check reads that same commit, so
     a unit's map does not go stale when main moves on (its own tags merge into main)."""
+    if wave and not unit:
+        return {"wave": wave}
     if not unit:
         return {"unit": None, "ref": PILOT_BASE_REF}
     base = _arg(argv, "--base")
@@ -368,6 +398,11 @@ def main(argv):
             if todo:
                 print("lean_id_map: %s: %d of %d lessons have no lean record yet (%s); their classic "
                       "ids are `kept`. Re-run when the records land." % (unit, len(todo), len(m["scope"]), ", ".join(todo)))
+        elif wave:
+            out_dir = os.path.join(REPO, "docs", "lessons", wave)
+            uname = {c: n for c, n, _s in WAVES[wave]}.get(ks)
+            path = os.path.join(out_dir, "ID-MAP-ks3-%s.json" % uname)
+            bpath = os.path.join(B2C_DIR, "%s.json" % ks)
         else:
             out_dir = OUT_DIR
             path = os.path.join(OUT_DIR, FILES[ks])
