@@ -240,13 +240,13 @@ def sender_reads_full_errors():
 
 
 def removed_ids():
-    """Ids the lean pilot retired from their pages (docs/lessons/pilot/ID-MAP-*.json,
+    """Ids the lean pilot retired from their pages (docs/lessons/<pilot or wave>/ID-MAP-*.json,
     status "removed"; tools/lean_id_map.py writes them). A child's saved answer to one of
     these still resolves, so the tag stays in knowledge_points/*.json and the check below
     accepts it. It accepts NOTHING else that no loader knows."""
     import glob
     out = set()
-    for path in glob.glob(os.path.join(REPO, "docs", "lessons", "pilot", "ID-MAP-*.json")):
+    for path in glob.glob(os.path.join(REPO, "docs", "lessons", "*", "ID-MAP-*.json")):
         with open(path, encoding="utf-8") as fh:
             for qid, e in (json.load(fh).get("ids") or {}).items():
                 if e.get("status") == "removed":

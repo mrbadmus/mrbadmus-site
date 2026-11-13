@@ -26,6 +26,20 @@ per lesson. NEW set: every id the lean pages can send, from tools/kp_classify's 
 
 Written to docs/lessons/pilot/ID-MAP-ks3-breathing-and-gas-exchange.json and
 docs/lessons/pilot/ID-MAP-ks4-energy.json.
+
+A later KS4 unit gets its own map, by unit:
+
+    python3 tools/lean_id_map.py --unit physics-magnetism --wave wave1            write
+    python3 tools/lean_id_map.py --unit physics-magnetism --wave wave1 --check    exit 1 if stale
+
+`--unit <subject>-<topic>` covers every subtopic of that topic (all four routes). It writes
+docs/lessons/<wave>/ID-MAP-ks4-<topic>.json and docs/b2c/id-maps/<subject>-<topic>.json (the file
+tools/lesson_contract_check.py --unit <subject>/<topic> reads). The pilot maps are untouched.
+A lesson with no lean record yet is still its classic page, so its classic matching cards (ks4c:)
+are `kept`; they become `removed` when its record lands. Re-run the map after every record.
+Classic ids (what the old page sent): ks4q:<slug>:<hash> quiz cards, ks4c:<slug>:match-<n>
+matching pairs (shared/mrbadmus.v2.js sends nothing else from a classic KS4 page); the
+assignment-bank rows ks4-<slug>-e01.. are never asked on a lesson page and stay `kept`.
 """
 import json
 import os
@@ -51,6 +65,12 @@ def b2c_map(m):
 
 def render_b2c(m):
     return json.dumps(b2c_map(m), indent=1, sort_keys=True, ensure_ascii=False) + "\n"
+
+# The pilot maps were written against main BEFORE the pilot's own tags landed in
+# knowledge_points/ks4.json (the parent of 654ff891c). Read against today's origin/main, which
+# holds those tags, every pilot "added" id would turn "kept" and --check would go red for a reason
+# that is not drift. The map still labels its base "origin/main"; this is the ref it reads.
+PILOT_BASE_REF = "654ff891c^"
 
 # old id -> (new id, reason). Empty on purpose: the pilot keeps every surviving id.
 CHANGED = {}
@@ -176,22 +196,51 @@ def _git_json(base, rel):
     return json.loads(r.stdout)
 
 
+# The pilot maps cover the pilot's own lessons and nothing else. Later lean units (KS3 records the
+# KS3 session adds, KS4 units such as Magnetism) have their own unit maps, so the pilot scope is
+# pinned here rather than read from whatever lean records exist today.
+PILOT_KS3 = ["alveoli-built-for-exchange", "exercise-asthma-and-smoking", "how-breathing-works",
+             "stomata-and-gas-exchange-in-plants", "the-gas-exchange-system"]
+
+
 def scopes():
-    import ks3_data.lean as k3
-    import ks4_lessons
-    return {"KS3": sorted(k3.records()), "KS4": sorted(L["slug"] for L in ks4_lessons.lean_lessons())}
+    from ks4_lessons import batch_lean
+    return {"KS3": sorted(PILOT_KS3), "KS4": sorted(batch_lean.SLUGS)}
 
 
-def build(base="origin/main"):
+def unit_parts(unit):
+    """'physics-magnetism' -> ('physics', 'magnetism'). Subjects have no hyphen; topics may."""
+    if "-" not in unit:
+        raise SystemExit("lean_id_map: --unit is <subject>-<topic>, e.g. physics-magnetism")
+    return tuple(unit.split("-", 1))
+
+
+def unit_scopes(unit):
+    """{'KS3': [], 'KS4': every subtopic slug of the unit's topic, on any route}."""
+    import build_ks4 as B
+    subject, topic = unit_parts(unit)
+    data = B.load_subtopics_by_route()
+    if subject not in data:
+        raise SystemExit("lean_id_map: unknown subject %r" % subject)
+    slugs = sorted({st["id"] for tree in data[subject].values() for st in tree.get(topic, [])})
+    if not slugs:
+        raise SystemExit("lean_id_map: no subtopics for %s/%s" % (subject, topic))
+    return {"KS3": [], "KS4": slugs}
+
+
+def build(base="origin/main", unit=None, ref=None):
     import kp_classify as kpc
     import export_knowledge_points as ekp
     from ks3_data import lean as lean3
     inv = kpc.inventory()
     exp = ekp.expected(inv)
-    old = {"KS3": _git_json(base, "knowledge_points/ks3.json"), "KS4": _git_json(base, "knowledge_points/ks4.json")}
+    ref = ref or base
+    old = {"KS3": _git_json(ref, "knowledge_points/ks3.json"), "KS4": _git_json(ref, "knowledge_points/ks4.json")}
     now = {"KS3": json.load(open(os.path.join(REPO, "knowledge_points", "ks3.json"))),
            "KS4": json.load(open(os.path.join(REPO, "knowledge_points", "ks4.json")))}
-    sc = scopes()
+    sc = unit_scopes(unit) if unit else scopes()
+    import ks4_lessons
+    lean_slugs = {L["slug"] for L in ks4_lessons.lean_lessons()}
     covers = root_covers()
     # Every ROOT_FORMS activity of a lean lesson must have been read with its covers, or a
     # later batch could keep an id the page can no longer send without anyone noticing.
@@ -204,6 +253,8 @@ def build(base="origin/main"):
                                  "root_covers() its shape before mapping this lesson" % (slug, f["id"]))
     maps, problems = {}, []
     for ks in ("KS3", "KS4"):
+        if not sc[ks]:
+            continue
         ids = {}
         for ref in sc[ks]:
             old_q = (old[ks].get(ref) or {}).get("questions") or {}
@@ -217,9 +268,11 @@ def build(base="origin/main"):
                     ids[qid] = {"status": "removed", "new": None, "kp": old_q[qid],
                                 "note": "the lesson's own activity (%s) is not drawn on the lean page"
                                         % ", ".join(undrawn_root_activity(qid, covers))}
-                elif qid in old_q and qid in new_q and not (ks == "KS4" and qid.startswith("ks4c:")):
+                elif qid in old_q and qid in new_q and not (
+                        ks == "KS4" and qid.startswith("ks4c:") and ref in lean_slugs):
                     # (a ks4c: matching card belongs to the classic page; a lean page never
-                    # sends one, though the inventory still lists the lesson's old pairs)
+                    # sends one, though the inventory still lists the lesson's old pairs. A
+                    # lesson with no lean record yet is still its classic page: kept.)
                     note = "the id is unchanged"
                     if qid.endswith("#start"):
                         note = _start_note(ks, ref, lean3)
@@ -266,10 +319,38 @@ def render(m):
     return json.dumps(m, indent=1, sort_keys=True, ensure_ascii=False) + "\n"
 
 
+def _arg(argv, flag):
+    return argv[argv.index(flag) + 1] if flag in argv else None
+
+
+def _sha(ref):
+    r = subprocess.run(["git", "rev-parse", "--verify", ref + "^{commit}"], cwd=REPO, capture_output=True, text=True)
+    if r.returncode != 0:
+        raise SystemExit("lean_id_map: cannot resolve %s: %s" % (ref, r.stderr.strip()))
+    return r.stdout.strip()
+
+
+def _base_args(unit, wave, argv):
+    """The `build()` arguments. The pilot reads PILOT_BASE_REF. A unit map records the commit SHA
+    it was written against (`--base`, default origin/main) and --check reads that same commit, so
+    a unit's map does not go stale when main moves on (its own tags merge into main)."""
+    if not unit:
+        return {"unit": None, "ref": PILOT_BASE_REF}
+    base = _arg(argv, "--base")
+    if "--check" in argv and not base:
+        path = os.path.join(REPO, "docs", "lessons", wave, "ID-MAP-ks4-%s.json" % unit_parts(unit)[1])
+        if os.path.exists(path):
+            base = json.load(open(path, encoding="utf-8")).get("base")
+    return {"unit": unit, "base": _sha(base or "origin/main")}
+
+
 def main(argv):
-    if "--tag" in argv:
+    unit, wave = _arg(argv, "--unit"), _arg(argv, "--wave")
+    if unit and not wave:
+        raise SystemExit("lean_id_map: --unit needs --wave (e.g. --wave wave1)")
+    if "--tag" in argv and not unit:
         print("lean_id_map: %d tag(s) written to knowledge_points/ks4.json" % apply_tags())
-    maps, problems = build()
+    maps, problems = build(**_base_args(unit, wave, argv))
     if problems:
         print("lean_id_map: %d problem(s)" % len(problems))
         for p in problems[:20]:
@@ -277,12 +358,24 @@ def main(argv):
         return 1
     bad = 0
     for ks, m in maps.items():
-        path = os.path.join(OUT_DIR, FILES[ks])
+        if unit:
+            out_dir = os.path.join(REPO, "docs", "lessons", wave)
+            path = os.path.join(out_dir, "ID-MAP-ks4-%s.json" % unit_parts(unit)[1])
+            bpath = os.path.join(B2C_DIR, "%s.json" % unit)
+            import ks4_lessons
+            lean_slugs = {L["slug"] for L in ks4_lessons.lean_lessons()}
+            todo = [s for s in m["scope"] if s not in lean_slugs]
+            if todo:
+                print("lean_id_map: %s: %d of %d lessons have no lean record yet (%s); their classic "
+                      "ids are `kept`. Re-run when the records land." % (unit, len(todo), len(m["scope"]), ", ".join(todo)))
+        else:
+            out_dir = OUT_DIR
+            path = os.path.join(OUT_DIR, FILES[ks])
+            bpath = os.path.join(B2C_DIR, B2C_FILES[ks])
         text = render(m)
         counts = {}
         for e in m["ids"].values():
             counts[e["status"]] = counts.get(e["status"], 0) + 1
-        bpath = os.path.join(B2C_DIR, B2C_FILES[ks])
         btext = render_b2c(m)
         if "--check" in argv:
             for p, t in ((path, text), (bpath, btext)):
@@ -291,7 +384,7 @@ def main(argv):
                     print("lean_id_map: %s is stale" % os.path.relpath(p, REPO))
                     bad += 1
             continue
-        os.makedirs(OUT_DIR, exist_ok=True)
+        os.makedirs(out_dir, exist_ok=True)
         os.makedirs(B2C_DIR, exist_ok=True)
         with open(path, "w", encoding="utf-8") as fh:
             fh.write(text)

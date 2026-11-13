@@ -14263,11 +14263,24 @@
  "electric-motors": {
   "key_stage": "KS4",
   "keys": {
+   "ks4:electric-motors:ch#r1-1": "Rotate",
+   "ks4:electric-motors:ch#r1-2": "Opposite",
+   "ks4:electric-motors:ch#r2-1": "It turns the other way",
+   "ks4:electric-motors:ch#start": "It turns",
+   "ks4:electric-motors:th#r1-1": "Rotate",
+   "ks4:electric-motors:th#r1-2": "Opposite",
+   "ks4:electric-motors:th#r2-1": "It turns the other way",
+   "ks4:electric-motors:th#start": "It turns",
    "ks4c:electric-motors:match-1": "Coil of wire",
    "ks4c:electric-motors:match-2": "Permanent magnet",
    "ks4c:electric-motors:match-3": "Split-ring commutator",
    "ks4c:electric-motors:match-4": "Carbon brushes",
+   "ks4q:electric-motors:4f86df06ce": "Increasing the current",
+   "ks4q:electric-motors:59cdb6d8a2": "Using a stronger magnet",
+   "ks4q:electric-motors:77d849c2c5": "The forces on its two sides act in opposite directions",
    "ks4q:electric-motors:9873926ce5": "It reverses the current in the coil every half turn — ensuring the forces always act to rotate the coil in the same direction",
+   "ks4q:electric-motors:98e0d5d54a": "Reversing the current",
+   "ks4q:electric-motors:acf78d0e40": "0.040 N",
    "ks4q:electric-motors:b9c2e6171b": "Kinetic energy → electrical energy — the motor runs in reverse as a generator, charging the battery"
   },
   "points": [
@@ -14298,6 +14311,11 @@
    {
     "id": "ks4.electric-motors.7",
     "label": "Electric motors are more efficient than petrol engines and are used in many everyday devices"
+   },
+   {
+    "added": "round-4",
+    "id": "ks4.electric-motors.8",
+    "label": "Reversing the current or connections reverses the direction the motor coil turns"
    }
   ],
   "questions": {
@@ -14355,11 +14373,32 @@
    "ks4-electric-motors-s16": "ks4.electric-motors.3",
    "ks4-electric-motors-s17": "ks4.electric-motors.2",
    "ks4-electric-motors-s18": "ks4.electric-motors.5",
+   "ks4:electric-motors:ch#r1-1": "ks4.electric-motors.1",
+   "ks4:electric-motors:ch#r1-2": "ks4.electric-motors.4",
+   "ks4:electric-motors:ch#r2-1": "ks4.electric-motors.8",
+   "ks4:electric-motors:ch#r2-2": "ks4.electric-motors.4",
+   "ks4:electric-motors:ch#r3-1": "ks4.electric-motors.4",
+   "ks4:electric-motors:ch#r3-2": "ks4.electric-motors.8",
+   "ks4:electric-motors:ch#r4-1": "ks4.electric-motors.4",
+   "ks4:electric-motors:ch#start": "ks4.electric-motors.2",
+   "ks4:electric-motors:th#r1-1": "ks4.electric-motors.1",
+   "ks4:electric-motors:th#r1-2": "ks4.electric-motors.4",
+   "ks4:electric-motors:th#r2-1": "ks4.electric-motors.8",
+   "ks4:electric-motors:th#r2-2": "ks4.electric-motors.4",
+   "ks4:electric-motors:th#r3-1": "ks4.electric-motors.4",
+   "ks4:electric-motors:th#r3-2": "ks4.electric-motors.8",
+   "ks4:electric-motors:th#r4-1": "ks4.electric-motors.4",
+   "ks4:electric-motors:th#start": "ks4.electric-motors.2",
    "ks4c:electric-motors:match-1": "ks4.electric-motors.2",
    "ks4c:electric-motors:match-2": "ks4.electric-motors.2",
    "ks4c:electric-motors:match-3": "ks4.electric-motors.2",
    "ks4c:electric-motors:match-4": "ks4.electric-motors.2",
+   "ks4q:electric-motors:4f86df06ce": "ks4.electric-motors.5",
+   "ks4q:electric-motors:59cdb6d8a2": "ks4.electric-motors.5",
+   "ks4q:electric-motors:77d849c2c5": "ks4.electric-motors.4",
    "ks4q:electric-motors:9873926ce5": "ks4.electric-motors.3",
+   "ks4q:electric-motors:98e0d5d54a": "ks4.electric-motors.8",
+   "ks4q:electric-motors:acf78d0e40": "ks4.electric-motors.4",
    "ks4q:electric-motors:b9c2e6171b": "ks4.electric-motors.7"
   },
   "scope_ref": "electric-motors",
@@ -15243,13 +15282,37 @@
  "electromagnetism": {
   "key_stage": "KS4",
   "keys": {
+   "ks4:electromagnetism:cf#r1-1": "Circles around the wire",
+   "ks4:electromagnetism:cf#r1-2": "A solenoid with an iron core",
+   "ks4:electromagnetism:cf#r2-1": "Put a compass next to a wire and switch on the current. The needle moves.",
+   "ks4:electromagnetism:cf#r2-2": "The fields of all the turns add together inside the coil",
+   "ks4:electromagnetism:cf#start": "It moves",
+   "ks4:electromagnetism:ch#r1-1": "Circles around the wire",
+   "ks4:electromagnetism:ch#r1-2": "A solenoid with an iron core",
+   "ks4:electromagnetism:ch#r2-1": "Put a compass next to a wire and switch on the current. The needle moves.",
+   "ks4:electromagnetism:ch#r2-2": "The fields of all the turns add together inside the coil",
+   "ks4:electromagnetism:ch#start": "It moves",
+   "ks4:electromagnetism:tf#r1-1": "Circles around the wire",
+   "ks4:electromagnetism:tf#r1-2": "A solenoid with an iron core",
+   "ks4:electromagnetism:tf#r2-1": "Put a compass next to a wire and switch on the current. The needle moves.",
+   "ks4:electromagnetism:tf#r2-2": "The fields of all the turns add together inside the coil",
+   "ks4:electromagnetism:tf#start": "It moves",
+   "ks4:electromagnetism:th#r1-1": "Circles around the wire",
+   "ks4:electromagnetism:th#r1-2": "A solenoid with an iron core",
+   "ks4:electromagnetism:th#r2-1": "Put a compass next to a wire and switch on the current. The needle moves.",
+   "ks4:electromagnetism:th#r2-2": "The fields of all the turns add together inside the coil",
+   "ks4:electromagnetism:th#start": "It moves",
    "ks4c:electromagnetism:match-1": "Magnetic field around a wire",
    "ks4c:electromagnetism:match-2": "Solenoid field",
    "ks4c:electromagnetism:match-3": "Why iron core is used",
    "ks4c:electromagnetism:match-4": "Increasing field strength",
    "ks4c:electromagnetism:match-5": "Scrapyard crane",
    "ks4q:electromagnetism:2d20bdf1fa": "The field doubles in strength — magnetic field strength is directly proportional to current",
-   "ks4q:electromagnetism:e3de8f8e44": "Iron is a soft magnetic material — it quickly loses magnetism when the current is switched off, so the electromagnet can be turned off easily"
+   "ks4q:electromagnetism:3a87490ae4": "Strong and uniform",
+   "ks4q:electromagnetism:b80d238697": "It gets stronger",
+   "ks4q:electromagnetism:c3795e2d31": "A bar magnet",
+   "ks4q:electromagnetism:da9e7ae554": "It gets weaker",
+   "ks4q:electromagnetism:e3de8f8e44": "Iron loses its magnetism quickly"
   },
   "points": [
    {
@@ -15283,6 +15346,11 @@
    {
     "id": "ks4.electromagnetism.8",
     "label": "Plan and evaluate fair-test investigations into electromagnet strength"
+   },
+   {
+    "added": "round-4",
+    "id": "ks4.electromagnetism.9",
+    "label": "A compass needle deflects when placed next to a current-carrying wire"
    }
   ],
   "questions": {
@@ -15358,12 +15426,48 @@
    "ks4-electromagnetism-s26": "ks4.electromagnetism.6",
    "ks4-electromagnetism-s27": "ks4.electromagnetism.7",
    "ks4-electromagnetism-s28": "ks4.electromagnetism.2",
+   "ks4:electromagnetism:cf#r1-1": "ks4.electromagnetism.1",
+   "ks4:electromagnetism:cf#r1-2": "ks4.electromagnetism.5",
+   "ks4:electromagnetism:cf#r2-1": "ks4.electromagnetism.9",
+   "ks4:electromagnetism:cf#r2-2": "ks4.electromagnetism.4",
+   "ks4:electromagnetism:cf#r3-1": "ks4.electromagnetism.5",
+   "ks4:electromagnetism:cf#r3-2": "ks4.electromagnetism.7",
+   "ks4:electromagnetism:cf#r4-1": "ks4.electromagnetism.6",
+   "ks4:electromagnetism:cf#start": "ks4.electromagnetism.9",
+   "ks4:electromagnetism:ch#r1-1": "ks4.electromagnetism.1",
+   "ks4:electromagnetism:ch#r1-2": "ks4.electromagnetism.5",
+   "ks4:electromagnetism:ch#r2-1": "ks4.electromagnetism.9",
+   "ks4:electromagnetism:ch#r2-2": "ks4.electromagnetism.4",
+   "ks4:electromagnetism:ch#r3-1": "ks4.electromagnetism.5",
+   "ks4:electromagnetism:ch#r3-2": "ks4.electromagnetism.7",
+   "ks4:electromagnetism:ch#r4-1": "ks4.electromagnetism.6",
+   "ks4:electromagnetism:ch#start": "ks4.electromagnetism.9",
+   "ks4:electromagnetism:tf#r1-1": "ks4.electromagnetism.1",
+   "ks4:electromagnetism:tf#r1-2": "ks4.electromagnetism.5",
+   "ks4:electromagnetism:tf#r2-1": "ks4.electromagnetism.9",
+   "ks4:electromagnetism:tf#r2-2": "ks4.electromagnetism.4",
+   "ks4:electromagnetism:tf#r3-1": "ks4.electromagnetism.5",
+   "ks4:electromagnetism:tf#r3-2": "ks4.electromagnetism.7",
+   "ks4:electromagnetism:tf#r4-1": "ks4.electromagnetism.6",
+   "ks4:electromagnetism:tf#start": "ks4.electromagnetism.9",
+   "ks4:electromagnetism:th#r1-1": "ks4.electromagnetism.1",
+   "ks4:electromagnetism:th#r1-2": "ks4.electromagnetism.5",
+   "ks4:electromagnetism:th#r2-1": "ks4.electromagnetism.9",
+   "ks4:electromagnetism:th#r2-2": "ks4.electromagnetism.4",
+   "ks4:electromagnetism:th#r3-1": "ks4.electromagnetism.5",
+   "ks4:electromagnetism:th#r3-2": "ks4.electromagnetism.7",
+   "ks4:electromagnetism:th#r4-1": "ks4.electromagnetism.6",
+   "ks4:electromagnetism:th#start": "ks4.electromagnetism.9",
    "ks4c:electromagnetism:match-1": "ks4.electromagnetism.2",
    "ks4c:electromagnetism:match-2": "ks4.electromagnetism.4",
    "ks4c:electromagnetism:match-3": "ks4.electromagnetism.5",
    "ks4c:electromagnetism:match-4": "ks4.electromagnetism.6",
    "ks4c:electromagnetism:match-5": "ks4.electromagnetism.7",
    "ks4q:electromagnetism:2d20bdf1fa": "ks4.electromagnetism.6",
+   "ks4q:electromagnetism:3a87490ae4": "ks4.electromagnetism.4",
+   "ks4q:electromagnetism:b80d238697": "ks4.electromagnetism.6",
+   "ks4q:electromagnetism:c3795e2d31": "ks4.electromagnetism.4",
+   "ks4q:electromagnetism:da9e7ae554": "ks4.electromagnetism.2",
    "ks4q:electromagnetism:e3de8f8e44": "ks4.electromagnetism.5"
   },
   "scope_ref": "electromagnetism",
@@ -18600,12 +18704,22 @@
  "flemings-left-hand-rule": {
   "key_stage": "KS4",
   "keys": {
+   "ks4:flemings-left-hand-rule:ch#r1-1": "The direction of the current",
+   "ks4:flemings-left-hand-rule:ch#r1-2": "tesla (T)",
+   "ks4:flemings-left-hand-rule:ch#start": "It doubles",
+   "ks4:flemings-left-hand-rule:th#r1-1": "The direction of the current",
+   "ks4:flemings-left-hand-rule:th#r1-2": "tesla (T)",
+   "ks4:flemings-left-hand-rule:th#start": "It doubles",
    "ks4c:flemings-left-hand-rule:match-1": "First finger (index)",
    "ks4c:flemings-left-hand-rule:match-2": "Second finger (middle)",
    "ks4c:flemings-left-hand-rule:match-3": "Thumb",
    "ks4c:flemings-left-hand-rule:match-4": "F = BIl",
-   "ks4q:flemings-left-hand-rule:827c630628": "Reverse the current direction OR reverse the magnetic field direction — either change reverses the force",
-   "ks4q:flemings-left-hand-rule:c73d8c86a3": "Out of the page (towards the observer) — field down, current right, force out"
+   "ks4q:flemings-left-hand-rule:2ca3762d50": "A magnet and a wire carrying a current exerting a force on each other",
+   "ks4q:flemings-left-hand-rule:3b5943cdd4": "Increasing the current",
+   "ks4q:flemings-left-hand-rule:700216b050": "At right angles to both",
+   "ks4q:flemings-left-hand-rule:827c630628": "Reverse the current or the field",
+   "ks4q:flemings-left-hand-rule:c73d8c86a3": "Out of the page (towards the observer) — field down, current right, force out",
+   "ks4q:flemings-left-hand-rule:f32841a88c": "0.30 N"
   },
   "points": [
    {
@@ -18639,6 +18753,16 @@
    {
     "id": "ks4.flemings-left-hand-rule.8",
     "label": "The motor effect is the basis of loudspeakers, electric motors and meters"
+   },
+   {
+    "added": "round-4",
+    "id": "ks4.flemings-left-hand-rule.9",
+    "label": "The unit of magnetic flux density is the tesla (T)"
+   },
+   {
+    "added": "round-4",
+    "id": "ks4.flemings-left-hand-rule.10",
+    "label": "A current in a wire creates a magnetic field that interacts with an external field, causing a force"
    }
   ],
   "questions": {
@@ -18696,12 +18820,32 @@
    "ks4-flemings-left-hand-rule-s16": "ks4.flemings-left-hand-rule.6",
    "ks4-flemings-left-hand-rule-s17": "ks4.flemings-left-hand-rule.2",
    "ks4-flemings-left-hand-rule-s18": "ks4.flemings-left-hand-rule.3",
+   "ks4:flemings-left-hand-rule:ch#r1-1": "ks4.flemings-left-hand-rule.6",
+   "ks4:flemings-left-hand-rule:ch#r1-2": "ks4.flemings-left-hand-rule.9",
+   "ks4:flemings-left-hand-rule:ch#r2-1": "ks4.flemings-left-hand-rule.3",
+   "ks4:flemings-left-hand-rule:ch#r2-2": "ks4.flemings-left-hand-rule.3",
+   "ks4:flemings-left-hand-rule:ch#r3-1": "ks4.flemings-left-hand-rule.10",
+   "ks4:flemings-left-hand-rule:ch#r3-2": "ks4.flemings-left-hand-rule.7",
+   "ks4:flemings-left-hand-rule:ch#r4-1": "ks4.flemings-left-hand-rule.2",
+   "ks4:flemings-left-hand-rule:ch#start": "ks4.flemings-left-hand-rule.2",
+   "ks4:flemings-left-hand-rule:th#r1-1": "ks4.flemings-left-hand-rule.6",
+   "ks4:flemings-left-hand-rule:th#r1-2": "ks4.flemings-left-hand-rule.9",
+   "ks4:flemings-left-hand-rule:th#r2-1": "ks4.flemings-left-hand-rule.3",
+   "ks4:flemings-left-hand-rule:th#r2-2": "ks4.flemings-left-hand-rule.3",
+   "ks4:flemings-left-hand-rule:th#r3-1": "ks4.flemings-left-hand-rule.10",
+   "ks4:flemings-left-hand-rule:th#r3-2": "ks4.flemings-left-hand-rule.7",
+   "ks4:flemings-left-hand-rule:th#r4-1": "ks4.flemings-left-hand-rule.2",
+   "ks4:flemings-left-hand-rule:th#start": "ks4.flemings-left-hand-rule.2",
    "ks4c:flemings-left-hand-rule:match-1": "ks4.flemings-left-hand-rule.6",
    "ks4c:flemings-left-hand-rule:match-2": "ks4.flemings-left-hand-rule.6",
    "ks4c:flemings-left-hand-rule:match-3": "ks4.flemings-left-hand-rule.6",
    "ks4c:flemings-left-hand-rule:match-4": "ks4.flemings-left-hand-rule.3",
+   "ks4q:flemings-left-hand-rule:2ca3762d50": "ks4.flemings-left-hand-rule.1",
+   "ks4q:flemings-left-hand-rule:3b5943cdd4": "ks4.flemings-left-hand-rule.2",
+   "ks4q:flemings-left-hand-rule:700216b050": "ks4.flemings-left-hand-rule.5",
    "ks4q:flemings-left-hand-rule:827c630628": "ks4.flemings-left-hand-rule.7",
-   "ks4q:flemings-left-hand-rule:c73d8c86a3": "ks4.flemings-left-hand-rule.8"
+   "ks4q:flemings-left-hand-rule:c73d8c86a3": "ks4.flemings-left-hand-rule.8",
+   "ks4q:flemings-left-hand-rule:f32841a88c": "ks4.flemings-left-hand-rule.3"
   },
   "scope_ref": "flemings-left-hand-rule",
   "subject": "physics",
@@ -23284,12 +23428,21 @@
  "induced-potential": {
   "key_stage": "KS4",
   "keys": {
+   "ks4:induced-potential:th#r1-1": "The generator effect",
+   "ks4:induced-potential:th#r1-2": "It opposes the original change",
+   "ks4:induced-potential:th#r2-1": "It moves to the left",
+   "ks4:induced-potential:th#r2-2": "Move the magnet faster and use more turns",
+   "ks4:induced-potential:th#start": "No current",
    "ks4c:induced-potential:match-1": "Magnet moved faster",
    "ks4c:induced-potential:match-2": "Fewer coil turns",
    "ks4c:induced-potential:match-3": "Larger magnet",
    "ks4c:induced-potential:match-4": "Coil stationary in field",
+   "ks4q:induced-potential:14d5e66965": "Zero",
+   "ks4q:induced-potential:1d8541a906": "Pushing the other pole in first",
+   "ks4q:induced-potential:2969eb4fe0": "A north pole",
    "ks4q:induced-potential:2bb04cd597": "As the coil rotates, the rate at which it cuts field lines varies sinusoidally — the emf and current reverse direction every half-turn",
-   "ks4q:induced-potential:50f3358631": "The changing magnetic flux as the magnet moves induces the current. Push faster, use stronger magnet, or use more coil turns to increase it."
+   "ks4q:induced-potential:50f3358631": "The changing magnetic field. Move the magnet faster.",
+   "ks4q:induced-potential:5f1333a39d": "Moving the wire across a magnetic field"
   },
   "points": [
    {
@@ -23323,6 +23476,11 @@
    {
     "id": "ks4.induced-potential.8",
     "label": "A generator transfers kinetic energy to electrical energy; work must be done against the opposing force"
+   },
+   {
+    "added": "round-4",
+    "id": "ks4.induced-potential.9",
+    "label": "A changing magnetic field through a conductor induces a current; this is called the generator effect"
    }
   ],
   "questions": {
@@ -23380,12 +23538,24 @@
    "ks4-induced-potential-s16": "ks4.induced-potential.1",
    "ks4-induced-potential-s17": "ks4.induced-potential.5",
    "ks4-induced-potential-s18": "ks4.induced-potential.5",
+   "ks4:induced-potential:th#r1-1": "ks4.induced-potential.9",
+   "ks4:induced-potential:th#r1-2": "ks4.induced-potential.3",
+   "ks4:induced-potential:th#r2-1": "ks4.induced-potential.3",
+   "ks4:induced-potential:th#r2-2": "ks4.induced-potential.2",
+   "ks4:induced-potential:th#r3-1": "ks4.induced-potential.3",
+   "ks4:induced-potential:th#r3-2": "ks4.induced-potential.2",
+   "ks4:induced-potential:th#r4-1": "ks4.induced-potential.9",
+   "ks4:induced-potential:th#start": "ks4.induced-potential.1",
    "ks4c:induced-potential:match-1": "ks4.induced-potential.2",
    "ks4c:induced-potential:match-2": "ks4.induced-potential.2",
    "ks4c:induced-potential:match-3": "ks4.induced-potential.2",
    "ks4c:induced-potential:match-4": "ks4.induced-potential.1",
+   "ks4q:induced-potential:14d5e66965": "ks4.induced-potential.1",
+   "ks4q:induced-potential:1d8541a906": "ks4.induced-potential.3",
+   "ks4q:induced-potential:2969eb4fe0": "ks4.induced-potential.3",
    "ks4q:induced-potential:2bb04cd597": "ks4.induced-potential.5",
-   "ks4q:induced-potential:50f3358631": "ks4.induced-potential.2"
+   "ks4q:induced-potential:50f3358631": "ks4.induced-potential.2",
+   "ks4q:induced-potential:5f1333a39d": "ks4.induced-potential.1"
   },
   "scope_ref": "induced-potential",
   "subject": "physics",
@@ -25077,12 +25247,20 @@
  "loudspeakers-headphones": {
   "key_stage": "KS4",
   "keys": {
+   "ks4:loudspeakers-headphones:th#r1-1": "The motor effect",
+   "ks4:loudspeakers-headphones:th#r1-2": "Pressure variations in sound waves",
+   "ks4:loudspeakers-headphones:th#r2-1": "It reverses",
+   "ks4:loudspeakers-headphones:th#r2-2": "It vibrates twice as many times each second",
+   "ks4:loudspeakers-headphones:th#start": "It keeps changing direction",
    "ks4c:loudspeakers-headphones:match-1": "Permanent magnet",
    "ks4c:loudspeakers-headphones:match-2": "Voice coil",
    "ks4c:loudspeakers-headphones:match-3": "Cone (diaphragm)",
    "ks4c:loudspeakers-headphones:match-4": "Frequency of AC",
-   "ks4q:loudspeakers-headphones:5bc089f963": "DC produces a constant force in one direction — the cone would deflect once and stop. AC reverses direction, reversing the force, making the cone vibrate and produce sound.",
-   "ks4q:loudspeakers-headphones:9634c6e6e3": "Low frequency (low pitch) and large amplitude (loud)"
+   "ks4q:loudspeakers-headphones:55af7487ac": "500 Hz",
+   "ks4q:loudspeakers-headphones:5bc089f963": "To make the force on the coil reverse",
+   "ks4q:loudspeakers-headphones:9634c6e6e3": "Low frequency and large amplitude",
+   "ks4q:loudspeakers-headphones:c59c63dab7": "The motor effect",
+   "ks4q:loudspeakers-headphones:db5b231c20": "The coil and the cone"
   },
   "points": [
    {
@@ -25169,12 +25347,23 @@
    "ks4-loudspeakers-headphones-s16": "ks4.loudspeakers-headphones.7",
    "ks4-loudspeakers-headphones-s17": "ks4.loudspeakers-headphones.1",
    "ks4-loudspeakers-headphones-s18": "ks4.loudspeakers-headphones.3",
+   "ks4:loudspeakers-headphones:th#r1-1": "ks4.loudspeakers-headphones.1",
+   "ks4:loudspeakers-headphones:th#r1-2": "ks4.loudspeakers-headphones.3",
+   "ks4:loudspeakers-headphones:th#r2-1": "ks4.loudspeakers-headphones.1",
+   "ks4:loudspeakers-headphones:th#r2-2": "ks4.loudspeakers-headphones.2",
+   "ks4:loudspeakers-headphones:th#r3-1": "ks4.loudspeakers-headphones.1",
+   "ks4:loudspeakers-headphones:th#r3-2": "ks4.loudspeakers-headphones.2",
+   "ks4:loudspeakers-headphones:th#r4-1": "ks4.loudspeakers-headphones.1",
+   "ks4:loudspeakers-headphones:th#start": "ks4.loudspeakers-headphones.2",
    "ks4c:loudspeakers-headphones:match-1": "ks4.loudspeakers-headphones.1",
    "ks4c:loudspeakers-headphones:match-2": "ks4.loudspeakers-headphones.1",
    "ks4c:loudspeakers-headphones:match-3": "ks4.loudspeakers-headphones.3",
    "ks4c:loudspeakers-headphones:match-4": "ks4.loudspeakers-headphones.2",
+   "ks4q:loudspeakers-headphones:55af7487ac": "ks4.loudspeakers-headphones.2",
    "ks4q:loudspeakers-headphones:5bc089f963": "ks4.loudspeakers-headphones.2",
-   "ks4q:loudspeakers-headphones:9634c6e6e3": "ks4.loudspeakers-headphones.2"
+   "ks4q:loudspeakers-headphones:9634c6e6e3": "ks4.loudspeakers-headphones.2",
+   "ks4q:loudspeakers-headphones:c59c63dab7": "ks4.loudspeakers-headphones.4",
+   "ks4q:loudspeakers-headphones:db5b231c20": "ks4.loudspeakers-headphones.1"
   },
   "scope_ref": "loudspeakers-headphones",
   "subject": "physics",
@@ -25183,12 +25372,36 @@
  "magnetic-fields": {
   "key_stage": "KS4",
   "keys": {
+   "ks4:magnetic-fields:cf#r1-1": "Nickel",
+   "ks4:magnetic-fields:cf#r1-2": "another north pole placed at that point",
+   "ks4:magnetic-fields:cf#r2-1": "Strongest at the poles and weaker further away. It points from north to south.",
+   "ks4:magnetic-fields:cf#r2-2": "Attracted both times, because it becomes an induced magnet",
+   "ks4:magnetic-fields:cf#start": "It points in one direction",
+   "ks4:magnetic-fields:ch#r1-1": "Nickel",
+   "ks4:magnetic-fields:ch#r1-2": "another north pole placed at that point",
+   "ks4:magnetic-fields:ch#r2-1": "Strongest at the poles and weaker further away. It points from north to south.",
+   "ks4:magnetic-fields:ch#r2-2": "Attracted both times, because it becomes an induced magnet",
+   "ks4:magnetic-fields:ch#start": "It points in one direction",
+   "ks4:magnetic-fields:tf#r1-1": "Nickel",
+   "ks4:magnetic-fields:tf#r1-2": "another north pole placed at that point",
+   "ks4:magnetic-fields:tf#r2-1": "Strongest at the poles and weaker further away. It points from north to south.",
+   "ks4:magnetic-fields:tf#r2-2": "Attracted both times, because it becomes an induced magnet",
+   "ks4:magnetic-fields:tf#start": "It points in one direction",
+   "ks4:magnetic-fields:th#r1-1": "Nickel",
+   "ks4:magnetic-fields:th#r1-2": "another north pole placed at that point",
+   "ks4:magnetic-fields:th#r2-1": "Strongest at the poles and weaker further away. It points from north to south.",
+   "ks4:magnetic-fields:th#r2-2": "Attracted both times, because it becomes an induced magnet",
+   "ks4:magnetic-fields:th#start": "It points in one direction",
    "ks4c:magnetic-fields:match-1": "Arrow direction",
    "ks4c:magnetic-fields:match-2": "Closely spaced lines",
    "ks4c:magnetic-fields:match-3": "Widely spaced lines",
    "ks4c:magnetic-fields:match-4": "Lines that never cross",
+   "ks4q:magnetic-fields:129a2757d2": "Iron, steel, cobalt and nickel",
+   "ks4q:magnetic-fields:1844d70fc9": "The Earth has a magnetic field",
    "ks4q:magnetic-fields:442f5c90ac": "The field is strongest near the poles — closely spaced field lines indicate greater magnetic force in that region",
-   "ks4q:magnetic-fields:5d2cfebcd8": "From the north pole to the south pole — field lines exit the north pole and enter the south pole"
+   "ks4q:magnetic-fields:5a1dd72f90": "Attraction",
+   "ks4q:magnetic-fields:5d2cfebcd8": "From the north pole to the south pole",
+   "ks4q:magnetic-fields:7625c6943e": "At the poles"
   },
   "points": [
    {
@@ -25222,6 +25435,21 @@
    {
     "id": "ks4.magnetic-fields.8",
     "label": "Magnetic field lines are a model; the field exists everywhere and forms closed loops through the magnet"
+   },
+   {
+    "added": "round-4",
+    "id": "ks4.magnetic-fields.9",
+    "label": "Magnetic materials include iron, steel, cobalt and nickel"
+   },
+   {
+    "added": "round-4",
+    "id": "ks4.magnetic-fields.10",
+    "label": "A magnetic material placed near a magnet is attracted by induced magnetism"
+   },
+   {
+    "added": "round-4",
+    "id": "ks4.magnetic-fields.11",
+    "label": "The direction of a magnetic field at a point is the force direction on a north pole there"
    }
   ],
   "questions": {
@@ -25297,12 +25525,48 @@
    "ks4-magnetic-fields-s26": "ks4.magnetic-fields.2",
    "ks4-magnetic-fields-s27": "ks4.magnetic-fields.8",
    "ks4-magnetic-fields-s28": "ks4.magnetic-fields.3",
+   "ks4:magnetic-fields:cf#r1-1": "ks4.magnetic-fields.9",
+   "ks4:magnetic-fields:cf#r1-2": "ks4.magnetic-fields.11",
+   "ks4:magnetic-fields:cf#r2-1": "ks4.magnetic-fields.3",
+   "ks4:magnetic-fields:cf#r2-2": "ks4.magnetic-fields.10",
+   "ks4:magnetic-fields:cf#r3-1": "ks4.magnetic-fields.7",
+   "ks4:magnetic-fields:cf#r3-2": "ks4.magnetic-fields.4",
+   "ks4:magnetic-fields:cf#r4-1": "ks4.magnetic-fields.4",
+   "ks4:magnetic-fields:cf#start": "ks4.magnetic-fields.4",
+   "ks4:magnetic-fields:ch#r1-1": "ks4.magnetic-fields.9",
+   "ks4:magnetic-fields:ch#r1-2": "ks4.magnetic-fields.11",
+   "ks4:magnetic-fields:ch#r2-1": "ks4.magnetic-fields.3",
+   "ks4:magnetic-fields:ch#r2-2": "ks4.magnetic-fields.10",
+   "ks4:magnetic-fields:ch#r3-1": "ks4.magnetic-fields.7",
+   "ks4:magnetic-fields:ch#r3-2": "ks4.magnetic-fields.4",
+   "ks4:magnetic-fields:ch#r4-1": "ks4.magnetic-fields.4",
+   "ks4:magnetic-fields:ch#start": "ks4.magnetic-fields.4",
+   "ks4:magnetic-fields:tf#r1-1": "ks4.magnetic-fields.9",
+   "ks4:magnetic-fields:tf#r1-2": "ks4.magnetic-fields.11",
+   "ks4:magnetic-fields:tf#r2-1": "ks4.magnetic-fields.3",
+   "ks4:magnetic-fields:tf#r2-2": "ks4.magnetic-fields.10",
+   "ks4:magnetic-fields:tf#r3-1": "ks4.magnetic-fields.7",
+   "ks4:magnetic-fields:tf#r3-2": "ks4.magnetic-fields.4",
+   "ks4:magnetic-fields:tf#r4-1": "ks4.magnetic-fields.4",
+   "ks4:magnetic-fields:tf#start": "ks4.magnetic-fields.4",
+   "ks4:magnetic-fields:th#r1-1": "ks4.magnetic-fields.9",
+   "ks4:magnetic-fields:th#r1-2": "ks4.magnetic-fields.11",
+   "ks4:magnetic-fields:th#r2-1": "ks4.magnetic-fields.3",
+   "ks4:magnetic-fields:th#r2-2": "ks4.magnetic-fields.10",
+   "ks4:magnetic-fields:th#r3-1": "ks4.magnetic-fields.7",
+   "ks4:magnetic-fields:th#r3-2": "ks4.magnetic-fields.4",
+   "ks4:magnetic-fields:th#r4-1": "ks4.magnetic-fields.4",
+   "ks4:magnetic-fields:th#start": "ks4.magnetic-fields.4",
    "ks4c:magnetic-fields:match-1": "ks4.magnetic-fields.2",
    "ks4c:magnetic-fields:match-2": "ks4.magnetic-fields.3",
    "ks4c:magnetic-fields:match-3": "ks4.magnetic-fields.3",
    "ks4c:magnetic-fields:match-4": "ks4.magnetic-fields.2",
+   "ks4q:magnetic-fields:129a2757d2": "ks4.magnetic-fields.9",
+   "ks4q:magnetic-fields:1844d70fc9": "ks4.magnetic-fields.7",
    "ks4q:magnetic-fields:442f5c90ac": "ks4.magnetic-fields.5",
-   "ks4q:magnetic-fields:5d2cfebcd8": "ks4.magnetic-fields.2"
+   "ks4q:magnetic-fields:5a1dd72f90": "ks4.magnetic-fields.10",
+   "ks4q:magnetic-fields:5d2cfebcd8": "ks4.magnetic-fields.2",
+   "ks4q:magnetic-fields:7625c6943e": "ks4.magnetic-fields.3"
   },
   "scope_ref": "magnetic-fields",
   "subject": "physics",
@@ -27498,12 +27762,20 @@
  "microphones": {
   "key_stage": "KS4",
   "keys": {
+   "ks4:microphones:th#r1-1": "The generator effect",
+   "ks4:microphones:th#r1-2": "The diaphragm",
+   "ks4:microphones:th#r2-1": "It is bigger, and changes direction just as often",
+   "ks4:microphones:th#r2-2": "The coil moves in a magnetic field",
+   "ks4:microphones:th#start": "The generator effect",
    "ks4c:microphones:match-1": "Loudspeaker",
    "ks4c:microphones:match-2": "Dynamic microphone",
    "ks4c:microphones:match-3": "Both",
    "ks4c:microphones:match-4": "Condenser microphone",
-   "ks4q:microphones:071ee4d060": "440 Hz — the coil vibrates at 440 Hz (driven by the sound wave) so the induced current alternates at 440 Hz",
-   "ks4q:microphones:1d272d0720": "Microphone: sound moves the coil → generator effect → AC output. Loudspeaker: AC input → motor effect → coil moves cone → sound. They are exact reverses."
+   "ks4q:microphones:071ee4d060": "440 Hz",
+   "ks4q:microphones:1d272d0720": "Microphone: generator effect. Loudspeaker: motor effect",
+   "ks4q:microphones:2bbbb746f0": "It gets bigger",
+   "ks4q:microphones:3113a56502": "Variations in current",
+   "ks4q:microphones:5fbec52358": "The coil"
   },
   "points": [
    {
@@ -27599,12 +27871,23 @@
    "ks4-microphones-s16": "ks4.microphones.5",
    "ks4-microphones-s17": "ks4.microphones.4",
    "ks4-microphones-s18": "ks4.microphones.2",
+   "ks4:microphones:th#r1-1": "ks4.microphones.3",
+   "ks4:microphones:th#r1-2": "ks4.microphones.1",
+   "ks4:microphones:th#r2-1": "ks4.microphones.5",
+   "ks4:microphones:th#r2-2": "ks4.microphones.2",
+   "ks4:microphones:th#r3-1": "ks4.microphones.2",
+   "ks4:microphones:th#r3-2": "ks4.microphones.4",
+   "ks4:microphones:th#r4-1": "ks4.microphones.2",
+   "ks4:microphones:th#start": "ks4.microphones.3",
    "ks4c:microphones:match-1": "ks4.microphones.7",
    "ks4c:microphones:match-2": "ks4.microphones.7",
    "ks4c:microphones:match-3": "ks4.microphones.7",
    "ks4c:microphones:match-4": "ks4.microphones.9",
    "ks4q:microphones:071ee4d060": "ks4.microphones.4",
-   "ks4q:microphones:1d272d0720": "ks4.microphones.7"
+   "ks4q:microphones:1d272d0720": "ks4.microphones.7",
+   "ks4q:microphones:2bbbb746f0": "ks4.microphones.5",
+   "ks4q:microphones:3113a56502": "ks4.microphones.3",
+   "ks4q:microphones:5fbec52358": "ks4.microphones.1"
   },
   "scope_ref": "microphones",
   "subject": "physics",
@@ -31982,12 +32265,36 @@
  "poles-of-a-magnet": {
   "key_stage": "KS4",
   "keys": {
+   "ks4:poles-of-a-magnet:cf#r1-1": "At the poles",
+   "ks4:poles-of-a-magnet:cf#r1-2": "They repel",
+   "ks4:poles-of-a-magnet:cf#r2-1": "A permanent magnet produces its own magnetic field. An induced magnet becomes a magnet in a magnetic field.",
+   "ks4:poles-of-a-magnet:cf#r2-2": "It is a magnetic material, not a permanent magnet",
+   "ks4:poles-of-a-magnet:cf#start": "It loses most of its magnetism",
+   "ks4:poles-of-a-magnet:ch#r1-1": "At the poles",
+   "ks4:poles-of-a-magnet:ch#r1-2": "They repel",
+   "ks4:poles-of-a-magnet:ch#r2-1": "A permanent magnet produces its own magnetic field. An induced magnet becomes a magnet in a magnetic field.",
+   "ks4:poles-of-a-magnet:ch#r2-2": "It is a magnetic material, not a permanent magnet",
+   "ks4:poles-of-a-magnet:ch#start": "It loses most of its magnetism",
+   "ks4:poles-of-a-magnet:tf#r1-1": "At the poles",
+   "ks4:poles-of-a-magnet:tf#r1-2": "They repel",
+   "ks4:poles-of-a-magnet:tf#r2-1": "A permanent magnet produces its own magnetic field. An induced magnet becomes a magnet in a magnetic field.",
+   "ks4:poles-of-a-magnet:tf#r2-2": "It is a magnetic material, not a permanent magnet",
+   "ks4:poles-of-a-magnet:tf#start": "It loses most of its magnetism",
+   "ks4:poles-of-a-magnet:th#r1-1": "At the poles",
+   "ks4:poles-of-a-magnet:th#r1-2": "They repel",
+   "ks4:poles-of-a-magnet:th#r2-1": "A permanent magnet produces its own magnetic field. An induced magnet becomes a magnet in a magnetic field.",
+   "ks4:poles-of-a-magnet:th#r2-2": "It is a magnetic material, not a permanent magnet",
+   "ks4:poles-of-a-magnet:th#start": "It loses most of its magnetism",
    "ks4c:poles-of-a-magnet:match-1": "Permanent magnet",
    "ks4c:poles-of-a-magnet:match-2": "Induced magnet",
    "ks4c:poles-of-a-magnet:match-3": "Both attract",
    "ks4c:poles-of-a-magnet:match-4": "Demagnetising",
-   "ks4q:poles-of-a-magnet:1cca5b268c": "The steel becomes an induced magnet — the end nearest the magnet becomes opposite in polarity, so they attract",
-   "ks4q:poles-of-a-magnet:536c4d26ac": "Fridge magnet: permanent — retains field indefinitely. Compass: also permanent — compass needle must always point north reliably"
+   "ks4q:poles-of-a-magnet:1cca5b268c": "It becomes an induced magnet",
+   "ks4q:poles-of-a-magnet:3dc7896f31": "The magnets do not need to touch",
+   "ks4q:poles-of-a-magnet:536c4d26ac": "Fridge magnet: permanent — retains field indefinitely. Compass: also permanent — compass needle must always point north reliably",
+   "ks4q:poles-of-a-magnet:6c0776d7c4": "An iron nail near a magnet",
+   "ks4q:poles-of-a-magnet:b974d29ef6": "A permanent magnet produces its own magnetic field",
+   "ks4q:poles-of-a-magnet:ca45eb93c3": "They repel"
   },
   "points": [
    {
@@ -32017,6 +32324,11 @@
    {
     "id": "ks4.poles-of-a-magnet.7",
     "label": "Magnetic force weakens as distance increases and cannot be blocked by non-magnetic materials"
+   },
+   {
+    "added": "round-4",
+    "id": "ks4.poles-of-a-magnet.8",
+    "label": "The magnetic force of a magnet is strongest at its poles"
    }
   ],
   "questions": {
@@ -32092,12 +32404,48 @@
    "ks4-poles-of-a-magnet-s26": "ks4.poles-of-a-magnet.6",
    "ks4-poles-of-a-magnet-s27": "ks4.poles-of-a-magnet.6",
    "ks4-poles-of-a-magnet-s28": "ks4.poles-of-a-magnet.5",
+   "ks4:poles-of-a-magnet:cf#r1-1": "ks4.poles-of-a-magnet.8",
+   "ks4:poles-of-a-magnet:cf#r1-2": "ks4.poles-of-a-magnet.2",
+   "ks4:poles-of-a-magnet:cf#r2-1": "ks4.poles-of-a-magnet.3",
+   "ks4:poles-of-a-magnet:cf#r2-2": "ks4.poles-of-a-magnet.4",
+   "ks4:poles-of-a-magnet:cf#r3-1": "ks4.poles-of-a-magnet.4",
+   "ks4:poles-of-a-magnet:cf#r3-2": "ks4.poles-of-a-magnet.4",
+   "ks4:poles-of-a-magnet:cf#r4-1": "ks4.poles-of-a-magnet.3",
+   "ks4:poles-of-a-magnet:cf#start": "ks4.poles-of-a-magnet.4",
+   "ks4:poles-of-a-magnet:ch#r1-1": "ks4.poles-of-a-magnet.8",
+   "ks4:poles-of-a-magnet:ch#r1-2": "ks4.poles-of-a-magnet.2",
+   "ks4:poles-of-a-magnet:ch#r2-1": "ks4.poles-of-a-magnet.3",
+   "ks4:poles-of-a-magnet:ch#r2-2": "ks4.poles-of-a-magnet.4",
+   "ks4:poles-of-a-magnet:ch#r3-1": "ks4.poles-of-a-magnet.4",
+   "ks4:poles-of-a-magnet:ch#r3-2": "ks4.poles-of-a-magnet.4",
+   "ks4:poles-of-a-magnet:ch#r4-1": "ks4.poles-of-a-magnet.3",
+   "ks4:poles-of-a-magnet:ch#start": "ks4.poles-of-a-magnet.4",
+   "ks4:poles-of-a-magnet:tf#r1-1": "ks4.poles-of-a-magnet.8",
+   "ks4:poles-of-a-magnet:tf#r1-2": "ks4.poles-of-a-magnet.2",
+   "ks4:poles-of-a-magnet:tf#r2-1": "ks4.poles-of-a-magnet.3",
+   "ks4:poles-of-a-magnet:tf#r2-2": "ks4.poles-of-a-magnet.4",
+   "ks4:poles-of-a-magnet:tf#r3-1": "ks4.poles-of-a-magnet.4",
+   "ks4:poles-of-a-magnet:tf#r3-2": "ks4.poles-of-a-magnet.4",
+   "ks4:poles-of-a-magnet:tf#r4-1": "ks4.poles-of-a-magnet.3",
+   "ks4:poles-of-a-magnet:tf#start": "ks4.poles-of-a-magnet.4",
+   "ks4:poles-of-a-magnet:th#r1-1": "ks4.poles-of-a-magnet.8",
+   "ks4:poles-of-a-magnet:th#r1-2": "ks4.poles-of-a-magnet.2",
+   "ks4:poles-of-a-magnet:th#r2-1": "ks4.poles-of-a-magnet.3",
+   "ks4:poles-of-a-magnet:th#r2-2": "ks4.poles-of-a-magnet.4",
+   "ks4:poles-of-a-magnet:th#r3-1": "ks4.poles-of-a-magnet.4",
+   "ks4:poles-of-a-magnet:th#r3-2": "ks4.poles-of-a-magnet.4",
+   "ks4:poles-of-a-magnet:th#r4-1": "ks4.poles-of-a-magnet.3",
+   "ks4:poles-of-a-magnet:th#start": "ks4.poles-of-a-magnet.4",
    "ks4c:poles-of-a-magnet:match-1": "ks4.poles-of-a-magnet.3",
    "ks4c:poles-of-a-magnet:match-2": "ks4.poles-of-a-magnet.4",
    "ks4c:poles-of-a-magnet:match-3": "ks4.poles-of-a-magnet.4",
    "ks4c:poles-of-a-magnet:match-4": "ks4.poles-of-a-magnet.6",
    "ks4q:poles-of-a-magnet:1cca5b268c": "ks4.poles-of-a-magnet.4",
-   "ks4q:poles-of-a-magnet:536c4d26ac": "ks4.poles-of-a-magnet.3"
+   "ks4q:poles-of-a-magnet:3dc7896f31": "ks4.poles-of-a-magnet.2",
+   "ks4q:poles-of-a-magnet:536c4d26ac": "ks4.poles-of-a-magnet.3",
+   "ks4q:poles-of-a-magnet:6c0776d7c4": "ks4.poles-of-a-magnet.4",
+   "ks4q:poles-of-a-magnet:b974d29ef6": "ks4.poles-of-a-magnet.3",
+   "ks4q:poles-of-a-magnet:ca45eb93c3": "ks4.poles-of-a-magnet.2"
   },
   "scope_ref": "poles-of-a-magnet",
   "subject": "physics",
@@ -44159,12 +44507,18 @@
  "transformers": {
   "key_stage": "KS4",
   "keys": {
+   "ks4:transformers:th#r1-1": "Iron is easily magnetised",
+   "ks4:transformers:th#r1-2": "Vₛ < Vₚ",
+   "ks4:transformers:th#start": "Bigger",
    "ks4c:transformers:match-1": "Step-up transformer",
    "ks4c:transformers:match-2": "Step-down transformer",
    "ks4c:transformers:match-3": "National Grid transmission",
    "ks4c:transformers:match-4": "Power conservation",
-   "ks4q:transformers:bc5f350558": "DC produces a constant magnetic flux — no change in flux means no induced emf in the secondary coil (Faraday's law requires changing flux)",
-   "ks4q:transformers:d2334c43cc": "High voltage means low current for the same power — less power wasted as heat in cables since P_loss = I²R"
+   "ks4q:transformers:11ee419d19": "40 A",
+   "ks4q:transformers:2c8d5d3eb5": "Two coils on an iron core",
+   "ks4q:transformers:2ef6e8bd98": "60 V",
+   "ks4q:transformers:bc5f350558": "A steady field induces no p.d.",
+   "ks4q:transformers:d2334c43cc": "The current is smaller, so cables heat less"
   },
   "points": [
    {
@@ -44251,10 +44605,21 @@
    "ks4-transformers-s16": "ks4.transformers.7",
    "ks4-transformers-s17": "ks4.transformers.1",
    "ks4-transformers-s18": "ks4.transformers.1",
+   "ks4:transformers:th#r1-1": "ks4.transformers.1",
+   "ks4:transformers:th#r1-2": "ks4.transformers.5",
+   "ks4:transformers:th#r2-1": "ks4.transformers.4",
+   "ks4:transformers:th#r2-2": "ks4.transformers.6",
+   "ks4:transformers:th#r3-1": "ks4.transformers.2",
+   "ks4:transformers:th#r3-2": "ks4.transformers.7",
+   "ks4:transformers:th#r4-1": "ks4.transformers.5",
+   "ks4:transformers:th#start": "ks4.transformers.5",
    "ks4c:transformers:match-1": "ks4.transformers.5",
    "ks4c:transformers:match-2": "ks4.transformers.5",
    "ks4c:transformers:match-3": "ks4.transformers.7",
    "ks4c:transformers:match-4": "ks4.transformers.6",
+   "ks4q:transformers:11ee419d19": "ks4.transformers.6",
+   "ks4q:transformers:2c8d5d3eb5": "ks4.transformers.1",
+   "ks4q:transformers:2ef6e8bd98": "ks4.transformers.4",
    "ks4q:transformers:bc5f350558": "ks4.transformers.3",
    "ks4q:transformers:d2334c43cc": "ks4.transformers.7"
   },
@@ -46272,12 +46637,21 @@
  "uses-generator-effect": {
   "key_stage": "KS4",
   "keys": {
+   "ks4:uses-generator-effect:th#r1-1": "Split-ring commutator",
+   "ks4:uses-generator-effect:th#r1-2": "Alternating current (a.c.)",
+   "ks4:uses-generator-effect:th#r2-1": "The peaks are higher and closer together",
+   "ks4:uses-generator-effect:th#r2-2": "The commutator swaps the connections each time the p.d. in the coil reverses",
+   "ks4:uses-generator-effect:th#start": "a.c.",
    "ks4c:uses-generator-effect:match-1": "Alternator",
    "ks4c:uses-generator-effect:match-2": "Dynamo",
    "ks4c:uses-generator-effect:match-3": "Modern wind turbine generator",
    "ks4c:uses-generator-effect:match-4": "Back-emf",
-   "ks4q:uses-generator-effect:1af8e65c8c": "The alternator uses slip rings — the connections don't reverse, giving AC. The dynamo uses a split-ring commutator which swaps connections each half-turn, giving pulsing DC.",
-   "ks4q:uses-generator-effect:229ba0e9ee": "A voltage generated by the rotating motor coil that opposes the supply — it limits the current drawn at full speed, making the motor efficient"
+   "ks4q:uses-generator-effect:1af8e65c8c": "Alternator: slip rings. Dynamo: split-ring commutator",
+   "ks4q:uses-generator-effect:229ba0e9ee": "A voltage generated by the rotating motor coil that opposes the supply — it limits the current drawn at full speed, making the motor efficient",
+   "ks4q:uses-generator-effect:501715ace9": "Slip rings and brushes",
+   "ks4q:uses-generator-effect:8324a6666c": "Using a stronger magnet",
+   "ks4q:uses-generator-effect:fb24673821": "Two",
+   "ks4q:uses-generator-effect:fbbf1231ed": "The peak p.d."
   },
   "points": [
    {
@@ -46321,6 +46695,11 @@
     "added": "round-2",
     "id": "ks4.uses-generator-effect.10",
     "label": "Back-emf is the opposing voltage a spinning motor generates, limiting its current"
+   },
+   {
+    "added": "round-4",
+    "id": "ks4.uses-generator-effect.11",
+    "label": "A dynamo's p.d.–time graph shows two positive humps per full turn of the coil"
    }
   ],
   "questions": {
@@ -46378,12 +46757,24 @@
    "ks4-uses-generator-effect-s16": "ks4.uses-generator-effect.4",
    "ks4-uses-generator-effect-s17": "ks4.uses-generator-effect.5",
    "ks4-uses-generator-effect-s18": "ks4.uses-generator-effect.3",
+   "ks4:uses-generator-effect:th#r1-1": "ks4.uses-generator-effect.2",
+   "ks4:uses-generator-effect:th#r1-2": "ks4.uses-generator-effect.1",
+   "ks4:uses-generator-effect:th#r2-1": "ks4.uses-generator-effect.5",
+   "ks4:uses-generator-effect:th#r2-2": "ks4.uses-generator-effect.2",
+   "ks4:uses-generator-effect:th#r3-1": "ks4.uses-generator-effect.1",
+   "ks4:uses-generator-effect:th#r3-2": "ks4.uses-generator-effect.2",
+   "ks4:uses-generator-effect:th#r4-1": "ks4.uses-generator-effect.1",
+   "ks4:uses-generator-effect:th#start": "ks4.uses-generator-effect.8",
    "ks4c:uses-generator-effect:match-1": "ks4.uses-generator-effect.1",
    "ks4c:uses-generator-effect:match-2": "ks4.uses-generator-effect.2",
    "ks4c:uses-generator-effect:match-3": "ks4.uses-generator-effect.9",
    "ks4c:uses-generator-effect:match-4": "ks4.uses-generator-effect.10",
    "ks4q:uses-generator-effect:1af8e65c8c": "ks4.uses-generator-effect.1",
-   "ks4q:uses-generator-effect:229ba0e9ee": "ks4.uses-generator-effect.6"
+   "ks4q:uses-generator-effect:229ba0e9ee": "ks4.uses-generator-effect.6",
+   "ks4q:uses-generator-effect:501715ace9": "ks4.uses-generator-effect.1",
+   "ks4q:uses-generator-effect:8324a6666c": "ks4.uses-generator-effect.5",
+   "ks4q:uses-generator-effect:fb24673821": "ks4.uses-generator-effect.11",
+   "ks4q:uses-generator-effect:fbbf1231ed": "ks4.uses-generator-effect.11"
   },
   "scope_ref": "uses-generator-effect",
   "subject": "physics",

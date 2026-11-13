@@ -261,7 +261,8 @@ def spec_table_problems(ks3_slugs, ks4_slugs):
     missing = []
     for ks, slugs in (("ks3", ks3_slugs), ("ks4", ks4_slugs)):
         for s in sorted(slugs):
-            if not os.path.exists(os.path.join(HERE, "docs", "lessons", "pilot", "%s-%s.md" % (ks, s))):
+            if not any(os.path.exists(os.path.join(HERE, "docs", "lessons", d, "%s-%s.md" % (ks, s)))
+                       for d in ("pilot", "wave1")):
                 missing.append("%s %s: no spec table at docs/lessons/pilot/%s-%s.md" % (ks, s, ks, s))
     return missing
 
