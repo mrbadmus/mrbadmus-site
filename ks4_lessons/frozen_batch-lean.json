@@ -7,6 +7,14 @@
   "hash": "be7708cd5b070ff85656a8ba193d1ea4735259a1d8de8d0f04336138a85b1d16",
   "review_state": "examiner-reviewed"
  },
+ "electric-motors": {
+  "hash": "57ce643ecce03d52edf9e01c7d3d9d2d05f51f34e0c0d91ce2406371156f71ee",
+  "review_state": "examiner-reviewed"
+ },
+ "electromagnetism": {
+  "hash": "2ea71366d8a865a01ab2d36e9934f6071b4425b0aa3920b42fd2e29782d10956",
+  "review_state": "examiner-reviewed"
+ },
  "energy-changes-in-systems": {
   "hash": "6e2013a66e4454fca83147a6d409ea49685a177237a705201c6f71cd11dffa53",
   "review_state": "examiner-reviewed"
@@ -23,12 +31,44 @@
   "hash": "c451e9d14ca8dfb2bd2788f958a4bb9a2e938409d81cbbb5c11c01c22ed5616e",
   "review_state": "examiner-reviewed"
  },
+ "flemings-left-hand-rule": {
+  "hash": "523dc29a193cfcd58269d58040522c587c92ec9710179c3f67fc1b430a039948",
+  "review_state": "examiner-reviewed"
+ },
+ "induced-potential": {
+  "hash": "039fe1dda5b681d5d82f579741888c687733841e0830ba103d1199ff755b224e",
+  "review_state": "examiner-reviewed"
+ },
+ "loudspeakers-headphones": {
+  "hash": "ba01152ae5bcac74dbf54b354fb60f5628ea9dc543ef134201f944d26a807425",
+  "review_state": "examiner-reviewed"
+ },
+ "magnetic-fields": {
+  "hash": "8877ea6adfd698256152517fb99aa1df45dc6a3f1a90ddf919431b71a2a344a0",
+  "review_state": "examiner-reviewed"
+ },
+ "microphones": {
+  "hash": "e5edf42b841d9fe13ee705a0694c35b09b8a79ba26ed466edb0b3420c6ee4104",
+  "review_state": "examiner-reviewed"
+ },
+ "poles-of-a-magnet": {
+  "hash": "cb8996c71ac8f61ff215609dc32271d2350168ddc840a538500e99260e1ab7ac",
+  "review_state": "examiner-reviewed"
+ },
  "power": {
   "hash": "d48969ef96b9bea6d0227051862fede97cf0f9b3e8238aa9d04e857e1d650461",
   "review_state": "examiner-reviewed"
  },
  "thermal-conductivity": {
   "hash": "eeb6609ef48308ed017636681baea394061910024a5cb001e51f5e562dfcd81e",
+  "review_state": "examiner-reviewed"
+ },
+ "transformers": {
+  "hash": "0982b232072d3804609b809c4e8d6d08a6504936005b941f7fbbb2b5d9584c34",
+  "review_state": "examiner-reviewed"
+ },
+ "uses-generator-effect": {
+  "hash": "c303a977199c80a88131d891597e3911287dad59048a3a8c7e774df3e5b48b61",
   "review_state": "examiner-reviewed"
  }
 }
