@@ -709,7 +709,8 @@ QUESTIONS = [
         "band": "harder",
         "tier": "foundation",
         "triple_only": False,
-        "text": "The current in just one of two solenoids placed end to end on a common axis is now reversed. Predict and explain what the pair of coils does.",
+        "figure": "ks4-fig-solenoid-pair-attracting",
+        "text": "The diagram shows two solenoids end to end on a common axis, with their poles marked. The current in coil B alone is now reversed. Predict and explain what the pair of coils does.",
         "options": [
             "Nothing changes at all, since the two coils were identical to start with",
             "They spin round to sit side by side, which is the arrangement that they prefer",
@@ -717,7 +718,7 @@ QUESTIONS = [
             "They attract each other even more strongly than they did before the change",
         ],
         "correct_index": 2,
-        "why": "Reversing a solenoid's current reverses its field and swaps its north and south ends. Two like poles now face each other across the gap, and like poles repel.",
+        "why": "Reversing coil B's current reverses its field and swaps its ends, so its left end becomes a north pole. Coil A's north pole now faces coil B's north pole across the gap, and like poles repel.",
     },
     {
         "id": "ks4-electromagnetism-h20",
