@@ -674,7 +674,7 @@ def walk_light(page, base, ks, slug, route, path, rec, shots):
     overflow(d)
     if ks == 4:
         triangles(d, rec)
-        ks4_words(d, route, path.split("/")[2])
+        ks4_words(d, route, next(p for p in path.split("/") if p in SPEC_TRIPLE))
     else:
         ks3_words(d)
     figures(d)
