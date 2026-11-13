@@ -161,6 +161,23 @@ RETIRED_BY_LEAN = {
                   "replaced by the drawn figures b8-word-fermentation and b8-yeast-limewater"),
     "route-decider": ("biology/respiration/aerobic-vs-anaerobic.html",
                       "the route-decider bench is not on the lean page"),
+    # ⊕ lean wave 1 (C2 atoms, elements and compounds): the families below are emitted by no page now.
+    "claim-switch": ("chemistry/atoms-elements-and-compounds/the-atom-daltons-model.html",
+                     "the claim-switch bench is not on the lean page"),
+    "scale-zoom": ("chemistry/atoms-elements-and-compounds/the-atom-daltons-model.html",
+                   "replaced by the drawn figure c2-lead-gold-atoms"),
+    "test-budget-bench": ("chemistry/atoms-elements-and-compounds/elements.html",
+                          "replaced by the drawn figure c2-element-particles"),
+    "mixture-compound-dish": ("chemistry/atoms-elements-and-compounds/compounds.html",
+                              "replaced by the drawn figures c2-iron-sulfur and c2-ecm-particles"),
+    "verdict-cards": ("chemistry/atoms-elements-and-compounds/compounds.html",
+                      "the verdict-card sorters (compounds, chemical symbols) are not on the lean pages"),
+    "formula-builder": ("chemistry/atoms-elements-and-compounds/formulae.html",
+                        "replaced by the drawn figures c2-molecules, c2-big-small, c2-salt-lattice and c2-ammonia"),
+    "balance-bench": ("chemistry/atoms-elements-and-compounds/conservation-of-mass.html",
+                      "replaced by the drawn figure c2-open-sealed"),
+    "fifa-pick": ("chemistry/atoms-elements-and-compounds/conservation-of-mass.html",
+                  "the four-step picker is not on the lean page (figure c2-word-magnesium)"),
 }
 
 

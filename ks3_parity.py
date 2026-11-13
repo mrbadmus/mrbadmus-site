@@ -7528,6 +7528,13 @@ _W1_WHY = {
     B8_DEBT: "the oxygen-debt bench is not on the lean page (figure b8-word-anaerobic)",
     B8_FERM: "the fermenter bench is not on the lean page (figures b8-word-fermentation, b8-yeast-limewater)",
     B8_ROUTE: "the route-decider bench is not on the lean page",
+    # ⊕ lean wave 1 (C2): the six C2 pages are lean pages; benches and the lesson-era cards are gone.
+    C2_ATOM: "the claim-switch and scale-zoom benches are not on the lean page (figure c2-lead-gold-atoms)",
+    C2_ELEM: "the test-budget bench is not on the lean page (figure c2-element-particles)",
+    C2_COMP: "the dish and verdict-card benches are not on the lean page (figures c2-iron-sulfur, c2-ecm-particles)",
+    C2_SYM: "the verdict-card grids are not on the lean page (figure c2-co-and-co)",
+    C2_FORM: "the formula-builder and vocabulary cards are not on the lean page (figures c2-molecules, c2-big-small, c2-salt-lattice, c2-ammonia)",
+    C2_MASS: "the balance bench and four-step picker are not on the lean page (figures c2-open-sealed, c2-carbon-burns, c2-word-magnesium)",
 }
 RETIRED_BY_LEAN += [(c["name"], c["on"], _W1_WHY[c["on"]])
                     for c in COMPONENTS + CONTRAST if c.get("on") in _W1_WHY]

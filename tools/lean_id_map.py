@@ -59,6 +59,8 @@ WAVES = {
                                   "testing-a-leaf-for-starch"]),
         ("B8", "respiration", ["aerobic-respiration", "why-every-cell-respires",
                                "anaerobic-respiration-in-humans", "fermentation", "aerobic-vs-anaerobic"]),
+        ("C2", "atoms-elements-and-compounds", ["the-atom-daltons-model", "elements", "compounds",
+                                                "chemical-symbols", "formulae", "conservation-of-mass"]),
     ],
 }
 
@@ -132,7 +134,23 @@ _WHY = [
     (r"#chain-|#write-", "this practice item is not on the lean page"),
     (r"#locate-the-fault-|#two-bags-|#gas-|#work-the-diaphragm", "the instrument was removed from the lean page"),
     (r"ks4c:", "the classic matching card is not on the lean page"),
+    (r"#think-commit-", "the Think first question is not on the lean page"),
+    (r"#where-it-runs-out$", "the where-the-model-runs-out activity is not on the lean page"),
 ]
+
+
+def ks3_undrawn(ref, qid):
+    """For a KS3 lean lesson: True when the built page never mentions the id's own part, so it
+    cannot send it, although the lesson data still lists the item (e.g. a Think first commit the
+    lean page does not draw). Conservative: any mention of the id on the page counts as drawn,
+    and lesson_contract_check still checks every page's real ids against this map."""
+    import glob
+    if "#" not in qid:
+        return False              # not a page-local id (e.g. a bank row): leave it to the rules below
+    hits = glob.glob(os.path.join(REPO, "mrbadmus_site", "ks3", "*", "*", ref + ".html"))
+    if len(hits) != 1:
+        raise SystemExit("lean_id_map: expected one KS3 page for %s, found %d" % (ref, len(hits)))
+    return qid.split("#", 1)[1] not in open(hits[0], encoding="utf-8").read()
 
 
 def _why(qid):
@@ -248,6 +266,8 @@ def build(base="origin/main", wave=None):
                     ids[qid] = {"status": "removed", "new": None, "kp": old_q[qid],
                                 "note": "the lesson's own activity (%s) is not drawn on the lean page"
                                         % ", ".join(undrawn_root_activity(qid, covers))}
+                elif qid in old_q and qid in new_q and ks == "KS3" and ks3_undrawn(ref, qid):
+                    ids[qid] = {"status": "removed", "new": None, "kp": old_q[qid], "note": _why(qid)}
                 elif qid in old_q and qid in new_q and not (ks == "KS4" and qid.startswith("ks4c:")):
                     # (a ks4c: matching card belongs to the classic page; a lean page never
                     # sends one, though the inventory still lists the lesson's old pairs)

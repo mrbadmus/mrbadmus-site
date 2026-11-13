@@ -1,0 +1,3823 @@
+{
+ "base": "origin/main",
+ "ids": {
+  "c2-01-e01": {
+   "kp": "ks3.the-atom-daltons-model.1",
+   "new": "c2-01-e01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-e02": {
+   "kp": "ks3.the-atom-daltons-model.1",
+   "new": "c2-01-e02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-e03": {
+   "kp": "ks3.the-atom-daltons-model.7",
+   "new": "c2-01-e03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-e04": {
+   "kp": "ks3.the-atom-daltons-model.4",
+   "new": "c2-01-e04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-e05": {
+   "kp": "ks3.the-atom-daltons-model.5",
+   "new": "c2-01-e05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-e06": {
+   "kp": "ks3.the-atom-daltons-model.4",
+   "new": "c2-01-e06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-e07": {
+   "kp": "ks3.the-atom-daltons-model.1",
+   "new": "c2-01-e07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-e08": {
+   "kp": "ks3.the-atom-daltons-model.4",
+   "new": "c2-01-e08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-e09": {
+   "kp": "ks3.the-atom-daltons-model.7",
+   "new": "c2-01-e09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-e10": {
+   "kp": "ks3.the-atom-daltons-model.2",
+   "new": "c2-01-e10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-e11": {
+   "kp": "ks3.the-atom-daltons-model.2",
+   "new": "c2-01-e11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-e12": {
+   "kp": "ks3.the-atom-daltons-model.6",
+   "new": "c2-01-e12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-e13": {
+   "kp": "ks3.the-atom-daltons-model.6",
+   "new": "c2-01-e13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-e14": {
+   "kp": "ks3.the-atom-daltons-model.2",
+   "new": "c2-01-e14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-e15": {
+   "kp": "ks3.the-atom-daltons-model.2",
+   "new": "c2-01-e15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-e16": {
+   "kp": "ks3.the-atom-daltons-model.7",
+   "new": "c2-01-e16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-e17": {
+   "kp": "ks3.the-atom-daltons-model.3",
+   "new": "c2-01-e17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-e18": {
+   "kp": "ks3.the-atom-daltons-model.2",
+   "new": "c2-01-e18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-e19": {
+   "kp": "ks3.the-atom-daltons-model.2",
+   "new": "c2-01-e19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-e20": {
+   "kp": "ks3.the-atom-daltons-model.2",
+   "new": "c2-01-e20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-e21": {
+   "kp": "ks3.the-atom-daltons-model.6",
+   "new": "c2-01-e21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-e22": {
+   "kp": "ks3.the-atom-daltons-model.6",
+   "new": "c2-01-e22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-e23": {
+   "kp": "ks3.the-atom-daltons-model.6",
+   "new": "c2-01-e23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-e24": {
+   "kp": "ks3.the-atom-daltons-model.2",
+   "new": "c2-01-e24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-e25": {
+   "kp": "ks3.the-atom-daltons-model.6",
+   "new": "c2-01-e25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-e26": {
+   "kp": "ks3.the-atom-daltons-model.6",
+   "new": "c2-01-e26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-e27": {
+   "kp": "ks3.the-atom-daltons-model.4",
+   "new": "c2-01-e27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-e28": {
+   "kp": "ks3.the-atom-daltons-model.7",
+   "new": "c2-01-e28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-e29": {
+   "kp": "ks3.the-atom-daltons-model.7",
+   "new": "c2-01-e29",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-e30": {
+   "kp": "ks3.the-atom-daltons-model.6",
+   "new": "c2-01-e30",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-e31": {
+   "kp": "ks3.the-atom-daltons-model.1",
+   "new": "c2-01-e31",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-e32": {
+   "kp": "ks3.the-atom-daltons-model.2",
+   "new": "c2-01-e32",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-h01": {
+   "kp": "ks3.the-atom-daltons-model.1",
+   "new": "c2-01-h01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-h02": {
+   "kp": "ks3.the-atom-daltons-model.6",
+   "new": "c2-01-h02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-h03": {
+   "kp": "ks3.the-atom-daltons-model.4",
+   "new": "c2-01-h03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-h04": {
+   "kp": "ks3.the-atom-daltons-model.5",
+   "new": "c2-01-h04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-h05": {
+   "kp": "ks3.the-atom-daltons-model.1",
+   "new": "c2-01-h05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-h06": {
+   "kp": "ks3.the-atom-daltons-model.7",
+   "new": "c2-01-h06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-h07": {
+   "kp": "ks3.the-atom-daltons-model.3",
+   "new": "c2-01-h07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-h08": {
+   "kp": "ks3.the-atom-daltons-model.4",
+   "new": "c2-01-h08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-h09": {
+   "kp": "ks3.the-atom-daltons-model.6",
+   "new": "c2-01-h09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-h10": {
+   "kp": "ks3.the-atom-daltons-model.1",
+   "new": "c2-01-h10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-h11": {
+   "kp": "ks3.the-atom-daltons-model.7",
+   "new": "c2-01-h11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-h12": {
+   "kp": "ks3.the-atom-daltons-model.6",
+   "new": "c2-01-h12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-h13": {
+   "kp": "ks3.the-atom-daltons-model.3",
+   "new": "c2-01-h13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-h14": {
+   "kp": "ks3.the-atom-daltons-model.6",
+   "new": "c2-01-h14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-h15": {
+   "kp": "ks3.the-atom-daltons-model.1",
+   "new": "c2-01-h15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-h16": {
+   "kp": "ks3.the-atom-daltons-model.6",
+   "new": "c2-01-h16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-h17": {
+   "kp": "ks3.the-atom-daltons-model.6",
+   "new": "c2-01-h17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-h18": {
+   "kp": "ks3.the-atom-daltons-model.1",
+   "new": "c2-01-h18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-h19": {
+   "kp": "ks3.the-atom-daltons-model.1",
+   "new": "c2-01-h19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-h20": {
+   "kp": "ks3.the-atom-daltons-model.6",
+   "new": "c2-01-h20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-h21": {
+   "kp": "ks3.the-atom-daltons-model.4",
+   "new": "c2-01-h21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-h22": {
+   "kp": "ks3.the-atom-daltons-model.5",
+   "new": "c2-01-h22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-h23": {
+   "kp": "ks3.the-atom-daltons-model.1",
+   "new": "c2-01-h23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-h24": {
+   "kp": "ks3.the-atom-daltons-model.6",
+   "new": "c2-01-h24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-h25": {
+   "kp": "ks3.the-atom-daltons-model.1",
+   "new": "c2-01-h25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-h26": {
+   "kp": "ks3.the-atom-daltons-model.2",
+   "new": "c2-01-h26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-h27": {
+   "kp": "ks3.the-atom-daltons-model.6",
+   "new": "c2-01-h27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-h28": {
+   "kp": "ks3.the-atom-daltons-model.3",
+   "new": "c2-01-h28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-h29": {
+   "kp": "ks3.the-atom-daltons-model.1",
+   "new": "c2-01-h29",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-h30": {
+   "kp": "ks3.the-atom-daltons-model.1",
+   "new": "c2-01-h30",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-h31": {
+   "kp": "ks3.the-atom-daltons-model.4",
+   "new": "c2-01-h31",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-h32": {
+   "kp": "ks3.the-atom-daltons-model.7",
+   "new": "c2-01-h32",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-s01": {
+   "kp": "ks3.the-atom-daltons-model.3",
+   "new": "c2-01-s01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-s02": {
+   "kp": "ks3.the-atom-daltons-model.1",
+   "new": "c2-01-s02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-s03": {
+   "kp": "ks3.the-atom-daltons-model.5",
+   "new": "c2-01-s03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-s04": {
+   "kp": "ks3.the-atom-daltons-model.7",
+   "new": "c2-01-s04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-s05": {
+   "kp": "ks3.the-atom-daltons-model.1",
+   "new": "c2-01-s05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-s06": {
+   "kp": "ks3.the-atom-daltons-model.1",
+   "new": "c2-01-s06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-s07": {
+   "kp": "ks3.the-atom-daltons-model.4",
+   "new": "c2-01-s07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-s08": {
+   "kp": "ks3.the-atom-daltons-model.3",
+   "new": "c2-01-s08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-s09": {
+   "kp": "ks3.the-atom-daltons-model.4",
+   "new": "c2-01-s09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-s10": {
+   "kp": "ks3.the-atom-daltons-model.6",
+   "new": "c2-01-s10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-s11": {
+   "kp": "ks3.the-atom-daltons-model.3",
+   "new": "c2-01-s11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-s12": {
+   "kp": "ks3.the-atom-daltons-model.5",
+   "new": "c2-01-s12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-s13": {
+   "kp": "ks3.the-atom-daltons-model.4",
+   "new": "c2-01-s13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-s14": {
+   "kp": "ks3.the-atom-daltons-model.2",
+   "new": "c2-01-s14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-s15": {
+   "kp": "ks3.the-atom-daltons-model.1",
+   "new": "c2-01-s15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-s16": {
+   "kp": "ks3.the-atom-daltons-model.5",
+   "new": "c2-01-s16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-s17": {
+   "kp": "ks3.the-atom-daltons-model.2",
+   "new": "c2-01-s17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-s18": {
+   "kp": "ks3.the-atom-daltons-model.7",
+   "new": "c2-01-s18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-s19": {
+   "kp": "ks3.the-atom-daltons-model.6",
+   "new": "c2-01-s19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-s20": {
+   "kp": "ks3.the-atom-daltons-model.2",
+   "new": "c2-01-s20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-s21": {
+   "kp": "ks3.the-atom-daltons-model.1",
+   "new": "c2-01-s21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-s22": {
+   "kp": "ks3.the-atom-daltons-model.7",
+   "new": "c2-01-s22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-s23": {
+   "kp": "ks3.the-atom-daltons-model.6",
+   "new": "c2-01-s23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-s24": {
+   "kp": "ks3.the-atom-daltons-model.3",
+   "new": "c2-01-s24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-s25": {
+   "kp": "ks3.the-atom-daltons-model.4",
+   "new": "c2-01-s25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-s26": {
+   "kp": "ks3.the-atom-daltons-model.6",
+   "new": "c2-01-s26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-s27": {
+   "kp": "ks3.the-atom-daltons-model.5",
+   "new": "c2-01-s27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-s28": {
+   "kp": "ks3.the-atom-daltons-model.6",
+   "new": "c2-01-s28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-s29": {
+   "kp": "ks3.the-atom-daltons-model.6",
+   "new": "c2-01-s29",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-s30": {
+   "kp": "ks3.the-atom-daltons-model.3",
+   "new": "c2-01-s30",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-s31": {
+   "kp": "ks3.the-atom-daltons-model.5",
+   "new": "c2-01-s31",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-01-s32": {
+   "kp": "ks3.the-atom-daltons-model.7",
+   "new": "c2-01-s32",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-e01": {
+   "kp": "ks3.elements.1",
+   "new": "c2-02-e01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-e02": {
+   "kp": "ks3.elements.5",
+   "new": "c2-02-e02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-e03": {
+   "kp": "ks3.elements.3",
+   "new": "c2-02-e03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-e04": {
+   "kp": "ks3.elements.5",
+   "new": "c2-02-e04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-e05": {
+   "kp": "ks3.elements.6",
+   "new": "c2-02-e05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-e06": {
+   "kp": "ks3.elements.4",
+   "new": "c2-02-e06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-e07": {
+   "kp": "ks3.elements.5",
+   "new": "c2-02-e07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-e08": {
+   "kp": "ks3.elements.3",
+   "new": "c2-02-e08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-e09": {
+   "kp": "ks3.elements.2",
+   "new": "c2-02-e09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-e10": {
+   "kp": "ks3.elements.2",
+   "new": "c2-02-e10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-e11": {
+   "kp": "ks3.elements.5",
+   "new": "c2-02-e11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-e12": {
+   "kp": "ks3.elements.4",
+   "new": "c2-02-e12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-e13": {
+   "kp": "ks3.elements.4",
+   "new": "c2-02-e13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-e14": {
+   "kp": "ks3.elements.4",
+   "new": "c2-02-e14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-e15": {
+   "kp": "ks3.elements.4",
+   "new": "c2-02-e15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-e16": {
+   "kp": "ks3.elements.3",
+   "new": "c2-02-e16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-e17": {
+   "kp": "ks3.elements.2",
+   "new": "c2-02-e17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-e18": {
+   "kp": "ks3.elements.5",
+   "new": "c2-02-e18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-e19": {
+   "kp": "ks3.elements.2",
+   "new": "c2-02-e19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-e20": {
+   "kp": "ks3.elements.1",
+   "new": "c2-02-e20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-e21": {
+   "kp": "ks3.elements.2",
+   "new": "c2-02-e21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-e22": {
+   "kp": "ks3.elements.2",
+   "new": "c2-02-e22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-e23": {
+   "kp": "ks3.elements.5",
+   "new": "c2-02-e23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-e24": {
+   "kp": "ks3.elements.3",
+   "new": "c2-02-e24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-e25": {
+   "kp": "ks3.elements.4",
+   "new": "c2-02-e25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-e26": {
+   "kp": "ks3.elements.2",
+   "new": "c2-02-e26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-e27": {
+   "kp": "ks3.elements.5",
+   "new": "c2-02-e27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-e28": {
+   "kp": "ks3.elements.5",
+   "new": "c2-02-e28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-e29": {
+   "kp": "ks3.elements.6",
+   "new": "c2-02-e29",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-e30": {
+   "kp": "ks3.elements.5",
+   "new": "c2-02-e30",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-e31": {
+   "kp": "ks3.elements.4",
+   "new": "c2-02-e31",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-e32": {
+   "kp": "ks3.elements.2",
+   "new": "c2-02-e32",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-h01": {
+   "kp": "ks3.elements.6",
+   "new": "c2-02-h01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-h02": {
+   "kp": "ks3.elements.1",
+   "new": "c2-02-h02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-h03": {
+   "kp": "ks3.elements.6",
+   "new": "c2-02-h03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-h04": {
+   "kp": "ks3.elements.3",
+   "new": "c2-02-h04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-h05": {
+   "kp": "ks3.elements.1",
+   "new": "c2-02-h05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-h06": {
+   "kp": "ks3.elements.6",
+   "new": "c2-02-h06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-h07": {
+   "kp": "ks3.elements.2",
+   "new": "c2-02-h07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-h08": {
+   "kp": "ks3.elements.1",
+   "new": "c2-02-h08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-h09": {
+   "kp": "ks3.elements.2",
+   "new": "c2-02-h09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-h10": {
+   "kp": "ks3.elements.6",
+   "new": "c2-02-h10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-h11": {
+   "kp": "ks3.elements.1",
+   "new": "c2-02-h11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-h12": {
+   "kp": "ks3.elements.3",
+   "new": "c2-02-h12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-h13": {
+   "kp": "ks3.elements.2",
+   "new": "c2-02-h13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-h14": {
+   "kp": "ks3.elements.6",
+   "new": "c2-02-h14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-h15": {
+   "kp": "ks3.elements.7",
+   "new": "c2-02-h15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-h16": {
+   "kp": "ks3.elements.6",
+   "new": "c2-02-h16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-h17": {
+   "kp": "ks3.elements.2",
+   "new": "c2-02-h17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-h18": {
+   "kp": "ks3.elements.5",
+   "new": "c2-02-h18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-h19": {
+   "kp": "ks3.elements.6",
+   "new": "c2-02-h19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-h20": {
+   "kp": "ks3.elements.4",
+   "new": "c2-02-h20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-h21": {
+   "kp": "ks3.elements.1",
+   "new": "c2-02-h21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-h22": {
+   "kp": "ks3.elements.1",
+   "new": "c2-02-h22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-h23": {
+   "kp": "ks3.elements.3",
+   "new": "c2-02-h23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-h24": {
+   "kp": "ks3.elements.7",
+   "new": "c2-02-h24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-h25": {
+   "kp": "ks3.elements.6",
+   "new": "c2-02-h25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-h26": {
+   "kp": "ks3.elements.2",
+   "new": "c2-02-h26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-h27": {
+   "kp": "ks3.elements.2",
+   "new": "c2-02-h27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-h28": {
+   "kp": "ks3.elements.2",
+   "new": "c2-02-h28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-h29": {
+   "kp": "ks3.elements.4",
+   "new": "c2-02-h29",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-h30": {
+   "kp": "ks3.elements.1",
+   "new": "c2-02-h30",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-h31": {
+   "kp": "ks3.elements.3",
+   "new": "c2-02-h31",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-h32": {
+   "kp": "ks3.elements.5",
+   "new": "c2-02-h32",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-s01": {
+   "kp": "ks3.elements.1",
+   "new": "c2-02-s01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-s02": {
+   "kp": "ks3.elements.2",
+   "new": "c2-02-s02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-s03": {
+   "kp": "ks3.elements.3",
+   "new": "c2-02-s03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-s04": {
+   "kp": "ks3.elements.3",
+   "new": "c2-02-s04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-s05": {
+   "kp": "ks3.elements.1",
+   "new": "c2-02-s05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-s06": {
+   "kp": "ks3.elements.6",
+   "new": "c2-02-s06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-s07": {
+   "kp": "ks3.elements.1",
+   "new": "c2-02-s07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-s08": {
+   "kp": "ks3.elements.6",
+   "new": "c2-02-s08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-s09": {
+   "kp": "ks3.elements.1",
+   "new": "c2-02-s09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-s10": {
+   "kp": "ks3.elements.2",
+   "new": "c2-02-s10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-s11": {
+   "kp": "ks3.elements.1",
+   "new": "c2-02-s11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-s12": {
+   "kp": "ks3.elements.6",
+   "new": "c2-02-s12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-s13": {
+   "kp": "ks3.elements.2",
+   "new": "c2-02-s13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-s14": {
+   "kp": "ks3.elements.4",
+   "new": "c2-02-s14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-s15": {
+   "kp": "ks3.elements.4",
+   "new": "c2-02-s15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-s16": {
+   "kp": "ks3.elements.3",
+   "new": "c2-02-s16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-s17": {
+   "kp": "ks3.elements.2",
+   "new": "c2-02-s17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-s18": {
+   "kp": "ks3.elements.2",
+   "new": "c2-02-s18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-s19": {
+   "kp": "ks3.elements.3",
+   "new": "c2-02-s19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-s20": {
+   "kp": "ks3.elements.3",
+   "new": "c2-02-s20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-s21": {
+   "kp": "ks3.elements.5",
+   "new": "c2-02-s21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-s22": {
+   "kp": "ks3.elements.7",
+   "new": "c2-02-s22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-s23": {
+   "kp": "ks3.elements.7",
+   "new": "c2-02-s23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-s24": {
+   "kp": "ks3.elements.2",
+   "new": "c2-02-s24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-s25": {
+   "kp": "ks3.elements.4",
+   "new": "c2-02-s25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-s26": {
+   "kp": "ks3.elements.4",
+   "new": "c2-02-s26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-s27": {
+   "kp": "ks3.elements.3",
+   "new": "c2-02-s27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-s28": {
+   "kp": "ks3.elements.6",
+   "new": "c2-02-s28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-s29": {
+   "kp": "ks3.elements.6",
+   "new": "c2-02-s29",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-s30": {
+   "kp": "ks3.elements.4",
+   "new": "c2-02-s30",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-s31": {
+   "kp": "ks3.elements.3",
+   "new": "c2-02-s31",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-02-s32": {
+   "kp": "ks3.elements.6",
+   "new": "c2-02-s32",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-e01": {
+   "kp": "ks3.compounds.1",
+   "new": "c2-03-e01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-e02": {
+   "kp": "ks3.compounds.1",
+   "new": "c2-03-e02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-e03": {
+   "kp": "ks3.compounds.2",
+   "new": "c2-03-e03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-e04": {
+   "kp": "ks3.compounds.2",
+   "new": "c2-03-e04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-e05": {
+   "kp": "ks3.compounds.2",
+   "new": "c2-03-e05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-e06": {
+   "kp": "ks3.compounds.2",
+   "new": "c2-03-e06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-e07": {
+   "kp": "ks3.compounds.2",
+   "new": "c2-03-e07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-e08": {
+   "kp": "ks3.compounds.1",
+   "new": "c2-03-e08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-e09": {
+   "kp": "ks3.compounds.2",
+   "new": "c2-03-e09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-e10": {
+   "kp": "ks3.compounds.2",
+   "new": "c2-03-e10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-e11": {
+   "kp": "ks3.compounds.2",
+   "new": "c2-03-e11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-e12": {
+   "kp": "ks3.compounds.3",
+   "new": "c2-03-e12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-e13": {
+   "kp": "ks3.compounds.4",
+   "new": "c2-03-e13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-e14": {
+   "kp": "ks3.compounds.5",
+   "new": "c2-03-e14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-e15": {
+   "kp": "ks3.compounds.5",
+   "new": "c2-03-e15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-e16": {
+   "kp": "ks3.compounds.5",
+   "new": "c2-03-e16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-e17": {
+   "kp": "ks3.compounds.5",
+   "new": "c2-03-e17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-e18": {
+   "kp": "ks3.compounds.5",
+   "new": "c2-03-e18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-e19": {
+   "kp": "ks3.compounds.5",
+   "new": "c2-03-e19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-e20": {
+   "kp": "ks3.compounds.5",
+   "new": "c2-03-e20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-e21": {
+   "kp": "ks3.compounds.5",
+   "new": "c2-03-e21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-e22": {
+   "kp": "ks3.compounds.5",
+   "new": "c2-03-e22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-e23": {
+   "kp": "ks3.compounds.5",
+   "new": "c2-03-e23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-e24": {
+   "kp": "ks3.compounds.5",
+   "new": "c2-03-e24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-e25": {
+   "kp": "ks3.compounds.2",
+   "new": "c2-03-e25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-e26": {
+   "kp": "ks3.compounds.2",
+   "new": "c2-03-e26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-e27": {
+   "kp": "ks3.compounds.2",
+   "new": "c2-03-e27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-e28": {
+   "kp": "ks3.compounds.1",
+   "new": "c2-03-e28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-e29": {
+   "kp": "ks3.compounds.2",
+   "new": "c2-03-e29",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-e30": {
+   "kp": "ks3.compounds.2",
+   "new": "c2-03-e30",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-e31": {
+   "kp": "ks3.compounds.1",
+   "new": "c2-03-e31",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-e32": {
+   "kp": "ks3.compounds.1",
+   "new": "c2-03-e32",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-h01": {
+   "kp": "ks3.compounds.3",
+   "new": "c2-03-h01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-h02": {
+   "kp": "ks3.compounds.4",
+   "new": "c2-03-h02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-h03": {
+   "kp": "ks3.compounds.2",
+   "new": "c2-03-h03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-h04": {
+   "kp": "ks3.compounds.1",
+   "new": "c2-03-h04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-h05": {
+   "kp": "ks3.compounds.3",
+   "new": "c2-03-h05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-h06": {
+   "kp": "ks3.compounds.4",
+   "new": "c2-03-h06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-h07": {
+   "kp": "ks3.compounds.3",
+   "new": "c2-03-h07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-h08": {
+   "kp": "ks3.compounds.2",
+   "new": "c2-03-h08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-h09": {
+   "kp": "ks3.compounds.1",
+   "new": "c2-03-h09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-h10": {
+   "kp": "ks3.compounds.1",
+   "new": "c2-03-h10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-h11": {
+   "kp": "ks3.compounds.2",
+   "new": "c2-03-h11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-h12": {
+   "kp": "ks3.compounds.3",
+   "new": "c2-03-h12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-h13": {
+   "kp": "ks3.compounds.4",
+   "new": "c2-03-h13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-h14": {
+   "kp": "ks3.compounds.5",
+   "new": "c2-03-h14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-h15": {
+   "kp": "ks3.compounds.5",
+   "new": "c2-03-h15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-h16": {
+   "kp": "ks3.compounds.2",
+   "new": "c2-03-h16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-h17": {
+   "kp": "ks3.compounds.5",
+   "new": "c2-03-h17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-h18": {
+   "kp": "ks3.compounds.5",
+   "new": "c2-03-h18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-h19": {
+   "kp": "ks3.compounds.5",
+   "new": "c2-03-h19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-h20": {
+   "kp": "ks3.compounds.4",
+   "new": "c2-03-h20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-h21": {
+   "kp": "ks3.compounds.3",
+   "new": "c2-03-h21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-h22": {
+   "kp": "ks3.compounds.3",
+   "new": "c2-03-h22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-h23": {
+   "kp": "ks3.compounds.3",
+   "new": "c2-03-h23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-h24": {
+   "kp": "ks3.compounds.2",
+   "new": "c2-03-h24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-h25": {
+   "kp": "ks3.compounds.4",
+   "new": "c2-03-h25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-h26": {
+   "kp": "ks3.compounds.3",
+   "new": "c2-03-h26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-h27": {
+   "kp": "ks3.compounds.2",
+   "new": "c2-03-h27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-h28": {
+   "kp": "ks3.compounds.1",
+   "new": "c2-03-h28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-h29": {
+   "kp": "ks3.compounds.2",
+   "new": "c2-03-h29",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-h30": {
+   "kp": "ks3.compounds.4",
+   "new": "c2-03-h30",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-h31": {
+   "kp": "ks3.compounds.1",
+   "new": "c2-03-h31",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-h32": {
+   "kp": "ks3.compounds.1",
+   "new": "c2-03-h32",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-s01": {
+   "kp": "ks3.compounds.2",
+   "new": "c2-03-s01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-s02": {
+   "kp": "ks3.compounds.1",
+   "new": "c2-03-s02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-s03": {
+   "kp": "ks3.compounds.3",
+   "new": "c2-03-s03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-s04": {
+   "kp": "ks3.compounds.1",
+   "new": "c2-03-s04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-s05": {
+   "kp": "ks3.compounds.1",
+   "new": "c2-03-s05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-s06": {
+   "kp": "ks3.compounds.2",
+   "new": "c2-03-s06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-s07": {
+   "kp": "ks3.compounds.3",
+   "new": "c2-03-s07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-s08": {
+   "kp": "ks3.compounds.2",
+   "new": "c2-03-s08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-s09": {
+   "kp": "ks3.compounds.1",
+   "new": "c2-03-s09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-s10": {
+   "kp": "ks3.compounds.2",
+   "new": "c2-03-s10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-s11": {
+   "kp": "ks3.compounds.2",
+   "new": "c2-03-s11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-s12": {
+   "kp": "ks3.compounds.3",
+   "new": "c2-03-s12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-s13": {
+   "kp": "ks3.compounds.4",
+   "new": "c2-03-s13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-s14": {
+   "kp": "ks3.compounds.5",
+   "new": "c2-03-s14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-s15": {
+   "kp": "ks3.compounds.5",
+   "new": "c2-03-s15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-s16": {
+   "kp": "ks3.compounds.2",
+   "new": "c2-03-s16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-s17": {
+   "kp": "ks3.compounds.5",
+   "new": "c2-03-s17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-s18": {
+   "kp": "ks3.compounds.5",
+   "new": "c2-03-s18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-s19": {
+   "kp": "ks3.compounds.5",
+   "new": "c2-03-s19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-s20": {
+   "kp": "ks3.compounds.1",
+   "new": "c2-03-s20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-s21": {
+   "kp": "ks3.compounds.2",
+   "new": "c2-03-s21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-s22": {
+   "kp": "ks3.compounds.2",
+   "new": "c2-03-s22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-s23": {
+   "kp": "ks3.compounds.3",
+   "new": "c2-03-s23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-s24": {
+   "kp": "ks3.compounds.2",
+   "new": "c2-03-s24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-s25": {
+   "kp": "ks3.compounds.1",
+   "new": "c2-03-s25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-s26": {
+   "kp": "ks3.compounds.3",
+   "new": "c2-03-s26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-s27": {
+   "kp": "ks3.compounds.2",
+   "new": "c2-03-s27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-s28": {
+   "kp": "ks3.compounds.1",
+   "new": "c2-03-s28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-s29": {
+   "kp": "ks3.compounds.2",
+   "new": "c2-03-s29",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-s30": {
+   "kp": "ks3.compounds.2",
+   "new": "c2-03-s30",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-s31": {
+   "kp": "ks3.compounds.1",
+   "new": "c2-03-s31",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-03-s32": {
+   "kp": "ks3.compounds.1",
+   "new": "c2-03-s32",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-e01": {
+   "kp": "ks3.chemical-symbols.2",
+   "new": "c2-04-e01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-e02": {
+   "kp": "ks3.chemical-symbols.3",
+   "new": "c2-04-e02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-e03": {
+   "kp": "ks3.chemical-symbols.4",
+   "new": "c2-04-e03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-e04": {
+   "kp": "ks3.chemical-symbols.3",
+   "new": "c2-04-e04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-e05": {
+   "kp": "ks3.chemical-symbols.1",
+   "new": "c2-04-e05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-e06": {
+   "kp": "ks3.chemical-symbols.2",
+   "new": "c2-04-e06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-e07": {
+   "kp": "ks3.chemical-symbols.1",
+   "new": "c2-04-e07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-e08": {
+   "kp": "ks3.chemical-symbols.3",
+   "new": "c2-04-e08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-e09": {
+   "kp": "ks3.chemical-symbols.4",
+   "new": "c2-04-e09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-e10": {
+   "kp": "ks3.chemical-symbols.1",
+   "new": "c2-04-e10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-e11": {
+   "kp": "ks3.chemical-symbols.1",
+   "new": "c2-04-e11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-e12": {
+   "kp": "ks3.chemical-symbols.3",
+   "new": "c2-04-e12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-e13": {
+   "kp": "ks3.chemical-symbols.2",
+   "new": "c2-04-e13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-e14": {
+   "kp": "ks3.chemical-symbols.5",
+   "new": "c2-04-e14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-e15": {
+   "kp": "ks3.chemical-symbols.1",
+   "new": "c2-04-e15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-e16": {
+   "kp": "ks3.chemical-symbols.4",
+   "new": "c2-04-e16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-e17": {
+   "kp": "ks3.chemical-symbols.3",
+   "new": "c2-04-e17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-e18": {
+   "kp": "ks3.chemical-symbols.3",
+   "new": "c2-04-e18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-e19": {
+   "kp": "ks3.chemical-symbols.1",
+   "new": "c2-04-e19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-e20": {
+   "kp": "ks3.chemical-symbols.1",
+   "new": "c2-04-e20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-e21": {
+   "kp": "ks3.chemical-symbols.6",
+   "new": "c2-04-e21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-e22": {
+   "kp": "ks3.chemical-symbols.3",
+   "new": "c2-04-e22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-e23": {
+   "kp": "ks3.chemical-symbols.3",
+   "new": "c2-04-e23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-e24": {
+   "kp": "ks3.chemical-symbols.1",
+   "new": "c2-04-e24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-e25": {
+   "kp": "ks3.chemical-symbols.4",
+   "new": "c2-04-e25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-e26": {
+   "kp": "ks3.chemical-symbols.1",
+   "new": "c2-04-e26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-e27": {
+   "kp": "ks3.chemical-symbols.6",
+   "new": "c2-04-e27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-e28": {
+   "kp": "ks3.chemical-symbols.4",
+   "new": "c2-04-e28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-e29": {
+   "kp": "ks3.chemical-symbols.5",
+   "new": "c2-04-e29",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-e30": {
+   "kp": "ks3.chemical-symbols.3",
+   "new": "c2-04-e30",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-h01": {
+   "kp": "ks3.chemical-symbols.4",
+   "new": "c2-04-h01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-h02": {
+   "kp": "ks3.chemical-symbols.3",
+   "new": "c2-04-h02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-h03": {
+   "kp": "ks3.chemical-symbols.6",
+   "new": "c2-04-h03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-h04": {
+   "kp": "ks3.chemical-symbols.3",
+   "new": "c2-04-h04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-h05": {
+   "kp": "ks3.chemical-symbols.2",
+   "new": "c2-04-h05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-h06": {
+   "kp": "ks3.chemical-symbols.1",
+   "new": "c2-04-h06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-h07": {
+   "kp": "ks3.chemical-symbols.3",
+   "new": "c2-04-h07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-h08": {
+   "kp": "ks3.chemical-symbols.4",
+   "new": "c2-04-h08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-h09": {
+   "kp": "ks3.chemical-symbols.4",
+   "new": "c2-04-h09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-h10": {
+   "kp": "ks3.chemical-symbols.3",
+   "new": "c2-04-h10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-h11": {
+   "kp": "ks3.chemical-symbols.3",
+   "new": "c2-04-h11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-h12": {
+   "kp": "ks3.chemical-symbols.6",
+   "new": "c2-04-h12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-h13": {
+   "kp": "ks3.chemical-symbols.2",
+   "new": "c2-04-h13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-h14": {
+   "kp": "ks3.chemical-symbols.2",
+   "new": "c2-04-h14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-h15": {
+   "kp": "ks3.chemical-symbols.3",
+   "new": "c2-04-h15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-h16": {
+   "kp": "ks3.chemical-symbols.5",
+   "new": "c2-04-h16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-h17": {
+   "kp": "ks3.chemical-symbols.2",
+   "new": "c2-04-h17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-h18": {
+   "kp": "ks3.chemical-symbols.3",
+   "new": "c2-04-h18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-h19": {
+   "kp": "ks3.chemical-symbols.6",
+   "new": "c2-04-h19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-h20": {
+   "kp": "ks3.chemical-symbols.4",
+   "new": "c2-04-h20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-h21": {
+   "kp": "ks3.chemical-symbols.4",
+   "new": "c2-04-h21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-h22": {
+   "kp": "ks3.chemical-symbols.6",
+   "new": "c2-04-h22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-h23": {
+   "kp": "ks3.chemical-symbols.4",
+   "new": "c2-04-h23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-h24": {
+   "kp": "ks3.chemical-symbols.3",
+   "new": "c2-04-h24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-h25": {
+   "kp": "ks3.chemical-symbols.1",
+   "new": "c2-04-h25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-h26": {
+   "kp": "ks3.chemical-symbols.5",
+   "new": "c2-04-h26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-h27": {
+   "kp": "ks3.chemical-symbols.6",
+   "new": "c2-04-h27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-h28": {
+   "kp": "ks3.chemical-symbols.1",
+   "new": "c2-04-h28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-h29": {
+   "kp": "ks3.chemical-symbols.2",
+   "new": "c2-04-h29",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-h30": {
+   "kp": "ks3.chemical-symbols.6",
+   "new": "c2-04-h30",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-s01": {
+   "kp": "ks3.chemical-symbols.2",
+   "new": "c2-04-s01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-s02": {
+   "kp": "ks3.chemical-symbols.1",
+   "new": "c2-04-s02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-s03": {
+   "kp": "ks3.chemical-symbols.1",
+   "new": "c2-04-s03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-s04": {
+   "kp": "ks3.chemical-symbols.4",
+   "new": "c2-04-s04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-s05": {
+   "kp": "ks3.chemical-symbols.3",
+   "new": "c2-04-s05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-s06": {
+   "kp": "ks3.chemical-symbols.2",
+   "new": "c2-04-s06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-s07": {
+   "kp": "ks3.chemical-symbols.6",
+   "new": "c2-04-s07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-s08": {
+   "kp": "ks3.chemical-symbols.4",
+   "new": "c2-04-s08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-s09": {
+   "kp": "ks3.chemical-symbols.4",
+   "new": "c2-04-s09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-s10": {
+   "kp": "ks3.chemical-symbols.3",
+   "new": "c2-04-s10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-s11": {
+   "kp": "ks3.chemical-symbols.3",
+   "new": "c2-04-s11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-s12": {
+   "kp": "ks3.chemical-symbols.4",
+   "new": "c2-04-s12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-s13": {
+   "kp": "ks3.chemical-symbols.3",
+   "new": "c2-04-s13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-s14": {
+   "kp": "ks3.chemical-symbols.3",
+   "new": "c2-04-s14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-s15": {
+   "kp": "ks3.chemical-symbols.2",
+   "new": "c2-04-s15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-s16": {
+   "kp": "ks3.chemical-symbols.2",
+   "new": "c2-04-s16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-s17": {
+   "kp": "ks3.chemical-symbols.1",
+   "new": "c2-04-s17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-s18": {
+   "kp": "ks3.chemical-symbols.2",
+   "new": "c2-04-s18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-s19": {
+   "kp": "ks3.chemical-symbols.1",
+   "new": "c2-04-s19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-s20": {
+   "kp": "ks3.chemical-symbols.2",
+   "new": "c2-04-s20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-s21": {
+   "kp": "ks3.chemical-symbols.2",
+   "new": "c2-04-s21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-s22": {
+   "kp": "ks3.chemical-symbols.6",
+   "new": "c2-04-s22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-s23": {
+   "kp": "ks3.chemical-symbols.6",
+   "new": "c2-04-s23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-s24": {
+   "kp": "ks3.chemical-symbols.2",
+   "new": "c2-04-s24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-s25": {
+   "kp": "ks3.chemical-symbols.6",
+   "new": "c2-04-s25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-s26": {
+   "kp": "ks3.chemical-symbols.1",
+   "new": "c2-04-s26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-s27": {
+   "kp": "ks3.chemical-symbols.3",
+   "new": "c2-04-s27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-s28": {
+   "kp": "ks3.chemical-symbols.2",
+   "new": "c2-04-s28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-s29": {
+   "kp": "ks3.chemical-symbols.2",
+   "new": "c2-04-s29",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-04-s30": {
+   "kp": "ks3.chemical-symbols.5",
+   "new": "c2-04-s30",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-e01": {
+   "kp": "ks3.formulae.2",
+   "new": "c2-05-e01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-e02": {
+   "kp": "ks3.formulae.1",
+   "new": "c2-05-e02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-e03": {
+   "kp": "ks3.formulae.5",
+   "new": "c2-05-e03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-e04": {
+   "kp": "ks3.formulae.3",
+   "new": "c2-05-e04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-e05": {
+   "kp": "ks3.formulae.5",
+   "new": "c2-05-e05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-e06": {
+   "kp": "ks3.formulae.5",
+   "new": "c2-05-e06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-e07": {
+   "kp": "ks3.formulae.5",
+   "new": "c2-05-e07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-e08": {
+   "kp": "ks3.formulae.7",
+   "new": "c2-05-e08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-e09": {
+   "kp": "ks3.formulae.2",
+   "new": "c2-05-e09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-e10": {
+   "kp": "ks3.formulae.2",
+   "new": "c2-05-e10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-e11": {
+   "kp": "ks3.formulae.3",
+   "new": "c2-05-e11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-e12": {
+   "kp": "ks3.formulae.4",
+   "new": "c2-05-e12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-e13": {
+   "kp": "ks3.formulae.5",
+   "new": "c2-05-e13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-e14": {
+   "kp": "ks3.formulae.7",
+   "new": "c2-05-e14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-e15": {
+   "kp": "ks3.formulae.2",
+   "new": "c2-05-e15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-e16": {
+   "kp": "ks3.formulae.4",
+   "new": "c2-05-e16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-e17": {
+   "kp": "ks3.formulae.2",
+   "new": "c2-05-e17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-e18": {
+   "kp": "ks3.formulae.2",
+   "new": "c2-05-e18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-e19": {
+   "kp": "ks3.formulae.1",
+   "new": "c2-05-e19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-e20": {
+   "kp": "ks3.formulae.4",
+   "new": "c2-05-e20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-e21": {
+   "kp": "ks3.formulae.6",
+   "new": "c2-05-e21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-e22": {
+   "kp": "ks3.formulae.7",
+   "new": "c2-05-e22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-e23": {
+   "kp": "ks3.formulae.1",
+   "new": "c2-05-e23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-e24": {
+   "kp": "ks3.formulae.2",
+   "new": "c2-05-e24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-e25": {
+   "kp": "ks3.formulae.5",
+   "new": "c2-05-e25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-e26": {
+   "kp": "ks3.formulae.2",
+   "new": "c2-05-e26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-e27": {
+   "kp": "ks3.formulae.1",
+   "new": "c2-05-e27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-e28": {
+   "kp": "ks3.formulae.7",
+   "new": "c2-05-e28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-e29": {
+   "kp": "ks3.formulae.2",
+   "new": "c2-05-e29",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-e30": {
+   "kp": "ks3.formulae.6",
+   "new": "c2-05-e30",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-h01": {
+   "kp": "ks3.formulae.5",
+   "new": "c2-05-h01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-h02": {
+   "kp": "ks3.formulae.3",
+   "new": "c2-05-h02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-h03": {
+   "kp": "ks3.formulae.4",
+   "new": "c2-05-h03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-h04": {
+   "kp": "ks3.formulae.4",
+   "new": "c2-05-h04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-h05": {
+   "kp": "ks3.formulae.7",
+   "new": "c2-05-h05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-h06": {
+   "kp": "ks3.formulae.3",
+   "new": "c2-05-h06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-h07": {
+   "kp": "ks3.formulae.2",
+   "new": "c2-05-h07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-h08": {
+   "kp": "ks3.formulae.1",
+   "new": "c2-05-h08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-h09": {
+   "kp": "ks3.formulae.7",
+   "new": "c2-05-h09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-h10": {
+   "kp": "ks3.formulae.1",
+   "new": "c2-05-h10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-h11": {
+   "kp": "ks3.formulae.4",
+   "new": "c2-05-h11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-h12": {
+   "kp": "ks3.formulae.6",
+   "new": "c2-05-h12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-h13": {
+   "kp": "ks3.formulae.7",
+   "new": "c2-05-h13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-h14": {
+   "kp": "ks3.formulae.3",
+   "new": "c2-05-h14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-h15": {
+   "kp": "ks3.formulae.7",
+   "new": "c2-05-h15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-h16": {
+   "kp": "ks3.formulae.3",
+   "new": "c2-05-h16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-h17": {
+   "kp": "ks3.formulae.6",
+   "new": "c2-05-h17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-h18": {
+   "kp": "ks3.formulae.6",
+   "new": "c2-05-h18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-h19": {
+   "kp": "ks3.formulae.5",
+   "new": "c2-05-h19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-h20": {
+   "kp": "ks3.formulae.3",
+   "new": "c2-05-h20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-h21": {
+   "kp": "ks3.formulae.3",
+   "new": "c2-05-h21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-h22": {
+   "kp": "ks3.formulae.6",
+   "new": "c2-05-h22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-h23": {
+   "kp": "ks3.formulae.6",
+   "new": "c2-05-h23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-h24": {
+   "kp": "ks3.formulae.3",
+   "new": "c2-05-h24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-h25": {
+   "kp": "ks3.formulae.2",
+   "new": "c2-05-h25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-h26": {
+   "kp": "ks3.formulae.1",
+   "new": "c2-05-h26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-h27": {
+   "kp": "ks3.formulae.5",
+   "new": "c2-05-h27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-h28": {
+   "kp": "ks3.formulae.1",
+   "new": "c2-05-h28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-h29": {
+   "kp": "ks3.formulae.3",
+   "new": "c2-05-h29",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-h30": {
+   "kp": "ks3.formulae.1",
+   "new": "c2-05-h30",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-s01": {
+   "kp": "ks3.formulae.1",
+   "new": "c2-05-s01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-s02": {
+   "kp": "ks3.formulae.4",
+   "new": "c2-05-s02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-s03": {
+   "kp": "ks3.formulae.5",
+   "new": "c2-05-s03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-s04": {
+   "kp": "ks3.formulae.6",
+   "new": "c2-05-s04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-s05": {
+   "kp": "ks3.formulae.2",
+   "new": "c2-05-s05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-s06": {
+   "kp": "ks3.formulae.4",
+   "new": "c2-05-s06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-s07": {
+   "kp": "ks3.formulae.2",
+   "new": "c2-05-s07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-s08": {
+   "kp": "ks3.formulae.6",
+   "new": "c2-05-s08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-s09": {
+   "kp": "ks3.formulae.3",
+   "new": "c2-05-s09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-s10": {
+   "kp": "ks3.formulae.7",
+   "new": "c2-05-s10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-s11": {
+   "kp": "ks3.formulae.1",
+   "new": "c2-05-s11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-s12": {
+   "kp": "ks3.formulae.4",
+   "new": "c2-05-s12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-s13": {
+   "kp": "ks3.formulae.7",
+   "new": "c2-05-s13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-s14": {
+   "kp": "ks3.formulae.3",
+   "new": "c2-05-s14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-s15": {
+   "kp": "ks3.formulae.3",
+   "new": "c2-05-s15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-s16": {
+   "kp": "ks3.formulae.1",
+   "new": "c2-05-s16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-s17": {
+   "kp": "ks3.formulae.7",
+   "new": "c2-05-s17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-s18": {
+   "kp": "ks3.formulae.7",
+   "new": "c2-05-s18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-s19": {
+   "kp": "ks3.formulae.3",
+   "new": "c2-05-s19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-s20": {
+   "kp": "ks3.formulae.7",
+   "new": "c2-05-s20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-s21": {
+   "kp": "ks3.formulae.2",
+   "new": "c2-05-s21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-s22": {
+   "kp": "ks3.formulae.6",
+   "new": "c2-05-s22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-s23": {
+   "kp": "ks3.formulae.4",
+   "new": "c2-05-s23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-s24": {
+   "kp": "ks3.formulae.4",
+   "new": "c2-05-s24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-s25": {
+   "kp": "ks3.formulae.7",
+   "new": "c2-05-s25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-s26": {
+   "kp": "ks3.formulae.1",
+   "new": "c2-05-s26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-s27": {
+   "kp": "ks3.formulae.3",
+   "new": "c2-05-s27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-s28": {
+   "kp": "ks3.formulae.2",
+   "new": "c2-05-s28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-s29": {
+   "kp": "ks3.formulae.3",
+   "new": "c2-05-s29",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-05-s30": {
+   "kp": "ks3.formulae.6",
+   "new": "c2-05-s30",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-e01": {
+   "kp": "ks3.conservation-of-mass.1",
+   "new": "c2-06-e01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-e02": {
+   "kp": "ks3.conservation-of-mass.2",
+   "new": "c2-06-e02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-e03": {
+   "kp": "ks3.conservation-of-mass.5",
+   "new": "c2-06-e03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-e04": {
+   "kp": "ks3.conservation-of-mass.7",
+   "new": "c2-06-e04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-e05": {
+   "kp": "ks3.conservation-of-mass.5",
+   "new": "c2-06-e05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-e06": {
+   "kp": "ks3.conservation-of-mass.6",
+   "new": "c2-06-e06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-e07": {
+   "kp": "ks3.conservation-of-mass.1",
+   "new": "c2-06-e07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-e08": {
+   "kp": "ks3.conservation-of-mass.4",
+   "new": "c2-06-e08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-e09": {
+   "kp": "ks3.conservation-of-mass.1",
+   "new": "c2-06-e09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-e10": {
+   "kp": "ks3.conservation-of-mass.3",
+   "new": "c2-06-e10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-e11": {
+   "kp": "ks3.conservation-of-mass.5",
+   "new": "c2-06-e11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-e12": {
+   "kp": "ks3.conservation-of-mass.2",
+   "new": "c2-06-e12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-e13": {
+   "kp": "ks3.conservation-of-mass.1",
+   "new": "c2-06-e13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-e14": {
+   "kp": "ks3.conservation-of-mass.4",
+   "new": "c2-06-e14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-e15": {
+   "kp": "ks3.conservation-of-mass.2",
+   "new": "c2-06-e15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-e16": {
+   "kp": "ks3.conservation-of-mass.5",
+   "new": "c2-06-e16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-e17": {
+   "kp": "ks3.conservation-of-mass.5",
+   "new": "c2-06-e17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-e18": {
+   "kp": "ks3.conservation-of-mass.1",
+   "new": "c2-06-e18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-e19": {
+   "kp": "ks3.conservation-of-mass.4",
+   "new": "c2-06-e19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-e20": {
+   "kp": "ks3.conservation-of-mass.2",
+   "new": "c2-06-e20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-e21": {
+   "kp": "ks3.conservation-of-mass.3",
+   "new": "c2-06-e21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-e22": {
+   "kp": "ks3.conservation-of-mass.4",
+   "new": "c2-06-e22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-e23": {
+   "kp": "ks3.conservation-of-mass.5",
+   "new": "c2-06-e23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-e24": {
+   "kp": "ks3.conservation-of-mass.1",
+   "new": "c2-06-e24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-e25": {
+   "kp": "ks3.conservation-of-mass.1",
+   "new": "c2-06-e25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-e26": {
+   "kp": "ks3.conservation-of-mass.3",
+   "new": "c2-06-e26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-e27": {
+   "kp": "ks3.conservation-of-mass.4",
+   "new": "c2-06-e27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-e28": {
+   "kp": "ks3.conservation-of-mass.2",
+   "new": "c2-06-e28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-e29": {
+   "kp": "ks3.conservation-of-mass.6",
+   "new": "c2-06-e29",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-e30": {
+   "kp": "ks3.conservation-of-mass.4",
+   "new": "c2-06-e30",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-h01": {
+   "kp": "ks3.conservation-of-mass.3",
+   "new": "c2-06-h01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-h02": {
+   "kp": "ks3.conservation-of-mass.4",
+   "new": "c2-06-h02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-h03": {
+   "kp": "ks3.conservation-of-mass.5",
+   "new": "c2-06-h03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-h04": {
+   "kp": "ks3.conservation-of-mass.3",
+   "new": "c2-06-h04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-h05": {
+   "kp": "ks3.conservation-of-mass.5",
+   "new": "c2-06-h05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-h06": {
+   "kp": "ks3.conservation-of-mass.4",
+   "new": "c2-06-h06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-h07": {
+   "kp": "ks3.conservation-of-mass.5",
+   "new": "c2-06-h07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-h08": {
+   "kp": "ks3.conservation-of-mass.7",
+   "new": "c2-06-h08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-h09": {
+   "kp": "ks3.conservation-of-mass.5",
+   "new": "c2-06-h09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-h10": {
+   "kp": "ks3.conservation-of-mass.7",
+   "new": "c2-06-h10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-h11": {
+   "kp": "ks3.conservation-of-mass.5",
+   "new": "c2-06-h11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-h12": {
+   "kp": "ks3.conservation-of-mass.4",
+   "new": "c2-06-h12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-h13": {
+   "kp": "ks3.conservation-of-mass.7",
+   "new": "c2-06-h13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-h14": {
+   "kp": "ks3.conservation-of-mass.3",
+   "new": "c2-06-h14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-h15": {
+   "kp": "ks3.conservation-of-mass.1",
+   "new": "c2-06-h15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-h16": {
+   "kp": "ks3.conservation-of-mass.1",
+   "new": "c2-06-h16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-h17": {
+   "kp": "ks3.conservation-of-mass.5",
+   "new": "c2-06-h17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-h18": {
+   "kp": "ks3.conservation-of-mass.7",
+   "new": "c2-06-h18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-h19": {
+   "kp": "ks3.conservation-of-mass.4",
+   "new": "c2-06-h19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-h20": {
+   "kp": "ks3.conservation-of-mass.7",
+   "new": "c2-06-h20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-h21": {
+   "kp": "ks3.conservation-of-mass.1",
+   "new": "c2-06-h21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-h22": {
+   "kp": "ks3.conservation-of-mass.7",
+   "new": "c2-06-h22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-h23": {
+   "kp": "ks3.conservation-of-mass.5",
+   "new": "c2-06-h23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-h24": {
+   "kp": "ks3.conservation-of-mass.3",
+   "new": "c2-06-h24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-h25": {
+   "kp": "ks3.conservation-of-mass.6",
+   "new": "c2-06-h25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-h26": {
+   "kp": "ks3.conservation-of-mass.7",
+   "new": "c2-06-h26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-h27": {
+   "kp": "ks3.conservation-of-mass.5",
+   "new": "c2-06-h27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-h28": {
+   "kp": "ks3.conservation-of-mass.1",
+   "new": "c2-06-h28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-h29": {
+   "kp": "ks3.conservation-of-mass.1",
+   "new": "c2-06-h29",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-h30": {
+   "kp": "ks3.conservation-of-mass.4",
+   "new": "c2-06-h30",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-s01": {
+   "kp": "ks3.conservation-of-mass.4",
+   "new": "c2-06-s01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-s02": {
+   "kp": "ks3.conservation-of-mass.1",
+   "new": "c2-06-s02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-s03": {
+   "kp": "ks3.conservation-of-mass.6",
+   "new": "c2-06-s03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-s04": {
+   "kp": "ks3.conservation-of-mass.7",
+   "new": "c2-06-s04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-s05": {
+   "kp": "ks3.conservation-of-mass.5",
+   "new": "c2-06-s05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-s06": {
+   "kp": "ks3.conservation-of-mass.7",
+   "new": "c2-06-s06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-s07": {
+   "kp": "ks3.conservation-of-mass.4",
+   "new": "c2-06-s07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-s08": {
+   "kp": "ks3.conservation-of-mass.4",
+   "new": "c2-06-s08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-s09": {
+   "kp": "ks3.conservation-of-mass.7",
+   "new": "c2-06-s09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-s10": {
+   "kp": "ks3.conservation-of-mass.7",
+   "new": "c2-06-s10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-s11": {
+   "kp": "ks3.conservation-of-mass.7",
+   "new": "c2-06-s11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-s12": {
+   "kp": "ks3.conservation-of-mass.6",
+   "new": "c2-06-s12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-s13": {
+   "kp": "ks3.conservation-of-mass.4",
+   "new": "c2-06-s13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-s14": {
+   "kp": "ks3.conservation-of-mass.4",
+   "new": "c2-06-s14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-s15": {
+   "kp": "ks3.conservation-of-mass.7",
+   "new": "c2-06-s15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-s16": {
+   "kp": "ks3.conservation-of-mass.7",
+   "new": "c2-06-s16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-s17": {
+   "kp": "ks3.conservation-of-mass.5",
+   "new": "c2-06-s17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-s18": {
+   "kp": "ks3.conservation-of-mass.4",
+   "new": "c2-06-s18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-s19": {
+   "kp": "ks3.conservation-of-mass.5",
+   "new": "c2-06-s19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-s20": {
+   "kp": "ks3.conservation-of-mass.7",
+   "new": "c2-06-s20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-s21": {
+   "kp": "ks3.conservation-of-mass.3",
+   "new": "c2-06-s21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-s22": {
+   "kp": "ks3.conservation-of-mass.4",
+   "new": "c2-06-s22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-s23": {
+   "kp": "ks3.conservation-of-mass.4",
+   "new": "c2-06-s23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-s24": {
+   "kp": "ks3.conservation-of-mass.5",
+   "new": "c2-06-s24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-s25": {
+   "kp": "ks3.conservation-of-mass.4",
+   "new": "c2-06-s25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-s26": {
+   "kp": "ks3.conservation-of-mass.6",
+   "new": "c2-06-s26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-s27": {
+   "kp": "ks3.conservation-of-mass.4",
+   "new": "c2-06-s27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-s28": {
+   "kp": "ks3.conservation-of-mass.1",
+   "new": "c2-06-s28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-s29": {
+   "kp": "ks3.conservation-of-mass.7",
+   "new": "c2-06-s29",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c2-06-s30": {
+   "kp": "ks3.conservation-of-mass.7",
+   "new": "c2-06-s30",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "chemical-symbols#apply": {
+   "kp": "ks3.chemical-symbols.2",
+   "new": "chemical-symbols#apply",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "chemical-symbols#explain": {
+   "kp": "ks3.chemical-symbols.6",
+   "new": "chemical-symbols#explain",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "chemical-symbols#produce": {
+   "kp": "ks3.chemical-symbols.1",
+   "new": "chemical-symbols#produce",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "chemical-symbols#read-four-labels-1": {
+   "kp": "ks3.chemical-symbols.4",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "chemical-symbols#read-four-labels-2": {
+   "kp": "ks3.chemical-symbols.4",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "chemical-symbols#read-four-labels-3": {
+   "kp": "ks3.chemical-symbols.2",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "chemical-symbols#read-four-labels-4": {
+   "kp": "ks3.chemical-symbols.4",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "chemical-symbols#recall": {
+   "kp": "ks3.chemical-symbols.4",
+   "new": "chemical-symbols#recall",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "chemical-symbols#start": {
+   "kp": "ks3.chemical-symbols.6",
+   "new": "chemical-symbols#start",
+   "note": "Start here kept; the question wording changed (was: If you had to guess, when the book gives the formula for water, will it be H2O, or written in Japanese?)",
+   "status": "kept"
+  },
+  "chemical-symbols#think-commit-co": {
+   "kp": "ks3.chemical-symbols.2",
+   "new": null,
+   "note": "the Think first question is not on the lean page",
+   "status": "removed"
+  },
+  "chemical-symbols#where-symbols-come-from-1": {
+   "kp": "ks3.chemical-symbols.1",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "chemical-symbols#where-symbols-come-from-2": {
+   "kp": "ks3.chemical-symbols.1",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "chemical-symbols#where-symbols-come-from-3": {
+   "kp": "ks3.chemical-symbols.1",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "chemical-symbols#where-symbols-come-from-4": {
+   "kp": "ks3.chemical-symbols.1",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "chemical-symbols#where-symbols-come-from-5": {
+   "kp": "ks3.chemical-symbols.1",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "chemical-symbols#where-symbols-come-from-6": {
+   "kp": "ks3.chemical-symbols.3",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "chemical-symbols#where-symbols-come-from-7": {
+   "kp": "ks3.chemical-symbols.3",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "chemical-symbols#where-symbols-come-from-8": {
+   "kp": "ks3.chemical-symbols.3",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "chemical-symbols#where-symbols-come-from-9": {
+   "kp": "ks3.chemical-symbols.3",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "compounds#apply": {
+   "kp": "ks3.compounds.2",
+   "new": "compounds#apply",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "compounds#explain": {
+   "kp": "ks3.compounds.4",
+   "new": "compounds#explain",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "compounds#iron-and-sulfur-1": {
+   "kp": "ks3.compounds.2",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "compounds#mixture-or-compound-1": {
+   "kp": "ks3.compounds.1",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "compounds#mixture-or-compound-2": {
+   "kp": "ks3.compounds.2",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "compounds#mixture-or-compound-3": {
+   "kp": "ks3.compounds.1",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "compounds#mixture-or-compound-4": {
+   "kp": "ks3.compounds.3",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "compounds#produce": {
+   "kp": "ks3.compounds.3",
+   "new": "compounds#produce",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "compounds#recall": {
+   "kp": "ks3.compounds.2",
+   "new": "compounds#recall",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "compounds#start": {
+   "kp": "ks3.compounds.3",
+   "new": "compounds#start",
+   "note": "Start here kept; the question wording changed (was: If you had to guess, has the iron burnt away, or joined up with the sulfur?)",
+   "status": "kept"
+  },
+  "compounds#think-commit-magnet": {
+   "kp": "ks3.compounds.3",
+   "new": null,
+   "note": "the Think first question is not on the lean page",
+   "status": "removed"
+  },
+  "conservation-of-mass#apply": {
+   "kp": "ks3.conservation-of-mass.3",
+   "new": "conservation-of-mass#apply",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "conservation-of-mass#explain": {
+   "kp": "ks3.conservation-of-mass.4",
+   "new": "conservation-of-mass#explain",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "conservation-of-mass#open-and-sealed-1": {
+   "kp": "ks3.conservation-of-mass.4",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "conservation-of-mass#produce": {
+   "kp": "ks3.conservation-of-mass.5",
+   "new": "conservation-of-mass#produce",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "conservation-of-mass#recall": {
+   "kp": "ks3.conservation-of-mass.7",
+   "new": "conservation-of-mass#recall",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "conservation-of-mass#start": {
+   "kp": "ks3.conservation-of-mass.1",
+   "new": "conservation-of-mass#start",
+   "note": "Start here, the same question as before",
+   "status": "kept"
+  },
+  "conservation-of-mass#think-commit-burning": {
+   "kp": "ks3.conservation-of-mass.6",
+   "new": null,
+   "note": "the Think first question is not on the lean page",
+   "status": "removed"
+  },
+  "conservation-of-mass#your-four-steps-1": {
+   "kp": "ks3.conservation-of-mass.7",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "elements#apply": {
+   "kp": "ks3.elements.1",
+   "new": "elements#apply",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "elements#explain": {
+   "kp": "ks3.elements.3",
+   "new": "elements#explain",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "elements#produce": {
+   "kp": "ks3.elements.1",
+   "new": "elements#produce",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "elements#recall": {
+   "kp": "ks3.elements.2",
+   "new": "elements#recall",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "elements#six-samples-1": {
+   "kp": "ks3.elements.3",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "elements#six-samples-2": {
+   "kp": "ks3.elements.3",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "elements#six-samples-3": {
+   "kp": "ks3.elements.3",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "elements#six-samples-4": {
+   "kp": "ks3.elements.3",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "elements#six-samples-5": {
+   "kp": "ks3.elements.3",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "elements#six-samples-6": {
+   "kp": "ks3.elements.3",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "elements#start": {
+   "kp": "ks3.elements.1",
+   "new": "elements#start",
+   "note": "Start here kept; the question wording changed (was: If you had to guess, how would you tell whether a sample is on that list: try to break it down, or look at it closely?)",
+   "status": "kept"
+  },
+  "elements#think-commit-brass": {
+   "kp": "ks3.elements.3",
+   "new": null,
+   "note": "the Think first question is not on the lean page",
+   "status": "removed"
+  },
+  "formulae#apply": {
+   "kp": "ks3.formulae.3",
+   "new": "formulae#apply",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "formulae#build-a-formula-1": {
+   "kp": "ks3.formulae.4",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "formulae#explain": {
+   "kp": "ks3.formulae.4",
+   "new": "formulae#explain",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "formulae#produce": {
+   "kp": "ks3.formulae.7",
+   "new": "formulae#produce",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "formulae#recall": {
+   "kp": "ks3.formulae.2",
+   "new": "formulae#recall",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "formulae#start": {
+   "kp": "ks3.formulae.8",
+   "new": "formulae#start",
+   "note": "Start here kept; the question wording changed (was: If you had to guess, would bubbling oxygen gas through water turn it into the dangerous liquid?)",
+   "status": "kept"
+  },
+  "formulae#think-commit-big-small": {
+   "kp": "ks3.formulae.4",
+   "new": null,
+   "note": "the Think first question is not on the lean page",
+   "status": "removed"
+  },
+  "formulae#where-it-runs-out": {
+   "kp": "ks3.formulae.7",
+   "new": null,
+   "note": "the where-the-model-runs-out activity is not on the lean page",
+   "status": "removed"
+  },
+  "ks3-c2-chemical-symbols-explain": {
+   "kp": "ks3.chemical-symbols.6",
+   "new": "ks3-c2-chemical-symbols-explain",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks3-c2-chemical-symbols-produce": {
+   "kp": "ks3.chemical-symbols.1",
+   "new": "ks3-c2-chemical-symbols-produce",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks3-c2-compounds-explain": {
+   "kp": "ks3.compounds.4",
+   "new": "ks3-c2-compounds-explain",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks3-c2-compounds-produce": {
+   "kp": "ks3.compounds.3",
+   "new": "ks3-c2-compounds-produce",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks3-c2-conservation-of-mass-explain": {
+   "kp": "ks3.conservation-of-mass.4",
+   "new": "ks3-c2-conservation-of-mass-explain",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks3-c2-conservation-of-mass-produce": {
+   "kp": "ks3.conservation-of-mass.5",
+   "new": "ks3-c2-conservation-of-mass-produce",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks3-c2-elements-explain": {
+   "kp": "ks3.elements.3",
+   "new": "ks3-c2-elements-explain",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks3-c2-elements-produce": {
+   "kp": "ks3.elements.1",
+   "new": "ks3-c2-elements-produce",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks3-c2-formulae-explain": {
+   "kp": "ks3.formulae.4",
+   "new": "ks3-c2-formulae-explain",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks3-c2-formulae-produce": {
+   "kp": "ks3.formulae.7",
+   "new": "ks3-c2-formulae-produce",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks3-c2-the-atom-daltons-model-explain": {
+   "kp": "ks3.the-atom-daltons-model.4",
+   "new": "ks3-c2-the-atom-daltons-model-explain",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks3-c2-the-atom-daltons-model-produce": {
+   "kp": "ks3.the-atom-daltons-model.6",
+   "new": "ks3-c2-the-atom-daltons-model-produce",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "the-atom-daltons-model#apply": {
+   "kp": "ks3.the-atom-daltons-model.6",
+   "new": "the-atom-daltons-model#apply",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "the-atom-daltons-model#explain": {
+   "kp": "ks3.the-atom-daltons-model.4",
+   "new": "the-atom-daltons-model#explain",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "the-atom-daltons-model#produce": {
+   "kp": "ks3.the-atom-daltons-model.6",
+   "new": "the-atom-daltons-model#produce",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "the-atom-daltons-model#recall": {
+   "kp": "ks3.the-atom-daltons-model.2",
+   "new": "the-atom-daltons-model#recall",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "the-atom-daltons-model#start": {
+   "kp": "ks3.the-atom-daltons-model.3",
+   "new": "the-atom-daltons-model#start",
+   "note": "Start here kept; the question wording changed (was: If you had to guess, could modern furnaces, acids and mixing finally turn lead into gold?)",
+   "status": "kept"
+  },
+  "the-atom-daltons-model#switch-a-claim-off-1": {
+   "kp": "ks3.the-atom-daltons-model.6",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "the-atom-daltons-model#think-commit-copper": {
+   "kp": "ks3.the-atom-daltons-model.5",
+   "new": null,
+   "note": "the Think first question is not on the lean page",
+   "status": "removed"
+  }
+ },
+ "scope": [
+  "chemical-symbols",
+  "compounds",
+  "conservation-of-mass",
+  "elements",
+  "formulae",
+  "the-atom-daltons-model"
+ ]
+}

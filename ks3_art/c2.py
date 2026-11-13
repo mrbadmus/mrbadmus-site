@@ -9,7 +9,21 @@ units at once without editing the same file.
 import json
 import re
 from ks3_art.kit import (
+    _SVG_ACCENT_TEXT,
+    _SVG_BAND,
+    _SVG_CARD,
+    _SVG_INK,
+    _SVG_INK_FAINT,
+    _SVG_INSET,
+    _SVG_RULE,
     _canvas_frame,
+    _circle,
+    _label,
+    _line,
+    _mono,
+    _path,
+    _rect,
+    _svg_open,
     e,
     r_bench_gate,
     rich,
@@ -882,4 +896,318 @@ KIND_FN = {
     'model-limit': r_model_limit,
     'balance-bench': r_balance_bench,
     'fifa-pick': r_fifa_pick,
+}
+
+
+# ── lean wave · C2's drawn figures ──────────────────────────────────────
+#
+# "particle-boxes": labelled boxes stacked in one column (one per row, so each reads at full size
+# on a phone), each holding circles marked with element symbols. fig["data"] =
+#   {"arrow": bool,                      # optional drawn arrow between the first two boxes
+#    "boxes": [{"label": str,            # 14px bold above the box ("2H2O" gets real subscripts)
+#               "tag": str,              # optional, mono, under the label
+#               "count": str,            # optional caption line under the box
+#               "layout": "grid" | "spread" | "clumps" | "single",
+#               # grid:   "atom": sym   or   "atoms": [a, b] with "pattern": "alternate";
+#               #         "rows", "cols"; "edges": "continue" runs the lattice off every edge
+#               # spread / single: "groups": [[sym, ...], ...], one joined molecule each;
+#               #         "shape": "straight" (default) | "bent" (A-X-B, X central) | "chain" | "pyramid" (X-A-B-C: first atom central)
+#               # clumps: "clumps": [[sym, ...], ...], each a touching cluster
+#              }]}
+# Atoms: a fixed fill per element with an ink outline; the symbol is drawn in a fixed dark or
+# white ink chosen for that fill, so it reads in light AND dark themes.
+
+_PB_R = {"H": 10, "O": 14, "C": 14, "N": 14, "He": 14, "Na": 13, "Cl": 15, "Cu": 15, "Fe": 15,
+         "S": 14, "Co": 15, "Pb": 16, "Au": 14, "Mg": 15}
+# fill, symbol ink
+_PB_COL = {"H": ("#FFFFFF", "#221E1B"), "O": ("#D8412F", "#FFFFFF"), "C": ("#3B3835", "#FFFFFF"),
+           "N": ("#3B6FD4", "#FFFFFF"), "Cu": ("#B8703A", "#FFFFFF"), "Fe": ("#9A9A9A", "#221E1B"),
+           "S": ("#F2D23C", "#221E1B"), "Na": ("#8A5CC2", "#FFFFFF"), "Cl": ("#3E9B4F", "#FFFFFF"),
+           "He": ("#E4D4F2", "#221E1B"), "Au": ("#E8B923", "#221E1B"), "Pb": ("#8C8C94", "#FFFFFF"),
+           "Co": ("#5F7F9F", "#FFFFFF"), "Mg": ("#D6D6D6", "#221E1B")}
+_PB_BW, _PB_BX = 310, 8
+
+
+def _pb_atom(sym, cx, cy, text=True):
+    if sym not in _PB_R:
+        raise ValueError("particle-boxes: no drawing for element %r" % sym)
+    fill, ink = _PB_COL[sym]
+    return (_circle(cx, cy, _PB_R[sym], fill=fill, stroke=_SVG_INK, w=2, data_part="atom", data_key=sym)
+            + (_label(cx, cy + 4.6, sym, size=13, fill=ink, weight="700", data_part="symbol", data_key=sym)
+               if text else ""))
+
+
+def _pb_group(syms, shape="straight"):
+    """[(sym, dx, dy)] for one joined molecule, atoms touching, plus (w, h) and the offset of its
+    bounding box's top-left from the origin."""
+    import math
+    r = [_PB_R[s] for s in syms]
+    pos = []
+    if shape == "bent" and len(syms) == 3:
+        d = r[1] + r[0]
+        sx, sy = d * math.sin(math.radians(52)), d * math.cos(math.radians(52))
+        pos = [(syms[0], -sx, sy), (syms[1], 0.0, 0.0), (syms[2], sx, sy)]
+    elif shape == "pyramid" and len(syms) == 4:
+        # the first atom in the middle, the other three touching it 120 degrees apart
+        pos = [(syms[0], 0.0, 0.0)]
+        for sym, ang in zip(syms[1:], (-90, 30, 150)):
+            d = r[0] + _PB_R[sym]
+            pos.append((sym, d * math.cos(math.radians(ang)), d * math.sin(math.radians(ang))))
+    elif shape == "chain" and len(syms) == 4:
+        d_h = r[0] + r[1]
+        a = math.radians(55)
+        o1x = 0.0
+        o2x = r[1] + r[2]
+        pos = [(syms[0], o1x - d_h * math.cos(a), -d_h * math.sin(a)),
+               (syms[1], o1x, 0.0), (syms[2], o2x, 0.0),
+               (syms[3], o2x + (r[2] + r[3]) * math.cos(a), (r[2] + r[3]) * math.sin(a))]
+    else:
+        x = 0.0
+        for i, s in enumerate(syms):
+            if i:
+                x += r[i - 1] + r[i]
+            pos.append((s, x, 0.0))
+    x0 = min(p[1] - _PB_R[p[0]] for p in pos)
+    x1 = max(p[1] + _PB_R[p[0]] for p in pos)
+    y0 = min(p[2] - _PB_R[p[0]] for p in pos)
+    y1 = max(p[2] + _PB_R[p[0]] for p in pos)
+    return [(s, dx - x0, dy - y0) for s, dx, dy in pos], x1 - x0, y1 - y0
+
+
+def _pb_clump(syms):
+    """A touching cluster: rows of ceil(sqrt(n)) atoms, alternate rows nudged half a step."""
+    import math
+    n = len(syms)
+    per = max(1, int(math.ceil(math.sqrt(n))))
+    r = _PB_R[syms[0]]
+    pos = []
+    for i, s in enumerate(syms):
+        row, col = divmod(i, per)
+        pos.append((s, 2 * r * col + (r if row % 2 else 0) + r, row * 1.74 * r + r))
+    w = max(p[1] for p in pos) + r
+    h = max(p[2] for p in pos) + r
+    return pos, w, h
+
+
+def _pb_flow(groups, inner_w, gap=16, row_gap=12):
+    """Pack (pos, w, h) groups into balanced rows no wider than inner_w -> [[group,...], ...]."""
+    n = len(groups)
+    def rows_for(k):
+        rows, cur, cw = [], [], 0
+        for g in groups:
+            if cur and cw + gap + g[1] > inner_w:
+                rows.append(cur); cur, cw = [], 0
+            cw = cw + (gap if cur else 0) + g[1]
+            cur.append(g)
+        rows.append(cur)
+        return rows
+    greedy = rows_for(n)
+    k = max(len(r) for r in greedy)
+    nrows = len(greedy)
+    per = -(-n // nrows)
+    balanced = [groups[i:i + per] for i in range(0, n, per)]
+    ok = all(sum(g[1] for g in r) + gap * (len(r) - 1) <= inner_w for r in balanced)
+    return balanced if ok else greedy
+
+
+def _pb_text(x, y, s, **kw):
+    """A label whose digits after a letter are real subscripts (only for space-free formula labels)."""
+    node = _label(x, y, s, **kw)
+    if " " in s or not re.search(r"[A-Za-z]\d", s):
+        return node
+    parts = re.sub(r"(?<=[A-Za-z])(\d+)", lambda m: "\x00" + m.group(1) + "\x01", s)
+    parts = parts.replace("\x00", '<tspan baseline-shift="sub" font-size="75%">').replace("\x01", "</tspan>")
+    return node.replace(">%s</text>" % s, ">%s</text>" % parts, 1)
+
+
+def _particle_boxes(fig):
+    from ks3_art.b4 import _b4_arrow
+    data = fig.get("data") or {}
+    boxes = data.get("boxes") or []
+    if not boxes:
+        raise ValueError("figure %r: particle-boxes needs data.boxes" % fig.get("id"))
+    W, BX, BW = 326, _PB_BX, _PB_BW
+    out, defs = [], []
+    y = 6
+    PAD = 14
+    for bi, b in enumerate(boxes):
+        label, tag, count = b["label"], b.get("tag"), b.get("count")
+        out.append(_pb_text(BX, y + 15, label, size=14, weight="700", anchor="start",
+                            data_part="box-label", data_key=label))
+        top = y + 24
+        if tag:
+            out.append(_mono(BX, y + 32, tag, size=13, fill=_SVG_INK_FAINT, weight="600", anchor="start",
+                             data_part="box-tag", data_key=label))
+            top = y + 42
+        lay = b.get("layout")
+        body, h = [], 0
+        if lay == "grid":
+            syms = b.get("atoms") or [b["atom"]]
+            alt = len(syms) > 1
+            pitch = (_PB_R[syms[0]] + _PB_R[syms[1]]) if alt else 2 * _PB_R[syms[0]]
+            rows, cols = b["rows"], b["cols"]
+            cont = b.get("edges") == "continue"
+            if cont:
+                cols = int(BW // pitch) + 3
+                h = rows * pitch
+                x0 = BX + BW / 2 - cols * pitch / 2
+                y0 = top
+            else:
+                h = rows * pitch + 2 * PAD
+                x0 = BX + BW / 2 - cols * pitch / 2
+                y0 = top + PAD
+            for i in range(rows):
+                for j in range(cols):
+                    s = syms[(i + j) % 2] if alt else syms[0]
+                    ax = x0 + pitch * (j + .5)
+                    # a lattice that runs off the box edge: a clipped circle carries no half-letter
+                    whole = (not cont) or (ax - _PB_R[s] >= BX and ax + _PB_R[s] <= BX + BW)
+                    body.append(_pb_atom(s, ax, y0 + pitch * (i + .5), text=whole))
+            if cont:
+                cid = "%s-clip%d" % (fig["id"], bi)
+                defs.append('<clipPath id="%s"><rect x="%s" y="%s" width="%s" height="%s" rx="10"/></clipPath>'
+                            % (cid, BX, top, BW, h))
+                body = ['<g clip-path="url(#%s)">' % cid] + body + ['</g>']
+        elif lay in ("spread", "single", "clumps"):
+            if lay == "clumps":
+                groups = [_pb_clump(c) for c in b["clumps"]]
+            else:
+                shape = b.get("shape", "straight")
+                groups = [_pb_group(g, shape) for g in b["groups"]]
+            rows = _pb_flow(groups, BW - 2 * PAD)
+            rh = [max(g[2] for g in r) for r in rows]
+            h = sum(rh) + 12 * (len(rows) - 1) + 2 * PAD
+            yy = top + PAD
+            for r, hh in zip(rows, rh):
+                rw = sum(g[1] for g in r) + 16 * (len(r) - 1)
+                xx = BX + BW / 2 - rw / 2
+                for pos, gw, gh in r:
+                    oy = yy + (hh - gh) / 2
+                    for s, dx, dy in pos:
+                        body.append(_pb_atom(s, xx + dx, oy + dy))
+                    xx += gw + 16
+                yy += hh + 12
+        else:
+            raise ValueError("figure %r: particle-boxes layout %r" % (fig.get("id"), lay))
+        out.append(_rect(BX, top, BW, h, rx=10, fill=_SVG_INSET, stroke=_SVG_INK, w=2.5,
+                         data_part="box", data_key=label))
+        out.extend(body)
+        y = top + h
+        if count:
+            out.append(_mono(BX, y + 20, count, size=13, fill=_SVG_INK_FAINT, weight="600", anchor="start",
+                             data_part="count", data_key=label))
+            y += 28
+        if bi < len(boxes) - 1:
+            if data.get("arrow") and bi == 0:
+                out.append(_b4_arrow(W / 2, y + 6, W / 2, y + 46, w=3, head=12, data_part="arrow"))
+                y += 52
+            else:
+                y += 20
+    H = y + 8
+    return (_svg_open(fig, W, H) + ("<defs>%s</defs>" % "".join(defs) if defs else "")
+            + '<g stroke-linecap="round" stroke-linejoin="round">' + "".join(out) + '</g></svg>')
+
+
+# "open-sealed-flask": two set-ups stacked, each on a top-pan balance with a Before/After readout.
+#   fig["data"] = {"panels": [{"label", "vessel": "flask" | "bottle", "before", "after",
+#                              "arrow_label": str  (flask: drawn arrow out of the neck with this text)
+#                              "note": str         (bottle: accent note beside the bottle)}]}
+def _osf_panel(p, oy, cx=163):
+    from ks3_art.b4 import _b4_arrow, _B4_BLUE, _B4_BLUE_TINT, _B4_LEADER
+    out = []
+    out.append(_label(8, oy + 16, p["label"], size=14, weight="700", anchor="start",
+                      data_part="panel-label", data_key=p["label"]))
+    vy = oy + 66            # top of the vessel
+    pan_y = vy + 102
+    if p["vessel"] == "flask":
+        out.append(_path("M %s,%s L %s,%s L %s,%s L %s,%s Z" % (cx - 40, vy + 76, cx - 55, pan_y - 2,
+                                                              cx + 55, pan_y - 2, cx + 40, vy + 76),
+                         fill=_B4_BLUE_TINT, data_part="liquid"))
+        out.append(_line(cx - 40, vy + 76, cx + 40, vy + 76, stroke=_B4_BLUE, w=2, data_part="liquid"))
+        out.append(_path("M %s,%s L %s,%s L %s,%s L %s,%s L %s,%s" % (cx - 13, vy, cx - 13, vy + 30, cx - 55, pan_y - 2,
+                                                                  cx + 55, pan_y - 2, cx + 13, vy + 30)
+                         + " L %s,%s" % (cx + 13, vy), stroke=_SVG_INK, w=3, data_part="flask"))
+        for dx, dy in ((-26, 16), (-6, 20), (16, 15), (30, 19), (-14, 10)):
+            out.append(_path("M %s,%s l 7,-4 l 6,3 l -2,6 l -8,1 Z" % (cx + dx - 6, pan_y - 2 - dy),
+                             fill="#9A948C", stroke=_SVG_INK, w=1.5, data_part="chip"))
+        for bx, by, r in ((cx - 18, vy + 92, 3), (cx + 6, vy + 86, 3.5), (cx + 24, vy + 96, 3),
+                          (cx - 4, vy + 70, 3.5), (cx + 2, vy + 48, 3), (cx - 2, vy + 24, 3)):
+            out.append(_circle(bx, by, r, fill=_SVG_CARD, stroke=_SVG_ACCENT_TEXT, w=1.8, data_part="bubble"))
+        out.append(_b4_arrow(cx, vy - 6, cx, vy - 36, stroke=_SVG_ACCENT_TEXT, w=3, data_part="gas"))
+        al = p.get("arrow_label") or ""
+        words = al.split()
+        half = max(1, len(words) // 2 + (len(words) % 2))
+        lines = [" ".join(words[:half]), " ".join(words[half:])] if len(words) > 1 else [al]
+        for i, ln in enumerate([x for x in lines if x]):
+            out.append(_label(cx + 18, vy - 24 + i * 17, ln, size=14, fill=_SVG_ACCENT_TEXT, weight="700",
+                              anchor="start", data_part="gas-label", data_key=al))
+    else:
+        bw = 42
+        out.append(_path("M %s,%s L %s,%s Q %s,%s %s,%s L %s,%s Q %s,%s %s,%s L %s,%s"
+                         % (cx - 13, vy + 4, cx - 13, vy + 30, cx - bw, vy + 40, cx - bw, vy + 58,
+                            cx - bw, pan_y - 12, cx - bw, pan_y - 2, cx - bw + 10, pan_y - 2,
+                            cx + bw - 10, pan_y - 2) + " Q %s,%s %s,%s L %s,%s Q %s,%s %s,%s L %s,%s Z"
+                         % (cx + bw, pan_y - 2, cx + bw, pan_y - 12, cx + bw, vy + 58, cx + bw, vy + 40,
+                            cx + 13, vy + 30, cx + 13, vy + 4),
+                         fill=_SVG_CARD, stroke=_SVG_INK, w=3, data_part="bottle"))
+        out.append(_path("M %s,%s L %s,%s Q %s,%s %s,%s L %s,%s Q %s,%s %s,%s Z"
+                         % (cx - bw + 1.5, vy + 74, cx - bw + 1.5, pan_y - 12, cx - bw + 1.5, pan_y - 3.5,
+                            cx - bw + 10, pan_y - 3.5, cx + bw - 10, pan_y - 3.5, cx + bw - 1.5, pan_y - 3.5,
+                            cx + bw - 1.5, pan_y - 12) + " L %s,%s Z" % (cx + bw - 1.5, vy + 74),
+                         fill=_B4_BLUE_TINT, data_part="liquid"))
+        out.append(_line(cx - bw + 1.5, vy + 74, cx + bw - 1.5, vy + 74, stroke=_B4_BLUE, w=2, data_part="liquid"))
+        out.append(_rect(cx - 17, vy - 10, 34, 14, rx=3, fill=_SVG_BAND, stroke=_SVG_INK, w=2.5, data_part="cap"))
+        for dx, dy in ((-24, 12), (-4, 16), (16, 11), (28, 15)):
+            out.append(_path("M %s,%s l 7,-4 l 6,3 l -2,6 l -8,1 Z" % (cx + dx - 6, pan_y - 4 - dy),
+                             fill="#9A948C", stroke=_SVG_INK, w=1.5, data_part="chip"))
+        for bx, by, r in ((cx - 22, vy + 86, 3), (cx + 4, vy + 84, 3.5), (cx + 26, vy + 90, 3),
+                          (cx - 12, vy + 64, 3.5), (cx + 14, vy + 58, 3), (cx - 6, vy + 46, 3),
+                          (cx + 8, vy + 36, 3), (cx - 3, vy + 20, 3)):
+            out.append(_circle(bx, by, r, fill=_SVG_CARD, stroke=_SVG_ACCENT_TEXT, w=1.8, data_part="bubble"))
+        note = p.get("note")
+        if note:
+            words = note.split()
+            lines = [" ".join(words[:2]), " ".join(words[2:])] if len(words) > 2 else [note]
+            for i, ln in enumerate(lines):
+                out.append(_label(cx + bw + 12, vy + 36 + i * 17, ln, size=14, fill=_SVG_ACCENT_TEXT,
+                                  weight="700", anchor="start", data_part="gas-label", data_key=note))
+    # the balance: pan, body, display
+    out.append(_rect(cx - 70, pan_y, 140, 6, rx=3, fill=_SVG_INK, data_part="pan"))
+    out.append(_rect(cx - 90, pan_y + 6, 180, 30, rx=6, fill=_SVG_BAND, stroke=_SVG_INK, w=3, data_part="balance"))
+    out.append(_rect(cx + 40, pan_y + 13, 40, 16, rx=3, fill=_SVG_CARD, stroke=_SVG_INK, w=2, data_part="display"))
+    # the readings
+    ry = pan_y + 48
+    changed = p["before"] != p["after"]
+    out.append(_rect(cx - 100, ry, 200, 54, rx=8, fill=_SVG_CARD, stroke=_SVG_INK, w=2, data_part="readout"))
+    for i, (k, v) in enumerate((("Before", p["before"]), ("After", p["after"]))):
+        yy = ry + 21 + i * 22
+        out.append(_label(cx - 88, yy, k, size=14, weight="600", anchor="start", data_part="reading-name", data_key=k))
+        out.append(_label(cx + 88, yy, v, size=15, weight="700", anchor="end",
+                          fill=_SVG_ACCENT_TEXT if (changed and k == "After") else _SVG_INK,
+                          data_part="reading", data_key=k))
+    return "".join(out), ry + 54
+
+
+def _open_sealed_flask(fig):
+    panels = (fig.get("data") or {}).get("panels") or []
+    if len(panels) != 2:
+        raise ValueError("figure %r: open-sealed-flask needs two panels" % fig.get("id"))
+    W = 326
+    out = []
+    y = 4
+    for i, p in enumerate(panels):
+        svg, bottom = _osf_panel(p, y)
+        out.append(svg)
+        y = bottom + 14
+        if i == 0:
+            out.append(_line(8, y, 318, y, stroke=_SVG_RULE, w=1.5, data_part="divider"))
+            y += 10
+    H = y - 4
+    return (_svg_open(fig, W, H) + '<g stroke-linecap="round" stroke-linejoin="round">'
+            + "".join(out) + '</g></svg>')
+
+
+ART = {
+    'particle-boxes': _particle_boxes,
+    'open-sealed-flask': _open_sealed_flask,
 }

@@ -19,11 +19,11 @@ MRB-103 also flagged an **anatomical/structural diagram gap** (cells, organs) an
 | Status | Figures |
 |---|---|
 | `drafted` | 1 |
-| `drawn` | 40 |
+| `drawn` | 52 |
 | `final` | 1 |
 | `needed` | 3 |
 | `retired` | 6 |
-| **Total** | **51** |
+| **Total** | **63** |
 
 `needed` = declared by a lesson, not yet drawn. A lesson may ship with figures at `needed` — it is not a build blocker — but the need is then counted here rather than invisible.
 
@@ -71,6 +71,18 @@ MRB-103 also flagged an **anatomical/structural diagram gap** (cells, organs) an
 | B9 | `food-chains-and-food-webs` | `b9-oak-wood-web-thread` | diagram | `drawn` | One oak wood.  The numbered orange chain is one route through it — the same four steps the bench above climbs. |
 | B9 | `predator-and-prey` | `b9-predator-prey-cycle` | diagram | `drawn` | The fox line is still going up while the rabbit line is already coming down, and it does not turn over until years later. That gap is the whole idea: foxes cannot become more foxes the moment there is more to eat — breeding takes time — so the fox peak always follows the rabbit peak rather than arriving with it. Look at when each peak happens, not how high it is: the two are counted on their own scales. |
 | C1 | `solids-liquids-and-gases` | `c1-particle-states` | diagram | `drawn` | One substance, three states. Compare the particles inside each box with the reference particle underneath it. |
+| C2 | `chemical-symbols` | `c2-co-and-co` | diagram | `drawn` | CO is two elements joined. Co is one element. |
+| C2 | `compounds` | `c2-ecm-particles` | diagram | `drawn` | Look at the kinds of atom, and which ones are joined. |
+| C2 | `compounds` | `c2-iron-sulfur` | diagram | `drawn` | Mixed, iron and sulfur are separate. In iron sulfide, they are joined. |
+| C2 | `conservation-of-mass` | `c2-carbon-burns` | diagram | `drawn` | The same atoms before and after, so the same mass. |
+| C2 | `conservation-of-mass` | `c2-open-sealed` | diagram | `drawn` | Open, the gas escapes and the mass falls. Sealed, it stays the same. |
+| C2 | `conservation-of-mass` | `c2-word-magnesium` | diagram | `drawn` | The word equation for burning magnesium. |
+| C2 | `elements` | `c2-element-particles` | diagram | `drawn` | Copper and oxygen each have one kind of atom. Water has two. |
+| C2 | `formulae` | `c2-ammonia` | diagram | `drawn` | Count the atoms of each element. |
+| C2 | `formulae` | `c2-big-small` | diagram | `drawn` | The big number counts molecules. The small numbers count atoms. |
+| C2 | `formulae` | `c2-molecules` | diagram | `drawn` | Each formula counts the atoms in one molecule. |
+| C2 | `formulae` | `c2-salt-lattice` | diagram | `drawn` | Salt has no separate molecules. NaCl gives the ratio. |
+| C2 | `the-atom-daltons-model` | `c2-lead-gold-atoms` | diagram | `drawn` | Lead is only lead atoms. Gold is only gold atoms. |
 | C3 | `distillation` | `c3-distillation-apparatus` | diagram | `needed` | Distillation apparatus: round-bottomed flask over a Bunsen with anti-bumping granules, thermometer bulb level with the side arm, Liebig condenser with cold water entering at the bottom and leaving at the top, and a beaker collecting the distillate. The apparatus is open to the air at the collecting end. |
 | C3 | `filtration` | `particle-panels` | diagram | `drawn` | A grain of sand is a lump of many millions of particles stuck together, thousands of times wider than the gaps between the paper's fibres. A dissolved salt particle is on its own, and it is smaller than the gap by more than the gap is smaller than the grain. There is no filter paper that stops one and passes the other. |
 | C5 | `displacement` | `reactivity-series` | diagram | `drawn` | Nobody was told this order. It was assembled by doing what you are about to do — putting metals into each other's solutions and recording which way the swap went. The bench below covers four of these twelve; the same method extended down the list produces the rest of it. |

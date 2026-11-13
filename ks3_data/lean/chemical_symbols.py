@@ -1,0 +1,140 @@
+# -*- coding: utf-8 -*-
+"""Chemical symbols, in the lean shape. Spec table: docs/lessons/wave1/ks3-chemical-symbols.md."""
+
+LESSON = {
+    "slug": "chemical-symbols",
+    "start": {
+        "setup": "A Japanese chemistry textbook is open at a page about water.",
+        "question": "If you had to guess, is its formula for water H2O, or written in Japanese?",
+        "options": [
+            ("H2O, as here", "H2O, as here. Chemical symbols are the same in every country and every language."),
+            ("Written in Japanese", "H2O, as here. Chemical symbols are the same in every country and every language."),
+        ],
+        "answer": 0,
+    },
+    "words": ["chemical symbol", "formula", "element", "periodic table"],
+    "word_defs": {
+        "chemical symbol": "One or two letters that stand for one element.",
+        "formula": "Symbols and numbers showing the elements in a substance and how many atoms of each.",
+        "element": "A substance made of only one kind of atom.",
+        "periodic table": "The table that lists every known element, with its symbol.",
+    },
+    "knowledge": [
+        {"kind": "card", "title": "Why chemists use symbols",
+         "body": ["Every element has its own chemical symbol.",
+                  "Symbols are the same in every language, so nothing needs translating.",
+                  "Each symbol stands for exactly one element.",
+                  "Symbols join together to make formulae, like H2O for water."]},
+        {"kind": "card", "title": "The rules",
+         "body": ["Every element in the periodic table has a symbol of one or two letters.",
+                  "The first letter is always a capital.",
+                  "A second letter is always lower case.",
+                  {"points": ["C is carbon.", "Ca is calcium.", "Co is cobalt."]}]},
+        {"kind": "card", "title": "CO or Co",
+         "body": ["CO has two capital letters, so it is two symbols, C and O.",
+                  "It is carbon and oxygen joined: carbon monoxide, a poisonous gas.",
+                  "Co has one capital letter, so it is one symbol: cobalt, a metal.",
+                  {"figure": "c2-co-and-co"}]},
+        {"kind": "card", "title": "Counting the elements",
+         "body": ["Each capital letter starts a new symbol.",
+                  "A lower case letter belongs to the capital before it.",
+                  "Count the different symbols to count the elements.",
+                  {"points": ["NaCl: Na and Cl, so two elements, sodium and chlorine.",
+                              "CaCO3: Ca, C and O, so three elements. The small 3 counts oxygen atoms."]}]},
+        {"kind": "card", "title": "Symbols from Latin",
+         "body": ["Some symbols come from old Latin names, so they do not match the English name.",
+                  "Many are metals people have used since ancient times, like gold, iron and lead."]},
+        {"kind": "reveal", "title": "Name to symbol",
+         "cols": ["Symbol", "Where it comes from"],
+         "rows": [
+             ("Hydrogen", "H", "First letter"),
+             ("Carbon", "C", "First letter"),
+             ("Calcium", "Ca", "First two letters"),
+             ("Chlorine", "Cl", "First and third letters"),
+             ("Magnesium", "Mg", "First and third letters"),
+             ("Sodium", "Na", "Latin name, natrium"),
+             ("Potassium", "K", "Latin name, kalium"),
+             ("Iron", "Fe", "Latin name, ferrum"),
+             ("Copper", "Cu", "Latin name, cuprum"),
+             ("Lead", "Pb", "Latin name, plumbum"),
+             ("Gold", "Au", "Latin name, aurum"),
+         ]},
+        {"kind": "reveal", "title": "Symbol to name",
+         "cols": ["Element"],
+         "rows": [
+             ("S", "Sulfur"),
+             ("N", "Nitrogen"),
+             ("He", "Helium"),
+             ("Al", "Aluminium"),
+             ("Zn", "Zinc"),
+             ("Ag", "Silver"),
+         ]},
+        {"kind": "card", "title": "The periodic table",
+         "body": ["The periodic table lists every known element with its symbol.",
+                  "Use it to find a symbol, or to find the element a symbol stands for.",
+                  "Each symbol belongs to one element only.",
+                  "So a new element needs a symbol that no other element has."]},
+        {"kind": "card", "title": "Easy mistakes",
+         "body": [{"mistakes": [
+             ("A symbol is the name shortened, so sodium is So.",
+              "Some symbols come from Latin names. Sodium is Na, from natrium."),
+             ("CO and Co mean the same thing.",
+              "CO is carbon and oxygen joined. Co is cobalt."),
+             ("Capitals do not matter, so NA is fine for sodium.",
+              "A second letter is always lower case. Sodium is Na."),
+         ]}]},
+    ],
+    "key_fact": "Every element has a symbol of one or two letters. The first letter is a capital, and "
+                "any second letter is lower case. Each capital letter starts a new symbol.",
+    "deeper": [
+        {"kind": "card", "title": "Before symbols",
+         "body": ["Alchemists drew pictures for elements, such as a circle with a dot for gold.",
+                  "About 200 years ago, Jöns Jacob Berzelius suggested letters from the Latin names.",
+                  "Chemists still use his system today."]},
+        {"kind": "card", "title": "Naming new elements",
+         "body": ["Scientists are still trying to make new elements.",
+                  "An international group of chemists agrees each new name and symbol."]},
+    ],
+    "try": None,
+    "ladder_stem": {
+        "explain": "Apart from being quicker to write, explain why chemists use symbols instead of "
+                   "names. Give two things symbols can do that names cannot.",
+        "produce": "A new element is made and needs a symbol. Say what rules its symbol must follow. "
+                   "Suggest a symbol for it. Say how you would check no other element has it.",
+    },
+    "ladder_ticks": [
+        ["Mentions that some symbols come from older Latin names, so the symbol is not always the name "
+         "shortened.",
+         "Explains each reason, and does not just list it."],
+        ["Says how the check was done — against the periodic table.",
+         "Says the check is done against the periodic table."],
+        ["Notes that the symbol will be used in every language, so it should not depend on English.",
+         "Checks that the suggested symbol follows the capital and lower case rules."],
+    ],
+    "figures": [
+        {"id": "c2-co-and-co", "kind": "diagram", "status": "drawn",
+         "art": "particle-boxes",
+         "title": "CO and Co",
+         "desc": "Two boxes side by side. The left box, labelled CO, carbon monoxide, holds five "
+                 "separate groups, each a black circle marked C joined to a red circle marked O. The "
+                 "right box, labelled Co, cobalt, is filled with identical grey-blue circles marked Co, "
+                 "packed in touching rows.",
+         "caption": "CO is two elements joined. Co is one element.",
+         "data": {"boxes": [
+             {"label": "CO", "tag": "carbon monoxide", "layout": "spread", "groups": [["C", "O"]] * 5},
+             {"label": "Co", "tag": "cobalt", "layout": "grid", "rows": 4, "cols": 5, "atom": "Co"},
+         ]}},
+    ],
+    "ladder_feedback": {
+        "recall": {
+            1: "Mg and O are two different symbols, so two elements. Mg is magnesium.",
+            2: "The small g belongs to the M before it. Each capital letter starts a new symbol.",
+            3: "Count the different symbols to count the elements. Amounts do not change this.",
+        },
+        "apply": {
+            1: "One capital then a lower case letter is one element. Co is cobalt.",
+            2: "Carbon on its own is C. Co is a different element.",
+            3: "Co is a real element, cobalt. That is why the mistake matters.",
+        },
+    },
+}
