@@ -1,0 +1,150 @@
+# -*- coding: utf-8 -*-
+"""Energy in food, in the lean shape. Spec table: docs/lessons/wave1/ks3-energy-in-food.md."""
+
+LESSON = {
+    "slug": "energy-in-food",
+    "start": {
+        "setup": "A 50 g bag of crisps says 229 kcal and also 958 kJ.",
+        "question": "If you had to guess, do they measure one thing or two different things?",
+        "options": [
+            ("The same thing", "The same thing. Both give the energy in the crisps, in two different units."),
+            ("Two different things", "The same thing. Both give the energy in the crisps, in two different units."),
+        ],
+        "answer": 0,
+    },
+    "words": ["chemical store", "kilojoule", "kilocalorie", "calorimeter"],
+    "word_defs": {
+        "chemical store": "Energy stored in food, fuels and batteries. Chemical reactions release it.",
+        "kilojoule": "1000 joules. Its symbol is kJ.",
+        "kilocalorie": "Another unit of energy on food labels. 1 kcal is about 4.18 kJ.",
+        "calorimeter": "Apparatus that measures the energy released when a sample burns.",
+    },
+    "knowledge": [
+        {"kind": "card", "title": "Food is a chemical store",
+         "body": ["Food is a chemical store of energy.",
+                  "Your body releases this energy by respiration.",
+                  "Energy is measured in joules, J. 1 kilojoule, kJ, is 1000 J.",
+                  "Food labels give the energy in kJ, usually per 100 g."]},
+        {"kind": "card", "title": "Two units on one label",
+         "body": ["Labels give the energy in kilojoules, kJ, and in kilocalories, kcal.",
+                  "These are two units for the same energy.",
+                  "1 kcal is about 4.18 kJ.",
+                  "So 229 kcal is about 958 kJ. It is the same energy."]},
+        {"kind": "reveal", "title": "Comparing foods from their labels",
+         "cols": ["Energy in 100 g", "Energy in one portion"],
+         "rows": [
+             ("Apple, 150 g", "About 220 kJ", "About 330 kJ"),
+             ("Cheddar cheese, 30 g", "About 1700 kJ", "About 510 kJ"),
+             ("Crisps, 50 g bag", "About 1900 kJ", "958 kJ"),
+         ]},
+        {"kind": "card", "title": "Per 100 g or per portion",
+         "body": ["Energy per 100 g lets you compare foods fairly.",
+                  "Energy per portion tells you how much you actually eat.",
+                  "Cheese has far more energy in 100 g than apple.",
+                  "Portions are different sizes, so check both numbers."]},
+        {"kind": "card", "title": "Energy in a portion",
+         "body": ["Energy in a portion = energy per gram × mass",
+                  {"figure": "p2-food-triangle"},
+                  "Bread holds about 10 kJ per gram. Find the energy in a 40 g slice.",
+                  {"points": ["Convert: both use grams, so nothing changes.",
+                              "Formula: energy = energy per gram × mass",
+                              "Insert: energy = 10 kJ/g × 40 g",
+                              "Fine-tune: 10 × 40 = 400",
+                              "Answer: 400 kJ"]}]},
+        {"kind": "card", "title": "Fat, carbohydrate and protein",
+         "body": ["Fat holds about 37 kJ in each gram.",
+                  "Carbohydrate and protein hold about 17 kJ in each gram.",
+                  "So fat holds about twice as much energy per gram.",
+                  "Water and fibre add mass, but little or no energy.",
+                  "The energy figure does not tell you about vitamins, minerals, protein or fibre.",
+                  "It does not show whether the energy comes from fat or carbohydrate.",
+                  "Two foods with the same energy can be very different for your health."]},
+        {"kind": "card", "title": "Measuring energy in food",
+         "body": ["Burn a piece of food under a tube of water.",
+                  "Measure how much the water's temperature rises.",
+                  "With the same volume of water, a bigger rise means more energy.",
+                  "Your result will be lower than the label. Here is why:",
+                  {"points": ["Some energy heats the air, not the water.",
+                              "Some energy heats the glass tube.",
+                              "The food may not burn completely.",
+                              "The warm water loses some energy to the air."]},
+                  "All three make the reading too low, never too high.",
+                  "Repeating the test does not fix this. Every repeat is low in the same way.",
+                  "An error like this is called a systematic error."]},
+        {"kind": "card", "title": "Where the energy goes",
+         "body": ["Energy is never used up. It is transferred.",
+                  "When you move, some energy goes to a kinetic store.",
+                  "Most of it ends up in the thermal store of you and the room.",
+                  "That is why exercise makes you warm."]},
+        {"kind": "card", "title": "Easy mistakes",
+         "body": [{"mistakes": [
+             ("Energy from food is used up and gone.",
+              "It is not destroyed. Most of it ends up warming you and the room."),
+             ("kcal and kJ measure different things.",
+              "They are two units for the same energy. 1 kcal is about 4.18 kJ."),
+             ("Every gram of food holds the same energy.",
+              "Fat holds about twice as much energy per gram as carbohydrate or protein."),
+         ]}]},
+    ],
+    "key_fact": "Food is a chemical store of energy. Labels give it in kilojoules, kJ. 1 kcal is "
+                "about 4.18 kJ. Energy in a portion = energy per gram × mass. Fat holds about twice as "
+                "much energy per gram as carbohydrate or protein.",
+    "deeper": [
+        {"kind": "card", "title": "Why a perfect burn would beat the label",
+         "body": ["A label gives the energy your body can release from the food.",
+                  "Some food passes through you without being digested.",
+                  "So a perfect burn, with no energy lost, would release more than the label."]},
+        {"kind": "card", "title": "Burning and respiring",
+         "body": ["Burning glucose and respiring it release the same energy.",
+                  "Respiration does it in many small steps, at body temperature."]},
+    ],
+    "try": None,
+    "safety_note": "Teacher demonstration only. Everyone wears eye protection. Check for food allergies "
+                   "first. Burning food can spit. The boiling tube gets very hot, but looks the same as a "
+                   "cold one. Put it on a heatproof mat and leave it there. Never taste any sample.",
+    "ks4_becomes": "At GCSE, you will use specific heat capacity to find the energy to warm water.",
+    "ladder_stem": {
+        "explain": "Your calorimeter gives 8.2 kJ per gram for a cheese puff. The packet says 21.6 kJ per "
+                   "gram. Give three reasons your value is lower. Would repeating the test fix it? Explain.",
+        "produce": "Two 100 g snacks have the same energy. One gets most of its energy from fat. "
+                   "The other gets most of its energy from carbohydrate. Explain how this is possible. "
+                   "Say what the energy figure does not tell you.",
+    },
+    "ladder_ticks": [
+        ["Says the fatty snack must therefore contain less actual fat than the other contains carbohydrate, "
+         "plus more water or fibre.",
+         "Says the fatty snack has less energy-giving material in total, and more water or fibre."],
+        ["Says the total energy is a product of density and mass, so different combinations can give the same "
+         "total.",
+         "Says energy is energy per gram × mass, so different mixes can give equal totals."],
+        ["Says two foods with equal energy can differ greatly in how useful they are to the body.",
+         "Says the energy figure does not show whether the energy comes from fat or carbohydrate."],
+        ["Notes that every one of these errors makes the reading too low, never too high.",
+         "Accepts another sound reason, such as the warm water losing energy to the air."],
+        ["Says repeating would not fix it, because this is systematic error rather than random scatter.",
+         "Says repeating would not fix it, as every repeat is low in the same way."],
+    ],
+    "figures": [
+        {"id": "p2-food-triangle", "kind": "diagram", "status": "drawn", "art": "formula-triangle",
+         "title": "The formula triangle for energy in a portion",
+         "desc": "A triangle split by a horizontal line. Energy, E, in kJ, sits in the top part. "
+                 "Energy per gram, e, in kJ/g, and mass, m, in g, sit side by side in the bottom part, "
+                 "with a multiplication sign between them.",
+         "caption": "Cover the one you want. Side by side means multiply. One over the other means divide.",
+         "data": {"top": {"s": "E", "name": "energy", "unit": "kJ"},
+                  "bottom": [{"s": "e", "name": "energy per gram", "unit": "kJ/g"},
+                             {"s": "m", "name": "mass", "unit": "g"}]}},
+    ],
+    "ladder_feedback": {
+        "recall": {
+            1: "That is 17 ÷ 30. More cheese means more energy, so multiply.",
+            2: "That is 17 + 30. Multiply the energy per gram by the mass.",
+            3: "That is 30 ÷ 17. Energy = energy per gram × mass.",
+        },
+        "apply": {
+            0: "Both figures are the same energy. Only the unit is different.",
+            2: "Both are units of energy. Neither is about one food group.",
+            3: "The label gives both units for the same bag, side by side.",
+        },
+    },
+}

@@ -1,0 +1,127 @@
+# -*- coding: utf-8 -*-
+"""Reading a fuel bill, in the lean shape. Spec table: docs/lessons/wave1/ks3-reading-a-fuel-bill.md."""
+
+LESSON = {
+    "slug": "reading-a-fuel-bill",
+    "start": {
+        "setup": "An electricity bill charges for each unit of electricity you use.",
+        "question": "If you had to guess, does a unit measure how fast, or how much?",
+        "options": [
+            ("How fast you use it", "How much. A unit is a kilowatt-hour, which is an amount of energy."),
+            ("How much you use", "How much. A unit is a kilowatt-hour, which is an amount of energy."),
+        ],
+        "answer": 1,
+    },
+    "words": ["unit", "kilowatt-hour", "price per unit", "standing charge"],
+    "word_defs": {
+        "unit": "On an electricity bill, one unit is one kilowatt-hour of energy.",
+        "kilowatt-hour": "The energy a 1 kW appliance transfers in 1 hour.",
+        "price per unit": "What the supplier charges for each kilowatt-hour you use.",
+        "standing charge": "A fixed amount paid each day for being connected. It does not depend on use.",
+    },
+    "knowledge": [
+        {"kind": "card", "title": "What a unit is",
+         "body": ["Bills charge for energy, not power.",
+                  "One unit is one kilowatt-hour, kWh.",
+                  "That is the energy a 1 kW appliance transfers in 1 hour.",
+                  "So a 2 kW heater uses one unit in half an hour."]},
+        {"kind": "reveal", "title": "Four ways to use one unit",
+         "cols": ["Power", "Time"],
+         "rows": [
+             ("Heater", "2 kW", "30 minutes"),
+             ("Kettle", "3 kW", "20 minutes"),
+             ("TV", "100 W", "10 hours"),
+             ("LED lamp", "10 W", "100 hours"),
+         ]},
+        {"kind": "card", "title": "Reading the meter",
+         "body": ["The meter counts the units you use.",
+                  "Units used = new meter reading − old meter reading",
+                  "For example, the old reading is 45 210. The new reading is 45 622.",
+                  "Units used = 45 622 − 45 210 = 412 units."]},
+        {"kind": "card", "title": "Working out the cost",
+         "body": ["cost = number of units × price per unit",
+                  "Prices change, so the prices here are only examples.",
+                  "A 2 kW heater runs for 3 hours. Each unit costs 27p.",
+                  {"points": ["Energy: 2 kW × 3 h = 6 kWh",
+                              "Cost: 6 × 27p = 162p",
+                              "Answer: £1.62"]}]},
+        {"kind": "card", "title": "The standing charge",
+         "body": ["Most bills also have a standing charge.",
+                  "It pays for the cables, meters and network.",
+                  "You pay it every day, even if you use nothing.",
+                  "So switching everything off does not make the bill zero."]},
+        {"kind": "card", "title": "A whole bill",
+         "body": ["A home uses 300 units in 30 days, at 27p a unit.",
+                  "The standing charge is 50p a day.",
+                  {"points": ["Units: 300 × 27p = £81.00",
+                              "Standing charge: 30 × 50p = £15.00",
+                              "Total: £81.00 + £15.00 = £96.00"]},
+                  "Multiply in each row first. Then add the rows.",
+                  "Halving the units would not halve the bill. The standing charge stays the same."]},
+        {"kind": "card", "title": "Cutting energy costs",
+         "body": [{"points": ["Switch appliances off at the wall, not on standby.",
+                              "Use LED lamps instead of old filament bulbs.",
+                              "Insulate the loft and walls, and fit double glazing.",
+                              "Turn the heating thermostat down by 1 °C.",
+                              "Take shorter showers.",
+                              "Wash clothes at a lower temperature.",
+                              "Choose appliances with a good energy rating."]},
+                  "Appliances that heat things use the most energy, such as showers and ovens.",
+                  "Lights use very little energy."]},
+        {"kind": "card", "title": "Easy mistakes",
+         "body": [{"mistakes": [
+             ("A kilowatt-hour is a unit of power.",
+              "It is a unit of energy. Power is measured in kilowatts."),
+             ("Switch everything off and the bill is zero.",
+              "The standing charge is still paid every day."),
+             ("45 minutes is 0.45 hours.",
+              "45 minutes is 45 ÷ 60 = 0.75 hours."),
+         ]}]},
+    ],
+    "key_fact": "A unit on a bill is one kilowatt-hour of energy. Cost = number of units × price per "
+                "unit. The standing charge is paid every day, whatever you use.",
+    "deeper": [
+        {"kind": "card", "title": "Why there is a standing charge",
+         "body": ["Cables, substations and meters cost money, even if you use nothing.",
+                  "So this cost is shared out as a charge for each day."]},
+        {"kind": "card", "title": "Gas bills",
+         "body": ["A gas meter measures the volume of gas, in cubic metres.",
+                  "The supplier converts this into kilowatt-hours to bill you."]},
+    ],
+    "try": None,
+    "ladder_stem": {
+        "apply": "A 2.2 kW oven runs for 45 minutes a day, for 30 days. Each unit costs 27p. "
+                 "What does it cost over the 30 days?",
+        "explain": "A household uses 412 units in 30 days. Each unit costs 27p. The standing charge is "
+                   "53p a day. Work out the bill. Explain why halving their use would not halve the bill.",
+        "produce": "A family is told to “switch off lights to save money”. Their eight 9 W lamps are on "
+                   "for 5 hours a day. Their 8.5 kW shower runs for 20 minutes a day. Their bill also has "
+                   "a standing charge of 53p a day. Is switching off "
+                   "lights the best advice? Use numbers to explain.",
+    },
+    "ladder_ticks": [
+        ["Concludes that lighting is a small share of the bill.",
+         "Concludes that lighting is small compared with the shower."],
+        ["Notes that the standing charge cannot be reduced by any change in behaviour.",
+         "Says the 53p standing charge is paid every day, however little energy they use."],
+        ["Concludes that halving usage gives about £71.52, which is more than half of £127.14 — so the saving "
+         "is less than 50 per cent.",
+         "Says halving use gives about £71.52, which is more than half of £127.14."],
+        ["Calculates the lighting figure — roughly 0.36 kWh a day, about 11 units a month.",
+         "Calculates the lighting as about 0.36 kWh a day, about 11 units a month."],
+        ["Compares it with a larger item such as the shower or the oven, with a number.",
+         "Compares it with the shower, about 2.8 kWh a day."],
+    ],
+    "ladder_feedback": {
+        "recall": {
+            0: "A joule is tiny. One unit is 3 600 000 J.",
+            1: "A kilowatt is a power. A unit is one kilowatt for one hour.",
+            3: "That is not a unit of energy. One unit is a kilowatt-hour.",
+        },
+        "apply": {
+            0: "Too high. Energy = 2.2 kW × 0.75 h × 30 = 49.5 kWh. Then × 27p.",
+            1: "That is one day. Multiply by 30 days.",
+            2: "That uses 45 hours. 45 minutes is 0.75 h.",
+        },
+    },
+}

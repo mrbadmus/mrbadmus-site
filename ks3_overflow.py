@@ -74,6 +74,7 @@ bug. That is what this file is for.
         physics/energy-at-home/fuels-and-energy-resources.html  1 × .ks3-grid2-tag
         physics/energy-at-home/reading-a-fuel-bill.html         1 × .ks3-beam-caption
         physics/energy-transfers/simple-machines.html           2 × .ks3-beam-label
+    ⊕ 13 Nov 2026: the lean rebuild (Wave 1) removed all three (no grid2 tag or beam on the pages).
     None of them scrolls the document — each is a clipped edge, which is the
     failure mode rule (3) exists to name and which nobody would see by looking.
     They are PRE-EXISTING (measured against HEAD's stylesheet, unchanged) and
@@ -229,11 +230,10 @@ NARROW = (320, 568)
 #
 # ⚠️ These counts are a CEILING, not a licence. Drop one to 0 when the page is
 # fixed; never raise one to make a new failure pass.
+# ⊕ 13 Nov 2026: both pins dropped to 0 (removed). The lean rebuild (Wave 1) took the
+# `.ks3-grid2-tag` grid off fuels-and-energy-resources and the `.ks3-beam-caption` bench off
+# reading-a-fuel-bill; their figures sit in .ks3-figure-scroll. Was: fuels 2, fuel bill 1.
 NARROW_KNOWN = {
-    # two `.ks3-grid2-tag` spans, right edges at 347 and 327
-    "physics/energy-at-home/fuels-and-energy-resources.html": 2,
-    # one `.ks3-beam-caption` SVG <text>, spanning -27 to 347
-    "physics/energy-at-home/reading-a-fuel-bill.html": 1,
 }
 
 

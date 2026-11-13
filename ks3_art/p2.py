@@ -1071,3 +1071,157 @@ KIND_FN = {
     'renewable-sort':    r_renewable_sort,
     'two-axis-grid':     r_two_axis_grid,
 }
+
+
+# ═════════════════════════════════════════════════════════════════════════
+# ⊕ LEAN WAVE 1 — `fossil-fuel-formation`: three stacked panels joined by
+# drawn down-arrows. Every word on the plate comes from data.panels.
+# ═════════════════════════════════════════════════════════════════════════
+
+from ks3_art.kit import (  # noqa: E402
+    _SVG_ACCENT_TEXT,
+    _SVG_ACCENT_TINT,
+    _SVG_BAND,
+    _SVG_CARD,
+    _SVG_INK,
+    _SVG_INK_FAINT,
+    _SVG_INSET,
+    _SVG_RULE,
+    _circle,
+    _label,
+    _line,
+    _path,
+    _rect,
+    _svg_open,
+)
+
+_FF_GREEN = "#5BA66B"
+_FF_MUD = "#9C7A5B"
+_FF_COAL = "#1F1B19"
+_FF_OIL = "#C77A1E"
+_FF_BLUE = "var(--ks3-blue)"
+_FF_BLUE_TINT = "var(--ks3-blue-tint)"
+
+
+def _ff_plant(x, base, h):
+    """A simple fern: a stem and three leaves."""
+    o = [_line(x, base, x, base - h, stroke=_SVG_INK, w=2.5, data_part="stem")]
+    for k, (dx, dy) in enumerate(((-11, 0.35), (11, 0.6), (-9, 0.82))):
+        ly = base - h * dy
+        o.append(_path("M %s,%s Q %s,%s %s,%s Q %s,%s %s,%s Z"
+                       % (x, ly, x + dx * 0.6, ly - 9, x + dx * 1.6, ly - 2, x + dx * 0.9, ly + 5, x, ly),
+                       fill=_FF_GREEN, stroke=_SVG_INK, w=1.8, data_part="leaf"))
+    return "".join(o)
+
+
+def _ff_plankton(cx, cy, r=5):
+    return (_circle(cx, cy, r, fill="#7FC8A9", stroke=_SVG_INK, w=1.8, data_part="organism")
+            + _line(cx + r, cy, cx + r + 4, cy - 3, stroke=_SVG_INK, w=1.5, data_part="organism"))
+
+
+def _fossil_fuel_formation(fig):
+    from ks3_art.b4 import _b4_arrow
+    panels = (fig.get("data") or {}).get("panels") or []
+    if len(panels) != 3:
+        raise ValueError("figure %r: fossil-fuel-formation needs three panels" % fig.get("id"))
+    p1, p2, p3 = panels
+    W, X0, X1, FH = 340, 8, 332, 66
+    fid = fig["id"]
+    cxm = (X0 + X1) / 2
+    out, defs = [], []
+    y = 4
+
+    def frame(y0, n):
+        top = y0 + 24
+        cid = "%s-clip%d" % (fid, n)
+        defs.append('<clipPath id="%s"><rect x="%s" y="%s" width="%s" height="%s" rx="10"/></clipPath>'
+                    % (cid, X0, top, X1 - X0, FH))
+        return top, cid
+
+    def end(top):
+        out.append(_rect(X0, top, X1 - X0, FH, rx=10, stroke=_SVG_INK, w=2.5, data_part="frame"))
+
+    def sublabels(top, left, right):
+        for s, cx in ((left, (X0 + cxm) / 2), (right, (cxm + X1) / 2)):
+            out.append(_label(cx, top + FH + 20, s, size=14, weight="600", data_part="scene-label", data_key=s))
+
+    def arrow(y0):
+        out.append(_b4_arrow(cxm, y0, cxm, y0 + 22, w=3, head=11, data_part="arrow"))
+
+    # ── panel 1: living things die ──
+    out.append(_label(X0, y + 15, p1["label"], size=14, weight="700", anchor="start",
+                      data_part="panel-label", data_key=p1["label"]))
+    top, cid = frame(y, 1)
+    out.append('<g clip-path="url(#%s)">' % cid)
+    out.append(_rect(X0, top, X1 - X0, FH, fill=_SVG_CARD, data_part="scene"))
+    out.append(_rect(X0, top + FH - 14, cxm - X0, 14, fill=_FF_MUD, data_part="ground"))
+    out.append(_rect(cxm, top, X1 - cxm, FH, fill=_FF_BLUE_TINT, data_part="sea"))
+    out.append(_line(cxm, top, cxm, top + FH, stroke=_SVG_INK, w=2.5, data_part="split"))
+    for px_, h in ((46, 40), (88, 46), (130, 38)):
+        out.append(_ff_plant(px_, top + FH - 14, h))
+    for sx, sy in ((200, 16), (232, 36), (262, 20), (292, 44), (214, 50), (306, 18), (252, 54), (186, 30)):
+        out.append(_ff_plankton(sx, top + sy))
+    out.append("</g>")
+    end(top)
+    sublabels(top, p1["left"], p1["right"])
+    y = top + FH + 26
+    arrow(y)
+    y += 26
+
+    # ── panel 2: buried ──
+    out.append(_label(X0, y + 15, p2["label"], size=14, weight="700", anchor="start",
+                      data_part="panel-label", data_key=p2["label"]))
+    top, cid = frame(y, 2)
+    out.append('<g clip-path="url(#%s)">' % cid)
+    out.append(_rect(X0, top, X1 - X0, FH, fill=_SVG_BAND, data_part="sand"))
+    out.append(_rect(X0, top + 14, X1 - X0, 16, fill=_FF_MUD, data_part="mud"))
+    out.append(_rect(X0, top + 30, X1 - X0, 10, fill=_SVG_BAND, data_part="sand"))
+    out.append(_rect(X0, top + 40, X1 - X0, FH - 40, fill=_SVG_INSET, data_part="remains-bed"))
+    for lyr in (14, 30, 40):
+        out.append(_line(X0, top + lyr, X1, top + lyr, stroke=_SVG_INK, w=1.5, data_part="layer-edge"))
+    for dx, dy in ((30, 6), (80, 8), (150, 5), (220, 7), (290, 6)):
+        out.append(_circle(X0 + dx, top + dy, 1.8, fill=_SVG_INK_FAINT, data_part="grain"))
+    for lx in (34, 72, 110):
+        out.append(_path("M %s,%s Q %s,%s %s,%s Q %s,%s %s,%s Z"
+                         % (lx, top + 55, lx + 12, top + 47, lx + 30, top + 55, lx + 12, top + 62, lx, top + 55),
+                         fill=_FF_GREEN, stroke=_SVG_INK, w=1.8, data_part="plant-remains"))
+    for sx in (206, 226, 246, 266, 286, 306):
+        out.append(_circle(sx, top + 55, 4, fill="#7FC8A9", stroke=_SVG_INK, w=1.8, data_part="organism-remains"))
+    out.append("</g>")
+    end(top)
+    out.append(_label(cxm, top + FH + 20, p2["note"], size=14, weight="700", fill=_SVG_ACCENT_TEXT,
+                      data_part="note", data_key=p2["note"]))
+    y = top + FH + 26
+    arrow(y)
+    y += 26
+
+    # ── panel 3: heat and pressure ──
+    out.append(_label(X0, y + 15, p3["label"], size=14, weight="700", anchor="start",
+                      data_part="panel-label", data_key=p3["label"]))
+    top, cid = frame(y, 3)
+    out.append('<g clip-path="url(#%s)">' % cid)
+    out.append(_rect(X0, top, X1 - X0, FH, fill=_SVG_BAND, data_part="rock"))
+    out.append(_line(cxm, top, cxm, top + FH, stroke=_SVG_INK, w=2.5, data_part="split"))
+    out.append(_rect(X0, top + 28, cxm - X0, 14, fill=_FF_COAL, stroke=_SVG_INK, w=2, data_part="coal-seam"))
+    for ry in (12, 54):
+        out.append(_line(X0, top + ry, cxm, top + ry, stroke=_SVG_RULE, w=1.5, data_part="rock-layer"))
+    dome = ("M %s,%s Q %s,%s %s,%s Z" % (200, top + FH + 6, 251, top - 22, 302, top + FH + 6))
+    did = "%s-dome" % fid
+    defs.append('<clipPath id="%s"><path d="%s"/></clipPath>' % (did, dome))
+    out.append(_path(dome, fill=_SVG_CARD, data_part="trap"))
+    out.append('<g clip-path="url(#%s)">' % did)
+    out.append(_rect(200, top + 34, 102, 40, fill=_FF_OIL, data_part="oil"))
+    out.append("</g>")
+    out.append(_path(dome, stroke=_SVG_INK, w=3, data_part="cap-rock"))
+    out.append("</g>")
+    end(top)
+    sublabels(top, p3["left"], p3["right"])
+    y = top + FH + 26
+    H = y + 2
+    body = ('<defs>%s</defs>' % "".join(defs)) + '<g stroke-linecap="round" stroke-linejoin="round">' + "".join(out) + "</g>"
+    return _svg_open(fig, W, H) + body + "</svg>"
+
+
+ART = {
+    'fossil-fuel-formation': _fossil_fuel_formation,
+}

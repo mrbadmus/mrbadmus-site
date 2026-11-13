@@ -1926,3 +1926,264 @@ KIND_FN = {
     'before-after-tally': r_before_after_tally,
     'waste-sort': r_waste_sort,
 }
+
+
+# ═════════════════════════════════════════════════════════════════════════
+# ⊕ LEAN WAVE 1 — four static figure drawers (store-bars, sankey,
+# formula-triangle, lever-trade). Each draws ONLY from fig["data"]; the only
+# words on a plate are strings in that data and numbers formatted from it.
+# 340 wide (≤ 358 so a 390px phone shows it whole), one column, text ≥ 14px.
+# `formula-triangle` is shared with P2 — its data shape is
+# {"top": {s,name,unit}, "bottom": [{s,name,unit}, {s,name,unit}]}.
+# ═════════════════════════════════════════════════════════════════════════
+
+from ks3_art.kit import (  # noqa: E402
+    _SVG_ACCENT_TEXT,
+    _SVG_ACCENT_TINT,
+    _SVG_BAND,
+    _SVG_CARD,
+    _SVG_INK,
+    _SVG_INK_FAINT,
+    _SVG_INSET,
+    _SVG_RULE,
+    _label,
+    _line,
+    _path,
+    _rect,
+    _svg_open,
+)
+
+_P1W = 340
+_P1_BLUE = "var(--ks3-blue)"
+_P1_BLUE_TINT = "var(--ks3-blue-tint)"
+
+
+def _p1_wrap(s, size, maxw, k=0.57):
+    """Greedy word wrap by an estimated advance (k * size per character)."""
+    lines, cur = [], ""
+    for w in str(s).split():
+        trial = (cur + " " + w).strip()
+        if cur and len(trial) * size * k > maxw:
+            lines.append(cur)
+            cur = w
+        else:
+            cur = trial
+    if cur:
+        lines.append(cur)
+    return lines
+
+
+def _p1_num(v):
+    return ("%g" % v) if isinstance(v, float) else str(v)
+
+
+def _p1_svg(fig, h, body):
+    return (_svg_open(fig, _P1W, h) + '<g stroke-linecap="round" stroke-linejoin="round">'
+            + "".join(body) + "</g></svg>")
+
+
+# ── formula-triangle ─────────────────────────────────────────────────────
+def _formula_triangle(fig):
+    d = fig.get("data") or {}
+    top, bot = d.get("top"), d.get("bottom")
+    if not (isinstance(top, dict) and isinstance(bot, list) and len(bot) == 2):
+        raise ValueError("figure %r: formula-triangle needs data.top and data.bottom[2]" % fig.get("id"))
+    for slot in [top] + bot:
+        for k in ("s", "name", "unit"):
+            if not slot.get(k):
+                raise ValueError("figure %r: formula-triangle slot %r lacks %r" % (fig.get("id"), slot, k))
+    cx, ay, by, bar = 170, 12, 232, 118
+    half = 146.0
+    slope = half / (by - ay)
+    out = []
+    xl = lambda y: cx - slope * (y - ay)
+    xr = lambda y: cx + slope * (y - ay)
+    out.append(_path("M %s,%s L %s,%s L %s,%s Z" % (cx, ay, cx + half, by, cx - half, by),
+                     fill=_SVG_INSET, data_part="triangle"))
+    out.append(_path("M %s,%s L %s,%s L %s,%s Z" % (cx, ay, round(xr(bar), 1), bar, round(xl(bar), 1), bar),
+                     fill=_SVG_ACCENT_TINT, data_part="top-zone"))
+    out.append(_path("M %s,%s L %s,%s L %s,%s Z" % (cx, ay, cx + half, by, cx - half, by),
+                     stroke=_SVG_INK, w=3, data_part="outline"))
+    out.append(_line(round(xl(bar), 1), bar, round(xr(bar), 1), bar, stroke=_SVG_INK, w=3, data_part="bar"))
+
+    def slot(s, x, ys, wrapw, key):
+        out.append(_label(x, ys, s["s"], size=28, weight="700", data_part="symbol", data_key=key))
+        for i, ln in enumerate(_p1_wrap("%s (%s)" % (s["name"], s["unit"]), 14, wrapw)):
+            out.append(_label(x, ys + 24 + i * 17, ln, size=14, weight="500", fill=_SVG_INK,
+                              data_part="slot-name", data_key=key))
+
+    slot(top, cx, 66, 104, top["s"])
+    slot(bot[0], 106, 158, 100, bot[0]["s"])
+    slot(bot[1], 234, 158, 100, bot[1]["s"])
+    out.append(_label(cx, 166, "×", size=28, weight="700", data_part="times"))
+    return _p1_svg(fig, by + 12, out)
+
+
+# ── store-bars ───────────────────────────────────────────────────────────
+def _store_bars(fig):
+    d = fig.get("data") or {}
+    total, unit = d["total"], d["unit"]
+    stores, panels = d["stores"], d["panels"]
+    for p in panels:
+        if len(p["values"]) != len(stores):
+            raise ValueError("figure %r: panel %r has %d values for %d stores"
+                             % (fig.get("id"), p["label"], len(p["values"]), len(stores)))
+        if sum(p["values"]) != total:
+            raise ValueError("figure %r: panel %r values sum to %s, not the total %s"
+                             % (fig.get("id"), p["label"], sum(p["values"]), total))
+    fills = [_SVG_ACCENT_TINT, _P1_BLUE_TINT, _SVG_BAND, _SVG_INSET]
+    HB, X0, X1 = 64.0, 8, _P1W - 8
+    n = len(stores)
+    colw, tw, gap = 84.0, 64.0, 8.0          # n store columns, a gap, then the Total column
+    xt0 = X0 + colw * n + gap                # left edge of the Total column
+    bw = 48
+    out, y = [], 4
+    for pi, p in enumerate(panels):
+        out.append(_label(8, y + 15, p["label"], size=14, weight="700", anchor="start",
+                          data_part="panel-label", data_key=p["label"]))
+        ytop = y + 22 + 24                   # y of the total line (headroom holds its label)
+        base = ytop + HB
+        out.append(_label(X0, ytop - 6, "Total %s %s" % (_p1_num(total), unit), size=14, weight="700",
+                          anchor="start", fill=_SVG_ACCENT_TEXT, data_part="total-label"))
+        for i, v in enumerate(p["values"]):
+            cx = X0 + colw * (i + .5)
+            h = HB * v / total
+            if v > 0:
+                out.append(_rect(cx - bw / 2, base - h, bw, h, rx=2, fill=fills[i % len(fills)],
+                                 stroke=_SVG_INK, w=2.5, data_part="bar", data_key=stores[i]))
+                ly = base - h + 19 if h >= 26 else base - h - 6
+                out.append(_label(cx, ly, "%s %s" % (_p1_num(v), unit), size=14, weight="700",
+                                  data_part="value", data_key=stores[i]))
+            for j, ln in enumerate(_p1_wrap(stores[i], 14, 100)):
+                out.append(_label(cx, base + 20 + j * 17, ln, size=14, weight="500",
+                                  data_part="store-name", data_key=stores[i]))
+        # the Total column: one stacked bar, segments in store colours, same scale
+        out.append(_line(xt0 - gap / 2, ytop - 4, xt0 - gap / 2, base + 4, stroke=_SVG_RULE, w=1.5,
+                         data_part="total-rule"))
+        tcx = xt0 + tw / 2
+        acc = 0.0
+        for i, v in enumerate(p["values"]):
+            if v > 0:
+                h = HB * v / total
+                acc += h
+                out.append(_rect(tcx - bw / 2, base - acc, bw, h, fill=fills[i % len(fills)],
+                                 stroke=_SVG_INK, w=2, data_part="stack-segment", data_key=stores[i]))
+        out.append(_label(tcx, base + 20, "Total", size=14, weight="700", data_part="total-name"))
+        out.append(_line(X0, base, X1, base, stroke=_SVG_INK, w=2.5, data_part="baseline"))
+        out.append(_line(X0, ytop, X1, ytop, stroke=_SVG_ACCENT_TEXT, w=2, dash="6 5", data_part="total-line"))
+        y = base + 20 + 17 * 2 + 12
+        if pi < len(panels) - 1:
+            out.append(_line(8, y - 4, _P1W - 8, y - 4, stroke=_SVG_RULE, w=1.5, data_part="divider"))
+            y += 6
+    return _p1_svg(fig, y, out)
+
+
+# ── sankey ───────────────────────────────────────────────────────────────
+def _sankey(fig):
+    d = fig.get("data") or {}
+    i, u, w = d["in"], d["useful"], d["wasted"]
+    if u["J"] + w["J"] != i["J"]:
+        raise ValueError("figure %r: useful %s + wasted %s != in %s"
+                         % (fig.get("id"), u["J"], w["J"], i["J"]))
+    S = 1.1                                   # px per joule — ONE scale for every band
+    xin, xs, xu, tip = 8, 128, 306, 24
+    yt = 8
+    hi, hu, hw = i["J"] * S, u["J"] * S, w["J"] * S
+    yu1 = yt + hu
+    drop = yu1 + 92
+    xw1 = xs + hw
+    out = []
+    out.append(_path("M %s,%s L %s,%s L %s,%s L %s,%s Z" % (xin, yt, xs, yt, xs, yt + hi, xin, yt + hi),
+                     fill=_SVG_BAND, data_part="band-in"))
+    out.append(_path("M %s,%s L %s,%s L %s,%s L %s,%s L %s,%s Z"
+                     % (xs, yt, xu, yt, xu + tip, yt + hu / 2, xu, yu1, xs, yu1),
+                     fill=_SVG_ACCENT_TINT, data_part="band-useful"))
+    out.append(_path("M %s,%s L %s,%s L %s,%s L %s,%s L %s,%s Z"
+                     % (xs, yu1, xw1, yu1, xw1, drop, xs + hw / 2, drop + tip, xs, drop),
+                     fill=_P1_BLUE_TINT, data_part="band-wasted"))
+    out.append(_path("M %s,%s L %s,%s L %s,%s L %s,%s L %s,%s L %s,%s L %s,%s L %s,%s L %s,%s L %s,%s Z"
+                     % (xin, yt, xu, yt, xu + tip, yt + hu / 2, xu, yu1, xw1, yu1, xw1, drop,
+                        xs + hw / 2, drop + tip, xs, drop, xs, yt + hi, xin, yt + hi),
+                     stroke=_SVG_INK, w=2.5, data_part="outline"))
+    out.append(_line(xs, yu1, xw1, yu1, stroke=_SVG_INK, w=2.5, data_part="split"))
+
+    def block(lines, cx, cy, anchor="middle"):
+        n = len(lines)
+        y0 = cy - (n - 1) * 17 / 2 + 5
+        for k, (txt, bold) in enumerate(lines):
+            out.append(_label(cx, y0 + k * 17, txt, size=14, weight="700" if bold else "500",
+                              anchor=anchor, data_part="band-label", data_key=txt))
+
+    def lines(band, wrapw):
+        return [("%s J" % _p1_num(band["J"]), True)] + [(t_, False) for t_ in _p1_wrap(band["label"], 14, wrapw)]
+
+    block(lines(i, 108), (xin + xs) / 2, yt + hi / 2)
+    block(lines(u, 168), (xs + xu) / 2, yt + hu / 2)
+    block(lines(w, 140), xw1 + 12, (yu1 + drop) / 2, anchor="start")
+    return _p1_svg(fig, drop + tip + 8, out)
+
+
+# ── lever-trade ──────────────────────────────────────────────────────────
+def _lever_trade(fig):
+    from ks3_art.b4 import _b4_arrow
+    d = fig.get("data") or {}
+    ef, ld = d["effort"], d["load"]
+    r_e, r_l = ef["moves_m"] / ef["arm_m"], ld["moves_m"] / ld["arm_m"]
+    if abs(r_e - r_l) > 1e-9:
+        raise ValueError("figure %r: moves/arm differs (%s vs %s): the bar would not be one rigid bar"
+                         % (fig.get("id"), r_e, r_l))
+    if abs(ef["N"] * ef["moves_m"] - ld["N"] * ld["moves_m"]) > 1e-9:
+        raise ValueError("figure %r: effort and load do equal work only if N x moves match" % fig.get("id"))
+    S = 170.0                                  # px per metre of arm
+    a_e, a_l = ef["arm_m"] * S, ld["arm_m"] * S
+    th = math.asin(r_e)
+    px, py = 84.0, 100.0
+    gy = 240
+    sn, cs = math.sin(th), math.cos(th)
+    deg = math.degrees(th)
+    out = []
+    out.append(_line(8, gy, _P1W - 8, gy, stroke=_SVG_RULE, w=3, data_part="ground"))
+    out.append(_path("M %s,%s L %s,%s L %s,%s Z" % (px, py + 4, px - 25, gy, px + 25, gy),
+                     fill=_SVG_INSET, stroke=_SVG_INK, w=2.5, data_part="fulcrum"))
+    # start position, dashed
+    out.append(_rect(px - a_l, py - 5, a_l + a_e, 10, rx=2, stroke=_SVG_INK_FAINT, w=2, dash="6 5",
+                     data_part="bar-start"))
+    # lifted bar + load, drawn level in a frame rotated about the fulcrum
+    bw = 34
+    out.append('<g transform="rotate(%s %s %s)">' % (_p1_num(round(deg, 2)), _p1_num(px), _p1_num(py)))
+    out.append(_rect(px - a_l, py - 5, a_l + a_e, 10, rx=2, fill=_SVG_BAND, stroke=_SVG_INK, w=2.5,
+                     data_part="bar"))
+    out.append(_rect(px - a_l + 4, py - 5 - 30, bw, 30, rx=3, fill=_SVG_ACCENT_TINT, stroke=_SVG_INK,
+                     w=2.5, data_part="load"))
+    for x1, x2, key in ((px - a_l, px, "load"), (px, px + a_e, "effort")):
+        out.append(_line(x1, py + 16, x2, py + 16, stroke=_SVG_INK_FAINT, w=1.5, data_part="arm", data_key=key))
+        for xx in (x1, x2):
+            out.append(_line(xx, py + 11, xx, py + 21, stroke=_SVG_INK_FAINT, w=1.5, data_part="arm-tick", data_key=key))
+    out.append("</g>")
+    out.append(_path("M %s,%s m -4,0 a4,4 0 1,0 8,0 a4,4 0 1,0 -8,0" % (px, py), fill=_SVG_INK, data_part="pivot"))
+
+    def glob(u, v):
+        return (px + u * cs - v * sn, py + u * sn + v * cs)
+
+    for u_mid, arm, key in ((-a_l / 2, ld["arm_m"], "load"), (a_e / 2, ef["arm_m"], "effort")):
+        gx, gyy = glob(u_mid, 36)
+        out.append(_label(round(gx, 1), round(gyy + 5, 1), "%s m" % _p1_num(arm), size=14, weight="600",
+                          fill=_SVG_INK, data_part="arm-label", data_key=key))
+    for k, ln in enumerate(("%s N load" % _p1_num(ld["N"]), "rises %s m" % _p1_num(ld["moves_m"]))):
+        out.append(_label(8, 20 + k * 17, ln, size=14, weight="700", anchor="start",
+                          data_part="load-label", data_key=ln))
+    ex, ey = glob(a_e, 0)
+    out.append(_b4_arrow(round(ex, 1), 152, round(ex, 1), round(ey - 6, 1), stroke=_SVG_ACCENT_TEXT, w=3, head=11,
+                         data_part="effort-arrow"))
+    for k, ln in enumerate(("%s N push" % _p1_num(ef["N"]), "moves %s m" % _p1_num(ef["moves_m"]))):
+        out.append(_label(_P1W - 10, 126 + k * 17, ln, size=14, weight="700", anchor="end",
+                          fill=_SVG_ACCENT_TEXT, data_part="effort-label", data_key=ln))
+    return _p1_svg(fig, gy + 12, out)
+
+
+ART = {
+    'formula-triangle': _formula_triangle,
+    'store-bars': _store_bars,
+    'sankey': _sankey,
+    'lever-trade': _lever_trade,
+}

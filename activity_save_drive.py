@@ -771,6 +771,8 @@ CASES = [
          same="""(function(){ var q = document.querySelector('[data-p4cfa-q="0"]'); return q.querySelector('[data-p4cfa-head]').textContent.trim() === 'Your spanner: 40 N at 0.05 m from the pivot.' && !q.querySelector('[data-p4cfa-reveal]').hasAttribute('hidden') && document.querySelector('[data-span-force]').value === '40'; })()""",
          back="""(function(){ var q = document.querySelector('[data-p4cfa-q="0"]'); return q.querySelector('[data-p4cfa-head]').textContent.trim() === 'Your spanner: 40 N at 0.05 m from the pivot.' && !q.querySelector('[data-p4cfa-reveal]').hasAttribute('hidden'); })()"""),
     dict(name="ks3-bench-runs", page="/ks3/physics/energy-at-home/energy-in-food.html", settle=0, settle_b=7,
+         retired="the lean rebuild (Wave 1) took the calorimeter bench off the page",
+         absent=["ks3-calor-block", "data-calor-burn", "data-calor-record"],
          act="""var s = document.querySelector('.ks3-calor-block'); H.click(s.querySelector('[data-calor-gopt]')); await H.sleep(200);
                 for (var k = 0; k < 2; k += 1) {
                   H.click(s.querySelectorAll('[data-calor-food]')[k]); await H.sleep(100);
@@ -785,6 +787,8 @@ CASES = [
     # than the slider's smallest mass, so it can't be made again with the same numbers.
     # It stays saved; the page's table starts empty rather than showing other numbers.
     dict(name="ks3-bench-part-run", page="/ks3/physics/energy-at-home/energy-in-food.html", settle=0, settle_b=7,
+         retired="the lean rebuild (Wave 1) took the calorimeter bench off the page",
+         absent=["ks3-calor-block", "data-calor-burn", "data-calor-record"],
          act="""var s = document.querySelector('.ks3-calor-block'); H.click(s.querySelector('[data-calor-gopt]')); await H.sleep(200);
                 var m = s.querySelector('[data-calor-mass]'); m.value = m.min; m.dispatchEvent(new Event('input', {bubbles: true})); await H.sleep(100);
                 H.click(s.querySelectorAll('[data-calor-food]')[0]); await H.sleep(100);
@@ -879,9 +883,13 @@ CASES = [
          check=lambda b: not any(x.get("answer") == "Drop it in" for x in b),
          back="true"),
     # ── KS3: the rest of the instruments ──
+    # ⊕ 13 Nov 2026: retired_proof looks each `want` up in docs/b2c/id-maps, so the id is the one the
+    # gate sent (before-after-tally-1, knowledge_points/ks3.json) rather than the old "#*-1" pattern.
     dict(name="ks3-gate", page="/ks3/physics/energy-transfers/energy-transfers-before-and-after.html",
+         retired="the lean rebuild (Wave 1) took the before-and-after tally off the page",
+         absent=["ks3-btally-block", "data-btally-gopt", "data-btally-gate"],
          act="var s = document.querySelector('.ks3-btally-block'); H.click(s.querySelector('[data-btally-gopt]')); await H.sleep(300);",
-         want=["energy-transfers-before-and-after#*-1"],
+         want=["energy-transfers-before-and-after#before-after-tally-1"],
          back="(function(){ var s = document.querySelector('.ks3-btally-block'); return H.pressed(s.querySelector('[data-btally-gopt]')) && s.querySelector('[data-btally-gate]').hidden; })()"),
     dict(name="ks3-unit-judged", page="/ks3/chemistry/particles-and-their-behaviour/testing-the-model.html",
          act="var s = document.querySelector('.ks3-ebench-block'); var c = s.querySelectorAll('.ks3-ebench-case'); H.click(c[0].querySelector('[data-call=\"1\"]')); H.click(c[2].querySelector('[data-call=\"1\"]')); await H.sleep(300);",
@@ -957,7 +965,10 @@ CASES = [
 # One school-pupil (non-child) run per page type: the same presses.
 # ⊕ 11 Nov 2026: ks4-form-internal stands in for ks4-form-round (the same stepPick form kind),
 # because the lean rebuild retired the round on changes-in-energy.
-PUPIL = ["ks4-flag-pick", "ks4-level-pick", "ks4-form-internal", "ks4-list-features", "ks3-gate", "ks3-parts-check", "ks3-typed"]
+# ⊕ 13 Nov 2026: ks3-commit-run stands in for ks3-gate (a KS3 bench that opens on a committed
+# option press, no animation, one "#*-1" row), because the lean rebuild (Wave 1) took the
+# before-and-after tally off energy-transfers-before-and-after.
+PUPIL = ["ks4-flag-pick", "ks4-level-pick", "ks4-form-internal", "ks4-list-features", "ks3-commit-run", "ks3-parts-check", "ks3-typed"]
 
 
 def retired_proof(c):
@@ -1007,10 +1018,14 @@ DRAFTS = [
                  var q = s.querySelector('[data-p4cfa-q="1"]'), i = q.querySelectorAll('[data-p4cfa-input]'); i[0].focus(); i[0].value = 'nothing to convert'; i[0].dispatchEvent(new Event('input', {bubbles: true})); i[1].value = 'M = F x d'; i[1].dispatchEvent(new Event('input', {bubbles: true}));""",
          back="""(function(){ var q = document.querySelector('[data-activity="your-turn-moment"] [data-p4cfa-q="1"]'); return !q.hasAttribute('hidden') && q.querySelectorAll('[data-p4cfa-input]')[1].value === 'M = F x d'; })()""",
          blank="""document.querySelector('[data-activity="your-turn-moment"] [data-p4cfa-q="1"] [data-p4cfa-input]').value === ''"""),
-    dict(name="a slider", page="/ks3/physics/energy-at-home/reading-a-fuel-bill.html",
-         type="""var r = document.querySelector('[data-bill-slider="shower"]'); r.value = '45'; r.dispatchEvent(new Event('input', {bubbles: true}));""",
-         back="""document.querySelector('[data-bill-slider="shower"]').value === '45'""",
-         blank="""document.querySelector('[data-bill-slider="shower"]').value === '20'"""),
+    # ⊕ 13 Nov 2026: was the fuel bill's shower slider (reading-a-fuel-bill), which the lean
+    # rebuild (Wave 1) took off the page. The echo bench's distance slider is the same shape
+    # (a G gate, then free sliders that save nothing; tools/ks3_instrument_shapes.json); it
+    # starts at 170 m (min 10, max 500, step 10).
+    dict(name="a slider", page="/ks3/physics/waves-and-sound/echoes-reflection-and-absorption.html",
+         type="""var r = document.querySelector('[data-echo-slider="dist"]'); r.value = '300'; r.dispatchEvent(new Event('input', {bubbles: true}));""",
+         back="""document.querySelector('[data-echo-slider="dist"]').value === '300'""",
+         blank="""document.querySelector('[data-echo-slider="dist"]').value === '170'"""),
     dict(name="a count on a block that takes no answer", page="/ks3/chemistry/the-earth-and-its-atmosphere/the-rock-cycle.html",
          type="""var s = document.querySelector('.ks3-parrow-block'), p = s.querySelectorAll('[data-parrow-pick]'); H.click(p[1]); await H.sleep(120); H.click(p[2]); await H.sleep(120);""",
          back="/^3 of 6/.test(document.querySelector('.ks3-parrow-block [data-count]').textContent.trim())",

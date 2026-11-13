@@ -89,7 +89,22 @@ WAVES = {
                                "anaerobic-respiration-in-humans", "fermentation", "aerobic-vs-anaerobic"]),
         ("C2", "atoms-elements-and-compounds", ["the-atom-daltons-model", "elements", "compounds",
                                                 "chemical-symbols", "formulae", "conservation-of-mass"]),
+        # P1: the four energy lessons only; its four heating lessons are not lean yet.
+        ("P1", "energy-transfers", ["energy-stores", "conservation-of-energy",
+                                    "energy-transfers-before-and-after", "simple-machines"]),
+        ("P2", "energy-at-home", ["energy-in-food", "power-ratings-in-watts", "calculating-energy-transferred",
+                                  "reading-a-fuel-bill", "fuels-and-energy-resources"]),
     ],
+}
+
+# ⊕ P2 (Wave 1): rows an old bench saved that no inventory lists, so knowledge_points never held
+# them and the loop below cannot see them. The calorimeter saved one numeric row per recorded
+# run (`<slug>#food-calorimeter-run-<n>`, shared/mrbadmus.v2.js RECORDS), numbered by the
+# child's own presses. Retired by the stem, as the KS4 maps retire `#picks`
+# (activity_save_drive.retired_proof strips the run number). lesson -> {stem id: why}.
+EXTRA_RETIRED = {
+    "energy-in-food": {"energy-in-food#food-calorimeter-run":
+                       "the calorimeter bench is not on the lean page; each recorded run was its own numeric row"},
 }
 
 # old id -> (new id, reason). Empty on purpose: the pilot keeps every surviving id.
@@ -155,6 +170,10 @@ _WHY = [
     (r"ks4c:", "the classic matching card is not on the lean page"),
     (r"#think-commit-", "the Think first question is not on the lean page"),
     (r"#where-it-runs-out$", "the where-the-model-runs-out activity is not on the lean page"),
+    # ⊕ P1/P2 (Wave 1): the energy benches and sorters, one id per press.
+    (r"#(store-audit-ledger|store-pathway-sort|running-total|before-after-tally|waste-sort|lever-bench|"
+     r"food-calorimeter|power-bench|power-energy-sort|appliance-bench|bill-builder|renewable-sort)-\d",
+     "the instrument was removed from the lean page"),
 ]
 
 
@@ -339,6 +358,9 @@ def build(base="origin/main", unit=None, ref=None, wave=None):
                         problems.append("%s: new id %s has no knowledge-point tag in knowledge_points/%s.json"
                                         % (ref, qid, ks.lower()))
                     ids[qid] = {"status": "added", "new": qid, "kp": kp, "note": "a new question on the lean page"}
+            for qid, why in sorted((EXTRA_RETIRED.get(ref) or {}).items()):
+                if qid not in ids:
+                    ids[qid] = {"status": "removed", "new": None, "kp": None, "note": why}
         maps[key] = {"scope": sorted(refs), "base": base, "ids": ids}
     return maps, problems
 
