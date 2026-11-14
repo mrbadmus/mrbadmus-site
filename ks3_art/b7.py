@@ -293,7 +293,14 @@ def _leaf_section(fig):
     # One straight run of Design's, cut at the two boundaries it crosses. The
     # x is 434, which is inside the pore (420–450) and inside the seventh
     # palisade cell (404–442): the route is aimed, not decorative.
-    out.append(_line(434, 444, 434, 396, stroke=_SVG_INK, w=3,
+    # ⊕ Nov 2026 (Mide): the tail starts lower (y 490) and a second arrowhead
+    # sits just under the pore, so the arrow reads as going INTO the leaf
+    # before it reaches the leaf. Its label sits beside the tail, so no text is
+    # crossed. The arrowhead is a path, so step 1's `line` is still the one
+    # whose end meets step 2's start.
+    out.append(_line(434, 490, 434, 396, stroke=_SVG_INK, w=3,
+                     data_route="co2", data_step="1", data_start="outside"))
+    out.append(_path("M 427,428 L 441,428 L 434,414 Z", fill=_SVG_INK,
                      data_route="co2", data_step="1", data_start="outside"))
     out.append(_line(434, 396, 434, 342, stroke=_SVG_INK, w=3,
                      data_route="co2", data_step="2", data_through="stoma"))
@@ -332,7 +339,7 @@ def _leaf_section(fig):
                       data_surface="upper"))
     out.append(_path("M 596,128 L 574,121", stroke=_SVG_INK, w=1.4))
 
-    out.append(_label(600, 182, "palisade cells — the top layer", size=16,
+    out.append(_label(600, 182, "palisade cells — near the top", size=16,
                       weight="700", anchor="start", data_layer="palisade",
                       data_order=_B7_LEAF_ORDER["palisade"]))
     out.append(_label(600, 204, "packed with chloroplasts, and", size=16,
@@ -345,10 +352,15 @@ def _leaf_section(fig):
                       data_order=_B7_LEAF_ORDER["palisade"]))
     out.append(_path("M 596,190 L 574,190", stroke=_SVG_INK, w=1.4))
 
-    out.append(_label(600, 288, "spongy mesophyll", size=16, weight="400",
+    out.append(_label(600, 270, "spongy mesophyll", size=16, weight="400",
                       anchor="start", data_layer="spongy-mesophyll",
                       data_order=_B7_LEAF_ORDER["spongy-mesophyll"]))
-    out.append(_path("M 596,284 L 574,286", stroke=_SVG_INK, w=1.4))
+    out.append(_path("M 596,266 L 574,270", stroke=_SVG_INK, w=1.4))
+    # ⊕ Nov 2026: spongy cells DO photosynthesise; they hold fewer chloroplasts.
+    out.append(_label(600, 292, "fewer chloroplasts", size=16,
+                      fill=_SVG_INK_BODY, weight="400", anchor="start",
+                      data_layer="spongy-mesophyll",
+                      data_order=_B7_LEAF_ORDER["spongy-mesophyll"]))
     out.append(_label(600, 320, "air spaces between the cells", size=16,
                       fill=_SVG_INK_BODY, weight="400", anchor="start",
                       data_layer="spongy-mesophyll",
@@ -361,18 +373,20 @@ def _leaf_section(fig):
                       data_surface="lower"))
     out.append(_path("M 596,364 L 574,365", stroke=_SVG_INK, w=1.4))
 
-    out.append(_label(150, 430, "the stoma and its two guard cells", size=16,
+    # ⊕ Nov 2026 (Mide): stomata are MOSTLY on the underside, not "nowhere on
+    # top". The label moves left to x 24 so neither line reaches the CO2 arrow.
+    out.append(_label(24, 430, "the stoma and its two guard cells", size=16,
                       weight="700", anchor="start", data_stoma="1",
                       data_surface="lower"))
-    out.append(_label(150, 452, "— on the underside, and nowhere on top",
+    out.append(_label(24, 452, "— stomata are mostly on the underside",
                       size=16, weight="700", anchor="start", data_stoma="1",
                       data_surface="lower"))
-    out.append(_path("M 400,424 L 414,400", stroke=_SVG_INK, w=1.4))
+    out.append(_path("M 330,424 L 402,400", stroke=_SVG_INK, w=1.4))
 
-    out.append(_label(452, 470, "carbon dioxide, in through the stoma",
+    # beside the arrow's tail, so it needs no leader and crosses nothing
+    out.append(_label(448, 482, "carbon dioxide, in through the stoma",
                       size=16, weight="400", anchor="start",
                       data_route="co2"))
-    out.append(_path("M 448,466 L 436,450", stroke=_SVG_INK, w=1.4))
 
     out.append('</g>')
     out.append('</svg>')
