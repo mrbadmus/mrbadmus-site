@@ -260,7 +260,7 @@ GATES = [
     dict(name="test_isolation_drive",
          cmd=["python3", "test_isolation_drive.py"],
          speed="slow",
-         watches=["config_env.py", "test_isolation_drive.py", "ks3_browser.py", "shared/**",
+         watches=["ks3_fixtures/**", "config_env.py", "test_isolation_drive.py", "ks3_browser.py", "shared/**",
                   "*.html", "student/**", "consumer/**", "parents/**",
                   "mrbadmus_site/**", "generate_site_v5.py", "build_ks3.py",
                   "build_ks4.py", "build_student_port.py", "student_rulings.py"],
@@ -442,7 +442,7 @@ GATES = [
          # ks3/**` (the only tree it opens), and generate_site_v5.py, which it
          # executes. Those are also precisely the changes the drift check
          # exists to detect collateral damage FROM.
-         watches=["shared/drawer.css", "shared/account.js", "config_env.py", "topbar.py", "shared/topbar.css", "shared/topbar.js", "verify_ks3.py", "ks3_parity.py", "ks3_canvas.py",
+         watches=["ks3_fixtures/**", "shared/drawer.css", "shared/account.js", "config_env.py", "topbar.py", "shared/topbar.css", "shared/topbar.js", "verify_ks3.py", "ks3_parity.py", "ks3_canvas.py",
                   "ks3_figure_sweep.py", "ks3_overflow.py", "ks3_browser.py",
                   "build_ks3.py", "ks3_art/**", "ks3_data/**",
                   "!ks3_data/**/questions_*.py",
@@ -519,7 +519,7 @@ GATES = [
     dict(name="family_dark_drive",
          cmd=["python3", "family_dark_drive.py"],
          speed="slow",
-         watches=["family_dark_drive.py", "shared/family-dark.css", "shared/config.js", "contrast_audit.py",
+         watches=["ks3_fixtures/**", "ks3/_fixtures/**", "family_dark_drive.py", "shared/family-dark.css", "shared/config.js", "contrast_audit.py",
                   "ks3_browser.py", "student_behaviour.py", "shared/ks3.css", "shared/ks3-theme.css",
                   "shared/ks4-theme.css", "shared/ks4-lesson.css", "shared/student-ds.css",
                   "student/assignment-fixture.html"],
@@ -1619,14 +1619,14 @@ GATES = [
     dict(name="guess_shuffle_drive",
          cmd=["python3", "guess_shuffle_drive.py"],
          speed="slow",
-         watches=["guess_shuffle_drive.py", "ks3_browser.py", "ks4_rulings.py",
+         watches=["ks3_fixtures/**", "guess_shuffle_drive.py", "ks3_browser.py", "ks4_rulings.py",
                   "build_ks4.py", "build_ks3.py", "shared/ks3.js",
                   "shared/ks4-runtime.js", "shared/mrbadmus.v2.js",
                   "ks4_lessons/start_here.py", "ks3_data/start_here.py",
                   "mrbadmus_site/shared/**",
                   "mrbadmus_site/combined/foundation/biology/ecology/carbon-cycle.html",
                   "mrbadmus_site/combined/foundation/chemistry/chemical-changes/ph-scale.html",
-                  "mrbadmus_site/ks3/biology/cells-and-organisation/using-a-microscope.html"],
+                  "mrbadmus_site/ks3/_fixtures/fixture-using-a-microscope.html"],
          needs="mrbadmus_site/ks4.html",
          why="the 'If you had to guess' opener's two options swap places at "
              "random per page load (R20 on KS4, shuffleGuess on KS3), because "
@@ -1646,12 +1646,12 @@ GATES = [
     dict(name="rail_label_drive",
          cmd=["python3", "rail_label_drive.py"],
          speed="slow",
-         watches=["rail_label_drive.py", "ks3_browser.py", "ks4_rulings.py",
+         watches=["ks3_fixtures/**", "rail_label_drive.py", "ks3_browser.py", "ks4_rulings.py",
                   "build_ks4.py", "build_ks3.py", "shared/ks3.js",
                   "shared/ks3.css", "shared/ks4-runtime.js",
                   "mrbadmus_site/shared/**",
                   "mrbadmus_site/combined/foundation/biology/ecology/carbon-cycle.html",
-                  "mrbadmus_site/ks3/biology/cells-and-organisation/using-a-microscope.html"],
+                  "mrbadmus_site/ks3/_fixtures/fixture-using-a-microscope.html"],
          needs="mrbadmus_site/ks4.html",
          why="the sticky progress strip names the section being read (KS3 "
              "wireRail's [data-rail-label], KS4 ks4-lib observe() via "
@@ -1732,7 +1732,7 @@ GATES = [
     dict(name="activity_save_drive",
          cmd=["python3", "activity_save_drive.py"],
          speed="slow",
-         watches=["activity_save_drive.py", "ks3_browser.py", "shared/mrbadmus.v2.js", "shared/config.js",
+         watches=["ks3_fixtures/**", "activity_save_drive.py", "ks3_browser.py", "shared/mrbadmus.v2.js", "shared/config.js",
                   "shared/ks3.js", "shared/ks4-runtime.js", "shared/ks4-lib.js",
                   "ks3/**", "combined/**", "triple/**", "build_ks3.py", "build_ks4.py",
                   "ks4_lessons/**", "ks3_art/**"],
@@ -2615,7 +2615,7 @@ GATES = [
     dict(name="contrast_audit",
          cmd=["python3", "contrast_audit.py", "--quick", "--gate"],
          speed="fast",
-         watches=["ks4_chrome_drive.py", "shared/drawer.css", "shared/account.js", 
+         watches=["ks3_fixtures/**", "ks3/_fixtures/**", "ks4_chrome_drive.py", "shared/drawer.css", "shared/account.js", 
                   # ⊕ B2C unit 6 — every consumer, parents, org and go page is measured flag on.
                   "consumer/**", "parents/**", "org/**", "go/**", 
                   "config_env.py", "topbar.py", "shared/topbar.css", "shared/topbar.js", "contrast_audit.py", "ks3_browser.py",
@@ -2739,7 +2739,7 @@ GATES = [
     dict(name="contrast_audit_interactions",
          cmd=["python3", "contrast_audit.py", "--interactions", "--quick", "--gate"],
          speed="slow",
-         watches=["ks4_chrome_drive.py", "shared/drawer.css", "shared/account.js", 
+         watches=["ks3_fixtures/**", "ks3/_fixtures/**", "ks4_chrome_drive.py", "shared/drawer.css", "shared/account.js", 
                   # ⊕ B2C unit 6 — every consumer, parents, org and go page is measured flag on.
                   "config_env.py", "consumer_dash_fixture.py", "shared/config.js", "consumer/**", "parents/**", "org/**", "go/**", 
                   "topbar.py", "shared/topbar.css", "shared/topbar.js", "contrast_audit.py", "ks3_browser.py",
@@ -2839,7 +2839,7 @@ GATES = [
          cmd=["python3", "theme_placement_drive.py"],
          speed="slow",
          needs="mrbadmus_site",
-         watches=["theme_placement_drive.py", "ks3_browser.py",
+         watches=["ks3_fixtures/**", "theme_placement_drive.py", "ks3_browser.py",
                   "consumer_dash_fixture.py", "today_drive.py", "config_env.py",
                   "shared/theme.js", "shared/ks3-theme.css", "shared/account.js",
                   "shared/config.js", "shared/topbar.css", "shared/topbar.js",
@@ -2886,7 +2886,7 @@ GATES = [
          # the estate, which is the intolerable-hook failure mode this
          # file's own docstring warns turns into "a gate that stops
          # watching". Deviation recorded rather than silently followed.
-         watches=["shared/drawer.css", "shared/account.js", "topbar.py", "shared/topbar.css", "shared/topbar.js", "focus_audit.py", "ks3_browser.py",
+         watches=["ks3_fixtures/**", "shared/drawer.css", "shared/account.js", "topbar.py", "shared/topbar.css", "shared/topbar.js", "focus_audit.py", "ks3_browser.py",
                   "build_student_port.py", "build_teacher_port.py",
                   "student_rulings.py", "student_template.py",
                   "shared/student-runtime.js", "shared/student-live.js", "shared/catch-up-sheet.js",

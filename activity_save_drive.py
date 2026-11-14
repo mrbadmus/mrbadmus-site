@@ -271,6 +271,11 @@ window.H = {
 
 KS4 = "/combined/higher/biology/ecology/"
 CASES = [
+    # ⊕ 14 Nov 2026 (Mide: "our checks should not depend on real lessons"). The cases on the
+    # lessons going lean in Wave 1 (C1, B1, the Forces samples) press the hidden frozen classic
+    # copy of the same page (ks3_fixtures/, /ks3/_fixtures/fixture-<slug>.html). Its ids are the
+    # page's own, under the fixture slug (fixture-<slug>#...), so each `want` and `check` names
+    # the same id with that prefix; the presses and the assertions are unchanged.
     # ── KS4: a lesson's own activities ──
     dict(name="ks4-flag-pick", page=KS4 + "abiotic-biotic-factors.html",
          act="H.click(H.rootBtn('A new predator')); await H.sleep(400); H.click(H.rootBtn('A new pathogen')); await H.sleep(400);",
@@ -624,10 +629,10 @@ CASES = [
          check=lambda b: all(isinstance(x["is_correct"], bool) and x.get("correct_answer") for x in b if "#plan-judge-" in x["question_id"])
                          and [x for x in b if x["question_id"].endswith("-1")][0]["is_correct"] is False,
          back="""(function(){ var c = document.querySelectorAll('.ks3-rplan-step'); return Array.prototype.every.call(c, function (s) { return H.pressed(s.querySelectorAll('.ks3-rplan-opt')[0]) && s.getAttribute('data-open') === '1'; }) && /^5 of 5|all/.test(document.querySelector('.ks3-rplan-block [data-count]').textContent); })()"""),
-    dict(name="ks3-bench-count", page="/ks3/chemistry/particles-and-their-behaviour/solids-liquids-and-gases.html",
+    dict(name="ks3-bench-count", page="/ks3/_fixtures/fixture-solids-liquids-and-gases.html",
          act="""var s = document.querySelector('.ks3-sbench-block'); H.click(s.querySelector('[data-benchgate] .ks3-option')); await H.sleep(200);
                 var st = s.querySelectorAll('[data-sbench-state]'); for (var i = 0; i < st.length; i += 1) { H.click(st[i]); await H.sleep(150); } await H.sleep(1000);""",
-         want=["solids-liquids-and-gases#state-bench-1"],
+         want=["fixture-solids-liquids-and-gases#state-bench-1"],
          ticks=True, settle=1.5,
          back="""/all three seen|^3 of 3/.test(document.querySelector('.ks3-sbench-block [data-count]').textContent)"""),
     dict(name="ks3-rig-runs", page="/ks3/chemistry/energy-changes-in-reactions/measuring-a-temperature-change.html",
@@ -694,12 +699,12 @@ CASES = [
          want=["the-rock-cycle#grain-order-1"],
          check=lambda b: len(b) == 1 and b[0]["kind"] == "order" and isinstance(b[0]["is_correct"], bool) and b[0]["correct_answer"].count("\n") >= 3,
          back="""(function(){ var p = document.querySelectorAll('.ks3-grain-block [data-grain-pick]'); return Array.prototype.every.call(p, function (x) { return H.pressed(x); }); })()"""),
-    dict(name="ks3-units-sort", page="/ks3/biology/cells-and-organisation/life-processes.html",
+    dict(name="ks3-units-sort", page="/ks3/_fixtures/fixture-life-processes.html",
          act="""var r = document.querySelectorAll('.ks3-sort .ks3-sortrow'); for (var i = 0; i < r.length; i += 1) { H.click(r[i].querySelector('.ks3-sort-chip')); await H.sleep(40); }
                 H.click(r[1].querySelectorAll('.ks3-sort-chip')[1]); await H.sleep(120);
                 H.click(document.querySelector('.ks3-sort [data-sort-reveal]')); await H.sleep(300);
                 H.click(document.querySelector('.ks3-sort [data-selfcheck] .ks3-option')); await H.sleep(200);""",
-         want=["life-processes#living-once-never-*"],
+         want=["fixture-life-processes#living-once-never-*"],
          check=lambda b: len(set(x["question_id"] for x in b)) == len(b) and len(b) >= 8 and all(x["correct_answer"] for x in b if x["is_correct"] is False),
          back="""(function(){ var r = document.querySelectorAll('.ks3-sort .ks3-sortrow'); return H.pressed(r[0].querySelector('.ks3-sort-chip')) && H.pressed(r[1].querySelectorAll('.ks3-sort-chip')[1]) && !r[0].querySelector('.ks3-sort-answer').closest('[hidden]') && H.pressed(document.querySelector('.ks3-sort [data-selfcheck] .ks3-option')); })()"""),
     # ── ⊕ 9 Nov 2026: a second blind run ──
@@ -758,7 +763,7 @@ CASES = [
          check=lambda b: [x for x in b if x["question_id"].endswith("#dxval-3")][0]["is_correct"] is False,
          same="H.rootState().dx === 2 && H.rootState().dxChecked === true && /^Count again/.test(H.v().dxWord)",
          back="H.rootState().dx === 2 && H.rootState().dxChecked === true && /^Count again/.test(H.v().dxWord)"),
-    dict(name="ks3-live-calc", page="/ks3/physics/forces/moments.html",
+    dict(name="ks3-live-calc", page="/ks3/_fixtures/fixture-moments.html",
          act="""var g = document.querySelector('.ks3-span-block [data-span-gopt="0"]'); H.click(g); await H.sleep(200);
                 H.click(document.querySelector('[data-span-arm="0.05"]')); await H.sleep(120);
                 var f = document.querySelector('[data-span-force]'); f.value = '40'; f.dispatchEvent(new Event('input', {bubbles: true})); await H.sleep(150);
@@ -766,8 +771,8 @@ CASES = [
                 for (var i = 0; i < ins.length; i += 1) { ins[i].value = L[i]; ins[i].dispatchEvent(new Event('input', {bubbles: true})); }
                 await H.sleep(100); H.click(q.querySelector('[data-p4cfa-check]')); await H.sleep(400);""",
          then="""var f = document.querySelector('[data-span-force]'); f.value = '100'; f.dispatchEvent(new Event('input', {bubbles: true})); await H.sleep(500);""",
-         want=["moments#your-turn-moment-1"],
-         check=lambda b: [x for x in b if x["question_id"] == "moments#your-turn-moment-1"][0]["question_text"].startswith("Your spanner: 40 N at 0.05 m"),
+         want=["fixture-moments#your-turn-moment-1"],
+         check=lambda b: [x for x in b if x["question_id"] == "fixture-moments#your-turn-moment-1"][0]["question_text"].startswith("Your spanner: 40 N at 0.05 m"),
          same="""(function(){ var q = document.querySelector('[data-p4cfa-q="0"]'); return q.querySelector('[data-p4cfa-head]').textContent.trim() === 'Your spanner: 40 N at 0.05 m from the pivot.' && !q.querySelector('[data-p4cfa-reveal]').hasAttribute('hidden') && document.querySelector('[data-span-force]').value === '40'; })()""",
          back="""(function(){ var q = document.querySelector('[data-p4cfa-q="0"]'); return q.querySelector('[data-p4cfa-head]').textContent.trim() === 'Your spanner: 40 N at 0.05 m from the pivot.' && !q.querySelector('[data-p4cfa-reveal]').hasAttribute('hidden'); })()"""),
     dict(name="ks3-bench-runs", page="/ks3/physics/energy-at-home/energy-in-food.html", settle=0, settle_b=7,
@@ -891,38 +896,38 @@ CASES = [
          act="var s = document.querySelector('.ks3-btally-block'); H.click(s.querySelector('[data-btally-gopt]')); await H.sleep(300);",
          want=["energy-transfers-before-and-after#before-after-tally-1"],
          back="(function(){ var s = document.querySelector('.ks3-btally-block'); return H.pressed(s.querySelector('[data-btally-gopt]')) && s.querySelector('[data-btally-gate]').hidden; })()"),
-    dict(name="ks3-unit-judged", page="/ks3/chemistry/particles-and-their-behaviour/testing-the-model.html",
+    dict(name="ks3-unit-judged", page="/ks3/_fixtures/fixture-testing-the-model.html",
          act="var s = document.querySelector('.ks3-ebench-block'); var c = s.querySelectorAll('.ks3-ebench-case'); H.click(c[0].querySelector('[data-call=\"1\"]')); H.click(c[2].querySelector('[data-call=\"1\"]')); await H.sleep(300);",
-         want=["testing-the-model#seven-observations-1", "testing-the-model#seven-observations-3"],
-         check=lambda b: {x["question_id"]: x["is_correct"] for x in b}.get("testing-the-model#seven-observations-1") is True
-                         and {x["question_id"]: x["is_correct"] for x in b}.get("testing-the-model#seven-observations-3") is False,
+         want=["fixture-testing-the-model#seven-observations-1", "fixture-testing-the-model#seven-observations-3"],
+         check=lambda b: {x["question_id"]: x["is_correct"] for x in b}.get("fixture-testing-the-model#seven-observations-1") is True
+                         and {x["question_id"]: x["is_correct"] for x in b}.get("fixture-testing-the-model#seven-observations-3") is False,
          back="(function(){ var c = document.querySelectorAll('.ks3-ebench-block .ks3-ebench-case'); return H.pressed(c[0].querySelector('[data-call=\"1\"]')) && H.pressed(c[2].querySelector('[data-call=\"1\"]')); })()"),
     # ⊕ 8 Nov 2026: the saved work arrives before shared/ks3.js has run (a phone on
     # a slow line, a fast read). The replay must wait: pressing buttons nothing is
     # listening to yet loses the restore for good, with state 'done'.
-    dict(name="ks3-slow-script", page="/ks3/chemistry/particles-and-their-behaviour/testing-the-model.html",
+    dict(name="ks3-slow-script", page="/ks3/_fixtures/fixture-testing-the-model.html",
          slow_on_b="/shared/ks3.js",
          act="var s = document.querySelector('.ks3-ebench-block'); var c = s.querySelectorAll('.ks3-ebench-case'); H.click(c[0].querySelector('[data-call=\"1\"]')); await H.sleep(300);",
-         want=["testing-the-model#seven-observations-1"],
+         want=["fixture-testing-the-model#seven-observations-1"],
          back="(function(){ var c = document.querySelectorAll('.ks3-ebench-block .ks3-ebench-case'); return H.pressed(c[0].querySelector('[data-call=\"1\"]')) && c[0].getAttribute('data-open') === '1'; })()"),
     dict(name="ks3-tab-unit", page="/ks3/physics/forces/non-contact-forces.html",
          act="var s = document.querySelector('.ks3-fsort-block'); H.click(s.querySelector('[data-fsort-tab=\"2\"]')); await H.sleep(200); H.click(s.querySelector('.ks3-fsort-label')); await H.sleep(300);",
          want=["non-contact-forces#*-3"],
          check=lambda b: any(x["question_id"].endswith("-3") and isinstance(x.get("is_correct"), bool) for x in b),
          back="(function(){ var s = document.querySelector('.ks3-fsort-block'); return H.pressed(s.querySelector('[data-fsort-tab=\"2\"]')) && H.pressed(s.querySelector('.ks3-fsort-label')); })()"),
-    dict(name="ks3-parts-check", page="/ks3/biology/cells-and-organisation/levels-of-organisation.html",
+    dict(name="ks3-parts-check", page="/ks3/_fixtures/fixture-levels-of-organisation.html",
          act="""var s = document.querySelector('.ks3-hard'); var rows = s.querySelectorAll('.ks3-hardrow');
                 Array.prototype.forEach.call(rows, function (r) { H.click(r.querySelector('.ks3-rung-chip[data-rung=\"Tissue\"]') || r.querySelector('.ks3-rung-chip')); });
                 await H.sleep(200); H.click(s.querySelector('[data-hard-reveal]')); await H.sleep(400);""",
-         want=["levels-of-organisation#s-hard-1", "levels-of-organisation#s-hard-2"],
+         want=["fixture-levels-of-organisation#s-hard-1", "fixture-levels-of-organisation#s-hard-2"],
          check=lambda b: all(isinstance(x.get("is_correct"), bool) for x in b if "#s-hard-" in x["question_id"]),
          back="(function(){ var r = document.querySelectorAll('.ks3-hard .ks3-hardrow'); return r.length > 1 && r[0].getAttribute('data-open') === '1' && !!r[0].querySelector('.ks3-rung-chip[aria-pressed=\"true\"]'); })()"),
-    dict(name="ks3-whole-check", page="/ks3/physics/describing-motion/distance-time-graphs.html",
+    dict(name="ks3-whole-check", page="/ks3/_fixtures/fixture-distance-time-graphs.html",
          act="""var s = document.querySelector('.ks3-jwalk-block'); var segs = s.querySelectorAll('[data-jwalk-seg]');
                 var want = ['walk','still','jog','back']; Array.prototype.forEach.call(segs, function (g, i) { H.click(g.querySelector('[data-jwalk-mode=\"' + want[i] + '\"]')); });
                 await H.sleep(200); H.click(s.querySelector('[data-jwalk-send]')); await H.sleep(500);""",
-         want=["distance-time-graphs#journey-match-1"],
-         check=lambda b: [x for x in b if x["question_id"] == "distance-time-graphs#journey-match-1"][0]["is_correct"] is True,
+         want=["fixture-distance-time-graphs#journey-match-1"],
+         check=lambda b: [x for x in b if x["question_id"] == "fixture-distance-time-graphs#journey-match-1"][0]["is_correct"] is True,
          back="(function(){ var g = document.querySelectorAll('.ks3-jwalk-block [data-jwalk-seg]'); return g.length === 4 && H.pressed(g[2].querySelector('[data-jwalk-mode=\"jog\"]')); })()"),
     dict(name="ks3-typed", page="/ks3/chemistry/types-of-reaction/which-reaction-is-this.html",
          act="""var s = document.querySelector('.ks3-rwrite-block'); var f = s.querySelector('[data-rwrite-field]');
@@ -957,9 +962,9 @@ CASES = [
          check=lambda b: len(b) == 1 and b[0]["answer"] == "2, 1, 2" and b[0]["is_correct"] is True,
          back="""(function(){ var s = document.querySelector('.ks3-cbal-block'); var eq = s.querySelector('[data-cbal-eq="water"]');
                 return eq.querySelector('[data-cbal-coeff="0"]').textContent === '2' && !eq.querySelector('[data-cbal-balanced]').hidden && !s.querySelector('[data-cbal-tick="water"]').hidden; })()"""),
-    dict(name="ks3-commit-no-reveal", page="/ks3/biology/cells-and-organisation/unicellular-organisms.html",
+    dict(name="ks3-commit-no-reveal", page="/ks3/_fixtures/fixture-unicellular-organisms.html",
          act="var s = H.sec('microscope-bench'); H.click(s.querySelectorAll('.ks3-option')[1]); await H.sleep(300);",
-         want=["unicellular-organisms#microscope-bench"],
+         want=["fixture-unicellular-organisms#microscope-bench"],
          back="H.pressed(H.sec('microscope-bench').querySelectorAll('.ks3-option')[1])"),
 ]
 # One school-pupil (non-child) run per page type: the same presses.
@@ -1008,12 +1013,12 @@ DRAFTS = [
          blank="document.querySelector('[data-rwrite-field]').value === ''",
          send="H.click(document.querySelector('[data-rwrite-show]')); await H.sleep(400);",
          sent=lambda b: b and b[0]["time_spent_seconds"] is not None and b[0]["time_spent_seconds"] >= 3),
-    dict(name="typed, KS3 Question 2", page="/ks3/physics/space/mass-vs-weight.html",
+    dict(name="typed, KS3 Question 2", page="/ks3/_fixtures/fixture-mass-vs-weight.html",
          type="""var s = document.querySelector('[data-activity="your-turn-mass"]'); H.click(s.querySelector('[data-p12cfa-tab="1"]')); await H.sleep(150);
                  var i = s.querySelector('[data-p12cfa-q="1"] [data-p12cfa-input="1"]'); i.value = 'second question line'; i.dispatchEvent(new Event('input', {bubbles: true}));""",
          back="""(function(){ var q = document.querySelector('[data-activity="your-turn-mass"] [data-p12cfa-q="1"]'); return !q.hasAttribute('hidden') && q.querySelector('[data-p12cfa-input="1"]').value === 'second question line'; })()""",
          blank="""document.querySelector('[data-activity="your-turn-mass"] [data-p12cfa-q="1"] [data-p12cfa-input="1"]').value === ''"""),
-    dict(name="typed, KS3 Question 2 beside a live bench", page="/ks3/physics/forces/moments.html",
+    dict(name="typed, KS3 Question 2 beside a live bench", page="/ks3/_fixtures/fixture-moments.html",
          type="""var s = document.querySelector('[data-activity="your-turn-moment"]'); H.click(s.querySelector('[data-p4cfa-tab="1"]')); await H.sleep(150);
                  var q = s.querySelector('[data-p4cfa-q="1"]'), i = q.querySelectorAll('[data-p4cfa-input]'); i[0].focus(); i[0].value = 'nothing to convert'; i[0].dispatchEvent(new Event('input', {bubbles: true})); i[1].value = 'M = F x d'; i[1].dispatchEvent(new Event('input', {bubbles: true}));""",
          back="""(function(){ var q = document.querySelector('[data-activity="your-turn-moment"] [data-p4cfa-q="1"]'); return !q.hasAttribute('hidden') && q.querySelectorAll('[data-p4cfa-input]')[1].value === 'M = F x d'; })()""",
@@ -1030,7 +1035,7 @@ DRAFTS = [
          type="""var s = document.querySelector('.ks3-parrow-block'), p = s.querySelectorAll('[data-parrow-pick]'); H.click(p[1]); await H.sleep(120); H.click(p[2]); await H.sleep(120);""",
          back="/^3 of 6/.test(document.querySelector('.ks3-parrow-block [data-count]').textContent.trim())",
          blank="/^1 of 6/.test(document.querySelector('.ks3-parrow-block [data-count]').textContent.trim())"),
-    dict(name="picks on a KS3 block, not yet opened", page="/ks3/biology/cells-and-organisation/levels-of-organisation.html",
+    dict(name="picks on a KS3 block, not yet opened", page="/ks3/_fixtures/fixture-levels-of-organisation.html",
          type="""await H.sleep(2500); var r = document.querySelector('.ks3-hard .ks3-hardrow'); H.click(r.querySelectorAll('.ks3-rung-chip')[1]); await H.sleep(150);""",
          back="H.pressed(document.querySelector('.ks3-hard .ks3-hardrow').querySelectorAll('.ks3-rung-chip')[1])",
          blank="!H.pressed(document.querySelector('.ks3-hard .ks3-hardrow').querySelectorAll('.ks3-rung-chip')[1])"),

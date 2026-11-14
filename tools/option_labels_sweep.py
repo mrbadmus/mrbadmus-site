@@ -312,6 +312,8 @@ def main():
                      r'<span class="ks3-opt-label">(.*?)</span>', re.S)
     n_act = n_pg = 0
     for f in sorted(glob.glob(os.path.join(SITE, "ks3", "**", "*.html"), recursive=True)):
+        if os.sep + "_fixtures" + os.sep in f:      # ⊕ 14 Nov 2026: hidden check fixtures, not lessons
+            continue
         t = open(f, encoding="utf-8").read()
         rows = []
         for m in pat.finditer(t):
