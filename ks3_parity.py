@@ -7542,6 +7542,14 @@ _W1_WHY = {
     C2_SYM: "the verdict-card grids are not on the lean page (figure c2-co-and-co)",
     C2_FORM: "the formula-builder and vocabulary cards are not on the lean page (figures c2-molecules, c2-big-small, c2-salt-lattice, c2-ammonia)",
     C2_MASS: "the balance bench and four-step picker are not on the lean page (figures c2-open-sealed, c2-carbon-burns, c2-word-magnesium)",
+    # ⊕ lean wave 1 (B1): five of the six B1 pages are lean pages. life-processes is held back
+    # (its stored Rung 2 options need a production reload), so B1_LIFE's rows still run. The
+    # microscope sim, the dark practical shells and the criteria numbers were on B1 pages only.
+    B1_MICRO: "the microscope lab, method critique and FIFA builder are not on the lean page (figures b1-light-microscope, b1-magnification-triangle, b1-field-of-view, b1-biological-drawing)",
+    B1_CELLS: "the cell bench, wall-or-membrane pairs and fit-the-cell bench are not on the lean page (figure b1-cell-pair)",
+    B1_SPEC: "the system bench and sabotage bench are not on the lean page (figures b1-specialised-cells, b1-diffusion)",
+    B1_PARTS: "the zoom ladder, sort task and removal cases are not on the lean page (figures b1-levels, b1-leaf-section)",
+    B1_UNI: "the microscope bench and settles-it cases are not on the lean page (figures b1-unicellular, b1-cell-sizes)",
 }
 RETIRED_BY_LEAN += [(c["name"], c["on"], _W1_WHY[c["on"]])
                     for c in COMPONENTS + CONTRAST if c.get("on") in _W1_WHY]
@@ -18396,7 +18404,15 @@ def run_browser_layers(ks3_root, browser_mod):
                 if rel in SIM_AUDITS:
                     audit_kind, audit_js = SIM_AUDITS[rel]
                     page = fresh(b, url, rel)
-                    if page is not None:
+                    # ⊕ lean wave 1 (B1): using-a-microscope is a lean page and carries no sim.
+                    # Excused only on a lean page (Key knowledge section present) with no sim at
+                    # all; a classic page, or a lean page that grows a sim, still runs the audit.
+                    if page is not None and rel in _W1_WHY and page.eval(
+                            "!!document.querySelector('[data-lean-sec=\"knowledge\"]')"
+                            " && !document.querySelector('.ks3-sim')"):
+                        style_rows.append(("sim audit · " + audit_kind, "—", "RETIRED_BY_LEAN",
+                                           _W1_WHY[rel], True))
+                    elif page is not None:
                         got = page.eval(audit_js)
                         audit_problems = (got or {}).get("problems") or []
                         for ap in audit_problems:

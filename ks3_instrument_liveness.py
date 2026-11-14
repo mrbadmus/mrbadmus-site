@@ -223,6 +223,31 @@ RETIRED_BY_LEAN = {
                     "the light-gates bench is not on the lean page (figure p3-speed-triangle)"),
     "compare-pairs": ("physics/describing-motion/speed.html",
                       "the compare-pairs bench is not on the lean page"),
+    # ⊕ lean wave 1 (B1 cells and organisation): five of the six lessons are lean pages, and no
+    # other built page emits any of these families. life-processes is held back (classic), so its
+    # test-board and sort-rows still run and are not listed here.
+    "critique-steps": ("biology/cells-and-organisation/using-a-microscope.html",
+                       "the method-critique steps are not on the lean page"),
+    "fifa-construct": ("biology/cells-and-organisation/using-a-microscope.html",
+                       "the FIFA builder is not on the lean page (figure b1-magnification-triangle)"),
+    "cell-bench": ("biology/cells-and-organisation/animal-and-plant-cells.html",
+                   "replaced by the drawn figure b1-cell-pair"),
+    "sort-pairs": ("biology/cells-and-organisation/animal-and-plant-cells.html",
+                   "the wall-or-membrane pairs are not on the lean page"),
+    "fit-parts": ("biology/cells-and-organisation/animal-and-plant-cells.html",
+                  "the fit-the-cell bench is not on the lean page (figure b1-cell-pair)"),
+    "system-bench": ("biology/cells-and-organisation/specialised-cells.html",
+                     "replaced by the drawn figure b1-specialised-cells"),
+    "sabotage": ("biology/cells-and-organisation/specialised-cells.html",
+                 "the sabotage bench is not on the lean page (figure b1-specialised-cells)"),
+    "zoom-ladder": ("biology/cells-and-organisation/levels-of-organisation.html",
+                    "replaced by the drawn figure b1-levels"),
+    "sort-task": ("biology/cells-and-organisation/levels-of-organisation.html",
+                  "the which-level sort task is not on the lean page"),
+    "removal-cases": ("biology/cells-and-organisation/levels-of-organisation.html",
+                      "the removal cases are not on the lean page"),
+    "settles-it": ("biology/cells-and-organisation/unicellular-organisms.html",
+                   "the settles-it cases are not on the lean page (figure b1-unicellular)"),
 }
 
 

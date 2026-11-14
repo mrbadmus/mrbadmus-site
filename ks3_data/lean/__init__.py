@@ -101,7 +101,9 @@ def _ladder(lesson, rec):
     # exact-text edits to a self-marked rung's success list (render only; the authored list is
     # untouched). Every [old, new] pair must find its old text exactly once, or the build stops.
     for old, new in rec.get("ladder_ticks") or []:
-        hits = [(rung, i) for rung, q in lad.items() for i, t in enumerate(q.get("success") or []) if t == old]
+        # (a ladder may carry text entries such as `retry_note` and `sub` beside the rung dicts)
+        hits = [(rung, i) for rung, q in lad.items() if isinstance(q, dict)
+                for i, t in enumerate(q.get("success") or []) if t == old]
         if len(hits) != 1:
             raise ValueError("lean[%s]: ladder_ticks old text %r found %d times in the ladder's success lists"
                              % (rec["slug"], old[:70], len(hits)))

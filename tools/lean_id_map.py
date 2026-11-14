@@ -98,6 +98,10 @@ WAVES = {
         # rest of both units is not lean yet.
         ("P3", "describing-motion", ["speed"]),
         ("P4", "forces", ["what-a-force-is", "drawing-and-adding-forces", "friction"]),
+        # B1: five of its six lessons; life-processes is held (its stored Rung 2 options need a
+        # production reload; record parked in docs/lessons/wave1/held/).
+        ("B1", "cells-and-organisation", ["using-a-microscope", "animal-and-plant-cells", "specialised-cells",
+                                          "levels-of-organisation", "unicellular-organisms"]),
     ],
 }
 
@@ -109,6 +113,13 @@ WAVES = {
 EXTRA_RETIRED = {
     "energy-in-food": {"energy-in-food#food-calorimeter-run":
                        "the calorimeter bench is not on the lean page; each recorded run was its own numeric row"},
+    # ⊕ B1 (Wave 1): the two microscope labs' commit-first question. A `.ks3-option` press in a
+    # section with no instrument shell sends `<slug>#<activity>` (shared/mrbadmus.v2.js,
+    # commitNoReveal); the activity's kind is `lab`, which no inventory lists.
+    "using-a-microscope": {"using-a-microscope#microscope-lab":
+                           "the microscope lab is not on the lean page; its commit-first question went with it"},
+    "unicellular-organisms": {"unicellular-organisms#microscope-bench":
+                              "the microscope bench is not on the lean page; its commit-first question went with it"},
 }
 
 # old id -> (new id, reason). Empty on purpose: the pilot keeps every surviving id.
@@ -182,6 +193,10 @@ _WHY = [
     # your-turn resultant calculation (a p4-attempt block, one id per question).
     (r"#(board|sledge|drag|light-gates|compare-pairs)-\d", "the instrument was removed from the lean page"),
     (r"#your-turn-resultant-\d", "the worked-calculation questions are not on the lean page"),
+    # ⊕ B1 (Wave 1): the cells benches, sorters and FIFA builder, one id per part.
+    (r"#(sams-method|magnification-fifa-do|seven-parts-two-cells|wall-or-membrane|fit-the-cell|"
+     r"s-break|s-hard|s-settle)-\d",
+     "the instrument was removed from the lean page"),
 ]
 
 
