@@ -19,11 +19,11 @@ MRB-103 also flagged an **anatomical/structural diagram gap** (cells, organs) an
 | Status | Figures |
 |---|---|
 | `drafted` | 1 |
-| `drawn` | 60 |
+| `drawn` | 65 |
 | `final` | 1 |
 | `needed` | 3 |
 | `retired` | 6 |
-| **Total** | **71** |
+| **Total** | **76** |
 
 `needed` = declared by a lesson, not yet drawn. A lesson may ship with figures at `needed` — it is not a build blocker — but the need is then counted here rather than invisible.
 
@@ -97,7 +97,12 @@ MRB-103 also flagged an **anatomical/structural diagram gap** (cells, organs) an
 | P2 | `energy-in-food` | `p2-food-triangle` | diagram | `drawn` | Cover the one you want. Side by side means multiply. One over the other means divide. |
 | P2 | `fuels-and-energy-resources` | `p2-fossil-fuels` | diagram | `drawn` | Coal formed from plants. Oil and gas formed from tiny sea organisms. |
 | P2 | `power-ratings-in-watts` | `p2-power-triangle` | diagram | `drawn` | Cover the one you want. Side by side means multiply. One over the other means divide. |
+| P3 | `speed` | `p3-speed-triangle` | diagram | `drawn` | Cover the one you want. Side by side means multiply. One over the other means divide. |
 | P4 | `drawing-and-adding-forces` | `p4-resultant-beam-recap` | diagram | `drawn` | The same beam as earlier in this lesson. |
+| P4 | `drawing-and-adding-forces` | `p4-sledge-arrows` | diagram | `drawn` | The 40 N pull and the 25 N pull, drawn to the same scale. |
+| P4 | `friction` | `p4-crate-steady` | diagram | `drawn` | A crate sliding along a floor at a steady speed. |
+| P4 | `what-a-force-is` | `p4-force-pair-wall` | diagram | `drawn` | The skater and the wall push on each other. |
+| P4 | `what-a-force-is` | `p4-newtonmeter-reading` | diagram | `drawn` | The pointer reads 3 N, so the shoe pulls down with 3 N. |
 | P8 | `conductors-and-insulators` | `p8-resistance-chart-recap` | diagram | `drawn` | The same chart as earlier in this lesson. |
 | P8 | `current-and-circuits` | `p8-lamp-symbol` | diagram | `drawn` | One of the eight symbols from this lesson's key, shown on its own. |
 | P9 | `electric-fields` | `p9-field-point-marked` | diagram | `drawn` | One point on a field map, marked. |
