@@ -19,11 +19,11 @@ MRB-103 also flagged an **anatomical/structural diagram gap** (cells, organs) an
 | Status | Figures |
 |---|---|
 | `drafted` | 1 |
-| `drawn` | 52 |
+| `drawn` | 60 |
 | `final` | 1 |
 | `needed` | 3 |
 | `retired` | 6 |
-| **Total** | **63** |
+| **Total** | **71** |
 
 `needed` = declared by a lesson, not yet drawn. A lesson may ship with figures at `needed` — it is not a build blocker — but the need is then counted here rather than invisible.
 
@@ -87,8 +87,16 @@ MRB-103 also flagged an **anatomical/structural diagram gap** (cells, organs) an
 | C3 | `filtration` | `particle-panels` | diagram | `drawn` | A grain of sand is a lump of many millions of particles stuck together, thousands of times wider than the gaps between the paper's fibres. A dissolved salt particle is on its own, and it is smaller than the gap by more than the gap is smaller than the grain. There is no filter paper that stops one and passes the other. |
 | C5 | `displacement` | `reactivity-series` | diagram | `drawn` | Nobody was told this order. It was assembled by doing what you are about to do — putting metals into each other's solutions and recording which way the swap went. The bench below covers four of these twelve; the same method extended down the list produces the rest of it. |
 | C6 | `the-ph-scale-and-indicators` | `ph-scale` | diagram | `drawn` | Fifteen whole numbers, one colour each. The reds and oranges are acid, green is neutral, and the blues and purples are alkali. The numbers matter more than the colours: colour-blind chemists use a pH meter and get the same answer. |
+| P1 | `conservation-of-energy` | `p1-pendulum-stores` | diagram | `drawn` | The bars change. The total stays at 120 J. |
+| P1 | `energy-transfers-before-and-after` | `p1-sankey-winch` | diagram | `drawn` | The width of each arrow shows the energy. 100 J in = 70 J + 30 J out. |
+| P1 | `simple-machines` | `p1-lever-trade` | diagram | `drawn` | Small force, big distance. Big force, small distance. |
+| P1 | `simple-machines` | `p1-triangle-wfd` | diagram | `drawn` | Cover the one you want to find. |
 | P10 | `how-a-motor-works` | `p10-motor-arrows-marked` | diagram | `drawn` | The coil from this lesson's bench, with its two force arrows marked. |
 | P10 | `magnetic-fields` | `p10-horseshoe-field-gap` | diagram | `drawn` | The gap between a horseshoe magnet's two poles. |
+| P2 | `calculating-energy-transferred` | `p2-energy-triangle` | diagram | `drawn` | Cover the one you want. Side by side means multiply. One over the other means divide. |
+| P2 | `energy-in-food` | `p2-food-triangle` | diagram | `drawn` | Cover the one you want. Side by side means multiply. One over the other means divide. |
+| P2 | `fuels-and-energy-resources` | `p2-fossil-fuels` | diagram | `drawn` | Coal formed from plants. Oil and gas formed from tiny sea organisms. |
+| P2 | `power-ratings-in-watts` | `p2-power-triangle` | diagram | `drawn` | Cover the one you want. Side by side means multiply. One over the other means divide. |
 | P4 | `drawing-and-adding-forces` | `p4-resultant-beam-recap` | diagram | `drawn` | The same beam as earlier in this lesson. |
 | P8 | `conductors-and-insulators` | `p8-resistance-chart-recap` | diagram | `drawn` | The same chart as earlier in this lesson. |
 | P8 | `current-and-circuits` | `p8-lamp-symbol` | diagram | `drawn` | One of the eight symbols from this lesson's key, shown on its own. |
