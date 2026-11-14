@@ -2182,3 +2182,832 @@ KIND_FN = {
     'state-bench': r_state_bench,
     'state-matrix': r_state_matrix,
 }
+
+
+# ══ lean wave · C1's drawn figures ═══════════════════════════════════════
+#
+# Three drawers for the lean C1 pages, appended below the retired
+# instruments and added to ART at the foot of this file. Every plate is 340
+# units wide and stacks its parts one under another, so each label reads at
+# full size on a phone.
+#
+# The science the drawings must not break (KS3):
+#   · a particle is the SAME size in every state and at every temperature.
+#     One radius per figure; heating moves particles apart, it never swells
+#     them. (`mix` is the one figure with two radii: two substances.)
+#   · solid: touching, regular rows, vibrating in place.
+#     liquid: touching, a jumble, no fixed places, no hole a particle fits.
+#     gas: far apart, each moving in a straight line.
+#   · a heating curve is flat while the substance melts and while it boils,
+#     drawn to scale from the record's own energy values.
+#
+# Positions are computed, never random at build time: every jumble comes
+# from a fixed seed, so two builds draw the same picture byte for byte.
+#
+# Paint: outlines, text and grounds are --ks3-* tokens. The dye and the smoke
+# speck carry a FIXED fill outlined in --ks3-ink, as C2's atoms do, so they
+# look the same in the light and dark themes.
+#
+#   "particle-picture"  data {"boxes": [box, ...], "r": optional radius}
+#       box {"label", "count"?, "layout", ...}
+#         solid  {"rows", "cols", "motion"?, "spacing"?: "wider"}
+#         liquid {"n", "size"?: "big"|"small", "motion"?}
+#         gas    {"n", "motion"?, "hits"?: k, "height"?: "half"}
+#         mix    {"big", "small", "sum_label"?, "note"?}  (needs a big and a small liquid box
+#                above it; a dashed line marks their two levels added, labelled sum_label)
+#         spread {"n", "where": "left"|"middle"|"even", "net_arrow"?: str}
+#   "state-heating-curve" data {"x_label", "y_label", "y_min", "y_max", "y_ticks",
+#                             "points": [[x, y]], "flats": [{"from", "label"}],
+#                             "slopes": [{"from", "label"}]}
+#   "brownian-path"     data {"speck_label", "air_label", "steps", "air"}
+
+import math as _c1x_math
+from ks3_art.kit import (
+    _SVG_ACCENT_TEXT,
+    _SVG_INK_BODY,
+    _SVG_INK_FAINT,
+    _SVG_INK_MUTED,
+    _SVG_INSET,
+    _SVG_RULE,
+    _line,
+    _mono,
+    _n,
+    _path,
+)
+
+_C1X_W = 340
+_C1X_BX, _C1X_BW = 8, 324           # every box: x and width
+_C1X_DYE = "#7B4FB8"                # dye particles (fixed fill, ink outline)
+_C1X_SMOKE = "#8C8C94"              # the smoke speck (fixed fill, ink outline)
+_C1X_PARTICLE = _SVG_ACCENT_TINT     # a plain particle
+_C1X_GAP = 0.25                      # "wider": the gap, in diameters
+
+
+def _c1x_need(fig, key):
+    v = (fig.get("data") or {}).get(key)
+    if v is None or v == [] or v == "":
+        raise ValueError("figure %r: %s needs data.%s" % (fig.get("id"), fig.get("art"), key))
+    return v
+
+
+def _c1x_open(fig, h, body, defs=""):
+    return (_svg_open(fig, _C1X_W, int(_c1x_math.ceil(h))) + defs
+            + '<g stroke-linecap="round" stroke-linejoin="round">' + "".join(body) + "</g></svg>")
+
+
+class _C1xRand(object):
+    """A fixed-seed generator, so a jumble is the same jumble on every build."""
+
+    def __init__(self, seed):
+        self.s = (seed * 2654435761 + 97) & 0x7FFFFFFF
+
+    def next(self):
+        self.s = (self.s * 1103515245 + 12345) & 0x7FFFFFFF
+        return self.s / float(0x7FFFFFFF)
+
+
+def _c1x_arrow(x1, y1, x2, y2, stroke=_SVG_INK, w=2.5, head=8, **data):
+    """A straight line with a drawn head ending exactly at (x2, y2)."""
+    ang = _c1x_math.atan2(y2 - y1, x2 - x1)
+    dx, dy = _c1x_math.cos(ang), _c1x_math.sin(ang)
+    px, py = -dy, dx
+    tri = _path("M %s,%s L %s,%s L %s,%s Z"
+                % (_n(x2), _n(y2),
+                   _n(x2 - dx * head + px * head * 0.55), _n(y2 - dy * head + py * head * 0.55),
+                   _n(x2 - dx * head - px * head * 0.55), _n(y2 - dy * head - py * head * 0.55)),
+                fill=stroke, **data)
+    return _line(x1, y1, x2 - dx * head * 0.6, y2 - dy * head * 0.6, stroke=stroke, w=w, **data) + tri
+
+
+def _c1x_curved_arrow(cx, cy, rad, a0, a1, stroke=_SVG_INK, w=2.5, head=8, **data):
+    """An arc round (cx, cy) from angle a0 to a1 (degrees), headed at a1."""
+    def pt(a):
+        t = _c1x_math.radians(a)
+        return cx + rad * _c1x_math.cos(t), cy + rad * _c1x_math.sin(t)
+    # stop the line short of the head so the stroke does not poke through it
+    sweep = 1 if a1 > a0 else 0
+    trim = _c1x_math.degrees(head * 0.6 / rad) * (1 if a1 > a0 else -1)
+    sx, sy = pt(a0)
+    ex, ey = pt(a1 - trim)
+    tx, ty = pt(a1)
+    arc = _path("M %s,%s A %s,%s 0 0 %d %s,%s" % (_n(sx), _n(sy), _n(rad), _n(rad), sweep, _n(ex), _n(ey)),
+                stroke=stroke, w=w, **data)
+    # tangent at a1, in the direction of travel
+    t = _c1x_math.radians(a1)
+    s = 1 if a1 > a0 else -1
+    dx, dy = -_c1x_math.sin(t) * s, _c1x_math.cos(t) * s
+    px, py = -dy, dx
+    tri = _path("M %s,%s L %s,%s L %s,%s Z"
+                % (_n(tx), _n(ty),
+                   _n(tx - dx * head + px * head * 0.55), _n(ty - dy * head + py * head * 0.55),
+                   _n(tx - dx * head - px * head * 0.55), _n(ty - dy * head - py * head * 0.55)),
+                fill=stroke, **data)
+    return arc + tri
+
+
+def _c1x_burst(x, y, nx, ny, size=8, **data):
+    """A small star where a particle hits a wall: six short rays, on the wall."""
+    out = []
+    for k in range(6):
+        a = _c1x_math.radians(30 + 60 * k)
+        out.append(_line(x + _c1x_math.cos(a) * 2.5, y + _c1x_math.sin(a) * 2.5,
+                         x + _c1x_math.cos(a) * size, y + _c1x_math.sin(a) * size,
+                         stroke=_SVG_ACCENT_TEXT, w=2.2, **data))
+    return "".join(out)
+
+
+# ── a liquid: touching circles that fill the bottom of the box ───────────
+#
+# Each circle goes into one of the DEEPEST resting places left: on the floor,
+# or cradled by two circles (or a circle and the floor, or a circle and a
+# wall). Which of the nearly-deepest places it takes is a fixed-seed choice,
+# so the surface stays level, as a liquid's does, while the particles land in
+# a jumble rather than in rows. Every particle touches others, and a spot a
+# whole particle would fit in is filled before the level rises.
+
+def _c1x_overlaps(x, y, r, circles, tol=0.01):
+    return any((x - c[0]) ** 2 + (y - c[1]) ** 2 < (r + c[2] - tol) ** 2 for c in circles)
+
+
+def _c1x_rests(r, circles, left, right, floor):
+    """Every place a circle of radius r can rest, as (x, y). y grows downward."""
+    cands = []
+    lo, hi = left + r, right - r
+    # on the floor
+    x = lo
+    while x <= hi + 0.01:
+        cands.append((x, floor - r))
+        x += 2.0
+    cands.append((hi, floor - r))
+    for i, a in enumerate(circles):
+        Ra = r + a[2]
+        # a circle and the floor
+        dy = (floor - r) - a[1]
+        if abs(dy) <= Ra:
+            dx = _c1x_math.sqrt(Ra * Ra - dy * dy)
+            cands += [(a[0] - dx, floor - r), (a[0] + dx, floor - r)]
+        # a circle and a wall
+        for wx in (lo, hi):
+            dx = wx - a[0]
+            if abs(dx) <= Ra:
+                cands.append((wx, a[1] - _c1x_math.sqrt(Ra * Ra - dx * dx)))
+        # two circles: cradled above both, between them
+        for b in circles[i + 1:]:
+            Rb = r + b[2]
+            dx, dy = b[0] - a[0], b[1] - a[1]
+            d = _c1x_math.hypot(dx, dy)
+            if d == 0 or d > Ra + Rb or d < abs(Ra - Rb):
+                continue
+            k = (Ra * Ra - Rb * Rb + d * d) / (2 * d)
+            hh = _c1x_math.sqrt(max(0.0, Ra * Ra - k * k))
+            mx, my = a[0] + k * dx / d, a[1] + k * dy / d
+            for sgn in (1, -1):
+                px, py = mx + sgn * hh * (-dy) / d, my + sgn * hh * dx / d
+                if py < min(a[1], b[1]) + 0.01 and min(a[0], b[0]) <= px <= max(a[0], b[0]):
+                    cands.append((px, py))
+    return [(x, y) for (x, y) in cands
+            if lo - 0.01 <= x <= hi + 0.01 and y <= floor - r + 0.01
+            and not _c1x_overlaps(x, y, r, circles)]
+
+
+def _c1x_touches(x, y, r, circles, left, right, floor):
+    if abs(y - (floor - r)) < 0.02 and (abs(x - (left + r)) < 0.02 or abs(x - (right - r)) < 0.02):
+        return True
+    return any(abs(_c1x_math.hypot(x - c[0], y - c[1]) - (r + c[2])) < 0.05 for c in circles)
+
+
+def _c1x_fill(radii, circles, left, right, floor, seed, tol=0.45, snug=0.6, cap=None):
+    """Add one circle per entry of `radii`, each into a near-deepest resting
+    place; `snug` is how often it takes a place touching a circle already
+    there, when there is one (so the floor layer is not a row of loose beads).
+    `cap` is the surface: no circle's top may stand above it."""
+    rnd = _C1xRand(seed)
+    allc = list(circles)
+    out = []
+    for r in radii:
+        cands = _c1x_rests(r, allc, left, right, floor)
+        if cap is not None:
+            cands = [p for p in cands if p[1] - r >= floor - cap - 0.01]
+        if not cands:
+            raise ValueError("particle-picture: the box is full")
+        deep = max(c[1] for c in cands)
+        near = sorted(set((round(x, 2), round(y, 2)) for (x, y) in cands if y >= deep - tol * r))
+        touching = [p for p in near if _c1x_touches(p[0], p[1], r, allc, left, right, floor)]
+        pool = touching if (touching and rnd.next() < snug) else near
+        x, y = pool[int(rnd.next() * len(pool)) % len(pool)]
+        allc.append((x, y, r))
+        out.append((x, y, r))
+    return out
+
+
+def _c1x_level(pile):
+    """How high a pile stands above the floor."""
+    return -min(c[1] - c[2] for c in pile)
+
+
+def _c1x_level_fill(radii, left, right, floor, seed):
+    """A liquid settles LEVEL: the lowest flat surface that holds every circle.
+    The top row may have gaps, but nothing stands above the surface."""
+    area = sum(_c1x_math.pi * r * r for r in radii)
+    cap = max(2 * max(radii), area / ((right - left) * 0.9))
+    def attempt(c):
+        try:
+            return _c1x_fill(radii, [], left, right, floor, seed, cap=c)
+        except ValueError:
+            return None
+    pile = attempt(cap)
+    while pile is None:                 # up in coarse steps until everything fits
+        cap += 4.0
+        pile = attempt(cap)
+    for _ in range(3):                  # then back down to the lowest that fits
+        lower = attempt(cap - 1.0)
+        if lower is None:
+            break
+        cap, pile = cap - 1.0, lower
+    return pile, cap
+
+
+def _c1x_bump(pile, cap):
+    """How far the surface is from flat: the worst particle on top that sits
+    neither at the surface line nor a whole particle below it (a gap)."""
+    r = min(c[2] for c in pile)
+    worst = 0.0
+    for c in pile:
+        if any(abs(q[0] - c[0]) < c[2] + q[2] - 2 and q[1] < c[1] for q in pile if q is not c):
+            continue                       # something sits on it: not on top
+        d = cap + (c[1] - c[2])            # how far its top is below the surface
+        worst = max(worst, min(d, max(0.0, 1.6 * r - d)))
+    return worst
+
+
+_C1X_SEEDS = 16
+
+
+def _c1x_liquid_pile(n, r, left, right, floor, seed0=1):
+    """The flattest-topped of a fixed set of seeds."""
+    best = None
+    for seed in range(seed0, seed0 + _C1X_SEEDS):
+        pile, cap = _c1x_level_fill([r] * n, left, right, floor, seed)
+        score = _c1x_bump(pile, cap)
+        if best is None or score < best[0] - 0.01:
+            best = (score, pile, cap)
+    return best[1], best[2]
+
+
+def _c1x_mix_pile(nb, rb, ns, rs, left, right, floor, seed0, apart):
+    """Big and small circles dropped in together, interleaved, settled level.
+    The mixture must stand lower than the two liquids' levels added (`apart`),
+    which the box marks with a dashed line. The real shrink is about 3%; the
+    drawing takes the flattest fixed seed that stands at most 95% of `apart`,
+    and the box says the drop is exaggerated."""
+    total = nb + ns
+    seq = [rb if (k + 1) * nb // total > k * nb // total else rs for k in range(total)]
+    best = None
+    for seed in range(seed0, seed0 + 12):
+        pile, cap = _c1x_level_fill(seq, left, right, floor, seed)
+        if cap <= 0.95 * apart:
+            score = _c1x_bump(pile, cap)
+            if best is None or score < best[0] - 0.01:
+                best = (score, pile, cap)
+    if best:
+        return best[1], best[2]
+    raise ValueError("particle-picture: no mixture stands visibly lower than its parts")
+
+
+# ── gas: far apart, each with an arrow ───────────────────────────────────
+
+_C1X_ARROW = 22         # length of a gas particle's arrow, beyond its edge
+
+
+def _c1x_gas(n, hits, r, x0, y0, w, h, seed):
+    """[(x, y, angle, hit_point or None)] for n particles, `hits` of them at a wall."""
+    reach = r + _C1X_ARROW
+    gap_wall = 4
+    for min_d in (8 * r, 7.5 * r, 7 * r, 6.5 * r, 6 * r):     # centre to centre: >= 3 diameters apart
+        for seed_try in range(seed, seed + 60):
+            rnd = _C1xRand(seed_try)
+            pts = []
+            # wall particles first: a wall chosen by its length, a point along it
+            per = 2 * (w + h)
+            ok = True
+            for k in range(hits):
+                placed = False
+                for _t in range(400):
+                    s = rnd.next() * per
+                    if s < w:
+                        wx, wy, nx, ny = x0 + s, y0, 0, -1
+                    elif s < w + h:
+                        wx, wy, nx, ny = x0 + w, y0 + s - w, 1, 0
+                    elif s < 2 * w + h:
+                        wx, wy, nx, ny = x0 + w - (s - w - h), y0 + h, 0, 1
+                    else:
+                        wx, wy, nx, ny = x0, y0 + h - (s - 2 * w - h), -1, 0
+                    # keep clear of the corners
+                    if nx and not (y0 + reach + 4 <= wy <= y0 + h - reach - 4):
+                        continue
+                    if ny and not (x0 + reach + 4 <= wx <= x0 + w - reach - 4):
+                        continue
+                    tilt = (rnd.next() - 0.5) * 0.9           # radians off the normal
+                    base = _c1x_math.atan2(ny, nx) + tilt
+                    ln = (reach + rnd.next() * 14) / max(0.5, _c1x_math.cos(tilt))
+                    px, py = wx - _c1x_math.cos(base) * ln, wy - _c1x_math.sin(base) * ln
+                    if not (x0 + r + gap_wall <= px <= x0 + w - r - gap_wall
+                            and y0 + r + gap_wall <= py <= y0 + h - r - gap_wall):
+                        continue
+                    if any(_c1x_math.hypot(px - q[0], py - q[1]) < min_d for q in pts):
+                        continue
+                    # this arrow must not pass through another particle
+                    if any(_c1x_math.hypot((px + wx) / 2 - q[0], (py + wy) / 2 - q[1]) < r + 12 for q in pts):
+                        continue
+                    pts.append((px, py, base, (wx, wy)))
+                    placed = True
+                    break
+                if not placed:
+                    ok = False
+                    break
+            if not ok:
+                continue
+            tries = 0
+            while len(pts) < n and tries < 3000:
+                tries += 1
+                px = x0 + r + 8 + rnd.next() * (w - 2 * r - 16)
+                py = y0 + r + 8 + rnd.next() * (h - 2 * r - 16)
+                if hits and min(px - x0, x0 + w - px, py - y0, y0 + h - py) < r + 16:
+                    continue          # only the wall particles sit close to a wall
+                if any(_c1x_math.hypot(px - q[0], py - q[1]) < min_d for q in pts):
+                    continue
+                pts.append((px, py, None, None))
+            if len(pts) < n:
+                continue
+            # directions for the free particles: varied, never into a neighbour or a wall
+            out = []
+            for i, (px, py, ang, hit) in enumerate(pts):
+                if ang is None:
+                    for j in range(24):
+                        a = (i * 2.399 + j * 0.83 + rnd.next() * 0.4) % (2 * _c1x_math.pi)
+                        tx = px + _c1x_math.cos(a) * reach
+                        ty = py + _c1x_math.sin(a) * reach
+                        clear = all(_c1x_math.hypot(tx - q[0], ty - q[1]) > r + 10
+                                    for k2, q in enumerate(pts) if k2 != i)
+                        if clear and x0 + 6 < tx < x0 + w - 6 and y0 + 6 < ty < y0 + h - 6:
+                            ang = a
+                            break
+                    if ang is None:
+                        break
+                out.append((px, py, ang, hit))
+            if len(out) == n:
+                return out
+    raise ValueError("particle-picture: cannot place %d gas particles (%d at a wall) in %sx%s"
+                     % (n, hits, w, h))
+
+
+# ── spread: dye particles in water ───────────────────────────────────────
+
+def _c1x_scatter(n, r, xa, xb, ya, yb, min_d, seed, skew=1.0):
+    """n non-overlapping centres in [xa, xb] x [ya, yb]; skew > 1 crowds them left."""
+    for seed_try in range(seed, seed + 400):
+        rnd = _C1xRand(seed_try)
+        pts, tries = [], 0
+        while len(pts) < n and tries < 6000:
+            tries += 1
+            px = xa + (xb - xa) * (rnd.next() ** skew)
+            py = ya + rnd.next() * (yb - ya)
+            if all(_c1x_math.hypot(px - q[0], py - q[1]) >= min_d for q in pts):
+                pts.append((px, py))
+        if len(pts) == n:
+            return pts
+    raise ValueError("particle-picture: cannot place %d particles" % n)
+
+
+def _c1x_spread(n, where, r, x0, y0, w, h, seed):
+    pad = r + 3
+    if where == "left":
+        # crowded into the left quarter, nearly touching
+        return _c1x_scatter(n, r, x0 + pad, x0 + w * 0.25 - r, y0 + pad, y0 + h - pad, 2 * r + 1.5, seed)
+    if where == "middle":
+        # over the left two thirds, more of them to the left
+        return _c1x_scatter(n, r, x0 + pad, x0 + w * 2.0 / 3.0 - r, y0 + pad, y0 + h - pad, 2 * r + 6, seed,
+                            skew=1.8)
+    if where == "even":
+        # one particle in each of n equal cells across the whole box
+        rnd = _C1xRand(seed)
+        rows = 2
+        cols = -(-n // rows)
+        cw, ch = (w - 2 * pad) / cols, (h - 2 * pad) / rows
+        pts = []
+        for i in range(n):
+            rr, cc = i % rows, i // rows
+            jx = (rnd.next() - 0.5) * max(0.0, cw - 2 * r - 8)
+            jy = (rnd.next() - 0.5) * max(0.0, ch - 2 * r - 8)
+            pts.append((x0 + pad + cw * (cc + 0.5) + jx, y0 + pad + ch * (rr + 0.5) + jy))
+        return pts
+    raise ValueError("particle-picture: spread where %r" % where)
+
+
+# ── the drawer ───────────────────────────────────────────────────────────
+
+def _c1x_radius(fig, boxes):
+    data = fig.get("data") or {}
+    if data.get("r"):
+        return float(data["r"]), float(data["r"]) / 1.6
+    lays = set(b.get("layout") for b in boxes)
+    if "mix" in lays or any(b.get("size") for b in boxes):
+        return 20.0, 12.5
+    if lays == {"gas"}:
+        return 8.0, 8.0
+    if "spread" in lays:
+        return 8.0, 8.0
+    return 12.0, 12.0
+
+
+def _c1x_vibe(cx, cy, r, side, big, **data):
+    """Two short curved marks beside a particle: it is vibrating on the spot."""
+    out = []
+    for k, off in enumerate((4, 9) if not big else (5, 12)):
+        rad = r + off
+        span = 26 if not big else 34
+        a = 0 if side > 0 else 180
+        a0, a1 = _c1x_math.radians(a - span), _c1x_math.radians(a + span)
+        sx, sy = cx + rad * _c1x_math.cos(a0), cy + rad * _c1x_math.sin(a0)
+        ex, ey = cx + rad * _c1x_math.cos(a1), cy + rad * _c1x_math.sin(a1)
+        out.append(_path("M %s,%s A %s,%s 0 0 1 %s,%s" % (_n(sx), _n(sy), _n(rad), _n(rad), _n(ex), _n(ey)),
+                         stroke=_SVG_INK, w=2 if not big else 2.4, **data))
+    return "".join(out)
+
+
+def _c1x_particle_picture(fig):
+    data = fig.get("data") or {}
+    boxes = _c1x_need(fig, "boxes")
+    R, RS = _c1x_radius(fig, boxes)
+    BX, BW = _C1X_BX, _C1X_BW
+    IN = 2.5                               # keep particles inside the box stroke
+    left, right = BX + IN, BX + BW - IN
+    fid = fig.get("id") or "fig"
+    seed = sum(ord(ch) for ch in fid)
+
+    # ── first pass: what each box holds, in box coordinates (floor at 0) ──
+    plans = []
+    for bi, b in enumerate(boxes):
+        lay = b.get("layout")
+        if lay == "solid":
+            rows, cols = b["rows"], b["cols"]
+            wider = b.get("spacing") == "wider"
+            pitch = 2 * R * (1 + (_C1X_GAP if wider else 0))
+            bw = (cols - 1) * pitch + 2 * R
+            bh = (rows - 1) * pitch + 2 * R
+            plans.append(dict(kind=lay, rows=rows, cols=cols, pitch=pitch, bw=bw, need=bh + 20, wider=wider))
+        elif lay == "liquid":
+            r = RS if b.get("size") == "small" else R
+            pile, cap = _c1x_liquid_pile(b["n"], r, left, right, 0.0, seed0=seed + bi * 7)
+            plans.append(dict(kind=lay, pile=pile, cap=cap, size=b.get("size"), need=cap / 0.62))
+        elif lay == "mix":
+            parts = dict((q["size"], len(q["pile"])) for q in plans if q["kind"] == "liquid")
+            if parts != {"big": b["big"], "small": b["small"]}:
+                raise ValueError("figure %r: a mix box needs a big and a small liquid box above it, "
+                                 "holding %d and %d circles" % (fid, b["big"], b["small"]))
+            apart = sum(q["cap"] for q in plans if q["kind"] == "liquid")
+            pile, cap = _c1x_mix_pile(b["big"], R, b["small"], RS, left, right, 0.0, seed + bi * 7, apart)
+            plans.append(dict(kind=lay, pile=pile, cap=cap, apart=apart, need=apart + 52))
+        elif lay == "gas":
+            plans.append(dict(kind=lay, need=230 if R <= 8 else 190))
+        elif lay == "spread":
+            plans.append(dict(kind=lay, need=104))
+        else:
+            raise ValueError("figure %r: particle-picture layout %r" % (fid, lay))
+
+    # liquids in one figure sit in boxes of one height, so their levels compare
+    liquid_h = max([p["need"] for p in plans if p["kind"] in ("liquid", "mix")] or [0])
+    if any(p["kind"] in ("liquid", "mix") for p in plans):
+        heights = [p["need"] for p in plans if p["kind"] != "gas"]
+        common = max(heights + [liquid_h])
+    else:
+        common = max(p["need"] for p in plans)
+
+    out, y = [], 6
+    for bi, (b, p) in enumerate(zip(boxes, plans)):
+        label = b["label"]
+        out.append(_label(BX, y + 15, label, size=14, weight="700", anchor="start",
+                          data_part="box-label", data_key=label))
+        top = y + 24
+        if p["kind"] == "gas":
+            h = p["need"] if b.get("height") != "half" else p["need"] / 2.0
+            if bi and plans[0]["kind"] == "gas" and b.get("height") != "half":
+                h = plans[0]["need"]
+        elif p["kind"] == "spread":
+            h = p["need"]
+        else:
+            h = common
+        floor = top + h - IN
+        body = []
+        if p["kind"] == "solid":
+            x0 = BX + BW / 2.0 - p["bw"] / 2.0 + R
+            for i in range(p["rows"]):
+                cy = floor - R - i * p["pitch"]
+                for j in range(p["cols"]):
+                    cx = x0 + j * p["pitch"]
+                    body.append(_circle(cx, cy, R, fill=_C1X_PARTICLE, stroke=_SVG_INK, w=1.8,
+                                        data_part="particle", data_state="solid"))
+                if b.get("motion"):
+                    body.append(_c1x_vibe(x0, cy, R, -1, p["wider"], data_part="vibration"))
+                    body.append(_c1x_vibe(x0 + (p["cols"] - 1) * p["pitch"], cy, R, 1, p["wider"],
+                                          data_part="vibration"))
+        elif p["kind"] in ("liquid", "mix"):
+            if p["kind"] == "mix":
+                # where the level would be if nothing fitted into the gaps
+                ly = floor - p["apart"]
+                body.append(_line(left + 4, ly, right - 4, ly, stroke=_SVG_INK_BODY, w=2, dash="6,5",
+                                  data_part="sum-level"))
+                if b.get("sum_label"):
+                    body.append(_mono(right - 6, ly - 8, b["sum_label"], size=14, fill=_SVG_INK_BODY,
+                                      weight="600", anchor="end", data_part="sum-label"))
+                if b.get("note"):
+                    body.append(_label(left + 8, top + 22, b["note"], size=14, fill=_SVG_INK_MUTED,
+                                       weight="600", anchor="start", data_part="note"))
+            for (cx, cy, r) in p["pile"]:
+                body.append(_circle(cx, floor + cy, r, fill=_C1X_PARTICLE, stroke=_SVG_INK, w=1.8,
+                                    data_part="particle",
+                                    data_state="small" if (p["kind"] == "mix" and r < R) else p["kind"]))
+            if b.get("motion"):
+                # three short curved arrows, each round a particle near the surface
+                pile = sorted(p["pile"], key=lambda c: c[1])
+                picks = []
+                for c in pile:
+                    if c[0] - c[2] < left + 22 or c[0] + c[2] > right - 22:
+                        continue
+                    # the arc goes over the top of the particle: nothing may sit there
+                    arc = [(c[0] + (c[2] + 7) * _c1x_math.cos(_c1x_math.radians(a)),
+                            c[1] + (c[2] + 7) * _c1x_math.sin(_c1x_math.radians(a)))
+                           for a in range(228, 316, 4)]
+                    if any(_c1x_math.hypot(ax - q[0], ay - q[1]) < q[2] + 2
+                           for (ax, ay) in arc for q in pile if q is not c):
+                        continue
+                    if all(abs(c[0] - q[0]) > 56 for q in picks):
+                        picks.append(c)
+                    if len(picks) == 3:
+                        break
+                for k, (cx, cy, r) in enumerate(sorted(picks)):
+                    a0, a1 = (225, 318) if k % 2 == 0 else (315, 222)
+                    body.append(_c1x_curved_arrow(cx, floor + cy, r + 7, a0, a1, w=2.4, head=8,
+                                                  data_part="slide"))
+        elif p["kind"] == "gas":
+            gas = _c1x_gas(b["n"], b.get("hits", 0), R, BX + IN, top + IN, BW - 2 * IN, h - 2 * IN,
+                           seed + bi * 13)
+            for (px, py, ang, hit) in gas:
+                body.append(_circle(px, py, R, fill=_C1X_PARTICLE, stroke=_SVG_INK, w=1.8,
+                                    data_part="particle", data_state="gas"))
+            for (px, py, ang, hit) in gas:
+                if not b.get("motion") and not hit:
+                    continue
+                sx, sy = px + _c1x_math.cos(ang) * (R + 2), py + _c1x_math.sin(ang) * (R + 2)
+                if hit:
+                    ex, ey = hit
+                    # the head ends at the wall's inner face
+                    body.append(_c1x_arrow(sx, sy, ex - _c1x_math.cos(ang) * 2, ey - _c1x_math.sin(ang) * 2,
+                                           w=2.2, head=7, data_part="move"))
+                else:
+                    ex = px + _c1x_math.cos(ang) * (R + _C1X_ARROW)
+                    ey = py + _c1x_math.sin(ang) * (R + _C1X_ARROW)
+                    body.append(_c1x_arrow(sx, sy, ex, ey, w=2.2, head=7, data_part="move"))
+            for (px, py, ang, hit) in gas:
+                if hit:
+                    body.append(_c1x_burst(hit[0], hit[1], 0, 0, data_part="hit"))
+        elif p["kind"] == "spread":
+            for (px, py) in _c1x_spread(b["n"], b["where"], R, BX + IN, top + IN, BW - 2 * IN, h - 2 * IN,
+                                        seed + bi * 5):
+                body.append(_circle(px, py, R, fill=_C1X_DYE, stroke=_SVG_INK, w=1.8,
+                                    data_part="dye"))
+        out.append(_rect(BX, top, BW, h, rx=10, fill=_SVG_INSET, stroke=_SVG_INK, w=2.5,
+                         data_part="box", data_key=label))
+        out.extend(body)
+        y = top + h
+        if b.get("count"):
+            out.append(_mono(BX, y + 21, b["count"], size=14, fill=_SVG_INK_BODY, weight="600", anchor="start",
+                             data_part="count", data_key=label))
+            y += 28
+        if b.get("net_arrow"):
+            out.append(_c1x_arrow(BX + 6, y + 19, BX + 124, y + 19, w=3, head=11, data_part="net-arrow"))
+            out.append(_label(BX + 134, y + 24, b["net_arrow"], size=14, weight="700", anchor="start",
+                              data_part="net-label"))
+            y += 32
+        if bi < len(boxes) - 1:
+            y += 18
+    return _c1x_open(fig, y + 8, out)
+
+
+# ── state-heating-curve ────────────────────────────────────────────────────────
+
+def _c1x_minus(v):
+    return ("−%s" % _n(-v)) if v < 0 else _n(v)
+
+
+def _c1x_text_w(s, size=14):
+    """A safe over-estimate of a bold label's width, for keeping labels apart."""
+    return len(s) * size * 0.6
+
+
+def _c1x_heating_curve(fig):
+    d = fig.get("data") or {}
+    pts = _c1x_need(fig, "points")
+    for k in ("x_label", "y_label", "y_min", "y_max", "y_ticks"):
+        _c1x_need(fig, k)
+    y0, y1 = float(d["y_min"]), float(d["y_max"])
+    xs = [p[0] for p in pts]
+    # a little room left of the first point, so the first rise is not drawn on the axis
+    xa, xb = min(xs) - 0.03 * (max(xs) - min(xs)), max(xs)
+    L, Rr, T, B = 66, 326, 16, 284          # plot area
+    H = B + 46
+
+    def X(v):
+        return L + (v - xa) / float(xb - xa) * (Rr - L)
+
+    def Y(v):
+        return B - (v - y0) / (y1 - y0) * (B - T)
+
+    o = []
+    for t in d["y_ticks"]:
+        o.append(_line(L, Y(t), Rr, Y(t), stroke=_SVG_RULE, w=1, data_part="grid"))
+        o.append(_line(L - 6, Y(t), L, Y(t), stroke=_SVG_INK, w=2))
+        o.append(_label(L - 10, Y(t) + 5, _c1x_minus(t), size=14, fill=_SVG_INK_MUTED, weight="500",
+                        anchor="end", data_part="tick"))
+    o.append(_line(L, T - 6, L, B, stroke=_SVG_INK, w=2, data_part="axis"))
+    o.append(_line(L, B, Rr + 6, B, stroke=_SVG_INK, w=2, data_part="axis"))
+    o.append(_label((L + Rr) / 2.0, B + 30, d["x_label"], size=14, fill=_SVG_INK_BODY, weight="700",
+                    data_part="x-label"))
+    yx, yy = 16, (T + B) / 2.0
+    o.append('<text x="%s" y="%s" font-family="%s" font-size="14" font-weight="700" style="fill:%s" '
+             'text-anchor="middle" transform="rotate(-90 %s %s)" data-part="y-label">%s</text>'
+             % (_n(yx), _n(yy), "'Instrument Sans', system-ui, sans-serif", _SVG_INK_BODY,
+                _n(yx), _n(yy), e(d["y_label"])))
+    P = [(X(px), Y(py)) for px, py in pts]
+    o.append(_path("M " + " L ".join("%s,%s" % (_n(px), _n(py)) for px, py in P),
+                   stroke=_SVG_INK, w=3, data_part="curve"))
+
+    # ── labels: each takes the first spot that clears the line, the axes and
+    #    every label (and leader) already placed ──
+    samples = []
+    for (ax, ay), (bx, by) in zip(P, P[1:]):
+        k = max(1, int(_c1x_math.hypot(bx - ax, by - ay)))
+        samples += [(ax + (bx - ax) * i / float(k), ay + (by - ay) * i / float(k)) for i in range(k + 1)]
+    taken = []          # rects (x0, y0, x1, y1)
+
+    def rect_for(x, base, s, anchor):
+        w = _c1x_text_w(s)
+        x0 = x if anchor == "start" else (x - w if anchor == "end" else x - w / 2.0)
+        return (x0, base - 11, x0 + w, base + 2)
+
+    def clear(rc, extra=()):
+        if rc[0] < L + 4 or rc[2] > Rr + 4 or rc[1] < T - 4 or rc[3] > B - 4:
+            return False
+        if any(rc[0] - 4 < sx < rc[2] + 4 and rc[1] - 4 < sy < rc[3] + 4 for sx, sy in samples):
+            return False
+        for q in taken:
+            if rc[0] < q[2] + 3 and q[0] < rc[2] + 3 and rc[1] < q[3] + 3 and q[1] < rc[3] + 3:
+                return False
+        for (lx0, ly0, lx1, ly1) in extra:          # a leader must cross no label either
+            for i in range(21):
+                px, py = lx0 + (lx1 - lx0) * i / 20.0, ly0 + (ly1 - ly0) * i / 20.0
+                if any(q[0] - 2 < px < q[2] + 2 and q[1] - 2 < py < q[3] + 2 for q in taken):
+                    return False
+        return True
+
+    def place(cands, s, fill, part):
+        for (x, base, anchor, leader) in cands:
+            rc = rect_for(x, base, s, anchor)
+            if clear(rc, [leader] if leader else ()):
+                taken.append(rc)
+                if leader:
+                    o.append(_line(leader[0], leader[1], leader[2], leader[3], stroke=_SVG_INK_MUTED, w=1.5,
+                                   data_part="leader", data_key=s))
+                    lx, ly = min(leader[0], leader[2]), min(leader[1], leader[3])
+                    taken.append((lx, ly, max(leader[0], leader[2]), max(leader[1], leader[3])))
+                o.append(_label(x, base, s, size=14, fill=fill, weight="700", anchor=anchor,
+                                data_part=part, data_key=s))
+                return
+        raise ValueError("figure %r: no room for the label %r" % (fig.get("id"), s))
+
+    for sl in d.get("slopes") or []:
+        i = sl["from"]
+        (ax, ay), (bx, by) = P[i], P[i + 1]
+        if ay == by:
+            raise ValueError("figure %r: slopes[%d] is flat" % (fig.get("id"), i))
+        cands = []
+        for f in (0.5, 0.35, 0.65, 0.2, 0.8):
+            px, py = ax + (bx - ax) * f, ay + (by - ay) * f
+            cands += [(px + 10, py + 5, "start", None), (px - 10, py + 5, "end", None)]
+        place(cands, sl["label"], _SVG_INK, "slope")
+    for fl in d.get("flats") or []:
+        i = fl["from"]
+        (ax, ay), (bx, by) = P[i], P[i + 1]
+        if ay != by:
+            raise ValueError("figure %r: flats[%d] is not flat" % (fig.get("id"), i))
+        mx = (ax + bx) / 2.0
+        cands = [(mx, ay - 9, "middle", None), (ax + 4, ay - 9, "start", None), (bx - 4, ay - 9, "end", None),
+                 (mx, ay + 19, "middle", None)]
+        # too short to hold its own word: beside it, below the line, with a leader
+        for dy in (17, 13, 21):
+            for dx in (16, 22, 30):
+                lx = bx + dx
+                cands.append((lx, ay + dy, "start", (lx - 4, ay + dy - 5, mx, ay + 3)))
+        place(cands, fl["label"], _SVG_ACCENT_TEXT, "flat")
+    return _svg_open(fig, _C1X_W, H) + '<g stroke-linecap="round" stroke-linejoin="round">' + "".join(o) + "</g></svg>"
+
+
+# ── brownian-path ────────────────────────────────────────────────────────
+
+def _c1x_seg_dist(px, py, p1, p2):
+    vx, vy = p2[0] - p1[0], p2[1] - p1[1]
+    t = max(0.0, min(1.0, ((px - p1[0]) * vx + (py - p1[1]) * vy) / float(vx * vx + vy * vy or 1)))
+    return _c1x_math.hypot(px - p1[0] - t * vx, py - p1[1] - t * vy)
+
+
+def _c1x_brownian_path(fig):
+    steps = int(_c1x_need(fig, "steps"))
+    n_air = int(_c1x_need(fig, "air"))
+    speck_label, air_label = _c1x_need(fig, "speck_label"), _c1x_need(fig, "air_label")
+    BX, BW, top, h = _C1X_BX, _C1X_BW, 6, 236
+    RS, RA = 13, 5
+    bottom = top + h
+    seed = sum(ord(ch) for ch in (fig.get("id") or ""))
+    for seed_try in range(seed, seed + 3000):
+        rnd = _C1xRand(seed_try)
+        # the path: short straight steps of varied length, each turning sharply
+        # and at random. It is walked BACK from the speck, which sits low and to
+        # the left so its label can go right under it, then reversed.
+        x, y = BX + 60 + rnd.next() * 80, bottom - 65 + rnd.next() * 27
+        path = [(x, y)]
+        ang = rnd.next() * 6.283
+        ok = True
+        for _ in range(steps):
+            for _t in range(40):
+                turn = (0.7 + rnd.next() * 1.9) * (1 if rnd.next() < 0.5 else -1)
+                a2 = ang + turn
+                ln = 18 + rnd.next() * 28
+                nx_, ny_ = x + _c1x_math.cos(a2) * ln, y + _c1x_math.sin(a2) * ln
+                if BX + 30 < nx_ < BX + BW - 30 and top + 26 < ny_ < bottom - 30:
+                    break
+            else:
+                ok = False
+                break
+            ang, x, y = a2, nx_, ny_
+            path.append((x, y))
+        if not ok:
+            continue
+        path.reverse()
+        x, y = path[-1]
+        xs_, ys_ = [p[0] for p in path], [p[1] for p in path]
+        if max(xs_) - min(xs_) < 160 or max(ys_) - min(ys_) < 90:
+            continue
+        air = []
+        tries = 0
+        while len(air) < n_air and tries < 5000:
+            tries += 1
+            ax = BX + 12 + rnd.next() * (BW - 24)
+            ay = top + 12 + rnd.next() * (h - 24)
+            if _c1x_math.hypot(ax - x, ay - y) < RS + RA + 7:
+                continue
+            if any(_c1x_math.hypot(ax - q[0], ay - q[1]) < 28 for q in air):
+                continue
+            if any(_c1x_seg_dist(ax, ay, p1, p2) < RA + 7 for p1, p2 in zip(path, path[1:])):
+                continue
+            # keep the strip straight under the speck clear, for its leader
+            if ay > y and abs(ax - x) < RA + 6:
+                continue
+            air.append((ax, ay))
+        if len(air) < n_air:
+            continue
+        if sum(1 for q in air if _c1x_math.hypot(q[0] - x, q[1] - y) < 62) < 4:
+            continue
+        # an air particle low on the right, nothing under it, for the other leader
+        low = [q for q in air if q[0] > BX + BW - 100 and q[0] < BX + BW - 30 and q[1] > bottom - 50
+               and not any(o2[1] > q[1] and abs(o2[0] - q[0]) < RA + 6 for o2 in air if o2 is not q)]
+        if not low:
+            continue
+        target = max(low, key=lambda q: q[1])
+        break
+    else:
+        raise ValueError("figure %r: brownian-path could not be laid out" % fig.get("id"))
+
+    o = [_rect(BX, top, BW, h, rx=10, fill=_SVG_INSET, stroke=_SVG_INK, w=2.5, data_part="box")]
+    o.append(_path("M " + " L ".join("%s,%s" % (_n(px), _n(py)) for px, py in path),
+                   stroke=_SVG_INK_MUTED, w=2.5, dash="1,6", data_part="path"))
+    for (ax, ay) in air:
+        o.append(_circle(ax, ay, RA, fill=_C1X_PARTICLE, stroke=_SVG_INK, w=1.6, data_part="air"))
+    o.append(_circle(x, y, RS, fill=_C1X_SMOKE, stroke=_SVG_INK, w=2, data_part="speck"))
+    # labels under the box, each with a short straight leader up to its part
+    ly = bottom + 30
+    o.append(_line(x, ly - 15, x, y + RS + 3, stroke=_SVG_INK_MUTED, w=1.5, data_part="leader",
+                   data_key="speck"))
+    o.append(_label(max(BX, x - 30), ly, speck_label, size=14, weight="700", anchor="start",
+                    data_part="label", data_key="speck"))
+    o.append(_line(target[0], ly - 15, target[0], target[1] + RA + 3, stroke=_SVG_INK_MUTED, w=1.5,
+                   data_part="leader", data_key="air"))
+    o.append(_label(BX + BW, ly, air_label, size=14, weight="700", anchor="end",
+                    data_part="label", data_key="air"))
+    return _c1x_open(fig, ly + 10, o)
+
+
+ART.update({
+    'particle-picture': _c1x_particle_picture,
+    'state-heating-curve': _c1x_heating_curve,
+    'brownian-path': _c1x_brownian_path,
+})

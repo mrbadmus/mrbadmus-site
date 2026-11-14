@@ -210,6 +210,33 @@ RETIRED_BY_LEAN = {
                       "the two-axis grid is not on the lean page (figure p2-fossil-fuels)"),
     "renewable-sort": ("physics/energy-at-home/fuels-and-energy-resources.html",
                        "the renewable-or-not sorter is not on the lean page"),
+    # ⊕ lean wave 1 (C1 particles and their behaviour): twelve of C1's thirteen families had only
+    # C1 pages, and no other built page emits them. keyed-commit is not here: every lean page's
+    # Start here still emits it.
+    "halving-bench": ("chemistry/particles-and-their-behaviour/particle-model.html",
+                      "the halving bench is not on the lean page (figure c1-mixing)"),
+    "gap-test-rig": ("chemistry/particles-and-their-behaviour/particle-model.html",
+                     "the gap-test rig is not on the lean page (figure c1-mixing)"),
+    "state-bench": ("chemistry/particles-and-their-behaviour/solids-liquids-and-gases.html",
+                    "replaced by the drawn figure c1-three-states"),
+    "state-matrix": ("chemistry/particles-and-their-behaviour/solids-liquids-and-gases.html",
+                     "the state matrix is not on the lean page (a reveal table carries it)"),
+    "heating-bench": ("chemistry/particles-and-their-behaviour/changes-of-state.html",
+                      "replaced by the drawn figure c1-heating-curve"),
+    "sort-cards": ("chemistry/particles-and-their-behaviour/changes-of-state.html",
+                   "the melt-or-dissolve sort cards are not on the lean page"),
+    "collision-counter": ("chemistry/particles-and-their-behaviour/gas-pressure.html",
+                          "replaced by the drawn figure c1-wall-hits"),
+    "prediction-stack": ("chemistry/particles-and-their-behaviour/gas-pressure.html",
+                         "the three-predictions stack is not on the lean page"),
+    "random-walk-bench": ("chemistry/particles-and-their-behaviour/diffusion.html",
+                          "replaced by the drawn figures c1-spreading and c1-brownian"),
+    "scale-cards": ("chemistry/particles-and-their-behaviour/diffusion.html",
+                    "the scale cards are not on the lean page"),
+    "evidence-bench": ("chemistry/particles-and-their-behaviour/testing-the-model.html",
+                       "the seven-observations evidence bench is not on the lean page"),
+    "model-timeline": ("chemistry/particles-and-their-behaviour/testing-the-model.html",
+                       "the model timeline is not on the lean page"),
 }
 
 

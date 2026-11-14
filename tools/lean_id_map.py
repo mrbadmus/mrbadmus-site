@@ -94,6 +94,8 @@ WAVES = {
                                     "energy-transfers-before-and-after", "simple-machines"]),
         ("P2", "energy-at-home", ["energy-in-food", "power-ratings-in-watts", "calculating-energy-transferred",
                                   "reading-a-fuel-bill", "fuels-and-energy-resources"]),
+        ("C1", "particles-and-their-behaviour", ["particle-model", "solids-liquids-and-gases", "changes-of-state",
+                                                 "gas-pressure", "diffusion", "testing-the-model"]),
     ],
 }
 
@@ -174,6 +176,12 @@ _WHY = [
     (r"#(store-audit-ledger|store-pathway-sort|running-total|before-after-tally|waste-sort|lever-bench|"
      r"food-calorimeter|power-bench|power-energy-sort|appliance-bench|bill-builder|renewable-sort)-\d",
      "the instrument was removed from the lean page"),
+    # ⊕ C1 (Wave 1): the particle benches, sorters and the evidence bench, one id per press,
+    # and the single-press activities (Think first, the reveal, the verdict) the lean page dropped.
+    (r"#(cut-bench|gap-rig|state-bench|the-heating-bench|melt-or-dissolve|count-the-hits|three-predictions|"
+     r"walk-bench|seven-observations)-\d", "the instrument was removed from the lean page"),
+    (r"#(think-swelling-particles|think-spread)$", "the Think first question is not on the lean page"),
+    (r"#(same-particles-reveal|the-bubble|settled-science|the-verdict)$", "this activity is not on the lean page"),
 ]
 
 

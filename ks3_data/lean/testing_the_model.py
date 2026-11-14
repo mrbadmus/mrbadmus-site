@@ -1,0 +1,116 @@
+# -*- coding: utf-8 -*-
+"""Testing the model, in the lean shape. Spec table: docs/lessons/wave1/ks3-testing-the-model.md."""
+
+LESSON = {
+    "slug": "testing-the-model",
+    "start": {
+        "setup": "Ice floats on water. A lump of solid wax is dropped into melted wax.",
+        "question": "If you had to guess, will the solid wax float or sink?",
+        "options": [
+            ("It floats",
+             "It sinks. Almost every solid sinks in its own liquid. Ice is a rare exception."),
+            ("It sinks",
+             "It sinks. Almost every solid sinks in its own liquid. Ice is a rare exception."),
+        ],
+        "answer": 1,
+    },
+    "words": ["model", "evidence", "prediction", "limit"],
+    "word_defs": {
+        "model": "A simple picture that helps explain something we cannot see.",
+        "evidence": "Observations or measurements used to decide whether an idea works.",
+        "prediction": "What a model says should happen, worked out before anyone checks.",
+        "limit": "The point where a model stops giving the right answer.",
+    },
+    "knowledge": [
+        {"kind": "reveal", "title": "Can the particle model explain it",
+         "cols": ["Explained", "Why"],
+         "rows": [
+             ("A gas squashes, a liquid hardly does", "Yes",
+              "A gas is mostly empty space. Liquid particles already touch."),
+             ("A smell spreads across a room", "Yes", "Particles move at random and diffuse."),
+             ("Mass stays the same when ice melts", "Yes",
+              "Particles are rearranged, not made or destroyed."),
+             ("A helium balloon slowly shrinks", "Yes",
+              "Tiny helium particles get through gaps in the rubber."),
+             ("Ice floats on water", "No",
+              "The model says a solid's particles are packed more closely than its liquid's."),
+             ("Diamond and graphite are both carbon", "No",
+              "The model says identical particles must give identical properties."),
+             ("Rubber stretches to twice its length, then springs back", "No",
+              "Particles fixed in place cannot move that far and all come back."),
+         ]},
+        {"kind": "card", "title": "What the three failures share",
+         "body": ["The simple model treats every particle as a plain sphere.",
+                  "The particles of one substance are all identical, and not joined to each other.",
+                  "Each failure needs more than that.",
+                  {"points": ["Diamond and graphite are carbon atoms joined in different patterns.",
+                              "Rubber is made of particles joined in long, tangled chains.",
+                              "In ice, water particles are held in an open pattern, with extra space."]}]},
+        {"kind": "card", "title": "When a model fails",
+         "body": ["Scientists test a model by checking its predictions against evidence.",
+                  "They do not throw a model away when it fails.",
+                  "They keep using it where it works, and note its limits.",
+                  "The failures show where a better model is needed.",
+                  "Ice floating matters. It is why lakes freeze from the top, and fish survive."]},
+        {"kind": "card", "title": "Models change with evidence",
+         "body": [{"points": ["About 400 BC: Democritus argued matter is made of tiny pieces. He had no evidence.",
+                              "1803: Dalton said atoms are tiny solid spheres. This explained why mass is conserved.",
+                              "1897: Thomson found electrons, tiny parts inside atoms.",
+                              "1911: Rutherford found that an atom has a tiny nucleus at its centre."]},
+                  "Each new model kept what the old one explained, and fixed what it could not.",
+                  "Dalton's explanation of conservation of mass is still used today."]},
+        {"kind": "card", "title": "Science can change",
+         "body": ["A scientific idea can be changed by new evidence. That is how science works.",
+                  "It does not mean nothing can be trusted.",
+                  "Today's models have been tested more than any before them."]},
+        {"kind": "card", "title": "Easy mistakes",
+         "body": [{"mistakes": [
+             ("One wrong prediction makes a model useless.",
+              "Keep using it where it works. Note where it fails."),
+             ("Once scientists agree, an idea never changes.",
+              "Ideas change when new evidence appears."),
+             ("Rubber is not made of particles.",
+              "It is. The simple model just cannot join them into chains."),
+         ]}]},
+    ],
+    "key_fact": "A model is judged by what it explains and where it fails. The particle model explains "
+                "states, pressure and diffusion. It fails where particles are joined together or held in special patterns.",
+    "deeper": [
+        {"kind": "card", "title": "Old models still work",
+         "body": ["Newton's laws were improved on by Einstein.",
+                  "Space agencies still use Newton's laws to send spacecraft to other planets.",
+                  "A new model must explain everything the old one did, and more."]},
+    ],
+    "try": None,
+    "ks4_becomes": "Bonding and structure: the reasons for every failure on this page.",
+    "connects": {
+        "Why ice floats": "Nearly everything shrinks when it freezes. Water expands, which is why ice floats.",
+    },
+    "ladder_stem": {
+        "explain": "Diamond and graphite are both pure carbon, but their properties are very different. "
+                   "The simple particle model cannot explain this. Explain why not. Say what would have "
+                   "to be added to the model.",
+        "produce": "A student says: \"Scientists keep being wrong. So there is no point trusting what they "
+                   "say now.\" Reply to them, using at least one example from this lesson.",
+    },
+    "ladder_ticks": [
+        ["Says identical particles should give identical properties, so one substance could only ever behave one way.",
+         "Says identical carbon particles should always give the same properties."],
+        ["Gives a specific example — Dalton’s explanation of conservation of mass is still used, or Newton is still used to land spacecraft.",
+         "Gives an example, such as Dalton on conservation of mass, or Newton on spacecraft."],
+        ["Says being open to revision by evidence is what makes an idea scientific, not a weakness in it.",
+         "Says changing an idea when new evidence appears is how science works."],
+    ],
+    "ladder_feedback": {
+        "recall": {
+            0: "The model explains this. A gas is mostly empty space.",
+            1: "The model explains this. Particles move at random and diffuse.",
+            3: "The model explains this. Particles are rearranged, not destroyed.",
+        },
+        "apply": {
+            0: "Every model has limits. Throwing them all out would leave none to use.",
+            2: "Exceptions show where a better model is needed. Ignoring them hides that.",
+            3: "A new name changes nothing. The prediction is still wrong.",
+        },
+    },
+}

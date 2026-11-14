@@ -7273,11 +7273,9 @@ _DONE_SIGNALS = (
 # `ks3_rail_manifest.py` already derives these two as mirrors from Design's own
 # `isDone()` — its docstring names them — so the completion they need may
 # already exist on the instrument beside them.
-_TICK_EXEMPT = {
-    ("chemistry/particles-and-their-behaviour/diffusion.html", "s-scale"),
-    ("chemistry/particles-and-their-behaviour/solids-liquids-and-gases.html",
-     "s-matrix"),
-}
+# ⊕ 14 Nov 2026: both entries removed, as the list's own rule says (a stale entry fails). The lean
+# rebuild (Wave 1, C1) took `#s-scale` off diffusion and `#s-matrix` off solids-liquids-and-gases.
+_TICK_EXEMPT = set()
 
 
 def check_nothing_ticks_on_load(ks3_root):
@@ -7535,6 +7533,14 @@ _W1_WHY = {
     C2_SYM: "the verdict-card grids are not on the lean page (figure c2-co-and-co)",
     C2_FORM: "the formula-builder and vocabulary cards are not on the lean page (figures c2-molecules, c2-big-small, c2-salt-lattice, c2-ammonia)",
     C2_MASS: "the balance bench and four-step picker are not on the lean page (figures c2-open-sealed, c2-carbon-burns, c2-word-magnesium)",
+    # ⊕ lean wave 1 (C1): five of the six C1 pages; every row on them measures a bench.
+    # C1_PRESSURE is NOT here: it is the same page as LESSON, the reference page for the generic
+    # block vocabulary, and retiring it would retire those rows too.
+    C1_MODEL: "the halving bench and gap-test rig are not on the lean page (figure c1-mixing)",
+    C1_STATES: "the state bench and state matrix are not on the lean page (figures c1-three-states, c1-expansion)",
+    C1_STATE: "the heating bench and sort cards are not on the lean page (figure c1-heating-curve)",
+    C1_DIFF: "the random-walk bench and scale cards are not on the lean page (figures c1-spreading, c1-brownian)",
+    C1_TEST: "the evidence bench, verdict panel and model timeline are not on the lean page",
 }
 RETIRED_BY_LEAN += [(c["name"], c["on"], _W1_WHY[c["on"]])
                     for c in COMPONENTS + CONTRAST if c.get("on") in _W1_WHY]

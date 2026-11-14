@@ -625,6 +625,8 @@ CASES = [
                          and [x for x in b if x["question_id"].endswith("-1")][0]["is_correct"] is False,
          back="""(function(){ var c = document.querySelectorAll('.ks3-rplan-step'); return Array.prototype.every.call(c, function (s) { return H.pressed(s.querySelectorAll('.ks3-rplan-opt')[0]) && s.getAttribute('data-open') === '1'; }) && /^5 of 5|all/.test(document.querySelector('.ks3-rplan-block [data-count]').textContent); })()"""),
     dict(name="ks3-bench-count", page="/ks3/chemistry/particles-and-their-behaviour/solids-liquids-and-gases.html",
+         retired="the lean rebuild (Wave 1) took the state bench off the page",
+         absent=["ks3-sbench-block", "data-sbenchblock", "data-sbench-state"],
          act="""var s = document.querySelector('.ks3-sbench-block'); H.click(s.querySelector('[data-benchgate] .ks3-option')); await H.sleep(200);
                 var st = s.querySelectorAll('[data-sbench-state]'); for (var i = 0; i < st.length; i += 1) { H.click(st[i]); await H.sleep(150); } await H.sleep(1000);""",
          want=["solids-liquids-and-gases#state-bench-1"],
@@ -892,6 +894,8 @@ CASES = [
          want=["energy-transfers-before-and-after#before-after-tally-1"],
          back="(function(){ var s = document.querySelector('.ks3-btally-block'); return H.pressed(s.querySelector('[data-btally-gopt]')) && s.querySelector('[data-btally-gate]').hidden; })()"),
     dict(name="ks3-unit-judged", page="/ks3/chemistry/particles-and-their-behaviour/testing-the-model.html",
+         retired="the lean rebuild (Wave 1) took the seven-observations evidence bench off the page",
+         absent=["ks3-ebench-block", "data-ebenchblock", "ks3-ebench-case"],
          act="var s = document.querySelector('.ks3-ebench-block'); var c = s.querySelectorAll('.ks3-ebench-case'); H.click(c[0].querySelector('[data-call=\"1\"]')); H.click(c[2].querySelector('[data-call=\"1\"]')); await H.sleep(300);",
          want=["testing-the-model#seven-observations-1", "testing-the-model#seven-observations-3"],
          check=lambda b: {x["question_id"]: x["is_correct"] for x in b}.get("testing-the-model#seven-observations-1") is True

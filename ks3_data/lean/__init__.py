@@ -18,7 +18,7 @@ authored LESSON, which export_ks3_questions.py reads for the database mirror):
     figures     the record's own figures are added
     ladder      options' feedback and stems overlaid from the record. The ladder's
                 questions, options and answers are never touched.
-    ks4_becomes, safety_note   replaced by the record's own wording when it gives one
+    ks4_becomes, safety_note, before_this   replaced by the record's own wording when it gives one
                 (None drops the line), so a lean page's endmatter meets the standard too.
 
 Every other field stays (vocabulary, covers, misconceptions, figures, activities,
@@ -151,8 +151,8 @@ def apply(lesson):
     # the "Ask MrBadmus" prompt, reworded when the old one names something the lean page dropped
     if rec.get("tutor_body") and lesson.get("tutor"):
         lesson["tutor"] = dict(lesson["tutor"], body=rec["tutor_body"])
-    # render-only rewording of two endmatter lines; a None value drops the line
-    for key in ("ks4_becomes", "safety_note"):
+    # render-only rewording of three endmatter lines; a None value drops the line
+    for key in ("ks4_becomes", "safety_note", "before_this"):
         if key in rec:
             if rec[key]:
                 lesson[key] = rec[key]
