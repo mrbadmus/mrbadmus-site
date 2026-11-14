@@ -68,7 +68,7 @@ LESSON = {
                               "Some energy heats the glass tube.",
                               "The food may not burn completely.",
                               "The warm water loses some energy to the air."]},
-                  "All three make the reading too low, never too high.",
+                  "Each of these makes the reading too low, never too high.",
                   "Repeating the test does not fix this. Every repeat is low in the same way.",
                   "An error like this is called a systematic error."]},
         {"kind": "card", "title": "Where the energy goes",
@@ -102,7 +102,7 @@ LESSON = {
     "safety_note": "Teacher demonstration only. Everyone wears eye protection. Check for food allergies "
                    "first. Burning food can spit. The boiling tube gets very hot, but looks the same as a "
                    "cold one. Put it on a heatproof mat and leave it there. Never taste any sample.",
-    "ks4_becomes": "At GCSE, you will use specific heat capacity to find the energy to warm water.",
+    "ks4_becomes": "Specific heat capacity, to find the energy needed to warm water.",
     "ladder_stem": {
         "explain": "Your calorimeter gives 8.2 kJ per gram for a cheese puff. The packet says 21.6 kJ per "
                    "gram. Give three reasons your value is lower. Would repeating the test fix it? Explain.",
@@ -120,7 +120,7 @@ LESSON = {
         ["Says two foods with equal energy can differ greatly in how useful they are to the body.",
          "Says the energy figure does not show whether the energy comes from fat or carbohydrate."],
         ["Notes that every one of these errors makes the reading too low, never too high.",
-         "Accepts another sound reason, such as the warm water losing energy to the air."],
+         "Gives another sound reason, such as the warm water losing energy to the air."],
         ["Says repeating would not fix it, because this is systematic error rather than random scatter.",
          "Says repeating would not fix it, as every repeat is low in the same way."],
     ],

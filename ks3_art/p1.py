@@ -2012,10 +2012,11 @@ def _formula_triangle(fig):
             out.append(_label(x, ys + 24 + i * 17, ln, size=14, weight="500", fill=_SVG_INK,
                               data_part="slot-name", data_key=key))
 
-    slot(top, cx, 66, 104, top["s"])
-    slot(bot[0], 106, 158, 100, bot[0]["s"])
-    slot(bot[1], 234, 158, 100, bot[1]["s"])
-    out.append(_label(cx, 166, "×", size=28, weight="700", data_part="times"))
+    # wrap widths keep every name line clear of the sloping edges at its height
+    slot(top, cx, 66, 84, top["s"])
+    slot(bot[0], 106, 164, 88, bot[0]["s"])
+    slot(bot[1], 234, 164, 88, bot[1]["s"])
+    out.append(_label(cx, 172, "×", size=28, weight="700", data_part="times"))
     return _p1_svg(fig, by + 12, out)
 
 
@@ -2145,15 +2146,17 @@ def _lever_trade(fig):
     out.append(_line(8, gy, _P1W - 8, gy, stroke=_SVG_RULE, w=3, data_part="ground"))
     out.append(_path("M %s,%s L %s,%s L %s,%s Z" % (px, py + 4, px - 25, gy, px + 25, gy),
                      fill=_SVG_INSET, stroke=_SVG_INK, w=2.5, data_part="fulcrum"))
+    # the load's centre sits at the load arm's end; the bar runs a little past it
+    bw = 34
+    ext = bw / 2 + 4
     # start position, dashed
-    out.append(_rect(px - a_l, py - 5, a_l + a_e, 10, rx=2, stroke=_SVG_INK_FAINT, w=2, dash="6 5",
+    out.append(_rect(px - a_l - ext, py - 5, a_l + ext + a_e, 10, rx=2, stroke=_SVG_INK_FAINT, w=2, dash="6 5",
                      data_part="bar-start"))
     # lifted bar + load, drawn level in a frame rotated about the fulcrum
-    bw = 34
     out.append('<g transform="rotate(%s %s %s)">' % (_p1_num(round(deg, 2)), _p1_num(px), _p1_num(py)))
-    out.append(_rect(px - a_l, py - 5, a_l + a_e, 10, rx=2, fill=_SVG_BAND, stroke=_SVG_INK, w=2.5,
+    out.append(_rect(px - a_l - ext, py - 5, a_l + ext + a_e, 10, rx=2, fill=_SVG_BAND, stroke=_SVG_INK, w=2.5,
                      data_part="bar"))
-    out.append(_rect(px - a_l + 4, py - 5 - 30, bw, 30, rx=3, fill=_SVG_ACCENT_TINT, stroke=_SVG_INK,
+    out.append(_rect(px - a_l - bw / 2, py - 5 - 30, bw, 30, rx=3, fill=_SVG_ACCENT_TINT, stroke=_SVG_INK,
                      w=2.5, data_part="load"))
     for x1, x2, key in ((px - a_l, px, "load"), (px, px + a_e, "effort")):
         out.append(_line(x1, py + 16, x2, py + 16, stroke=_SVG_INK_FAINT, w=1.5, data_part="arm", data_key=key))

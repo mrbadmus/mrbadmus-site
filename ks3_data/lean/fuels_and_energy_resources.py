@@ -111,7 +111,8 @@ LESSON = {
          "body": ["Coal and oil store energy from sunlight, trapped by ancient living things.",
                   "Wind blows because the Sun heats the air unevenly.",
                   "The Sun evaporates water, which falls as rain and fills the dams.",
-                  "Geothermal, nuclear and tidal energy do not come from the Sun."]},
+                  "Geothermal and nuclear energy do not come from the Sun.",
+                  "Tides are caused mostly by the Moon's pull."]},
     ],
     "try": None,
     "ladder_stem": {

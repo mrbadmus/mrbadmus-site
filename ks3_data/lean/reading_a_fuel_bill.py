@@ -119,7 +119,7 @@ LESSON = {
             3: "That is not a unit of energy. One unit is a kilowatt-hour.",
         },
         "apply": {
-            0: "Too high. Energy = 2.2 kW × 0.75 h × 30 = 49.5 kWh. Then × 27p.",
+            0: "45 minutes is 0.75 h, not 0.45 h. Energy = 2.2 × 0.75 × 30 = 49.5 kWh. Then × 27p.",
             1: "That is one day. Multiply by 30 days.",
             2: "That uses 45 hours. 45 minutes is 0.75 h.",
         },

@@ -4,7 +4,7 @@
 LESSON = {
     "slug": "power-ratings-in-watts",
     "start": {
-        "setup": "A 3000 W kettle is on for 4 minutes a day. A 10 W router is on all day.",
+        "setup": "A 2000 W kettle is on for 3 minutes a day. A 15 W router is on all day.",
         "question": "If you had to guess, which uses more energy in a day?",
         "options": [
             ("The kettle", "The router. Its power is far lower, but it is on for much longer."),
@@ -31,8 +31,7 @@ LESSON = {
                   {"figure": "p2-power-triangle"},
                   "Power is in watts, W. Energy is in joules, J. Time is in seconds, s.",
                   "So energy transferred = power × time.",
-                  "You may see this written as P = W ÷ t.",
-                  "There, W stands for work done. Work done is the energy transferred."]},
+                  ]},
         {"kind": "card", "title": "What affects power",
          "body": ["Power depends on two things:",
                   {"points": ["how much energy is transferred",
