@@ -273,6 +273,8 @@ KS4 = "/combined/higher/biology/ecology/"
 CASES = [
     # ── KS4: a lesson's own activities ──
     dict(name="ks4-flag-pick", page=KS4 + "abiotic-biotic-factors.html",
+         retired="the lean rebuild (Wave 1, Ecology) took the 'which factor' question off the page",
+         absent=['sc-interp">A new predator<', 'sc-interp">A new pathogen<'],
          act="H.click(H.rootBtn('A new predator')); await H.sleep(400); H.click(H.rootBtn('A new pathogen')); await H.sleep(400);",
          want=["ks4:abiotic-biotic-factors:ch#bq", "ks4:abiotic-biotic-factors:ch#bq"],
          check=lambda b: [x for x in b if x["question_id"] == "ks4:abiotic-biotic-factors:ch#bq"][0]["is_correct"] is False
@@ -284,6 +286,8 @@ CASES = [
          check=lambda b: [x for x in b if x["question_id"].endswith("#est")][0]["is_correct"] is True,
          back="H.rootState().est === 2"),
     dict(name="ks4-gate", page=KS4 + "ecosystems.html",
+         retired="the lean rebuild (Wave 1, Ecology) took the community/population level gate off the page",
+         absent=['sc-interp">community<', 'sc-interp">population<'],
          act="H.click(H.rootBtn('community')); await H.sleep(400); H.click(H.rootBtn('population')); await H.sleep(400);",
          want=["ks4:ecosystems:ch#lv-1", "ks4:ecosystems:ch#lv-1"],
          check=lambda b: [x["is_correct"] for x in b if x["question_id"] == "ks4:ecosystems:ch#lv-1"] == [False, True],
@@ -976,7 +980,10 @@ CASES = [
 # ⊕ 13 Nov 2026: ks3-commit-run stands in for ks3-gate (a KS3 bench that opens on a committed
 # option press, no animation, one "#*-1" row), because the lean rebuild (Wave 1) took the
 # before-and-after tally off energy-transfers-before-and-after.
-PUPIL = ["ks4-flag-pick", "ks4-level-pick", "ks4-form-internal", "ks4-list-features", "ks3-commit-run", "ks3-parts-check", "ks3-typed"]
+# ⊕ 14 Nov 2026: ks4-words-pick stands in for ks4-flag-pick (the same one-press root option pick,
+# posted and restored), because the lean rebuild (Wave 1, Ecology) took the 'which factor'
+# question off abiotic-biotic-factors.
+PUPIL = ["ks4-words-pick", "ks4-level-pick", "ks4-form-internal", "ks4-list-features", "ks3-commit-run", "ks3-parts-check", "ks3-typed"]
 
 
 def retired_proof(c):
