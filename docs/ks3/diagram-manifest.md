@@ -19,11 +19,11 @@ MRB-103 also flagged an **anatomical/structural diagram gap** (cells, organs) an
 | Status | Figures |
 |---|---|
 | `drafted` | 1 |
-| `drawn` | 60 |
+| `drawn` | 71 |
 | `final` | 1 |
 | `needed` | 3 |
 | `retired` | 6 |
-| **Total** | **71** |
+| **Total** | **82** |
 
 `needed` = declared by a lesson, not yet drawn. A lesson may ship with figures at `needed` — it is not a build blocker — but the need is then counted here rather than invisible.
 
@@ -32,7 +32,18 @@ MRB-103 also flagged an **anatomical/structural diagram gap** (cells, organs) an
 | Unit | Lesson | Figure ID | Kind | Status | Caption |
 |---|---|---|---|---|---|
 | B1 | `animal-and-plant-cells` | `b1-cell-bench` | css-art | `drafted` | The cell bench drawing: a leaf cell and a cheek cell, each as a textbook drawing and as a ×400 field of view. |
+| B1 | `animal-and-plant-cells` | `b1-cell-pair` | diagram | `drawn` | The plant cell has every part the animal cell has, plus three more. |
+| B1 | `levels-of-organisation` | `b1-leaf-section` | diagram | `drawn` | Each layer is a different tissue. Together they make the leaf an organ. |
+| B1 | `levels-of-organisation` | `b1-levels` | diagram | `drawn` | Each level is made of the level before it. |
 | B1 | `life-processes` | `b1-candle-flame` | css-art | `final` | A burning candle: a flickering flame above the wick, with soot rising from it. |
+| B1 | `specialised-cells` | `b1-diffusion` | diagram | `drawn` | Particles diffuse from a high concentration to a low concentration. |
+| B1 | `specialised-cells` | `b1-specialised-cells` | diagram | `drawn` | The same basic parts, with a different shape or amount for each job. Not to scale. |
+| B1 | `unicellular-organisms` | `b1-cell-sizes` | diagram | `drawn` | Lengths drawn to scale. |
+| B1 | `unicellular-organisms` | `b1-unicellular` | diagram | `drawn` | Each one is a whole organism in a single cell. Not to scale. |
+| B1 | `using-a-microscope` | `b1-biological-drawing` | diagram | `drawn` | Single lines, ruled labels and the magnification. No shading. |
+| B1 | `using-a-microscope` | `b1-field-of-view` | diagram | `drawn` | Width of slide you can see with a ×10 eyepiece, to scale. |
+| B1 | `using-a-microscope` | `b1-light-microscope` | diagram | `drawn` | Light goes up from the lamp, through the slide and the lenses, to your eye. |
+| B1 | `using-a-microscope` | `b1-magnification-triangle` | diagram | `drawn` | Cover the one you want. Side by side means multiply. One over the other means divide. |
 | B1 | `using-a-microscope` | `b1-onion-epidermis-x100` | micrograph | `needed` | Onion epidermis, ×100. Cells countable, edges sharp. |
 | B1 | `using-a-microscope` | `b1-onion-epidermis-x400` | micrograph | `needed` | The same spot, ×400. One cell wall crossing an empty grey field. |
 | B10 | `chromosomes-genes-and-dna` | `b10-nested-scale` | diagram | `drawn` | One molecule, five magnifications. Each frame is a callout of the frame above it, and the orange strand you can trace from the top of the column to the bottom never stops being the same strand. Orange is DNA wherever it appears; ink and grey are everything that is not DNA. The gene in panel 04 is a marked length of the strand that was coiled in panel 03 — a section of it, not a separate object sitting on it. Nothing is swapped for anything else on the way down: a chromosome, a gene and DNA are not three things sitting side by side in the nucleus, they are one thing at three magnifications. Count the marks in panel 02 — there are 46, in 23 pairs — and the orange one is the member of one pair that the rest of the column follows. |
