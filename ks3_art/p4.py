@@ -2023,3 +2023,340 @@ KIND_FN = {
     'force-band':        r_force_band,
     'p4-attempt':        r_p4_attempt,
 }
+
+
+
+# ══ lean wave · P4's drawn figures ═══════════════════════════════════════
+#
+# Two drawers for the lean P4 pages, registered in ART at the foot of this
+# file. Both plates are 340 units wide, every label is at least 14px, and the
+# paint is --ks3-* tokens only, so each reads in the light and dark themes.
+#
+#   "force-arrows"   data {"layout": "one", "object": str, "floor": bool,
+#                          "scale_N": number (optional, draws a scale bar),
+#                          "arrows": [{"dir": "left|right|up|down", "N", "label"}]}
+#                    data {"layout": "pair", "touching": True,
+#                          "objects": [{"label"}, {"label", "fixed": True}],
+#                          "arrows": [{"on": 0|1, "dir": "left|right", "label"}]}
+#   "newtonmeter"    data {"max_N", "minor_N", "label_every_N", "reading_N", "load"}
+#
+# The physics is checked here, at build time, rather than trusted to the data:
+#   · "one": every arrow starts on the box edge it leaves from and points
+#     outward; every length is k * N on ONE scale k (a round number of px per
+#     newton), so two equal forces draw equal arrows; each label must name
+#     its own size in N.
+#   · "pair": an interaction pair. One arrow on EACH object, opposite
+#     directions, the same length, both starting at the contact face.
+#   · "newtonmeter": the pointer sits exactly on the reading's tick, and the
+#     spring's bottom end is the pointer, so the stretch matches the reading.
+
+import re as _p4x_re
+from ks3_art.kit import (  # noqa: E402
+    _SVG_ACCENT_TEXT as _P4X_ACCENT_TEXT,
+    _SVG_ACCENT_TINT as _P4X_ACCENT_TINT,
+    _SVG_BAND as _P4X_BAND,
+    _SVG_INK as _P4X_INK,
+    _SVG_INK_FAINT as _P4X_INK_FAINT,
+    _SVG_INK_MUTED as _P4X_INK_MUTED,
+    _SVG_INSET as _P4X_INSET,
+    _SVG_RULE as _P4X_RULE,
+    _SVG_RULE_STRONG as _P4X_RULE_STRONG,
+    _circle as _p4x_circle,
+    _label as _p4x_label,
+    _line as _p4x_line,
+    _n as _p4x_n,
+    _path as _p4x_path,
+    _rect as _p4x_rect,
+    _svg_open as _p4x_svg_open,
+)
+
+_P4XW = 340
+_P4X_BLUE = "var(--ks3-blue)"
+_P4X_DIRS = {"left": (-1, 0), "right": (1, 0), "up": (0, -1), "down": (0, 1)}
+# px per newton: the scale is always one of these, so it can be stated.
+_P4X_NICE = (0.25, 0.5, 0.6, 0.75, 1, 1.2, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10)
+
+
+def _p4x_svg(fig, h, body):
+    return (_p4x_svg_open(fig, _P4XW, h) + '<g stroke-linecap="round" stroke-linejoin="round">'
+            + "".join(body) + "</g></svg>")
+
+
+def _p4x_num(v):
+    return ("%g" % v) if isinstance(v, (int, float)) else str(v)
+
+
+def _p4x_arrow(x1, y1, x2, y2, paint, w=4, head=13, **data):
+    """A shaft and a solid head whose point is exactly (x2, y2)."""
+    dx, dy = x2 - x1, y2 - y1
+    ln = (dx * dx + dy * dy) ** 0.5
+    ux, uy = dx / ln, dy / ln
+    px, py = -uy, ux
+    tri = _p4x_path("M %s,%s L %s,%s L %s,%s Z"
+                    % (_p4x_n(x2), _p4x_n(y2),
+                       _p4x_n(x2 - ux * head + px * head * 0.55), _p4x_n(y2 - uy * head + py * head * 0.55),
+                       _p4x_n(x2 - ux * head - px * head * 0.55), _p4x_n(y2 - uy * head - py * head * 0.55)),
+                    fill=paint, **data)
+    return (_p4x_line(x1, y1, x2 - ux * head * 0.6, y2 - uy * head * 0.6, stroke=paint, w=w, **data)
+            + tri)
+
+
+def _p4x_lines(label):
+    """A label "Friction, 100 N" sets as two lines: the name, then the size."""
+    return [p.strip() for p in str(label).split(",") if p.strip()]
+
+
+def _p4x_ground(x0, x1, y, skip=None):
+    """A floor line with short hatching beneath it (a fixed surface)."""
+    out = [_p4x_line(x0, y, x1, y, stroke=_P4X_INK, w=2.5, data_part="floor")]
+    x = x0 + 4
+    while x + 8 <= x1:
+        if not (skip and skip[0] - 12 <= x <= skip[1] + 4):
+            out.append(_p4x_line(x + 8, y + 2, x, y + 10, stroke=_P4X_RULE_STRONG, w=1.5,
+                                 data_part="floor-hatch"))
+        x += 12
+    return out
+
+
+# ── force-arrows · "one": one object, each force an arrow on one scale ───
+def _p4x_force_one(fig, d):
+    fid = fig.get("id")
+    arrows = d.get("arrows") or []
+    if not arrows:
+        raise ValueError("figure %r: force-arrows needs data.arrows" % fid)
+    for a in arrows:
+        if a.get("dir") not in _P4X_DIRS:
+            raise ValueError("figure %r: arrow %r has no valid dir" % (fid, a))
+        if not isinstance(a.get("N"), (int, float)) or a["N"] <= 0:
+            raise ValueError("figure %r: arrow %r needs a positive N" % (fid, a))
+        if not _p4x_re.search(r"(^|[^\d.])%s N\b" % _p4x_re.escape(_p4x_num(a["N"])), a.get("label", "")):
+            raise ValueError("figure %r: arrow label %r does not state its own size, %s N"
+                             % (fid, a.get("label"), _p4x_num(a["N"])))
+    dirs = [a["dir"] for a in arrows]
+    if len(set(dirs)) != len(dirs):
+        raise ValueError("figure %r: two arrows leave the same edge" % fid)
+    BW, BH = 96, 64
+    cx = _P4XW / 2.0
+    bx0, bx1 = cx - BW / 2, cx + BW / 2
+    # free room: 108 px each side horizontally, 120 px above and below
+    room = {"left": 108, "right": 108, "up": 120, "down": 120}
+    raw = min(room[a["dir"]] / float(a["N"]) for a in arrows)
+    k = max([v for v in _P4X_NICE if v <= raw] or [_P4X_NICE[0]])
+    L = {a["dir"]: k * a["N"] for a in arrows}
+    for a in arrows:
+        for b in arrows:
+            if a["N"] == b["N"] and abs(L[a["dir"]] - L[b["dir"]]) > 1e-9:
+                raise ValueError("figure %r: equal forces drew unequal arrows" % fid)
+    top = 12 + L.get("up", 0) if "up" in L else 34
+    by0, by1 = top, top + BH
+    my = (by0 + by1) / 2.0
+    out = []
+    floor = bool(d.get("floor"))
+    if floor:
+        out += _p4x_ground(8, _P4XW - 8, by1, skip=(cx - 4, cx + 4) if "down" in L else None)
+    out.append(_p4x_rect(bx0, by0, BW, BH, rx=8, fill=_P4X_INSET, stroke=_P4X_INK, w=2.5,
+                         data_part="object"))
+    out.append(_p4x_label(cx, my + 6, d.get("object", ""), size=16, weight="700", data_part="object-name"))
+    for a in arrows:
+        ux, uy = _P4X_DIRS[a["dir"]]
+        sx = {"left": bx0, "right": bx1}.get(a["dir"], cx)
+        sy = {"up": by0, "down": by1}.get(a["dir"], my)
+        ex, ey = sx + ux * L[a["dir"]], sy + uy * L[a["dir"]]
+        out.append(_p4x_circle(sx, sy, 4, fill=_P4X_ACCENT_TEXT, data_part="arrow-start", data_key=a["dir"]))
+        out.append(_p4x_arrow(sx, sy, ex, ey, _P4X_ACCENT_TEXT, data_part="force", data_key=a["dir"],
+                              data_n=_p4x_num(a["N"]), data_len=_p4x_n(L[a["dir"]])))
+        lines = _p4x_lines(a["label"])
+        if a["dir"] in ("left", "right"):
+            # above the shaft, kept clear of the box
+            x, anchor = (bx0 - 8, "end") if a["dir"] == "left" else (bx1 + 8, "start")
+            for i, ln in enumerate(lines):
+                out.append(_p4x_label(x, my - 14 - 17 * (len(lines) - 1 - i), ln, size=14, weight="700",
+                                      anchor=anchor, fill=_P4X_INK, data_part="force-label",
+                                      data_key=a["dir"]))
+        else:
+            # beside the shaft, centred on its length
+            mid = (sy + ey) / 2.0
+            y0 = mid - 17 * (len(lines) - 1) / 2.0 + 5
+            for i, ln in enumerate(lines):
+                out.append(_p4x_label(cx + 12, y0 + 17 * i, ln, size=14, weight="700", anchor="start",
+                                      fill=_P4X_INK, data_part="force-label", data_key=a["dir"]))
+    bottom = by1 + L.get("down", 0) + (14 if "down" in L else (16 if floor else 10))
+    sN = d.get("scale_N")
+    if sN:
+        y = bottom + 18
+        out.append(_p4x_label(16, y + 5, "Scale:", size=14, weight="600", anchor="start",
+                              fill=_P4X_INK_MUTED, data_part="scale-label"))
+        x0 = 70
+        x1 = x0 + k * sN
+        out.append(_p4x_line(x0, y, x1, y, stroke=_P4X_INK, w=3, data_part="scale-bar"))
+        out.append(_p4x_line(x0, y - 6, x0, y + 6, stroke=_P4X_INK, w=2, data_part="scale-bar"))
+        out.append(_p4x_line(x1, y - 6, x1, y + 6, stroke=_P4X_INK, w=2, data_part="scale-bar"))
+        out.append(_p4x_label(x1 + 8, y + 5, "= %s N" % _p4x_num(sN), size=14, weight="700",
+                              anchor="start", data_part="scale-value"))
+        bottom = y + 14
+    return _p4x_svg(fig, int(round(bottom)), out)
+
+
+# ── force-arrows · "pair": two objects pushing on each other ─────────────
+def _p4x_force_pair(fig, d):
+    fid = fig.get("id")
+    objs, arrows = d.get("objects") or [], d.get("arrows") or []
+    if len(objs) != 2 or len(arrows) != 2:
+        raise ValueError("figure %r: a pair needs two objects and two arrows" % fid)
+    if sorted(a.get("on") for a in arrows) != [0, 1]:
+        raise ValueError("figure %r: an interaction pair has one arrow on EACH object" % fid)
+    if not d.get("touching"):
+        raise ValueError("figure %r: only a touching pair is drawn" % fid)
+    a0 = next(a for a in arrows if a["on"] == 0)
+    a1 = next(a for a in arrows if a["on"] == 1)
+    if (a0.get("dir"), a1.get("dir")) != ("left", "right"):
+        raise ValueError("figure %r: a push pair points each force away from the contact, into "
+                         "the object it acts on (left on object 0, right on object 1)" % fid)
+    if "N" in a0 or "N" in a1:
+        if a0.get("N") != a1.get("N"):
+            raise ValueError("figure %r: the two forces in a pair are equal" % fid)
+    if objs[0].get("fixed") or not objs[1].get("fixed"):
+        raise ValueError("figure %r: only a free object against a fixed one is drawn" % fid)
+    C = 170                      # the contact face
+    FLOOR = 178
+    L = 104                      # both arrows: the same length, by construction
+    out = []
+    out += _p4x_ground(8, C, FLOOR)
+    # object 1: a fixed wall, hatched on its far side
+    wx0, wx1, hx = C, 322, 298
+    out.append(_p4x_rect(wx0, 10, wx1 - wx0, FLOOR - 10, fill=_P4X_BAND, stroke=_P4X_INK, w=2.5,
+                         data_part="object", data_key="1"))
+    yy = 10
+    while yy < FLOOR:
+        y2 = min(yy + 24, FLOOR)
+        out.append(_p4x_line(hx, y2, hx + (y2 - yy), yy, stroke=_P4X_RULE_STRONG, w=1.5,
+                             data_part="wall-hatch"))
+        yy += 12
+    out.append(_p4x_line(hx, 10, hx, FLOOR, stroke=_P4X_RULE_STRONG, w=1.5, data_part="wall-hatch"))
+    out.append(_p4x_label((wx0 + hx) / 2.0, 40, objs[1]["label"], size=16, weight="700",
+                          data_part="object-name", data_key="1"))
+    # object 0: a box on wheels, touching the wall
+    sx0 = 14
+    out.append(_p4x_rect(sx0, 52, C - sx0, 108, rx=8, fill=_P4X_INSET, stroke=_P4X_INK, w=2.5,
+                         data_part="object", data_key="0"))
+    for wx in (50, 134):
+        out.append(_p4x_circle(wx, 169, 8, fill=_P4X_INK_MUTED, stroke=_P4X_INK, w=2, data_part="wheel"))
+    out.append(_p4x_label((sx0 + C) / 2.0, 76, objs[0]["label"], size=16, weight="700",
+                          data_part="object-name", data_key="0"))
+    # the two forces: each starts at the contact face, ON the object it acts on
+    for a, y, paint, lab_x in ((a0, 100, _P4X_ACCENT_TEXT, C - L / 2.0),
+                               (a1, 132, _P4X_BLUE, C + L / 2.0)):
+        sgn = -1 if a["dir"] == "left" else 1
+        x1 = C + sgn * 3
+        out.append(_p4x_arrow(x1, y, x1 + sgn * L, y, paint, data_part="force", data_key=str(a["on"]),
+                              data_len=_p4x_n(L)))
+        words = a["label"].split()
+        lines = [" ".join(words[:2]), " ".join(words[2:])] if len(words) > 2 else [a["label"]]
+        for i, ln in enumerate(lines):
+            out.append(_p4x_label(lab_x, y + 24 + 17 * i, ln, size=14, weight="700", fill=paint,
+                                  data_part="force-label", data_key=str(a["on"])))
+    return _p4x_svg(fig, FLOOR + 14, out)
+
+
+def _p4x_force_arrows(fig):
+    d = fig.get("data") or {}
+    lay = d.get("layout")
+    if lay == "one":
+        return _p4x_force_one(fig, d)
+    if lay == "pair":
+        return _p4x_force_pair(fig, d)
+    raise ValueError("figure %r: force-arrows layout must be 'one' or 'pair'" % fig.get("id"))
+
+
+# ── newtonmeter: a spring balance holding a load ─────────────────────────
+def _p4x_newtonmeter(fig):
+    d = fig.get("data") or {}
+    fid = fig.get("id")
+    mx, mn, every, rd = d["max_N"], d["minor_N"], d["label_every_N"], d["reading_N"]
+    if not (0 <= rd <= mx):
+        raise ValueError("figure %r: reading %s is off the scale" % (fid, rd))
+    if abs(rd / float(mn) - round(rd / float(mn))) > 1e-9:
+        raise ValueError("figure %r: the reading must sit on a tick" % fid)
+    cx = 150                      # spring and rod centre line
+    PX = 18.0                     # px per newton
+    Y0 = 92                       # the 0 N mark
+    yN = lambda v: Y0 + PX * v
+    cx0, cx1 = 104, 222           # casing
+    ctop, cbot = 62, int(yN(mx) + 16)
+    sxl = 202                     # scale line (ticks run left from here)
+    out = []
+    # the fixed support and the hook it hangs from
+    out.append(_p4x_rect(96, 6, 132, 12, fill=_P4X_BAND, stroke=_P4X_INK, w=2, data_part="support"))
+    x = 100
+    while x + 8 <= 224:
+        out.append(_p4x_line(x, 18, x + 8, 6, stroke=_P4X_RULE_STRONG, w=1.2, data_part="support-hatch"))
+        x += 10
+    out.append(_p4x_line(163, 18, 163, 30, stroke=_P4X_INK, w=3, data_part="top-hook"))
+    out.append(_p4x_path("M 163,30 L 163,40 A 8,8 0 1 1 147,40", stroke=_P4X_INK, w=3,
+                         data_part="top-hook"))
+    out.append(_p4x_circle(155, 41, 6, stroke=_P4X_INK_MUTED, w=2.5, data_part="top-ring"))
+    out.append(_p4x_line(155, 47, 155, ctop, stroke=_P4X_INK_MUTED, w=3, data_part="top-ring"))
+    # casing
+    out.append(_p4x_rect(cx0, ctop, cx1 - cx0, cbot - ctop, rx=10, fill=_P4X_INSET, stroke=_P4X_INK,
+                         w=2.5, data_part="casing"))
+    out.append(_p4x_rect(cx - 18, ctop + 8, 36, cbot - ctop - 16, rx=6, fill=_P4X_BAND,
+                         stroke=_P4X_RULE_STRONG, w=1.5, data_part="slot"))
+    # the scale: small ticks every minor_N, numbers every label_every_N
+    out.append(_p4x_line(sxl, yN(0), sxl, yN(mx), stroke=_P4X_INK, w=1.5, data_part="scale"))
+    n = int(round(mx / float(mn)))
+    for i in range(n + 1):
+        v = i * mn
+        big = abs(v / float(every) - round(v / float(every))) < 1e-9
+        out.append(_p4x_line(sxl - (14 if big else 8), yN(v), sxl, yN(v), stroke=_P4X_INK,
+                             w=2 if big else 1.5, data_part="tick", data_n=_p4x_num(v)))
+        if big:
+            out.append(_p4x_label(cx1 + 8, yN(v) + 5, _p4x_num(v), size=14, weight="700", anchor="start",
+                                  data_part="scale-number", data_n=_p4x_num(v)))
+    out.append(_p4x_label(cx1 + 34, yN(0) + 5, "N", size=14, weight="700", anchor="start",
+                          fill=_P4X_INK_MUTED, data_part="scale-unit"))
+    # the spring: top fixed under the cap, bottom end IS the pointer, so the
+    # stretch is the reading
+    ys, ye = ctop + 12, yN(rd)
+    coils = 6
+    pts = ["M %s,%s" % (cx, ys), "L %s,%s" % (cx, ys + 4)]
+    step = (ye - 4 - (ys + 4)) / (coils * 2.0)
+    for i in range(coils * 2):
+        xx = cx - 11 if i % 2 == 0 else cx + 11
+        pts.append("L %s,%s" % (_p4x_n(xx), _p4x_n(ys + 4 + step * (i + 0.5))))
+    pts.append("L %s,%s" % (cx, _p4x_n(ye - 4)))
+    pts.append("L %s,%s" % (cx, _p4x_n(ye)))
+    out.append(_p4x_path(" ".join(pts), stroke=_P4X_INK, w=2, data_part="spring"))
+    # the pointer: a bar from the spring's end, its tip on the reading's tick
+    out.append(_p4x_line(cx - 14, ye, sxl - 12, ye, stroke=_P4X_ACCENT_TEXT, w=3, data_part="pointer"))
+    out.append(_p4x_path("M %s,%s L %s,%s L %s,%s Z" % (sxl, _p4x_n(ye), sxl - 12, _p4x_n(ye - 6),
+                                                       sxl - 12, _p4x_n(ye + 6)),
+                         fill=_P4X_ACCENT_TEXT, data_part="pointer", data_n=_p4x_num(rd)))
+    # the rod moves with the pointer: its length is fixed, so the hook drops
+    # as the reading grows
+    rod = (cbot - Y0) + 14
+    hy = ye + rod
+    out.append(_p4x_line(cx, ye, cx, hy, stroke=_P4X_INK_MUTED, w=3, data_part="rod"))
+    out.append(_p4x_path("M %s,%s L %s,%s A 8,8 0 1 1 %s,%s" % (cx, _p4x_n(hy), cx, _p4x_n(hy + 10),
+                                                                 cx - 16, _p4x_n(hy + 10)),
+                         stroke=_P4X_INK, w=3, data_part="bottom-hook"))
+    # the load: a shoe hung by its heel loop
+    ly = hy + 18
+    out.append(_p4x_path("M %s,%s L %s,%s" % (cx - 8, _p4x_n(ly - 6), cx - 8, _p4x_n(ly + 8)),
+                         stroke=_P4X_INK_MUTED, w=2.5, data_part="load-loop"))
+    sy = ly + 8
+    shoe = ("M {a},{t} L {b},{t} L {b},{m} Q {c},{m2} {d},{u} Q {e},{u} {e},{bt} "
+            "L {a},{bt} Q {f},{bt} {a},{t} Z").format(
+        a=_p4x_n(cx - 20), b=_p4x_n(cx + 8), t=_p4x_n(sy), m=_p4x_n(sy + 16), m2=_p4x_n(sy + 18),
+        c=_p4x_n(cx + 40), d=_p4x_n(cx + 62), u=_p4x_n(sy + 26), e=_p4x_n(cx + 70),
+        bt=_p4x_n(sy + 42), f=_p4x_n(cx - 26))
+    out.append(_p4x_path(shoe, fill=_P4X_ACCENT_TINT, stroke=_P4X_INK, w=2.5, data_part="load"))
+    out.append(_p4x_line(cx - 22, sy + 35, cx + 70, sy + 35, stroke=_P4X_INK, w=2, data_part="load-sole"))
+    out.append(_p4x_label(cx + 82, sy + 32, d.get("load", ""), size=16, weight="700", anchor="start",
+                          data_part="load-name"))
+    return _p4x_svg(fig, int(round(sy + 52)), out)
+
+
+ART.update({
+    'force-arrows': _p4x_force_arrows,
+    'newtonmeter': _p4x_newtonmeter,
+})
