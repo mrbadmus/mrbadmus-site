@@ -8,9 +8,9 @@ LESSON = {
         "question": "If you had to guess, what lets a stomach do what the dish cannot?",
         "options": [
             ("Many more cells",
-             "The layers. A stomach has different tissues working together, such as muscle to churn food."),
+             "The layers. Each layer is a tissue of similar cells, such as muscle to churn food."),
             ("Cells arranged in layers",
-             "The layers. A stomach has different tissues working together, such as muscle to churn food."),
+             "The layers. Each layer is a tissue of similar cells, such as muscle to churn food."),
         ],
         "answer": 1,
     },
@@ -50,8 +50,7 @@ LESSON = {
                   "The heart is an organ. It has muscle tissue, nerve tissue and connective tissue.",
                   "Skin is an organ too, made of several tissues."]},
         {"kind": "card", "title": "A leaf is an organ",
-         "body": [{"figure": "b1-leaf-section"},
-                  "A leaf is made of several tissues working together.",
+         "body": ["A leaf is made of several tissues working together.",
                   "Its tissues include the epidermis, palisade and spongy tissue, xylem and phloem.",
                   "Palisade tissue makes most of the food.",
                   "Other tissues bring water, let gases in and protect the leaf.",
@@ -59,7 +58,7 @@ LESSON = {
         {"kind": "card", "title": "Organ systems",
          "body": ["The digestive system includes the mouth, stomach, intestines, liver and pancreas.",
                   "The circulatory system is the heart, blood vessels and blood.",
-                  "A tree's root system is many roots working together. Each root is an organ.",
+                  "In plants, the roots, stem and leaves work together as a transport system.",
                   "Each system does a job that no single organ could do alone."]},
         {"kind": "card", "title": "Each level does something new",
          "body": ["Stomach cells in a dish make acid and enzymes. They barely digest a sandwich.",
@@ -129,16 +128,6 @@ LESSON = {
              {"level": "Organ system", "example": "Circulatory system"},
              {"level": "Organism", "example": "Human"},
          ], "arrows": "left-to-right"}},
-        {"id": "b1-leaf-section", "kind": "diagram", "status": "drawn", "art": "leaf-section",
-         "title": "A leaf in cross-section, showing its tissues",
-         "desc": "A slice through a leaf, drawn with the top of the leaf at the top. From the top down: a "
-                 "thin waxy cuticle; a single row of upper epidermis cells; the palisade layer, tall narrow "
-                 "cells packed with chloroplasts; the spongy layer, rounded cells with air spaces between "
-                 "them and a vein among them; a single row of lower epidermis cells with one pore between "
-                 "two guard cells. An arrow shows carbon dioxide coming in through the pore, and a second "
-                 "arrow shows water arriving along the vein.",
-         "caption": "Each layer is a different tissue. Together they make the leaf an organ.",
-         "data": {}},
     ],
     "ladder_feedback": {
         "recall": {
@@ -152,6 +141,5 @@ LESSON = {
             3: "Enzymes do work in a dish. But nothing churns the food to mix them in.",
         },
     },
-    "figure_caption": {"b1-leaf-section": "The layers are different tissues. Together they make the leaf an organ."},
     "ks4_becomes": "Organ systems in detail: digestion, circulation and gas exchange.",
 }

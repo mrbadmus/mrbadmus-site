@@ -1558,7 +1558,7 @@ def _b1x_biological_drawing(fig):
     cells = _b1x_onion_cells(12, top, n)
     if "colouring" in faults:
         for (x, yy, w, h, nx, ny) in cells:
-            o.append(_rect(x + 1, yy + 1, w - 2, h - 2, fill="#8FBF5A", opacity="0.55", data_part="colouring"))
+            o.append(_rect(x + 1, yy + 1, w - 2, h - 2, fill="#8C857D", opacity="0.4", data_part="colouring"))
     if "shading" in faults:
         clip = "%s-shade" % fig["id"]
         rects = "".join(_rect(x, yy, w, h) for (x, yy, w, h, nx, ny) in cells)
@@ -1588,7 +1588,7 @@ def _b1x_biological_drawing(fig):
 # Animal cell over plant cell. Every part the animal cell has, the plant cell
 # has too; the plant's extras are named on a tinted pill and keyed underneath.
 _B1X_PART_NAMES = {"cell membrane": "Cell membrane", "cytoplasm": "Cytoplasm", "nucleus": "Nucleus",
-                   "mitochondria": "Mitochondria", "cell wall": "Cell wall", "vacuole": "Vacuole",
+                   "mitochondria": "Mitochondria", "cell wall": "Cell wall", "vacuole": "Large vacuole",
                    "chloroplasts": "Chloroplasts"}
 
 
@@ -1792,28 +1792,36 @@ def _b1x_spec_root(oy, marks):
     hy = oy + 70
     L, T, R, B = 12, oy + 30, 110, oy + 112
     # soil particles around the hair
-    for x, y, r in ((150, hy - 22, 13), (192, hy + 20, 12), (232, hy - 20, 14), (276, hy + 19, 12),
-                    (312, hy - 21, 11), (166, hy + 34, 9), (256, hy + 40, 10), (300, hy + 44, 9),
-                    (206, hy - 38, 9), (322, hy + 6 + 30, 7)):
-        o.append(_circle(x, y, r, fill=_SVG_RULE_STRONG, stroke=_SVG_INK, w=1.5, data_part="soil"))
-    d = ("M %s,%s L %s,%s L %s,%s L %s,%s Q %s,%s %s,%s L %s,%s L %s,%s L %s,%s Z"
-         % tuple(_n(v) for v in (L, T, R, T, R, hy - 6, 318, hy - 5, 326, hy, 318, hy + 5,
-                                 R, hy + 6, R, B, L, B)))
-    o.append(_path(d, fill=_SVG_BAND, stroke=_SVG_INK, w=2.5, data_part="root-hair-cell"))
-    o.append(_rect(L + 14, T + 14, 56, B - T - 28, rx=10, fill=_B1X_BLUE_TINT, stroke=_SVG_INK, w=1.5,
+    for x, y, r in ((150, hy - 24, 13), (192, hy + 22, 12), (232, hy - 22, 14), (276, hy + 21, 12),
+                    (312, hy - 23, 11), (166, hy + 36, 9), (256, hy + 42, 10), (300, hy + 46, 9),
+                    (206, hy - 40, 9), (322, hy + 38, 7)):
+        o.append(_circle(x, y, r, fill="#A9845A", stroke=_SVG_INK, w=1.5, data_part="soil"))
+
+    def outline(i, hw):
+        """The cell and its hair as one outline, `i` units inside the outer edge."""
+        return ("M %s,%s L %s,%s L %s,%s L %s,%s Q %s,%s %s,%s L %s,%s L %s,%s L %s,%s Z"
+                % tuple(_n(v) for v in (L + i, T + i, R - i, T + i, R - i, hy - hw, 318 - i, hy - hw,
+                                        327 - i, hy, 318 - i, hy + hw, R - i, hy + hw, R - i, B - i,
+                                        L + i, B - i)))
+    # cell wall outside, cell membrane just inside it
+    o.append(_path(outline(0, 8), fill=_SVG_RULE_STRONG, stroke=_SVG_INK, w=2.5, data_part="cell-wall"))
+    o.append(_path(outline(4, 4), fill=_SVG_BAND, stroke=_SVG_INK, w=1.5, data_part="cell-membrane"))
+    o.append(_rect(L + 16, T + 16, 52, B - T - 40, rx=10, fill=_B1X_BLUE_TINT, stroke=_SVG_INK, w=1.5,
                    data_part="vacuole"))
-    o.append(_b1x_nucleus(R - 14, hy - 22, 8))
-    for x, y, a in ((R - 16, B - 18, 30), (L + 10, T + 50, 90)):
+    o.append(_b1x_nucleus(R - 17, hy - 22, 8))
+    for x, y, a in ((R - 17, B - 22, 30), (L + 10, T + 46, 90)):
         o.append(_b1x_mito(x, y, a, s=.8))
-    labs = {"Long hair": ((282, hy - 6), (282, hy - 36), (266, hy - 44), "start"),
-            "No chloroplasts": ((L + 40, B - 10), (L + 40, B + 16), (L + 4, B + 31), "start")}
+    labs = {"Long hair": ((282, hy - 8), (282, hy - 38), (266, hy - 46), "start"),
+            # a fact about the whole cell, so a plain line under it rather than a leader to one spot
+            "No chloroplasts": (None, None, (L, B + 22), "start")}
     for m in marks:
         if m not in labs:
             raise ValueError("b1-specialised-cells: no root-hair mark %r" % m)
         a, b, (lx, ly), anc = labs[m]
-        o.append(_b1x_lead(a[0], a[1], b[0], b[1], m))
+        if a:
+            o.append(_b1x_lead(a[0], a[1], b[0], b[1], m))
         o.append(_b1x_text(lx, ly, m, anchor=anc, data_part="mark", data_key=m))
-    return o, B + 36
+    return o, B + 28
 
 
 def _b1x_specialised_cells(fig):
@@ -2058,12 +2066,12 @@ def _b1x_uni_paramecium(oy):
     o.append(_path(_b1x_smooth(pts), fill=_SVG_BAND, stroke=_SVG_INK, w=2.5, data_part="cell-membrane"))
     gx = cx - .15 * 86
     o.append(_path("M %s,%s Q %s,%s %s,%s" % (_n(gx - 22), _n(cy + 20), _n(gx), _n(cy + 2), _n(gx + 20), _n(cy + 6)),
-                   stroke=_SVG_INK, w=2, data_part="oral-groove"))
+                   stroke=_SVG_INK, w=2.5, data_part="oral-groove"))
     o.append(_ellipse(cx + 12, cy - 6, 18, 11, fill=_B1X_NUC, stroke=_SVG_INK, w=2, data_part="nucleus"))
     o.append(_b1x_cvac(cx - 54, cy - 6, True))
     o.append(_b1x_cvac(cx + 60, cy - 4, True))
     tgt = {"cilia": (cx + 66, cy - 26), "contractile vacuole": (cx + 74, cy - 4),
-           "nucleus": (cx + 26, cy + 2), "oral groove": (gx + 18, cy + 6)}
+           "nucleus": (cx + 26, cy + 2), "oral groove": (gx - 9, cy + 11)}
     ys = {"cilia": cy - 32, "contractile vacuole": cy - 8, "nucleus": cy + 34, "oral groove": cy + 58}
     return o, tgt, ys, cy + 64
 

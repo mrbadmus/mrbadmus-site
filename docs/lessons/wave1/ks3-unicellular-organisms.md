@@ -20,3 +20,5 @@ Sources: National Curriculum B5 (no Rainford SOW row). KS3 has one route.
 **Left out because unsure.** Exact Amoeba, Euglena and Paramecium sizes (the page keeps "about a quarter of a millimetre" for Paramecium and 0.002 mm for a bacterium, as on the old page and bank `b1-06-s01`). "Every twenty minutes" is kept as "sometimes every twenty minutes".
 
 **Removed or moved.** Removed: the pond-water microscope bench, the four mystery cells (their discriminations are now Card: Telling an organism from part of one and Easy mistakes), the two "Think again" essays, the key note. The side-by-side table is kept as a reveal table. Mystery cell 1's verdict ("green and makes its own food settles it") was wrong, as a palisade cell is green and part of a plant; it is not carried over. Added to Dive deeper: Euglena as plant or animal, cilia in your airways.
+
+**Pupil walk fixes (390 px).** Rung 4 stem drops "changes shape a little", which clashed with the wall clue (render only).

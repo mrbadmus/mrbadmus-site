@@ -76,7 +76,7 @@ LESSON = {
              "Turn the lowest-power objective into place.",
              "Clip the slide onto the stage, over the hole.",
              "Watch from the side. Use the coarse focus to bring the lens close to the slide.",
-             "Look down the eyepiece. Turn the coarse focus slowly to move them apart.",
+             "Look down the eyepiece. Turn the coarse focus slowly to move the lens and slide apart.",
              "Stop when the cells appear. Sharpen them with the fine focus.",
              "Move the cells to the middle. Turn to a higher power.",
              "Refocus with the fine focus only.",
@@ -204,6 +204,7 @@ LESSON = {
             3: "One zero too many. 15 × 40 = 600, so it is ×600.",
         },
     },
+    "figure_caption": {"b1-biological-drawing": None},      # the bullets under it already say it
     "safety_note": "Microscope lamps get hot, and slides and coverslips are glass. Handle them with care. "
                    "Iodine solution stains skin. Never point a mirror at the Sun.",
 }

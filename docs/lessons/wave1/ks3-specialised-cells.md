@@ -22,3 +22,5 @@ Sources: Rainford Year 7 Bio 1, lessons 2b "Specialised cells" and 3a "Diffusion
 **Left out because unsure.** "Two million red blood cells a second". Glucose as an example of diffusion (AQA's examples are oxygen, carbon dioxide and urea; glucose uptake is not simple diffusion), so the page names oxygen and carbon dioxide only. Exact red blood cell and sperm sizes.
 
 **Removed or moved.** Removed: the four-cell tuning bench, the sabotage engine, the "Think again" essay, the key note. Their facts (no nucleus, no mitochondria, disc shape, midpiece mitochondria, root hair surface) are in the reveal table and cards. Moved to Dive deeper: the long nerve cell, the red blood cell's 120-day life.
+
+**Pupil walk fixes (390 px).** Rung 4 stem no longer asks for a shape (no stored tick credits one). The red blood cell card no longer repeats the Start text; it is now "Life without a nucleus".

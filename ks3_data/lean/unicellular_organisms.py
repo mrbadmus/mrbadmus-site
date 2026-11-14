@@ -110,8 +110,8 @@ LESSON = {
         "explain": "A Paramecium and your cheek cell are both single cells. Explain why the Paramecium needs "
                    "cilia, an oral groove and a contractile vacuole. Explain why your cheek cell needs none "
                    "of them.",
-        "produce": "A student finds a single cell in water from a plant pot. It has a wall and changes shape a "
-                   "little. It has no chloroplasts. It buds off smaller copies of itself. The student says it "
+        "produce": "A student finds a single cell in water from a plant pot. It has a wall. "
+                   "It has no chloroplasts. It buds off smaller copies of itself. The student says it "
                    "must be part of a plant, because it has a wall. Are they right? Which fact would you use "
                    "instead? What would you still want to check?",
     },

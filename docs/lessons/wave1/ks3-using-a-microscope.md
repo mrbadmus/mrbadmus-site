@@ -26,3 +26,5 @@ Sources: Rainford Year 7 Bio 1, lesson 1a "Microscopes" and skills lesson 2c "Sc
 **Left out because unsure.** The magnification triangle uses "×" as the unit slot, because the drawer needs a unit; the page says magnification has no unit. If Mide prefers, the art executor can allow an empty unit.
 
 **Removed or moved.** Removed: Sam's method critique (its three faults are now Card: Making a slide, Card: Finding the cells and Easy mistakes), the cover-the-triangle instrument (now a drawn triangle), the "Now you" FIFA construct, the microscope lab (its readout values are now the reveal table and the scale figure), the "Think again" essay, the key note. Two micrograph slots that were never photographed are not used.
+
+**Pupil walk fixes (390 px).** The biological-drawing caption is dropped (it repeated the bullets). Finding the cells step 4 says the lens and slide move apart.

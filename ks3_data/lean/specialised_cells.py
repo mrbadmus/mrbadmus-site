@@ -54,10 +54,8 @@ LESSON = {
              ("Palisade cell", "Makes food by photosynthesis.",
               "Packed with chloroplasts. Tall cells near the top of the leaf, to absorb light."),
          ]},
-        {"kind": "card", "title": "A red blood cell gives up its nucleus",
-         "body": ["A red blood cell pushes out its nucleus as it matures.",
-                  "This makes room for more haemoglobin.",
-                  "Without a nucleus, it cannot repair itself or divide.",
+        {"kind": "card", "title": "Life without a nucleus",
+         "body": ["Without a nucleus, a red blood cell cannot repair itself or divide.",
                   "It lasts about 120 days. Bone marrow keeps making new ones."]},
         {"kind": "card", "title": "Why shape matters",
          "body": ["Substances get into a cell through its surface.",
@@ -109,7 +107,7 @@ LESSON = {
         "explain": "A root hair cell has a long thin hair. Explain how this shape helps the whole plant. "
                    "Explain why a round cell of the same volume would be worse.",
         "produce": "Design a cell to line your windpipe and stop dust reaching your lungs. "
-                   "Say which parts it would have more of. Say what shape you would give it. Say what would "
+                   "Say which parts it would have more of. Say what would "
                    "go wrong in the body if it stopped working. You may invent a structure, but say which "
                    "problem it solves.",
     },
@@ -135,8 +133,9 @@ LESSON = {
                  " middle section packed with small mitochondria, and a long wavy tail, labelled Head with genetic"
                  " material, Mitochondria and Tail. A nerve cell with a cell body and short branches, one very "
                  "long fibre and branched ends, labelled Long fibre and Branched ends. A root hair cell, a box "
-                 "with a nucleus and a vacuole and one long thin hair growing out between soil particles, labelled"
-                 " Long hair and No chloroplasts.",
+                 "with a nucleus and a vacuole and one long thin hair growing out between soil particles. A cell "
+                 "wall runs outside the membrane all the way round, including round the hair. The hair is "
+                 "labelled Long hair, and the words No chloroplasts are written under the cell with no label line.",
          "caption": "The same basic parts, with a different shape or amount for each job. Not to scale.",
          "data": {"cells": [
              {"kind": "red", "label": "Red blood cell", "marks": ["No nucleus", "Disc shape"]},

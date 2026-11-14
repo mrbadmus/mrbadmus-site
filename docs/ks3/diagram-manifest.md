@@ -19,11 +19,11 @@ MRB-103 also flagged an **anatomical/structural diagram gap** (cells, organs) an
 | Status | Figures |
 |---|---|
 | `drafted` | 1 |
-| `drawn` | 71 |
+| `drawn` | 70 |
 | `final` | 1 |
 | `needed` | 3 |
 | `retired` | 6 |
-| **Total** | **82** |
+| **Total** | **81** |
 
 `needed` = declared by a lesson, not yet drawn. A lesson may ship with figures at `needed` — it is not a build blocker — but the need is then counted here rather than invisible.
 
@@ -33,7 +33,6 @@ MRB-103 also flagged an **anatomical/structural diagram gap** (cells, organs) an
 |---|---|---|---|---|---|
 | B1 | `animal-and-plant-cells` | `b1-cell-bench` | css-art | `drafted` | The cell bench drawing: a leaf cell and a cheek cell, each as a textbook drawing and as a ×400 field of view. |
 | B1 | `animal-and-plant-cells` | `b1-cell-pair` | diagram | `drawn` | The plant cell has every part the animal cell has, plus three more. |
-| B1 | `levels-of-organisation` | `b1-leaf-section` | diagram | `drawn` | Each layer is a different tissue. Together they make the leaf an organ. |
 | B1 | `levels-of-organisation` | `b1-levels` | diagram | `drawn` | Each level is made of the level before it. |
 | B1 | `life-processes` | `b1-candle-flame` | css-art | `final` | A burning candle: a flickering flame above the wick, with soot rising from it. |
 | B1 | `specialised-cells` | `b1-diffusion` | diagram | `drawn` | Particles diffuse from a high concentration to a low concentration. |

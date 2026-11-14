@@ -24,9 +24,8 @@ LESSON = {
     "knowledge": [
         {"kind": "card", "title": "Animal and plant cells",
          "body": [{"figure": "b1-cell-pair"},
-                  "Of the seven parts here, every animal cell part is in a plant cell too.",
                   "Plant cells also have a cell wall and a large vacuole.",
-                  "Plant cells that get light also have chloroplasts."]},
+                  "Most cells in the green parts of a plant have chloroplasts."]},
         {"kind": "reveal", "title": "Seven parts and their jobs",
          "cols": ["Job", "Animal cell", "Plant cell"],
          "rows": [
@@ -157,7 +156,7 @@ LESSON = {
             2: "The green is chlorophyll, inside the chloroplasts. The vacuole holds cell sap.",
         },
     },
-    "figure_caption": {"b1-cell-pair": "Of the seven parts, the plant cell has all the animal cell's, plus three more."},
+    "figure_caption": {"b1-cell-pair": None},      # the Start reply already says it
     "safety_note": "Only use cells from your own cheek. Put used cotton buds straight into disinfectant. "
                    "Methylene blue stains skin and clothes.",
 }
