@@ -48,6 +48,11 @@ it. Adding a constant here does not create a unit.
 TEMPERATURE_IS = ("a measure of the average kinetic energy of the particles "
                   "— the energy they have because they are moving")
 
+# Dash-free short form, for lean pages (a spaced dash is refused there). Same words as TEMPERATURE_IS.
+TEMPERATURE_SHORT = "a measure of the average kinetic energy of the particles"
+TEMPERATURE_SENTENCE_SHORT = "Temperature is %s." % TEMPERATURE_SHORT
+TEMPERATURE_CRITERION_SHORT = "Says temperature is %s." % TEMPERATURE_SHORT
+
 # A full sentence, for prose, key facts and reveals.
 TEMPERATURE_SENTENCE = "Temperature is %s." % TEMPERATURE_IS
 
