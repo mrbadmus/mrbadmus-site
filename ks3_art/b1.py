@@ -1261,3 +1261,874 @@ KIND_FN = {
     'system-bench': r_system_bench,
     'sabotage': r_sabotage,
 }
+
+
+
+# ══ lean wave · B1's drawn figures ═══════════════════════════════════════
+#
+# Seven plates for the lean B1 pages, appended below the retired instruments
+# and registered in ART at the foot of this file. Every plate is 340 units
+# wide and stacks its parts one under another, so each label reads at full
+# size on a phone.
+#
+# Paint: outlines, text and neutral grounds are --ks3-* tokens. Organelles
+# carry a FIXED fill (nucleus purple, chloroplast green, mitochondrion orange,
+# red blood cell red), always outlined in --ks3-ink, so a part looks the same
+# in the light and dark themes. Labels sit beside their part with a ruled
+# leader line and no arrowhead, the way a biological drawing is labelled.
+#
+#   "b1-light-microscope"   data {"labels": [{"part", "text"}], "light_path": bool}
+#       part ∈ eyepiece | objectives | stage | clips | coarse | fine | diaphragm | lamp
+#   "b1-biological-drawing" data {"cells": int, "specimen": str,
+#                                 "good": {"labels": [str ×3], "magnification": str},
+#                                 "poor": {"faults": [str]}}
+#   "b1-cell-pair"          data {"cells": [{"kind": "animal"|"plant", "label", "parts": [str]}],
+#                                 "highlight_extras": [str]}
+#   "b1-specialised-cells"  data {"cells": [{"kind": "red"|"sperm"|"nerve"|"root", "label",
+#                                  "marks": [str]}], "to_scale": false}
+#   "b1-diffusion"          data {"particle", "left": {"label", "tag", "count"},
+#                                 "right": {...}, "arrows": int, "barrier": str}
+#   "b1-levels"             data {"levels": [{"level", "example"} ×5]}
+#   "b1-unicellular"        data {"organisms": [{"kind": "amoeba"|"paramecium"|"euglena",
+#                                  "label", "parts": [str]}], "to_scale": false}
+
+import math as _b1x_math
+from ks3_art.kit import (
+    _SVG_ACCENT_TEXT,
+    _SVG_ACCENT_TINT,
+    _SVG_BAND,
+    _SVG_CARD,
+    _SVG_INK,
+    _SVG_INK_BODY,
+    _SVG_INK_FAINT,
+    _SVG_INK_MUTED,
+    _SVG_INSET,
+    _SVG_RULE,
+    _SVG_RULE_STRONG,
+    _circle,
+    _ellipse,
+    _label,
+    _line,
+    _n,
+    _path,
+    _rect,
+    _svg_open,
+)
+
+_B1X_W = 340
+_B1X_BLUE = "var(--ks3-blue)"
+_B1X_BLUE_TINT = "var(--ks3-blue-tint)"
+_B1X_OK = "var(--ks3-ok)"
+# fixed fills, each always outlined in ink
+_B1X_NUC = "#7C6AA6"      # nucleus (the old canvas drawings' purple)
+_B1X_CHL = "#3E9B4F"      # chloroplast
+_B1X_MITO = "#E39B4E"     # mitochondrion
+_B1X_RED = "#C2372B"      # red blood cell
+_B1X_RED_PALE = "#E58C80"  # its thin middle
+_B1X_MUSCLE = "#D9796E"   # muscle cell
+_B1X_LAMP = "#F2D23C"     # lamp
+_B1X_O = "#D8412F"        # oxygen atom (as C2's particle boxes)
+_B1X_EYE = "#D8412F"      # Euglena's eyespot
+_B1X_LEAD = dict(stroke=_SVG_INK_MUTED, w=1.5)
+
+
+def _b1x_need(fig, key):
+    v = (fig.get("data") or {}).get(key)
+    if not v:
+        raise ValueError("figure %r: %s needs data.%s" % (fig.get("id"), fig.get("art"), key))
+    return v
+
+
+def _b1x_open(fig, h, body):
+    return (_svg_open(fig, _B1X_W, int(_b1x_math.ceil(h)))
+            + '<g stroke-linecap="round" stroke-linejoin="round">' + "".join(body) + "</g></svg>")
+
+
+def _b1x_text(x, y, s, anchor="start", size=14, weight="600", fill=_SVG_INK, gap=17, **data):
+    """A label; a "\\n" in it stacks a second line `gap` below the first."""
+    return "".join(_label(x, y + i * gap, line, size=size, weight=weight, fill=fill, anchor=anchor, **data)
+                   for i, line in enumerate(str(s).split("\n")))
+
+
+def _b1x_lead(x1, y1, x2, y2, key):
+    return _line(x1, y1, x2, y2, data_part="leader", data_key=key, **_B1X_LEAD)
+
+
+def _b1x_tw(s, size=14, weight="600"):
+    """A generous estimate of a label's drawn width, for pills and clearance."""
+    k = 0.55 if weight in ("700", "800") else 0.52
+    return max(len(line) for line in str(s).split("\n")) * size * k
+
+
+def _b1x_smooth(pts):
+    """A closed Catmull-Rom curve through `pts`, as cubic Béziers."""
+    n = len(pts)
+    d = "M %s,%s" % (_n(pts[0][0]), _n(pts[0][1]))
+    for i in range(n):
+        p0, p1, p2, p3 = pts[i - 1], pts[i], pts[(i + 1) % n], pts[(i + 2) % n]
+        c1 = (p1[0] + (p2[0] - p0[0]) / 6.0, p1[1] + (p2[1] - p0[1]) / 6.0)
+        c2 = (p2[0] - (p3[0] - p1[0]) / 6.0, p2[1] - (p3[1] - p1[1]) / 6.0)
+        d += " C %s,%s %s,%s %s,%s" % (_n(c1[0]), _n(c1[1]), _n(c2[0]), _n(c2[1]), _n(p2[0]), _n(p2[1]))
+    return d + " Z"
+
+
+def _b1x_polyd(pts):
+    return "M " + " L ".join("%s,%s" % (_n(x), _n(y)) for x, y in pts)
+
+
+def _b1x_rot(svg, ang, cx, cy):
+    return '<g transform="rotate(%s %s %s)">%s</g>' % (_n(ang), _n(cx), _n(cy), svg)
+
+
+def _b1x_nucleus(cx, cy, rx, ry=None, **data):
+    return _ellipse(cx, cy, rx, ry or rx, fill=_B1X_NUC, stroke=_SVG_INK, w=2, data_part="nucleus", **data)
+
+
+def _b1x_mito(cx, cy, ang=0, s=1.0):
+    rx, ry = 10 * s, 5 * s
+    z = _b1x_polyd([(cx - 6 * s, cy), (cx - 3.5 * s, cy - 2.5 * s), (cx - 1 * s, cy + 2.5 * s),
+                    (cx + 1.5 * s, cy - 2.5 * s), (cx + 4 * s, cy + 2.5 * s), (cx + 6 * s, cy)])
+    return _b1x_rot(_ellipse(cx, cy, rx, ry, fill=_B1X_MITO, stroke=_SVG_INK, w=1.5, data_part="mitochondrion")
+                    + _path(z, stroke="#5A3410", w=1), ang, cx, cy)
+
+
+def _b1x_chloro(cx, cy, ang=0, rx=8, ry=4.5):
+    return _b1x_rot(_ellipse(cx, cy, rx, ry, fill=_B1X_CHL, stroke=_SVG_INK, w=1.5, data_part="chloroplast"),
+                    ang, cx, cy)
+
+
+def _b1x_arrow(x1, y1, x2, y2, stroke=_SVG_INK, w=2.5, head=9, **data):
+    from ks3_art.b4 import _b4_arrow
+    return _b4_arrow(x1, y1, x2, y2, stroke=stroke, w=w, head=head, **data)
+
+
+def _b1x_tick(x, y, s=1.0):
+    return _path("M %s,%s L %s,%s L %s,%s" % (_n(x), _n(y + 7 * s), _n(x + 6 * s), _n(y + 13 * s),
+                                              _n(x + 17 * s), _n(y)),
+                 stroke=_B1X_OK, w=3.5, data_part="tick")
+
+
+def _b1x_cross(x, y, s=1.0):
+    return (_line(x, y, x + 13 * s, y + 13 * s, stroke=_SVG_ACCENT_TEXT, w=3.5, data_part="cross")
+            + _line(x + 13 * s, y, x, y + 13 * s, stroke=_SVG_ACCENT_TEXT, w=3.5, data_part="cross"))
+
+
+def _b1x_divider(y):
+    return _line(8, y, _B1X_W - 8, y, stroke=_SVG_RULE, w=1.5, data_part="divider")
+
+
+def _b1x_heading(y, s, key):
+    return _label(8, y, s, size=15, weight="700", anchor="start", data_part="heading", data_key=key)
+
+
+# ── b1-light-microscope ─────────────────────────────────────────────────
+# A straight-tube school microscope from the side: the arm at the back (left),
+# the tube, turret and stage in front of it, the lamp in the base under the
+# hole in the stage. The light path, when drawn, runs up the tube's axis.
+_B1X_SCOPE_TARGETS = {
+    # part: (label x, label baseline y, anchor, leader from, leader to)
+    "eyepiece":   (196, 31, "start", (192, 26), (174, 26)),
+    "objectives": (236, 174, "start", (232, 169), (182, 174)),
+    "clips":      (236, 215, "start", (232, 210), (209, 207)),
+    "stage":      (236, 241, "start", (232, 236), (221, 225)),
+    "diaphragm":  (236, 266, "start", (232, 261), (181, 239)),
+    "lamp":       (236, 305, "start", (232, 300), (170, 300)),
+    "coarse":     (62, 254, "end", (65, 258), (77, 258)),
+    "fine":       (62, 294, "end", (65, 298), (85, 298)),
+}
+_B1X_SCOPE_SPLIT = {"Objective lenses": "Objective\nlenses", "Coarse focus": "Coarse\nfocus",
+                    "Fine focus": "Fine\nfocus"}
+
+
+def _b1x_light_microscope(fig):
+    data = fig.get("data") or {}
+    labels = _b1x_need(fig, "labels")
+    o = []
+    X = 160
+    # base and arm (behind everything)
+    o.append(_rect(70, 330, 180, 26, rx=6, fill=_SVG_BAND, stroke=_SVG_INK, w=2, data_part="base"))
+    o.append(_path("M 82,330 L 82,140 Q 82,84 132,84 L 142,84 L 142,118 L 132,118 Q 108,118 108,150 L 108,330 Z",
+                   fill=_SVG_BAND, stroke=_SVG_INK, w=2, data_part="arm"))
+    # lamp in the base, under the hole
+    o.append(_rect(146, 304, 28, 26, rx=3, fill=_SVG_BAND, stroke=_SVG_INK, w=2, data_part="lamp-housing"))
+    o.append(_circle(X, 298, 9, fill=_B1X_LAMP, stroke=_SVG_INK, w=1.5, data_part="lamp"))
+    # diaphragm under the stage, hung from it
+    o.append(_line(146, 224, 146, 234, stroke=_SVG_INK, w=2))
+    o.append(_line(174, 224, 174, 234, stroke=_SVG_INK, w=2))
+    o.append(_rect(139, 234, 42, 7, rx=3, fill=_SVG_CARD, stroke=_SVG_INK, w=2, data_part="diaphragm"))
+    # the stage, in two pieces either side of its hole
+    o.append(_rect(108, 214, 44, 10, fill=_SVG_BAND, stroke=_SVG_INK, w=2, data_part="stage"))
+    o.append(_rect(168, 214, 54, 10, fill=_SVG_BAND, stroke=_SVG_INK, w=2, data_part="stage"))
+    # the slide over the hole, held by two clips
+    o.append(_rect(126, 210, 68, 4, fill=_B1X_BLUE_TINT, stroke=_SVG_INK, w=1.5, data_part="slide"))
+    for x0, x1, post in ((111, 134, 111), (186, 209, 205)):
+        o.append(_rect(post, 205, 4, 9, fill=_SVG_INK, data_part="clip-post"))
+        o.append(_rect(x0, 204, x1 - x0, 4, rx=2, fill=_SVG_INK_BODY, stroke=_SVG_INK, w=1, data_part="clip"))
+    # tube, turret and three objectives of different lengths
+    o.append(_rect(142, 58, 36, 90, fill=_SVG_BAND, stroke=_SVG_INK, w=2, data_part="tube"))
+    o.append(_path("M 132,148 L 188,148 L 184,164 L 136,164 Z", fill=_SVG_BAND, stroke=_SVG_INK, w=2,
+                   data_part="turret"))
+    for x0, x1, y1, power in ((139, 149, 178, "low"), (154, 166, 200, "high"), (171, 181, 189, "medium")):
+        o.append(_rect(x0, 164, x1 - x0, y1 - 164, rx=2, fill=_SVG_CARD, stroke=_SVG_INK, w=2,
+                       data_part="objective", data_key=power))
+        o.append(_line(x0 + 2, y1, x1 - 2, y1, stroke=_B1X_BLUE, w=2.5))
+    # eyepiece on top, its lens at the top
+    o.append(_rect(147, 27, 26, 31, fill=_SVG_BAND, stroke=_SVG_INK, w=2, data_part="eyepiece"))
+    o.append(_ellipse(X, 27, 13, 4, fill=_B1X_BLUE_TINT, stroke=_SVG_INK, w=1.5, data_part="eyepiece-lens"))
+    # focus knobs on the arm: coarse large, fine small
+    o.append(_circle(95, 258, 17, fill=_SVG_CARD, stroke=_SVG_INK, w=2, data_part="knob", data_key="coarse"))
+    o.append(_circle(95, 258, 5, fill=_SVG_INK_FAINT, stroke=_SVG_INK, w=1.5))
+    o.append(_circle(95, 298, 9, fill=_SVG_CARD, stroke=_SVG_INK, w=2, data_part="knob", data_key="fine"))
+    o.append(_circle(95, 298, 3, fill=_SVG_INK_FAINT))
+    if data.get("light_path"):
+        o.append(_line(X, 288, X, 17, stroke=_SVG_ACCENT_TEXT, w=2, dash="5 4", data_part="light-path"))
+        o.append(_path("M %s,6 L %s,17 L %s,17 Z" % (X, X - 6, X + 6), fill=_SVG_ACCENT_TEXT,
+                       data_part="light-path"))
+    for lab in labels:
+        part, text = lab["part"], lab["text"]
+        if part not in _B1X_SCOPE_TARGETS:
+            raise ValueError("figure %r: no microscope part %r" % (fig.get("id"), part))
+        lx, ly, anchor, a, b = _B1X_SCOPE_TARGETS[part]
+        o.append(_b1x_lead(a[0], a[1], b[0], b[1], part))
+        o.append(_b1x_text(lx, ly, _B1X_SCOPE_SPLIT.get(text, text), anchor=anchor,
+                           data_part="label", data_key=part))
+    return _b1x_open(fig, 362, o)
+
+
+# ── b1-biological-drawing ───────────────────────────────────────────────
+# The same onion cells twice: a good drawing (thin single lines, no shading,
+# a title, ruled labels, the magnification) over a poor one (sketchy doubled
+# lines, shading, colouring, nothing written on it).
+def _b1x_onion_cells(ox, oy, n, w=166, h=36):
+    """[(x, y, w, h, nucleus cx, nucleus cy)] for n long cells stacked like bricks."""
+    cells = []
+    for i in range(n):
+        shift = 18 if i % 2 else 0
+        x = ox + shift
+        cells.append((x, oy + i * h, w, h, x + (40 if i % 2 else w - 44), oy + i * h + h / 2))
+    return cells
+
+
+def _b1x_biological_drawing(fig):
+    data = fig.get("data") or {}
+    n = int(data.get("cells") or 3)
+    good = data.get("good") or {}
+    poor = data.get("poor") or {}
+    labs = good.get("labels") or []
+    if len(labs) != 3:
+        raise ValueError("figure %r: b1-biological-drawing needs three good.labels" % fig.get("id"))
+    faults = set(poor.get("faults") or [])
+    title = {"onion": "Onion cells"}.get(data.get("specimen"), str(data.get("specimen") or "Cells").capitalize())
+    pencil = _SVG_INK_BODY
+    o = []
+    # ── the good drawing ──
+    o.append(_b1x_tick(10, 6))
+    o.append(_label(36, 19, "Good drawing", size=15, weight="700", anchor="start", data_part="heading",
+                    data_key="good"))
+    o.append(_label(102, 50, title, size=14, weight="600", anchor="middle", fill=pencil,
+                    data_part="drawing-title"))
+    cells = _b1x_onion_cells(12, 62, n)
+    for (x, y, w, h, nx, ny) in cells:
+        o.append(_rect(x, y, w, h, fill="none", stroke=pencil, w=1.5, data_part="cell-wall"))
+        o.append(_ellipse(nx, ny, 9, 6, fill="none", stroke=pencil, w=1.5, data_part="nucleus"))
+    # ruled labels: wall (top cell's right end), nucleus (middle cell), cytoplasm (bottom cell)
+    x0, y0, w0, h0 = cells[0][:4]
+    xm, ym, wm, hm, nxm, nym = cells[min(1, n - 1)]
+    xb, yb, wb, hb, nxb, nyb = cells[-1]
+    targets = [(x0 + w0, y0 + 12), (nxm + 9, nym), (xb + wb - 20, yb + hb / 2 + 6)]
+    lys = [y0 + 12, nym, yb + hb / 2 + 6]
+    for text, (tx, ty), ly in zip(labs, targets, lys):
+        o.append(_line(222, ly, tx, ty, stroke=pencil, w=1.2, data_part="leader", data_key=text))
+        o.append(_label(228, ly + 5, text, size=14, weight="600", anchor="start", fill=pencil,
+                        data_part="label", data_key=text))
+    mag = good.get("magnification")
+    bottom = yb + hb
+    if mag:
+        o.append(_label(102, bottom + 24, "Magnification %s" % mag, size=14, weight="600", anchor="middle",
+                        fill=pencil, data_part="magnification"))
+        bottom += 24
+    y = bottom + 18
+    o.append(_b1x_divider(y))
+    # ── the poor drawing ──
+    y += 14
+    o.append(_b1x_cross(12, y + 1))
+    o.append(_label(36, y + 13, "Poor drawing", size=15, weight="700", anchor="start", data_part="heading",
+                    data_key="poor"))
+    top = y + 30
+    cells = _b1x_onion_cells(12, top, n)
+    if "colouring" in faults:
+        for (x, yy, w, h, nx, ny) in cells:
+            o.append(_rect(x + 1, yy + 1, w - 2, h - 2, fill="#8FBF5A", opacity="0.55", data_part="colouring"))
+    if "shading" in faults:
+        clip = "%s-shade" % fig["id"]
+        rects = "".join(_rect(x, yy, w, h) for (x, yy, w, h, nx, ny) in cells)
+        o.append('<defs><clipPath id="%s">%s</clipPath></defs>' % (clip, rects))
+        hatch = []
+        for k in range(-10, 30):
+            hx = 12 + k * 9
+            hatch.append(_line(hx, top + n * 36, hx + n * 36, top, stroke=_SVG_INK, w=1, opacity="0.45"))
+        o.append('<g clip-path="url(#%s)" data-part="shading">%s</g>' % (clip, "".join(hatch)))
+    for ci, (x, yy, w, h, nx, ny) in enumerate(cells):
+        sketch = "sketchy lines" in faults
+        passes = ((0, 0), (1.6, -1.4), (-1.2, 1.8)) if sketch else ((0, 0),)
+        for pi, (dx, dy) in enumerate(passes):
+            j = (ci * 3 + pi) % 4 - 1.5
+            pts = [(x + dx - 2, yy + dy + j), (x + w * .5, yy + dy - j * .6), (x + w + dx + 3, yy + dy + .8 * j),
+                   (x + w + dx - j * .5, yy + h + dy), (x + w * .45, yy + h + dy + j * .7),
+                   (x + dx + 1.5, yy + h + dy - j * .4), (x + dx - 2, yy + dy + j)]
+            o.append(_path(_b1x_polyd(pts), stroke=_SVG_INK, w=1.6, data_part="sketch-line"))
+        o.append(_ellipse(nx, ny, 9, 6, fill="#4A443F", stroke=_SVG_INK, w=1.5, data_part="nucleus"))
+        if sketch:
+            o.append(_ellipse(nx + 1.5, ny - 1, 10, 6.5, fill="none", stroke=_SVG_INK, w=1.2))
+    H = top + n * 36 + 20
+    return _b1x_open(fig, H, o)
+
+
+# ── b1-cell-pair ────────────────────────────────────────────────────────
+# Animal cell over plant cell. Every part the animal cell has, the plant cell
+# has too; the plant's extras are named on a tinted pill and keyed underneath.
+_B1X_PART_NAMES = {"cell membrane": "Cell membrane", "cytoplasm": "Cytoplasm", "nucleus": "Nucleus",
+                   "mitochondria": "Mitochondria", "cell wall": "Cell wall", "vacuole": "Vacuole",
+                   "chloroplasts": "Chloroplasts"}
+
+
+def _b1x_extra_label(x, y, text, key):
+    w = _b1x_tw(text, 14, "700")
+    return (_rect(x - 5, y - 15, w + 10, 21, rx=10, fill=_SVG_ACCENT_TINT, stroke=_SVG_ACCENT_TEXT, w=1.5,
+                  data_part="extra-pill", data_key=key)
+            + _label(x, y, text, size=14, weight="700", anchor="start", fill=_SVG_ACCENT_TEXT,
+                     data_part="label", data_key=key, data_extra="1"))
+
+
+def _b1x_part_label(x, y, key, extras):
+    name = _B1X_PART_NAMES.get(key, key[:1].upper() + key[1:])
+    if key in extras:
+        return _b1x_extra_label(x, y, name, key)
+    return _label(x, y, name, size=14, weight="600", anchor="start", data_part="label", data_key=key)
+
+
+def _b1x_animal_cell(oy, parts, extras):
+    o = []
+    cx, cy = 100, oy + 82
+    rs = (70, 64, 60, 66, 72, 66, 58, 62, 68, 64)
+    pts = []
+    for i, r in enumerate(rs):
+        a = 2 * _b1x_math.pi * i / len(rs)
+        pts.append((cx + r * 1.12 * _b1x_math.cos(a), cy + r * 0.86 * _b1x_math.sin(a)))
+    o.append(_path(_b1x_smooth(pts), fill=_SVG_BAND, stroke=_SVG_INK, w=2.5, data_part="cell-membrane"))
+    o.append(_b1x_nucleus(cx - 8, cy + 2, 20))
+    for mx, my, ang in ((cx + 38, cy - 26, 20), (cx - 50, cy + 28, -30), (cx + 22, cy + 34, 10),
+                        (cx - 44, cy - 28, 35)):
+        o.append(_b1x_mito(mx, my, ang))
+    # targets on the right half, top to bottom
+    tgt = {"cell membrane": (cx + 58, cy - 32), "mitochondria": (cx + 47, cy - 22),
+           "nucleus": (cx + 12, cy + 2), "cytoplasm": (cx + 52, cy + 22)}
+    ys = {"cell membrane": cy - 50, "mitochondria": cy - 20, "nucleus": cy + 10, "cytoplasm": cy + 40}
+    for key in parts:
+        if key not in tgt:
+            raise ValueError("b1-cell-pair: no animal-cell part %r" % key)
+        tx, ty = tgt[key]
+        o.append(_b1x_lead(206, ys[key] - 5, tx, ty, key))
+        o.append(_b1x_part_label(212, ys[key], key, ()))
+    return o, oy + 146
+
+
+def _b1x_plant_cell(oy, parts, extras):
+    o = []
+    L, T, R, B = 14, oy + 6, 194, oy + 176
+    o.append(_rect(L, T, R - L, B - T, rx=4, fill=_SVG_RULE_STRONG, stroke=_SVG_INK, w=2.5, data_part="cell-wall"))
+    o.append(_rect(L + 8, T + 8, R - L - 16, B - T - 16, rx=2, fill=_SVG_CARD, stroke=_SVG_INK, w=1))
+    o.append(_rect(L + 11, T + 11, R - L - 22, B - T - 22, rx=2, fill=_SVG_BAND, stroke=_SVG_INK, w=1.5,
+                   data_part="cell-membrane"))
+    vx0, vy0, vx1, vy1 = L + 30, T + 30, R - 46, B - 30
+    o.append(_rect(vx0, vy0, vx1 - vx0, vy1 - vy0, rx=18, fill=_B1X_BLUE_TINT, stroke=_SVG_INK, w=1.5,
+                   data_part="vacuole"))
+    nx, ny = R - 27, T + 72
+    o.append(_b1x_nucleus(nx, ny, 12))
+    chl = [(L + 28, T + 20, 0), (L + 62, T + 20, 0), (L + 98, T + 20, 0), (L + 134, T + 20, 0),
+           (R - 26, T + 25, 30),
+           (L + 20, T + 58, 90), (L + 20, T + 98, 90), (L + 20, T + 138, 90),
+           (L + 46, B - 20, 0), (L + 82, B - 20, 0), (L + 118, B - 20, 0)]
+    for x, y, a in chl:
+        o.append(_b1x_chloro(x, y, a))
+    o.append(_b1x_mito(R - 24, T + 112, 80, s=.85))
+    o.append(_b1x_mito(L + 20, T + 118, 90, s=.85))
+    tgt = {"cell wall": (R - 3, T + 6), "chloroplasts": (R - 20, T + 28), "cell membrane": (R - 11, T + 50),
+           "nucleus": (nx + 11, ny + 4), "vacuole": (vx1 - 2, T + 98), "mitochondria": (R - 18, T + 116),
+           "cytoplasm": (R - 26, B - 32)}
+    ys = {"cell wall": T + 6, "chloroplasts": T + 30, "cell membrane": T + 54, "nucleus": T + 78,
+          "vacuole": T + 102, "mitochondria": T + 126, "cytoplasm": T + 150}
+    for key in parts:
+        if key not in tgt:
+            raise ValueError("b1-cell-pair: no plant-cell part %r" % key)
+        tx, ty = tgt[key]
+        o.append(_b1x_lead(206, ys[key] - 5, tx, ty, key))
+        o.append(_b1x_part_label(212, ys[key], key, extras))
+    return o, B
+
+
+def _b1x_cell_pair(fig):
+    data = fig.get("data") or {}
+    cells = _b1x_need(fig, "cells")
+    extras = set(data.get("highlight_extras") or [])
+    o = []
+    y = 4
+    for i, c in enumerate(cells):
+        if i:
+            o.append(_b1x_divider(y + 10))
+            y += 24
+        o.append(_b1x_heading(y + 16, c["label"], c["kind"]))
+        y += 26
+        fn = {"animal": _b1x_animal_cell, "plant": _b1x_plant_cell}.get(c["kind"])
+        if not fn:
+            raise ValueError("figure %r: no cell kind %r" % (fig.get("id"), c["kind"]))
+        part, y = fn(y, c.get("parts") or [], extras)
+        o.extend(part)
+    if extras:
+        y += 22
+        o.append(_rect(14, y - 8, 30, 16, rx=8, fill=_SVG_ACCENT_TINT, stroke=_SVG_ACCENT_TEXT, w=1.5,
+                       data_part="key-pill"))
+        o.append(_label(52, y + 5, "Only in plant cells", size=14, weight="600", anchor="start",
+                        data_part="key"))
+        y += 12
+    return _b1x_open(fig, y + 8, o)
+
+
+# ── b1-specialised-cells ────────────────────────────────────────────────
+# Four rows, one cell each, not to scale. Each row: the cell's name, the
+# drawing, and its marks on short ruled lines.
+def _b1x_spec_red(oy, marks):
+    o = []
+    fx, sx, cy = 70, 222, oy + 70
+    o.append(_label(fx, oy + 30, "From above", size=14, weight="500", fill=_SVG_INK_MUTED, data_part="view"))
+    o.append(_label(sx, oy + 30, "From the side", size=14, weight="500", fill=_SVG_INK_MUTED, data_part="view"))
+    o.append(_circle(fx, cy, 30, fill=_B1X_RED, stroke=_SVG_INK, w=2, data_part="red-cell-face"))
+    o.append(_circle(fx, cy, 13, fill=_B1X_RED_PALE, data_part="thin-middle"))
+    # biconcave disc seen edge-on: thick rim, thin middle
+    d = ("M %s,%s C %s,%s %s,%s %s,%s C %s,%s %s,%s %s,%s C %s,%s %s,%s %s,%s C %s,%s %s,%s %s,%s Z"
+         % tuple(_n(v) for v in (sx - 44, cy,
+                                 sx - 40, cy - 16, sx - 22, cy - 16, sx, cy - 6,
+                                 sx + 22, cy - 16, sx + 40, cy - 16, sx + 44, cy,
+                                 sx + 40, cy + 16, sx + 22, cy + 16, sx, cy + 6,
+                                 sx - 22, cy + 16, sx - 40, cy + 16, sx - 44, cy)))
+    o.append(_path(d, fill=_B1X_RED, stroke=_SVG_INK, w=2, data_part="red-cell-side"))
+    pos = [(fx, cy, fx, cy + 50, "middle"), (sx, cy + 7, sx, cy + 50, "middle")]
+    for m, (tx, ty, lx, ly, anc) in zip(marks, pos):
+        o.append(_b1x_lead(tx, ty, lx, ly - 15, m))
+        o.append(_b1x_text(lx, ly, m, anchor=anc, data_part="mark", data_key=m))
+    return o, cy + 56
+
+
+def _b1x_spec_sperm(oy, marks):
+    o = []
+    cy = oy + 64
+    hx = 46
+    tail = []
+    for i in range(0, 61):
+        t = i / 60.0
+        x = 104 + t * 222
+        tail.append((x, cy + 11 * (1 - .55 * t) * _b1x_math.sin(t * 2 * _b1x_math.pi * 2.2)))
+    o.append(_path(_b1x_polyd(tail), stroke=_SVG_INK, w=3, data_part="tail"))
+    o.append(_rect(66, cy - 8, 40, 16, rx=7, fill=_SVG_BAND, stroke=_SVG_INK, w=2, data_part="midpiece"))
+    for mx in (74, 86, 98):
+        o.append(_ellipse(mx, cy, 5, 4, fill=_B1X_MITO, stroke=_SVG_INK, w=1.2, data_part="mitochondrion"))
+    o.append(_ellipse(hx, cy, 24, 17, fill=_SVG_BAND, stroke=_SVG_INK, w=2, data_part="head"))
+    o.append(_b1x_nucleus(hx + 2, cy, 15, 11))
+    labs = {"Head with genetic material": ((hx, cy - 17), (hx, oy + 34), (10, oy + 30), "start", "above"),
+            "Mitochondria": ((86, cy + 8), (86, cy + 30), (86, cy + 45), "middle", "below"),
+            "Tail": ((236, cy + 9), (236, cy + 30), (236, cy + 45), "middle", "below")}
+    for m in marks:
+        if m not in labs:
+            raise ValueError("b1-specialised-cells: no sperm mark %r" % m)
+        a, b, (lx, ly), anc, _side = labs[m]
+        o.append(_b1x_lead(a[0], a[1], b[0], b[1], m))
+        o.append(_b1x_text(lx, ly, m, anchor=anc, data_part="mark", data_key=m))
+    return o, cy + 50
+
+
+def _b1x_spec_nerve(oy, marks):
+    o = []
+    cy = oy + 70
+    bx = 58
+    # dendrites from the cell body
+    for ang, ln in ((195, 20), (150, 20), (240, 18), (115, 18), (285, 14)):
+        a = _b1x_math.radians(ang)
+        x1, y1 = bx + 20 * _b1x_math.cos(a), cy + 20 * _b1x_math.sin(a)
+        x2, y2 = bx + (20 + ln) * _b1x_math.cos(a), cy + (20 + ln) * _b1x_math.sin(a)
+        o.append(_line(x1, y1, x2, y2, stroke=_SVG_INK, w=2.5))
+        for da in (-28, 28):
+            b = _b1x_math.radians(ang + da)
+            o.append(_line(x2, y2, x2 + 9 * _b1x_math.cos(b), y2 + 9 * _b1x_math.sin(b), stroke=_SVG_INK, w=2))
+    # the long fibre
+    o.append(_line(bx + 18, cy, 270, cy, stroke=_SVG_INK, w=8, data_part="fibre"))
+    o.append(_line(bx + 18, cy, 270, cy, stroke=_SVG_BAND, w=4))
+    # branched ends
+    ends = []
+    for dy in (-22, -8, 8, 22):
+        ex, ey = 312, cy + dy
+        ends.append(_path("M 270,%s Q 290,%s %s,%s" % (_n(cy), _n(cy + dy * .4), _n(ex), _n(ey)),
+                          stroke=_SVG_INK, w=2.5))
+        ends.append(_circle(ex + 3, ey, 4, fill=_SVG_BAND, stroke=_SVG_INK, w=2))
+    o.extend(ends)
+    pts = []
+    for i, r in enumerate((22, 19, 23, 20, 22, 18, 21, 20)):
+        a = 2 * _b1x_math.pi * i / 8
+        pts.append((bx + r * _b1x_math.cos(a), cy + r * _b1x_math.sin(a)))
+    o.append(_path(_b1x_smooth(pts), fill=_SVG_BAND, stroke=_SVG_INK, w=2, data_part="cell-body"))
+    o.append(_b1x_nucleus(bx, cy, 8))
+    labs = {"Long fibre": ((170, cy - 4), (170, cy - 26), (170, cy - 31), "middle"),
+            "Branched ends": ((300, cy + 22), (300, cy + 36), (330, cy + 51), "end")}
+    for m in marks:
+        if m not in labs:
+            raise ValueError("b1-specialised-cells: no nerve mark %r" % m)
+        a, b, (lx, ly), anc = labs[m]
+        o.append(_b1x_lead(a[0], a[1], b[0], b[1], m))
+        o.append(_b1x_text(lx, ly, m, anchor=anc, data_part="mark", data_key=m))
+    return o, cy + 56
+
+
+def _b1x_spec_root(oy, marks):
+    o = []
+    hy = oy + 70
+    L, T, R, B = 12, oy + 30, 110, oy + 112
+    # soil particles around the hair
+    for x, y, r in ((150, hy - 22, 13), (192, hy + 20, 12), (232, hy - 20, 14), (276, hy + 19, 12),
+                    (312, hy - 21, 11), (166, hy + 34, 9), (256, hy + 40, 10), (300, hy + 44, 9),
+                    (206, hy - 38, 9), (322, hy + 6 + 30, 7)):
+        o.append(_circle(x, y, r, fill=_SVG_RULE_STRONG, stroke=_SVG_INK, w=1.5, data_part="soil"))
+    d = ("M %s,%s L %s,%s L %s,%s L %s,%s Q %s,%s %s,%s L %s,%s L %s,%s L %s,%s Z"
+         % tuple(_n(v) for v in (L, T, R, T, R, hy - 6, 318, hy - 5, 326, hy, 318, hy + 5,
+                                 R, hy + 6, R, B, L, B)))
+    o.append(_path(d, fill=_SVG_BAND, stroke=_SVG_INK, w=2.5, data_part="root-hair-cell"))
+    o.append(_rect(L + 14, T + 14, 56, B - T - 28, rx=10, fill=_B1X_BLUE_TINT, stroke=_SVG_INK, w=1.5,
+                   data_part="vacuole"))
+    o.append(_b1x_nucleus(R - 14, hy - 22, 8))
+    for x, y, a in ((R - 16, B - 18, 30), (L + 10, T + 50, 90)):
+        o.append(_b1x_mito(x, y, a, s=.8))
+    labs = {"Long hair": ((282, hy - 6), (282, hy - 36), (266, hy - 44), "start"),
+            "No chloroplasts": ((L + 40, B - 10), (L + 40, B + 16), (L + 4, B + 31), "start")}
+    for m in marks:
+        if m not in labs:
+            raise ValueError("b1-specialised-cells: no root-hair mark %r" % m)
+        a, b, (lx, ly), anc = labs[m]
+        o.append(_b1x_lead(a[0], a[1], b[0], b[1], m))
+        o.append(_b1x_text(lx, ly, m, anchor=anc, data_part="mark", data_key=m))
+    return o, B + 36
+
+
+def _b1x_specialised_cells(fig):
+    cells = _b1x_need(fig, "cells")
+    fns = {"red": _b1x_spec_red, "sperm": _b1x_spec_sperm, "nerve": _b1x_spec_nerve, "root": _b1x_spec_root}
+    o = []
+    y = 4
+    for i, c in enumerate(cells):
+        if c["kind"] not in fns:
+            raise ValueError("figure %r: no cell kind %r" % (fig.get("id"), c["kind"]))
+        if i:
+            o.append(_b1x_divider(y + 8))
+            y += 18
+        o.append(_b1x_heading(y + 16, c["label"], c["kind"]))
+        part, y = fns[c["kind"]](y + 8, c.get("marks") or [])
+        o.extend(part)
+    return _b1x_open(fig, y + 6, o)
+
+
+# ── b1-diffusion ────────────────────────────────────────────────────────
+# A membrane down the middle; oxygen molecules crowded on one side, few on
+# the other; arrows across it from high to low.
+_B1X_LEFT_SPOTS = ((30, 92), (78, 84), (122, 96), (40, 124), (100, 120), (24, 156), (70, 146),
+                   (116, 146), (44, 186), (96, 180), (24, 214), (74, 212), (114, 198), (50, 236),
+                   (106, 238), (130, 124))
+_B1X_RIGHT_SPOTS = ((268, 108), (296, 186), (236, 232), (300, 236), (262, 150))
+
+
+def _b1x_o2(cx, cy, ang=0):
+    r = 6.5
+    return _b1x_rot(_circle(cx - r, cy, r, fill=_B1X_O, stroke=_SVG_INK, w=1.5)
+                    + _circle(cx + r, cy, r, fill=_B1X_O, stroke=_SVG_INK, w=1.5), ang, cx, cy)
+
+
+def _b1x_diffusion(fig):
+    data = fig.get("data") or {}
+    left, right = data.get("left") or {}, data.get("right") or {}
+    nl, nr = int(left.get("count") or 0), int(right.get("count") or 0)
+    if nl > len(_B1X_LEFT_SPOTS) or nr > len(_B1X_RIGHT_SPOTS) or nl <= nr:
+        raise ValueError("figure %r: b1-diffusion counts %r/%r" % (fig.get("id"), nl, nr))
+    if data.get("direction", "left-to-right") != "left-to-right":
+        raise ValueError("figure %r: b1-diffusion draws left-to-right only" % fig.get("id"))
+    o = []
+    M = 170
+    o.append(_rect(8, 64, 324, 192, rx=10, fill=_SVG_INSET, stroke=_SVG_RULE, w=1.5, data_part="field"))
+    o.append(_rect(M - 5, 64, 10, 192, fill=_SVG_BAND, data_part="membrane"))
+    o.append(_line(M - 5, 64, M - 5, 256, stroke=_SVG_INK, w=2.5, data_part="membrane"))
+    o.append(_line(M + 5, 64, M + 5, 256, stroke=_SVG_INK, w=2.5, data_part="membrane"))
+    barrier = data.get("barrier")
+    if barrier:
+        o.append(_label(M, 18, barrier, size=14, weight="600", anchor="middle", data_part="barrier"))
+        o.append(_b1x_lead(M, 24, M, 64, "barrier"))
+    o.append(_label(87, 52, left.get("label", ""), size=14, weight="700", data_part="side", data_key="left"))
+    o.append(_label(255, 52, right.get("label", ""), size=14, weight="700", data_part="side", data_key="right"))
+    for i, (x, y) in enumerate(_B1X_LEFT_SPOTS[:nl]):
+        o.append(_b1x_o2(x, y, (i * 37) % 180))
+    for i, (x, y) in enumerate(_B1X_RIGHT_SPOTS[:nr]):
+        o.append(_b1x_o2(x, y, (i * 53 + 20) % 180))
+    n = int(data.get("arrows") or 3)
+    for k in range(n):
+        ay = 64 + 192 * (k + 1) / (n + 1)
+        o.append(_b1x_arrow(146, ay, 216, ay, stroke=_SVG_INK, w=3, head=11, data_part="arrow"))
+    o.append(_label(87, 282, left.get("tag", ""), size=14, weight="600", fill=_SVG_ACCENT_TEXT,
+                    data_part="tag", data_key="left"))
+    o.append(_label(255, 282, right.get("tag", ""), size=14, weight="600", fill=_SVG_ACCENT_TEXT,
+                    data_part="tag", data_key="right"))
+    if data.get("particle"):
+        o.append(_b1x_o2(118, 308))
+        o.append(_label(138, 313, "= one %s molecule" % data["particle"], size=14, weight="600",
+                        anchor="start", fill=_SVG_INK_MUTED, data_part="key"))
+    return _b1x_open(fig, 326, o)
+
+
+# ── b1-levels ───────────────────────────────────────────────────────────
+# Cell → tissue → organ → organ system → organism, top to bottom, each
+# picture bigger than the last, joined by arrows pointing down.
+def _b1x_muscle_cell(cx, cy, hw, hh):
+    """One muscle cell: a long rounded cell, cross-striped, its nucleus in the middle."""
+    out = [_rect(cx - hw, cy - hh, 2 * hw, 2 * hh, rx=hh, fill=_B1X_MUSCLE, stroke=_SVG_INK, w=1.8,
+                 data_part="muscle-cell")]
+    k = cx - hw + hh + 2
+    while k < cx + hw - hh:
+        if abs(k - cx) > hh * 1.2:
+            out.append(_line(k, cy - hh + 2, k, cy + hh - 2, stroke="#8E3B32", w=1.2))
+        k += 5
+    out.append(_ellipse(cx, cy, hh * .9, hh * .55, fill=_B1X_NUC, stroke=_SVG_INK, w=1.2, data_part="nucleus"))
+    return "".join(out)
+
+
+def _b1x_heart(cx, cy, s):
+    """A front-view heart, its top vessels cut short; (cx, cy) is its middle, s its scale (1 = 100 units)."""
+    def P(x, y):
+        return "%s,%s" % (_n(cx + (x - 50) * s), _n(cy + (y - 55) * s))
+    body = ("M %s C %s %s %s C %s %s %s C %s %s %s C %s %s %s C %s %s %s Z"
+            % (P(28, 32), P(8, 40), P(8, 66), P(32, 84), P(44, 94), P(56, 100), P(60, 98),
+               P(80, 82), P(94, 58), P(84, 36), P(76, 24), P(62, 24), P(54, 32), P(46, 26), P(36, 26),
+               P(28, 32)))
+    ves = []
+    for d in ("M %s Q %s %s" % (P(48, 30), P(48, 6), P(70, 8)),
+              "M %s L %s" % (P(38, 30), P(30, 10)),
+              "M %s L %s" % (P(66, 28), P(74, 18))):
+        ves.append(_path(d, stroke=_SVG_INK, w=max(2, 11 * s)))
+        ves.append(_path(d, stroke=_B1X_RED, w=max(1, 7 * s)))
+    return ("".join(ves) + _path(body, fill=_B1X_RED, stroke=_SVG_INK, w=2, data_part="heart")
+            + _path("M %s Q %s %s" % (P(56, 34), P(48, 62), P(58, 92)), stroke=_SVG_INK, w=1.5, opacity="0.6"))
+
+
+def _b1x_level_pic(i, cx, cy):
+    o = []
+    if i == 0:
+        o.append(_b1x_muscle_cell(cx, cy, 30, 8))
+        return o, 20
+    if i == 1:
+        for r, dx in ((-1, 0), (0, 23), (1, 0)):
+            for k in (-1, 0, 1):
+                o.append(_b1x_muscle_cell(cx + k * 46 + dx - 12, cy + r * 14, 22, 7))
+        return o, 44
+    if i == 2:
+        o.append(_b1x_heart(cx, cy, .62))
+        return o, 66
+    if i == 3:
+        cy += 4
+        # vessels leave the heart and branch out to the head, arms and legs
+        segs = [((0, -14), (0, -30), 3.5), ((0, -30), (0, -46), 2.5), ((0, -30), (-24, -34), 2.5),
+                ((-24, -34), (-38, -14), 2.5), ((0, -30), (24, -34), 2.5), ((24, -34), (38, -14), 2.5),
+                ((0, 12), (0, 26), 3.5), ((0, 26), (-14, 50), 2.5), ((0, 26), (14, 50), 2.5)]
+        ends = [((0, -46), -90), ((-38, -14), 115), ((38, -14), 65), ((-14, 50), 110), ((14, 50), 70)]
+        for (x1, y1), (x2, y2), wd in segs:
+            o.append(_line(cx + x1, cy + y1, cx + x2, cy + y2, stroke=_B1X_RED, w=wd, data_part="vessel"))
+        for (x, y), ang in ends:
+            for da in (-35, 0, 35):
+                a = _b1x_math.radians(ang + da)
+                o.append(_line(cx + x, cy + y, cx + x + 9 * _b1x_math.cos(a), cy + y + 9 * _b1x_math.sin(a),
+                               stroke=_B1X_RED, w=1.6, data_part="vessel"))
+        o.append(_b1x_heart(cx, cy, .36))
+        return o, 120
+    # organism: a person, arms down
+    def limb(x1, y1, x2, y2, wd):
+        return (_line(x1, y1, x2, y2, stroke=_SVG_INK, w=wd + 4)
+                + _line(x1, y1, x2, y2, stroke=_SVG_BAND, w=wd))
+    top = cy - 62
+    o.append(limb(cx - 10, top + 76, cx - 14, top + 120, 12))
+    o.append(limb(cx + 10, top + 76, cx + 14, top + 120, 12))
+    o.append(limb(cx - 20, top + 32, cx - 32, top + 76, 9))
+    o.append(limb(cx + 20, top + 32, cx + 32, top + 76, 9))
+    o.append(_rect(cx - 22, top + 24, 44, 58, rx=14, fill=_SVG_BAND, stroke=_SVG_INK, w=2, data_part="body"))
+    o.append(_circle(cx, top + 12, 13, fill=_SVG_BAND, stroke=_SVG_INK, w=2, data_part="head"))
+    o.append(_b1x_heart(cx + 5, top + 44, .15))
+    return o, 126
+
+
+def _b1x_levels(fig):
+    levels = _b1x_need(fig, "levels")
+    if len(levels) != 5:
+        raise ValueError("figure %r: b1-levels draws five levels" % fig.get("id"))
+    o = []
+    cx = 86
+    y = 6
+    for i, lv in enumerate(levels):
+        _, h = _b1x_level_pic(i, cx, 0)
+        cy = y + h / 2
+        part, _ = _b1x_level_pic(i, cx, cy)
+        o.append('<g data-part="level" data-key="%s">' % lv["level"].lower().replace(" ", "-"))
+        o.extend(part)
+        o.append("</g>")
+        o.append(_label(184, cy - 2, lv["level"], size=16, weight="700", anchor="start",
+                        data_part="level-name", data_key=lv["level"]))
+        o.append(_label(184, cy + 17, lv["example"], size=14, weight="500", anchor="start",
+                        fill=_SVG_INK_MUTED, data_part="example", data_key=lv["level"]))
+        y += h
+        if i < len(levels) - 1:
+            o.append(_b1x_arrow(cx, y + 6, cx, y + 32, stroke=_SVG_INK, w=2.5, head=9, data_part="arrow"))
+            y += 38
+    return _b1x_open(fig, y + 8, o)
+
+
+# ── b1-unicellular ──────────────────────────────────────────────────────
+# Amoeba, Paramecium and Euglena, one per row, not to scale; ruled labels on
+# the right, in top-to-bottom order of the parts they name.
+_B1X_UNI_NAMES = {"nucleus": "Nucleus", "food vacuole": "Food vacuole",
+                  "contractile vacuole": "Contractile\nvacuole", "cell membrane": "Cell membrane",
+                  "cilia": "Cilia", "oral groove": "Oral groove", "flagellum": "Flagellum",
+                  "eyespot": "Eyespot", "chloroplasts": "Chloroplasts"}
+
+
+def _b1x_cvac(cx, cy, star):
+    o = [_circle(cx, cy, 6, fill=_B1X_BLUE_TINT, stroke=_SVG_INK, w=1.5, data_part="contractile-vacuole")]
+    if star:
+        for k in range(6):
+            a = 2 * _b1x_math.pi * k / 6 + .3
+            o.append(_line(cx + 6 * _b1x_math.cos(a), cy + 6 * _b1x_math.sin(a),
+                           cx + 14 * _b1x_math.cos(a), cy + 14 * _b1x_math.sin(a), stroke=_SVG_INK, w=1.5))
+    return "".join(o)
+
+
+def _b1x_uni_amoeba(oy):
+    o = []
+    cx, cy = 96, oy + 70
+    pts = [(cx - 70, cy - 4), (cx - 52, cy - 34), (cx - 20, cy - 40), (cx + 4, cy - 52), (cx + 24, cy - 70),
+           (cx + 44, cy - 62), (cx + 40, cy - 36), (cx + 66, cy - 22), (cx + 92, cy - 14), (cx + 92, cy + 4),
+           (cx + 64, cy + 14), (cx + 44, cy + 40), (cx + 4, cy + 46), (cx - 36, cy + 38), (cx - 66, cy + 22)]
+    o.append(_path(_b1x_smooth(pts), fill=_SVG_BAND, stroke=_SVG_INK, w=2.5, data_part="cell-membrane"))
+    o.append(_b1x_nucleus(cx - 14, cy - 12, 14))
+    o.append(_circle(cx + 14, cy + 22, 15, fill=_SVG_CARD, stroke=_SVG_INK, w=1.5, data_part="food-vacuole"))
+    o.append(_ellipse(cx + 14, cy + 22, 8, 6, fill=_B1X_CHL, stroke=_SVG_INK, w=1.2, data_part="prey"))
+    o.append(_b1x_cvac(cx + 62, cy - 5, False))
+    tgt = {"cell membrane": (cx + 40, cy - 52), "nucleus": (cx - 1, cy - 17),
+           "contractile vacuole": (cx + 68, cy - 5), "food vacuole": (cx + 29, cy + 24)}
+    ys = {"cell membrane": cy - 56, "nucleus": cy - 26, "contractile vacuole": cy + 2, "food vacuole": cy + 44}
+    return o, tgt, ys, cy + 54
+
+
+def _b1x_slipper(cx, cy, a=86, b=26):
+    """Boundary points of a Paramecium: a long oval, blunter at the front (left),
+    with the oral groove dipping in along the lower side."""
+    pts = []
+    for k in range(48):
+        t = 2 * _b1x_math.pi * k / 48
+        x = cx + a * _b1x_math.cos(t)
+        bb = b * (1.08 if _b1x_math.cos(t) < 0 else .92)
+        y = cy + bb * _b1x_math.sin(t)
+        if _b1x_math.sin(t) > 0:
+            dip = _b1x_math.exp(-((_b1x_math.cos(t) + .15) ** 2) / .06)
+            y -= 9 * dip * _b1x_math.sin(t)
+        pts.append((x, y))
+    return pts
+
+
+def _b1x_uni_paramecium(oy):
+    o = []
+    cx, cy = 100, oy + 54
+    pts = _b1x_slipper(cx, cy)
+    n = len(pts)
+    for k in range(n):
+        x0, y0 = pts[k - 1]
+        x1, y1 = pts[(k + 1) % n]
+        tx, ty = x1 - x0, y1 - y0
+        ln = _b1x_math.hypot(tx, ty) or 1
+        nx, ny = ty / ln, -tx / ln
+        px, py = pts[k]
+        o.append(_line(px, py, px + nx * 8, py + ny * 8, stroke=_SVG_INK, w=1.3, data_part="cilium"))
+    o.append(_path(_b1x_smooth(pts), fill=_SVG_BAND, stroke=_SVG_INK, w=2.5, data_part="cell-membrane"))
+    gx = cx - .15 * 86
+    o.append(_path("M %s,%s Q %s,%s %s,%s" % (_n(gx - 22), _n(cy + 20), _n(gx), _n(cy + 2), _n(gx + 20), _n(cy + 6)),
+                   stroke=_SVG_INK, w=2, data_part="oral-groove"))
+    o.append(_ellipse(cx + 12, cy - 6, 18, 11, fill=_B1X_NUC, stroke=_SVG_INK, w=2, data_part="nucleus"))
+    o.append(_b1x_cvac(cx - 54, cy - 6, True))
+    o.append(_b1x_cvac(cx + 60, cy - 4, True))
+    tgt = {"cilia": (cx + 66, cy - 26), "contractile vacuole": (cx + 74, cy - 4),
+           "nucleus": (cx + 26, cy + 2), "oral groove": (gx + 18, cy + 6)}
+    ys = {"cilia": cy - 32, "contractile vacuole": cy - 8, "nucleus": cy + 34, "oral groove": cy + 58}
+    return o, tgt, ys, cy + 64
+
+
+def _b1x_uni_euglena(oy):
+    o = []
+    cy = oy + 64
+    L, R = 22, 166
+    # front (right) rounded, back (left) drawn out to a point
+    d = ("M %s,%s C %s,%s %s,%s %s,%s C %s,%s %s,%s %s,%s C %s,%s %s,%s %s,%s C %s,%s %s,%s %s,%s Z"
+         % tuple(_n(v) for v in (L, cy + 4,
+                                 L + 40, cy - 8, L + 70, cy - 24, R - 30, cy - 22,
+                                 R - 6, cy - 20, R + 2, cy - 4, R, cy + 2,
+                                 R - 2, cy + 14, R - 24, cy + 22, R - 46, cy + 20,
+                                 L + 64, cy + 18, L + 30, cy + 10, L, cy + 4)))
+    flag = []
+    for i in range(0, 41):
+        t = i / 40.0
+        x = R - 2 + t * 70
+        flag.append((x, cy - 6 - t * 44 + 5 * _b1x_math.sin(t * 2 * _b1x_math.pi * 2)))
+    o.append(_path(_b1x_polyd(flag), stroke=_SVG_INK, w=2.5, data_part="flagellum"))
+    o.append(_path(d, fill=_SVG_BAND, stroke=_SVG_INK, w=2.5, data_part="cell-membrane"))
+    for x, y, a in ((52, cy + 3, 0), (70, cy - 8, -15), (72, cy + 11, 15), (118, cy - 13, 5),
+                    (132, cy + 9, -10), (142, cy - 5, 30)):
+        o.append(_b1x_chloro(x, y, a, rx=7, ry=4))
+    o.append(_b1x_nucleus(96, cy + 1, 11, 9))
+    o.append(_ellipse(R - 12, cy - 9, 5, 3.5, fill=_B1X_EYE, stroke=_SVG_INK, w=1.2, data_part="eyespot"))
+    tgt = {"flagellum": (R + 60, cy - 42), "eyespot": (R - 8, cy - 11), "chloroplasts": (139, cy + 10),
+           "nucleus": (99, cy + 9)}
+    ys = {"flagellum": cy - 48, "eyespot": cy - 14, "chloroplasts": cy + 20, "nucleus": cy + 42}
+    return o, tgt, ys, cy + 48
+
+
+def _b1x_unicellular(fig):
+    orgs = _b1x_need(fig, "organisms")
+    fns = {"amoeba": _b1x_uni_amoeba, "paramecium": _b1x_uni_paramecium, "euglena": _b1x_uni_euglena}
+    o = []
+    y = 4
+    for i, org in enumerate(orgs):
+        if org["kind"] not in fns:
+            raise ValueError("figure %r: no organism %r" % (fig.get("id"), org["kind"]))
+        if i:
+            o.append(_b1x_divider(y + 8))
+            y += 18
+        o.append(_b1x_heading(y + 16, org["label"], org["kind"]))
+        part, tgt, ys, bottom = fns[org["kind"]](y + 18)
+        o.extend(part)
+        for key in org.get("parts") or []:
+            if key not in tgt:
+                raise ValueError("figure %r: no %s part %r" % (fig.get("id"), org["kind"], key))
+            tx, ty = tgt[key]
+            lx = 244 if org["kind"] == "euglena" and key == "flagellum" else 214
+            o.append(_b1x_lead(lx - 6, ys[key] - 5, tx, ty, key))
+            o.append(_b1x_text(lx, ys[key], _B1X_UNI_NAMES.get(key, key.capitalize()),
+                               data_part="label", data_key=key))
+        y = bottom
+    return _b1x_open(fig, y + 6, o)
+
+
+ART = {
+    'b1-light-microscope': _b1x_light_microscope,
+    'b1-biological-drawing': _b1x_biological_drawing,
+    'b1-cell-pair': _b1x_cell_pair,
+    'b1-specialised-cells': _b1x_specialised_cells,
+    'b1-diffusion': _b1x_diffusion,
+    'b1-levels': _b1x_levels,
+    'b1-unicellular': _b1x_unicellular,
+}

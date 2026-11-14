@@ -911,12 +911,27 @@ CASES = [
          check=lambda b: any(x["question_id"].endswith("-3") and isinstance(x.get("is_correct"), bool) for x in b),
          back="(function(){ var s = document.querySelector('.ks3-fsort-block'); return H.pressed(s.querySelector('[data-fsort-tab=\"2\"]')) && H.pressed(s.querySelector('.ks3-fsort-label')); })()"),
     dict(name="ks3-parts-check", page="/ks3/biology/cells-and-organisation/levels-of-organisation.html",
+         retired="the lean rebuild (Wave 1) took the sort task (which level is it?) off the page",
+         absent=["ks3-hard", "ks3-hardrow", "data-hard-reveal"],
          act="""var s = document.querySelector('.ks3-hard'); var rows = s.querySelectorAll('.ks3-hardrow');
                 Array.prototype.forEach.call(rows, function (r) { H.click(r.querySelector('.ks3-rung-chip[data-rung=\"Tissue\"]') || r.querySelector('.ks3-rung-chip')); });
                 await H.sleep(200); H.click(s.querySelector('[data-hard-reveal]')); await H.sleep(400);""",
          want=["levels-of-organisation#s-hard-1", "levels-of-organisation#s-hard-2"],
          check=lambda b: all(isinstance(x.get("is_correct"), bool) for x in b if "#s-hard-" in x["question_id"]),
          back="(function(){ var r = document.querySelectorAll('.ks3-hard .ks3-hardrow'); return r.length > 1 && r[0].getAttribute('data-open') === '1' && !!r[0].querySelector('.ks3-rung-chip[aria-pressed=\"true\"]'); })()"),
+    # ⊕ 14 Nov 2026: the same "several parts, one Check" shape (shared/mrbadmus.v2.js, t: 'c'), on a
+    # live page, because the lean rebuild (Wave 1) took ks3-parts-check's sort task off
+    # levels-of-organisation. The plate's seven rows each take one band; Show the real amounts
+    # opens all seven and each row is judged (data-state hit/miss). Carbohydrate is set right
+    # ("lots") and every other row to "some", so row 1 is right and row 4 (vitamins) is wrong.
+    dict(name="ks3-parts-band", page="/ks3/biology/nutrition-and-digestion/a-balanced-diet.html",
+         act="""var s = document.querySelector('.ks3-plate-block'); var rows = s.querySelectorAll('.ks3-plate-row');
+                Array.prototype.forEach.call(rows, function (r, i) { H.click(r.querySelector('.ks3-plate-band[data-band=\"' + (i === 0 ? 'lots' : 'some') + '\"]')); });
+                await H.sleep(200); H.click(s.querySelector('[data-plate-open]')); await H.sleep(400);""",
+         want=["a-balanced-diet#seven-bands-1", "a-balanced-diet#seven-bands-4"],
+         check=lambda b: {x["question_id"]: x.get("is_correct") for x in b}.get("a-balanced-diet#seven-bands-1") is True
+                         and {x["question_id"]: x.get("is_correct") for x in b}.get("a-balanced-diet#seven-bands-4") is False,
+         back="(function(){ var r = document.querySelectorAll('.ks3-plate-block .ks3-plate-row'); return r.length === 7 && r[0].getAttribute('data-state') === 'hit' && r[3].getAttribute('data-state') === 'miss' && H.pressed(r[0].querySelector('.ks3-plate-band[data-band=\"lots\"]')); })()"),
     dict(name="ks3-whole-check", page="/ks3/physics/describing-motion/distance-time-graphs.html",
          act="""var s = document.querySelector('.ks3-jwalk-block'); var segs = s.querySelectorAll('[data-jwalk-seg]');
                 var want = ['walk','still','jog','back']; Array.prototype.forEach.call(segs, function (g, i) { H.click(g.querySelector('[data-jwalk-mode=\"' + want[i] + '\"]')); });
@@ -957,7 +972,12 @@ CASES = [
          check=lambda b: len(b) == 1 and b[0]["answer"] == "2, 1, 2" and b[0]["is_correct"] is True,
          back="""(function(){ var s = document.querySelector('.ks3-cbal-block'); var eq = s.querySelector('[data-cbal-eq="water"]');
                 return eq.querySelector('[data-cbal-coeff="0"]').textContent === '2' && !eq.querySelector('[data-cbal-balanced]').hidden && !s.querySelector('[data-cbal-tick="water"]').hidden; })()"""),
+    # ⊕ 14 Nov 2026: retired. The lab's commit-first question (a practical's first choice, nothing
+    # revealed on the block) was on two pages, both B1 lean pages now; no live page has the shape.
+    # Its id is not in knowledge_points, so tools/lean_id_map.py retires it by EXTRA_RETIRED.
     dict(name="ks3-commit-no-reveal", page="/ks3/biology/cells-and-organisation/unicellular-organisms.html",
+         retired="the lean rebuild (Wave 1) took the microscope bench off the page",
+         absent=['data-activity="microscope-bench"', 'data-sim="microscope"'],
          act="var s = H.sec('microscope-bench'); H.click(s.querySelectorAll('.ks3-option')[1]); await H.sleep(300);",
          want=["unicellular-organisms#microscope-bench"],
          back="H.pressed(H.sec('microscope-bench').querySelectorAll('.ks3-option')[1])"),
@@ -968,7 +988,9 @@ CASES = [
 # ⊕ 13 Nov 2026: ks3-commit-run stands in for ks3-gate (a KS3 bench that opens on a committed
 # option press, no animation, one "#*-1" row), because the lean rebuild (Wave 1) took the
 # before-and-after tally off energy-transfers-before-and-after.
-PUPIL = ["ks4-flag-pick", "ks4-level-pick", "ks4-form-internal", "ks4-list-features", "ks3-commit-run", "ks3-parts-check", "ks3-typed"]
+# ⊕ 14 Nov 2026: ks3-parts-band stands in for ks3-parts-check (several parts, one Check, a row
+# per part), because the lean rebuild (Wave 1) took the sort task off levels-of-organisation.
+PUPIL = ["ks4-flag-pick", "ks4-level-pick", "ks4-form-internal", "ks4-list-features", "ks3-commit-run", "ks3-parts-band", "ks3-typed"]
 
 
 def retired_proof(c):
@@ -1030,10 +1052,13 @@ DRAFTS = [
          type="""var s = document.querySelector('.ks3-parrow-block'), p = s.querySelectorAll('[data-parrow-pick]'); H.click(p[1]); await H.sleep(120); H.click(p[2]); await H.sleep(120);""",
          back="/^3 of 6/.test(document.querySelector('.ks3-parrow-block [data-count]').textContent.trim())",
          blank="/^1 of 6/.test(document.querySelector('.ks3-parrow-block [data-count]').textContent.trim())"),
-    dict(name="picks on a KS3 block, not yet opened", page="/ks3/biology/cells-and-organisation/levels-of-organisation.html",
-         type="""await H.sleep(2500); var r = document.querySelector('.ks3-hard .ks3-hardrow'); H.click(r.querySelectorAll('.ks3-rung-chip')[1]); await H.sleep(150);""",
-         back="H.pressed(document.querySelector('.ks3-hard .ks3-hardrow').querySelectorAll('.ks3-rung-chip')[1])",
-         blank="!H.pressed(document.querySelector('.ks3-hard .ks3-hardrow').querySelectorAll('.ks3-rung-chip')[1])"),
+    # ⊕ 14 Nov 2026: was the sort task on levels-of-organisation, which the lean rebuild (Wave 1)
+    # took off the page. The plate on a-balanced-diet is the same kind of block (picks per row, then
+    # its own Check, shared/mrbadmus.v2.js t: 'c'); its second band starts unpressed.
+    dict(name="picks on a KS3 block, not yet opened", page="/ks3/biology/nutrition-and-digestion/a-balanced-diet.html",
+         type="""await H.sleep(2500); var r = document.querySelector('.ks3-plate-block .ks3-plate-row'); H.click(r.querySelectorAll('.ks3-plate-band')[1]); await H.sleep(150);""",
+         back="H.pressed(document.querySelector('.ks3-plate-block .ks3-plate-row').querySelectorAll('.ks3-plate-band')[1])",
+         blank="!H.pressed(document.querySelector('.ks3-plate-block .ks3-plate-row').querySelectorAll('.ks3-plate-band')[1])"),
     dict(name="a pick behind its own Check", page="/ks3/biology/reproduction/seed-dispersal.html",
          type="""var o = document.querySelectorAll('.ks3-dsort-block .ks3-b5c-opt[data-owner="dandelion"]'); H.click(o[1]); await H.sleep(150);""",
          back="""H.pressed(document.querySelectorAll('.ks3-dsort-block .ks3-b5c-opt[data-owner="dandelion"]')[1])""",
