@@ -304,11 +304,15 @@ def _eyebrow_js(lesson, spec):
         tri = "AQA Biology (8461) %s%s" % (spec, tail)
     elif lesson["subject"] == "chemistry":
         es = lesson.get("eyebrow_spec")
-        if not es or not es[0] or not es[1] or es[0] != spec:
+        if es and es[0] is None and es[1] and es[1] == spec:
+            # chemistry only (8462), no 8464 section: the Triple wording on every route it has
+            comb = tri = "AQA Chemistry (8462) %s%s" % (es[1], tail)
+        elif not es or not es[0] or not es[1] or es[0] != spec:
             raise SystemExit("lean_ks4: %s: chemistry eyebrow: the literal %r is not the 8464 number in "
                              "batch_lean.CHEM_EYEBROW %r" % (lesson["slug"], spec, es))
-        comb = "AQA Combined Science (8464) %s%s" % (es[0], tail)
-        tri = "AQA Chemistry (8462) %s%s" % (es[1], tail)
+        else:
+            comb = "AQA Combined Science (8464) %s%s" % (es[0], tail)
+            tri = "AQA Chemistry (8462) %s%s" % (es[1], tail)
     else:
         raise SystemExit("lean_ks4: %s: no eyebrow rule for subject %r" % (lesson["slug"], lesson["subject"]))
     return "const LEAN_EYEBROW = %s;\n" % js({"c": comb, "t": tri})

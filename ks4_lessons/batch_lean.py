@@ -69,6 +69,7 @@ _FAMILY = {
     "uses-generator-effect": "Process",
     "microphones": "Process",
     "transformers": "Quantitative",
+    "gas-volumes": "Quantitative",
     # Ecology's eight old-format lessons (the fifteen legacy ones keep batch 10's own family)
     "biodiversity": "Model",
     "waste-management": "Process",
@@ -124,6 +125,7 @@ CHEM_EYEBROW = {
     "concentration-of-solutions": ("5.3.2.5", "4.3.2.5"),
     "percentage-yield": (None, "4.3.3.1"),
     "atom-economy": (None, "4.3.3.2"),
+    "gas-volumes": (None, "4.3.5"),
 }
 # Words kept capitalised by sentence_case() beyond the first word.
 _KEEP_CAPS = {"Fleming's"}

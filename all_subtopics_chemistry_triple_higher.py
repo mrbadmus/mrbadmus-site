@@ -5518,7 +5518,109 @@ CHEMISTRY_SUBTOPICS_ALL = {
   'triple_only': None,
   'variables': [('c', 'Concentration', 'mol/dm³', 'mol/dm³'),
                 ('n', 'Moles', 'mol', 'mol'),
-                ('V', 'Volume', 'dm³', 'dm³')]}],
+                ('V', 'Volume', 'dm³', 'dm³')]},
+ {
+    'id': 'gas-volumes',
+    'title': 'Volumes of Gases',
+    'spec': '4.3.5',
+    'summary': 'Use the volume of one mole of gas at room temperature and pressure, 24 dm³, to '
+               'calculate gas volumes from amounts, masses and balanced equations.',
+    'theory': [
+        {'heading': 'Equal moles, equal volumes',
+         'content': 'Equal amounts in moles of gases occupy the same volume under the same '
+                    'conditions of temperature and pressure.\n\n'
+                    'The volume of one mole of any gas at room temperature and pressure (20 °C and '
+                    '1 atmosphere pressure) is 24 dm³. That is 24 000 cm³.'},
+        {'heading': 'Calculating a gas volume',
+         'content': 'Volume of gas (dm³) = amount of gas (mol) × 24\n'
+                    'Amount of gas (mol) = volume of gas (dm³) ÷ 24\n\n'
+                    'From a mass: amount (mol) = mass (g) ÷ Mr, then volume (dm³) = amount × 24.\n\n'
+                    'Change a volume in cm³ into dm³ (÷ 1000) before using 24 dm³.'},
+        {'heading': 'Gas volumes from a balanced equation',
+         'content': 'For gases at the same temperature and pressure, the balancing numbers give '
+                    'the ratio of volumes as well as the ratio of moles.\n\n'
+                    'N₂(g) + 3H₂(g) → 2NH₃(g): 10 dm³ of nitrogen reacts with 30 dm³ of hydrogen to '
+                    'make 20 dm³ of ammonia.\n\n'
+                    'Only gases count. A solid, a liquid or a solution does not occupy 24 dm³ per '
+                    'mole.'},
+    ],
+    'equations': ['Volume of gas (dm³) = amount of gas (mol) × 24',
+                  'Amount of gas (mol) = volume of gas (dm³) ÷ 24'],
+    'variables': [],
+    'fifas': [{'label': 'Volume from a mass',
+               'question': 'Calculate the volume of 8.8 g of carbon dioxide, CO₂ (Mr 44), at room '
+                           'temperature and pressure.',
+               'steps': [('F', 'Amount = mass ÷ Mr, then volume = amount × 24'),
+                         ('I', 'Amount = 8.8 ÷ 44 = 0.2 mol'),
+                         ('F', 'Volume = 0.2 × 24 = 4.8'),
+                         ('A', 'Volume = 4.8 dm³')]}],
+    'matching': {'title': 'Volumes of Gases',
+                 'instruction': 'Match each value or step to what it means.',
+                 'pairs': [('24 dm³', 'The volume of one mole of any gas at room temperature and '
+                                      'pressure'),
+                           ('20 °C and 1 atmosphere', 'Room temperature and pressure'),
+                           ('Multiply by 24', 'Amount of gas in moles to volume in dm³'),
+                           ('Divide by 24', 'Volume of gas in dm³ to amount in moles')]},
+    'quiz': [
+        {'q': 'What is the volume of 2.5 mol of any gas at room temperature and pressure?',
+         'opts': [('60 dm³', True), ('9.6 dm³', False), ('0.10 dm³', False), ('56 dm³', False)],
+         'wrong_explanations': {1: 'That is 24 ÷ 2.5. Each mole takes up 24 dm³, so multiply: '
+                                   '2.5 × 24 = 60 dm³.',
+                                2: 'That divides by 24. Multiply the amount by 24: 2.5 × 24 = '
+                                   '60 dm³.',
+                                3: 'Use 24 dm³ for one mole at room temperature and pressure: '
+                                   '2.5 × 24 = 60 dm³.'}},
+        {'q': 'Which statement about gases at the same temperature and pressure is correct?',
+         'opts': [('Equal amounts in moles have equal volumes', True),
+                  ('Heavier gases take up more volume per mole', False),
+                  ('Equal masses of gases have equal volumes', False),
+                  ('Bigger molecules take up more volume per mole', False)],
+         'wrong_explanations': {1: 'One mole of any gas has the same volume. Its mass does not '
+                                   'change that.',
+                                2: 'Equal masses of different gases are different amounts in '
+                                   'moles, so their volumes are different.',
+                                3: 'The size of the molecules does not change the volume of a mole '
+                                   'of gas.'}},
+        {'q': 'A gas syringe holds 120 cm³ of oxygen at room temperature and pressure. How many '
+              'moles of oxygen is this?',
+         'opts': [('0.005 mol', True), ('5 mol', False), ('2.88 mol', False), ('0.0005 mol', False)],
+         'wrong_explanations': {1: 'Convert first: 120 cm³ = 0.12 dm³. Then 0.12 ÷ 24 = 0.005 mol.',
+                                2: 'That multiplies by 24. Divide a volume in dm³ by 24: '
+                                   '0.12 ÷ 24 = 0.005 mol.',
+                                3: '120 cm³ ÷ 1000 = 0.12 dm³, not 0.012 dm³. Then 0.12 ÷ 24 = '
+                                   '0.005 mol.'}},
+        {'q': '2H₂(g) + O₂(g) → 2H₂O(l). What volume of oxygen reacts with 40 cm³ of hydrogen? '
+              'All volumes are at room temperature and pressure.',
+         'opts': [('20 cm³', True), ('80 cm³', False), ('40 cm³', False), ('960 cm³', False)],
+         'wrong_explanations': {1: 'That turns the ratio upside down. O₂ : H₂ is 1 : 2, so '
+                                   '40 × 1 ÷ 2 = 20 cm³.',
+                                2: 'The ratio is not 1 : 1. Two volumes of hydrogen react with one '
+                                   'volume of oxygen.',
+                                3: 'No moles are needed. Gas volumes are in the same ratio as '
+                                   'moles: 40 × 1 ÷ 2 = 20 cm³.'}},
+        {'q': 'What is the volume of 7.1 g of chlorine gas, Cl₂, at room temperature and pressure? '
+              'Mr of Cl₂ = 71.',
+         'opts': [('2.4 dm³', True), ('0.1 dm³', False), ('240 dm³', False), ('0.0042 dm³', False)],
+         'wrong_explanations': {1: '0.1 is the amount in moles. Multiply by 24 for the volume: '
+                                   '0.1 × 24 = 2.4 dm³.',
+                                2: 'That divides Mr by the mass. Amount = 7.1 ÷ 71 = 0.1 mol, then '
+                                   '0.1 × 24 = 2.4 dm³.',
+                                3: 'Multiply the amount by 24, do not divide: 0.1 × 24 = 2.4 dm³.'}},
+    ],
+    'common_mistake': 'Dividing an amount in moles by 24 instead of multiplying, using a volume in '
+                      'cm³ with 24 dm³, and using the mole ratio upside down. 24 dm³ is for one mole '
+                      'of a gas only.',
+    'key_note': 'One mole of any gas at room temperature and pressure (20 °C, 1 atmosphere) occupies '
+                '24 dm³. Volume (dm³) = amount (mol) × 24. Gas volumes react in the same ratio as '
+                'the balancing numbers. Chemistry-only, Higher-only spec point.',
+    'rp': None,
+    'higher': 'All of 4.3.5 is Higher Tier only: equal amounts in moles of gases occupy equal volumes '
+              'at the same temperature and pressure; one mole of gas at room temperature and pressure occupies 24 dm³; '
+              'calculate a gas volume from a mass and Mr; calculate gas volumes from a balanced '
+              'equation and a given gas volume; change the subject of the equation.',
+    'triple_only': 'Use of amount of substance in relation to volumes of gases (4.3.5) is '
+                   'chemistry-only and Higher-only. It is not in Combined Science.',
+}],
 
 "chemical-changes": [{'common_mistake': 'A metal can only displace another metal that is BELOW it in the reactivity series. Copper cannot '
                     'displace iron from iron sulfate — copper is less reactive than iron. The more reactive metal '

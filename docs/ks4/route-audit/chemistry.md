@@ -139,11 +139,10 @@ to a section headed "(HT only)" in both specs (5.3.2.1–5.3.2.4, 5.4.2.5, 5.4.3
 
 ## 3. Not settled / worth Mide's eye
 
-- **No page exists for 8462 4.3.5 "Use of amount of substance in relation to volumes of gases
-  (chemistry only) (HT only)"** (24 dm³, gas volume calculations) — a TH-only spec point with no
-  home. 4.3.4 (mol/dm³) is partly covered inside concentration-of-solutions / using-moles-calculations /
-  titrations but has no page of its own. Best reading: add a TH page (or a TH layer on
-  using-moles-calculations) for 4.3.5; it is a gap, not a mis-route.
+- **8462 4.3.5 "Use of amount of substance in relation to volumes of gases
+  (chemistry only) (HT only)"** (24 dm³, gas volume calculations): this gap is now filled by the
+  TH-only lean lesson `gas-volumes`. 4.3.4 (mol/dm³) is partly covered inside
+  concentration-of-solutions / using-moles-calculations / titrations but has no page of its own.
 - **nanoparticles widening was considered and rejected.** Its site label points at a base spec point
   (5.2.3.3), which on the face of it argues MOVE WIDER. But the page's title and core are
   nanoparticles (4.2.4, chemistry only), and 5.2.3.3 is already taught on all four routes inside
