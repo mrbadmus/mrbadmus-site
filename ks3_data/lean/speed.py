@@ -23,14 +23,16 @@ LESSON = {
     },
     "knowledge": [
         {"kind": "card", "title": "The speed equation",
-         "body": ["speed = distance ÷ time",
+         "body": ["distance (s) = speed (v) × time (t)",
+                  "speed (v) = distance (s) ÷ time (t)",
+                  "time (t) = distance (s) ÷ speed (v)",
                   {"figure": "p3-speed-triangle"},
                   "Distance in metres and time in seconds give speed in metres per second, m/s.",
                   "Distance in kilometres and time in hours give speed in kilometres per hour, km/h."]},
         {"kind": "card", "title": "Worked example: finding speed",
          "body": ["A car covers 1.8 km of motorway in 90 s. Find its speed in m/s.",
                   {"points": ["Convert: 1.8 km × 1000 = 1800 m",
-                              "Formula: speed = distance ÷ time",
+                              "Formula: speed (v) = distance (s) ÷ time (t)",
                               "Insert: speed = 1800 m ÷ 90 s",
                               "Fine-tune: 1800 ÷ 90 = 20",
                               "Answer: speed = 20 m/s"]},
@@ -38,7 +40,7 @@ LESSON = {
         {"kind": "card", "title": "Worked example: finding distance",
          "body": ["A cyclist rides at 5 m/s for 2 minutes. Find the distance travelled.",
                   {"points": ["Convert: 2 minutes × 60 = 120 s",
-                              "Formula: distance = speed × time",
+                              "Formula: distance (s) = speed (v) × time (t)",
                               "Insert: distance = 5 m/s × 120 s",
                               "Fine-tune: 5 × 120 = 600",
                               "Answer: distance = 600 m"]}]},
@@ -105,13 +107,13 @@ LESSON = {
     "figures": [
         {"id": "p3-speed-triangle", "kind": "diagram", "status": "drawn", "art": "formula-triangle",
          "title": "The formula triangle for speed",
-         "desc": "A triangle split by a horizontal line. Distance, d, in m, sits in the top part. "
-                 "Speed, s, in m/s, and time, t, in s, sit side by side in the bottom part, with a "
+         "desc": "A triangle split by a horizontal line. Distance, s, in metres, sits in the top part. "
+                 "Speed, v, in m/s, and time, t, in seconds, sit side by side in the bottom part, with a "
                  "multiplication sign between them.",
          "caption": "Cover the one you want. Side by side means multiply. One over the other means divide.",
-         "data": {"top": {"s": "d", "name": "distance", "unit": "m"},
-                  "bottom": [{"s": "s", "name": "speed", "unit": "m/s"},
-                             {"s": "t", "name": "time", "unit": "s"}]}},
+         "data": {"top": {"s": "s", "name": "distance", "unit": "m", "caption": "distance in metres"},
+                  "bottom": [{"s": "v", "name": "speed", "unit": "m/s", "caption": "speed in m/s"},
+                             {"s": "t", "name": "time", "unit": "s", "caption": "time in seconds"}]}},
     ],
     "ladder_stem": {
         "apply": "A runner covers the first 200 m in 40 s. They cover the next 200 m in 60 s. "
