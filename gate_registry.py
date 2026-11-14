@@ -202,12 +202,13 @@ GATES = [
          speed="slow",
          watches=["lean_pilot_drive.py", "ks3_browser.py", "lean_blocks.py", "lean_ks4.py",
                   "shared/lean.css", "shared/lean.js", "ks3_data/lean/**", "ks4_lessons/lean/**",
-                  "ks4_lessons/batch_lean.py", "ks3_art/b4.py", "ks3_art/b7.py", "ks3_art/b8.py", "ks3_art/c2.py", "ks3_art/p1.py", "ks3_art/p2.py", "build_ks3.py", "build_ks4.py",
+                  "ks4_lessons/batch_lean.py", "ks3_art/b4.py", "ks3_art/b7.py", "ks3_art/b8.py", "ks3_art/c2.py", "ks3_art/p1.py", "ks3_art/p2.py", "ks3_art/p4.py", "build_ks3.py", "build_ks4.py",
                   "shared/ks4-lib.js", "shared/ks4-runtime.js", "shared/mrbadmus.v2.js",
                   "mrbadmus_site/ks3/biology/breathing-and-gas-exchange/**",
                   "mrbadmus_site/ks3/biology/photosynthesis/**", "mrbadmus_site/ks3/biology/respiration/**",
                   "mrbadmus_site/ks3/chemistry/atoms-elements-and-compounds/**",
                   "mrbadmus_site/ks3/physics/energy-transfers/**", "mrbadmus_site/ks3/physics/energy-at-home/**",
+                  "mrbadmus_site/ks3/physics/describing-motion/**", "mrbadmus_site/ks3/physics/forces/**",
                   "mrbadmus_site/combined/*/physics/energy/**", "mrbadmus_site/triple/*/physics/energy/**"],
          why="the lean pilot pages walked at 390px in headless Chrome, light and dark: Start here, "
              "every card by tap, keyboard and swipe, reveal tables, Dive deeper, every triangle cell, "

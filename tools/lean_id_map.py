@@ -94,6 +94,10 @@ WAVES = {
                                     "energy-transfers-before-and-after", "simple-machines"]),
         ("P2", "energy-at-home", ["energy-in-food", "power-ratings-in-watts", "calculating-energy-transferred",
                                   "reading-a-fuel-bill", "fuels-and-energy-resources"]),
+        # P3 and P4 (Y7 Phys 1, forces and motion): only the lessons Rainford's Phys 1 teaches; the
+        # rest of both units is not lean yet.
+        ("P3", "describing-motion", ["speed"]),
+        ("P4", "forces", ["what-a-force-is", "drawing-and-adding-forces", "friction"]),
     ],
 }
 
@@ -174,6 +178,10 @@ _WHY = [
     (r"#(store-audit-ledger|store-pathway-sort|running-total|before-after-tally|waste-sort|lever-bench|"
      r"food-calorimeter|power-bench|power-energy-sort|appliance-bench|bill-builder|renewable-sort)-\d",
      "the instrument was removed from the lean page"),
+    # ⊕ P3/P4 (Wave 1, Phys 1): the forces and speed benches, one id per press, and the
+    # your-turn resultant calculation (a p4-attempt block, one id per question).
+    (r"#(board|sledge|drag|light-gates|compare-pairs)-\d", "the instrument was removed from the lean page"),
+    (r"#your-turn-resultant-\d", "the worked-calculation questions are not on the lean page"),
 ]
 
 

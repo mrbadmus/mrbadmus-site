@@ -210,6 +210,19 @@ RETIRED_BY_LEAN = {
                       "the two-axis grid is not on the lean page (figure p2-fossil-fuels)"),
     "renewable-sort": ("physics/energy-at-home/fuels-and-energy-resources.html",
                        "the renewable-or-not sorter is not on the lean page"),
+    # ⊕ lean wave 1 (Y7 Phys 1: P3 speed; P4 what-a-force-is, drawing-and-adding-forces, friction):
+    # each family had exactly one lesson, and no other built page emits it. force-band and p4-attempt
+    # are not here: other P4 lessons (classic) still place them. The rest of P3 and P4 is not lean.
+    "interaction-board": ("physics/forces/what-a-force-is.html",
+                          "replaced by the drawn figure p4-force-pair-wall"),
+    "resultant-bench": ("physics/forces/drawing-and-adding-forces.html",
+                        "replaced by the drawn figures p4-sledge-arrows and p4-resultant-beam-recap"),
+    "drag-lane": ("physics/forces/friction.html",
+                  "the drag-lane bench is not on the lean page (figure p4-crate-steady)"),
+    "light-gates": ("physics/describing-motion/speed.html",
+                    "the light-gates bench is not on the lean page (figure p3-speed-triangle)"),
+    "compare-pairs": ("physics/describing-motion/speed.html",
+                      "the compare-pairs bench is not on the lean page"),
 }
 
 
