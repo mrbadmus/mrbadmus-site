@@ -279,6 +279,9 @@ _EYEBROW_LITERAL = re.compile(r'<p class="ks3-eyebrow">AQA Physics (6\.[\d.]+)</
 # Biology numbers 4.7.x in BOTH specs (8464 and 8461). A legacy biology header writes one literal
 # for every route, "AQA Biology 4.7.1.2 and 4.7.1.3 \u00b7 Combined and Triple", which names a
 # single spec on routes of the other: the spec numbers are kept, the rest is rebuilt per route.
+# Chemistry (8464 5.3.x.y / 8462 4.3.x.y): a batch-11 header writes "AQA Chemistry 5.3.x.y \u00b7 <tag>"
+# for every route. The numbers come from batch_lean.CHEM_EYEBROW (lesson["eyebrow_spec"]).
+_EYEBROW_LITERAL_CHEM = re.compile(r'<p class="ks3-eyebrow">AQA Chemistry (5\.3\.\d+\.\d+)(?: \u00b7 [^<]*)?</p>')
 _EYEBROW_LITERAL_BIO = re.compile(r'<p class="ks3-eyebrow">AQA Biology (4\.7\.\d+\.\d+(?: and 4\.7\.\d+\.\d+)?)'
                                   r'(?: \u00b7 [^<]*)?</p>')
 
@@ -299,6 +302,13 @@ def _eyebrow_js(lesson, spec):
                              % (lesson["slug"], spec))
         comb = "AQA Combined Science (8464) %s%s" % (lesson.get("spec_c") or spec, tail)
         tri = "AQA Biology (8461) %s%s" % (spec, tail)
+    elif lesson["subject"] == "chemistry":
+        es = lesson.get("eyebrow_spec")
+        if not es or not es[0] or not es[1] or es[0] != spec:
+            raise SystemExit("lean_ks4: %s: chemistry eyebrow: the literal %r is not the 8464 number in "
+                             "batch_lean.CHEM_EYEBROW %r" % (lesson["slug"], spec, es))
+        comb = "AQA Combined Science (8464) %s%s" % (es[0], tail)
+        tri = "AQA Chemistry (8462) %s%s" % (es[1], tail)
     else:
         raise SystemExit("lean_ks4: %s: no eyebrow rule for subject %r" % (lesson["slug"], lesson["subject"]))
     return "const LEAN_EYEBROW = %s;\n" % js({"c": comb, "t": tri})
@@ -356,7 +366,8 @@ def _legacy_template(lesson, rec, tpl):
         raise SystemExit("lean_ks4: %s: header has %d big question(s), %d draft flag(s)"
                          % (lesson["slug"], n1, n3))
 
-    m = (_EYEBROW_LITERAL_BIO if lesson["subject"] == "biology" else _EYEBROW_LITERAL).search(hdr)
+    m = {"biology": _EYEBROW_LITERAL_BIO, "chemistry": _EYEBROW_LITERAL_CHEM}.get(
+        lesson["subject"], _EYEBROW_LITERAL).search(hdr)
     slots.spec = m.group(1) if m else None
     if m:
         hdr = hdr.replace(m.group(0), '<p class="ks3-eyebrow">{{ leanEyebrow }}</p>', 1)
@@ -450,7 +461,9 @@ def _legacy_logic(lesson, rec, logic, spec=None):
         raise SystemExit("lean_ks4: %s: cannot find the RAIL constant" % what)
     logic = logic[:m.start()] + RAIL_JS + logic[m.end():]
 
-    ms = re.findall(r"const done = \[[^\n]*\];", logic)
+    # the rail done[] array: one line, `const done = [...];`, or the conditional two-array form
+    # `const done = F.H ? [...] : [...];` (mass-changes-reactions). Exactly one, or the build stops.
+    ms = re.findall(r"const done = (?:F\.H \? )?\[[^\n]*\];", logic)
     if len(ms) != 1:
         raise SystemExit("lean_ks4: %s: cannot find the rail done[] array" % what)
     logic = logic.replace(ms[0], DONE_JS)

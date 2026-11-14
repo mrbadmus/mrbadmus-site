@@ -386,6 +386,8 @@ CASES = [
          want=["ks4:carbon-cycle:th#labels"],  # the map retires the activity as #labels, not per letter
          back="(function(){ var s = H.rootState(); return s.lChecked === true && Object.keys(s.labels).length === 9 && document.getElementById(H.v().lRows[0].id).value === s.labels[H.v().lRows[0].letter]; })()"),
     dict(name="ks4-form-pan", page="/triple/higher/chemistry/quantitative/relative-formula-mass.html", forms=True,
+         retired="the lean rebuild (Wave 1, Quantitative chemistry) took the pan-balance activity off the page",
+         absent=['"e": "panOpts"'],
          act="""await H.call(function (v) { return v.panOpts[0].onClick; }); await H.call('onPanL', H.val('10')); await H.call('onPanR', H.val('20')); await H.call('onLoad'); await H.sleep(200);""",
          want=["ks4:relative-formula-mass:th#pan-1"],
          check=lambda b: b[-1]["is_correct"] is False and b[-1]["answer"].count("\n") == 2,
@@ -532,6 +534,8 @@ CASES = [
                          and "24.75" in [x for x in b if x["question_id"].endswith("#rows-2")][0]["answer"],
          back="""(function(){ var s = H.rootState(); return s.rows.length === 4 && s.rows[1].titre === 2475 && s.rows[1].run === 1 && s.rows[3].titre === 2470 && !s.rows[1].over && !!s.sel[1] && !!s.sel[3] && !!s.pick && s.pick.ok === true; })()"""),
     dict(name="ks4-reveal-check", page="/triple/higher/chemistry/quantitative/conservation-of-mass.html", forms=True,
+         retired="the lean rebuild (Wave 1, Quantitative chemistry) took the state-symbols check off the page",
+         absent=['"e": "w3Rows"'],
          act="""H.click(H.rootBtn(H.v().w1Options[0].label)); await H.sleep(400); H.click(H.opt(H.v().w2Options[0].label)); await H.sleep(400);
                 var n = H.v().w3Rows.length; for (var i = 0; i < n; i += 1) { H.click(document.querySelector('#ks4-mount button[aria-label="' + H.v().w3Rows[i].options[0].aria + '"]')); await H.sleep(120); }
                 await H.call('onW3Check'); await H.sleep(200);""",
@@ -708,6 +712,8 @@ CASES = [
          back="""(function(){ var r = document.querySelectorAll('.ks3-sort .ks3-sortrow'); return H.pressed(r[0].querySelector('.ks3-sort-chip')) && H.pressed(r[1].querySelectorAll('.ks3-sort-chip')[1]) && !r[0].querySelector('.ks3-sort-answer').closest('[hidden]') && H.pressed(document.querySelector('.ks3-sort [data-selfcheck] .ks3-option')); })()"""),
     # ── ⊕ 9 Nov 2026: a second blind run ──
     dict(name="ks4-all-right", page="/combined/higher/chemistry/quantitative/conservation-of-mass.html",
+         retired="the lean rebuild (Wave 1, Quantitative chemistry) took the state-symbols check off the page",
+         absent=['"e": "w3Rows"'],
          act="""await H.set({ w1: 0, w2: 2 }); var R = [0, 3, 3, 1, 2];
                 for (var i = 0; i < 5; i += 1) { var o = H.v().w3Rows[i].options[R[i]]; H.click(document.querySelector('#ks4-mount button[aria-label="' + o.aria + '"]')); await H.sleep(200); }
                 await H.call('onW3Check'); await H.sleep(200);""",

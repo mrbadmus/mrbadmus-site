@@ -99,6 +99,8 @@ CHANGED = {}
 REPLACED = {
     "ks4q:population-competition:b4d4451a57":
         "practice Q2 (intraspecific vs interspecific competition) is replaced by an on-spec item in the lean record",
+    "ks4q:mass-changes-reactions:9dd627e1ec":
+        "practice Q2 (why the mass of iron increases when it rusts) is replaced by the magnesium-burning item: rusting is not in this spec point",
 }
 
 _ROUTE_DIRS = {"cf": "combined/foundation", "ch": "combined/higher", "tf": "triple/foundation", "th": "triple/higher"}
