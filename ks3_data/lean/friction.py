@@ -24,8 +24,9 @@ LESSON = {
     },
     "knowledge": [
         {"kind": "card", "title": "What friction is",
-         "body": ["Friction acts against the sliding, or against a slide that is about to start.",
-                  "Friction acts even when nothing slides.",
+         "body": ["Friction is a force between two surfaces that touch.",
+                  "It acts against sliding, or against a slide that is about to start.",
+                  "So friction can act even when nothing slides.",
                   "On a tilted desk, part of a book's weight pulls it down the slope.",
                   "Friction acts up the slope and holds the book still.",
                   "Before sliding starts, it is called static friction.",

@@ -38,8 +38,7 @@ LESSON = {
                   "Two people push a car forwards, one with 200 N and one with 150 N.",
                   "The resultant force is 200 N + 150 N = 350 N forwards."]},
         {"kind": "card", "title": "Forces in opposite directions",
-         "body": [{"figure": "p4-resultant-beam-recap"},
-                  "Forces that point opposite ways subtract.",
+         "body": ["Forces that point opposite ways subtract.",
                   "Take the smaller force away from the bigger one.",
                   "The resultant points the same way as the bigger force."]},
         {"kind": "card", "title": "Worked example: two units",
@@ -88,16 +87,13 @@ LESSON = {
         {"kind": "card", "title": "Where the arrow starts",
          "body": ["Two equal and opposite forces along one line give no resultant.",
                   "Push up on one side of a steering wheel and down on the other.",
-                  "The forces are balanced, but the wheel turns.",
+                  "These forces are not along one line, so the wheel turns.",
                   "So where each arrow starts is part of the diagram too."]},
         {"kind": "card", "title": "Free-body diagrams",
          "body": ["A diagram showing every force on one object is called a free-body diagram.",
                   "It leaves out the forces that object puts on other things."]},
     ],
     "try": None,
-    "figure_caption": {
-        "p4-resultant-beam-recap": "The 25 N pull cancels 25 N of the 40 N pull. 15 N is left.",
-    },
     "figures": [
         {"id": "p4-sledge-arrows", "kind": "diagram", "status": "drawn", "art": "force-arrows",
          "title": "Two pulls on a sledge, drawn to scale",
@@ -126,7 +122,7 @@ LESSON = {
         ["Says a resultant of 40 N forwards makes a trolley at rest start to move forwards and speed up.",
          "Says the 40 N forwards resultant makes the trolley start moving and speed up."],
         ["Says the direction of the resultant is upwards in the second case, using the direction of the bigger force.",
-         "Says the second resultant is upwards, the direction of the bigger force."],
+         "Says the first resultant is 0 N, so the parachutist falls at a steady speed."],
     ],
     "ladder_feedback": {
         "recall": {
