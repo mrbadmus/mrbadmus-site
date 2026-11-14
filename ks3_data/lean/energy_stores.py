@@ -1,0 +1,121 @@
+# -*- coding: utf-8 -*-
+"""Energy stores, in the lean shape. Spec table: docs/lessons/wave1/ks3-energy-stores.md."""
+
+LESSON = {
+    "slug": "energy-stores",
+    "start": {
+        "setup": "A ball rolls across a carpet, slows down and stops.",
+        "question": "If you had to guess, has its energy been used up, or gone somewhere else?",
+        "options": [
+            ("It is used up", "It went somewhere else. The ball and the carpet warmed up very slightly."),
+            ("It went somewhere else", "It went somewhere else. The ball and the carpet warmed up very slightly."),
+        ],
+        "answer": 1,
+    },
+    "words": ["energy store", "energy transfer", "joule", "conservation of energy"],
+    "word_defs": {
+        "energy store": "A way energy is held, such as in a moving object or a fuel.",
+        "energy transfer": "Energy moving from one store to another.",
+        "joule": "The unit of energy. Its symbol is J.",
+        "conservation of energy": "Energy cannot be created or destroyed. It can only be transferred.",
+    },
+    "knowledge": [
+        {"kind": "reveal", "title": "The energy stores",
+         "cols": ["What it is", "Example"],
+         "rows": [
+             ("Kinetic", "Energy of a moving object", "A rolling ball"),
+             ("Gravitational potential", "Energy of an object raised up", "A diver on a high board"),
+             ("Elastic potential", "Energy of a stretched or squashed object", "A stretched catapult"),
+             ("Thermal", "Energy of an object because of its temperature", "A cup of hot tea"),
+             ("Chemical", "Energy held in fuels, food and batteries", "A bowl of cereal"),
+             ("Magnetic", "Energy of magnets that attract or repel", "Two attracting magnets held apart"),
+             ("Electrostatic", "Energy of charges that attract or repel", "A charged balloon held near a wall"),
+             ("Nuclear", "Energy held inside the nucleus of an atom", "Uranium fuel in a power station"),
+         ]},
+        {"kind": "card", "title": "Stores and pathways",
+         "body": ["Energy is transferred between stores in four ways.",
+                  {"points": ["By a force: a push or pull moves something.",
+                              "By an electric current flowing in a circuit.",
+                              "By heating: from a hotter object to a cooler one.",
+                              "By waves: light and sound carry energy away."]},
+                  "Light, sound and electric current are pathways. They are not stores.",
+                  "Light from a lamp hits the walls. It warms them very slightly."]},
+        {"kind": "card", "title": "Measuring energy",
+         "body": ["Energy is measured in joules (J).",
+                  "1 kilojoule (kJ) is 1000 J."]},
+        {"kind": "card", "title": "Stores changing",
+         "body": [{"points": ["A catapult fires: its elastic potential store empties. The stone's kinetic store fills.",
+                              "A diver falls: the gravitational potential store empties. The kinetic store fills.",
+                              "A car brakes: the kinetic store empties. The brakes' thermal store fills.",
+                              "You run after breakfast: the food's chemical store empties. "
+                              "Your kinetic and thermal stores fill."]}]},
+        {"kind": "card", "title": "Conservation of energy",
+         "body": ["Energy cannot be created or destroyed.",
+                  "It can only be transferred from one store to another.",
+                  "Count every store, including the surroundings. The total is the same before and after.",
+                  "This is the law of conservation of energy."]},
+        {"kind": "card", "title": "Where the ball's energy went",
+         "body": ["The rolling ball had energy in its kinetic store.",
+                  "Friction with the carpet slowed it down.",
+                  "This warmed the ball and the carpet very slightly.",
+                  "So the energy went into thermal stores. None of it was used up."]},
+        {"kind": "card", "title": "Easy mistakes",
+         "body": [{"mistakes": [
+             ("Energy gets used up.",
+              "Energy is never used up. It is transferred to other stores."),
+             ("A battery stores electrical energy.",
+              "A battery has a chemical store. The electric current is a pathway."),
+             ("Light and sound are energy stores.",
+              "They are pathways. They carry energy from one store to another."),
+         ]}]},
+    ],
+    "key_fact": "Energy is held in stores, such as kinetic, thermal and chemical. It is transferred "
+                "between stores by forces, electric currents, heating and waves. Energy cannot be "
+                "created or destroyed, so the total stays the same.",
+    "deeper": [
+        {"kind": "card", "title": "Nobody has seen energy",
+         "body": ["Energy is not a substance. You cannot hold it or see it.",
+                  "It is a quantity you can calculate for any situation.",
+                  "Work it out before and after a change. The total is always the same."]},
+        {"kind": "card", "title": "Where the Sun's energy comes from",
+         "body": ["The Sun's energy comes from its nuclear store.",
+                  "In its core, hydrogen nuclei join to make helium.",
+                  "Light and infrared carry the energy to Earth."]},
+    ],
+    "try": None,
+    "tutor_body": "Want to check why an electric current is a pathway, not a store?",
+    "ks4_becomes": "Calculating the energy in kinetic and gravitational potential stores.",
+    "ladder_stem": {
+        "explain": "A wind-up torch is cranked for 30 seconds. This charges its battery. Then it shines "
+                   "for 2 minutes. Describe the energy stores at the start, in the middle and at the end. "
+                   "Say which parts are pathways, not stores.",
+        "produce": "A student says: “A phone battery stores electrical energy. When it goes flat, the "
+                   "energy is used up.” Two things are wrong. Correct both.",
+    },
+    "ladder_ticks": [
+        ["Starts with a chemical store in the person turning the handle.",
+         "Starts with the person's chemical store. The force on the handle is a pathway."],
+        ["Identifies light as a pathway, not a store.",
+         "Names light as a pathway. Accept by waves or by radiation."],
+        ["Identifies the electric current as a pathway, not a store.",
+         "Names the electric current as a pathway. Accept electrical work."],
+        ["Names the store filled by cranking — elastic in the spring, or kinetic in a flywheel.",
+         "Names the battery's chemical store as the store filled by cranking."],
+        ["Says electricity is a pathway — a way energy travels out of the battery.",
+         "Says the electric current is a pathway that carries energy out of the battery."],
+        ["Says where it has gone — thermal stores in the phone and the room, and out as light and sound.",
+         "Says where it went: thermal stores in the phone and the room."],
+    ],
+    "ladder_feedback": {
+        "recall": {
+            1: "Kinetic means moving. A stretched band held still is not moving.",
+            2: "Chemical stores are in fuels, food and batteries.",
+            3: "Elastic potential is a store. A stretched band holds energy while still.",
+        },
+        "apply": {
+            0: "Energy is never used up. The brakes warm up.",
+            1: "Energy cannot disappear. The kinetic store empties into thermal stores.",
+            3: "Freewheeling means not pedalling. Energy is never created, only transferred.",
+        },
+    },
+}

@@ -87,7 +87,28 @@ WAVES = {
                                   "testing-a-leaf-for-starch"]),
         ("B8", "respiration", ["aerobic-respiration", "why-every-cell-respires",
                                "anaerobic-respiration-in-humans", "fermentation", "aerobic-vs-anaerobic"]),
+        ("C2", "atoms-elements-and-compounds", ["the-atom-daltons-model", "elements", "compounds",
+                                                "chemical-symbols", "formulae", "conservation-of-mass"]),
+        # P1: the four energy lessons only; its four heating lessons are not lean yet.
+        ("P1", "energy-transfers", ["energy-stores", "conservation-of-energy",
+                                    "energy-transfers-before-and-after", "simple-machines"]),
+        ("P2", "energy-at-home", ["energy-in-food", "power-ratings-in-watts", "calculating-energy-transferred",
+                                  "reading-a-fuel-bill", "fuels-and-energy-resources"]),
+        # P3 and P4 (Y7 Phys 1, forces and motion): only the lessons Rainford's Phys 1 teaches; the
+        # rest of both units is not lean yet.
+        ("P3", "describing-motion", ["speed"]),
+        ("P4", "forces", ["what-a-force-is", "drawing-and-adding-forces", "friction"]),
     ],
+}
+
+# ⊕ P2 (Wave 1): rows an old bench saved that no inventory lists, so knowledge_points never held
+# them and the loop below cannot see them. The calorimeter saved one numeric row per recorded
+# run (`<slug>#food-calorimeter-run-<n>`, shared/mrbadmus.v2.js RECORDS), numbered by the
+# child's own presses. Retired by the stem, as the KS4 maps retire `#picks`
+# (activity_save_drive.retired_proof strips the run number). lesson -> {stem id: why}.
+EXTRA_RETIRED = {
+    "energy-in-food": {"energy-in-food#food-calorimeter-run":
+                       "the calorimeter bench is not on the lean page; each recorded run was its own numeric row"},
 }
 
 # old id -> (new id, reason). Empty on purpose: the pilot keeps every surviving id.
@@ -166,7 +187,31 @@ _WHY = [
     (r"#chain-|#write-", "this practice item is not on the lean page"),
     (r"#locate-the-fault-|#two-bags-|#gas-|#work-the-diaphragm", "the instrument was removed from the lean page"),
     (r"ks4c:", "the classic matching card is not on the lean page"),
+    (r"#think-commit-", "the Think first question is not on the lean page"),
+    (r"#where-it-runs-out$", "the where-the-model-runs-out activity is not on the lean page"),
+    # ⊕ P1/P2 (Wave 1): the energy benches and sorters, one id per press.
+    (r"#(store-audit-ledger|store-pathway-sort|running-total|before-after-tally|waste-sort|lever-bench|"
+     r"food-calorimeter|power-bench|power-energy-sort|appliance-bench|bill-builder|renewable-sort)-\d",
+     "the instrument was removed from the lean page"),
+    # ⊕ P3/P4 (Wave 1, Phys 1): the forces and speed benches, one id per press, and the
+    # your-turn resultant calculation (a p4-attempt block, one id per question).
+    (r"#(board|sledge|drag|light-gates|compare-pairs)-\d", "the instrument was removed from the lean page"),
+    (r"#your-turn-resultant-\d", "the worked-calculation questions are not on the lean page"),
 ]
+
+
+def ks3_undrawn(ref, qid):
+    """For a KS3 lean lesson: True when the built page never mentions the id's own part, so it
+    cannot send it, although the lesson data still lists the item (e.g. a Think first commit the
+    lean page does not draw). Conservative: any mention of the id on the page counts as drawn,
+    and lesson_contract_check still checks every page's real ids against this map."""
+    import glob
+    if "#" not in qid:
+        return False              # not a page-local id (e.g. a bank row): leave it to the rules below
+    hits = glob.glob(os.path.join(REPO, "mrbadmus_site", "ks3", "*", "*", ref + ".html"))
+    if len(hits) != 1:
+        raise SystemExit("lean_id_map: expected one KS3 page for %s, found %d" % (ref, len(hits)))
+    return qid.split("#", 1)[1] not in open(hits[0], encoding="utf-8").read()
 
 
 def _why(qid):
@@ -313,6 +358,8 @@ def build(base="origin/main", unit=None, ref=None, wave=None):
                     ids[qid] = {"status": "removed", "new": None, "kp": old_q[qid],
                                 "note": "the lesson's own activity (%s) is not drawn on the lean page"
                                         % ", ".join(undrawn_root_activity(qid, covers))}
+                elif qid in old_q and qid in new_q and ks == "KS3" and ks3_undrawn(ref, qid):
+                    ids[qid] = {"status": "removed", "new": None, "kp": old_q[qid], "note": _why(qid)}
                 elif qid in old_q and qid in new_q and not (
                         ks == "KS4" and qid.startswith("ks4c:") and ref in lean_slugs):
                     # (a ks4c: matching card belongs to the classic page; a lean page never
@@ -336,6 +383,9 @@ def build(base="origin/main", unit=None, ref=None, wave=None):
                         problems.append("%s: new id %s has no knowledge-point tag in knowledge_points/%s.json"
                                         % (ref, qid, ks.lower()))
                     ids[qid] = {"status": "added", "new": qid, "kp": kp, "note": "a new question on the lean page"}
+            for qid, why in sorted((EXTRA_RETIRED.get(ref) or {}).items()):
+                if qid not in ids:
+                    ids[qid] = {"status": "removed", "new": None, "kp": None, "note": why}
         maps[key] = {"scope": sorted(refs), "base": base, "ids": ids}
     return maps, problems
 
