@@ -47,7 +47,7 @@ LESSON = {
                       "grasshoppers: 80 ÷ 40 = 2 cm",
                       "frogs: 16 ÷ 40 = 0.4 cm",
                   ]},
-                  {"slot": "legacy-fig:pFig"}]},
+                  {"slot": "fig:biomass-pyramid"}]},
         {"kind": "card", "title": "Converting kg to g",
          "body": ["Oak leaves 0.8 kg/m². Scale: 1 cm = 80 g/m².",
                   {"points": [

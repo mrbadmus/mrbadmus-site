@@ -54,7 +54,7 @@ LESSON = {
                   "A field of one crop gives food and shelter to very few species.",
                   "Hedgerows and field margins give insects, birds and mammals food and shelter, so "
                   "more species can live on the farm.",
-                  {"slot": "legacy-fig:hFig"}]},
+                  {"slot": "fig:hedgerow-field"}]},
         {"kind": "card", "title": "Conflicting pressures",
          "body": ["Maintaining biodiversity competes with other needs:",
                   {"points": [

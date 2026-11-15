@@ -78,7 +78,7 @@ LESSON = {
                   "secondary consumers and then tertiary consumers.",
                   "Each arrow points from the food to the eater. It shows the direction biomass "
                   "is transferred.",
-                  {"slot": "legacy-fig:chFig"}]},
+                  {"slot": "fig:food-chain"}]},
         {"kind": "reveal", "title": "A pond food chain: algae, pond snail, small fish, heron",
          "cols": ["Role", "Eats"],
          "rows": [
@@ -97,7 +97,7 @@ LESSON = {
                   "The organisms in a web depend on each other. Change one population and the "
                   "populations linked to it change too."]},
         {"kind": "card", "title": "Follow the arrows",
-         "body": [{"slot": "legacy-fig:wFig"},
+         "body": [{"slot": "fig:field-food-web"},
                   "In this web, the foxes die out. Follow the arrows one step at a time.",
                   {"points": [
                       "Foxes ate rabbits, so more rabbits survive. More rabbits eat more grass, so "

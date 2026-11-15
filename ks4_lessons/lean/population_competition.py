@@ -60,7 +60,7 @@ LESSON = {
                       "<strong>Water and mineral ions</strong>: taken up from the soil by the "
                       "roots.",
                   ]},
-                  {"slot": "legacy-fig:cFig"}]},
+                  {"slot": "fig:competition-resources"}]},
         {"kind": "card", "title": "What animals compete for",
          "body": ["Animals often compete with each other for food, mates and territory.",
                   {"points": [
@@ -110,7 +110,7 @@ LESSON = {
         {"kind": "card", "title": "Reading a predator-prey graph",
          "body": ["Predators take time to breed, so the predator peak comes after the prey peak. "
                   "This delay is the lag.",
-                  {"slot": "legacy-fig:gFig"},
+                  {"slot": "fig:predator-prey-graph"},
                   "To find the lag, read the year of each peak and subtract.",
                   "On this graph the hares peak at year 2 and the lynx at about year 3.5. The lag "
                   "is about 1.5 years."]},
