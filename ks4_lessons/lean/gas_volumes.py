@@ -63,10 +63,9 @@ LESSON = {
                   "A gas syringe measures volume in cm³. Change it into dm³ before you use "
                   "24 dm³."]},
         {"kind": "card", "title": "The equation",
-         "body": ["volume of gas (dm³) = amount of gas (mol) × 24",
+         "body": [{"slot": "triangle:EQ_V"},
                   "Change the subject to find the amount: amount of gas (mol) = volume of gas "
-                  "(dm³) ÷ 24.",
-                  {"slot": "triangle:EQ_V"}]},
+                  "(dm³) ÷ 24."]},
         {"kind": "card", "title": "Volume from a mass",
          "body": ["To find the volume of a gas from its mass, work out the amount in moles first.",
                   {"points": ["Step 1: amount (mol) = mass (g) ÷ M<sub>r</sub>",
