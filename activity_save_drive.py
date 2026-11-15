@@ -561,6 +561,8 @@ CASES = [
          back="""(function(){ var s = H.rootState(), n = H.v().pTones.length; return s.pShown[1] === true && n > 0 && s.pShown[s.pStage] === true && Object.keys(s.tPred).length === n; })()"""),
     # ── Answers found by reading the groups the classifier filed as not-an-answer ──
     dict(name="ks4-read-threats", page="/triple/higher/biology/ecology/factors-affecting-food-security.html", forms=True,
+         retired="the lean rebuild (Wave 1, Ecology) took the threats reading activity off the page",
+         absent=['"e": "threatBtns"'],
          act="""H.click(H.exact(H.v().threatBtns[0].label)); await H.sleep(300);""",
          want=["ks4:factors-affecting-food-security:th#picks-1"],
          check=lambda b: isinstance(b[-1]["is_correct"], bool) and b[-1]["answer"],
