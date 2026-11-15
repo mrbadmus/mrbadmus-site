@@ -31,7 +31,8 @@ SLUGS = ["efficiency", "changes-in-energy", "power", "thermal-conductivity",
 
 # Slugs the lean batch registers when their record exists: the eight above first (their order
 # is part of the Energy pages' bytes), then every other record in ks4_lessons/lean/, by slug.
-# Wave 1 (docs/lessons/LEAN-PLAN.md): Physics Magnetism, ten old-format lessons.
+# Wave 1 (docs/lessons/LEAN-PLAN.md): Physics Magnetism (ten old-format lessons), then Biology
+# Ecology (eight old-format lessons derived below, fifteen legacy batch-10 lessons).
 
 # Lessons that have no legacy page: identity comes from here (the subtopic data's own
 # title and spec, 6.1.1.1 / 6.1.1.3 / 6.1.2.1). The three Energy ones are written out so
@@ -48,6 +49,7 @@ _OLD_FORMAT = {
 # header chrome shows. A unit is added here when its first record lands.
 _UNITS = {
     ("physics", "magnetism"): "Magnetism and electromagnetism",
+    ("biology", "ecology"): "Ecology",
 }
 # The family label (the eyebrow's last word) is a ruled choice per lesson, drawn from the
 # labels the existing batches use: Model, Quantitative, Process, Classify, Contrast,
@@ -66,6 +68,40 @@ _FAMILY = {
     "uses-generator-effect": "Process",
     "microphones": "Process",
     "transformers": "Quantitative",
+    # Ecology's eight old-format lessons (the fifteen legacy ones keep batch 10's own family)
+    "biodiversity": "Model",
+    "waste-management": "Process",
+    "land-use": "Process",
+    "global-warming": "Process",
+    "carbon-cycle": "Model",
+    "water-cycle": "Model",
+    "decomposition": "Process",
+    "factors-affecting-food-security": "Classify",
+}
+# Ecology lessons whose record has no `legacy` but which were live Design lessons in an earlier
+# batch: the lean page is built from the record alone and replaces that page. slug -> the one
+# batch it replaces (ks4_lessons.verify_no_slug_collisions refuses any other collision).
+SUPERSEDES = {
+    "biodiversity": "batch-4", "water-cycle": "batch-4",
+    "carbon-cycle": "batch-2", "decomposition": "batch-2",
+    "global-warming": "batch-5", "land-use": "batch-5", "waste-management": "batch-5",
+    "factors-affecting-food-security": "batch-6",
+}
+# The AQA section number of each old-format Biology lesson, taken from the lesson's curriculum
+# table (docs/lessons/wave1/ks4-<slug>.md, its Sources line) and NOT from the subtopic data, whose
+# `spec` is sometimes only the section (carbon-cycle, water-cycle and decomposition say 4.7.3).
+# Biology numbers the same in 8464 and 8461, so one number serves both specs, except
+# decomposition: 8464 has no Decomposition section, so on CF/CH it is the 4.7.2.2 line on
+# microorganisms; 8461 teaches it as 4.7.2.3 (TF/TH). A (combined, triple) pair says so.
+_SPEC = {
+    "biodiversity": "4.7.3.1",
+    "waste-management": "4.7.3.2",
+    "land-use": "4.7.3.3",
+    "global-warming": "4.7.3.5",
+    "carbon-cycle": "4.7.2.2",
+    "water-cycle": "4.7.2.2",
+    "decomposition": ("4.7.2.2", "4.7.2.3"),
+    "factors-affecting-food-security": "4.7.5.1",
 }
 # Words kept capitalised by sentence_case() beyond the first word.
 _KEEP_CAPS = {"Fleming's"}
@@ -74,8 +110,11 @@ _SUBTOPIC_MODULES = {
     "physics": {"CF": "all_subtopics_physics", "CH": "all_subtopics_physics_higher",
                 "TF": "all_subtopics_physics_triple_foundation",
                 "TH": "all_subtopics_physics_triple_higher"},
+    "biology": {"CF": "all_subtopics_biology", "CH": "all_subtopics_biology_higher",
+                "TF": "all_subtopics_biology_triple_foundation",
+                "TH": "all_subtopics_biology_triple_higher"},
 }
-_SUBTOPIC_ATTR = {"physics": "PHYSICS_SUBTOPICS_ALL"}
+_SUBTOPIC_ATTR = {"physics": "PHYSICS_SUBTOPICS_ALL", "biology": "BIOLOGY_SUBTOPICS_ALL"}
 _DATA = {}
 
 
@@ -113,11 +152,21 @@ def _derive(slug):
         if slug not in _FAMILY:
             raise ValueError("batch_lean: %r has no family label in _FAMILY" % slug)
         canon = found.get("TH") or next(iter(found.values()))   # TH is the 'everything' tier
-        return dict(slug=slug, subject=subject, topic_id=topic,
-                    title=sentence_case(canon["title"]), spec=clean_spec(canon["spec"]),
+        spec, spec_c = clean_spec(canon["spec"]), None
+        if subject == "biology":
+            if slug not in _SPEC:
+                raise ValueError("batch_lean: %r has no section number in _SPEC" % slug)
+            spec = _SPEC[slug]
+            if isinstance(spec, tuple):
+                spec_c, spec = spec
+        d = dict(slug=slug, subject=subject, topic_id=topic,
+                    title=sentence_case(canon["title"]), spec=spec,
                     family=_FAMILY[slug], routes=[r for r in ALL if r in found],
                     review_state="examiner-reviewed", legacy_batch=None, source_file=None,
                     unit=unit)
+        if spec_c:
+            d["spec_c"] = spec_c
+        return d
     raise ValueError("batch_lean: %r is not a subtopic of any unit in _UNITS (%s)"
                      % (slug, ", ".join("%s/%s" % k for k in _UNITS)))
 
@@ -156,7 +205,7 @@ def _lesson(slug, rec):
     if legacy:
         d = dict(_legacy(slug, legacy))
         d["legacy_batch"] = legacy
-        unit = "Energy"
+        unit = _UNITS.get((d["subject"], d["topic_id"]), "Energy")
     elif slug in _OLD_FORMAT:
         title, spec, family = _OLD_FORMAT[slug]
         unit = "Energy"

@@ -278,6 +278,8 @@ CASES = [
     # the same id with that prefix; the presses and the assertions are unchanged.
     # ── KS4: a lesson's own activities ──
     dict(name="ks4-flag-pick", page=KS4 + "abiotic-biotic-factors.html",
+         retired="the lean rebuild (Wave 1, Ecology) took the 'which factor' question off the page",
+         absent=['sc-interp">A new predator<', 'sc-interp">A new pathogen<'],
          act="H.click(H.rootBtn('A new predator')); await H.sleep(400); H.click(H.rootBtn('A new pathogen')); await H.sleep(400);",
          want=["ks4:abiotic-biotic-factors:ch#bq", "ks4:abiotic-biotic-factors:ch#bq"],
          check=lambda b: [x for x in b if x["question_id"] == "ks4:abiotic-biotic-factors:ch#bq"][0]["is_correct"] is False
@@ -289,6 +291,8 @@ CASES = [
          check=lambda b: [x for x in b if x["question_id"].endswith("#est")][0]["is_correct"] is True,
          back="H.rootState().est === 2"),
     dict(name="ks4-gate", page=KS4 + "ecosystems.html",
+         retired="the lean rebuild (Wave 1, Ecology) took the community/population level gate off the page",
+         absent=['sc-interp">community<', 'sc-interp">population<'],
          act="H.click(H.rootBtn('community')); await H.sleep(400); H.click(H.rootBtn('population')); await H.sleep(400);",
          want=["ks4:ecosystems:ch#lv-1", "ks4:ecosystems:ch#lv-1"],
          check=lambda b: [x["is_correct"] for x in b if x["question_id"] == "ks4:ecosystems:ch#lv-1"] == [False, True],
@@ -330,11 +334,13 @@ CASES = [
     # ── ⊕ 8 Nov 2026: what the option-group classifier cannot see (ROOT_FORMS) ──
     # Typed, through the page's real input and real button.
     dict(name="ks4-typed-rate", page="/triple/higher/biology/ecology/decomposition.html", forms=True,
+         retired="the lean rebuild (Wave 1, Ecology) took the decay-rate bench and its typed rate off the page",
+         absent=['dec-rate', '"e": "rateWord"'],
          act="""H.click(document.querySelector('#ks4-mount [aria-label^="Graph A"]')); await H.sleep(200);
                 await H.set({ own: { 20: 300, 30: 180, 40: 100, 50: 150, 60: null } });
                 await H.type(document.getElementById('dec-rate'), '0.01');
                 H.click(H.exact('Check')); await H.sleep(300);""",
-         want=["ks4:decomposition:th#rate", "ks4:decomposition:th#own-40", "ks4:decomposition:th#own-60"],
+         want=["ks4:decomposition:th#rate", "ks4:decomposition:th#own-40", "ks4:decomposition:th#own-60"],  # own-N retire under the map's #own
          check=lambda b: [x for x in b if x["question_id"].endswith("#rate")][0]["kind"] == "numeric"
                          and [x for x in b if x["question_id"].endswith("#rate")][0]["is_correct"] is True
                          and [x for x in b if x["question_id"].endswith("#own-60")][0]["answer"] == "Over 600 s",
@@ -382,9 +388,11 @@ CASES = [
          check=lambda b: [x for x in b if "#formula-" in x["question_id"]][-1]["is_correct"] is True,
          back="(function(){ var s = H.rootState(); return s.f === 1 && s.fm > 0 && s.fx > 0 && /^Formula:/.test(String(H.v().fDone)); })()"),
     dict(name="ks4-select-labels", page="/triple/higher/biology/ecology/carbon-cycle.html", forms=True,
+         retired="the lean rebuild (Wave 1, Ecology) took the carbon-cycle labelling activity off the page",
+         absent=['"e": "lRows"'],
          act="""var rows = H.v().lRows; for (var i = 0; i < rows.length; i += 1) { var el = document.getElementById(rows[i].id); await H.type(el, el.options[1].value); }
                 await H.call('onLCheck'); await H.sleep(200);""",
-         want=["ks4:carbon-cycle:th#labels-a", "ks4:carbon-cycle:th#labels-i"],
+         want=["ks4:carbon-cycle:th#labels"],  # the map retires the activity as #labels, not per letter
          back="(function(){ var s = H.rootState(); return s.lChecked === true && Object.keys(s.labels).length === 9 && document.getElementById(H.v().lRows[0].id).value === s.labels[H.v().lRows[0].letter]; })()"),
     dict(name="ks4-form-pan", page="/triple/higher/chemistry/quantitative/relative-formula-mass.html", forms=True,
          act="""await H.call(function (v) { return v.panOpts[0].onClick; }); await H.call('onPanL', H.val('10')); await H.call('onPanR', H.val('20')); await H.call('onLoad'); await H.sleep(200);""",
@@ -558,6 +566,8 @@ CASES = [
          back="""(function(){ var s = H.rootState(), n = H.v().pTones.length; return s.pShown[1] === true && n > 0 && s.pShown[s.pStage] === true && Object.keys(s.tPred).length === n; })()"""),
     # ── Answers found by reading the groups the classifier filed as not-an-answer ──
     dict(name="ks4-read-threats", page="/triple/higher/biology/ecology/factors-affecting-food-security.html", forms=True,
+         retired="the lean rebuild (Wave 1, Ecology) took the threats reading activity off the page",
+         absent=['"e": "threatBtns"'],
          act="""H.click(H.exact(H.v().threatBtns[0].label)); await H.sleep(300);""",
          want=["ks4:factors-affecting-food-security:th#picks-1"],
          check=lambda b: isinstance(b[-1]["is_correct"], bool) and b[-1]["answer"],
@@ -804,6 +814,8 @@ CASES = [
          back="""(function(){ return document.querySelectorAll('.ks3-calor-block [data-calor-rows] tr').length === 0; })()"""),
     # ── ⊕ 9 Nov 2026: a third blind run ──
     dict(name="ks4-typed-rate", page="/triple/higher/biology/ecology/decomposition.html",
+         retired="the lean rebuild (Wave 1, Ecology) took the decay-rate bench and its typed rate off the page",
+         absent=['dec-rate', '"e": "rateWord"'],
          act="""var L = document.getElementById('ks4-mount').__mrbKs4.logic; L.setState({ own: { 40: 120 } }); await H.sleep(150); L.setState({ rate: '1' }); await H.sleep(100); await H.call('onRateCheck'); await H.sleep(250);""",
          want=["ks4:decomposition:th#rate"],
          check=lambda b: [x for x in b if x["question_id"].endswith("#rate")][0]["correct_answer"] == "0.0083",
@@ -857,6 +869,8 @@ CASES = [
          want=[],
          back="(function(){ var s = document.querySelector('.ks3-hcurve-block'); return !!s; })()"),
     dict(name="ks4-steps-wrong", page="/combined/higher/biology/ecology/decomposition.html",
+         retired="the lean rebuild (Wave 1, Ecology) took the decay-cycle steps off the page",
+         absent=['"e": "cycOptions"'],
          act="""var settle = async function () { for (var t = 0; t < 40 && H.rootState().cycAnim; t += 1) { await H.sleep(200); } };
                 for (var i = 0; i < 3; i += 1) { var o = H.v().cycOptions; H.click(H.rootBtn(o[i === 1 ? 1 : 0].text)); await H.sleep(150); await settle(); if (i < 2) { await H.call('onCycNext'); } }""",
          want=["ks4:decomposition:ch#cycpick-1", "ks4:decomposition:ch#cycpick-2", "ks4:decomposition:ch#cycpick-3"],
@@ -973,7 +987,10 @@ CASES = [
 # ⊕ 13 Nov 2026: ks3-commit-run stands in for ks3-gate (a KS3 bench that opens on a committed
 # option press, no animation, one "#*-1" row), because the lean rebuild (Wave 1) took the
 # before-and-after tally off energy-transfers-before-and-after.
-PUPIL = ["ks4-flag-pick", "ks4-level-pick", "ks4-form-internal", "ks4-list-features", "ks3-commit-run", "ks3-parts-check", "ks3-typed"]
+# ⊕ 14 Nov 2026: ks4-words-pick stands in for ks4-flag-pick (the same one-press root option pick,
+# posted and restored), because the lean rebuild (Wave 1, Ecology) took the 'which factor'
+# question off abiotic-biotic-factors.
+PUPIL = ["ks4-words-pick", "ks4-level-pick", "ks4-form-internal", "ks4-list-features", "ks3-commit-run", "ks3-parts-check", "ks3-typed"]
 
 
 def retired_proof(c):
@@ -990,6 +1007,11 @@ def retired_proof(c):
                 if not any(k in maps and maps[k] is None for k in (w, re.sub(r"(-\d+)+$", "", w)))]
     return (not still and not unmapped), {"still drawn": still, "not retired in the id map": unmapped}
 
+
+# Draft keys whose activity a lean rebuild removed: ROOT_DRAFT in shared/mrbadmus.v2.js still names
+# them (editing that file would restamp every page on the site), the page no longer has the state
+# key, and the draft simply never finds anything to restore. Wave 1, Ecology.
+RETIRED_DRAFTS = {"decomposition": ("rate",), "carbon-cycle": ("labels",)}
 
 # Typed and not sent: back on the same device, nowhere else, and gone once sent.
 DRAFTS = [
@@ -1513,6 +1535,8 @@ def run_commits():
         j = h.rfind("class Component extends DCLogic")
         head = h[j:h.find("renderVals", j)]
         for k in re.findall(r"'(\w+)'", keys):
+            if k in RETIRED_DRAFTS.get(slug, ()):
+                continue
             if not re.search(r"\b%s\s*:" % k, head):
                 print("   draft: %s has no %s in its state" % (slug, k))
                 bad += 1

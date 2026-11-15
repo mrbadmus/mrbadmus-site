@@ -507,8 +507,25 @@ PATCH_UN = """(function () {
       if (v && typeof v === 'object') { var o = {}; Object.keys(v).sort().forEach(function (k) { if (!skip[k]) { o[k] = canon(v[k]); } }); return o; }
       return v;
     };
+    // ⊕ 14 Nov 2026 (Mide's ruling): which "Your turn" tab a worked-example
+    // block (Ks4Cfifa) shows is not an answer. On reload the page reopens on
+    // the first question not yet checked (the 25 Oct rule), so device A ends
+    // on whatever tab the drive last pressed and device B on that rule's tab.
+    // Every answer and tick (q) is still compared exactly; in place of the
+    // tab number, both devices must show A tab: a real question index, with
+    // the block drawn on screen.
+    var tab = function (e, st) {
+      var n = ((e.__mrbKs4.logic.props || {}).questions || []).length, x = st.qEx;
+      var real = typeof x === 'number' && x === Math.floor(x) && x >= 0 && x < Math.max(n, 1);
+      return real && e.childElementCount > 0 ? 'tab:shown' : 'tab:MISSING(' + JSON.stringify(x) + ' of ' + n + ')';
+    };
     return Array.prototype.filter.call(document.querySelectorAll('[data-dc-tpl]'), function (e) { return e.__mrbKs4 && ANSWER.test(e.__mrbKs4.comp || ''); })
-      .map(function (e) { return e.__mrbKs4.comp + ' ' + JSON.stringify(canon(e.__mrbKs4.logic.state)); });
+      .map(function (e) {
+        var comp = e.__mrbKs4.comp, st = e.__mrbKs4.logic.state || {};
+        if (comp !== 'Ks4Cfifa') { return comp + ' ' + JSON.stringify(canon(st)); }
+        var rest = {}; Object.keys(st).forEach(function (k) { if (k !== 'qEx') { rest[k] = st[k]; } });
+        return comp + ' ' + JSON.stringify(canon(rest)) + ' ' + tab(e, st);
+      });
   };
   window.__fillIn = function (sec) {
     Array.prototype.forEach.call(sec.querySelectorAll('textarea, input[type=text], input:not([type])'), function (f) {
@@ -699,7 +716,8 @@ def drive(pages, cur, args, chk):
                 for x, y in zip(states_a, states_b):
                     if x != y:
                         back_ok = False
-                        chk.fail("drive", "%s: the saved state of %s did not come back on device B" % (page, x.split(" ")[0]))
+                        why = "no question tab open" if "tab:MISSING" in y else "the saved state"
+                        chk.fail("drive", "%s: %s of %s did not come back on device B" % (page, why, x.split(" ")[0]))
                 if len(states_a) != len(states_b):
                     back_ok = False
                     chk.fail("drive", "%s: device B drew %d answer blocks, device A %d" % (page, len(states_b), len(states_a)))
