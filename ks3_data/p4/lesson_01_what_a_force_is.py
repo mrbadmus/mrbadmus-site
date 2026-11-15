@@ -403,10 +403,8 @@ LESSON = {
             "options": [
                 "The head pushes the ball, and the ball pushes the head just "
                 "as hard.",
-                "The ball has force stored in it, and the force is used up "
-                "when it hits the head.",
-                "The head gives its force to the ball, and the ball keeps "
-                "that force until it stops.",
+                "The ball has force stored in it, and uses it up hitting the head.",
+                "The head gives its force to the ball, which keeps it until it stops.",
                 "The force is in the movement of the ball, and not in either "
                 "object.",
             ],

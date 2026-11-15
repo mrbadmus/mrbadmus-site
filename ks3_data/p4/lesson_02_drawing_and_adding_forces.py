@@ -543,8 +543,7 @@ LESSON = {
                 "The resultant force is 60 N, because the two forces add "
                 "together.",
                 "The two forces cancel out and stop existing.",
-                "The two forces are equal in size, so the resultant force is "
-                "0 N.",
+                "The forces are equal and opposite, so the resultant is 0 N.",
             ],
             "answer": 3,
             "feedback": {

@@ -790,7 +790,7 @@ LESSON = {
                  "is an organism or part of one?",
             "options": [
                 "How fast it moves",
-                "Whether it feeds itself, or is fed",
+                "Whether it does every life process itself",
                 "How many mitochondria it has",
                 "Whether it is bigger than one of your cells",
             ],
@@ -808,30 +808,22 @@ LESSON = {
         # carry the pair.
         "apply": {
             "title": "Rung 2 · The one that catches people",
-            "q": "A red blood cell has no nucleus and can never divide. A "
-                 "bacterium has no nucleus and divides every twenty minutes. "
-                 "What explains the difference?",
+            "q": "A red blood cell has no nucleus and can never divide. A bacterium has no nucleus and can divide every twenty minutes. What explains the difference?",
             # ⊕ MRB-177, ruled 17 Aug 2026 — the three distractors now state
             # wrong RULES, in the same shape as the correct option. The
             # correct option and its index are unchanged, and the option-1
             # correction still carries the CELL-08 pair verbatim.
             "options": [
-                "The bacterium still has its DNA, loose in the cytoplasm; the "
-                "red blood cell lost its DNA with its nucleus",
-                "A smaller cell divides more easily, so the smallest cells "
-                "are the ones that divide fastest",
-                "A cell that loses its nucleus later in life can still "
-                "divide, because it had one to begin with",
-                "Dividing needs no instructions at all, so any cell without "
-                "a nucleus can still copy itself freely",
+                "The bacterium has DNA loose in its cytoplasm, but the red blood cell has none",
+                "Smaller cells divide more easily, so the smallest cells divide fastest",
+                "A cell that loses its nucleus later can still divide, as it once had one",
+                "Dividing needs no instructions, so any cell without a nucleus can copy itself",
             ],
             "answer": 0,
             "feedback": {
                 1: "Size has nothing to do with it. The difference is about "
                    "the instructions, not the effort.",
-                2: "Having had one does not help: the red blood cell "
-                   "destroyed its nucleus and lost the DNA with it. The "
-                   "bacterium never had a nucleus at any point.",
+                2: "Having had one does not help. The red blood cell pushed out its nucleus, and its DNA went with it. The bacterium never had a nucleus at all.",
                 3: "Nothing copies itself without instructions. Every new "
                    "bacterium gets a full copy of the loop.",
             }},

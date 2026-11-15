@@ -76,6 +76,16 @@ def ks3_rungs():
             for rung, r in (l.get("ladder") or {}).items():
                 if isinstance(r, dict) and r.get("options") and isinstance(r.get("answer"), int):
                     out.append((u.get("code"), l["slug"], rung, r))
+    # ⊕ 15 Nov 2026: the hidden fixture pages (ks3_fixtures, built at /ks3/_fixtures/ by the same
+    # renderer, and scanned by check_built and page_truth below) are FROZEN copies of classic
+    # lessons. Once a real lesson's options are reworded its fixture no longer matches it, so the
+    # fixtures' own rungs join the corpus: every built page is judged by the rung it was built from.
+    import ks3_fixtures
+    for fx in ks3_fixtures.fixtures():
+        l = fx["lesson"]
+        for rung, r in (l.get("ladder") or {}).items():
+            if isinstance(r, dict) and r.get("options") and isinstance(r.get("answer"), int):
+                out.append((fx["unit"], l["slug"], rung, r))
     return out
 
 

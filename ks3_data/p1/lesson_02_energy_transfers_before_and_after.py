@@ -430,7 +430,7 @@ LESSON = {
             # MRB-278: correct at index 1.
             "options": [
                 "The total afterwards is smaller, because some is used up",
-                "The two totals are equal",
+                "The total afterwards is the same as the total before",
                 "The total afterwards is larger, because the device adds "
                 "energy",
                 "It depends how efficient the device is",
@@ -450,7 +450,7 @@ LESSON = {
                  "other 57 J?",
             # MRB-278: correct at index 3.
             "options": [
-                "It is lost, the way water is lost down a drain",
+                "It disappears, so there is now less energy in total",
                 "It is used up in the work of lighting the bulb",
                 "It stays in the wires as electrical energy, ready for "
                 "later",
@@ -458,8 +458,7 @@ LESSON = {
             ],
             "answer": 3,
             "feedback": {
-                0: "“Lost” is the word to avoid — it is "
-                   "somewhere specific, and a thermometer can find it.",
+                0: "Energy cannot disappear. It is somewhere specific, and a thermometer can find it.",
                 1: "Making the bulb work is not a place energy can go. "
                    "Name the store.",
                 2: "Electrical is a pathway, not a store — nothing sits in "

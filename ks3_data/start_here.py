@@ -148,9 +148,8 @@ START_HERE = {
              "More cells sounds sensible, but a dish with a thousand times "
              "more would still leave the sandwich untouched. It is how they "
              "are arranged that counts."),
-            ("Cells arranged in layers",
-             "Layers, each with its own job: muscle to churn the food, a "
-             "lining to make acid and enzymes. They only work as a team."),
+            ("Cells in tissues",
+             "Tissues, each with its own job: muscle to churn the food, a lining to make acid and enzymes. They only work as a team."),
         ],
         answer=1,
         bridge="That gives a ladder of levels, from one cell up to a whole "

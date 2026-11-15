@@ -638,7 +638,7 @@ LESSON = {
             "q": "The particle model makes a wrong prediction about ice. What "
                  "is the right response?",
             "options": [
-                "Throw it out — a model that gets something wrong is worthless",
+                "Throw it out, because a model that gets something wrong is worthless",
                 "Keep using it where it works, and note the limit",
                 "Ignore the exception, since it is only water",
                 "Call it a theory instead of a model, which allows exceptions",

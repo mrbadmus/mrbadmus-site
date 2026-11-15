@@ -856,16 +856,13 @@ LESSON = {
             "q": "What does it mean to call a plant a producer?",
             "options": [
                 # 15w — Design's, unchanged.
-                "It builds its own organic molecules from simple raw "
-                "materials, instead of eating something else’s",
+                "It makes its own food from simple raw materials, instead of eating other organisms",
                 # 16w — `PLANT-08` wearing a rule. Was "It produces oxygen for
                 # other organisms to breathe" (8w).
-                "It makes the oxygen other organisms breathe, so its role in a "
-                "chain is supplying air",
+                "It makes the oxygen other organisms breathe, so its role is to supply air",
                 # 16w — the word-association error, given its consequence. Was
                 # "It produces more offspring than it needs" (7w).
-                "It produces more offspring than it needs, so the word is "
-                "about quantity rather than food",
+                "It produces more offspring than it needs, so the word is about numbers, not food",
                 # 15w — the inverted position. Was "It is at the top of the
                 # food chain" (9w). The new clause CONCEDES the dependence,
                 # which is what makes the existing correction land harder.
@@ -889,19 +886,14 @@ LESSON = {
                 # 24w — was "No — it makes its own food from the compost it
                 # grows in" (13w). Design's own "the compost it grows in" is
                 # kept inside the rewritten rule.
-                "No — an organism that takes its food straight from the "
-                "compost it grows in is making its own, so it needs no "
-                "producer",
+                "No, because it takes its food straight from the compost, so it makes its own",
                 # 22w — Design's, unchanged.
-                "No — a fungus takes its energy from the minerals in the soil, "
-                "so sunlight never enters its chain",
+                "No, because a fungus gets its energy from minerals in the soil, not sunlight",
                 # 19w — was "No — fungi get their energy from the soil
                 # minerals" (10w).
-                "Yes — it feeds on dead material that a photosynthetic "
-                "organism built, so it sits at the end of the same chain",
+                "Yes, because it feeds on dead material that was built by photosynthesis",
                 # 20w — was "Only if it is growing on a living plant" (8w).
-                "Only if it is growing on a living plant — what is dead has "
-                "stopped being part of any chain",
+                "Only if it grows on living plants, as dead material is in no food chain",
             ],
             "answer": 2,
             "feedback": {

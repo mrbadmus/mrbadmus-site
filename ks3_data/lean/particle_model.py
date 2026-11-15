@@ -79,8 +79,6 @@ LESSON = {
         "produce": "A student says the gaps between gas particles must be full of air. \"Otherwise there "
                    "would be a vacuum in there,\" they say. \"You cannot have a vacuum in the middle of a "
                    "room.\" Reply to them.",
-        "apply": "A student keeps cutting sugar, each piece half as wide as the last. After 24 halvings, "
-                 "one sugar particle is left. Why can they never get a smaller piece of sugar?",
     },
     "ladder_ticks": [
         ["Says no particles are lost or destroyed — the total amount of matter is unchanged.",
@@ -123,9 +121,9 @@ LESSON = {
             3: "Dust is made of particles too. Between particles there is only empty space.",
         },
         "apply": {
-            0: "A better knife would not help. One particle is the smallest piece of sugar.",
+            0: "Particles can be split. But splitting a sugar particle makes new substances.",
             1: "Hardness belongs to a lump of sugar, not to one particle.",
-            3: "Aiming is not the problem. Splitting a sugar particle makes new substances.",
+            3: "Every particle has mass. Splitting one makes new substances, not smaller sugar.",
         },
     },
 }

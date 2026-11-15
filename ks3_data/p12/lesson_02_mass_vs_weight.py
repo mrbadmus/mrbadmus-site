@@ -514,13 +514,12 @@ LESSON = {
     # untouched.
     "ladder": {
         "recall": {
-            "q": "A spring balance on Earth reads 45 N. What is the mass of "
-                 "the object hanging from it?",
+            "q": "A spring balance on Earth reads 45 N. Take g as 10 N/kg. What is the mass of the object hanging from it?",
             "options": [
-                "450 kg — multiply by 10",
-                "45 kg — the balance reads the mass directly",
+                "450 kg",
+                "45 kg",
                 "4.5 kg",
-                "4.5 N — the answer is still a force",
+                "4.5 N",
             ],
             "answer": 2,
             "feedback": {
@@ -535,16 +534,10 @@ LESSON = {
         "apply": {
             "q": "A hammer is used on the Moon. Which of these is true?",
             "options": [
-                "It is easier to lift, because that works against its weight, "
-                "and just as hard to swing, because that works against its "
-                "mass.",
-                "It is easier both to lift and to swing, because everything "
-                "is lighter on the Moon and lighter things move more easily.",
-                "It behaves exactly as it does on Earth, because it is the "
-                "same hammer and a hammer’s mass and weight both travel with "
-                "it.",
-                "It is harder to swing, because there is no air to help, and "
-                "without air resistance a moving tool is harder to control.",
+                "Easier to lift, with less weight, but as hard to swing, with the same mass.",
+                "Easier to lift and to swing, because everything is lighter on the Moon.",
+                "Exactly the same as on Earth, because its mass and weight both travel with it.",
+                "Harder to swing, because with no air resistance a moving tool is harder to control.",
             ],
             "answer": 0,
             "feedback": {

@@ -126,7 +126,7 @@ LESSON = {
         },
         "apply": {
             0: "A flame seems to do several life processes, but it is not alive.",
-            1: "That is not the reason. People make bread dough, and the yeast in it is alive.",
+            1: "That is not the reason. Plants cannot think, and they are alive.",
             2: "Watching for longer will not help. It is parts, wires and a battery, with no cells.",
         },
     },

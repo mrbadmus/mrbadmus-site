@@ -385,8 +385,7 @@ LESSON = {
                    "afterwards, not what happens to the total.",
             }},
         "apply": {
-            "q": "A pendulum swings until it hangs still. What is true of "
-                 "the total energy at the end compared with the start?",
+            "q": "A pendulum swings until it hangs still. Count the pendulum and its surroundings together. What is true of their total energy at the end?",
             # MRB-278: correct at index 2.
             # ⚠️ MRB-177: her set runs 15w against 7/7/9 — gap 6, ratio 1.67
             # — and trips BOTH limbs of the gate. Fixed AT THE DISTRACTOR per
@@ -399,8 +398,7 @@ LESSON = {
                 "it on every swing",
                 "It is zero now, because nothing is moving and the pendulum "
                 "hangs still",
-                "It is exactly the same — it is just all in the thermal "
-                "store now",
+                "It is unchanged, with the energy now spread in thermal stores nearby",
                 "It is less, but only by the tiny amount that friction "
                 "managed to remove",
             ],

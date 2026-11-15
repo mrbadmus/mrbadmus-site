@@ -247,26 +247,23 @@ LESSON = {
         {"type": "formula",
          "id": "light-distance-rule",
          "eyebrow": "Writing it down · the shape of this relationship",
-         "statement": "Distance = speed of light × time",
+         "statement": "Distance (s) = speed of light (c) × time (t)",
          "triangle": {
              "eyebrow": "The triangle",
              "heading": "Cover the one you want",
-             "aria_label": "A formula triangle. The distance d sits above a "
-                           "dividing line; the speed of light c and the time "
-                           "t sit below it, multiplied together. Covering one "
-                           "letter leaves the way to work it out.",
+             "aria_label": "A formula triangle. The distance s sits above a dividing line; the speed of light c and the time t sit below it, multiplied together. Covering one letter leaves the way to work it out.",
              "order": ["top", "left", "right"],
              "covered": "top",
-             "top":   {"label": "d", "button": "Cover d",
-                       "result": "d = c × t", "text": ""},
+             "top":   {"label": "s", "button": "Cover s",
+                       "result": "s = c × t", "text": ""},
              "left":  {"label": "c", "button": "Cover c",
-                       "result": "c = d ÷ t", "text": ""},
+                       "result": "c = s ÷ t", "text": ""},
              "right": {"label": "t", "button": "Cover t",
-                       "result": "t = d ÷ c", "text": ""},
+                       "result": "t = s ÷ c", "text": ""},
              "close": {
                  "rule": "Two things side by side means multiply. One thing "
                          "over another means divide.",
-                 "units": ["d · distance the light travels · m",
+                 "units": ["s · distance the light travels · m",
                            "c · speed of light in a vacuum · m/s",
                            "t · time it takes · s"],
                  "condition": "m/s with s gives m, and km/s with s gives km — "
@@ -307,18 +304,17 @@ LESSON = {
               "note": "The speed is in metres per second and the time is in "
                       "seconds, so there is nothing to convert."},
              {"letter": "F", "label": "Formula",
-              "line": "d = c × t",
-              "note": "Cover d on the triangle: c sits beside t, so you "
-                      "multiply."},
+              "line": "s = c × t",
+              "note": "Cover s on the triangle: c sits beside t, so you multiply."},
              {"letter": "I", "label": "Insert",
-              "line": "d = 300 000 000 m/s × 1.28 s",
+              "line": "s = 300 000 000 m/s × 1.28 s",
               "note": "The speed of light in a vacuum, which space very "
                       "nearly is."},
              {"letter": "F", "label": "Fine-tune",
               "line": "300 000 000 × 1.28 = 384 000 000",
               "note": "Metres per second times seconds leaves metres."},
              {"letter": "A", "label": "Answer",
-              "line": "d = 384 000 000 m",
+              "line": "s = 384 000 000 m",
               "note": "Which is 384 000 km — the familiar figure for the "
                       "Moon."},
          ]},
@@ -342,17 +338,16 @@ LESSON = {
               "note": "The speed is metres per second, so the time has to be "
                       "in seconds before it can multiply."},
              {"letter": "F", "label": "Formula",
-              "line": "d = c × t",
-              "note": "Cover d on the triangle: c sits beside t, so you "
-                      "multiply."},
+              "line": "s = c × t",
+              "note": "Cover s on the triangle: c sits beside t, so you multiply."},
              {"letter": "I", "label": "Insert",
-              "line": "d = 300 000 000 m/s × 498 s",
+              "line": "s = 300 000 000 m/s × 498 s",
               "note": "The converted time goes in. The 8.3 never does."},
              {"letter": "F", "label": "Fine-tune",
               "line": "300 000 000 × 498 = 149 400 000 000",
               "note": "Metres per second times seconds leaves metres."},
              {"letter": "A", "label": "Answer",
-              "line": "d = 1.494 × 10^11 m",
+              "line": "s = 1.494 × 10^11 m",
               "note": "Insert 8.3 instead of 498 and the Sun comes out sixty "
                       "times too close — nearer than Venus."},
          ]},
@@ -383,17 +378,16 @@ LESSON = {
                    "note": "Metres per second multiplied by seconds gives "
                            "metres, so there is nothing to convert."},
                   {"letter": "F", "label": "Formula",
-                   "line": "d = c × t",
-                   "note": "Cover d on the triangle: c sits beside t, so you "
-                           "multiply."},
+                   "line": "s = c × t",
+                   "note": "Cover s on the triangle: c sits beside t, so you multiply."},
                   {"letter": "I", "label": "Insert",
-                   "line": "d = 3.0 × 10^8 m/s × {texp} s",
+                   "line": "s = 3.0 × 10^8 m/s × {texp} s",
                    "note": "The speed of light in a vacuum."},
                   {"letter": "F", "label": "Fine-tune",
                    "line": "3.0 × {mant} = {prod}, and the powers add",
                    "note": "Metres per second times seconds leaves metres."},
                   {"letter": "A", "label": "Answer",
-                   "line": "d = {d} m",
+                   "line": "s = {d} m",
                    "note": "Which is {dist}."},
               ],
               "close": "The five lines give the distance to {name}. Pick "
@@ -413,11 +407,10 @@ LESSON = {
                            "has to be in seconds first. Radio travels at the "
                            "speed of light."},
                   {"letter": "F", "label": "Formula",
-                   "line": "d = c × t",
-                   "note": "Cover d on the triangle: c sits beside t, so you "
-                           "multiply."},
+                   "line": "s = c × t",
+                   "note": "Cover s on the triangle: c sits beside t, so you multiply."},
                   {"letter": "I", "label": "Insert",
-                   "line": "d = 300 000 000 m/s × 1320 s",
+                   "line": "s = 300 000 000 m/s × 1320 s",
                    "note": "The converted time goes in. The 22 never does."},
                   {"letter": "F", "label": "Fine-tune",
                    "line": "300 000 000 × 1320 = 396 000 000 000",
@@ -431,7 +424,7 @@ LESSON = {
                   # and 6.6 × 10^9 m is exactly 22 light seconds, which
                   # names the mistake better than a wrong comparison did.
                   {"letter": "A", "label": "Answer",
-                   "line": "d = 3.96 × 10^11 m",
+                   "line": "s = 3.96 × 10^11 m",
                    "note": "Insert 22 instead of 1320 and the answer comes "
                            "out sixty times too small — 22 light "
                            "seconds away instead of 22 light minutes."},
@@ -506,9 +499,7 @@ LESSON = {
             ],
             "answer": 2,
             "feedback": {
-                0: "Cover d on the triangle and c sits beside t, so you "
-                   "multiply. Dividing gives you a speed or a time, not a "
-                   "distance.",
+                0: "Cover s on the triangle and c sits beside t, so you multiply. Dividing gives you a speed or a time, not a distance.",
                 1: "The number is right and the unit is wrong. Metres per "
                    "second times seconds leaves metres.",
                 3: "500 light seconds is right, and it converts perfectly "

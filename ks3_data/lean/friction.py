@@ -113,8 +113,6 @@ LESSON = {
                              {"dir": "left", "N": 100, "label": "Friction, 100 N"}]}},
     ],
     "ladder_stem": {
-        "recall": "A sledge is pulled across level snow by a horizontal 40 N pull. It moves at a "
-                  "steady speed. Ignore air resistance. What is the friction on it?",
         "explain": "A cyclist oils the chain and fits new brake blocks on the same afternoon. Explain "
                    "why one job reduces friction and the other increases it. Explain why both make the "
                    "bicycle better.",

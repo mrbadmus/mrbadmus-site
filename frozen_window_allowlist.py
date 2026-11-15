@@ -160,12 +160,39 @@ RULING_D3 = (
 # Only the stem. Options (and with them the key and every why) stay fixed.
 D3_PERMITTED_FIELDS = frozenset({"text"})
 
+# ── ⊕ P12 speed — TWO further ids, FEEDBACK (`why`) ONLY (Mide, 14 Nov 2026) ─
+# A fourth one-time exception, narrower than D3: not even the stem moves.
+# The Lean Wave 1 KS3 quiz batch writes speed as s = v t (s for distance, as
+# the lessons now teach it). Two frozen rows of how-far-is-a-light-year carry
+# the old letter in ONE wrong option's `why` ("Cover d on the triangle…" ->
+# "Cover s on the triangle…"). Conditions, every one checked by
+# `frozen_window_guard.py`:
+#
+#   * the same id, band and bank_position;
+#   * the same stem, figure, option texts and correct flags, byte for byte;
+#   * the ONLY change is the `why` text of one or more options.
+#
+# It covers exactly these two ids and no other frozen row.
+WHY_TEXT_ONLY = [
+    "p12-06-s01",                            # pos  4  KS3 physics P12
+    "p12-06-s02",                            # pos  5  KS3 physics P12
+]
+
+RULING_WHY_TEXT = "Mide ruling 14 Nov 2026: speed s = v t wording, feedback only"
+
+# The row-level field that may differ (`options`), and inside it the only
+# per-option key that may (`why`). `text` and `correct` must match exactly.
+WHY_TEXT_PERMITTED_FIELDS = frozenset({"options"})
+WHY_TEXT_PERMITTED_OPTION_KEYS = frozenset({"why"})
+
 
 def permitted_fields(row_id, key_stage):
     """The fields a frozen row may differ in, or None if it may not differ
     at all. The single place the guard and the leaf checker ask."""
     if row_id in D3_TEXT_ONLY:
         return D3_PERMITTED_FIELDS
+    if row_id in WHY_TEXT_ONLY:
+        return WHY_TEXT_PERMITTED_FIELDS     # and inside options, `why` only
     if row_id in ALLOWLIST:
         return KS3_PERMITTED_FIELDS if key_stage == "ks3" \
             else KS4_PERMITTED_FIELDS
@@ -177,6 +204,9 @@ assert len(BORDERLINE) == 14, "the ruling covers 14 borderline rows"
 assert len(ALLOWLIST) == 28, "the ruling covers exactly 28 ids, with no duplicates"
 assert len(D3_TEXT_ONLY) == 1, "the D3 ruling covers exactly one id"
 assert not (set(D3_TEXT_ONLY) & ALLOWLIST), "D3 is separate from the 28"
+assert len(WHY_TEXT_ONLY) == 2, "the 14 Nov 2026 ruling covers exactly two ids"
+assert not (set(WHY_TEXT_ONLY) & (ALLOWLIST | set(D3_TEXT_ONLY))), \
+    "the why-only ids are separate from the 28 and from D3"
 
 
 # ── ⊕ ROUTE FLAGS — 8 subtopics, tier/triple_only ONLY (Mide, 2 Oct 2026) ─

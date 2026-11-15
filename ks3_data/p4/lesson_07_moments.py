@@ -455,10 +455,9 @@ LESSON = {
                  "30 N at right angles. What is the moment?",
             "options": [
                 "12 N m",
-                "75 N m — divide the force by the distance",
-                "12 N — a turning effect is a force, so it is in newtons",
-                "30 N m — the moment is the force, and the distance only "
-                "sets which way it turns",
+                "75 N m",
+                "12 N",
+                "30 N m",
             ],
             "answer": 0,
             "feedback": {
@@ -478,16 +477,12 @@ LESSON = {
                  "One uses a 0.10 m spanner, the other a 0.40 m spanner. "
                  "Which statement is right?",
             "options": [
-                "They give the same moment, because the moment is decided "
-                "by how hard you pull, and the length of the handle only "
-                "changes how comfortable it is.",
-                "The long spanner gives 20 N m against 5 N m — four times "
-                "the turning effect for the same pull.",
+                "They give the same moment, because only how hard you pull decides the moment.",
+                "The long spanner gives 20 N m, while the short one gives 5 N m.",
                 # ⊕ MRB-297 · 1 Sep 2026 — the third option was widened so
                 # the correct answer stops being resolvable as the
                 # second-longest.
-                "The short spanner gives more, because the force acts closer "
-                "to the bolt that is being turned.",
+                "The short spanner gives more, because the force acts closer to the bolt.",
                 "The long spanner gives more, because a longer spanner "
                 "weighs more.",
             ],
