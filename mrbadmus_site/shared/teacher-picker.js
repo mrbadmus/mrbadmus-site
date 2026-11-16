@@ -15,14 +15,38 @@
    class" switch. While the panel is open, a "Back" button takes the class
    code's place in the header and returns to the board, keeping every change;
    the X still closes the whole picker. A clock button beside the cog opens
-   `MrBadmusTimer` (`shared/teacher-timer.js`) as a floating timer, so the
+   `MrBadmusTimer` (`shared/teacher-timer.js`) DOCKED in the board, so the
    names stay in view — on the board only: it is not drawn while settings is
-   open, so opening or closing settings can never open the timer.
+   open (so opening or closing settings can never open the timer), nor while
+   a timer is already showing.
 
-   PRESENTATION CLICKERS (they send keyboard keys): while the picker is open
-   it registers `clickPick()` with the timer module, which owns the one key
+   ══ ONE OF FOUR VIEWS — see `teacher-timer.js`, which owns the rule ═════
+
+   This board is view 1 of the four the teacher tools have (Board, Timer
+   full, Mini, Pop-out), and only one shows at a time. A live timer is docked
+   in the board's own HEADER as a one-row strip (`[data-mrb-tm-slot]`, its
+   own line of the header on a phone, ≤ 56px tall) — part of the board's
+   layout, never a card over it, and never taking the stage's space. Beside
+   the X, "minimise" puts the board away into the Mini (the class, the last
+   name, Pick and Skip, in a small draggable panel on `document.body`), and
+   "pop out" puts the same into a Document Picture-in-Picture window where
+   the browser has one. `section(kind)` draws that picker section; the Mini
+   and the pop-out only place it. `STATE` is untouched by all of this:
+   minimise, expand, pop-out and pop-in never lose the picked list, the
+   absent list, weights or pick-next. Expanding the Mini brings the board
+   back exactly as it was left.
+
+   SKIP (on the board, in the Mini and in the pop-out, shown once something
+   has been picked and someone else could be): it discards the current pick
+   without counting it and draws someone else, with the normal reveal. In
+   No repeats the skipped pupil's ticket goes back (their picked count −1,
+   never below 0) and the new draw excludes them; in Random it just draws
+   again, excluding them.
+
+   PRESENTATION CLICKERS (they send keyboard keys): while the picker is live
+   (board, Mini or pop-out) it registers `clickPick()` with the timer module, which owns the one key
    listener. Forward (PageDown, ArrowRight, Space) presses the real Pick
-   button, so the reveal and `aria-busy` are exactly a tap's; it is ignored
+   button wherever it is showing, so the reveal and `aria-busy` are exactly a tap's; it is ignored
    while a reveal is spinning. Back never touches the pick. A one-second hold
    cheers instead. The settings panel carries the one shared Sound switch
    (memory only) and a line naming the keys.
@@ -103,7 +127,7 @@
 
    ══ THE DOM ORDER IS NOT THE VISUAL ORDER, ON PURPOSE ═══════════════════
 
-   The three panels are appended stage → footer → header and put back in
+   The panels are appended stage → footer → header and put back in
    visual order with `order`. `teacher_behaviour.py` walks controls by
    ORDINAL (`list[j]`, re-queried each iteration), so a close button first
    in the DOM is pressed first — it would shut the overlay before the sweep
@@ -129,7 +153,10 @@
   /* The one storage key family. One key per class; nothing else is stored. */
   var KEY = 'mrb.picker.weights.v1.';
 
-  var live = null;      // {el, opts, pool, timer} while open, else null
+  /* {el, opts, pool, timer, board, sec, secKind, revealing, …} while the
+     picker is live — on the board (`board` true) or put away into the Mini
+     or the pop-out (`board` false) — else null. */
+  var live = null;
   var keyHandler = null;
 
   /* ── Design's v3 tokens, off the pages this sits on ────────────────────
@@ -148,8 +175,11 @@
   var OVERLAY = 'position:fixed;inset:0;z-index:90;background:' + GROUND +
                 ';display:flex;flex-direction:column;overflow:hidden';
 
-  var HEAD = 'order:1;flex:none;display:flex;align-items:center;' +
-             'justify-content:space-between;gap:12px;padding:14px 20px;' +
+  /* Wraps: on a phone the docked timer strip takes a line of its own INSIDE
+     the header, so it never takes the stage's space. */
+  var HEAD = 'order:1;flex:none;display:flex;flex-wrap:wrap;' +
+             'align-items:center;justify-content:space-between;' +
+             'column-gap:12px;row-gap:8px;padding:12px 20px;' +
              'border-bottom:1px solid var(--st-rule)';
   /* ⛔ NO `text-transform`, AND THE REST OF THE ESTATE HAS THE SAME NOTE.
      Design's mono caption register is uppercase, and every OTHER use of it
@@ -159,13 +189,13 @@
      on the wall, which is not what the class is called anywhere else in the
      product. `teacher/today.html` carries the identical warning over its own
      three lesson lines. */
-  var HEAD_CODE = 'min-width:0;overflow:hidden;text-overflow:ellipsis;' +
+  var HEAD_CODE = 'order:1;flex:0 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;' +
                   'white-space:nowrap;font:500 14px/1.2 var(--st-mono);' +
                   'letter-spacing:.08em;color:var(--st-caption)';
   /* Design's close X (node 520) at 32px, taken to 40px: 40 is the height of
      every button in her class-screen action row, and it is this file's
      floor for anything a finger has to find. */
-  var HEAD_X = 'flex:none;width:40px;height:40px;display:flex;' +
+  var HEAD_X = 'flex:none;width:44px;height:44px;display:flex;padding:0;' +
                'align-items:center;justify-content:center;' +
                'background:transparent;border:1px solid var(--st-btn-border);' +
                'border-radius:9px;cursor:pointer;color:var(--st-muted)';
@@ -191,6 +221,14 @@
              'font:600 22px/1.2 var(--st-ui);color:var(--st-paper);' +
              'background:var(--st-accent-text);border:none;border-radius:11px;' +
              'cursor:pointer';
+  /* Skip: the same size as Pick, in the secondary weight. */
+  var SKIP = 'flex:none;min-height:60px;padding:0 28px;' +
+             'font:600 22px/1.2 var(--st-ui);color:var(--st-ink);' +
+             'background:var(--st-paper);' +
+             'border:1px solid var(--st-btn-border);border-radius:11px;' +
+             'cursor:pointer';
+  var PICK_ROW = 'display:flex;flex-wrap:wrap;align-items:center;' +
+                 'justify-content:center;gap:12px';
   var PICK_OFF = 'flex:none;min-height:60px;padding:0 34px;' +
                  'font:600 22px/1.2 var(--st-ui);color:var(--st-caption);' +
                  'background:var(--st-paper);' +
@@ -224,16 +262,24 @@
   /* The header's two quiet icon buttons (timer, settings): the close X's
      40px box with no border, in the caption colour, so they are findable and
      never compete with the name. Pressed/expanded = the seg trough. */
-  var ICON_BTN = 'flex:none;width:40px;height:40px;display:flex;' +
+  var ICON_BTN = 'flex:none;width:44px;height:44px;display:flex;padding:0;' +
                  'align-items:center;justify-content:center;' +
                  'background:transparent;border:1px solid transparent;' +
                  'border-radius:9px;cursor:pointer;color:var(--st-caption)';
-  var ICON_BTN_ON = 'flex:none;width:40px;height:40px;display:flex;' +
+  var ICON_BTN_ON = 'flex:none;width:44px;height:44px;display:flex;padding:0;' +
                     'align-items:center;justify-content:center;' +
                     'background:var(--st-seg-bg);' +
                     'border:1px solid var(--st-rule-strong);' +
                     'border-radius:9px;cursor:pointer;color:var(--st-ink)';
-  var HEAD_RIGHT = 'flex:none;display:flex;align-items:center;gap:6px';
+  var HEAD_RIGHT = 'order:3;flex:none;display:flex;align-items:center;gap:6px';
+  /* The header slot the timer's strip docks into. Wide: between the class
+     and the buttons. A phone: its own line at the foot of the header. */
+  function slotStyle() {
+    return (window.innerWidth >= 720
+      ? 'order:2;flex:1 1 auto;min-width:0;'
+      : 'order:4;flex:1 0 100%;min-width:0;') +
+      'display:flex;justify-content:center';
+  }
 
   /* ⊕ 12 Nov 2026 (Mide) — the settings panel's way out. It takes the class
      code's place, top LEFT, because that is where the eye lands first: the
@@ -318,6 +364,46 @@
                  'background:var(--st-seg-bg);' +
                  'border:1px solid var(--st-rule-strong);border-radius:9px;' +
                  'cursor:pointer;text-decoration:line-through';
+
+  /* ── the picker SECTION, for the Mini and the pop-out ──────────────────
+     The Mini: one row — the name (ellipsed), Pick, Skip. The pop-out: the
+     section is its own size container, so the name and the buttons grow
+     with the window. */
+  var SEC_MINI = 'display:flex;align-items:center;gap:6px;padding:6px 10px';
+  var SEC_PIP = 'flex:1 1 0;min-height:0;container-type:size;display:flex;' +
+                'flex-direction:column;align-items:center;' +
+                'justify-content:safe center;gap:10px;padding:8px 12px 12px;' +
+                'overflow:hidden;text-align:center';
+  var NAME_MINI = 'flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;' +
+                  'white-space:nowrap;font:600 20px/1.2 var(--st-display);' +
+                  'letter-spacing:-0.02em;color:var(--st-ink)';
+  var NAME_PIP = 'max-width:100%;overflow:hidden;overflow-wrap:break-word;' +
+                 'font:600 max(22px,min(11cqw,calc((100cqh - 64px) / 2.3)))/1.08 ' +
+                 'var(--st-display);letter-spacing:-0.03em;color:var(--st-ink)';
+  function secBtn(kind, primary, off) {
+    var big = kind === 'pip';
+    return 'flex:none;min-height:44px;padding:0 ' + (big ? 20 : 12) + 'px;' +
+           'font:600 ' + (big ? 'max(16px,min(6cqw,22px))' : '15px') +
+           '/1.2 var(--st-ui);border-radius:10px;box-sizing:border-box;' +
+           (off ? 'color:var(--st-caption);background:var(--st-paper);' +
+                  'border:1px solid var(--st-btn-border);cursor:not-allowed'
+                : primary ? 'color:var(--st-paper);background:var(--st-accent-text);' +
+                            'border:none;cursor:pointer'
+                          : 'color:var(--st-ink);background:var(--st-paper);' +
+                            'border:1px solid var(--st-btn-border);cursor:pointer');
+  }
+
+  function TM() { return window.MrBadmusTimer || null; }
+  /* Reveal frames run on the window the picker is shown in (see `later` in
+     teacher-timer.js): the pop-out's while it is open. */
+  function tlater(fn, ms) {
+    var T = TM();
+    return T && T.later ? T.later(fn, ms) : { w: window, id: window.setTimeout(fn, ms) };
+  }
+  function tcancel(h) {
+    if (!h) { return; }
+    try { h.w.clearTimeout(h.id); } catch (e) { /* gone */ }
+  }
 
   // ── little DOM helpers ─────────────────────────────────────────────────
 
@@ -457,6 +543,7 @@
   function sessionFor(classId) {
     if (!STATE[classId]) {
       STATE[classId] = { mode: 'cycle', absent: {}, picked: {}, last: null,
+                         lastSpent: false,
                          weights: {}, next: null, save: false,
                          saveFailed: false };
     }
@@ -503,26 +590,86 @@
      one of the pupil's tickets if one is left, and is still honoured if none
      is — the teacher's choice wins — without pushing `picked` above the
      weight. */
-  function chooseWinner(s, g, cycling) {
+  /* `skipId`: the pupil a Skip is drawing past — never drawn in this draw.
+     Returns `{p, spent}`: `spent` is whether this draw used a ticket, which
+     is what a later Skip gives back. */
+  function chooseWinner(s, g, cycling, skipId) {
     var nx = null;
     if (s.next) {
-      g.present.forEach(function (p) { if (p.id === s.next) { nx = p; } });
+      g.present.forEach(function (p) {
+        if (p.id === s.next && p.id !== skipId) { nx = p; }
+      });
       s.next = null;
     }
     if (nx) {
       if (cycling && (s.picked[nx.id] || 0) < wOf(s, nx.id)) {
         s.picked[nx.id] = (s.picked[nx.id] || 0) + 1;
+        return { p: nx, spent: true };
       }
-      return nx;
+      return { p: nx, spent: false };
     }
+    var not = function (p) { return p.id !== skipId; };
     if (cycling) {
-      var w = drawTicket(g.left, function (p) {
+      var w = drawTicket(g.left.filter(not), function (p) {
         return wOf(s, p.id) - Math.min(s.picked[p.id] || 0, wOf(s, p.id));
       });
       s.picked[w.id] = (s.picked[w.id] || 0) + 1;
-      return w;
+      return { p: w, spent: true };
     }
-    return drawTicket(g.present, function (p) { return wOf(s, p.id); });
+    return { p: drawTicket(g.present.filter(not), function (p) { return wOf(s, p.id); }),
+             spent: false };
+  }
+
+  function nextOk(s, g, but) {
+    return !!(s.next && s.next !== but &&
+              g.present.some(function (p) { return p.id === s.next; }));
+  }
+  function spentOut(s, g, cycling) {
+    return (cycling ? g.leftN === 0 : g.present.length === 0) && !nextOk(s, g);
+  }
+  /* Skip is offered once something is picked AND someone else could be
+     drawn instead: a Skip that can only land on the same child is not one. */
+  function canSkip(s, g, cycling) {
+    if (!s.last) { return false; }
+    var id = s.last.id;
+    return (cycling ? g.left : g.present).some(function (p) { return p.id !== id; }) ||
+           nextOk(s, g, id);
+  }
+  function countText(s, g) {
+    if (!g.present.length) { return 'Nobody in the pool'; }
+    return s.mode === 'cycle' ? 'Picked ' + g.doneN + ' of ' + g.total
+                              : g.present.length + ' in the pool';
+  }
+  function pickLabel(s, g, cycling) {
+    return spentOut(s, g, cycling)
+      ? (g.present.length ? 'Everyone picked' : 'Nobody here')
+      : (s.last ? 'Pick again' : 'Pick a student');
+  }
+
+  /* ONE pick, from whichever surface it was pressed on. `skip`: discard the
+     current pick without counting it — its ticket goes back if it took one
+     — and draw someone else. */
+  function doPick(skip) {
+    if (!live) { return; }
+    var s = sessionFor(live.opts.id), pool = live.pool;
+    var cycling = s.mode === 'cycle', g = sets(pool, s), skipId = null;
+    if (skip) {
+      if (!canSkip(s, g, cycling)) { return; }
+      skipId = s.last.id;
+      if (s.lastSpent) {
+        var n = (s.picked[skipId] || 0) - 1;
+        if (n > 0) { s.picked[skipId] = n; } else { delete s.picked[skipId]; }
+        s.lastSpent = false;
+      }
+      g = sets(pool, s);
+    } else if (!g.present.length || spentOut(s, g, cycling)) {
+      return;
+    }
+    var r = chooseWinner(s, g, cycling, skipId);
+    s.last = r.p;
+    s.lastSpent = r.spent;
+    redraw();
+    reveal(r.p, g.present);
   }
 
   // ── the reveal ─────────────────────────────────────────────────────────
@@ -535,7 +682,25 @@
   }
 
   function stopReveal() {
-    if (live && live.timer) { clearTimeout(live.timer); live.timer = null; }
+    if (live && live.timer) { tcancel(live.timer); live.timer = null; }
+    if (live) { live.revealing = null; }
+  }
+
+  /* The name slot of whichever surface is showing the picker. */
+  function nameTarget() {
+    if (!live) { return null; }
+    var scope = live.board ? live.el : live.sec;
+    return scope ? scope.querySelector('[data-mrb-name]') : null;
+  }
+
+  /* Land a reveal that is still spinning, at once — the pop-out is going
+     and its timers with it. */
+  function settle() {
+    if (!live || !live.revealing) { return; }
+    var w = live.revealing;
+    stopReveal();
+    var n = nameTarget();
+    if (n) { text(n, w.name); n.removeAttribute('aria-busy'); }
   }
 
   /* ⚠️ THE WINNER IS DECIDED BEFORE THE ANIMATION, NEVER BY IT. The shuffle
@@ -563,28 +728,44 @@
      and the gate reported repeats a correct picker had not made. A drive
      that has to guess when an animation ended will eventually guess wrong;
      the page says so instead. */
-  function reveal(nameNode, winner, pool) {
+  /* ⚠️ THE NAME NODE IS LOOKED UP EVERY FRAME, never held: the surface can
+     change under a reveal (the Mini is redrawn when its header changes, the
+     pop-out takes the section to another document), and the reveal lands
+     on whatever slot is showing the picker then. */
+  function reveal(winner, pool) {
     stopReveal();
     function land() {
-      text(nameNode, winner.name);
-      nameNode.removeAttribute('aria-busy');
+      if (live) { live.revealing = null; live.timer = null; }
+      var n = nameTarget();
+      if (!n) { return; }
+      text(n, winner.name);
+      n.removeAttribute('aria-busy');
     }
-    if (reduced() || pool.length < 2) { land(); return; }
-    nameNode.setAttribute('aria-busy', 'true');
+    var n0 = nameTarget();
+    if (reduced() || pool.length < 2 || !n0) { land(); return; }
+    live.revealing = winner;
+    n0.setAttribute('aria-busy', 'true');
     var i = 0, FRAMES = 10;
     (function step() {
-      if (!live || !document.contains(nameNode)) { return; }
-      if (i >= FRAMES) { land(); live.timer = null; return; }
-      text(nameNode, pool[Math.floor(Math.random() * pool.length)].name);
+      if (!live || live.revealing !== winner) { return; }
+      var n = nameTarget();
+      if (i >= FRAMES || !n) { land(); return; }
+      n.setAttribute('aria-busy', 'true');
+      text(n, pool[Math.floor(Math.random() * pool.length)].name);
       i += 1;
-      live.timer = setTimeout(step, 30 + i * i * 1.1);
+      live.timer = tlater(step, 30 + i * i * 1.1);
     })();
   }
 
   // ── draw ───────────────────────────────────────────────────────────────
 
-  function draw() {
+  function redraw() {
     if (!live) { return; }
+    if (live.board) { draw(); } else if (live.sec) { drawSection(); }
+  }
+
+  function draw() {
+    if (!live || !live.board) { return; }
     stopReveal();
     var root = live.el, opts = live.opts, pool = live.pool;
     var s = sessionFor(opts.id);
@@ -612,29 +793,28 @@
     stage.appendChild(nameNode);
 
     /* A pick-next mark that points at nobody present is no mark. */
-    var nextOk = !!(s.next && g.present.some(function (p) { return p.id === s.next; }));
-    var exhausted = (cycling ? g.leftN === 0 : g.present.length === 0) && !nextOk;
+    var exhausted = spentOut(s, g, cycling);
     var pick = el('button', exhausted ? PICK_OFF : PICK, 'pick-go');
     /* ⚠️ A SPENT BUTTON SAYS SO. Dimming it and leaving it reading "Pick
        again" makes the reader join two things up — a greyed control here and
        a count in the footer — to work out why nothing happens. Looked at on
        a 1460px board, that is exactly how it read. The three labels are the
        three states, and "Start again" in the footer is the way on. */
-    text(pick, exhausted ? (g.present.length ? 'Everyone picked' : 'Nobody here')
-                         : (s.last ? 'Pick again' : 'Pick a student'));
+    text(pick, pickLabel(s, g, cycling));
     if (exhausted) {
       pick.setAttribute('aria-disabled', 'true');
     } else {
-      pick.addEventListener('click', function () {
-        if (!g.present.length) { return; }
-        var winner = chooseWinner(s, g, cycling);
-        s.last = winner;
-        draw();
-        reveal(root.querySelector('[data-mrb-name]') || nameNode,
-               winner, g.present);
-      });
+      pick.addEventListener('click', function () { doPick(false); });
     }
-    stage.appendChild(pick);
+    var prow = el('div', PICK_ROW);
+    prow.appendChild(pick);
+    if (canSkip(s, g, cycling)) {
+      var skip = el('button', SKIP, 'pick-skip');
+      text(skip, 'Skip');
+      skip.addEventListener('click', function () { doPick(true); });
+      prow.appendChild(skip);
+    }
+    stage.appendChild(prow);
     root.appendChild(stage);
 
     // ── footer ─────────────────────────────────────────────────────────
@@ -642,13 +822,7 @@
     var row = el('div', FOOT_ROW);
 
     var count = el('div', COUNT);
-    if (!g.present.length) {
-      text(count, 'Nobody in the pool');
-    } else if (cycling) {
-      text(count, 'Picked ' + g.doneN + ' of ' + g.total);
-    } else {
-      text(count, g.present.length + ' in the pool');
-    }
+    text(count, countText(s, g));
     row.appendChild(count);
 
     var seg = el('div', SEG + ';margin-left:auto');
@@ -669,7 +843,9 @@
     if (cycling && g.doneN) {
       var reset = el('button', TEXT_BTN, 'pick-reset');
       text(reset, 'Start again');
-      reset.addEventListener('click', function () { s.picked = {}; draw(); });
+      reset.addEventListener('click', function () {
+        s.picked = {}; s.lastSpent = false; draw();
+      });
       row.appendChild(reset);
     }
     foot.appendChild(row);
@@ -714,6 +890,9 @@
 
     // ── header (last in the DOM, first on the screen — see the note up top)
     var head = el('div', HEAD);
+    /* The timer's strip docks here (teacher-timer.js puts it in). */
+    var slot = el('div', slotStyle());
+    slot.setAttribute('data-mrb-tm-slot', '1');
     if (settings) {
       /* Back closes the panel and returns to the board. Every change made
          in the panel is already in `s` (and, with Save on, in storage), so
@@ -750,16 +929,15 @@
        stops drawing the button. */
     if (T && !settings) {
       var tOpen = T.isShown();
-      var tb = el('button', tOpen ? ICON_BTN_ON : ICON_BTN, 'pick-timer');
+      var tb = el('button', ICON_BTN, 'pick-timer');
       tb.setAttribute('aria-label', 'Timer');
       tb.setAttribute('aria-pressed', tOpen ? 'true' : 'false');
       icon(tb, 'clock');
-      /* Closed: open it FLOATING, so the names stay in view. Already open:
-         bring it to the full-screen view — closing a running timer from
-         here would be a way to lose it by accident. It is closed from its
-         own X. */
+      /* Opens the timer DOCKED in this header, so the names stay in view
+         (or shows one the clicker's B had hidden). Not drawn while a timer
+         is showing: the strip's own expand is the way to the full view. */
       tb.addEventListener('click', function () {
-        T.open({ view: T.isShown() ? 'full' : 'float' });
+        T.open({ view: 'dock' });
         syncTimerBtn();
       });
       live.timerBtn = tb;
@@ -777,6 +955,23 @@
     });
     right.appendChild(cog);
 
+    /* Pop out (only where the browser has Document Picture-in-Picture) and
+       minimise: both put the board away; the X still closes it. */
+    if (T && T.canPopOut && T.canPopOut()) {
+      var po = el('button', ICON_BTN, 'pick-popout');
+      po.setAttribute('aria-label', 'Pop out');
+      po.innerHTML = T.icon('popout');
+      po.addEventListener('click', function () { T.popOut(); });
+      right.appendChild(po);
+    }
+    if (T && T.sync) {
+      var mn = el('button', ICON_BTN, 'pick-min');
+      mn.setAttribute('aria-label', 'Minimise');
+      mn.innerHTML = T.icon('minimise');
+      mn.addEventListener('click', function () { minimise(); });
+      right.appendChild(mn);
+    }
+
     var x = el('button', HEAD_X, 'pick-close');
     x.setAttribute('aria-label', 'Close');
     x.innerHTML = '<svg width="14" height="14" viewBox="0 0 14 14" ' +
@@ -785,39 +980,88 @@
                   'stroke-linecap="round"/></svg>';
     x.addEventListener('click', close);
     right.appendChild(x);
+    head.appendChild(slot);
     head.appendChild(right);
     root.appendChild(head);
+    syncTimerBtn();
+    if (T && T.sync) { T.sync(); }
   }
 
-  /* The timer button reflects whether the timer is showing — in place, never
-     by a redraw, because a redraw would cut a reveal short. */
+  /* The timer button and the strip's slot follow whether the timer is
+     showing — in place, never by a redraw, because a redraw would cut a
+     reveal short. */
   function syncTimerBtn() {
     var T = window.MrBadmusTimer;
-    if (!live || !live.timerBtn || !T) { return; }
+    if (!live || !live.board || !T) { return; }
     var on = T.isShown();
-    live.timerBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
-    live.timerBtn.setAttribute('style', on ? ICON_BTN_ON : ICON_BTN);
-    padPanel();
+    if (live.timerBtn) {
+      live.timerBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
+      live.timerBtn.setAttribute('style', ICON_BTN + (on ? ';display:none' : ''));
+    }
+    var slot = live.el.querySelector('[data-mrb-tm-slot]');
+    if (slot) {
+      slot.setAttribute('style', slotStyle() +
+                        (T.view && T.view() === 'strip' ? '' : ';display:none'));
+    }
+  }
+  window.addEventListener('resize', function () { syncTimerBtn(); });
+
+  // ── the section the Mini and the pop-out show ───────────────────────────
+
+  function section(kind) {
+    if (!live) { return null; }
+    if (!live.sec) {
+      live.sec = el('div', '', 'pick-section');
+      live.sec.setAttribute('data-mrb-pick-section', '1');
+      live.sec.setAttribute('role', 'region');
+    }
+    if (live.secKind !== kind || !live.sec.firstChild) {
+      live.secKind = kind;
+      drawSection();
+    }
+    return live.sec;
   }
 
-  /* ⚠️ THE FLOATING TIMER IS A CARD IN THE BOTTOM-RIGHT CORNER, and what
-     is in that corner is the picker's own footer — the mode toggle and
-     "Start again" on the board, the `+` buttons of the last rows in the
-     settings panel. `teacher_reach` found the second at 390px, and the
-     first is the same defect with a bigger target. So while the float is
-     showing, the overlay reserves room for it at the bottom (bottom
-     padding = the float's measured height), and everything the picker draws
-     sits above it instead of under it. Not showing, or full-screen (which
-     covers the page by design), it reserves nothing. */
-  function padPanel() {
-    if (!live) { return; }
-    var t = document.querySelector('[data-tm="overlay"]'), pad = '';
-    if (t && t.getAttribute('data-tm-view') === 'float') {
-      pad = (Math.ceil(t.getBoundingClientRect().height) + 12) + 'px';
+  function drawSection() {
+    if (!live || !live.sec) { return; }
+    stopReveal();
+    var sec = live.sec, kind = live.secKind, opts = live.opts;
+    var s = sessionFor(opts.id), g = sets(live.pool, s), cycling = s.mode === 'cycle';
+    var pip = kind === 'pip';
+    sec.textContent = '';
+    sec.setAttribute('style', pip ? SEC_PIP : SEC_MINI);
+    sec.setAttribute('aria-label', 'Pick a student' + (opts.code ? ' · ' + opts.code : ''));
+    /* The count line lives on the board; here it is carried for the record
+       (as the timer carries `data-tm-reading`), not shown. */
+    sec.setAttribute('data-pick-count', countText(s, g));
+    sec.setAttribute('data-mrb-picker-class', String(opts.id));
+
+    var nameNode = el('div', pip ? NAME_PIP : NAME_MINI);
+    nameNode.setAttribute('data-mrb-name', '1');
+    nameNode.setAttribute('aria-live', 'polite');
+    if (s.last) { text(nameNode, s.last.name); }
+    sec.appendChild(nameNode);
+
+    var row = el('div', 'flex:none;display:flex;align-items:center;gap:6px' +
+                        (pip ? ';flex-wrap:wrap;justify-content:center' : ''));
+    var exhausted = spentOut(s, g, cycling);
+    var go = el('button', secBtn(kind, true, exhausted), 'pick-go');
+    text(go, pickLabel(s, g, cycling));
+    if (exhausted) { go.setAttribute('aria-disabled', 'true'); }
+    else { go.addEventListener('click', function () { doPick(false); }); }
+    row.appendChild(go);
+    if (canSkip(s, g, cycling)) {
+      var sk = el('button', secBtn(kind, false, false), 'pick-skip');
+      text(sk, 'Skip');
+      sk.addEventListener('click', function () { doPick(true); });
+      row.appendChild(sk);
     }
-    live.el.style.paddingBottom = pad;
-    live.el.style.boxSizing = 'border-box';
+    sec.appendChild(row);
   }
+
+  /* (The old floating timer card sat over this board's footer and the
+     overlay reserved room for it at the bottom. The timer is now docked in
+     the header instead, so nothing ever sits over the board.) */
 
   // ── the settings panel ─────────────────────────────────────────────────
 
@@ -964,10 +1208,11 @@
      panel up (the board is not showing) and when Pick is spent. */
   function clickPick() {
     if (!live) { return 'off'; }
-    if (live.settingsOpen) { return 'off'; }
-    var n = live.el.querySelector('[data-mrb-name]');
-    if (n && n.hasAttribute('aria-busy')) { return 'busy'; }
-    var go = live.el.querySelector('[data-mrb-added="pick-go"]');
+    if (live.board && live.settingsOpen) { return 'off'; }
+    var n = nameTarget();
+    if ((n && n.hasAttribute('aria-busy')) || live.revealing) { return 'busy'; }
+    var scope = live.board ? live.el : live.sec;
+    var go = scope && scope.querySelector('[data-mrb-added="pick-go"]');
     if (!go || go.getAttribute('aria-disabled') === 'true') { return 'off'; }
     go.click();
     return true;
@@ -984,6 +1229,9 @@
     if (live && live.el && live.el.parentNode) {
       live.el.parentNode.removeChild(live.el);
     }
+    if (live && live.sec && live.sec.parentNode) {
+      live.sec.parentNode.removeChild(live.sec);
+    }
     /* Weights live only as long as the picker is open unless the teacher
        turned "Save for this class" on. (Pick-next, the cycle and the absent
        list stay in `STATE` for the page load, as they always did.) */
@@ -992,9 +1240,51 @@
       if (s && !s.save) { s.weights = {}; }
     }
     if (live && live.unTimer) { live.unTimer(); }
+    var was = !!live;
     live = null;
-    if (window.MrBadmusTimer && window.MrBadmusTimer.setPicker) {
-      window.MrBadmusTimer.setPicker(null);
+    var T = TM();
+    if (T && T.setPicker) { T.setPicker(null); }
+    if (was && T && T.sync) { T.sync(); }
+  }
+
+  /* Board → put away (the Mini, or the pop-out while it is open). Only the
+     view changes: STATE, and the weights with it, are exactly as they were. */
+  function minimise() {
+    if (!live || !live.board) { return; }
+    settle();
+    live.board = false;
+    live.settingsOpen = false;
+    if (keyHandler) {
+      document.removeEventListener('keydown', keyHandler);
+      keyHandler = null;
+    }
+    if (live.el.parentNode) { live.el.parentNode.removeChild(live.el); }
+    var T = TM();
+    if (T && T.sync) { T.sync('tools-expand'); }
+  }
+
+  /* Put away → the board again, as it was left. Not while popped out: the
+     pop-out holds the picker until it comes back to the page. */
+  function restore() {
+    var T = TM();
+    if (!live || live.board || (T && T.isPopped && T.isPopped())) { return; }
+    settle();
+    if (live.sec && live.sec.parentNode) { live.sec.parentNode.removeChild(live.sec); }
+    live.board = true;
+    mountBoard();
+    draw();
+    var go = live.el.querySelector('[data-mrb-added="pick-go"]');
+    if (go && go.focus) { try { go.focus(); } catch (e) { /* headless */ } }
+  }
+
+  function mountBoard() {
+    var host = document.querySelector('#mrb-teacher') || document.body;
+    host.appendChild(live.el);
+    if (!keyHandler) {
+      keyHandler = function (e) {
+        if (e.key === 'Escape' || e.keyCode === 27) { close(); }
+      };
+      document.addEventListener('keydown', keyHandler);
     }
   }
 
@@ -1006,12 +1296,19 @@
        roster is empty, and this is the belt to that brace. */
     if (!pool.length || !opts.id) { return; }
 
+    /* The same class again while it is put away: bring it back, do not
+       close it (closing would drop unsaved weights). */
+    if (live && String(live.opts.id) === String(opts.id)) {
+      live.opts = opts; live.pool = pool;
+      if (live.board) { draw(); } else { restore(); }
+      return;
+    }
+
     close();
 
     /* ⚠️ `#mrb-teacher` FIRST — see the mount note at the top of this file.
        `document.body` is the hand-written pages' answer (Today has no
        runtime host), not a fallback that is ever taken on a generated one. */
-    var host = document.querySelector('#mrb-teacher') || document.body;
     var root = el('div', OVERLAY);
     root.setAttribute('role', 'dialog');
     root.setAttribute('aria-modal', 'true');
@@ -1026,11 +1323,13 @@
     root.setAttribute('aria-label',
                       'Pick a student' + (opts.code ? ' · ' + opts.code : ''));
     root.setAttribute('data-mrb-picker', String(opts.id));
-    host.appendChild(root);
-
+    var T0 = TM();
     live = { el: root, opts: opts, pool: pool, timer: null,
              absentOpen: false, settingsOpen: false, timerBtn: null,
-             unTimer: null };
+             unTimer: null, sec: null, secKind: null, revealing: null,
+             /* While popped out, a picker opened from the page goes
+                straight into the pop-out. */
+             board: !(T0 && T0.isPopped && T0.isPopped()) };
 
     /* The saved weights, if this class has a key: the switch reads ON and the
        weights load from it. No key means OFF. */
@@ -1045,22 +1344,30 @@
       live.unTimer = window.MrBadmusTimer.onChange(syncTimerBtn);
     }
 
-    keyHandler = function (e) {
-      if (e.key === 'Escape' || e.keyCode === 27) { close(); }
-    };
-    document.addEventListener('keydown', keyHandler);
-
-    draw();
-    padPanel();
     /* The clicker's forward keys press the real Pick button through this. */
-    if (window.MrBadmusTimer && window.MrBadmusTimer.setPicker) {
-      window.MrBadmusTimer.setPicker({ pick: clickPick });
+    if (T0 && T0.setPicker) { T0.setPicker({ pick: clickPick }); }
+    if (live.board) {
+      mountBoard();
+      draw();
+      var go = root.querySelector('[data-mrb-added="pick-go"]');
+      if (go && go.focus) { try { go.focus(); } catch (e) { /* headless */ } }
+    } else if (T0 && T0.sync) {
+      T0.sync();
     }
-    var go = root.querySelector('[data-mrb-added="pick-go"]');
-    if (go && go.focus) { try { go.focus(); } catch (e) { /* headless */ } }
   }
 
-  window.MrBadmusPicker = { open: open, close: close, isOpen: function () {
-    return !!live;
-  } };
+  window.MrBadmusPicker = {
+    open: open,
+    close: close,
+    isOpen: function () { return !!live; },
+    /* 'board' | 'away' (in the Mini or the pop-out) | null */
+    view: function () { return live ? (live.board ? 'board' : 'away') : null; },
+    minimise: minimise,
+    restore: restore,
+    section: section,
+    settle: settle,
+    slot: function () {
+      return live && live.board ? live.el.querySelector('[data-mrb-tm-slot]') : null;
+    }
+  };
 }());
