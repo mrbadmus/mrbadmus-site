@@ -39,12 +39,15 @@ LESSON = {
         {"kind": "card", "title": "Easy mistakes",
          "body": [{"mistakes": [
              ("Oxygen is pumped into the blood.",
-              "Oxygen moves by diffusion. No pump is involved."),
+              "Oxygen moves by diffusion. No pump is involved.", "BREATH-06"),
              ("Oxygen moves because it wants to spread out.",
-              "Particles move randomly. More cross from the high concentration side."),
+              "Particles move randomly. More cross from the high concentration side.", "BREATH-07"),
              ("Gases only cross in one direction.",
               "Particles cross both ways. The overall movement follows the concentration "
               "difference."),
+             ("Alveoli are just where air is stored.",
+              "Alveoli are where gases are exchanged. Oxygen diffuses into the blood and carbon dioxide diffuses out.",
+              "BREATH-08"),
          ]}]},
     ],
     "key_fact": "Alveoli have a large surface area, thin walls and a good blood supply. Oxygen "

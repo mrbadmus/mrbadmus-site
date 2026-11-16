@@ -79,6 +79,12 @@ LESSON = {
               "Always divide the useful energy by the total energy in."),
              ("A device can be 120% efficient.",
               "Nothing gives out more useful energy than it takes in."),
+             ("When the battery goes flat, its energy has disappeared.",
+              "Energy moves from the battery's chemical store to other stores. Most ends up in the thermal store of the surroundings. None is destroyed.",
+              "ENER-11"),
+             ("Light, sound and electricity are energy stores.",
+              "They are pathways. They carry energy from one store to another.",
+              "ENER-10"),
          ]}]},
     ],
     "key_fact": "In any transfer, the total energy before equals the total after. Useful energy goes "

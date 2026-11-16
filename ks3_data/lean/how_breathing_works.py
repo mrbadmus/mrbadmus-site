@@ -50,11 +50,11 @@ LESSON = {
         {"kind": "card", "title": "Easy mistakes",
          "body": [{"mistakes": [
              ("The lungs pull air in.",
-              "Muscles make the chest bigger, then air moves in."),
+              "Muscles make the chest bigger, then air moves in.", "BREATH-04"),
              ("Air coming in makes the chest bigger.",
-              "The chest gets bigger first. Then air moves in."),
+              "The chest gets bigger first. Then air moves in.", "BREATH-05"),
              ("Air gets sucked in.",
-              "Air moves in because the pressure outside is higher."),
+              "Air moves in because the pressure outside is higher.", "BREATH-14"),
          ]}]},
     ],
     "key_fact": "Breathing works by changing pressure. Muscles change the volume of the chest, "

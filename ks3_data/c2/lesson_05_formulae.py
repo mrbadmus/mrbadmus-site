@@ -131,8 +131,7 @@ LESSON = {
          "elicited_by": "build-a-formula",
          "confronted_by": "build-a-formula"},
         {"id": "ATOM-10",
-         "statement": "2H2O and H2O2 both have four atoms "
-                      "written down, so they must be the same thing.",
+         "statement": "2H2O and H2O2 have the same number of atoms.",
          "elicited_by": "think-commit-big-small",
          "confronted_by": "think-commit-big-small"},
     ],

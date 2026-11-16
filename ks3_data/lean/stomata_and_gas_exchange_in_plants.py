@@ -49,11 +49,11 @@ LESSON = {
         {"kind": "card", "title": "Easy mistakes",
          "body": [{"mistakes": [
              ("Plants breathe.",
-              "Plants have no lungs or breathing muscles. Gases move by diffusion."),
+              "Plants have no lungs or breathing muscles. Gases move by diffusion.", "BREATH-15"),
              ("Plants only respire at night.",
-              "Plants respire all the time, day and night."),
+              "Plants respire all the time, day and night.", "BREATH-13"),
              ("Plants only ever take in carbon dioxide.",
-              "In the dark, a plant gives out carbon dioxide overall."),
+              "Plants respire all the time, like animals. In the dark they give out carbon dioxide. In bright light, photosynthesis takes in more than respiration gives out.", "BREATH-12"),
          ]}]},
     ],
     "key_fact": "Gases diffuse through stomata, which guard cells open and close. Plants respire "

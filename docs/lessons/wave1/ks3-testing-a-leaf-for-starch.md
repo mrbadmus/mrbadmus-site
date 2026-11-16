@@ -17,3 +17,5 @@ Sources: Rainford Year 8 Bio 4, lesson 1a "Photosynthesis" (third outcome and th
 **Removed or moved.** Removed: the leave-a-step-out bench and its seven result panels, the two long "Think again" essays, Going further. Moved to Dive deeper: how destarching works, the same test on food.
 
 **Review fixes (12 Nov).** The first draft's Start here set-up said the leaf is boiled in ethanol first; it is boiled in water first. Fixed before any build. Rung 2 stem now says the plant was not destarched and asks when the starch was made, so "Almost nothing" is the one defensible answer. Rung 3 now asks for a method to find out if a leaf made starch during an experiment, so the destarch tick fits. The control plant is sealed in a bag the same way. Key fact now says what the result shows.
+
+**Easy mistakes rule (16 Nov).** Each Easy mistakes line is tagged with the misconception it names (PLANT-05, PLANT-06); the page marks it `data-misconception`. No wording change. (Mide, 16 Nov 2026)

@@ -682,7 +682,7 @@ LESSON = {
     # emitted element, not a completion signal, so either would do.
     "misconceptions": [
         {"id": "RESP-07",
-         "statement": "Fermenting is just food going off in a controlled way.",
+         "statement": "Fermentation needs oxygen.",
          "elicited_by": "s-think",
          "confronted_by": "s-think"},
         # ⚖️ Elicited at the BENCH, and this is not a formality. A student who

@@ -12,3 +12,5 @@ Sources: Rainford Year 8 Bio 4, lesson 1b "Respiratory system"; National Curricu
 **Gaps and mismatches.** NC B16 also says "including adaptations to function"; that half is taught on alveoli-built-for-exchange. SOW 1b lists a lung dissection demo, which is a classroom activity and has no page content.
 
 **Removed or moved.** Removed: the two-bags simulation and the long confrontation text. Moved to Dive deeper: mouth-to-mouth, cartilage rings, number of branches.
+
+**Easy mistakes rule (16 Nov).** Each Easy mistakes line is tagged with the misconception it names (BREATH-01, BREATH-02, BREATH-03); the page marks it `data-misconception`. New Easy mistakes line for BREATH-03 (lungs are balloons). (Mide, 16 Nov 2026)

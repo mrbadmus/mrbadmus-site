@@ -57,7 +57,10 @@ LESSON = {
              ("In humans, both kinds make carbon dioxide.",
               "Anaerobic respiration in humans makes lactic acid only."),
              ("Anaerobic respiration only happens when something goes wrong.",
-              "Yeast uses it whenever oxygen is short. Some bacteria use it all the time."),
+              "Yeast uses it whenever oxygen is short. Some bacteria use it all the time.", "RESP-10"),
+             ("Anaerobic respiration releases as much energy as aerobic.",
+              "Anaerobic releases much less energy from each glucose.",
+              "RESP-09"),
          ]}]},
     ],
     "key_fact": "Aerobic respiration uses oxygen and breaks glucose down completely. It releases much "

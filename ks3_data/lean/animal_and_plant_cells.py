@@ -77,9 +77,9 @@ LESSON = {
         {"kind": "card", "title": "Easy mistakes",
          "body": [{"mistakes": [
              ("A plant cell has a wall instead of a membrane.",
-              "A plant cell has both. The membrane is just inside the wall."),
+              "Plant cells have a membrane inside the wall. Animal cells have no wall.", "CELL-04"),
              ("Every plant cell has chloroplasts.",
-              "Only cells that get light have them. Root cells have none."),
+              "Many plant cells have no chloroplasts, so are not green. Root cells have none.", "CELL-03"),
              ("If you cannot see mitochondria, the cell has none.",
               "They are there. They are too small to see with a school microscope."),
              ("Only plant cells have walls.",

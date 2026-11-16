@@ -12,3 +12,5 @@ Sources: Rainford Year 8 Bio 4, lesson 2c "Stomata investigation"; National Curr
 **Gaps and mismatches.** SOW 2c also links NC B25 (adaptations of leaves for photosynthesis), which is taught fully on the site lesson "Leaves built for the job" in unit B7. SOW 2c is a practical (observing stomata), which has no page content.
 
 **Removed or moved.** Removed: the light-ledger simulation and the long confrontation text. Moved to Dive deeper: when the two rates balance.
+
+**Easy mistakes rule (16 Nov).** Each Easy mistakes line is tagged with the misconception it names (BREATH-15, BREATH-13, BREATH-12); the page marks it `data-misconception`. Easy mistakes: the right-hand line for BREATH-12 reworded. (Mide, 16 Nov 2026)

@@ -18,3 +18,5 @@ Sources: Rainford Year 8 Bio 4, lesson 2b "Aerobic respiration" (second outcome)
 **Removed or moved.** Removed: the five-cells bench, the four-jobs panel (now the reveal table), the two long "Think again" essays, Going further. Moved to Dive deeper: hibernation, why a lizard eats less.
 
 **Review fixes (12 Nov).** Blind answer check agreed with every key, but found two arguable distractors. Rung 1 asked which process "could not happen without respiration"; carbon dioxide leaving a cell could be defended, since respiration makes it. Stem now asks which process needs energy released by respiration. Rung 2's "respires instead of photosynthesising" is half true in the dark; stem now asks which statement is fully correct. Waterlogged roots added to Key knowledge for Rung 4. "Almost no oxygen" became "a few minutes' worth".
+
+**Easy mistakes rule (16 Nov).** Each Easy mistakes line is tagged with the misconception it names (RESP-03, RESP-04); the page marks it `data-misconception`. No wording change. (Mide, 16 Nov 2026)

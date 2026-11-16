@@ -58,11 +58,11 @@ LESSON = {
         {"kind": "card", "title": "Easy mistakes",
          "body": [{"mistakes": [
              ("Plants photosynthesise and animals respire.",
-              "Plants do both. Every living cell respires."),
+              "Plants do both. Every living cell respires.", "RESP-03"),
              ("Plants only respire at night.",
               "Plants respire day and night. Photosynthesis only happens in the light."),
              ("You only respire when you exercise.",
-              "You respire all the time. Exercise makes it faster."),
+              "You respire all the time. Exercise makes it faster.", "RESP-04"),
          ]}]},
     ],
     "key_fact": "Every living cell respires all the time, in plants and in animals. Respiration releases "

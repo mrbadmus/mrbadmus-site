@@ -22,3 +22,5 @@ Sources: National Curriculum C6, C12, C13. Rainford Year 8 Chem 4 has no row for
 **Left out because unsure.** "Sixty grams of candle" and "burnt for an hour" detail beyond what the rungs give. The phlogiston story's details (the page says only that weighing showed metals get heavier when they burn).
 
 **Removed or moved.** Removed: the open-and-sealed balance bench, the cover-the-bar model, the four-step practice, the burning "Think again" essay (now an Easy mistakes line), Going further. The magnesium worked example is now a card with a word equation. The sealed container in the drawing is a capped plastic bottle, since a gas-making reaction in a stoppered glass flask builds pressure. Moved to Dive deeper: phlogiston.
+
+**Easy mistakes rule (16 Nov).** Each Easy mistakes line is tagged with the misconception it names (ATOM-11); the page marks it `data-misconception`. No wording change. (Mide, 16 Nov 2026)

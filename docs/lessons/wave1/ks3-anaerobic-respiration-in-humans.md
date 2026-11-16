@@ -19,3 +19,5 @@ Sources: Rainford Year 8 Bio 4, lesson 3a "Anaerobic respiration"; National Curr
 **Removed or moved.** Removed: the supply-against-demand bench, the three panels, the two long "Think again" essays (the delayed-ache point is kept as an Easy mistake), Going further. Moved to Dive deeper: where the lactic acid goes, why training helps.
 
 **Review fixes (12 Nov).** Blind answer check agreed with every key. "Why training helps" moved into Key knowledge for Rung 4. The Rung 4 tick that called a resting pulse a control now asks for a control variable. AQA wording: muscles "stop contracting efficiently"; the key fact now names the oxygen debt.
+
+**Easy mistakes rule (16 Nov).** Each Easy mistakes line is tagged with the misconception it names (RESP-06, RESP-05); the page marks it `data-misconception`. No wording change. (Mide, 16 Nov 2026)

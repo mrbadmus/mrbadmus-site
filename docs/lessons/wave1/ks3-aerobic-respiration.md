@@ -20,3 +20,5 @@ Sources: Rainford Year 8 Bio 4, lesson 2b "Aerobic respiration"; National Curric
 **Removed or moved.** Removed: the weigh-both-sides bench, the exits panel, the two long "Think again" essays, Going further. Moved to Dive deeper: germinating seeds, respiration is not burning, red blood cells.
 
 **Review fixes (12 Nov).** Blind answer check agreed with every key. Examiner pass: Rung 3 (running) needed exercise, blood and the heart, which the page never taught; added a "During exercise" card. The germinating-peas card moved into Key knowledge for Rung 4, and the stem now says the boiled peas were disinfected. The reveal column is "Aerobic respiration", since anaerobic respiration is not in mitochondria. Energy uses aligned with AQA's list.
+
+**Easy mistakes rule (16 Nov).** Each Easy mistakes line is tagged with the misconception it names (RESP-02, RESP-01); the page marks it `data-misconception`. New Easy mistakes line for RESP-01 (respiration is slow burning). (Mide, 16 Nov 2026)

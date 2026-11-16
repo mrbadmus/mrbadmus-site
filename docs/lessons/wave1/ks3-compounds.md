@@ -26,3 +26,5 @@ Sources: Rainford Year 8 Chem 4, lessons 5b "Elements & compounds", 6a "Compound
 **Left out because unsure.** That iron sulfide itself is not magnetic (some forms are weakly magnetic). The page says only that a magnet cannot pull iron out of it. The safety handling of hydrogen sulfide in schools.
 
 **Removed or moved.** Removed: the mixture-compound dish bench, the four mixture-or-compound verdict cards, the magnet "Think again" essay (now an Easy mistakes line). The bench's four tests became Reveal table: Telling the mixture from the compound. Moved to Dive deeper: sea water, steel and carbon dioxide as mixture or compound.
+
+**Easy mistakes rule (16 Nov).** Each Easy mistakes line is tagged with the misconception it names (ATOM-06, ATOM-07); the page marks it `data-misconception`. No wording change. (Mide, 16 Nov 2026)

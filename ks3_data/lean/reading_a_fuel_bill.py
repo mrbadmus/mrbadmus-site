@@ -71,9 +71,9 @@ LESSON = {
         {"kind": "card", "title": "Easy mistakes",
          "body": [{"mistakes": [
              ("A kilowatt-hour is a unit of power.",
-              "It is a unit of energy. Power is measured in kilowatts."),
+              "It is a unit of energy. Power is measured in kilowatts.", "ENER-25"),
              ("Switch everything off and the bill is zero.",
-              "The standing charge is still paid every day."),
+              "The standing charge is still paid every day.", "ENER-26"),
              ("45 minutes is 0.45 hours.",
               "45 minutes is 45 ÷ 60 = 0.75 hours."),
          ]}]},

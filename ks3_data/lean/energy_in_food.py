@@ -79,11 +79,14 @@ LESSON = {
         {"kind": "card", "title": "Easy mistakes",
          "body": [{"mistakes": [
              ("Energy from food is used up and gone.",
-              "It is not destroyed. Most of it ends up warming you and the room."),
+              "It is not destroyed. Most of it ends up warming you and the room.", "ENER-09"),
              ("kcal and kJ measure different things.",
               "They are two units for the same energy. 1 kcal is about 4.18 kJ."),
              ("Every gram of food holds the same energy.",
               "Fat holds about twice as much energy per gram as carbohydrate or protein."),
+             ("One food calorie is the same as one calorie in science.",
+              "A food calorie is really a kilocalorie. That is 1000 calories, about 4200 J.",
+              "ENER-20"),
          ]}]},
     ],
     "key_fact": "Food is a chemical store of energy. Labels give it in kilojoules, kJ. 1 kcal is "

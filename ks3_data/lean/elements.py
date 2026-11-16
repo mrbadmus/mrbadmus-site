@@ -63,11 +63,11 @@ LESSON = {
         {"kind": "card", "title": "Easy mistakes",
          "body": [{"mistakes": [
              ("Brass is a metal, so it is an element.",
-              "Brass is copper and zinc mixed. Being a metal does not make something an element."),
+              "Brass is copper and zinc mixed. Being a metal does not make something an element.", "ATOM-03"),
              ("Anything pure is an element.",
-              "Pure means only one substance. Pure water is a compound."),
+              "Pure means only one substance. Pure water is a compound.", "ATOM-04"),
              ("Sodium reacting with water means it is breaking down.",
-              "The sodium joins with the water. The hydrogen given off comes from the water."),
+              "The sodium joins with the water. The hydrogen given off comes from the water.", "ATOM-05"),
          ]}]},
     ],
     "key_fact": "An element is a substance made of only one kind of atom. It cannot be broken down "

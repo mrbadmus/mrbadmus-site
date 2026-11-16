@@ -62,9 +62,9 @@ LESSON = {
         {"kind": "card", "title": "Easy mistakes",
          "body": [{"mistakes": [
              ("Iodine turns blue-black because it reacts with chlorophyll.",
-              "Iodine tests for starch. The ethanol has already removed the chlorophyll."),
+              "Iodine tests for starch. The ethanol has already removed the chlorophyll.", "PLANT-05"),
              ("You can test any leaf straight from the plant.",
-              "Destarch the plant first. Otherwise old starch spoils the result."),
+              "Destarch the plant first. Otherwise old starch spoils the result.", "PLANT-06"),
          ]}]},
     ],
     "key_fact": "Iodine solution turns from orange-brown to blue-black when starch is present. Starch "

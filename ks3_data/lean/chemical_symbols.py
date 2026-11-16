@@ -77,7 +77,7 @@ LESSON = {
         {"kind": "card", "title": "Easy mistakes",
          "body": [{"mistakes": [
              ("A symbol is the name shortened, so sodium is So.",
-              "Some symbols come from Latin names. Sodium is Na, from natrium."),
+              "Some symbols come from Latin names. Sodium is Na, from natrium.", "ATOM-08"),
              ("CO and Co mean the same thing.",
               "CO is carbon and oxygen joined. Co is cobalt."),
              ("Capitals do not matter, so NA is fine for sodium.",

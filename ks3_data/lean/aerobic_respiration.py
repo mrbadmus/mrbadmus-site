@@ -70,9 +70,12 @@ LESSON = {
              ("Respiration makes energy.",
               "Energy cannot be made. Respiration releases energy stored in glucose."),
              ("Fat turns into energy and disappears.",
-              "Its atoms leave the body, mostly as carbon dioxide you breathe out."),
+              "Its atoms leave the body, mostly as carbon dioxide you breathe out.", "RESP-02"),
              ("Plants do not respire.",
               "Plants respire all the time, just like animals."),
+             ("Respiration is just slow burning.",
+              "Respiration happens in cells, controlled by enzymes. It releases energy in small steps without flames.",
+              "RESP-01"),
          ]}]},
     ],
     "key_fact": "Aerobic respiration is a reaction in the mitochondria of cells. Glucose and oxygen "

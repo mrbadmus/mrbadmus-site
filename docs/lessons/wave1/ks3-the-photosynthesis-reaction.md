@@ -21,3 +21,5 @@ Sources: Rainford Year 8 Bio 4, lesson 1a "Photosynthesis"; National Curriculum 
 **Removed or moved.** Removed: the take-one-thing-away bench, the two long "Think again" essays, Going further. Moved to Dive deeper: carbon dioxide in greenhouses, plants respire too, what van Helmont got wrong. Kept from the old page: the van Helmont figures (74 kg gained, 57 g lost).
 
 **Review fixes (12 Nov).** Blind answer check agreed with every key. Examiner pass: both starch-test cards now say to destarch first and say what the comparison is; Rung 1 stem now asks for "the reactants and products" so "+ sunlight" is plainly wrong; Start here question shortened to 13 words (same question, same options).
+
+**Easy mistakes rule (16 Nov).** Each Easy mistakes line is tagged with the misconception it names (PLANT-01, PLANT-02); the page marks it `data-misconception`. No wording change. (Mide, 16 Nov 2026)

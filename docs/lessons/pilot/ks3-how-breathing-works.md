@@ -13,3 +13,5 @@ Sources: Rainford Year 8 Bio 4, lesson 2a "Breathing & gas exchange"; National C
 **Gaps and mismatches.** SOW 2a also lists "Compare the components of air breathed in vs air breathed out" (taught on the-gas-exchange-system) and "Describe the process of gas exchange in the alveoli" (taught on alveoli-built-for-exchange). One SOW lesson maps to three site lessons.
 
 **Removed or moved.** Removed: the bell-jar simulation, the puncture-wound story, the iron lung, the "Leans on Physics" panel. Moved to Dive deeper: where the model fails, breathing out at rest, how a wound collapses a lung.
+
+**Easy mistakes rule (16 Nov).** Each Easy mistakes line is tagged with the misconception it names (BREATH-04, BREATH-05, BREATH-14); the page marks it `data-misconception`. No wording change. (Mide, 16 Nov 2026)

@@ -29,3 +29,5 @@ Sources: National Curriculum P15, P19, P22; Rainford Year 7 Phys 1 lesson 9a For
 **Review fixes (blind 12/12 agree; examiner pass).** Rung 1 stem says "the forces" (the key names a pair). Rung 3 ticks: "towards the wall" and "away from the wall" replace forwards/backwards; "same size, in newtons" is now "same size" (the stem gives no values). Rung 4 stem names "the force that speeds it up"; the gas tick credits burnt fuel again. The newtonmeter figure now follows the line that says what one is. The card no longer repeats the newton definition.
 
 **Removed or moved.** Removed: the interaction board (five cases), the three-questions band, the two Think-again essays, the convention note. The five cases are now rows of the reveal table. Moved to Dive deeper: why pair forces never cancel; typical sizes.
+
+**Easy mistakes rule (16 Nov).** Each Easy mistakes line is tagged with the misconception it names (FORCE-12, FORCE-13, FORCE-15, FORCE-14); the page marks it `data-misconception`. New Easy mistakes line for FORCE-14 (contact forces only). (Mide, 16 Nov 2026)

@@ -54,9 +54,12 @@ LESSON = {
          "body": [{"mistakes": [
              ("We breathe in oxygen and breathe out carbon dioxide.",
               "Air in and air out are both mostly nitrogen. Air out has less oxygen and more "
-              "carbon dioxide."),
+              "carbon dioxide.", "BREATH-01"),
              ("Breathing and respiration are the same thing.",
-              "Breathing moves air. Respiration is a chemical reaction in cells."),
+              "Breathing moves air. Respiration is a chemical reaction in cells.", "BREATH-02"),
+             ("Lungs are hollow bags that fill like balloons.",
+              "Lungs are spongy. Tubes branch into millions of tiny air sacs, the alveoli.",
+              "BREATH-03"),
          ]}]},
     ],
     "key_fact": "Air travels down the trachea, bronchi and bronchioles to the alveoli. In the "

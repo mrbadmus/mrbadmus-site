@@ -65,9 +65,12 @@ LESSON = {
              ("Stomata only let oxygen out.",
               "They let carbon dioxide in, and oxygen and water vapour out."),
              ("Bigger leaves are always better.",
-              "Big leaves lose more water. The best leaf depends on the habitat."),
+              "Big leaves lose more water. The best leaf depends on the habitat.", "PLANT-04"),
              ("Carbon dioxide gets in through the cuticle.",
               "It gets in through the stomata. The waxy cuticle lets very little gas through."),
+             ("Leaves look green because chlorophyll absorbs green light.",
+              "Chlorophyll absorbs mostly red and blue light. It reflects much of the green light.",
+              "PLANT-03"),
          ]}]},
     ],
     "key_fact": "A leaf is adapted for photosynthesis. It is broad to absorb light and thin so gases "

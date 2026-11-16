@@ -85,9 +85,9 @@ LESSON = {
              ("A watt is an amount of energy.",
               "A watt is a rate. It is 1 joule every second."),
              ("A higher power always means a bigger bill.",
-              "The bill depends on the power and the time it is on."),
+              "The energy used depends on the power and how long it is on.", "ENER-21"),
              ("Standby is the same as off.",
-              "Standby still uses some energy, all the time."),
+              "Standby still uses some energy, all the time.", "ENER-22"),
          ]}]},
     ],
     "key_fact": "Power is how fast energy is transferred. It is measured in watts, W. 1 watt is 1 joule "

@@ -25,3 +25,5 @@ Sources: National Curriculum P3 (and P2, P4); Rainford Year 8 Phys 4 lesson 11a 
 **Removed or moved.** Removed: the appliance bench, the two CFIFA steppers (now cards), the times-sixty Think again essay (now an Easy mistake), Going further. The interactive triangle is now a drawn triangle. Moved to Dive deeper: the lost spacecraft; joules and kilowatt-hours.
 
 **Review fixes (blind answer check and examiner pass).** Blind key pass 3/3 agree. Rung 4 ticks now accept joules as well as kWh: oven 5 940 000 J, fridge 3 888 000 J and lamps 1 296 000 J. The ranking tick now says the fridge's long hours put it second. The sensible-size card now says "If your answer for a kettle is only a few thousand joules". Start setup numbers have been changed so they no longer repeat Rung 3. It is now a 9000 W shower for 8 minutes against a 50 W lamp for 24 hours, both 4 320 000 J. The stored start options are unchanged.
+
+**Easy mistakes rule (16 Nov).** Each Easy mistakes line is tagged with the misconception it names (ENER-23, ENER-24); the page marks it `data-misconception`. No wording change. (Mide, 16 Nov 2026)

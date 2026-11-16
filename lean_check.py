@@ -19,6 +19,10 @@ reword.
     spec       docs/lessons/<folder>/ks3-<slug>.md / ks4-<slug>.md exists. A WARNING until
                the spec tables are all in; STRICT_SPEC (or --strict-spec) makes it a failure.
 
+    easy mistakes  KS3: Start here is the first block of the page, and the Easy mistakes card
+               tags (a third item on a pair: (wrong, right, "ID")) exactly the ids of the
+               misconceptions the lesson declares, each one at least once
+
     python3 lean_check.py [--strict-spec]
 """
 import glob
@@ -73,7 +77,7 @@ def _strings(obj, skip_slots=True):
                 yield from _strings(obj[k])
         if "mistakes" in obj:
             for pair in obj["mistakes"]:
-                yield from _strings(list(pair))
+                yield from _strings(list(pair[:2]))   # a third item is the misconception id, not text
     elif isinstance(obj, (list, tuple)):
         for x in obj:
             yield from _strings(x)
@@ -226,6 +230,47 @@ def check_ks3_pages(records):
     return probs
 
 
+def easy_mistake_ids(rec):
+    """Every misconception id tagged on a pair of the record's Easy mistakes card(s)."""
+    import lean_blocks
+    ids = []
+    for c in (rec.get("knowledge") or []) + (rec.get("deeper") or []):
+        if c.get("kind") == "card" and lean_blocks.card_id(c) == lean_blocks.EASY_MISTAKES_ID:
+            for part in c.get("body") or []:
+                if isinstance(part, dict):
+                    ids += [pair[2] for pair in part.get("mistakes") or [] if len(pair) > 2]
+    return ids
+
+
+def check_ks3_easy_mistakes(records):
+    """KS3 rules from Mide (16 Nov 2026): Start here opens the page, and Easy mistakes names
+    every misconception the lesson declares (and nothing it does not)."""
+    import ks3_data
+    probs = []
+    reg = ks3_data.lesson_registry()
+    for slug in sorted(records):
+        l = reg.get(slug)
+        if l is None or not l.get("lean"):
+            continue   # check_ks3_pages reports it
+        core = l.get("core") or []
+        if not core or core[0].get("type") != "lean-start":
+            probs.append("ks3 %s: Start here is not the first block (first is %r)"
+                         % (slug, core[0].get("type") if core else None))
+        declared = [m["id"] for m in l.get("misconceptions") or []]
+        if not declared:
+            continue
+        tagged = easy_mistake_ids(records[slug])
+        missing = [i for i in declared if i not in tagged]
+        unknown = sorted({i for i in tagged if i not in declared})
+        if missing:
+            probs.append("ks3 %s: Easy mistakes does not name %s (add a pair tagged with each id)"
+                         % (slug, ", ".join(missing)))
+        if unknown:
+            probs.append("ks3 %s: Easy mistakes tags %s, which the lesson does not declare"
+                         % (slug, ", ".join(unknown)))
+    return probs
+
+
 def check_ks4_pages(lessons):
     import build_ks4
     import lean_ks4
@@ -307,6 +352,7 @@ def run(strict_spec=None, pages=True, ks=(3, 4)):
         problems += check_record(rec, 3)
     for L in k4_lessons:
         problems += check_record(L["lean"], 4)
+    problems += check_ks3_easy_mistakes(ks3)   # registry only, no page build
     if pages:
         problems += check_ks3_pages(ks3)
         problems += check_ks4_pages(k4_lessons)

@@ -19,3 +19,5 @@ Sources: Rainford Year 8 Chem 4, lesson 5a "Atoms"; National Curriculum C5. KS3 
 **Left out because unsure.** Why magnesium is Mg and not Ma (the old page said Ma "would have clashed"). Why NA "says nitrogen-and-something". The year 1813 for Berzelius (the page says "about 200 years ago").
 
 **Removed or moved.** Removed: the nine-symbols and four-labels verdict cards, the CO and Co "Think again" essay, Going further. The nine symbols became Reveal table: Name to symbol; the CO and Co point is now a card with a drawing. Moved to Dive deeper: alchemists' pictures and Berzelius, naming new elements.
+
+**Easy mistakes rule (16 Nov).** Each Easy mistakes line is tagged with the misconception it names (ATOM-08); the page marks it `data-misconception`. No wording change. (Mide, 16 Nov 2026)

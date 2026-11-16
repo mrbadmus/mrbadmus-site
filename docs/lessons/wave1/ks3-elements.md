@@ -22,3 +22,5 @@ Sources: Rainford Year 8 Chem 4, lessons 5a "Atoms" and 5b "Elements & compounds
 **Left out because unsure.** "About a hundred" elements and "about sixty in a phone" (the page says "over 100 known elements"). The 70/30 and 60/40 brass compositions. The body-composition percentages from Going further.
 
 **Removed or moved.** Removed: the six-samples, eight-tests bench, the brass "Think again" essay (now an Easy mistakes line), Going further. The six samples became Reveal table: Element or not. Moved to Dive deeper: Humphry Davy, elements in your body.
+
+**Easy mistakes rule (16 Nov).** Each Easy mistakes line is tagged with the misconception it names (ATOM-03, ATOM-04, ATOM-05); the page marks it `data-misconception`. No wording change. (Mide, 16 Nov 2026)

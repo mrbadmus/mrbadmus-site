@@ -78,11 +78,14 @@ LESSON = {
         {"kind": "card", "title": "Easy mistakes",
          "body": [{"mistakes": [
              ("A smooth surface has no friction.",
-              "Even polished wood has some friction."),
+              "Even polished wood has some friction.", "FORCE-29"),
              ("Friction only acts once something moves.",
-              "Friction also stops a still object from starting to slide."),
+              "Friction also stops a still object from starting to slide.", "FORCE-30"),
              ("At a steady speed, friction has been beaten, so it is zero.",
-              "At a steady speed, friction is as big as the forward force."),
+              "At a steady speed, friction is as big as the forward force.", "FORCE-31"),
+             ("Starting an object sliding takes the same push as keeping it sliding.",
+              "Starting it usually needs a bigger push. Friction is smaller once it is sliding.",
+              "FORCE-28"),
          ]}]},
     ],
     "key_fact": "Friction is a contact force that acts against sliding. Rougher surfaces and harder "

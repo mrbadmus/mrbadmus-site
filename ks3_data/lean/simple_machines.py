@@ -72,7 +72,7 @@ LESSON = {
         {"kind": "card", "title": "Easy mistakes",
          "body": [{"mistakes": [
              ("A lever gives you extra energy.",
-              "A lever never gives out more energy than you put in. It changes the force and the distance."),
+              "A lever never gives out more energy than you put in. It changes the force and the distance.", "ENER-19"),
              ("Put 250 cm straight into W = F × d.",
               "Convert centimetres to metres first. Divide by 100."),
              ("A longer lever needs less energy.",
