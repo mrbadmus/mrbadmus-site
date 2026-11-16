@@ -1296,11 +1296,21 @@
        roster is empty, and this is the belt to that brace. */
     if (!pool.length || !opts.id) { return; }
 
+    /* Pressed on the page while popped out: the teacher wants the board
+       HERE, so the tools come back from the pop-out first. */
+    var Tp = TM();
+    if (Tp && Tp.isPopped && Tp.isPopped() && Tp.popIn) { Tp.popIn(); }
+
     /* The same class again while it is put away: bring it back, do not
        close it (closing would drop unsaved weights). */
     if (live && String(live.opts.id) === String(opts.id)) {
       live.opts = opts; live.pool = pool;
-      if (live.board) { draw(); } else { restore(); }
+      if (live.board) {
+        /* ⚠️ The host can be wiped under the board (see WHERE IT MOUNTS):
+           a board the runtime has emptied out of the host is put back. */
+        if (!live.el.isConnected) { mountBoard(); }
+        draw();
+      } else { restore(); }
       return;
     }
 
