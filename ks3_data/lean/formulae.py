@@ -77,7 +77,10 @@ LESSON = {
          "body": [{"mistakes": [
              ("The small number shows how much of the substance there is.",
               "It counts atoms in one molecule. Changing it makes a different substance.", "ATOM-09"),
-             ("2H2O and H2O2 have the same number of atoms.", "2H2O has six atoms (two molecules of three). H2O2 has four.", "ATOM-10"),
+             ("A big number in front means the same as a small number.",
+              "A big number counts molecules. A small number counts atoms in one molecule."),
+             ("2H2O and H2O2 have the same number of atoms.",
+              "2H2O has six atoms (two molecules of three). H2O2 has four.", "ATOM-10"),
              ("NaCl is one molecule with one sodium and one chlorine.",
               "Salt is a giant structure. NaCl gives the ratio, one to one."),
          ]}]},
