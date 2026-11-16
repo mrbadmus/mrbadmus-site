@@ -19,4 +19,4 @@ Sources: Rainford Year 8 Bio 4, lesson 3a "Anaerobic respiration" (second outcom
 
 **Review fixes (12 Nov).** Blind answer check agreed with every key. Reveal table gained a Reactants row and the key fact names the products (NC B29). "Yeast and many bacteria use it all the time" contradicted the fermentation page; now "Yeast uses it whenever oxygen is short".
 
-**Easy mistakes rule (16 Nov).** Each Easy mistakes line is tagged with the misconception it names (RESP-10, RESP-09); the page marks it `data-misconception`. Misconception RESP-09 reworded to "Anaerobic respiration releases as much energy as aerobic." New Easy mistakes line for it. (Mide, 16 Nov 2026)
+**Easy mistakes rule (16 Nov).** Each Easy mistakes line is tagged with the misconception it names (RESP-10, RESP-09); the page marks it `data-misconception`. Misconception RESP-09 reworded to "Anaerobic respiration releases as much energy as aerobic." The first Easy mistakes line ("releases more energy") now states it in the ruled words; no second line, so nothing is said twice. (Mide, 16 Nov 2026)
