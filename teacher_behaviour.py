@@ -463,8 +463,18 @@ _DRIVE_JS = r"""
      class screen's "Timer" and the picker's clock button each move one of
      those, so each press is seen to do something and nothing else is let
      through. The timer's own controls are outside the host and are driven by
-     `teacher_picker_drive.py`. */
+     `teacher_picker_drive.py`.
+     ⊕ 16 Nov 2026 (the four views) — the timer element now MOVES: into the
+     picker board's header as a strip (inside the host, digits as generated
+     content so the host's text never ticks), to body for the full view, into
+     the Mini. Its start/pause in the strip is an icon, so a press changes no
+     text; the module counts presses on its own element (`data-tm-acts`) and
+     that count joins `tm` — a press count, never the reading, so it only
+     moves when a control was pressed. The MINI (`[data-mrb-tools="mini"]`,
+     the picker's "minimise" sends the board there) is a FIFTH sibling of
+     the host, read the same way: its view and open count. */
   function timer() { return document.querySelector('[data-tm="overlay"]'); }
+  function toolsMini() { return document.querySelector('[data-mrb-tools="mini"]'); }
   function snap() {
     var sw = sheet();
     var swOpen = !!(sw && !sw.hidden);
@@ -488,7 +498,13 @@ _DRIVE_JS = r"""
       tm: (function () {
         var t = timer();
         return t ? ((t.getAttribute('data-tm-view') || '') + ':' +
-                    (t.getAttribute('data-tm-opens') || '')) : '';
+                    (t.getAttribute('data-tm-opens') || '') + ':' +
+                    (t.getAttribute('data-tm-acts') || '')) : '';
+      })(),
+      mini: (function () {
+        var m = toolsMini();
+        return m ? ((m.getAttribute('data-tools-view') || '') + ':' +
+                    (m.getAttribute('data-tools-opens') || '')) : '';
       })(),
       /* ⊕ MRB-335 — THE SHEET'S OWN `data-mrb-renders`. Four buttons open
          one sheet, so the second one pressed in a sweep re-opens a sheet
@@ -665,6 +681,7 @@ _DRIVE_JS = r"""
                 after.renders !== before.renders ||
                 after.nodes !== before.nodes ||
                 after.sw !== before.sw || after.tm !== before.tm ||
+                after.mini !== before.mini ||
                 after.bd !== before.bd || after.fb !== before.fb ||
                 navs.length > navsBefore;
     if (!moved) {
@@ -788,7 +805,8 @@ _DRIVE_JS = r"""
     if (aAfter.text === aBefore.text && aAfter.renders === aBefore.renders &&
         aAfter.nodes === aBefore.nodes && aAfter.sw === aBefore.sw &&
         aAfter.bd === aBefore.bd && aAfter.fb === aBefore.fb &&
-        aAfter.tm === aBefore.tm && navs.length === aNavs) {
+        aAfter.tm === aBefore.tm && aAfter.mini === aBefore.mini &&
+        navs.length === aNavs) {
       addedDead.push({i: want, label: aLabel,
                       tag: el.tagName.toLowerCase()});
     }

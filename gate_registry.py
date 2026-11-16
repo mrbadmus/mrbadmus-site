@@ -1059,6 +1059,42 @@ GATES = [
              "stubs loadClassMatrices and therefore the only one that can "
              "reveal that page's button at all."),
 
+    # ── ⊕ 16 Nov 2026 · the teacher tools' four views, one at a time ────
+
+    dict(name="teacher_tools_drive",
+         cmd=["python3", "teacher_tools_drive.py"],
+         speed="slow",
+         watches=["teacher_tools_drive.py", "teacher_picker_drive.py",
+                  "ks3_browser.py", "build_teacher_port.py",
+                  "teacher_rulings.py",
+                  "teacher_fixtures/class-detail-fixture.html",
+                  "teacher_fixtures/teacher-fixture-class-detail.js",
+                  "shared/teacher-picker.js", "shared/teacher-timer.js",
+                  "shared/student-runtime.js", "shared/teacher-ds.css",
+                  "shared/brand/brand.js", "shared/brand/brand.css"],
+         needs="teacher_fixtures/class-detail-fixture.html",
+         why="16 Nov 2026 (Mide: the minimised timer sat on top of the "
+             "picker, could not be closed without going full screen, and "
+             "the flow was all over the place). The picker and the timer "
+             "have ONE state and four views — Board, Timer full, Mini, "
+             "Pop-out — and only one shows at a time. teacher_picker_drive "
+             "proves what they DO; this proves WHERE they show: a running "
+             "timer on the board is a <=56px strip inside the board's header "
+             "(elementFromPoint), never over it; the Mini never shows with "
+             "the board or the full timer and keeps Mide's footprint (<=320px "
+             "wide at 1440, <=30% of the viewport tall); close and minimise "
+             "are one real click on a >=44px in-viewport button in every "
+             "view at 390, 1440 and 1920; a running timer survives minimise, "
+             "drag, expand, pop-out, picks, pop-in and the teacher closing "
+             "the Document Picture-in-Picture window with its reading only "
+             "falling by the elapsed time; a whole No-repeats cycle and a "
+             "Skip run from the pop-out; the pop-out mirrors light/dark live "
+             "and takes clicker keys on its own CDP target; with the API "
+             "removed there is no pop-out button and the Mini still drags; "
+             "zero requests, zero storage keys. Every press is a real CDP "
+             "mouse or key event, because requestWindow needs the click's "
+             "activation."),
+
     # ── ⊕ MRB-288 · one bank per surface ────────────────────────────────
 
     dict(name="pool_ownership",
