@@ -10,7 +10,8 @@ per page load.
 Other gates compare the pair as UNORDERED (ks4_parity's R18 check). This is
 the gate that proves the shuffle is real and harmless. For three pages — a KS4
 lesson on a Code-authored record (carbon-cycle), a KS4 lesson authored by
-Design on Ks4Guess (ph-scale, batch 11) and a KS3 lesson (using-a-microscope):
+Design on Ks4Guess (ph-scale, batch 11) and a KS3 lesson (using-a-microscope, read from
+its hidden frozen fixture copy, ks3_fixtures/):
 
   1. FORCED ORDER. With `window.MRB_GUESS_FLIP` = false then true (the test
      hook; absent in production, where it is Math.random()) the two cards
@@ -42,7 +43,9 @@ OUT = os.path.join(ROOT, "mrbadmus_site")
 
 KS4_A = "/combined/foundation/biology/ecology/carbon-cycle.html"      # built from a record (lean since Wave 1)
 KS4_B = "/combined/foundation/chemistry/chemical-changes/ph-scale.html"  # Design's own Ks4Guess
-KS3 = "/ks3/biology/cells-and-organisation/using-a-microscope.html"
+# ⊕ 14 Nov 2026 (Mide: checks do not depend on real lessons): the hidden frozen classic copy
+# of using-a-microscope (ks3_fixtures/). Same page, same Start here, fixture- save keys.
+KS3 = "/ks3/_fixtures/fixture-using-a-microscope.html"
 
 FAILS = []
 
@@ -185,10 +188,19 @@ def drive_ks4(b, base, path, label, record):
 
 def drive_ks3(b, base, path, label):
     from ks3_data import start_here as K
+    import ks3_fixtures
     rec = None
     for k, v in K.START_HERE.items():
         if path.endswith("/" + k + ".html"):
             rec = v
+    # A fixture page is checked against the Start here it was frozen with (its own record).
+    fx = ks3_fixtures.by_path(path)
+    if fx is not None:
+        ph = fx["lesson"].get("phenomenon") or {}
+        if not ph.get("guess"):
+            fail("%s: the fixture %s has no Start here guess to check against" % (label, fx["slug"]))
+            return
+        rec = {"answer": ph["answer"]}
     print("\n%s  %s" % (label, path))
     outcomes = {}
     for flip in (False, True):

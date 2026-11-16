@@ -741,7 +741,8 @@ PAGES = [
          pre_js="document.querySelector('.nav-burger').click()",
          wait_js="document.getElementById('nav-drawer').classList.contains('open')",
          scope="#nav-drawer", no_chat=True),
-    dict(key="drawer_open_ks3", url="/ks3/biology/cells-and-organisation/specialised-cells.html",
+    # ⊕ 14 Nov 2026: the hidden frozen classic copy of specialised-cells (ks3_fixtures/).
+    dict(key="drawer_open_ks3", url="/ks3/_fixtures/fixture-specialised-cells.html",
          pre_js="document.querySelector('.nav-burger').click()",
          wait_js="document.getElementById('nav-drawer').classList.contains('open')",
          scope="#nav-drawer", no_chat=True),
@@ -975,8 +976,8 @@ def main(argv):
         # burger, focus moves INTO it, Tab cannot leave it, Escape closes it
         # and focus goes back to the burger that opened it.
         for dkey, durl in (("drawer_keyboard_classic", "/past-papers.html"),
-                           ("drawer_keyboard_ks3",
-                            "/ks3/biology/cells-and-organisation/specialised-cells.html")):
+                           ("drawer_keyboard_ks3",   # ⊕ 14 Nov 2026: fixture copy (ks3_fixtures/)
+                            "/ks3/_fixtures/fixture-specialised-cells.html")):
             if filters and not any(f in dkey for f in filters):
                 continue
             with cdp.Browser() as b:

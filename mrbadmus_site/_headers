@@ -60,3 +60,10 @@
 # undoes both blocks above and the whole file becomes decoration. Pages already
 # serves HTML as `max-age=0, must-revalidate` by default, so the rule would buy
 # nothing and could cost everything.
+
+# ⊕ 14 Nov 2026 — the hidden check fixtures (ks3_fixtures/__init__.py). Frozen classic copies
+# of lessons that the checks read instead of real lessons. Linked from nowhere and each page
+# already carries <meta name="robots" content="noindex,nofollow">; this says the same to a
+# crawler that never parses the page. It adds a header and touches no caching rule above.
+/ks3/_fixtures/*
+  X-Robots-Tag: noindex, nofollow

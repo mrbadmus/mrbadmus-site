@@ -99,8 +99,12 @@ BACK_LINKS = r"""(function(){
   var m=document.querySelector('main')||document.body,d=document.createElement('div');d.id='fd-samples';d.style.cssText='padding:20px;display:flex;gap:12px;flex-wrap:wrap';
   d.innerHTML='<a class="btn btn--primary" href="#">Back to Today</a><a class="ks3-btn is-primary" href="#">Back to Today</a>';m.appendChild(d);return true;
 })()"""
-MOMENTS = "ks3/physics/forces/moments.html"
-FOURSTEPS = "ks3/chemistry/atoms-elements-and-compounds/conservation-of-mass.html"
+# ⊕ 14 Nov 2026 (Mide: checks do not depend on real lessons): the hidden frozen classic copy of
+# moments (ks3_fixtures/). Was ks3/physics/forces/moments.html.
+MOMENTS = "ks3/_fixtures/fixture-moments.html"
+# ⊕ 15 Nov 2026 (same ruling): the hidden frozen classic copy of conservation-of-mass. The real
+# lesson went lean with C2 (0d26f0f4cb) and lost its four-step picker; this case had gone stale.
+FOURSTEPS = "ks3/_fixtures/fixture-conservation-of-mass.html"
 SEED = "ks3/biology/reproduction/seed-dispersal.html"
 GROUP1 = "combined/higher/chemistry/atomic-structure/group-1.html"
 # A marked KS3 calculation: write every line, Check, tick one.

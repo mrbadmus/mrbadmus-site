@@ -1935,6 +1935,10 @@ KIND_FN = {
 # 340 wide (≤ 358 so a 390px phone shows it whole), one column, text ≥ 14px.
 # `formula-triangle` is shared with P2 — its data shape is
 # {"top": {s,name,unit}, "bottom": [{s,name,unit}, {s,name,unit}]}.
+# ⊕ Nov 2026: a slot may also carry "caption", the words printed under its
+# symbol in place of "name (unit)". The speed triangle uses it, because its
+# page writes symbols in brackets ("time (t)") and "time (s)" would read as a
+# symbol. Slots without it draw exactly as before.
 # ═════════════════════════════════════════════════════════════════════════
 
 from ks3_art.kit import (  # noqa: E402
@@ -2008,7 +2012,8 @@ def _formula_triangle(fig):
 
     def slot(s, x, ys, wrapw, key):
         out.append(_label(x, ys, s["s"], size=28, weight="700", data_part="symbol", data_key=key))
-        for i, ln in enumerate(_p1_wrap("%s (%s)" % (s["name"], s["unit"]), 14, wrapw)):
+        words = s.get("caption") or "%s (%s)" % (s["name"], s["unit"])
+        for i, ln in enumerate(_p1_wrap(words, 14, wrapw)):
             out.append(_label(x, ys + 24 + i * 17, ln, size=14, weight="500", fill=_SVG_INK,
                               data_part="slot-name", data_key=key))
 
