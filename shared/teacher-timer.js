@@ -82,7 +82,9 @@
    resizes it. Its title follows the brand rule (`… | MrBadmus`).
    "Back to page", or the teacher closing the window with its own X
    (`pagehide`), puts the tools back on the page as the Mini with identical
-   state. While it is open the clicker listener is on the pop-out's window
+   state. So does pressing the PAGE's own "Pick a student" or "Timer" while
+   popped out — the teacher is asking for that tool on the page — which then
+   opens the board or the full timer as usual. While it is open the clicker listener is on the pop-out's window
    as well, the ticker and the reveal run on ITS timers (a page in a
    background tab is throttled; the pop-out in front is not), and the finish
    beep still plays from this page's Web Audio.
@@ -1191,6 +1193,9 @@
 
   function open(opts) {
     opts = opts || {};
+    /* The page's own Timer button, pressed while popped out: the teacher is
+       asking for the timer HERE, so the tools come back to the page first. */
+    if (pipWin && opts.view === 'full') { pipBack(); }
     var wantFull = !(opts.view === 'dock' || opts.view === 'float' ||
                      opts.view === 'mini');
     var wasOpen = !!root;
@@ -1542,6 +1547,8 @@
     canPopOut: pipOK,
     popOut: popOut,
     isPopped: function () { return !!pipWin; },
+    /* Back to the page from the pop-out (as its "Back to page" does). */
+    popIn: function () { if (pipWin) { pipBack(); } },
     /* Timers on the window the tools are shown in (see `later`). */
     later: later,
     cancel: cancel,

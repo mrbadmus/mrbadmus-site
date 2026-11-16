@@ -542,6 +542,18 @@ def survive_and_pip(R):
     pip_vis = R.ev("%s.querySelector('[data-mrb-added=\"tm-done\"]') ? 1 : 0" % PIPDOC)
     if pip_vis != 1:
         R.bad("the pop-out does not show the finished state")
+    # the PAGE's own "Pick a student", pressed while popped out, brings
+    # the tools back to the page as the board — state untouched
+    if not R.pip_open():
+        R.bad("(set-up) the pop-out closed before the page-button check")
+    R.pclick("pick-open")
+    time.sleep(0.4)
+    v = R.sample("page's Pick a student while popped out")
+    tz2 = R.j(TM)
+    if R.pip_open() or not v["board"]:
+        R.bad("the page's Pick a student while popped out did not bring the board back: %r" % v)
+    if not tz2 or tz2["s"] != "done":
+        R.bad("bringing the tools back changed the timer: %r" % (tz2,))
     print("     %-6s survive: %d view changes over %.0fs, reading %s -> %s, still %s; "
           "pop-out %sx%s; cycle of %d with a Skip"
           % ("%dpx" % R.w, len(log) - 1, el, r0, rl, t and t["s"], pip_w[0], pip_w[1], M))
