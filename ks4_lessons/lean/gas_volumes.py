@@ -143,7 +143,7 @@ LESSON = {
                  "bottom": [{"s": "n", "name": "amount of gas", "unit": "mol"},
                             {"s": "24", "name": "volume of one mole of gas at room temperature "
                                                 "and pressure",
-                             "unit": "dm³/mol", "fixed": True}]},
+                             "unit": "dm³", "fixed": True}]},
         "EQ_N": {"name": "Moles from mass", "written": "number of moles = mass (g) ÷ Mr",
                  "source": "none",
                  "top": {"s": "m", "name": "mass", "unit": "g"},
@@ -227,8 +227,8 @@ LESSON = {
              "options": [
                  {"text": "24 dm³", "correct": True},
                  {"text": "24 cm³", "correct": False,
-                  "reply": "A cm³ is a thousand times smaller than a dm³. One mole takes up "
-                           "24 dm³, which is 24 000 cm³."},
+                  "reply": "A cm³ is a thousand times smaller than a dm³, so 24 cm³ is far "
+                           "too small. One mole takes up 24 dm³."},
                  {"text": "It depends on which gas it is", "correct": False,
                   "reply": "At the same temperature and pressure, one mole of any gas has the "
                            "same volume."},

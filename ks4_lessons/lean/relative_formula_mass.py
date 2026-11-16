@@ -2,9 +2,9 @@
 """Relative formula mass, in the lean shape. Spec table: ks4-relative-formula-mass.md.
 
 LEGACY (batch 2). The ladder (Ks4Ladder, r1..r4) and the practice set stay from the Design page.
-The practice set reads the route's `quiz` list (K.bank), and rung 1 is that list's calcium
-carbonate question (K.find, needle 'relative formula mass of calcium carbonate'), so its stem must
-not change. Practice fixes are in quiz-relative-formula-mass.json.
+The practice set reads the route's `quiz` list (K.bank). Rung 1 used to be that list's calcium
+carbonate question (K.find); since 16 Nov 2026 it is its own question (sulfuric acid, below), so
+no rung repeats the practice set. Practice fixes are in quiz-relative-formula-mass.json.
 """
 
 LOGIC_EDITS = [
@@ -32,6 +32,13 @@ LOGIC_EDITS = [
      "'F · mass of element = (Aᵣ × number of atoms ÷ Mᵣ) × mass of compound', 'I · Mᵣ = 112 + 48 "
      "= 160; mass of Fe = (56 × 2 ÷ 160) × 320', 'F · 112 ÷ 160 = 0.70; 0.70 × 320 = 224', "
      "'A · 224 g'] }"),
+    # Rung 1 (Mide, 16 Nov 2026): it WAS practice question 1 (K.find on the calcium carbonate
+    # stem), so a pupil met the same question twice. A new question on the same point (Mr from
+    # Ar, no brackets), through the same K.item path; position and id kept.
+    ("K.find(slug, R.route, 'relative formula mass of calcium carbonate') || { options: [] }",
+     "K.item({ q: 'What is the relative formula mass of sulfuric acid, H₂SO₄? Aᵣ: H = 1, S = 32, O = 16.', opts: [['98', true], ['49', false], ['50', false], ['97', false]], wrong_explanations: { '1': 'That counts one atom of each element. H₂SO₄ has two H and four O.', '2': 'That counts one oxygen. There are four: 4 × 16 = 64.', '3': 'That counts one hydrogen. There are two: 2 × 1 = 2.' } })"),
+    ("why: 'One Ca, one C and three O: 40 + 12 + (3 × 16) = 100.'",
+     "why: 'Two H, one S and four O: (2 × 1) + 32 + (4 × 16) = 98.'"),
 ]
 
 LESSON = {

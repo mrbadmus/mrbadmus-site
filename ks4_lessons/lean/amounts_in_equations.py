@@ -42,6 +42,13 @@ LOGIC_EDITS = [
     # Blind fix (a): practice Q4 named a 'Step 3' the item does not show. Self-contained now. NEW ID.
     ("Q('Mg + 2HCl → MgCl₂ + H₂. What is the Mr of hydrogen gas used in Step 3?'",
      "Q('Mg + 2HCl → MgCl₂ + H₂. What is the Mr of hydrogen gas, H₂? Ar: H = 1.'"),
+    # Ladder rung 2 (Mide, 16 Nov 2026): both calculations repeated the practice set (the 4.8 g Mg
+    # question word for word, and the 10 g CaCO3 numbers). New questions on the same point
+    # (mass to moles, ratio, moles to mass); positions and ids kept.
+    ("CALC('Calculate the mass of magnesium oxide formed when 4.8 g of magnesium burns completely. 2Mg + O₂ → 2MgO. Ar: Mg = 24, O = 16.', ['Nothing to convert', 'Convert g to kg', 'Convert Mg to O₂'], 0, 8, 'g', ['g', 'mol', 'kg'], 'n(Mg) = 4.8 ÷ 24 = 0.2 mol; ratio 2 : 2 gives 0.2 mol MgO; m = 0.2 × 40 = 8.0 g.', 'Mass to moles, ratio, moles to mass.', ['C · nothing to convert', 'F · n = m ÷ Ar; ratio; m = n × Mr', 'I · n(Mg) = 4.8 ÷ 24 = 0.2; n(MgO) = 0.2 × 2 ÷ 2 = 0.2', 'F · m(MgO) = 0.2 × 40 = 8.0', 'A · 8.0 g'], 0.05),",
+     "CALC('Calculate the mass of water formed when 0.4 g of hydrogen burns completely. 2H₂ + O₂ → 2H₂O. Ar: H = 1, O = 16.', ['Nothing to convert', 'Convert g to kg', 'Convert H₂ to H'], 0, 3.6, 'g', ['g', 'mol', 'kg'], 'n(H₂) = 0.4 ÷ 2 = 0.2 mol; ratio 2 : 2 gives 0.2 mol H₂O; m = 0.2 × 18 = 3.6 g.', 'Mass to moles, ratio, moles to mass. Hydrogen gas is H₂, so its Mr is 2.', ['C · nothing to convert', 'F · n = m ÷ Mr; ratio; m = n × Mr', 'I · n(H₂) = 0.4 ÷ 2 = 0.2; n(H₂O) = 0.2 × 2 ÷ 2 = 0.2', 'F · m(H₂O) = 0.2 × 18 = 3.6', 'A · 3.6 g'], 0.05),"),
+    ("CALC('Calculate the mass of calcium oxide formed when 10 g of calcium carbonate decomposes. CaCO₃ → CaO + CO₂. Mr: CaCO₃ = 100, CaO = 56.', ['Nothing to convert', 'Convert g to kg', 'Convert Mr to g'], 0, 5.6, 'g', ['g', 'mol', 'kg'], 'n(CaCO₃) = 10 ÷ 100 = 0.1 mol; ratio 1 : 1; m(CaO) = 0.1 × 56 = 5.6 g.', 'Three steps: ÷ 100, × 1/1, × 56.', ['C · nothing to convert', 'F · n = m ÷ Mr; ratio; m = n × Mr', 'I · n(CaCO₃) = 10 ÷ 100 = 0.1; n(CaO) = 0.1', 'F · m(CaO) = 0.1 × 56 = 5.6', 'A · 5.6 g'], 0.05)",
+     "CALC('Calculate the mass of carbon dioxide formed when 6.0 g of carbon burns completely. C + O₂ → CO₂. Ar: C = 12, O = 16.', ['Nothing to convert', 'Convert g to kg', 'Convert C to CO₂'], 0, 22, 'g', ['g', 'mol', 'kg'], 'n(C) = 6.0 ÷ 12 = 0.5 mol; ratio 1 : 1; m(CO₂) = 0.5 × 44 = 22 g.', 'Three steps: ÷ 12, × 1/1, × 44.', ['C · nothing to convert', 'F · n = m ÷ Ar; ratio; m = n × Mr', 'I · n(C) = 6.0 ÷ 12 = 0.5; n(CO₂) = 0.5', 'F · m(CO₂) = 0.5 × 44 = 22', 'A · 22 g'], 0.05)"),
 ]
 
 LESSON = {
@@ -91,9 +98,6 @@ LESSON = {
         {"kind": "card", "title": "Moles from mass",
          "body": [{"slot": "triangle:EQ_N"},
                   "n = m ÷ M<sub>r</sub>",
-                  {"points": ["number of moles, n, in moles (mol)",
-                              "mass, m, in grams (g)",
-                              "relative formula mass, M<sub>r</sub>, has no unit"]},
                   "You use it twice in a reacting-mass question: forwards for the substance you "
                   "are given, backwards for the one you want."]},
         {"kind": "card", "title": "Each step on its own",
@@ -126,8 +130,8 @@ LESSON = {
     "deeper": [
         {"kind": "card", "title": "Check your answer",
          "body": ["The total mass of the reactants equals the total mass of the products.",
-                  "4.8 g of magnesium burns in 3.2 g of oxygen to make 8.0 g of magnesium oxide: "
-                  "4.8 + 3.2 = 8.0."]},
+                  "4.6 g of sodium burns in 1.6 g of oxygen to make 6.2 g of sodium oxide: "
+                  "4.6 + 1.6 = 6.2."]},
         {"kind": "card", "title": "Where this goes next",
          "body": ["Balancing an equation from masses, and limiting reactants, are in Using moles "
                   "in calculations."]},
