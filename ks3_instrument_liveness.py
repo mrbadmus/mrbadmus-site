@@ -248,6 +248,14 @@ RETIRED_BY_LEAN = {
                       "the removal cases are not on the lean page"),
     "settles-it": ("biology/cells-and-organisation/unicellular-organisms.html",
                    "the settles-it cases are not on the lean page (figure b1-unicellular)"),
+    # ⊕ lean wave 1 (rest of Forces): each family had exactly one lesson, and no other built page
+    # emits it. mass-vs-weight's p12-attempt is not here: the other P12 lessons (classic) still place it.
+    "graph-plot": ("physics/describing-motion/distance-time-graphs.html",
+                   "the graph-plot bench is not on the lean page (figures p3-dt-journey and p3-dt-curve)"),
+    "journey-match": ("physics/describing-motion/distance-time-graphs.html",
+                      "the journey-match cards are not on the lean page"),
+    "spanner-rig": ("physics/forces/moments.html",
+                    "the spanner rig is not on the lean page (figures p4-moment-triangle and p4-moments-seesaw)"),
 }
 
 

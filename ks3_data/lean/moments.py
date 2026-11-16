@@ -74,12 +74,12 @@ LESSON = {
                   "If an object is balanced, the clockwise moment equals the anticlockwise moment.",
                   "Ignore the weight of the seesaw itself."]},
         {"kind": "card", "title": "Worked example: balancing",
-         "body": ["A 300 N child sits 2 m from the pivot. A 400 N child sits on the other side. "
-                  "Find how far from the pivot the second child must sit to balance.",
-                  {"points": ["Anticlockwise moment: 300 N × 2 m = 600 N m",
-                              "Clockwise moment must also be 600 N m",
-                              "Formula: distance = moment ÷ force",
-                              "Insert: distance = 600 N m ÷ 400 N",
+         "body": [{"figure": "p4-moments-seesaw-find"},
+                  "This seesaw balances. How far from the pivot is the 400 N child?",
+                  {"points": ["Convert: nothing. Newtons and metres are the right units.",
+                              "Formula: clockwise moment = anticlockwise moment",
+                              "Insert: 400 N × distance = 500 N × 1.2 m",
+                              "Fine-tune: 500 × 1.2 = 600, and 600 ÷ 400 = 1.5",
                               "Answer: distance = 1.5 m"]}]},
         {"kind": "card", "title": "Easy mistakes",
          "body": [{"mistakes": [
@@ -129,8 +129,17 @@ LESSON = {
          "data": {"balanced": True, "px_per_m": 60,
                   "forces": [{"side": "left", "N": 300, "m": 2},
                              {"side": "right", "N": 400, "m": 1.5}]}},
+        {"id": "p4-moments-seesaw-find", "kind": "diagram", "status": "drawn", "art": "moments-beam",
+         "title": "A balanced seesaw with one distance to find",
+         "desc": "A plank balanced on a central pivot. On the left, 1.2 metres from the pivot, a downward "
+                 "arrow is labelled 500 N. On the right, a downward arrow is labelled 400 N. Its distance "
+                 "from the pivot is marked with a question mark.",
+         "caption": "Find the distance marked with a question mark.",
+         "data": {"balanced": True, "px_per_m": 60,
+                  "forces": [{"side": "left", "N": 500, "m": 1.2},
+                             {"side": "right", "N": 400, "m": 1.5, "unknown": True}]}},
     ],
-    "figure_caption": {"p4-moments-seesaw": None},     # the card text already says it
+    "figure_caption": {"p4-moments-seesaw": None, "p4-moments-seesaw-find": None},     # the card text already says it
     "ladder_stem": {
         "apply": "Two people pull with exactly 50 N at right angles on the same stiff bolt. "
                  "One uses a 0.10 m spanner, the other a 0.40 m spanner. Which statement is right?",

@@ -2367,6 +2367,8 @@ ART.update({
 # "moments-beam": a plank on a pivot with downward forces at measured distances.
 #   data {"forces": [{"side": "left|right", "N": number, "m": distance in metres}, ...],
 #         "px_per_m": 60, "balanced": True|False}
+#   A force may carry "unknown": True. Its arrow is still drawn at its true distance (so the
+#   picture stays honest to scale), but the distance label reads "?" for a pupil to find.
 # Checked here: every arrow sits at pivot +/- m * px_per_m, so the drawn distance IS the
 # stated distance; each force label states its own N and distance; and when "balanced"
 # is True the clockwise moments (right side, down) must equal the anticlockwise ones
@@ -2414,7 +2416,8 @@ def _p4x_moments_beam(fig):
                              data_key=f["side"]))
         for xx in (PX, x):
             out.append(_p4x_line(xx, dim_y - 6, xx, dim_y + 6, stroke=_P4X_INK, w=2, data_part="distance-tick"))
-        out.append(_p4x_label((PX + x) / 2.0, dim_y + 24, "%s m" % _p4x_num(f["m"]), size=14, weight="700",
+        out.append(_p4x_label((PX + x) / 2.0, dim_y + 24,
+                              "? m" if f.get("unknown") else "%s m" % _p4x_num(f["m"]), size=14, weight="700",
                               fill=_P4X_INK, data_part="distance-label", data_key=f["side"]))
     return _p4x_svg(fig, int(dim_y + 34), out)
 
