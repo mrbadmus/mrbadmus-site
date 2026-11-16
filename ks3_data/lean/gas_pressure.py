@@ -100,13 +100,14 @@ LESSON = {
                  "straight arrow showing which way it is moving. Where an arrow meets a wall, a small star "
                  "marks a collision. The top box, labelled Big container, has four stars. The bottom box, "
                  "labelled Same gas, half the space, is half as tall, and has eight stars.",
-         "caption": None,
+         "caption": "In half the space, the particles hit the walls more often.",
          "data": {"boxes": [
              {"label": "Big container", "layout": "gas", "n": 10, "motion": True, "hits": 4},
              {"label": "Same gas, half the space", "layout": "gas", "n": 10, "motion": True, "hits": 8,
               "height": "half"},
          ]}},
     ],
+    "figure_caption": {"c1-wall-hits": None},     # no caption on the page, as before
     "ladder_feedback": {
         "recall": {
             0: "Particles do bump into each other. Only hits on the walls push on the walls.",

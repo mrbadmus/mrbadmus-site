@@ -36,6 +36,7 @@ KS3_OUT = os.path.join("mrbadmus_site", "ks3")
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 import ks3_data
+import ks3_fixtures
 import build_ks3 as B
 # Imported at module top ON PURPOSE. half_terms derives its placement at import
 # time from DEFAULT_SEQUENCE_V1, and check 6 below temporarily swaps that dict
@@ -130,6 +131,42 @@ def prose_of(lesson):
     return " ".join(out)
 
 
+# ⊕ 15 Nov 2026 (Mide, 14 Nov 2026: "our checks should not depend on real lessons. Every
+# time a unit goes lean we will hit this again."). The C1 + B1 checks below measure the
+# CLASSIC lesson shape. A lesson that has gone lean is read through its hidden frozen
+# classic copy (ks3_fixtures/, built at ks3/_fixtures/fixture-<slug>.html) instead of the
+# real page; a lesson that is still classic keeps reading its real page. Only the lesson
+# and the page moved: every assertion, threshold and expected string is unchanged.
+
+def classic_lesson(unit, lesson, fixture_of):
+    """(the lesson a classic-shape check reads, problem or None).
+
+    The real lesson while it is classic. Once it carries a lean record, the frozen fixture
+    lesson (slug `fixture-<source>`), with the real slug kept as `_source`. A lean lesson
+    with no fixture, or a fixture frozen from another unit, comes back as the REAL lesson
+    with a problem string, so its checks still run and fail by name rather than vanish."""
+    if not lesson.get("lean"):
+        return lesson, None
+    f = fixture_of.get(lesson["slug"])
+    if f is None:
+        return lesson, ("%s/%s is lean and has no frozen classic fixture in ks3_fixtures/"
+                        % (unit["code"], lesson["slug"]))
+    if f["unit"] != unit["code"]:
+        return lesson, ("%s/%s is lean and its fixture is frozen from unit %s"
+                        % (unit["code"], lesson["slug"], f["unit"]))
+    sub = dict(f["lesson"])
+    sub["_source"] = lesson["slug"]
+    return sub, None
+
+
+def lesson_page_path(unit, lesson, root=KS3_OUT):
+    """The built page for (unit, lesson): the fixture page for a lesson `classic_lesson`
+    substituted, `<root>/<discipline>/<unit slug>/<slug>.html` for any other lesson."""
+    if lesson.get("_source"):
+        return "%s/%s" % (root, ks3_fixtures.rel(lesson["_source"]))
+    return "%s/%s/%s/%s.html" % (root, unit["discipline"], unit["slug"], lesson["slug"])
+
+
 def main():
     units = ks3_data.build_units()
     registry = ks3_data.lesson_registry(units)
@@ -143,8 +180,30 @@ def main():
     # Every authored lesson in the key stage with its unit attached, for
     # the checks that span units (the draft markers, the §10.2 done-list).
     all_authored = [(c1, l) for l in authored] + [(b1, l) for l in b1_authored]
+    # ⊕ 15 Nov 2026 (Mide, 14 Nov 2026: "our checks should not depend on real lessons").
+    # `all_authored` feeds ONLY classic-shape checks (the rung titles reaching the page,
+    # the P11 link, the §10.2 done-list), so a lean lesson in it is swapped for its frozen
+    # classic fixture; see `classic_lesson`. `authored` and `b1_authored` stay the real
+    # ks3_data lessons, because the checks that read them (how many lessons, review_state,
+    # beyond_statutory) are about the curriculum, not about a page's shape.
+    fixture_of = {f["source"]: f for f in ks3_fixtures.fixtures()}
+    _swapped, no_fixture = [], []
+    for _u, _l in all_authored:
+        _c, _why = classic_lesson(_u, _l, fixture_of)
+        _swapped.append((_u, _c))
+        if _why:
+            no_fixture.append(_why)
+    all_authored = _swapped
+    # The real slug for each lesson in it, so a check that names a lesson can find it.
+    classic_of = {(l.get("_source") or l["slug"]): (u, l) for u, l in all_authored}
 
     print("\n§9 — vertical slice done-list\n" + "=" * 60)
+
+    check("every lean C1/B1 lesson has a frozen classic fixture to read",
+          not no_fixture,
+          "; ".join(no_fixture) if no_fixture
+          else "%d lean, each read through ks3/_fixtures/"
+               % sum(1 for _u, l in all_authored if l.get("_source")))
 
     # 1. Six lessons authored.
     check("C1 has six authored lessons", len(authored) == 6,
@@ -494,9 +553,10 @@ def main():
     # the title as a whole heading ("Rung 1 · Name the job"), so a renderer that
     # forwarded it verbatim would drop no text and still be wrong.
     rung_misses = []
+    # ⊕ 15 Nov 2026 — a lean lesson's row reads its frozen fixture and that fixture's page
+    # (`all_authored`, `lesson_page_path`); the heading it must find is unchanged.
     for u, l in all_authored:
-        page = ("mrbadmus_site/ks3/%s/%s/%s.html"
-                % (u["discipline"], u["slug"], l["slug"]))
+        page = lesson_page_path(u, l)
         if not os.path.exists(page):
             continue
         html = open(page).read()
@@ -550,8 +610,13 @@ def main():
     # check was written to prevent, seen from the other side. Both halves are
     # asserted, so the check is stronger than before, not weaker: it fails if
     # the link is missing AND it fails if the pending state survives.
-    p = "ks3/chemistry/particles-and-their-behaviour/testing-the-model.html"
-    html = open(p, encoding="utf-8").read() if os.path.exists(p) else ""
+    # ⊕ 15 Nov 2026 — the page comes from `lesson_page_path`, so once testing-the-model goes
+    # lean this reads its frozen fixture (rendered against the real registry, so the link
+    # is still resolved live). Still the ./ks3 mirror it always read. It was
+    #     p = "ks3/chemistry/particles-and-their-behaviour/testing-the-model.html"
+    _ttm = classic_of.get("testing-the-model")
+    p = lesson_page_path(*_ttm, root="ks3") if _ttm else ""
+    html = open(p, encoding="utf-8").read() if p and os.path.exists(p) else ""
     check("P11 reference resolves to the real why-ice-floats page",
           "why-ice-floats.html" in html)
     check("P11 reference no longer carries the pending state",
@@ -1135,6 +1200,9 @@ def main():
           "        12 of 103 authored lessons · reading age is ADVISORY)\n"
           + "=" * 60)
 
+    # ⊕ 15 Nov 2026 — a lean lesson's row is its frozen classic fixture, named by the
+    # fixture slug (`[fixture-<slug>]`) so the row says what it read. Every condition is
+    # unchanged.
     for _u, l in all_authored:
         pre = "  [%s]" % l["slug"]
         # §10.2's covers rule has two legal halves: non-empty covers, OR

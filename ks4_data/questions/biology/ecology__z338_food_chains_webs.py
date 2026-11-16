@@ -753,8 +753,8 @@ QUESTIONS = [
         "band": "harder",
         "tier": "foundation",
         "triple_only": False,
-        "text": "A student draws the chain grass to rabbit and then an arrow "
-                "back from the rabbit to the grass. Identify the error.",
+        "text": "A student writes this food chain: grass \u2192 rabbit \u2192 grass. "
+                "Identify the error.",
         "options": [
             "Energy travels one way only, so the second arrow is wrong",
             "There is no error, because the rabbit's droppings feed the grass",
@@ -762,8 +762,9 @@ QUESTIONS = [
             "A chain must have at least three levels, so one is missing",
         ],
         "correct_index": 0,
-        "why": "Energy is transferred from the eaten to the eater and is then "
-               "lost as heat, so it never returns to a lower level of the chain.",
+        "why": "The arrows show the direction of energy transfer, from the "
+               "organism that is eaten to the organism that eats it. The grass "
+               "does not eat the rabbit, so the second arrow is wrong.",
     },
     {
         "id": "ks4-food-chains-webs-h14",

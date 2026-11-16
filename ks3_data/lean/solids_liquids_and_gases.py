@@ -81,7 +81,8 @@ LESSON = {
                   "Stars are made of plasma, a fourth state of matter."]},
     ],
     "try": None,
-    "figure_caption": {"c1-expansion": "The change is drawn far bigger than it really is."},
+    "figure_caption": {"c1-three-states": None,     # no caption on the page, as before
+                       "c1-expansion": "The change is drawn far bigger than it really is."},
     "ladder_stem": {
         "explain": "A gas fills any container it is put in. The same amount of liquid sits in a "
                    "puddle at the bottom. Explain both, using the arrangement and movement of the particles.",
@@ -111,7 +112,7 @@ LESSON = {
                  "bottom of the box, with three short curved arrows over the top ones showing them "
                  "sliding. The bottom box, labelled Gas, holds a few circles far apart, each with a "
                  "straight arrow pointing a different way.",
-         "caption": None,
+         "caption": "The same particles in each state, arranged and moving differently.",
          "data": {"boxes": [
              {"label": "Solid", "layout": "solid", "rows": 4, "cols": 8, "motion": True},
              {"label": "Liquid", "layout": "liquid", "n": 22, "motion": True},
@@ -125,7 +126,7 @@ LESSON = {
                  "box, labelled Hot steel, holds the same number of circles, drawn the same size, in neat "
                  "rows with small gaps between them, and bigger vibration marks. The block of particles in "
                  "the bottom box is wider and taller.",
-         "caption": None,
+         "caption": "Heating moves the particles slightly further apart. The particles do not grow.",
          "data": {"boxes": [
              {"label": "Cold steel", "layout": "solid", "rows": 3, "cols": 8, "motion": True},
              {"label": "Hot steel", "layout": "solid", "rows": 3, "cols": 8, "motion": True,

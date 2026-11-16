@@ -118,7 +118,7 @@ LESSON = {
                  "labelled Air particles, scattered through the box. Behind the speck, a dotted line of "
                  "short straight steps changes direction at random, showing the path it has taken. The "
                  "two labels sit under the box, each joined to its part by a short line.",
-         "caption": None,
+         "caption": "Air particles hit the speck unevenly, so it moves in a random path.",
          "data": {"speck_label": "Smoke speck", "air_label": "Air particles", "steps": 14, "air": 18}},
     ],
     "figure_caption": {"c1-spreading": None,     # the key word above it says it
