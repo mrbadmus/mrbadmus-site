@@ -81,13 +81,13 @@ MRB-103 also flagged an **anatomical/structural diagram gap** (cells, organs) an
 | B9 | `food-chains-and-food-webs` | `b9-oak-wood-web-thread` | diagram | `drawn` | One oak wood.  The numbered orange chain is one route through it — the same four steps the bench above climbs. |
 | B9 | `predator-and-prey` | `b9-predator-prey-cycle` | diagram | `drawn` | The fox line is still going up while the rabbit line is already coming down, and it does not turn over until years later. That gap is the whole idea: foxes cannot become more foxes the moment there is more to eat — breeding takes time — so the fox peak always follows the rabbit peak rather than arriving with it. Look at when each peak happens, not how high it is: the two are counted on their own scales. |
 | C1 | `changes-of-state` | `c1-heating-curve` | graph | `drawn` | The temperature stays flat while the water melts and while it boils. |
-| C1 | `diffusion` | `c1-brownian` | diagram | `drawn` | None |
+| C1 | `diffusion` | `c1-brownian` | diagram | `drawn` | Air particles hit the speck unevenly, so it moves in a random path. |
 | C1 | `diffusion` | `c1-spreading` | diagram | `drawn` | The particles spread from a high concentration to a low concentration. |
-| C1 | `gas-pressure` | `c1-wall-hits` | diagram | `drawn` | None |
+| C1 | `gas-pressure` | `c1-wall-hits` | diagram | `drawn` | In half the space, the particles hit the walls more often. |
 | C1 | `particle-model` | `c1-mixing` | diagram | `drawn` | The small particles fit into gaps between the big ones. |
-| C1 | `solids-liquids-and-gases` | `c1-expansion` | diagram | `drawn` | None |
+| C1 | `solids-liquids-and-gases` | `c1-expansion` | diagram | `drawn` | Heating moves the particles slightly further apart. The particles do not grow. |
 | C1 | `solids-liquids-and-gases` | `c1-particle-states` | diagram | `drawn` | One substance, three states. Compare the particles inside each box with the reference particle underneath it. |
-| C1 | `solids-liquids-and-gases` | `c1-three-states` | diagram | `drawn` | None |
+| C1 | `solids-liquids-and-gases` | `c1-three-states` | diagram | `drawn` | The same particles in each state, arranged and moving differently. |
 | C2 | `chemical-symbols` | `c2-co-and-co` | diagram | `drawn` | CO is two elements joined. Co is one element. |
 | C2 | `compounds` | `c2-ecm-particles` | diagram | `drawn` | Look at the kinds of atom, and which ones are joined. |
 | C2 | `compounds` | `c2-iron-sulfur` | diagram | `drawn` | Mixed, iron and sulfur are separate. In iron sulfide, they are joined. |
