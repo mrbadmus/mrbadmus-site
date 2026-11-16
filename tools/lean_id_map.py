@@ -102,6 +102,8 @@ WAVES = {
         # production reload; record parked in docs/lessons/wave1/held/).
         ("B1", "cells-and-organisation", ["using-a-microscope", "animal-and-plant-cells", "specialised-cells",
                                           "levels-of-organisation", "unicellular-organisms"]),
+        ("C1", "particles-and-their-behaviour", ["particle-model", "solids-liquids-and-gases", "changes-of-state",
+                                                 "gas-pressure", "diffusion", "testing-the-model"]),
     ],
 }
 
@@ -212,6 +214,12 @@ _WHY = [
     (r"#(sams-method|magnification-fifa-do|seven-parts-two-cells|wall-or-membrane|fit-the-cell|"
      r"s-break|s-hard|s-settle)-\d",
      "the instrument was removed from the lean page"),
+    # ⊕ C1 (Wave 1): the particle benches, sorters and the evidence bench, one id per press,
+    # and the single-press activities (Think first, the reveal, the verdict) the lean page dropped.
+    (r"#(cut-bench|gap-rig|state-bench|the-heating-bench|melt-or-dissolve|count-the-hits|three-predictions|"
+     r"walk-bench|seven-observations)-\d", "the instrument was removed from the lean page"),
+    (r"#(think-swelling-particles|think-spread)$", "the Think first question is not on the lean page"),
+    (r"#(same-particles-reveal|the-bubble|settled-science|the-verdict)$", "this activity is not on the lean page"),
 ]
 
 
