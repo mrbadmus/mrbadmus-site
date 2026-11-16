@@ -132,6 +132,8 @@ LESSON = {
     ],
     "figure_caption": {"p4-moments-seesaw": None},     # the card text already says it
     "ladder_stem": {
+        "apply": "Two people pull with exactly 50 N at right angles on the same stiff bolt. "
+                 "One uses a 0.10 m spanner, the other a 0.40 m spanner. Which statement is right?",
         "recall": "A spanner is gripped 0.40 m from a bolt. It is pulled with 30 N at right angles. "
                   "What is the moment?",
         "produce": "A car wheel nut needs a moment of 110 N m. A driver can pull with about 250 N. "

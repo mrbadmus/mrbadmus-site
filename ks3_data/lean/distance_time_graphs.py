@@ -131,6 +131,8 @@ LESSON = {
     ],
     "figure_caption": {"p3-dt-journey": None, "p3-dt-curve": None},   # the card text already says it
     "ladder_stem": {
+        "apply": "Two journeys are drawn on the same distance-time axes. "
+                 "Line A is steeper than line B. Which statement must be true?",
         "recall": "A distance-time graph is horizontal between 20 s and 35 s. "
                   "What was happening in those fifteen seconds?",
         "explain": "Explain why the steepness of a distance-time graph shows the speed. "
