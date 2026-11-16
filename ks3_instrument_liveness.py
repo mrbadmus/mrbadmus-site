@@ -151,6 +151,9 @@ RETIRED_BY_LEAN = {
                    "the leaf-tuner bench is not on the lean page"),
     "method-breaker": ("biology/photosynthesis/testing-a-leaf-for-starch.html",
                        "the method-breaker bench is not on the lean page"),
+    # (why-almost-all-life-depends-on-it joined on 15 Nov 2026, after the quiz batch.)
+    "trace-it-back": ("biology/photosynthesis/why-almost-all-life-depends-on-it.html",
+                      "replaced by the drawn figure b7-food-chain-grass"),
     "mass-ledger": ("biology/respiration/aerobic-respiration.html",
                     "replaced by the drawn figure b8-word-aerobic"),
     "cell-demand": ("biology/respiration/why-every-cell-respires.html",
@@ -223,9 +226,13 @@ RETIRED_BY_LEAN = {
                     "the light-gates bench is not on the lean page (figure p3-speed-triangle)"),
     "compare-pairs": ("physics/describing-motion/speed.html",
                       "the compare-pairs bench is not on the lean page"),
-    # ⊕ lean wave 1 (B1 cells and organisation): five of the six lessons are lean pages, and no
-    # other built page emits any of these families. life-processes is held back (classic), so its
-    # test-board and sort-rows still run and are not listed here.
+    # ⊕ lean wave 1 (B1 cells and organisation): all six lessons are lean pages, and no other
+    # built page emits any of these families. (life-processes joined on 15 Nov 2026; its hidden
+    # fixture under ks3/_fixtures/ is not a lesson page and is not scanned here.)
+    "test-board": ("biology/cells-and-organisation/life-processes.html",
+                   "the seven-tests board is not on the lean page"),
+    "sort-rows": ("biology/cells-and-organisation/life-processes.html",
+                  "the living, once-living, never-living sort is not on the lean page (a reveal table)"),
     "critique-steps": ("biology/cells-and-organisation/using-a-microscope.html",
                        "the method-critique steps are not on the lean page"),
     "fifa-construct": ("biology/cells-and-organisation/using-a-microscope.html",

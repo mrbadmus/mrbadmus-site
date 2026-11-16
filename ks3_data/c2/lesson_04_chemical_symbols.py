@@ -323,10 +323,10 @@ LESSON = {
         "apply": {
             "q": "A student writes the formula for carbon monoxide as Co. What have they written?",
             "options": [
-                "Cobalt — one element, and a metal",
+                "Cobalt, which is one element and a metal",
                 "Carbon monoxide, just written untidily",
                 "Carbon, on its own",
-                "Nothing — Co is not an element",
+                "Nothing, because Co is not an element",
             ],
             "answer": 0,
             "feedback": {

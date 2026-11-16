@@ -169,7 +169,7 @@ LESSON = {
             3: "Sublimation is from solid straight to gas, as dry ice does.",
         },
         "apply": {
-            1: "Energy cannot just vanish. It is freeing the particles from their fixed positions.",
+            1: "Some energy escapes to the room. Most of it frees the ice particles from their fixed positions.",
             2: "The beaker stays near 0 °C as well. The ice takes in the energy.",
             3: "Particles never change size. The energy frees them from their fixed positions.",
         },

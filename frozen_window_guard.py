@@ -290,6 +290,30 @@ def compare_pool(pool_label, id_field, leaf_fields, columns, hash_fn,
                 print("  ⊕ %s %s differs in text only — permitted under D3 "
                       "(Mide, 26 Sep 2026)" % (pool_label, rid))
             continue
+        # ⊕ Mide, 14 Nov 2026: p12-06-s01/s02 may differ in an option's
+        # `why` ONLY — not the stem, not an option's text or correct flag.
+        if rid in fwa.WHY_TEXT_ONLY:
+            bad = [f for f in diffs if f not in fwa.WHY_TEXT_PERMITTED_FIELDS]
+            oa, ob = a.get("options") or [], b.get("options") or []
+            if len(oa) != len(ob):
+                bad.append("options (count %d -> %d)" % (len(ob), len(oa)))
+            else:
+                for i, (x, y) in enumerate(zip(oa, ob)):
+                    keys = sorted(k for k in set(x) | set(y)
+                                  if k not in fwa.WHY_TEXT_PERMITTED_OPTION_KEYS
+                                  and x.get(k) != y.get(k))
+                    if keys:
+                        bad.append("options[%d].%s" % (i, "/".join(keys)))
+            if bad:
+                unexpected.append(rid)
+                problems.append(
+                    "%s %s: on the why-only allowlist, but changed field(s) "
+                    "the ruling forbids — %s (only an option's why may change)"
+                    % (pool_label, rid, ", ".join(bad)))
+            else:
+                print("  ⊕ %s %s differs in an option's why only — permitted "
+                      "(%s)" % (pool_label, rid, fwa.RULING_WHY_TEXT))
+            continue
         if rid not in fwa.ALLOWLIST:
             unexpected.append(rid)
             problems.append(
@@ -505,7 +529,7 @@ def main():
     by_id_ks3 = {r["id"]: r for r in authored_ks3}
     by_id_ks4 = {r["id"]: r for r in authored_ks4}
     stale, moved = [], []
-    for aid in sorted(fwa.ALLOWLIST | set(fwa.D3_TEXT_ONLY)):
+    for aid in sorted(fwa.ALLOWLIST | set(fwa.D3_TEXT_ONLY) | set(fwa.WHY_TEXT_ONLY)):
         row = by_id_ks3.get(aid, by_id_ks4.get(aid))
         if row is None:
             stale.append(aid)
@@ -548,7 +572,7 @@ def main():
             "%d frozen row(s) in route-flag subtopics do not carry the ruled "
             "AFTER flags: %s" % (len(rf_wrong), ", ".join(rf_wrong[:8])))
     rf_overlap = {r["id"] for r in rf_rows} & \
-        (fwa.ALLOWLIST | set(fwa.D3_TEXT_ONLY))
+        (fwa.ALLOWLIST | set(fwa.D3_TEXT_ONLY) | set(fwa.WHY_TEXT_ONLY))
     if rf_overlap:
         problems.append(
             "route-flag rows are also on a content allowlist: %s"
@@ -629,7 +653,8 @@ def main():
 
     print("✅ every frozen row not on the allowlist is byte-identical to "
           "%s; all 28 allowlisted rows changed only fields the ruling "
-          "permits, and the D3 row (c1-01-s04) only its text; the 8 "
+          "permits, the D3 row (c1-01-s04) only its text and the two "
+          "P12 speed rows (p12-06-s01/s02) only an option's why; the 8 "
           "route-flag subtopics differ at most by their ruled flags; "
           "positions 0-11 hold the same ids in the same order, "
           "per leaf.\n"

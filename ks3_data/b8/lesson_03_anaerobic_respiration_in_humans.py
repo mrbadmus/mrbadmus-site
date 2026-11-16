@@ -930,20 +930,16 @@ LESSON = {
                 # 20w — mechanical momentum, given its consequence. Was "Your
                 # lungs take time to slow down after being worked hard" (11w).
                 # Design's clause is kept verbatim at the front.
-                "You are taking in the oxygen you could not get during the "
-                "sprint, to deal with the lactic acid — the oxygen debt",
+                "You need extra oxygen to break down the lactic acid made during the sprint",
                 # 23w — Design's, unchanged.
-                "Your lungs take time to slow down after being worked hard, so "
-                "the breathing runs on under its own momentum",
+                "Your lungs take time to slow down, so your breathing runs on by itself",
                 # 22w — the muscles-still-consuming belief, now stated as a
                 # rule that survives the stopping. Was "Your muscles are still
                 # working, so they still need oxygen" (10w).
-                "Your muscles are still working after you stop, so they go on "
-                "needing oxygen at the same rate as during the sprint",
+                "Your muscles are still working hard, so they need oxygen at the same rate",
                 # 22w — breathing as thermoregulation. Was "You are cooling
                 # down, and breathing out is how heat leaves" (11w).
-                "You are cooling down, and breathing out is how the extra heat "
-                "leaves, so the rate stays up until you have cooled",
+                "You are cooling down, and breathing out is how the extra heat leaves",
             ],
             "answer": 0,
             # All three unchanged from Design, and each still answers exactly

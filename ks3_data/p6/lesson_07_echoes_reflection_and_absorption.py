@@ -307,7 +307,7 @@ LESSON = {
          # same distance, so a second button would offer the student a
          # choice with no difference in it.
          "support": ["d · distance to the surface · m",
-                     "s · total path, out and back · m"],
+                     "s · distance the sound travels, out and back · m"],
          "cover": {
              "shape": "bar",
              "eyebrow": "The bar",

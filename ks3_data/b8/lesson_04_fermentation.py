@@ -904,8 +904,7 @@ LESSON = {
                 # 14w — was "The yeast reabsorbs it before baking" (6w). The
                 # belief it already carried, given the rule that licenses it:
                 # a living thing does not waste anything it has made.
-                "It evaporates in the oven — ethanol boils well below the "
-                "temperature of baking",
+                "It evaporates in the oven, because ethanol boils well below baking temperature",
                 # 14w — Design's, unchanged.
                 "The yeast reabsorbs it before baking, because nothing a cell "
                 "makes is ever wasted",

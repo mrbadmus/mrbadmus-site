@@ -867,18 +867,15 @@ LESSON = {
             }},
         "apply": {
             "title": "Rung 2 · The one that catches people",
-            "q": "A sunflower seed weighing 0.1 g grows into a plant weighing "
-                 "3 kg. Where has almost all that mass come from?",
+            "q": "A sunflower seed of 0.1 g grows into a large plant. The plant is dried out. Its dry mass is 300 g. Where did almost all of this dry mass come from?",
             # ⊕ MRB-177, 17 Aug 2026. Options 0, 2 and 3 rewritten as wrong
             # RULES in the correct answer's shape. Option 1 and `answer` are
             # Design's, unchanged.
             "options": [
-                "Carbon dioxide from the air, built into glucose and then "
-                "into the plant’s structures",
+                "Carbon dioxide from the air, built into glucose and then into stems and leaves",
                 "The soil, drawn up through the roots and built into the wood "
                 "and the leaves",
-                "The water it was given, taken up by the roots and turned "
-                "into new plant tissue",
+                "The water it was given, taken up by the roots and turned into new tissue",
                 "The sunlight falling on the leaves, converted into plant "
                 "material as it is absorbed",
             ],

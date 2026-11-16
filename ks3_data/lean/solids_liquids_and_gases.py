@@ -84,8 +84,6 @@ LESSON = {
     "figure_caption": {"c1-three-states": None,     # no caption on the page, as before
                        "c1-expansion": "The change is drawn far bigger than it really is."},
     "ladder_stem": {
-        "apply": "Steam can be squashed into a fifth of its volume. Liquid water hardly squashes at all. "
-                 "Why not?",
         "explain": "A gas fills any container it is put in. The same amount of liquid sits in a "
                    "puddle at the bottom. Explain both, using the arrangement and movement of the particles.",
         "produce": "A steel railway rail is 30 m long in winter. On a hot summer day it is about 1 cm "

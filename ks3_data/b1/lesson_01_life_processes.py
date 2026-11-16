@@ -542,17 +542,16 @@ LESSON = {
                  "stairs and drives to its charger when the battery is low. "
                  "Which statement is right?",
             "options": [
-                "It is alive — it does three of the seven",
-                "It is not alive — nothing built by people is alive",
+                "It is alive, because it does some of the life processes",
+                "It is not alive, because it cannot think for itself",
                 "You would have to watch it for longer to say",
-                "It is not alive — it is not made of cells",
+                "It is not alive, because it is not made of cells",
             ],
             "answer": 3,
             "feedback": {
                 0: "A flame does six and is not alive. Counting processes "
                    "never settles it.",
-                1: "True of this one, but not for that reason. Bread dough is "
-                   "put together by people and the yeast in it is alive.",
+                1: "True of this one, but not for that reason. Plants cannot think, and they are alive.",
                 2: "You would not. Open it up: parts, wiring and a battery. "
                    "No cells, so no.",
             }},
