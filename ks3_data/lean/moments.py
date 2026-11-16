@@ -75,7 +75,7 @@ LESSON = {
                   "Ignore the weight of the seesaw itself."]},
         {"kind": "card", "title": "Worked example: balancing",
          "body": [{"figure": "p4-moments-seesaw-find"},
-                  "This seesaw balances. How far from the pivot is the 400 N child?",
+                  "This seesaw balances. Find how far from the pivot the 400 N child sits.",
                   {"points": ["Convert: nothing. Newtons and metres are the right units.",
                               "Formula: clockwise moment = anticlockwise moment",
                               "Insert: 400 N × distance = 500 N × 1.2 m",
