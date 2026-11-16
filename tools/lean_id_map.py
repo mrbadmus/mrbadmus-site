@@ -126,6 +126,14 @@ EXTRA_RETIRED = {
 
 # old id -> (new id, reason). Empty on purpose: the pilot keeps every surviving id.
 CHANGED = {}
+# An id the inventory still lists (the subtopic's own quiz keeps the question) but whose question
+# the lean page's record REPLACED, so the page no longer sends it. status `removed`; the id stays
+# tagged. (Learned from the Ecology unit: a legacy lesson's practice set is its own BANK, and a
+# logic_edit that replaces an item takes its prompt's id off the page.)
+REPLACED = {
+    "ks4q:population-competition:b4d4451a57":
+        "practice Q2 (intraspecific vs interspecific competition) is replaced by an on-spec item in the lean record",
+}
 
 _ROUTE_DIRS = {"cf": "combined/foundation", "ch": "combined/higher", "tf": "triple/foundation", "th": "triple/higher"}
 
@@ -142,8 +150,13 @@ def root_covers():
     for i, k in enumerate(keys):
         chunk = body[k.end():keys[i + 1].start() if i + 1 < len(keys) else len(body)]
         forms = {}
-        for m in re.finditer(r"(?:\bid|\bpick): '(\w+)'(?:(?!\bid: ').)*?covers: \[([^\]]*)\]", chunk, re.S):
-            forms.setdefault(m.group(1), re.findall(r"'(\w+)'", m.group(2)))
+        for m in re.finditer(r"(?:\bid|\bpick|\bkey): '(\w+)'(?:(?!\bid: ').)*?covers: \[([^\]]*)\]", chunk, re.S):
+            forms.setdefault(m.group(1), re.findall(r"'([\w.]+)'", m.group(2)))
+        # `readings({...})` is a bench activity (the child's own timed readings, id `own`). It
+        # names no `covers`: its controls are the bench's own, which a lean page never draws
+        # (no bench, simulation or canvas), so it is covered by a value no lean page carries.
+        if re.search(r"\breadings\(\{", chunk):
+            forms.setdefault("own", ["__bench__"])
         out[k.group(1)] = forms
     return out
 
@@ -360,6 +373,8 @@ def build(base="origin/main", unit=None, ref=None, wave=None):
                 if qid in CHANGED:
                     new_id, why = CHANGED[qid]
                     ids[qid] = {"status": "changed", "new": new_id, "kp": old_q[qid], "note": why}
+                elif qid in REPLACED and qid in old_q and ref in lean_slugs:
+                    ids[qid] = {"status": "removed", "new": None, "kp": old_q[qid], "note": REPLACED[qid]}
                 elif qid in old_q and qid in new_q and ks == "KS4" and undrawn_root_activity(qid, covers):
                     ids[qid] = {"status": "removed", "new": None, "kp": old_q[qid],
                                 "note": "the lesson's own activity (%s) is not drawn on the lean page"

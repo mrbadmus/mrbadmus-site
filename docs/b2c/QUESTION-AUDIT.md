@@ -301,7 +301,7 @@ The grams-to-newtons question Orion hit (`p4-03-s01`) is from *Balanced and unba
 | `ks4-distance-time-graphs-s23` | describes | A courier's plotted line starts at the origin, is straight, and reaches 450 m at 90 s. Det |
 | `ks4-distance-time-graphs-s25` | describes | A plotted line rises steadily from the origin to 60 m at 12 s. Calculate the speed and sta |
 | `ks4-electromagnetism-h19` | describes | The current in just one of two solenoids placed end to end on a common axis is now reverse |
-| `ks4-food-chains-webs-h13` | describes | A student draws the chain grass to rabbit and then an arrow back from the rabbit to the gr |
+| `ks4-food-chains-webs-h13` | ~~describes~~ fixed 15 Nov 2026: reworded to a written chain in the lean Ecology rebuild, loaded to production, removed from the backend exclusions (214ffbe) | A student draws the chain grass to rabbit and then an arrow back from the rabbit to the gr |
 | `ks4-free-body-diagrams-e08` | describes | A book lies still on a table. Its free body diagram has two arrows of equal length, one po |
 | `ks4-free-body-diagrams-e18` | describes | A free body diagram shows exactly two arrows of the same length pointing in opposite direc |
 | `ks4-free-body-diagrams-h05` | describes | On a diagram of a ball whirled on a string, a student draws the string tension towards the |

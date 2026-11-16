@@ -41,7 +41,7 @@ import ks3_browser as cdp
 ROOT = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(ROOT, "mrbadmus_site")
 
-KS4_A = "/combined/foundation/biology/ecology/carbon-cycle.html"      # record: correct first
+KS4_A = "/combined/foundation/biology/ecology/carbon-cycle.html"      # built from a record (lean since Wave 1)
 KS4_B = "/combined/foundation/chemistry/chemical-changes/ph-scale.html"  # Design's own Ks4Guess
 # ⊕ 14 Nov 2026 (Mide: checks do not depend on real lessons): the hidden frozen classic copy
 # of using-a-microscope (ks3_fixtures/). Same page, same Start here, fixture- save keys.
@@ -167,7 +167,7 @@ def drive_ks4(b, base, path, label, record):
                 fail("%s: reply for %r does not carry the authored reply" % (label, o["text"][:30]))
             if (right in ans) is not True:
                 fail("%s: 'The answer' mark is not on the authored correct option" % label)
-        ok("replies and the answer mark match ks4_lessons/start_here.py")
+        ok("replies and the answer mark match the record the page is built from")
     # unforced
     firsts = set()
     page = b.attach()
@@ -251,8 +251,19 @@ def drive_ks3(b, base, path, label):
         fail("%s: 16 unforced loads never showed both orders" % label)
 
 
+def ks4_record(slug):
+    """The Start here a KS4 page is built from: its lean record when it has one (the lean rebuild
+    supersedes ks4_lessons/start_here.py on that page), otherwise start_here.py."""
+    from ks4_lessons import lean, start_here as SH
+    rec = lean.records().get(slug)
+    if rec is None:
+        return SH.START_HERE[slug]
+    st = rec["start"]
+    return {"options": [{"text": t, "correct": i == st["answer"], "reply": r}
+                        for i, (t, r) in enumerate(st["options"])]}
+
+
 def main():
-    from ks4_lessons import start_here as SH
     server, port = cdp.serve(OUT)
     base = "http://127.0.0.1:%d" % port
     try:
@@ -261,7 +272,7 @@ def main():
                 print("missing built page %s — run build_all.py first" % p)
                 return 2
         with cdp.Browser() as b:
-            drive_ks4(b, base, KS4_A, "KS4 (record)", SH.START_HERE["carbon-cycle"])
+            drive_ks4(b, base, KS4_A, "KS4 (record)", ks4_record("carbon-cycle"))
             drive_ks4(b, base, KS4_B, "KS4 (Design's Ks4Guess)", None)
             drive_ks3(b, base, KS3, "KS3")
     finally:
