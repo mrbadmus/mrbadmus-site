@@ -6022,6 +6022,16 @@ def build_ks3(output_dir=OUT_ROOT, mirror_to_root=True, repo_root="."):
                 n += 1
     lesson_tree = n
 
+    # ⊕ Hidden check fixtures (Mide, 14 Nov 2026): "our checks should not depend on real
+    # lessons". Frozen classic copies of the lessons the checks read, at
+    # ks3/_fixtures/fixture-<slug>.html, rendered by the same lesson_page(). They are NOT in
+    # `units`, so no index, browse page, next/previous or "Before this" can reach them, and
+    # they are not counted in `n` (the lesson tree). See ks3_fixtures/__init__.py.
+    import ks3_fixtures
+    fixture_pages = ks3_fixtures.render(units_by_code, registry, neighbours, lesson_page, canon)
+    for relpath, page in fixture_pages:
+        write(relpath, page)
+
     # ── the browse layer (§4.5.2) ────────────────────────────────────────
     # Index pages only. Every href above is a lesson URL that already exists and
     # is untouched by anything below; year and half term reach these paths and
@@ -6049,6 +6059,17 @@ def build_ks3(output_dir=OUT_ROOT, mirror_to_root=True, repo_root="."):
           % (n, ks3_out, lesson_tree, browse_pages))
     print("  ✅ browse layer covers %d lesson slots across %d years"
           % (placed, len(YEARS)))
+
+    # The fixtures stay hidden: a page anywhere in this tree that links to one, or a fixture
+    # that lost its noindex tag or its own save keys, stops the build.
+    fixture_problems = ks3_fixtures.audit(output_dir, KS3_DIR, scan_root=ks3_out)
+    if fixture_problems:
+        print("\n❌ BUILD FAILED — ks3_fixtures, %d problem(s):\n" % len(fixture_problems))
+        for p in fixture_problems:
+            print("   • %s" % p)
+        raise SystemExit(1)
+    print("  ✅ %d hidden check fixture(s) → %s/%s/ (noindex, fixture- save keys, linked from "
+          "nowhere)" % (len(fixture_pages), ks3_out, ks3_fixtures.DIR))
 
     # Shared assets. Cloudflare serves from mrbadmus_site/, so a KS3 page that
     # links /shared/ks3.css gets a 404 unless the file is copied there.

@@ -131,7 +131,7 @@ class Component extends DCLogic {
       workedTabs: exs.map((e, i) => ({ label: e.tab, pressed: wi === i, style: this.seg(wi === i), onClick: () => this.setState({ workedEx: i, workedStep: 0 }) })),
       workedHead: ex.head || '',
       workedProgress: 'Step ' + s.workedStep + ' of ' + wn,
-      workedSteps: (ex.steps || []).slice(0, s.workedStep).map((st) => Object.assign({}, st, { hasNote: !!st.note, hasTri: !!(ex.eq && st.label === 'Formula'), eq: ex.eq || null, find: ex.find || '' })),
+      workedSteps: (ex.steps || []).slice(0, s.workedStep).map((st) => Object.assign({}, st, { line: (ex.eq && !ex.eq.top && ex.eq.written && st.label === 'Formula') ? ex.eq.written : st.line, hasNote: !!st.note, hasTri: !!(ex.eq && ex.eq.top && st.label === 'Formula'), eq: ex.eq || null, find: ex.find || '' })),
       workedDone: s.workedStep >= wn,
       workedBtnLabel: s.workedStep === 0 ? 'Show the first step' : (s.workedStep >= wn ? 'All five shown' : 'Show the next step'),
       workedBtnStyle: s.workedStep >= wn ? 'opacity:.45;cursor:default;' : '',

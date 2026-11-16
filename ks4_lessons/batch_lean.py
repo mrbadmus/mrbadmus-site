@@ -17,6 +17,7 @@ arrive.
 """
 import importlib
 import os
+import re
 
 from . import lean as _lean
 
@@ -28,13 +29,147 @@ SLUGS = ["efficiency", "changes-in-energy", "power", "thermal-conductivity",
          "energy-resources", "energy-stores-systems", "energy-changes-in-systems",
          "energy-transfers-in-a-system"]
 
+# Slugs the lean batch registers when their record exists: the eight above first (their order
+# is part of the Energy pages' bytes), then every other record in ks4_lessons/lean/, by slug.
+# Wave 1 (docs/lessons/LEAN-PLAN.md): Physics Magnetism (ten old-format lessons), then Biology
+# Ecology (eight old-format lessons derived below, fifteen legacy batch-10 lessons).
+
 # Lessons that have no legacy page: identity comes from here (the subtopic data's own
-# title and spec, 6.1.1.1 / 6.1.1.3 / 6.1.2.1).
+# title and spec, 6.1.1.1 / 6.1.1.3 / 6.1.2.1). The three Energy ones are written out so
+# their pages stay byte-identical; every OTHER old-format lesson is derived from the subtopic
+# data by _derive() below.
 _OLD_FORMAT = {
     "energy-stores-systems": ("Energy stores and systems", "6.1.1.1", "Model"),
     "energy-changes-in-systems": ("Energy changes in systems", "6.1.1.3", "Quantitative"),
     "energy-transfers-in-a-system": ("Energy transfers in a system", "6.1.2.1", "Model"),
 }
+
+# ── old-format lessons beyond Energy: identity derived from all_subtopics_<subject>*.py ──
+# Subject and topic of each unit whose old-format lessons are derived, and the unit name the
+# header chrome shows. A unit is added here when its first record lands.
+_UNITS = {
+    ("physics", "magnetism"): "Magnetism and electromagnetism",
+    ("biology", "ecology"): "Ecology",
+}
+# The family label (the eyebrow's last word) is a ruled choice per lesson, drawn from the
+# labels the existing batches use: Model, Quantitative, Process, Classify, Contrast,
+# Investigation, Required practical. Magnetism: poles are sorted (Classify), the two field
+# lessons and electromagnetism are about drawing the field (Model), the motor effect, motors,
+# loudspeakers, the generator effect and microphones are cause-and-effect chains (Process),
+# transformers is the one with a calculation (Quantitative).
+_FAMILY = {
+    "poles-of-a-magnet": "Classify",
+    "magnetic-fields": "Model",
+    "electromagnetism": "Model",
+    "flemings-left-hand-rule": "Process",
+    "electric-motors": "Process",
+    "loudspeakers-headphones": "Process",
+    "induced-potential": "Process",
+    "uses-generator-effect": "Process",
+    "microphones": "Process",
+    "transformers": "Quantitative",
+    # Ecology's eight old-format lessons (the fifteen legacy ones keep batch 10's own family)
+    "biodiversity": "Model",
+    "waste-management": "Process",
+    "land-use": "Process",
+    "global-warming": "Process",
+    "carbon-cycle": "Model",
+    "water-cycle": "Model",
+    "decomposition": "Process",
+    "factors-affecting-food-security": "Classify",
+}
+# Ecology lessons whose record has no `legacy` but which were live Design lessons in an earlier
+# batch: the lean page is built from the record alone and replaces that page. slug -> the one
+# batch it replaces (ks4_lessons.verify_no_slug_collisions refuses any other collision).
+SUPERSEDES = {
+    "biodiversity": "batch-4", "water-cycle": "batch-4",
+    "carbon-cycle": "batch-2", "decomposition": "batch-2",
+    "global-warming": "batch-5", "land-use": "batch-5", "waste-management": "batch-5",
+    "factors-affecting-food-security": "batch-6",
+}
+# The AQA section number of each old-format Biology lesson, taken from the lesson's curriculum
+# table (docs/lessons/wave1/ks4-<slug>.md, its Sources line) and NOT from the subtopic data, whose
+# `spec` is sometimes only the section (carbon-cycle, water-cycle and decomposition say 4.7.3).
+# Biology numbers the same in 8464 and 8461, so one number serves both specs, except
+# decomposition: 8464 has no Decomposition section, so on CF/CH it is the 4.7.2.2 line on
+# microorganisms; 8461 teaches it as 4.7.2.3 (TF/TH). A (combined, triple) pair says so.
+_SPEC = {
+    "biodiversity": "4.7.3.1",
+    "waste-management": "4.7.3.2",
+    "land-use": "4.7.3.3",
+    "global-warming": "4.7.3.5",
+    "carbon-cycle": "4.7.2.2",
+    "water-cycle": "4.7.2.2",
+    "decomposition": ("4.7.2.2", "4.7.2.3"),
+    "factors-affecting-food-security": "4.7.5.1",
+}
+# Words kept capitalised by sentence_case() beyond the first word.
+_KEEP_CAPS = {"Fleming's"}
+
+_SUBTOPIC_MODULES = {
+    "physics": {"CF": "all_subtopics_physics", "CH": "all_subtopics_physics_higher",
+                "TF": "all_subtopics_physics_triple_foundation",
+                "TH": "all_subtopics_physics_triple_higher"},
+    "biology": {"CF": "all_subtopics_biology", "CH": "all_subtopics_biology_higher",
+                "TF": "all_subtopics_biology_triple_foundation",
+                "TH": "all_subtopics_biology_triple_higher"},
+}
+_SUBTOPIC_ATTR = {"physics": "PHYSICS_SUBTOPICS_ALL", "biology": "BIOLOGY_SUBTOPICS_ALL"}
+_DATA = {}
+
+
+def _subtopics(subject):
+    """{route: {topic_id: [subtopic dict]}} for one subject (cached)."""
+    if subject not in _DATA:
+        _DATA[subject] = {r: getattr(importlib.import_module(m), _SUBTOPIC_ATTR[subject])
+                          for r, m in _SUBTOPIC_MODULES[subject].items()}
+    return _DATA[subject]
+
+
+def sentence_case(title):
+    """'Magnetic Fields' -> 'Magnetic fields', as the pilot titled its lessons."""
+    words = title.split()
+    return " ".join([words[0]] + [w if w in _KEEP_CAPS else w.lower() for w in words[1:]])
+
+
+def clean_spec(spec):
+    """'6.7.2.4 (HT only, physics only)' -> '6.7.2.4'."""
+    return re.sub(r"\s*\([^)]*\)", "", str(spec)).strip()
+
+
+def _derive(slug):
+    """Identity of an old-format lesson (no legacy page, not one of the Energy three) from the
+    subtopic data: subject, topic, unit, sentence-case title, clean spec, and ROUTES = only
+    the routes the subtopic exists on. Fails loudly if the slug is not in a known unit."""
+    for (subject, topic), unit in _UNITS.items():
+        found = {}
+        for route, tree in _subtopics(subject).items():
+            for st in tree.get(topic, []):
+                if st["id"] == slug:
+                    found[route] = st
+        if not found:
+            continue
+        if slug not in _FAMILY:
+            raise ValueError("batch_lean: %r has no family label in _FAMILY" % slug)
+        canon = found.get("TH") or next(iter(found.values()))   # TH is the 'everything' tier
+        spec, spec_c = clean_spec(canon["spec"]), None
+        if subject == "biology":
+            if slug not in _SPEC:
+                raise ValueError("batch_lean: %r has no section number in _SPEC" % slug)
+            spec = _SPEC[slug]
+            if isinstance(spec, tuple):
+                spec_c, spec = spec
+        d = dict(slug=slug, subject=subject, topic_id=topic,
+                    title=sentence_case(canon["title"]), spec=spec,
+                    family=_FAMILY[slug], routes=[r for r in ALL if r in found],
+                    review_state="examiner-reviewed", legacy_batch=None, source_file=None,
+                    unit=unit)
+        if spec_c:
+            d["spec_c"] = spec_c
+        return d
+    raise ValueError("batch_lean: %r is not a subtopic of any unit in _UNITS (%s)"
+                     % (slug, ", ".join("%s/%s" % k for k in _UNITS)))
+
 
 BLOCKS_DIR = os.path.join("ks4_lessons", "lean", "blocks")
 BLOCK_NAMES = ["Ks4Chrome", "Ks4Choice", "Ks4Sort", "Ks4Chain", "Ks4Write",
@@ -70,17 +205,27 @@ def _lesson(slug, rec):
     if legacy:
         d = dict(_legacy(slug, legacy))
         d["legacy_batch"] = legacy
-    else:
+        unit = _UNITS.get((d["subject"], d["topic_id"]), "Energy")
+    elif slug in _OLD_FORMAT:
         title, spec, family = _OLD_FORMAT[slug]
+        unit = "Energy"
         d = dict(slug=slug, subject="physics", topic_id="energy", title=title, spec=spec,
                  family=family, routes=ALL, review_state="examiner-reviewed",
                  legacy_batch=None,
                  # no Design file: the key exists (as None) because tools that walk every
                  # registered batch index lessons by `source_file`
                  source_file=None)
-    d.update(batch=B, staged=False, lean=rec, unit="Energy",
+    else:
+        d = _derive(slug)
+        unit = d.pop("unit")
+    d.update(batch=B, staged=False, lean=rec, unit=unit,
              block_map=dict(_BLOCK_MAP))
     return d
 
 
-LESSONS = [_lesson(s, _lean.records()[s]) for s in SLUGS if s in _lean.records()]
+def _slugs():
+    recs = _lean.records()
+    return [s for s in SLUGS if s in recs] + sorted(s for s in recs if s not in SLUGS)
+
+
+LESSONS = [_lesson(s, _lean.records()[s]) for s in _slugs()]

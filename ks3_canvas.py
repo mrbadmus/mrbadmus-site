@@ -57,7 +57,13 @@ import sys
 import time
 
 KS3_OUT = os.path.join("mrbadmus_site", "ks3")
-C1 = "chemistry/particles-and-their-behaviour/"
+# ⊕ 14 Nov 2026 (Mide: "our checks should not depend on real lessons"). The six C1
+# instruments are measured on the hidden frozen classic copies of their lessons
+# (ks3_fixtures/, built at ks3/_fixtures/fixture-<slug>.html), not on the real C1 pages, so
+# the gate keeps measuring them when C1 goes lean. It used to read
+#     C1 = "chemistry/particles-and-their-behaviour/"
+# Every instrument, control, canvas and assertion below is unchanged; only the page moved.
+C1 = "_fixtures/fixture-"
 
 STABLE = "stable"
 ANIMATED = "animated"

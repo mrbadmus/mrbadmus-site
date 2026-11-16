@@ -18,6 +18,8 @@ authored LESSON, which export_ks3_questions.py reads for the database mirror):
     figures     the record's own figures are added
     ladder      options' feedback and stems overlaid from the record. The ladder's
                 questions, options and answers are never touched.
+    ks4_becomes, safety_note, before_this   replaced by the record's own wording when it gives one
+                (None drops the line), so a lean page's endmatter meets the standard too.
 
 Every other field stays (vocabulary, covers, misconceptions, figures, activities,
 key_note...) so the data-reading gates and the flashcards are unaffected.
@@ -99,7 +101,9 @@ def _ladder(lesson, rec):
     # exact-text edits to a self-marked rung's success list (render only; the authored list is
     # untouched). Every [old, new] pair must find its old text exactly once, or the build stops.
     for old, new in rec.get("ladder_ticks") or []:
-        hits = [(rung, i) for rung, q in lad.items() for i, t in enumerate(q.get("success") or []) if t == old]
+        # (a ladder may carry text entries such as `retry_note` and `sub` beside the rung dicts)
+        hits = [(rung, i) for rung, q in lad.items() if isinstance(q, dict)
+                for i, t in enumerate(q.get("success") or []) if t == old]
         if len(hits) != 1:
             raise ValueError("lean[%s]: ladder_ticks old text %r found %d times in the ladder's success lists"
                              % (rec["slug"], old[:70], len(hits)))
@@ -146,6 +150,16 @@ def apply(lesson):
     lesson["stretch"] = []
     lesson["ladder"] = _ladder(lesson, rec)
     lesson["misconceptions"] = _misconceptions(lesson, rec)
+    # the "Ask MrBadmus" prompt, reworded when the old one names something the lean page dropped
+    if rec.get("tutor_body") and lesson.get("tutor"):
+        lesson["tutor"] = dict(lesson["tutor"], body=rec["tutor_body"])
+    # render-only rewording of three endmatter lines; a None value drops the line
+    for key in ("ks4_becomes", "safety_note", "before_this"):
+        if key in rec:
+            if rec[key]:
+                lesson[key] = rec[key]
+            else:
+                lesson.pop(key, None)
     # the lean page carries a convention note only when its record sets one
     if rec.get("convention_note"):
         lesson["convention_note"] = rec["convention_note"]

@@ -522,10 +522,60 @@ def wave_graph(x_label, y_label, cycles=2.5, mid=0.55, amp=0.30, W=480,
     return c.svg()
 
 
+# ── two solenoids end to end on one axis, with their poles lettered ───────
+
+def solenoid_pair(turns=5, pitch=32, radius=46, x0=50, gap=90, axis_y=120,
+                  poles=(("S", "N"), ("S", "N")), names=("coil A", "coil B"),
+                  W=480, H=250, key=True):
+    """Two coils drawn as `solenoid` draws one (front of each turn solid,
+    back dashed), side by side on a common horizontal axis with `gap`
+    between them. Each coil's two ends are lettered from `poles`
+    ((left, right) per coil) above the end of the coil, and each coil is
+    named below it. A short lead leaves each end of each coil.
+    NEVER drawn: current arrows, field lines, a force arrow, a core — what
+    the pair does next is the answer."""
+    for a, b in poles:
+        if {a, b} != {"N", "S"}:
+            raise ValueError("solenoid_pair: each coil has one N and one S end")
+    fs = q_font(W)
+    c = Canvas(W, H)
+    top, bot = axis_y - radius, axis_y + radius
+    sw_f, sw_b = q_stroke(W, 3), q_stroke(W, 2)
+    lead = 22
+    for i, ((pl, pr), name) in enumerate(zip(poles, names)):
+        xs = x0 + i * ((turns - 1) * pitch + pitch / 2.0 + gap)
+        for k in range(turns - 1):
+            line(c, xs + k * pitch + pitch / 2.0, bot, xs + (k + 1) * pitch,
+                 top, ST, sw_b, "6 5", "butt")
+        for k in range(turns):
+            line(c, xs + k * pitch, top, xs + k * pitch + pitch / 2.0, bot,
+                 ST, sw_f)
+        xe = xs + (turns - 1) * pitch + pitch / 2.0
+        line(c, xs - lead, top, xs, top, ST, sw_f)
+        line(c, xe, bot, xe + lead, bot, ST, sw_f)
+        ly = top - 14
+        text(c, xs, ly, pl, fs + 4, LBL, "bold")
+        text(c, xe, ly, pr, fs + 4, LBL, "bold")
+        text(c, (xs + xe) / 2.0, bot + fs + 14, name, fs, LBL, "bold")
+    if key:
+        ky = H - 22
+        items = (("front of each turn", None), ("back of each turn", "6 5"))
+        widths = [30 + 8 + _tw(t, fs) for t, _ in items]
+        g = 28
+        x = (W - (sum(widths) + g)) / 2
+        for (t, dash), w_ in zip(items, widths):
+            line(c, x, ky - fs * 0.35, x + 30, ky - fs * 0.35, ST,
+                 sw_f if dash is None else sw_b, dash, "butt")
+            text(c, x + 38, ky, t, fs, LBL, "bold", "start")
+            x += w_ + g
+    return c.svg()
+
+
 ART_KS4PHYS = {
     "free-body":         free_body,
     "magnet-compasses":  magnet_compasses,
     "solenoid":          solenoid,
+    "solenoid-pair":     solenoid_pair,
     "nuclide":           nuclide,
     "sankey-simple":     sankey_simple,
     "echo-sounder":      echo_sounder,

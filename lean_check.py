@@ -16,11 +16,12 @@ reword.
     shape      exactly 3 or 4 key words; exactly two Start here options with answer 0 or 1;
                KS4 route sets the template can gate; rung labels are "Rung 1".."Rung 4";
                no embedded bench or instrument on the page
-    spec       docs/lessons/pilot/ks3-<slug>.md / ks4-<slug>.md exists. A WARNING until
+    spec       docs/lessons/<folder>/ks3-<slug>.md / ks4-<slug>.md exists. A WARNING until
                the spec tables are all in; STRICT_SPEC (or --strict-spec) makes it a failure.
 
     python3 lean_check.py [--strict-spec]
 """
+import glob
 import os
 import re
 import sys
@@ -261,8 +262,8 @@ def spec_table_problems(ks3_slugs, ks4_slugs):
     missing = []
     for ks, slugs in (("ks3", ks3_slugs), ("ks4", ks4_slugs)):
         for s in sorted(slugs):
-            if not os.path.exists(os.path.join(HERE, "docs", "lessons", "pilot", "%s-%s.md" % (ks, s))):
-                missing.append("%s %s: no spec table at docs/lessons/pilot/%s-%s.md" % (ks, s, ks, s))
+            if not glob.glob(os.path.join(HERE, "docs", "lessons", "*", "%s-%s.md" % (ks, s))):
+                missing.append("%s %s: no spec table at docs/lessons/<folder>/%s-%s.md" % (ks, s, ks, s))
     return missing
 
 

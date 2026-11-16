@@ -207,6 +207,7 @@ def _legacy_slot_sources(tpl):
 class _Slots:
     def __init__(self, rec, legacy_tpl):
         self.rec = rec
+        self.tpl = legacy_tpl
         self.legacy = _legacy_slot_sources(legacy_tpl)
         self.used = set()
 
@@ -215,6 +216,21 @@ class _Slots:
             raise ValueError("lean KS4 record: {'figure': ...} is KS3 only")
         name = part["slot"]
         self.used.add(name)
+        if name.startswith("fig:"):
+            # a drawn figure for a card (figlib/ks4lean.py): inline SVG, checked, unknown names raise
+            from figlib import ks4lean
+            return lean_blocks.fig_wrap(ks4lean.svg(name[4:]))
+        if name.startswith("legacy-fig:"):
+            # a figure the legacy page already draws (`{{ <prop> }}` in its own bordered div):
+            # the same bordered div, wrapped for the card. The prop must be in the legacy
+            # template exactly once, as that div, or the build stops.
+            prop = name.split(":", 1)[1]
+            if self.tpl is None:
+                raise ValueError("lean KS4 record %r: slot %r needs a legacy page" % (self.rec["slug"], name))
+            if self.tpl.count("{{ %s }}" % prop) != 1 or self.tpl.count(_FIG_DIV % prop) != 1:
+                raise SystemExit("lean_ks4: %s: slot %r: {{ %s }} is not in the legacy template "
+                                 "exactly once as its bordered figure div" % (self.rec["slug"], name, prop))
+            return lean_blocks.fig_wrap(_FIG_DIV % prop)
         if name in SIMPLE_FIG_SLOTS:
             return lean_blocks.fig_wrap(_FIG_DIV % SIMPLE_FIG_SLOTS[name])
         if name == "triangle-energy":
@@ -226,6 +242,9 @@ class _Slots:
             if eq not in (self.rec.get("equations") or {}):
                 raise ValueError("lean KS4 record %r: slot %r names an equation the record "
                                  "does not define" % (self.rec["slug"], name))
+            if not self.rec["equations"][eq].get("top"):
+                raise ValueError("lean KS4 record %r: slot %r names a sheet equation (no top/bottom), "
+                                 "which cannot be a triangle" % (self.rec["slug"], name))
             return self._triangle("leanEq_" + eq)
         if name == "cfifa":
             ex, qs = (("leanCfExamples", "leanCfQuestions") if self.rec.get("cfifa")
@@ -257,15 +276,31 @@ def _route_wrap(flag, out):
 # resolves from the route (the same mechanism power and changes-in-energy already use).
 
 _EYEBROW_LITERAL = re.compile(r'<p class="ks3-eyebrow">AQA Physics (6\.[\d.]+)</p>')
+# Biology numbers 4.7.x in BOTH specs (8464 and 8461). A legacy biology header writes one literal
+# for every route, "AQA Biology 4.7.1.2 and 4.7.1.3 \u00b7 Combined and Triple", which names a
+# single spec on routes of the other: the spec numbers are kept, the rest is rebuilt per route.
+_EYEBROW_LITERAL_BIO = re.compile(r'<p class="ks3-eyebrow">AQA Biology (4\.7\.\d+\.\d+(?: and 4\.7\.\d+\.\d+)?)'
+                                  r'(?: \u00b7 [^<]*)?</p>')
 
 
 def _eyebrow_js(lesson, spec):
-    if lesson["subject"] != "physics" or not spec.startswith("6."):
-        raise SystemExit("lean_ks4: %s: the 6.x to 4.x eyebrow rule is for physics sections, got %r"
-                         % (lesson["slug"], spec))
     tail = (" \u00b7 %s" % lesson["family"]) if lesson.get("family") else ""
-    comb = "AQA Combined Science (8464) %s%s" % (spec, tail)
-    tri = "AQA Physics (8463) 4.%s%s" % (spec[2:], tail)
+    if lesson["subject"] == "physics":
+        if not spec.startswith("6."):
+            raise SystemExit("lean_ks4: %s: the 6.x to 4.x eyebrow rule is for physics sections, got %r"
+                             % (lesson["slug"], spec))
+        comb = "AQA Combined Science (8464) %s%s" % (spec, tail)
+        tri = "AQA Physics (8463) 4.%s%s" % (spec[2:], tail)
+    elif lesson["subject"] == "biology":
+        # the same number in both specs; a lesson may carry a different one per spec family
+        # (batch_lean `spec_c`: the Combined number when it differs from the Triple one)
+        if not spec.startswith("4.7."):
+            raise SystemExit("lean_ks4: %s: a biology eyebrow spec must be 4.7.x, got %r"
+                             % (lesson["slug"], spec))
+        comb = "AQA Combined Science (8464) %s%s" % (lesson.get("spec_c") or spec, tail)
+        tri = "AQA Biology (8461) %s%s" % (spec, tail)
+    else:
+        raise SystemExit("lean_ks4: %s: no eyebrow rule for subject %r" % (lesson["slug"], lesson["subject"]))
     return "const LEAN_EYEBROW = %s;\n" % js({"c": comb, "t": tri})
 
 
@@ -321,7 +356,7 @@ def _legacy_template(lesson, rec, tpl):
         raise SystemExit("lean_ks4: %s: header has %d big question(s), %d draft flag(s)"
                          % (lesson["slug"], n1, n3))
 
-    m = _EYEBROW_LITERAL.search(hdr)
+    m = (_EYEBROW_LITERAL_BIO if lesson["subject"] == "biology" else _EYEBROW_LITERAL).search(hdr)
     slots.spec = m.group(1) if m else None
     if m:
         hdr = hdr.replace(m.group(0), '<p class="ks3-eyebrow">{{ leanEyebrow }}</p>', 1)
@@ -401,9 +436,16 @@ def _lean_props_js(rec):
     return "\n".join(lines) + "\n"
 
 
+_ASSIGN_HEAD = re.compile(r"(?<=return Object\.assign\()(\{\}, R, |c, )")
+
+
 def _legacy_logic(lesson, rec, logic, spec=None):
     what = lesson["slug"] + " logic"
-    m = re.search(r"const RAIL = \[.*?\n\];", logic, re.S)
+    # RAIL is written on ONE line (Design's batch 10) or over several (the pilot's): the one-line
+    # form first, so a multi-line match can never run on past it and swallow the next constant
+    m = re.search(r"const RAIL = \[[^\n]*\];[ \t]*(?=\n)", logic)
+    if not m:
+        m = re.search(r"const RAIL = \[.*?\n\];", logic, re.S)
     if not m or len(re.findall(r"const RAIL = \[", logic)) != 1:
         raise SystemExit("lean_ks4: %s: cannot find the RAIL constant" % what)
     logic = logic[:m.start()] + RAIL_JS + logic[m.end():]
@@ -434,14 +476,20 @@ def _legacy_logic(lesson, rec, logic, spec=None):
         k = _match_close(logic, j, "{", "}")
         logic = logic[:j] + _example_js(cff, rec) + logic[k:]
 
+    # The props object is returned as `Object.assign({}, R, {` (the pilot's logic) or
+    # `Object.assign(c, {` (Design's batch 10, where `c` is common()'s result). Exactly one of
+    # either shape, or the build stops.
+    heads = _ASSIGN_HEAD.findall(logic)
+    if len(heads) != 1 and (rec.get("equations") or rec.get("cfifa") or spec):
+        raise SystemExit("lean_ks4: %s: expected exactly one `return Object.assign({}, R, ` or "
+                         "`return Object.assign(c, `, found %d" % (what, len(heads)))
     if rec.get("equations") or rec.get("cfifa"):
-        logic = _once(logic, "return Object.assign({}, R, {",
-                      "return Object.assign({}, R, LEAN_PROPS, {", what)
+        logic = _ASSIGN_HEAD.sub(lambda m: m.group(0) + "LEAN_PROPS, ", logic)
         logic = _lean_props_js(rec) + logic
     if spec:
         # the eyebrow literal became {{ leanEyebrow }}: resolve it from the route
-        logic = _once(logic, "return Object.assign({}, R, ",
-                      "return Object.assign({}, R, { leanEyebrow: R.isTriple ? LEAN_EYEBROW.t : LEAN_EYEBROW.c }, ", what)
+        v = "R" if heads[0].startswith("{}") else "c"
+        logic = _ASSIGN_HEAD.sub(lambda m: m.group(0) + "{ leanEyebrow: %s.isTriple ? LEAN_EYEBROW.t : LEAN_EYEBROW.c }, " % v, logic)
         logic = _eyebrow_js(lesson, spec) + logic
     return logic
 
@@ -495,6 +543,12 @@ def source(lesson, legacy=None):
     `legacy` is `(tpl, logic, port_report)` after ks4_batch_rulings.port_lesson and
     ks4_science_rulings, from build_ks4.legacy_texts(); None for a lesson with no legacy page."""
     rec = lesson["lean"]
+    for k, e in (rec.get("equations") or {}).items():
+        # an equation is a triangle (top and bottom) or a sheet equation: name, written, source "sheet"
+        if bool(e.get("top")) != bool(e.get("bottom")) or (not e.get("top") and (
+                e.get("source") != "sheet" or not e.get("written"))):
+            raise ValueError("lean KS4 record %r: equation %s needs top+bottom (a triangle) or "
+                             "source 'sheet' with name and written" % (rec["slug"], k))
     for it in rec["knowledge"] + rec["deeper"]:
         lean_blocks.route_flag(it.get("routes"))          # rejects any route set we cannot gate
     if legacy is not None:

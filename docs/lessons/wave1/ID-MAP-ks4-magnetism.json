@@ -1,0 +1,5183 @@
+{
+ "base": "bddc23a06f4f92958d9426148313d7c3af04cd19",
+ "ids": {
+  "ks4-electric-motors-e01": {
+   "kp": "ks4.electric-motors.1",
+   "new": "ks4-electric-motors-e01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electric-motors-e02": {
+   "kp": "ks4.electric-motors.2",
+   "new": "ks4-electric-motors-e02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electric-motors-e03": {
+   "kp": "ks4.electric-motors.4",
+   "new": "ks4-electric-motors-e03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electric-motors-e04": {
+   "kp": "ks4.electric-motors.4",
+   "new": "ks4-electric-motors-e04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electric-motors-e05": {
+   "kp": "ks4.electric-motors.3",
+   "new": "ks4-electric-motors-e05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electric-motors-e06": {
+   "kp": "ks4.electric-motors.4",
+   "new": "ks4-electric-motors-e06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electric-motors-e07": {
+   "kp": "ks4.electric-motors.5",
+   "new": "ks4-electric-motors-e07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electric-motors-e08": {
+   "kp": "ks4.electric-motors.2",
+   "new": "ks4-electric-motors-e08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electric-motors-e09": {
+   "kp": "ks4.electric-motors.2",
+   "new": "ks4-electric-motors-e09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electric-motors-e10": {
+   "kp": "ks4.electric-motors.4",
+   "new": "ks4-electric-motors-e10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electric-motors-e11": {
+   "kp": "ks4.electric-motors.4",
+   "new": "ks4-electric-motors-e11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electric-motors-e12": {
+   "kp": "ks4.electric-motors.4",
+   "new": "ks4-electric-motors-e12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electric-motors-e13": {
+   "kp": "ks4.electric-motors.4",
+   "new": "ks4-electric-motors-e13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electric-motors-e14": {
+   "kp": "ks4.electric-motors.5",
+   "new": "ks4-electric-motors-e14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electric-motors-e15": {
+   "kp": "ks4.electric-motors.7",
+   "new": "ks4-electric-motors-e15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electric-motors-e16": {
+   "kp": "ks4.electric-motors.1",
+   "new": "ks4-electric-motors-e16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electric-motors-e17": {
+   "kp": "ks4.electric-motors.2",
+   "new": "ks4-electric-motors-e17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electric-motors-e18": {
+   "kp": "ks4.electric-motors.1",
+   "new": "ks4-electric-motors-e18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electric-motors-h01": {
+   "kp": "ks4.electric-motors.6",
+   "new": "ks4-electric-motors-h01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electric-motors-h02": {
+   "kp": "ks4.electric-motors.4",
+   "new": "ks4-electric-motors-h02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electric-motors-h03": {
+   "kp": "ks4.electric-motors.7",
+   "new": "ks4-electric-motors-h03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electric-motors-h04": {
+   "kp": "ks4.electric-motors.5",
+   "new": "ks4-electric-motors-h04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electric-motors-h05": {
+   "kp": "ks4.electric-motors.6",
+   "new": "ks4-electric-motors-h05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electric-motors-h06": {
+   "kp": "ks4.electric-motors.5",
+   "new": "ks4-electric-motors-h06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electric-motors-h07": {
+   "kp": "ks4.electric-motors.5",
+   "new": "ks4-electric-motors-h07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electric-motors-h08": {
+   "kp": "ks4.electric-motors.5",
+   "new": "ks4-electric-motors-h08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electric-motors-h09": {
+   "kp": "ks4.electric-motors.4",
+   "new": "ks4-electric-motors-h09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electric-motors-h10": {
+   "kp": "ks4.electric-motors.6",
+   "new": "ks4-electric-motors-h10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electric-motors-h11": {
+   "kp": "ks4.electric-motors.5",
+   "new": "ks4-electric-motors-h11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electric-motors-h12": {
+   "kp": "ks4.electric-motors.7",
+   "new": "ks4-electric-motors-h12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electric-motors-h13": {
+   "kp": "ks4.electric-motors.6",
+   "new": "ks4-electric-motors-h13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electric-motors-h14": {
+   "kp": "ks4.electric-motors.1",
+   "new": "ks4-electric-motors-h14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electric-motors-h15": {
+   "kp": "ks4.electric-motors.3",
+   "new": "ks4-electric-motors-h15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electric-motors-h16": {
+   "kp": "ks4.electric-motors.6",
+   "new": "ks4-electric-motors-h16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electric-motors-h17": {
+   "kp": "ks4.electric-motors.4",
+   "new": "ks4-electric-motors-h17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electric-motors-h18": {
+   "kp": "ks4.electric-motors.7",
+   "new": "ks4-electric-motors-h18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electric-motors-s01": {
+   "kp": "ks4.electric-motors.4",
+   "new": "ks4-electric-motors-s01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electric-motors-s02": {
+   "kp": "ks4.electric-motors.5",
+   "new": "ks4-electric-motors-s02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electric-motors-s03": {
+   "kp": "ks4.electric-motors.3",
+   "new": "ks4-electric-motors-s03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electric-motors-s04": {
+   "kp": "ks4.electric-motors.3",
+   "new": "ks4-electric-motors-s04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electric-motors-s05": {
+   "kp": "ks4.electric-motors.6",
+   "new": "ks4-electric-motors-s05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electric-motors-s06": {
+   "kp": "ks4.electric-motors.6",
+   "new": "ks4-electric-motors-s06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electric-motors-s07": {
+   "kp": "ks4.electric-motors.6",
+   "new": "ks4-electric-motors-s07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electric-motors-s08": {
+   "kp": "ks4.electric-motors.6",
+   "new": "ks4-electric-motors-s08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electric-motors-s09": {
+   "kp": "ks4.electric-motors.1",
+   "new": "ks4-electric-motors-s09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electric-motors-s10": {
+   "kp": "ks4.electric-motors.6",
+   "new": "ks4-electric-motors-s10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electric-motors-s11": {
+   "kp": "ks4.electric-motors.6",
+   "new": "ks4-electric-motors-s11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electric-motors-s12": {
+   "kp": "ks4.electric-motors.1",
+   "new": "ks4-electric-motors-s12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electric-motors-s13": {
+   "kp": "ks4.electric-motors.2",
+   "new": "ks4-electric-motors-s13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electric-motors-s14": {
+   "kp": "ks4.electric-motors.2",
+   "new": "ks4-electric-motors-s14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electric-motors-s15": {
+   "kp": "ks4.electric-motors.2",
+   "new": "ks4-electric-motors-s15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electric-motors-s16": {
+   "kp": "ks4.electric-motors.3",
+   "new": "ks4-electric-motors-s16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electric-motors-s17": {
+   "kp": "ks4.electric-motors.2",
+   "new": "ks4-electric-motors-s17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electric-motors-s18": {
+   "kp": "ks4.electric-motors.5",
+   "new": "ks4-electric-motors-s18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electromagnetism-e01": {
+   "kp": "ks4.electromagnetism.1",
+   "new": "ks4-electromagnetism-e01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electromagnetism-e02": {
+   "kp": "ks4.electromagnetism.2",
+   "new": "ks4-electromagnetism-e02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electromagnetism-e03": {
+   "kp": "ks4.electromagnetism.5",
+   "new": "ks4-electromagnetism-e03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electromagnetism-e04": {
+   "kp": "ks4.electromagnetism.4",
+   "new": "ks4-electromagnetism-e04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electromagnetism-e05": {
+   "kp": "ks4.electromagnetism.4",
+   "new": "ks4-electromagnetism-e05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electromagnetism-e06": {
+   "kp": "ks4.electromagnetism.6",
+   "new": "ks4-electromagnetism-e06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electromagnetism-e07": {
+   "kp": "ks4.electromagnetism.5",
+   "new": "ks4-electromagnetism-e07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electromagnetism-e08": {
+   "kp": "ks4.electromagnetism.2",
+   "new": "ks4-electromagnetism-e08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electromagnetism-e09": {
+   "kp": "ks4.electromagnetism.3",
+   "new": "ks4-electromagnetism-e09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electromagnetism-e10": {
+   "kp": "ks4.electromagnetism.3",
+   "new": "ks4-electromagnetism-e10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electromagnetism-e11": {
+   "kp": "ks4.electromagnetism.4",
+   "new": "ks4-electromagnetism-e11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electromagnetism-e12": {
+   "kp": "ks4.electromagnetism.3",
+   "new": "ks4-electromagnetism-e12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electromagnetism-e13": {
+   "kp": "ks4.electromagnetism.2",
+   "new": "ks4-electromagnetism-e13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electromagnetism-e14": {
+   "kp": "ks4.electromagnetism.7",
+   "new": "ks4-electromagnetism-e14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electromagnetism-e15": {
+   "kp": "ks4.electromagnetism.4",
+   "new": "ks4-electromagnetism-e15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electromagnetism-e16": {
+   "kp": "ks4.electromagnetism.5",
+   "new": "ks4-electromagnetism-e16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electromagnetism-h01": {
+   "kp": "ks4.electromagnetism.8",
+   "new": "ks4-electromagnetism-h01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electromagnetism-h02": {
+   "kp": "ks4.electromagnetism.5",
+   "new": "ks4-electromagnetism-h02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electromagnetism-h03": {
+   "kp": "ks4.electromagnetism.4",
+   "new": "ks4-electromagnetism-h03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electromagnetism-h04": {
+   "kp": "ks4.electromagnetism.7",
+   "new": "ks4-electromagnetism-h04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electromagnetism-h05": {
+   "kp": "ks4.electromagnetism.6",
+   "new": "ks4-electromagnetism-h05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electromagnetism-h06": {
+   "kp": "ks4.electromagnetism.6",
+   "new": "ks4-electromagnetism-h06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electromagnetism-h07": {
+   "kp": "ks4.electromagnetism.3",
+   "new": "ks4-electromagnetism-h07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electromagnetism-h08": {
+   "kp": "ks4.electromagnetism.1",
+   "new": "ks4-electromagnetism-h08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electromagnetism-h09": {
+   "kp": "ks4.electromagnetism.6",
+   "new": "ks4-electromagnetism-h09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electromagnetism-h10": {
+   "kp": "ks4.electromagnetism.8",
+   "new": "ks4-electromagnetism-h10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electromagnetism-h11": {
+   "kp": "ks4.electromagnetism.8",
+   "new": "ks4-electromagnetism-h11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electromagnetism-h12": {
+   "kp": "ks4.electromagnetism.7",
+   "new": "ks4-electromagnetism-h12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electromagnetism-h13": {
+   "kp": "ks4.electromagnetism.6",
+   "new": "ks4-electromagnetism-h13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electromagnetism-h14": {
+   "kp": "ks4.electromagnetism.7",
+   "new": "ks4-electromagnetism-h14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electromagnetism-h15": {
+   "kp": "ks4.electromagnetism.8",
+   "new": "ks4-electromagnetism-h15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electromagnetism-h16": {
+   "kp": "ks4.electromagnetism.6",
+   "new": "ks4-electromagnetism-h16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electromagnetism-h17": {
+   "kp": "ks4.electromagnetism.6",
+   "new": "ks4-electromagnetism-h17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electromagnetism-h18": {
+   "kp": "ks4.electromagnetism.4",
+   "new": "ks4-electromagnetism-h18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electromagnetism-h19": {
+   "kp": "ks4.electromagnetism.4",
+   "new": "ks4-electromagnetism-h19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electromagnetism-h20": {
+   "kp": "ks4.electromagnetism.5",
+   "new": "ks4-electromagnetism-h20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electromagnetism-h21": {
+   "kp": "ks4.electromagnetism.6",
+   "new": "ks4-electromagnetism-h21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electromagnetism-h22": {
+   "kp": "ks4.electromagnetism.7",
+   "new": "ks4-electromagnetism-h22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electromagnetism-h23": {
+   "kp": "ks4.electromagnetism.7",
+   "new": "ks4-electromagnetism-h23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electromagnetism-h24": {
+   "kp": "ks4.electromagnetism.7",
+   "new": "ks4-electromagnetism-h24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electromagnetism-h25": {
+   "kp": "ks4.electromagnetism.7",
+   "new": "ks4-electromagnetism-h25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electromagnetism-h26": {
+   "kp": "ks4.electromagnetism.1",
+   "new": "ks4-electromagnetism-h26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electromagnetism-h27": {
+   "kp": "ks4.electromagnetism.5",
+   "new": "ks4-electromagnetism-h27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electromagnetism-h28": {
+   "kp": "ks4.electromagnetism.1",
+   "new": "ks4-electromagnetism-h28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electromagnetism-s01": {
+   "kp": "ks4.electromagnetism.6",
+   "new": "ks4-electromagnetism-s01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electromagnetism-s02": {
+   "kp": "ks4.electromagnetism.2",
+   "new": "ks4-electromagnetism-s02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electromagnetism-s03": {
+   "kp": "ks4.electromagnetism.7",
+   "new": "ks4-electromagnetism-s03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electromagnetism-s04": {
+   "kp": "ks4.electromagnetism.3",
+   "new": "ks4-electromagnetism-s04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electromagnetism-s05": {
+   "kp": "ks4.electromagnetism.7",
+   "new": "ks4-electromagnetism-s05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electromagnetism-s06": {
+   "kp": "ks4.electromagnetism.1",
+   "new": "ks4-electromagnetism-s06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electromagnetism-s07": {
+   "kp": "ks4.electromagnetism.7",
+   "new": "ks4-electromagnetism-s07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electromagnetism-s08": {
+   "kp": "ks4.electromagnetism.7",
+   "new": "ks4-electromagnetism-s08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electromagnetism-s09": {
+   "kp": "ks4.electromagnetism.7",
+   "new": "ks4-electromagnetism-s09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electromagnetism-s10": {
+   "kp": "ks4.electromagnetism.7",
+   "new": "ks4-electromagnetism-s10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electromagnetism-s11": {
+   "kp": "ks4.electromagnetism.7",
+   "new": "ks4-electromagnetism-s11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electromagnetism-s12": {
+   "kp": "ks4.electromagnetism.6",
+   "new": "ks4-electromagnetism-s12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electromagnetism-s13": {
+   "kp": "ks4.electromagnetism.8",
+   "new": "ks4-electromagnetism-s13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electromagnetism-s14": {
+   "kp": "ks4.electromagnetism.8",
+   "new": "ks4-electromagnetism-s14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electromagnetism-s15": {
+   "kp": "ks4.electromagnetism.8",
+   "new": "ks4-electromagnetism-s15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electromagnetism-s16": {
+   "kp": "ks4.electromagnetism.6",
+   "new": "ks4-electromagnetism-s16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electromagnetism-s17": {
+   "kp": "ks4.electromagnetism.6",
+   "new": "ks4-electromagnetism-s17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electromagnetism-s18": {
+   "kp": "ks4.electromagnetism.6",
+   "new": "ks4-electromagnetism-s18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electromagnetism-s19": {
+   "kp": "ks4.electromagnetism.7",
+   "new": "ks4-electromagnetism-s19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electromagnetism-s20": {
+   "kp": "ks4.electromagnetism.2",
+   "new": "ks4-electromagnetism-s20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electromagnetism-s21": {
+   "kp": "ks4.electromagnetism.5",
+   "new": "ks4-electromagnetism-s21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electromagnetism-s22": {
+   "kp": "ks4.electromagnetism.6",
+   "new": "ks4-electromagnetism-s22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electromagnetism-s23": {
+   "kp": "ks4.electromagnetism.5",
+   "new": "ks4-electromagnetism-s23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electromagnetism-s24": {
+   "kp": "ks4.electromagnetism.7",
+   "new": "ks4-electromagnetism-s24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electromagnetism-s25": {
+   "kp": "ks4.electromagnetism.4",
+   "new": "ks4-electromagnetism-s25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electromagnetism-s26": {
+   "kp": "ks4.electromagnetism.6",
+   "new": "ks4-electromagnetism-s26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electromagnetism-s27": {
+   "kp": "ks4.electromagnetism.7",
+   "new": "ks4-electromagnetism-s27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-electromagnetism-s28": {
+   "kp": "ks4.electromagnetism.2",
+   "new": "ks4-electromagnetism-s28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-flemings-left-hand-rule-e01": {
+   "kp": "ks4.flemings-left-hand-rule.7",
+   "new": "ks4-flemings-left-hand-rule-e01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-flemings-left-hand-rule-e02": {
+   "kp": "ks4.flemings-left-hand-rule.3",
+   "new": "ks4-flemings-left-hand-rule-e02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-flemings-left-hand-rule-e03": {
+   "kp": "ks4.flemings-left-hand-rule.3",
+   "new": "ks4-flemings-left-hand-rule-e03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-flemings-left-hand-rule-e04": {
+   "kp": "ks4.flemings-left-hand-rule.4",
+   "new": "ks4-flemings-left-hand-rule-e04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-flemings-left-hand-rule-e05": {
+   "kp": "ks4.flemings-left-hand-rule.5",
+   "new": "ks4-flemings-left-hand-rule-e05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-flemings-left-hand-rule-e06": {
+   "kp": "ks4.flemings-left-hand-rule.6",
+   "new": "ks4-flemings-left-hand-rule-e06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-flemings-left-hand-rule-e07": {
+   "kp": "ks4.flemings-left-hand-rule.6",
+   "new": "ks4-flemings-left-hand-rule-e07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-flemings-left-hand-rule-e08": {
+   "kp": "ks4.flemings-left-hand-rule.6",
+   "new": "ks4-flemings-left-hand-rule-e08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-flemings-left-hand-rule-e09": {
+   "kp": "ks4.flemings-left-hand-rule.5",
+   "new": "ks4-flemings-left-hand-rule-e09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-flemings-left-hand-rule-e10": {
+   "kp": "ks4.flemings-left-hand-rule.6",
+   "new": "ks4-flemings-left-hand-rule-e10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-flemings-left-hand-rule-e11": {
+   "kp": "ks4.flemings-left-hand-rule.6",
+   "new": "ks4-flemings-left-hand-rule-e11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-flemings-left-hand-rule-e12": {
+   "kp": "ks4.flemings-left-hand-rule.7",
+   "new": "ks4-flemings-left-hand-rule-e12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-flemings-left-hand-rule-e13": {
+   "kp": "ks4.flemings-left-hand-rule.4",
+   "new": "ks4-flemings-left-hand-rule-e13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-flemings-left-hand-rule-e14": {
+   "kp": "ks4.flemings-left-hand-rule.3",
+   "new": "ks4-flemings-left-hand-rule-e14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-flemings-left-hand-rule-e15": {
+   "kp": "ks4.flemings-left-hand-rule.3",
+   "new": "ks4-flemings-left-hand-rule-e15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-flemings-left-hand-rule-e16": {
+   "kp": "ks4.flemings-left-hand-rule.1",
+   "new": "ks4-flemings-left-hand-rule-e16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-flemings-left-hand-rule-e17": {
+   "kp": "ks4.flemings-left-hand-rule.1",
+   "new": "ks4-flemings-left-hand-rule-e17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-flemings-left-hand-rule-e18": {
+   "kp": "ks4.flemings-left-hand-rule.1",
+   "new": "ks4-flemings-left-hand-rule-e18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-flemings-left-hand-rule-h01": {
+   "kp": "ks4.flemings-left-hand-rule.3",
+   "new": "ks4-flemings-left-hand-rule-h01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-flemings-left-hand-rule-h02": {
+   "kp": "ks4.flemings-left-hand-rule.3",
+   "new": "ks4-flemings-left-hand-rule-h02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-flemings-left-hand-rule-h03": {
+   "kp": "ks4.flemings-left-hand-rule.4",
+   "new": "ks4-flemings-left-hand-rule-h03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-flemings-left-hand-rule-h04": {
+   "kp": "ks4.flemings-left-hand-rule.2",
+   "new": "ks4-flemings-left-hand-rule-h04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-flemings-left-hand-rule-h05": {
+   "kp": "ks4.flemings-left-hand-rule.3",
+   "new": "ks4-flemings-left-hand-rule-h05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-flemings-left-hand-rule-h06": {
+   "kp": "ks4.flemings-left-hand-rule.4",
+   "new": "ks4-flemings-left-hand-rule-h06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-flemings-left-hand-rule-h07": {
+   "kp": "ks4.flemings-left-hand-rule.3",
+   "new": "ks4-flemings-left-hand-rule-h07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-flemings-left-hand-rule-h08": {
+   "kp": "ks4.flemings-left-hand-rule.2",
+   "new": "ks4-flemings-left-hand-rule-h08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-flemings-left-hand-rule-h09": {
+   "kp": "ks4.flemings-left-hand-rule.2",
+   "new": "ks4-flemings-left-hand-rule-h09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-flemings-left-hand-rule-h10": {
+   "kp": "ks4.flemings-left-hand-rule.1",
+   "new": "ks4-flemings-left-hand-rule-h10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-flemings-left-hand-rule-h11": {
+   "kp": "ks4.flemings-left-hand-rule.1",
+   "new": "ks4-flemings-left-hand-rule-h11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-flemings-left-hand-rule-h12": {
+   "kp": "ks4.flemings-left-hand-rule.1",
+   "new": "ks4-flemings-left-hand-rule-h12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-flemings-left-hand-rule-h13": {
+   "kp": "ks4.flemings-left-hand-rule.3",
+   "new": "ks4-flemings-left-hand-rule-h13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-flemings-left-hand-rule-h14": {
+   "kp": "ks4.flemings-left-hand-rule.3",
+   "new": "ks4-flemings-left-hand-rule-h14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-flemings-left-hand-rule-h15": {
+   "kp": "ks4.flemings-left-hand-rule.2",
+   "new": "ks4-flemings-left-hand-rule-h15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-flemings-left-hand-rule-h16": {
+   "kp": "ks4.flemings-left-hand-rule.6",
+   "new": "ks4-flemings-left-hand-rule-h16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-flemings-left-hand-rule-h17": {
+   "kp": "ks4.flemings-left-hand-rule.7",
+   "new": "ks4-flemings-left-hand-rule-h17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-flemings-left-hand-rule-h18": {
+   "kp": "ks4.flemings-left-hand-rule.2",
+   "new": "ks4-flemings-left-hand-rule-h18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-flemings-left-hand-rule-s01": {
+   "kp": "ks4.flemings-left-hand-rule.5",
+   "new": "ks4-flemings-left-hand-rule-s01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-flemings-left-hand-rule-s02": {
+   "kp": "ks4.flemings-left-hand-rule.3",
+   "new": "ks4-flemings-left-hand-rule-s02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-flemings-left-hand-rule-s03": {
+   "kp": "ks4.flemings-left-hand-rule.5",
+   "new": "ks4-flemings-left-hand-rule-s03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-flemings-left-hand-rule-s04": {
+   "kp": "ks4.flemings-left-hand-rule.5",
+   "new": "ks4-flemings-left-hand-rule-s04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-flemings-left-hand-rule-s05": {
+   "kp": "ks4.flemings-left-hand-rule.5",
+   "new": "ks4-flemings-left-hand-rule-s05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-flemings-left-hand-rule-s06": {
+   "kp": "ks4.flemings-left-hand-rule.5",
+   "new": "ks4-flemings-left-hand-rule-s06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-flemings-left-hand-rule-s07": {
+   "kp": "ks4.flemings-left-hand-rule.5",
+   "new": "ks4-flemings-left-hand-rule-s07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-flemings-left-hand-rule-s08": {
+   "kp": "ks4.flemings-left-hand-rule.5",
+   "new": "ks4-flemings-left-hand-rule-s08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-flemings-left-hand-rule-s09": {
+   "kp": "ks4.flemings-left-hand-rule.3",
+   "new": "ks4-flemings-left-hand-rule-s09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-flemings-left-hand-rule-s10": {
+   "kp": "ks4.flemings-left-hand-rule.3",
+   "new": "ks4-flemings-left-hand-rule-s10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-flemings-left-hand-rule-s11": {
+   "kp": "ks4.flemings-left-hand-rule.3",
+   "new": "ks4-flemings-left-hand-rule-s11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-flemings-left-hand-rule-s12": {
+   "kp": "ks4.flemings-left-hand-rule.3",
+   "new": "ks4-flemings-left-hand-rule-s12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-flemings-left-hand-rule-s13": {
+   "kp": "ks4.flemings-left-hand-rule.1",
+   "new": "ks4-flemings-left-hand-rule-s13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-flemings-left-hand-rule-s14": {
+   "kp": "ks4.flemings-left-hand-rule.2",
+   "new": "ks4-flemings-left-hand-rule-s14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-flemings-left-hand-rule-s15": {
+   "kp": "ks4.flemings-left-hand-rule.3",
+   "new": "ks4-flemings-left-hand-rule-s15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-flemings-left-hand-rule-s16": {
+   "kp": "ks4.flemings-left-hand-rule.6",
+   "new": "ks4-flemings-left-hand-rule-s16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-flemings-left-hand-rule-s17": {
+   "kp": "ks4.flemings-left-hand-rule.2",
+   "new": "ks4-flemings-left-hand-rule-s17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-flemings-left-hand-rule-s18": {
+   "kp": "ks4.flemings-left-hand-rule.3",
+   "new": "ks4-flemings-left-hand-rule-s18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-induced-potential-e01": {
+   "kp": "ks4.induced-potential.1",
+   "new": "ks4-induced-potential-e01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-induced-potential-e02": {
+   "kp": "ks4.induced-potential.1",
+   "new": "ks4-induced-potential-e02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-induced-potential-e03": {
+   "kp": "ks4.induced-potential.4",
+   "new": "ks4-induced-potential-e03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-induced-potential-e04": {
+   "kp": "ks4.induced-potential.5",
+   "new": "ks4-induced-potential-e04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-induced-potential-e05": {
+   "kp": "ks4.induced-potential.4",
+   "new": "ks4-induced-potential-e05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-induced-potential-e06": {
+   "kp": "ks4.induced-potential.4",
+   "new": "ks4-induced-potential-e06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-induced-potential-e07": {
+   "kp": "ks4.induced-potential.4",
+   "new": "ks4-induced-potential-e07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-induced-potential-e08": {
+   "kp": "ks4.induced-potential.2",
+   "new": "ks4-induced-potential-e08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-induced-potential-e09": {
+   "kp": "ks4.induced-potential.1",
+   "new": "ks4-induced-potential-e09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-induced-potential-e10": {
+   "kp": "ks4.induced-potential.1",
+   "new": "ks4-induced-potential-e10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-induced-potential-e11": {
+   "kp": "ks4.induced-potential.1",
+   "new": "ks4-induced-potential-e11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-induced-potential-e12": {
+   "kp": "ks4.induced-potential.1",
+   "new": "ks4-induced-potential-e12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-induced-potential-e13": {
+   "kp": "ks4.induced-potential.1",
+   "new": "ks4-induced-potential-e13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-induced-potential-e14": {
+   "kp": "ks4.induced-potential.5",
+   "new": "ks4-induced-potential-e14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-induced-potential-e15": {
+   "kp": "ks4.induced-potential.2",
+   "new": "ks4-induced-potential-e15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-induced-potential-e16": {
+   "kp": "ks4.induced-potential.2",
+   "new": "ks4-induced-potential-e16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-induced-potential-e17": {
+   "kp": "ks4.induced-potential.2",
+   "new": "ks4-induced-potential-e17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-induced-potential-e18": {
+   "kp": "ks4.induced-potential.1",
+   "new": "ks4-induced-potential-e18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-induced-potential-h01": {
+   "kp": "ks4.induced-potential.3",
+   "new": "ks4-induced-potential-h01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-induced-potential-h02": {
+   "kp": "ks4.induced-potential.2",
+   "new": "ks4-induced-potential-h02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-induced-potential-h03": {
+   "kp": "ks4.induced-potential.8",
+   "new": "ks4-induced-potential-h03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-induced-potential-h04": {
+   "kp": "ks4.induced-potential.2",
+   "new": "ks4-induced-potential-h04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-induced-potential-h05": {
+   "kp": "ks4.induced-potential.3",
+   "new": "ks4-induced-potential-h05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-induced-potential-h06": {
+   "kp": "ks4.induced-potential.7",
+   "new": "ks4-induced-potential-h06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-induced-potential-h07": {
+   "kp": "ks4.induced-potential.7",
+   "new": "ks4-induced-potential-h07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-induced-potential-h08": {
+   "kp": "ks4.induced-potential.7",
+   "new": "ks4-induced-potential-h08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-induced-potential-h09": {
+   "kp": "ks4.induced-potential.2",
+   "new": "ks4-induced-potential-h09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-induced-potential-h10": {
+   "kp": "ks4.induced-potential.2",
+   "new": "ks4-induced-potential-h10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-induced-potential-h11": {
+   "kp": "ks4.induced-potential.2",
+   "new": "ks4-induced-potential-h11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-induced-potential-h12": {
+   "kp": "ks4.induced-potential.7",
+   "new": "ks4-induced-potential-h12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-induced-potential-h13": {
+   "kp": "ks4.induced-potential.8",
+   "new": "ks4-induced-potential-h13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-induced-potential-h14": {
+   "kp": "ks4.induced-potential.5",
+   "new": "ks4-induced-potential-h14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-induced-potential-h15": {
+   "kp": "ks4.induced-potential.2",
+   "new": "ks4-induced-potential-h15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-induced-potential-h16": {
+   "kp": "ks4.induced-potential.3",
+   "new": "ks4-induced-potential-h16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-induced-potential-h17": {
+   "kp": "ks4.induced-potential.1",
+   "new": "ks4-induced-potential-h17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-induced-potential-h18": {
+   "kp": "ks4.induced-potential.8",
+   "new": "ks4-induced-potential-h18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-induced-potential-s01": {
+   "kp": "ks4.induced-potential.3",
+   "new": "ks4-induced-potential-s01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-induced-potential-s02": {
+   "kp": "ks4.induced-potential.5",
+   "new": "ks4-induced-potential-s02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-induced-potential-s03": {
+   "kp": "ks4.induced-potential.6",
+   "new": "ks4-induced-potential-s03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-induced-potential-s04": {
+   "kp": "ks4.induced-potential.4",
+   "new": "ks4-induced-potential-s04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-induced-potential-s05": {
+   "kp": "ks4.induced-potential.3",
+   "new": "ks4-induced-potential-s05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-induced-potential-s06": {
+   "kp": "ks4.induced-potential.3",
+   "new": "ks4-induced-potential-s06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-induced-potential-s07": {
+   "kp": "ks4.induced-potential.3",
+   "new": "ks4-induced-potential-s07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-induced-potential-s08": {
+   "kp": "ks4.induced-potential.3",
+   "new": "ks4-induced-potential-s08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-induced-potential-s09": {
+   "kp": "ks4.induced-potential.5",
+   "new": "ks4-induced-potential-s09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-induced-potential-s10": {
+   "kp": "ks4.induced-potential.5",
+   "new": "ks4-induced-potential-s10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-induced-potential-s11": {
+   "kp": "ks4.induced-potential.5",
+   "new": "ks4-induced-potential-s11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-induced-potential-s12": {
+   "kp": "ks4.induced-potential.1",
+   "new": "ks4-induced-potential-s12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-induced-potential-s13": {
+   "kp": "ks4.induced-potential.1",
+   "new": "ks4-induced-potential-s13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-induced-potential-s14": {
+   "kp": "ks4.induced-potential.5",
+   "new": "ks4-induced-potential-s14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-induced-potential-s15": {
+   "kp": "ks4.induced-potential.4",
+   "new": "ks4-induced-potential-s15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-induced-potential-s16": {
+   "kp": "ks4.induced-potential.1",
+   "new": "ks4-induced-potential-s16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-induced-potential-s17": {
+   "kp": "ks4.induced-potential.5",
+   "new": "ks4-induced-potential-s17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-induced-potential-s18": {
+   "kp": "ks4.induced-potential.5",
+   "new": "ks4-induced-potential-s18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-loudspeakers-headphones-e01": {
+   "kp": "ks4.loudspeakers-headphones.1",
+   "new": "ks4-loudspeakers-headphones-e01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-loudspeakers-headphones-e02": {
+   "kp": "ks4.loudspeakers-headphones.5",
+   "new": "ks4-loudspeakers-headphones-e02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-loudspeakers-headphones-e03": {
+   "kp": "ks4.loudspeakers-headphones.1",
+   "new": "ks4-loudspeakers-headphones-e03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-loudspeakers-headphones-e04": {
+   "kp": "ks4.loudspeakers-headphones.4",
+   "new": "ks4-loudspeakers-headphones-e04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-loudspeakers-headphones-e05": {
+   "kp": "ks4.loudspeakers-headphones.1",
+   "new": "ks4-loudspeakers-headphones-e05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-loudspeakers-headphones-e06": {
+   "kp": "ks4.loudspeakers-headphones.1",
+   "new": "ks4-loudspeakers-headphones-e06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-loudspeakers-headphones-e07": {
+   "kp": "ks4.loudspeakers-headphones.2",
+   "new": "ks4-loudspeakers-headphones-e07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-loudspeakers-headphones-e08": {
+   "kp": "ks4.loudspeakers-headphones.2",
+   "new": "ks4-loudspeakers-headphones-e08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-loudspeakers-headphones-e09": {
+   "kp": "ks4.loudspeakers-headphones.2",
+   "new": "ks4-loudspeakers-headphones-e09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-loudspeakers-headphones-e10": {
+   "kp": "ks4.loudspeakers-headphones.2",
+   "new": "ks4-loudspeakers-headphones-e10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-loudspeakers-headphones-e11": {
+   "kp": "ks4.loudspeakers-headphones.3",
+   "new": "ks4-loudspeakers-headphones-e11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-loudspeakers-headphones-e12": {
+   "kp": "ks4.loudspeakers-headphones.7",
+   "new": "ks4-loudspeakers-headphones-e12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-loudspeakers-headphones-e13": {
+   "kp": "ks4.loudspeakers-headphones.7",
+   "new": "ks4-loudspeakers-headphones-e13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-loudspeakers-headphones-e14": {
+   "kp": "ks4.loudspeakers-headphones.7",
+   "new": "ks4-loudspeakers-headphones-e14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-loudspeakers-headphones-e15": {
+   "kp": "ks4.loudspeakers-headphones.4",
+   "new": "ks4-loudspeakers-headphones-e15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-loudspeakers-headphones-e16": {
+   "kp": "ks4.loudspeakers-headphones.3",
+   "new": "ks4-loudspeakers-headphones-e16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-loudspeakers-headphones-e17": {
+   "kp": "ks4.loudspeakers-headphones.3",
+   "new": "ks4-loudspeakers-headphones-e17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-loudspeakers-headphones-e18": {
+   "kp": "ks4.loudspeakers-headphones.5",
+   "new": "ks4-loudspeakers-headphones-e18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-loudspeakers-headphones-h01": {
+   "kp": "ks4.loudspeakers-headphones.1",
+   "new": "ks4-loudspeakers-headphones-h01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-loudspeakers-headphones-h02": {
+   "kp": "ks4.loudspeakers-headphones.6",
+   "new": "ks4-loudspeakers-headphones-h02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-loudspeakers-headphones-h03": {
+   "kp": "ks4.loudspeakers-headphones.2",
+   "new": "ks4-loudspeakers-headphones-h03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-loudspeakers-headphones-h04": {
+   "kp": "ks4.loudspeakers-headphones.1",
+   "new": "ks4-loudspeakers-headphones-h04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-loudspeakers-headphones-h05": {
+   "kp": "ks4.loudspeakers-headphones.2",
+   "new": "ks4-loudspeakers-headphones-h05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-loudspeakers-headphones-h06": {
+   "kp": "ks4.loudspeakers-headphones.7",
+   "new": "ks4-loudspeakers-headphones-h06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-loudspeakers-headphones-h07": {
+   "kp": "ks4.loudspeakers-headphones.7",
+   "new": "ks4-loudspeakers-headphones-h07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-loudspeakers-headphones-h08": {
+   "kp": "ks4.loudspeakers-headphones.7",
+   "new": "ks4-loudspeakers-headphones-h08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-loudspeakers-headphones-h09": {
+   "kp": "ks4.loudspeakers-headphones.5",
+   "new": "ks4-loudspeakers-headphones-h09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-loudspeakers-headphones-h10": {
+   "kp": "ks4.loudspeakers-headphones.3",
+   "new": "ks4-loudspeakers-headphones-h10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-loudspeakers-headphones-h11": {
+   "kp": "ks4.loudspeakers-headphones.4",
+   "new": "ks4-loudspeakers-headphones-h11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-loudspeakers-headphones-h12": {
+   "kp": "ks4.loudspeakers-headphones.4",
+   "new": "ks4-loudspeakers-headphones-h12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-loudspeakers-headphones-h13": {
+   "kp": "ks4.loudspeakers-headphones.6",
+   "new": "ks4-loudspeakers-headphones-h13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-loudspeakers-headphones-h14": {
+   "kp": "ks4.loudspeakers-headphones.6",
+   "new": "ks4-loudspeakers-headphones-h14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-loudspeakers-headphones-h15": {
+   "kp": "ks4.loudspeakers-headphones.7",
+   "new": "ks4-loudspeakers-headphones-h15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-loudspeakers-headphones-h16": {
+   "kp": "ks4.loudspeakers-headphones.7",
+   "new": "ks4-loudspeakers-headphones-h16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-loudspeakers-headphones-h17": {
+   "kp": "ks4.loudspeakers-headphones.5",
+   "new": "ks4-loudspeakers-headphones-h17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-loudspeakers-headphones-h18": {
+   "kp": "ks4.loudspeakers-headphones.6",
+   "new": "ks4-loudspeakers-headphones-h18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-loudspeakers-headphones-s01": {
+   "kp": "ks4.loudspeakers-headphones.5",
+   "new": "ks4-loudspeakers-headphones-s01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-loudspeakers-headphones-s02": {
+   "kp": "ks4.loudspeakers-headphones.6",
+   "new": "ks4-loudspeakers-headphones-s02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-loudspeakers-headphones-s03": {
+   "kp": "ks4.loudspeakers-headphones.7",
+   "new": "ks4-loudspeakers-headphones-s03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-loudspeakers-headphones-s04": {
+   "kp": "ks4.loudspeakers-headphones.1",
+   "new": "ks4-loudspeakers-headphones-s04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-loudspeakers-headphones-s05": {
+   "kp": "ks4.loudspeakers-headphones.7",
+   "new": "ks4-loudspeakers-headphones-s05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-loudspeakers-headphones-s06": {
+   "kp": "ks4.loudspeakers-headphones.7",
+   "new": "ks4-loudspeakers-headphones-s06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-loudspeakers-headphones-s07": {
+   "kp": "ks4.loudspeakers-headphones.6",
+   "new": "ks4-loudspeakers-headphones-s07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-loudspeakers-headphones-s08": {
+   "kp": "ks4.loudspeakers-headphones.6",
+   "new": "ks4-loudspeakers-headphones-s08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-loudspeakers-headphones-s09": {
+   "kp": "ks4.loudspeakers-headphones.6",
+   "new": "ks4-loudspeakers-headphones-s09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-loudspeakers-headphones-s10": {
+   "kp": "ks4.loudspeakers-headphones.6",
+   "new": "ks4-loudspeakers-headphones-s10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-loudspeakers-headphones-s11": {
+   "kp": "ks4.loudspeakers-headphones.6",
+   "new": "ks4-loudspeakers-headphones-s11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-loudspeakers-headphones-s12": {
+   "kp": "ks4.loudspeakers-headphones.2",
+   "new": "ks4-loudspeakers-headphones-s12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-loudspeakers-headphones-s13": {
+   "kp": "ks4.loudspeakers-headphones.4",
+   "new": "ks4-loudspeakers-headphones-s13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-loudspeakers-headphones-s14": {
+   "kp": "ks4.loudspeakers-headphones.5",
+   "new": "ks4-loudspeakers-headphones-s14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-loudspeakers-headphones-s15": {
+   "kp": "ks4.loudspeakers-headphones.5",
+   "new": "ks4-loudspeakers-headphones-s15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-loudspeakers-headphones-s16": {
+   "kp": "ks4.loudspeakers-headphones.7",
+   "new": "ks4-loudspeakers-headphones-s16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-loudspeakers-headphones-s17": {
+   "kp": "ks4.loudspeakers-headphones.1",
+   "new": "ks4-loudspeakers-headphones-s17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-loudspeakers-headphones-s18": {
+   "kp": "ks4.loudspeakers-headphones.3",
+   "new": "ks4-loudspeakers-headphones-s18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-magnetic-fields-e01": {
+   "kp": "ks4.magnetic-fields.1",
+   "new": "ks4-magnetic-fields-e01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-magnetic-fields-e02": {
+   "kp": "ks4.magnetic-fields.4",
+   "new": "ks4-magnetic-fields-e02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-magnetic-fields-e03": {
+   "kp": "ks4.magnetic-fields.2",
+   "new": "ks4-magnetic-fields-e03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-magnetic-fields-e04": {
+   "kp": "ks4.magnetic-fields.7",
+   "new": "ks4-magnetic-fields-e04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-magnetic-fields-e05": {
+   "kp": "ks4.magnetic-fields.2",
+   "new": "ks4-magnetic-fields-e05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-magnetic-fields-e06": {
+   "kp": "ks4.magnetic-fields.3",
+   "new": "ks4-magnetic-fields-e06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-magnetic-fields-e07": {
+   "kp": "ks4.magnetic-fields.3",
+   "new": "ks4-magnetic-fields-e07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-magnetic-fields-e08": {
+   "kp": "ks4.magnetic-fields.4",
+   "new": "ks4-magnetic-fields-e08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-magnetic-fields-e09": {
+   "kp": "ks4.magnetic-fields.3",
+   "new": "ks4-magnetic-fields-e09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-magnetic-fields-e10": {
+   "kp": "ks4.magnetic-fields.6",
+   "new": "ks4-magnetic-fields-e10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-magnetic-fields-e11": {
+   "kp": "ks4.magnetic-fields.5",
+   "new": "ks4-magnetic-fields-e11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-magnetic-fields-e12": {
+   "kp": "ks4.magnetic-fields.5",
+   "new": "ks4-magnetic-fields-e12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-magnetic-fields-e13": {
+   "kp": "ks4.magnetic-fields.3",
+   "new": "ks4-magnetic-fields-e13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-magnetic-fields-e14": {
+   "kp": "ks4.magnetic-fields.2",
+   "new": "ks4-magnetic-fields-e14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-magnetic-fields-e15": {
+   "kp": "ks4.magnetic-fields.4",
+   "new": "ks4-magnetic-fields-e15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-magnetic-fields-e16": {
+   "kp": "ks4.magnetic-fields.7",
+   "new": "ks4-magnetic-fields-e16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-magnetic-fields-h01": {
+   "kp": "ks4.magnetic-fields.7",
+   "new": "ks4-magnetic-fields-h01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-magnetic-fields-h02": {
+   "kp": "ks4.magnetic-fields.8",
+   "new": "ks4-magnetic-fields-h02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-magnetic-fields-h03": {
+   "kp": "ks4.magnetic-fields.1",
+   "new": "ks4-magnetic-fields-h03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-magnetic-fields-h04": {
+   "kp": "ks4.magnetic-fields.8",
+   "new": "ks4-magnetic-fields-h04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-magnetic-fields-h05": {
+   "kp": "ks4.magnetic-fields.2",
+   "new": "ks4-magnetic-fields-h05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-magnetic-fields-h06": {
+   "kp": "ks4.magnetic-fields.4",
+   "new": "ks4-magnetic-fields-h06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-magnetic-fields-h07": {
+   "kp": "ks4.magnetic-fields.7",
+   "new": "ks4-magnetic-fields-h07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-magnetic-fields-h08": {
+   "kp": "ks4.magnetic-fields.8",
+   "new": "ks4-magnetic-fields-h08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-magnetic-fields-h09": {
+   "kp": "ks4.magnetic-fields.6",
+   "new": "ks4-magnetic-fields-h09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-magnetic-fields-h10": {
+   "kp": "ks4.magnetic-fields.3",
+   "new": "ks4-magnetic-fields-h10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-magnetic-fields-h11": {
+   "kp": "ks4.magnetic-fields.3",
+   "new": "ks4-magnetic-fields-h11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-magnetic-fields-h12": {
+   "kp": "ks4.magnetic-fields.7",
+   "new": "ks4-magnetic-fields-h12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-magnetic-fields-h13": {
+   "kp": "ks4.magnetic-fields.8",
+   "new": "ks4-magnetic-fields-h13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-magnetic-fields-h14": {
+   "kp": "ks4.magnetic-fields.4",
+   "new": "ks4-magnetic-fields-h14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-magnetic-fields-h15": {
+   "kp": "ks4.magnetic-fields.8",
+   "new": "ks4-magnetic-fields-h15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-magnetic-fields-h16": {
+   "kp": "ks4.magnetic-fields.7",
+   "new": "ks4-magnetic-fields-h16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-magnetic-fields-h17": {
+   "kp": "ks4.magnetic-fields.3",
+   "new": "ks4-magnetic-fields-h17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-magnetic-fields-h18": {
+   "kp": "ks4.magnetic-fields.7",
+   "new": "ks4-magnetic-fields-h18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-magnetic-fields-h19": {
+   "kp": "ks4.magnetic-fields.8",
+   "new": "ks4-magnetic-fields-h19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-magnetic-fields-h20": {
+   "kp": "ks4.magnetic-fields.5",
+   "new": "ks4-magnetic-fields-h20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-magnetic-fields-h21": {
+   "kp": "ks4.magnetic-fields.7",
+   "new": "ks4-magnetic-fields-h21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-magnetic-fields-h22": {
+   "kp": "ks4.magnetic-fields.6",
+   "new": "ks4-magnetic-fields-h22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-magnetic-fields-h23": {
+   "kp": "ks4.magnetic-fields.1",
+   "new": "ks4-magnetic-fields-h23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-magnetic-fields-h24": {
+   "kp": "ks4.magnetic-fields.8",
+   "new": "ks4-magnetic-fields-h24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-magnetic-fields-h25": {
+   "kp": "ks4.magnetic-fields.4",
+   "new": "ks4-magnetic-fields-h25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-magnetic-fields-h26": {
+   "kp": "ks4.magnetic-fields.7",
+   "new": "ks4-magnetic-fields-h26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-magnetic-fields-h27": {
+   "kp": "ks4.magnetic-fields.3",
+   "new": "ks4-magnetic-fields-h27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-magnetic-fields-h28": {
+   "kp": "ks4.magnetic-fields.8",
+   "new": "ks4-magnetic-fields-h28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-magnetic-fields-s01": {
+   "kp": "ks4.magnetic-fields.6",
+   "new": "ks4-magnetic-fields-s01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-magnetic-fields-s02": {
+   "kp": "ks4.magnetic-fields.4",
+   "new": "ks4-magnetic-fields-s02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-magnetic-fields-s03": {
+   "kp": "ks4.magnetic-fields.5",
+   "new": "ks4-magnetic-fields-s03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-magnetic-fields-s04": {
+   "kp": "ks4.magnetic-fields.6",
+   "new": "ks4-magnetic-fields-s04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-magnetic-fields-s05": {
+   "kp": "ks4.magnetic-fields.1",
+   "new": "ks4-magnetic-fields-s05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-magnetic-fields-s06": {
+   "kp": "ks4.magnetic-fields.7",
+   "new": "ks4-magnetic-fields-s06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-magnetic-fields-s07": {
+   "kp": "ks4.magnetic-fields.4",
+   "new": "ks4-magnetic-fields-s07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-magnetic-fields-s08": {
+   "kp": "ks4.magnetic-fields.7",
+   "new": "ks4-magnetic-fields-s08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-magnetic-fields-s09": {
+   "kp": "ks4.magnetic-fields.1",
+   "new": "ks4-magnetic-fields-s09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-magnetic-fields-s10": {
+   "kp": "ks4.magnetic-fields.8",
+   "new": "ks4-magnetic-fields-s10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-magnetic-fields-s11": {
+   "kp": "ks4.magnetic-fields.1",
+   "new": "ks4-magnetic-fields-s11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-magnetic-fields-s12": {
+   "kp": "ks4.magnetic-fields.1",
+   "new": "ks4-magnetic-fields-s12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-magnetic-fields-s13": {
+   "kp": "ks4.magnetic-fields.3",
+   "new": "ks4-magnetic-fields-s13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-magnetic-fields-s14": {
+   "kp": "ks4.magnetic-fields.3",
+   "new": "ks4-magnetic-fields-s14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-magnetic-fields-s15": {
+   "kp": "ks4.magnetic-fields.7",
+   "new": "ks4-magnetic-fields-s15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-magnetic-fields-s16": {
+   "kp": "ks4.magnetic-fields.4",
+   "new": "ks4-magnetic-fields-s16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-magnetic-fields-s17": {
+   "kp": "ks4.magnetic-fields.6",
+   "new": "ks4-magnetic-fields-s17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-magnetic-fields-s18": {
+   "kp": "ks4.magnetic-fields.4",
+   "new": "ks4-magnetic-fields-s18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-magnetic-fields-s19": {
+   "kp": "ks4.magnetic-fields.4",
+   "new": "ks4-magnetic-fields-s19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-magnetic-fields-s20": {
+   "kp": "ks4.magnetic-fields.1",
+   "new": "ks4-magnetic-fields-s20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-magnetic-fields-s21": {
+   "kp": "ks4.magnetic-fields.2",
+   "new": "ks4-magnetic-fields-s21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-magnetic-fields-s22": {
+   "kp": "ks4.magnetic-fields.5",
+   "new": "ks4-magnetic-fields-s22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-magnetic-fields-s23": {
+   "kp": "ks4.magnetic-fields.3",
+   "new": "ks4-magnetic-fields-s23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-magnetic-fields-s24": {
+   "kp": "ks4.magnetic-fields.6",
+   "new": "ks4-magnetic-fields-s24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-magnetic-fields-s25": {
+   "kp": "ks4.magnetic-fields.4",
+   "new": "ks4-magnetic-fields-s25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-magnetic-fields-s26": {
+   "kp": "ks4.magnetic-fields.2",
+   "new": "ks4-magnetic-fields-s26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-magnetic-fields-s27": {
+   "kp": "ks4.magnetic-fields.8",
+   "new": "ks4-magnetic-fields-s27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-magnetic-fields-s28": {
+   "kp": "ks4.magnetic-fields.3",
+   "new": "ks4-magnetic-fields-s28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-microphones-e01": {
+   "kp": "ks4.microphones.1",
+   "new": "ks4-microphones-e01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-microphones-e02": {
+   "kp": "ks4.microphones.2",
+   "new": "ks4-microphones-e02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-microphones-e03": {
+   "kp": "ks4.microphones.3",
+   "new": "ks4-microphones-e03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-microphones-e04": {
+   "kp": "ks4.microphones.6",
+   "new": "ks4-microphones-e04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-microphones-e05": {
+   "kp": "ks4.microphones.1",
+   "new": "ks4-microphones-e05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-microphones-e06": {
+   "kp": "ks4.microphones.1",
+   "new": "ks4-microphones-e06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-microphones-e07": {
+   "kp": "ks4.microphones.2",
+   "new": "ks4-microphones-e07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-microphones-e08": {
+   "kp": "ks4.microphones.3",
+   "new": "ks4-microphones-e08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-microphones-e09": {
+   "kp": "ks4.microphones.4",
+   "new": "ks4-microphones-e09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-microphones-e10": {
+   "kp": "ks4.microphones.5",
+   "new": "ks4-microphones-e10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-microphones-e11": {
+   "kp": "ks4.microphones.5",
+   "new": "ks4-microphones-e11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-microphones-e12": {
+   "kp": "ks4.microphones.4",
+   "new": "ks4-microphones-e12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-microphones-e13": {
+   "kp": "ks4.microphones.2",
+   "new": "ks4-microphones-e13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-microphones-e14": {
+   "kp": "ks4.microphones.2",
+   "new": "ks4-microphones-e14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-microphones-e15": {
+   "kp": "ks4.microphones.6",
+   "new": "ks4-microphones-e15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-microphones-e16": {
+   "kp": "ks4.microphones.3",
+   "new": "ks4-microphones-e16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-microphones-e17": {
+   "kp": "ks4.microphones.7",
+   "new": "ks4-microphones-e17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-microphones-e18": {
+   "kp": "ks4.microphones.3",
+   "new": "ks4-microphones-e18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-microphones-h01": {
+   "kp": "ks4.microphones.3",
+   "new": "ks4-microphones-h01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-microphones-h02": {
+   "kp": "ks4.microphones.7",
+   "new": "ks4-microphones-h02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-microphones-h03": {
+   "kp": "ks4.microphones.3",
+   "new": "ks4-microphones-h03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-microphones-h04": {
+   "kp": "ks4.microphones.6",
+   "new": "ks4-microphones-h04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-microphones-h05": {
+   "kp": "ks4.microphones.5",
+   "new": "ks4-microphones-h05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-microphones-h06": {
+   "kp": "ks4.microphones.3",
+   "new": "ks4-microphones-h06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-microphones-h07": {
+   "kp": "ks4.microphones.2",
+   "new": "ks4-microphones-h07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-microphones-h08": {
+   "kp": "ks4.microphones.4",
+   "new": "ks4-microphones-h08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-microphones-h09": {
+   "kp": "ks4.microphones.3",
+   "new": "ks4-microphones-h09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-microphones-h10": {
+   "kp": "ks4.microphones.6",
+   "new": "ks4-microphones-h10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-microphones-h11": {
+   "kp": "ks4.microphones.3",
+   "new": "ks4-microphones-h11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-microphones-h12": {
+   "kp": "ks4.microphones.8",
+   "new": "ks4-microphones-h12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-microphones-h13": {
+   "kp": "ks4.microphones.5",
+   "new": "ks4-microphones-h13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-microphones-h14": {
+   "kp": "ks4.microphones.4",
+   "new": "ks4-microphones-h14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-microphones-h15": {
+   "kp": "ks4.microphones.3",
+   "new": "ks4-microphones-h15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-microphones-h16": {
+   "kp": "ks4.microphones.3",
+   "new": "ks4-microphones-h16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-microphones-h17": {
+   "kp": "ks4.microphones.5",
+   "new": "ks4-microphones-h17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-microphones-h18": {
+   "kp": "ks4.microphones.5",
+   "new": "ks4-microphones-h18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-microphones-s01": {
+   "kp": "ks4.microphones.5",
+   "new": "ks4-microphones-s01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-microphones-s02": {
+   "kp": "ks4.microphones.7",
+   "new": "ks4-microphones-s02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-microphones-s03": {
+   "kp": "ks4.microphones.7",
+   "new": "ks4-microphones-s03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-microphones-s04": {
+   "kp": "ks4.microphones.8",
+   "new": "ks4-microphones-s04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-microphones-s05": {
+   "kp": "ks4.microphones.3",
+   "new": "ks4-microphones-s05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-microphones-s06": {
+   "kp": "ks4.microphones.3",
+   "new": "ks4-microphones-s06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-microphones-s07": {
+   "kp": "ks4.microphones.5",
+   "new": "ks4-microphones-s07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-microphones-s08": {
+   "kp": "ks4.microphones.8",
+   "new": "ks4-microphones-s08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-microphones-s09": {
+   "kp": "ks4.microphones.8",
+   "new": "ks4-microphones-s09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-microphones-s10": {
+   "kp": "ks4.microphones.8",
+   "new": "ks4-microphones-s10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-microphones-s11": {
+   "kp": "ks4.microphones.8",
+   "new": "ks4-microphones-s11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-microphones-s12": {
+   "kp": "ks4.microphones.2",
+   "new": "ks4-microphones-s12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-microphones-s13": {
+   "kp": "ks4.microphones.6",
+   "new": "ks4-microphones-s13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-microphones-s14": {
+   "kp": "ks4.microphones.1",
+   "new": "ks4-microphones-s14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-microphones-s15": {
+   "kp": "ks4.microphones.2",
+   "new": "ks4-microphones-s15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-microphones-s16": {
+   "kp": "ks4.microphones.5",
+   "new": "ks4-microphones-s16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-microphones-s17": {
+   "kp": "ks4.microphones.4",
+   "new": "ks4-microphones-s17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-microphones-s18": {
+   "kp": "ks4.microphones.2",
+   "new": "ks4-microphones-s18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-poles-of-a-magnet-e01": {
+   "kp": "ks4.poles-of-a-magnet.1",
+   "new": "ks4-poles-of-a-magnet-e01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-poles-of-a-magnet-e02": {
+   "kp": "ks4.poles-of-a-magnet.2",
+   "new": "ks4-poles-of-a-magnet-e02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-poles-of-a-magnet-e03": {
+   "kp": "ks4.poles-of-a-magnet.2",
+   "new": "ks4-poles-of-a-magnet-e03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-poles-of-a-magnet-e04": {
+   "kp": "ks4.poles-of-a-magnet.3",
+   "new": "ks4-poles-of-a-magnet-e04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-poles-of-a-magnet-e05": {
+   "kp": "ks4.poles-of-a-magnet.2",
+   "new": "ks4-poles-of-a-magnet-e05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-poles-of-a-magnet-e06": {
+   "kp": "ks4.poles-of-a-magnet.4",
+   "new": "ks4-poles-of-a-magnet-e06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-poles-of-a-magnet-e07": {
+   "kp": "ks4.poles-of-a-magnet.7",
+   "new": "ks4-poles-of-a-magnet-e07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-poles-of-a-magnet-e08": {
+   "kp": "ks4.poles-of-a-magnet.2",
+   "new": "ks4-poles-of-a-magnet-e08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-poles-of-a-magnet-e09": {
+   "kp": "ks4.poles-of-a-magnet.2",
+   "new": "ks4-poles-of-a-magnet-e09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-poles-of-a-magnet-e10": {
+   "kp": "ks4.poles-of-a-magnet.1",
+   "new": "ks4-poles-of-a-magnet-e10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-poles-of-a-magnet-e11": {
+   "kp": "ks4.poles-of-a-magnet.5",
+   "new": "ks4-poles-of-a-magnet-e11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-poles-of-a-magnet-e12": {
+   "kp": "ks4.poles-of-a-magnet.3",
+   "new": "ks4-poles-of-a-magnet-e12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-poles-of-a-magnet-e13": {
+   "kp": "ks4.poles-of-a-magnet.1",
+   "new": "ks4-poles-of-a-magnet-e13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-poles-of-a-magnet-e14": {
+   "kp": "ks4.poles-of-a-magnet.4",
+   "new": "ks4-poles-of-a-magnet-e14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-poles-of-a-magnet-e15": {
+   "kp": "ks4.poles-of-a-magnet.7",
+   "new": "ks4-poles-of-a-magnet-e15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-poles-of-a-magnet-e16": {
+   "kp": "ks4.poles-of-a-magnet.3",
+   "new": "ks4-poles-of-a-magnet-e16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-poles-of-a-magnet-h01": {
+   "kp": "ks4.poles-of-a-magnet.4",
+   "new": "ks4-poles-of-a-magnet-h01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-poles-of-a-magnet-h02": {
+   "kp": "ks4.poles-of-a-magnet.5",
+   "new": "ks4-poles-of-a-magnet-h02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-poles-of-a-magnet-h03": {
+   "kp": "ks4.poles-of-a-magnet.1",
+   "new": "ks4-poles-of-a-magnet-h03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-poles-of-a-magnet-h04": {
+   "kp": "ks4.poles-of-a-magnet.4",
+   "new": "ks4-poles-of-a-magnet-h04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-poles-of-a-magnet-h05": {
+   "kp": "ks4.poles-of-a-magnet.4",
+   "new": "ks4-poles-of-a-magnet-h05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-poles-of-a-magnet-h06": {
+   "kp": "ks4.poles-of-a-magnet.3",
+   "new": "ks4-poles-of-a-magnet-h06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-poles-of-a-magnet-h07": {
+   "kp": "ks4.poles-of-a-magnet.3",
+   "new": "ks4-poles-of-a-magnet-h07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-poles-of-a-magnet-h08": {
+   "kp": "ks4.poles-of-a-magnet.2",
+   "new": "ks4-poles-of-a-magnet-h08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-poles-of-a-magnet-h09": {
+   "kp": "ks4.poles-of-a-magnet.5",
+   "new": "ks4-poles-of-a-magnet-h09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-poles-of-a-magnet-h10": {
+   "kp": "ks4.poles-of-a-magnet.6",
+   "new": "ks4-poles-of-a-magnet-h10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-poles-of-a-magnet-h11": {
+   "kp": "ks4.poles-of-a-magnet.6",
+   "new": "ks4-poles-of-a-magnet-h11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-poles-of-a-magnet-h12": {
+   "kp": "ks4.poles-of-a-magnet.7",
+   "new": "ks4-poles-of-a-magnet-h12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-poles-of-a-magnet-h13": {
+   "kp": "ks4.poles-of-a-magnet.1",
+   "new": "ks4-poles-of-a-magnet-h13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-poles-of-a-magnet-h14": {
+   "kp": "ks4.poles-of-a-magnet.2",
+   "new": "ks4-poles-of-a-magnet-h14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-poles-of-a-magnet-h15": {
+   "kp": "ks4.poles-of-a-magnet.2",
+   "new": "ks4-poles-of-a-magnet-h15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-poles-of-a-magnet-h16": {
+   "kp": "ks4.poles-of-a-magnet.1",
+   "new": "ks4-poles-of-a-magnet-h16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-poles-of-a-magnet-h17": {
+   "kp": "ks4.poles-of-a-magnet.2",
+   "new": "ks4-poles-of-a-magnet-h17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-poles-of-a-magnet-h18": {
+   "kp": "ks4.poles-of-a-magnet.2",
+   "new": "ks4-poles-of-a-magnet-h18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-poles-of-a-magnet-h19": {
+   "kp": "ks4.poles-of-a-magnet.2",
+   "new": "ks4-poles-of-a-magnet-h19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-poles-of-a-magnet-h20": {
+   "kp": "ks4.poles-of-a-magnet.7",
+   "new": "ks4-poles-of-a-magnet-h20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-poles-of-a-magnet-h21": {
+   "kp": "ks4.poles-of-a-magnet.6",
+   "new": "ks4-poles-of-a-magnet-h21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-poles-of-a-magnet-h22": {
+   "kp": "ks4.poles-of-a-magnet.5",
+   "new": "ks4-poles-of-a-magnet-h22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-poles-of-a-magnet-h23": {
+   "kp": "ks4.poles-of-a-magnet.3",
+   "new": "ks4-poles-of-a-magnet-h23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-poles-of-a-magnet-h24": {
+   "kp": "ks4.poles-of-a-magnet.2",
+   "new": "ks4-poles-of-a-magnet-h24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-poles-of-a-magnet-h25": {
+   "kp": "ks4.poles-of-a-magnet.3",
+   "new": "ks4-poles-of-a-magnet-h25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-poles-of-a-magnet-h26": {
+   "kp": "ks4.poles-of-a-magnet.3",
+   "new": "ks4-poles-of-a-magnet-h26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-poles-of-a-magnet-h27": {
+   "kp": "ks4.poles-of-a-magnet.7",
+   "new": "ks4-poles-of-a-magnet-h27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-poles-of-a-magnet-h28": {
+   "kp": "ks4.poles-of-a-magnet.7",
+   "new": "ks4-poles-of-a-magnet-h28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-poles-of-a-magnet-s01": {
+   "kp": "ks4.poles-of-a-magnet.4",
+   "new": "ks4-poles-of-a-magnet-s01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-poles-of-a-magnet-s02": {
+   "kp": "ks4.poles-of-a-magnet.5",
+   "new": "ks4-poles-of-a-magnet-s02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-poles-of-a-magnet-s03": {
+   "kp": "ks4.poles-of-a-magnet.6",
+   "new": "ks4-poles-of-a-magnet-s03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-poles-of-a-magnet-s04": {
+   "kp": "ks4.poles-of-a-magnet.6",
+   "new": "ks4-poles-of-a-magnet-s04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-poles-of-a-magnet-s05": {
+   "kp": "ks4.poles-of-a-magnet.6",
+   "new": "ks4-poles-of-a-magnet-s05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-poles-of-a-magnet-s06": {
+   "kp": "ks4.poles-of-a-magnet.4",
+   "new": "ks4-poles-of-a-magnet-s06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-poles-of-a-magnet-s07": {
+   "kp": "ks4.poles-of-a-magnet.5",
+   "new": "ks4-poles-of-a-magnet-s07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-poles-of-a-magnet-s08": {
+   "kp": "ks4.poles-of-a-magnet.6",
+   "new": "ks4-poles-of-a-magnet-s08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-poles-of-a-magnet-s09": {
+   "kp": "ks4.poles-of-a-magnet.6",
+   "new": "ks4-poles-of-a-magnet-s09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-poles-of-a-magnet-s10": {
+   "kp": "ks4.poles-of-a-magnet.4",
+   "new": "ks4-poles-of-a-magnet-s10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-poles-of-a-magnet-s11": {
+   "kp": "ks4.poles-of-a-magnet.3",
+   "new": "ks4-poles-of-a-magnet-s11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-poles-of-a-magnet-s12": {
+   "kp": "ks4.poles-of-a-magnet.5",
+   "new": "ks4-poles-of-a-magnet-s12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-poles-of-a-magnet-s13": {
+   "kp": "ks4.poles-of-a-magnet.4",
+   "new": "ks4-poles-of-a-magnet-s13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-poles-of-a-magnet-s14": {
+   "kp": "ks4.poles-of-a-magnet.7",
+   "new": "ks4-poles-of-a-magnet-s14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-poles-of-a-magnet-s15": {
+   "kp": "ks4.poles-of-a-magnet.3",
+   "new": "ks4-poles-of-a-magnet-s15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-poles-of-a-magnet-s16": {
+   "kp": "ks4.poles-of-a-magnet.5",
+   "new": "ks4-poles-of-a-magnet-s16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-poles-of-a-magnet-s17": {
+   "kp": "ks4.poles-of-a-magnet.2",
+   "new": "ks4-poles-of-a-magnet-s17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-poles-of-a-magnet-s18": {
+   "kp": "ks4.poles-of-a-magnet.1",
+   "new": "ks4-poles-of-a-magnet-s18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-poles-of-a-magnet-s19": {
+   "kp": "ks4.poles-of-a-magnet.3",
+   "new": "ks4-poles-of-a-magnet-s19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-poles-of-a-magnet-s20": {
+   "kp": "ks4.poles-of-a-magnet.1",
+   "new": "ks4-poles-of-a-magnet-s20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-poles-of-a-magnet-s21": {
+   "kp": "ks4.poles-of-a-magnet.1",
+   "new": "ks4-poles-of-a-magnet-s21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-poles-of-a-magnet-s22": {
+   "kp": "ks4.poles-of-a-magnet.5",
+   "new": "ks4-poles-of-a-magnet-s22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-poles-of-a-magnet-s23": {
+   "kp": "ks4.poles-of-a-magnet.6",
+   "new": "ks4-poles-of-a-magnet-s23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-poles-of-a-magnet-s24": {
+   "kp": "ks4.poles-of-a-magnet.1",
+   "new": "ks4-poles-of-a-magnet-s24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-poles-of-a-magnet-s25": {
+   "kp": "ks4.poles-of-a-magnet.5",
+   "new": "ks4-poles-of-a-magnet-s25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-poles-of-a-magnet-s26": {
+   "kp": "ks4.poles-of-a-magnet.6",
+   "new": "ks4-poles-of-a-magnet-s26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-poles-of-a-magnet-s27": {
+   "kp": "ks4.poles-of-a-magnet.6",
+   "new": "ks4-poles-of-a-magnet-s27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-poles-of-a-magnet-s28": {
+   "kp": "ks4.poles-of-a-magnet.5",
+   "new": "ks4-poles-of-a-magnet-s28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-transformers-e01": {
+   "kp": "ks4.transformers.4",
+   "new": "ks4-transformers-e01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-transformers-e02": {
+   "kp": "ks4.transformers.1",
+   "new": "ks4-transformers-e02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-transformers-e03": {
+   "kp": "ks4.transformers.5",
+   "new": "ks4-transformers-e03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-transformers-e04": {
+   "kp": "ks4.transformers.4",
+   "new": "ks4-transformers-e04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-transformers-e05": {
+   "kp": "ks4.transformers.4",
+   "new": "ks4-transformers-e05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-transformers-e06": {
+   "kp": "ks4.transformers.1",
+   "new": "ks4-transformers-e06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-transformers-e07": {
+   "kp": "ks4.transformers.5",
+   "new": "ks4-transformers-e07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-transformers-e08": {
+   "kp": "ks4.transformers.3",
+   "new": "ks4-transformers-e08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-transformers-e09": {
+   "kp": "ks4.transformers.2",
+   "new": "ks4-transformers-e09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-transformers-e10": {
+   "kp": "ks4.transformers.1",
+   "new": "ks4-transformers-e10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-transformers-e11": {
+   "kp": "ks4.transformers.1",
+   "new": "ks4-transformers-e11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-transformers-e12": {
+   "kp": "ks4.transformers.5",
+   "new": "ks4-transformers-e12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-transformers-e13": {
+   "kp": "ks4.transformers.5",
+   "new": "ks4-transformers-e13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-transformers-e14": {
+   "kp": "ks4.transformers.5",
+   "new": "ks4-transformers-e14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-transformers-e15": {
+   "kp": "ks4.transformers.7",
+   "new": "ks4-transformers-e15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-transformers-e16": {
+   "kp": "ks4.transformers.7",
+   "new": "ks4-transformers-e16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-transformers-e17": {
+   "kp": "ks4.transformers.6",
+   "new": "ks4-transformers-e17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-transformers-e18": {
+   "kp": "ks4.transformers.1",
+   "new": "ks4-transformers-e18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-transformers-h01": {
+   "kp": "ks4.transformers.7",
+   "new": "ks4-transformers-h01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-transformers-h02": {
+   "kp": "ks4.transformers.7",
+   "new": "ks4-transformers-h02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-transformers-h03": {
+   "kp": "ks4.transformers.6",
+   "new": "ks4-transformers-h03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-transformers-h04": {
+   "kp": "ks4.transformers.6",
+   "new": "ks4-transformers-h04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-transformers-h05": {
+   "kp": "ks4.transformers.7",
+   "new": "ks4-transformers-h05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-transformers-h06": {
+   "kp": "ks4.transformers.7",
+   "new": "ks4-transformers-h06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-transformers-h07": {
+   "kp": "ks4.transformers.7",
+   "new": "ks4-transformers-h07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-transformers-h08": {
+   "kp": "ks4.transformers.6",
+   "new": "ks4-transformers-h08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-transformers-h09": {
+   "kp": "ks4.transformers.6",
+   "new": "ks4-transformers-h09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-transformers-h10": {
+   "kp": "ks4.transformers.6",
+   "new": "ks4-transformers-h10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-transformers-h11": {
+   "kp": "ks4.transformers.1",
+   "new": "ks4-transformers-h11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-transformers-h12": {
+   "kp": "ks4.transformers.1",
+   "new": "ks4-transformers-h12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-transformers-h13": {
+   "kp": "ks4.transformers.6",
+   "new": "ks4-transformers-h13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-transformers-h14": {
+   "kp": "ks4.transformers.6",
+   "new": "ks4-transformers-h14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-transformers-h15": {
+   "kp": "ks4.transformers.3",
+   "new": "ks4-transformers-h15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-transformers-h16": {
+   "kp": "ks4.transformers.2",
+   "new": "ks4-transformers-h16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-transformers-h17": {
+   "kp": "ks4.transformers.6",
+   "new": "ks4-transformers-h17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-transformers-h18": {
+   "kp": "ks4.transformers.7",
+   "new": "ks4-transformers-h18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-transformers-s01": {
+   "kp": "ks4.transformers.4",
+   "new": "ks4-transformers-s01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-transformers-s02": {
+   "kp": "ks4.transformers.6",
+   "new": "ks4-transformers-s02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-transformers-s03": {
+   "kp": "ks4.transformers.6",
+   "new": "ks4-transformers-s03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-transformers-s04": {
+   "kp": "ks4.transformers.1",
+   "new": "ks4-transformers-s04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-transformers-s05": {
+   "kp": "ks4.transformers.4",
+   "new": "ks4-transformers-s05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-transformers-s06": {
+   "kp": "ks4.transformers.4",
+   "new": "ks4-transformers-s06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-transformers-s07": {
+   "kp": "ks4.transformers.4",
+   "new": "ks4-transformers-s07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-transformers-s08": {
+   "kp": "ks4.transformers.4",
+   "new": "ks4-transformers-s08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-transformers-s09": {
+   "kp": "ks4.transformers.6",
+   "new": "ks4-transformers-s09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-transformers-s10": {
+   "kp": "ks4.transformers.6",
+   "new": "ks4-transformers-s10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-transformers-s11": {
+   "kp": "ks4.transformers.4",
+   "new": "ks4-transformers-s11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-transformers-s12": {
+   "kp": "ks4.transformers.6",
+   "new": "ks4-transformers-s12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-transformers-s13": {
+   "kp": "ks4.transformers.6",
+   "new": "ks4-transformers-s13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-transformers-s14": {
+   "kp": "ks4.transformers.6",
+   "new": "ks4-transformers-s14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-transformers-s15": {
+   "kp": "ks4.transformers.7",
+   "new": "ks4-transformers-s15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-transformers-s16": {
+   "kp": "ks4.transformers.7",
+   "new": "ks4-transformers-s16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-transformers-s17": {
+   "kp": "ks4.transformers.1",
+   "new": "ks4-transformers-s17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-transformers-s18": {
+   "kp": "ks4.transformers.1",
+   "new": "ks4-transformers-s18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-uses-generator-effect-e01": {
+   "kp": "ks4.uses-generator-effect.3",
+   "new": "ks4-uses-generator-effect-e01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-uses-generator-effect-e02": {
+   "kp": "ks4.uses-generator-effect.3",
+   "new": "ks4-uses-generator-effect-e02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-uses-generator-effect-e03": {
+   "kp": "ks4.uses-generator-effect.3",
+   "new": "ks4-uses-generator-effect-e03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-uses-generator-effect-e04": {
+   "kp": "ks4.uses-generator-effect.4",
+   "new": "ks4-uses-generator-effect-e04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-uses-generator-effect-e05": {
+   "kp": "ks4.uses-generator-effect.1",
+   "new": "ks4-uses-generator-effect-e05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-uses-generator-effect-e06": {
+   "kp": "ks4.uses-generator-effect.2",
+   "new": "ks4-uses-generator-effect-e06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-uses-generator-effect-e07": {
+   "kp": "ks4.uses-generator-effect.1",
+   "new": "ks4-uses-generator-effect-e07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-uses-generator-effect-e08": {
+   "kp": "ks4.uses-generator-effect.2",
+   "new": "ks4-uses-generator-effect-e08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-uses-generator-effect-e09": {
+   "kp": "ks4.uses-generator-effect.3",
+   "new": "ks4-uses-generator-effect-e09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-uses-generator-effect-e10": {
+   "kp": "ks4.uses-generator-effect.3",
+   "new": "ks4-uses-generator-effect-e10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-uses-generator-effect-e11": {
+   "kp": "ks4.uses-generator-effect.3",
+   "new": "ks4-uses-generator-effect-e11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-uses-generator-effect-e12": {
+   "kp": "ks4.uses-generator-effect.3",
+   "new": "ks4-uses-generator-effect-e12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-uses-generator-effect-e13": {
+   "kp": "ks4.uses-generator-effect.8",
+   "new": "ks4-uses-generator-effect-e13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-uses-generator-effect-e14": {
+   "kp": "ks4.uses-generator-effect.8",
+   "new": "ks4-uses-generator-effect-e14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-uses-generator-effect-e15": {
+   "kp": "ks4.uses-generator-effect.3",
+   "new": "ks4-uses-generator-effect-e15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-uses-generator-effect-e16": {
+   "kp": "ks4.uses-generator-effect.3",
+   "new": "ks4-uses-generator-effect-e16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-uses-generator-effect-e17": {
+   "kp": "ks4.uses-generator-effect.6",
+   "new": "ks4-uses-generator-effect-e17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-uses-generator-effect-e18": {
+   "kp": "ks4.uses-generator-effect.8",
+   "new": "ks4-uses-generator-effect-e18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-uses-generator-effect-h01": {
+   "kp": "ks4.uses-generator-effect.3",
+   "new": "ks4-uses-generator-effect-h01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-uses-generator-effect-h02": {
+   "kp": "ks4.uses-generator-effect.5",
+   "new": "ks4-uses-generator-effect-h02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-uses-generator-effect-h03": {
+   "kp": "ks4.uses-generator-effect.5",
+   "new": "ks4-uses-generator-effect-h03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-uses-generator-effect-h04": {
+   "kp": "ks4.uses-generator-effect.8",
+   "new": "ks4-uses-generator-effect-h04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-uses-generator-effect-h05": {
+   "kp": "ks4.uses-generator-effect.6",
+   "new": "ks4-uses-generator-effect-h05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-uses-generator-effect-h06": {
+   "kp": "ks4.uses-generator-effect.6",
+   "new": "ks4-uses-generator-effect-h06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-uses-generator-effect-h07": {
+   "kp": "ks4.uses-generator-effect.7",
+   "new": "ks4-uses-generator-effect-h07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-uses-generator-effect-h08": {
+   "kp": "ks4.uses-generator-effect.7",
+   "new": "ks4-uses-generator-effect-h08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-uses-generator-effect-h09": {
+   "kp": "ks4.uses-generator-effect.7",
+   "new": "ks4-uses-generator-effect-h09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-uses-generator-effect-h10": {
+   "kp": "ks4.uses-generator-effect.3",
+   "new": "ks4-uses-generator-effect-h10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-uses-generator-effect-h11": {
+   "kp": "ks4.uses-generator-effect.3",
+   "new": "ks4-uses-generator-effect-h11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-uses-generator-effect-h12": {
+   "kp": "ks4.uses-generator-effect.4",
+   "new": "ks4-uses-generator-effect-h12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-uses-generator-effect-h13": {
+   "kp": "ks4.uses-generator-effect.4",
+   "new": "ks4-uses-generator-effect-h13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-uses-generator-effect-h14": {
+   "kp": "ks4.uses-generator-effect.8",
+   "new": "ks4-uses-generator-effect-h14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-uses-generator-effect-h15": {
+   "kp": "ks4.uses-generator-effect.8",
+   "new": "ks4-uses-generator-effect-h15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-uses-generator-effect-h16": {
+   "kp": "ks4.uses-generator-effect.1",
+   "new": "ks4-uses-generator-effect-h16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-uses-generator-effect-h17": {
+   "kp": "ks4.uses-generator-effect.6",
+   "new": "ks4-uses-generator-effect-h17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-uses-generator-effect-h18": {
+   "kp": "ks4.uses-generator-effect.3",
+   "new": "ks4-uses-generator-effect-h18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-uses-generator-effect-s01": {
+   "kp": "ks4.uses-generator-effect.4",
+   "new": "ks4-uses-generator-effect-s01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-uses-generator-effect-s02": {
+   "kp": "ks4.uses-generator-effect.8",
+   "new": "ks4-uses-generator-effect-s02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-uses-generator-effect-s03": {
+   "kp": "ks4.uses-generator-effect.5",
+   "new": "ks4-uses-generator-effect-s03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-uses-generator-effect-s04": {
+   "kp": "ks4.uses-generator-effect.7",
+   "new": "ks4-uses-generator-effect-s04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-uses-generator-effect-s05": {
+   "kp": "ks4.uses-generator-effect.7",
+   "new": "ks4-uses-generator-effect-s05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-uses-generator-effect-s06": {
+   "kp": "ks4.uses-generator-effect.8",
+   "new": "ks4-uses-generator-effect-s06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-uses-generator-effect-s07": {
+   "kp": "ks4.uses-generator-effect.7",
+   "new": "ks4-uses-generator-effect-s07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-uses-generator-effect-s08": {
+   "kp": "ks4.uses-generator-effect.3",
+   "new": "ks4-uses-generator-effect-s08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-uses-generator-effect-s09": {
+   "kp": "ks4.uses-generator-effect.3",
+   "new": "ks4-uses-generator-effect-s09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-uses-generator-effect-s10": {
+   "kp": "ks4.uses-generator-effect.8",
+   "new": "ks4-uses-generator-effect-s10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-uses-generator-effect-s11": {
+   "kp": "ks4.uses-generator-effect.8",
+   "new": "ks4-uses-generator-effect-s11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-uses-generator-effect-s12": {
+   "kp": "ks4.uses-generator-effect.8",
+   "new": "ks4-uses-generator-effect-s12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-uses-generator-effect-s13": {
+   "kp": "ks4.uses-generator-effect.7",
+   "new": "ks4-uses-generator-effect-s13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-uses-generator-effect-s14": {
+   "kp": "ks4.uses-generator-effect.8",
+   "new": "ks4-uses-generator-effect-s14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-uses-generator-effect-s15": {
+   "kp": "ks4.uses-generator-effect.5",
+   "new": "ks4-uses-generator-effect-s15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-uses-generator-effect-s16": {
+   "kp": "ks4.uses-generator-effect.4",
+   "new": "ks4-uses-generator-effect-s16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-uses-generator-effect-s17": {
+   "kp": "ks4.uses-generator-effect.5",
+   "new": "ks4-uses-generator-effect-s17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4-uses-generator-effect-s18": {
+   "kp": "ks4.uses-generator-effect.3",
+   "new": "ks4-uses-generator-effect-s18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4:electric-motors:ch#r1-1": {
+   "kp": "ks4.electric-motors.1",
+   "new": "ks4:electric-motors:ch#r1-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:electric-motors:ch#r1-2": {
+   "kp": "ks4.electric-motors.4",
+   "new": "ks4:electric-motors:ch#r1-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:electric-motors:ch#r2-1": {
+   "kp": "ks4.electric-motors.8",
+   "new": "ks4:electric-motors:ch#r2-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:electric-motors:ch#r2-2": {
+   "kp": "ks4.electric-motors.4",
+   "new": "ks4:electric-motors:ch#r2-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:electric-motors:ch#r3-1": {
+   "kp": "ks4.electric-motors.4",
+   "new": "ks4:electric-motors:ch#r3-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:electric-motors:ch#r3-2": {
+   "kp": "ks4.electric-motors.8",
+   "new": "ks4:electric-motors:ch#r3-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:electric-motors:ch#r4-1": {
+   "kp": "ks4.electric-motors.4",
+   "new": "ks4:electric-motors:ch#r4-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:electric-motors:ch#start": {
+   "kp": "ks4.electric-motors.2",
+   "new": "ks4:electric-motors:ch#start",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:electric-motors:th#r1-1": {
+   "kp": "ks4.electric-motors.1",
+   "new": "ks4:electric-motors:th#r1-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:electric-motors:th#r1-2": {
+   "kp": "ks4.electric-motors.4",
+   "new": "ks4:electric-motors:th#r1-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:electric-motors:th#r2-1": {
+   "kp": "ks4.electric-motors.8",
+   "new": "ks4:electric-motors:th#r2-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:electric-motors:th#r2-2": {
+   "kp": "ks4.electric-motors.4",
+   "new": "ks4:electric-motors:th#r2-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:electric-motors:th#r3-1": {
+   "kp": "ks4.electric-motors.4",
+   "new": "ks4:electric-motors:th#r3-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:electric-motors:th#r3-2": {
+   "kp": "ks4.electric-motors.8",
+   "new": "ks4:electric-motors:th#r3-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:electric-motors:th#r4-1": {
+   "kp": "ks4.electric-motors.4",
+   "new": "ks4:electric-motors:th#r4-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:electric-motors:th#start": {
+   "kp": "ks4.electric-motors.2",
+   "new": "ks4:electric-motors:th#start",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:electromagnetism:cf#r1-1": {
+   "kp": "ks4.electromagnetism.1",
+   "new": "ks4:electromagnetism:cf#r1-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:electromagnetism:cf#r1-2": {
+   "kp": "ks4.electromagnetism.5",
+   "new": "ks4:electromagnetism:cf#r1-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:electromagnetism:cf#r2-1": {
+   "kp": "ks4.electromagnetism.9",
+   "new": "ks4:electromagnetism:cf#r2-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:electromagnetism:cf#r2-2": {
+   "kp": "ks4.electromagnetism.4",
+   "new": "ks4:electromagnetism:cf#r2-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:electromagnetism:cf#r3-1": {
+   "kp": "ks4.electromagnetism.5",
+   "new": "ks4:electromagnetism:cf#r3-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:electromagnetism:cf#r3-2": {
+   "kp": "ks4.electromagnetism.7",
+   "new": "ks4:electromagnetism:cf#r3-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:electromagnetism:cf#r4-1": {
+   "kp": "ks4.electromagnetism.6",
+   "new": "ks4:electromagnetism:cf#r4-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:electromagnetism:cf#start": {
+   "kp": "ks4.electromagnetism.9",
+   "new": "ks4:electromagnetism:cf#start",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:electromagnetism:ch#r1-1": {
+   "kp": "ks4.electromagnetism.1",
+   "new": "ks4:electromagnetism:ch#r1-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:electromagnetism:ch#r1-2": {
+   "kp": "ks4.electromagnetism.5",
+   "new": "ks4:electromagnetism:ch#r1-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:electromagnetism:ch#r2-1": {
+   "kp": "ks4.electromagnetism.9",
+   "new": "ks4:electromagnetism:ch#r2-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:electromagnetism:ch#r2-2": {
+   "kp": "ks4.electromagnetism.4",
+   "new": "ks4:electromagnetism:ch#r2-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:electromagnetism:ch#r3-1": {
+   "kp": "ks4.electromagnetism.5",
+   "new": "ks4:electromagnetism:ch#r3-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:electromagnetism:ch#r3-2": {
+   "kp": "ks4.electromagnetism.7",
+   "new": "ks4:electromagnetism:ch#r3-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:electromagnetism:ch#r4-1": {
+   "kp": "ks4.electromagnetism.6",
+   "new": "ks4:electromagnetism:ch#r4-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:electromagnetism:ch#start": {
+   "kp": "ks4.electromagnetism.9",
+   "new": "ks4:electromagnetism:ch#start",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:electromagnetism:tf#r1-1": {
+   "kp": "ks4.electromagnetism.1",
+   "new": "ks4:electromagnetism:tf#r1-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:electromagnetism:tf#r1-2": {
+   "kp": "ks4.electromagnetism.5",
+   "new": "ks4:electromagnetism:tf#r1-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:electromagnetism:tf#r2-1": {
+   "kp": "ks4.electromagnetism.9",
+   "new": "ks4:electromagnetism:tf#r2-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:electromagnetism:tf#r2-2": {
+   "kp": "ks4.electromagnetism.4",
+   "new": "ks4:electromagnetism:tf#r2-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:electromagnetism:tf#r3-1": {
+   "kp": "ks4.electromagnetism.5",
+   "new": "ks4:electromagnetism:tf#r3-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:electromagnetism:tf#r3-2": {
+   "kp": "ks4.electromagnetism.7",
+   "new": "ks4:electromagnetism:tf#r3-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:electromagnetism:tf#r4-1": {
+   "kp": "ks4.electromagnetism.6",
+   "new": "ks4:electromagnetism:tf#r4-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:electromagnetism:tf#start": {
+   "kp": "ks4.electromagnetism.9",
+   "new": "ks4:electromagnetism:tf#start",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:electromagnetism:th#r1-1": {
+   "kp": "ks4.electromagnetism.1",
+   "new": "ks4:electromagnetism:th#r1-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:electromagnetism:th#r1-2": {
+   "kp": "ks4.electromagnetism.5",
+   "new": "ks4:electromagnetism:th#r1-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:electromagnetism:th#r2-1": {
+   "kp": "ks4.electromagnetism.9",
+   "new": "ks4:electromagnetism:th#r2-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:electromagnetism:th#r2-2": {
+   "kp": "ks4.electromagnetism.4",
+   "new": "ks4:electromagnetism:th#r2-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:electromagnetism:th#r3-1": {
+   "kp": "ks4.electromagnetism.5",
+   "new": "ks4:electromagnetism:th#r3-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:electromagnetism:th#r3-2": {
+   "kp": "ks4.electromagnetism.7",
+   "new": "ks4:electromagnetism:th#r3-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:electromagnetism:th#r4-1": {
+   "kp": "ks4.electromagnetism.6",
+   "new": "ks4:electromagnetism:th#r4-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:electromagnetism:th#start": {
+   "kp": "ks4.electromagnetism.9",
+   "new": "ks4:electromagnetism:th#start",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:flemings-left-hand-rule:ch#r1-1": {
+   "kp": "ks4.flemings-left-hand-rule.6",
+   "new": "ks4:flemings-left-hand-rule:ch#r1-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:flemings-left-hand-rule:ch#r1-2": {
+   "kp": "ks4.flemings-left-hand-rule.9",
+   "new": "ks4:flemings-left-hand-rule:ch#r1-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:flemings-left-hand-rule:ch#r2-1": {
+   "kp": "ks4.flemings-left-hand-rule.3",
+   "new": "ks4:flemings-left-hand-rule:ch#r2-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:flemings-left-hand-rule:ch#r2-2": {
+   "kp": "ks4.flemings-left-hand-rule.3",
+   "new": "ks4:flemings-left-hand-rule:ch#r2-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:flemings-left-hand-rule:ch#r3-1": {
+   "kp": "ks4.flemings-left-hand-rule.10",
+   "new": "ks4:flemings-left-hand-rule:ch#r3-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:flemings-left-hand-rule:ch#r3-2": {
+   "kp": "ks4.flemings-left-hand-rule.7",
+   "new": "ks4:flemings-left-hand-rule:ch#r3-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:flemings-left-hand-rule:ch#r4-1": {
+   "kp": "ks4.flemings-left-hand-rule.2",
+   "new": "ks4:flemings-left-hand-rule:ch#r4-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:flemings-left-hand-rule:ch#start": {
+   "kp": "ks4.flemings-left-hand-rule.2",
+   "new": "ks4:flemings-left-hand-rule:ch#start",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:flemings-left-hand-rule:th#r1-1": {
+   "kp": "ks4.flemings-left-hand-rule.6",
+   "new": "ks4:flemings-left-hand-rule:th#r1-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:flemings-left-hand-rule:th#r1-2": {
+   "kp": "ks4.flemings-left-hand-rule.9",
+   "new": "ks4:flemings-left-hand-rule:th#r1-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:flemings-left-hand-rule:th#r2-1": {
+   "kp": "ks4.flemings-left-hand-rule.3",
+   "new": "ks4:flemings-left-hand-rule:th#r2-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:flemings-left-hand-rule:th#r2-2": {
+   "kp": "ks4.flemings-left-hand-rule.3",
+   "new": "ks4:flemings-left-hand-rule:th#r2-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:flemings-left-hand-rule:th#r3-1": {
+   "kp": "ks4.flemings-left-hand-rule.10",
+   "new": "ks4:flemings-left-hand-rule:th#r3-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:flemings-left-hand-rule:th#r3-2": {
+   "kp": "ks4.flemings-left-hand-rule.7",
+   "new": "ks4:flemings-left-hand-rule:th#r3-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:flemings-left-hand-rule:th#r4-1": {
+   "kp": "ks4.flemings-left-hand-rule.2",
+   "new": "ks4:flemings-left-hand-rule:th#r4-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:flemings-left-hand-rule:th#start": {
+   "kp": "ks4.flemings-left-hand-rule.2",
+   "new": "ks4:flemings-left-hand-rule:th#start",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:induced-potential:th#r1-1": {
+   "kp": "ks4.induced-potential.9",
+   "new": "ks4:induced-potential:th#r1-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:induced-potential:th#r1-2": {
+   "kp": "ks4.induced-potential.3",
+   "new": "ks4:induced-potential:th#r1-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:induced-potential:th#r2-1": {
+   "kp": "ks4.induced-potential.3",
+   "new": "ks4:induced-potential:th#r2-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:induced-potential:th#r2-2": {
+   "kp": "ks4.induced-potential.2",
+   "new": "ks4:induced-potential:th#r2-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:induced-potential:th#r3-1": {
+   "kp": "ks4.induced-potential.3",
+   "new": "ks4:induced-potential:th#r3-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:induced-potential:th#r3-2": {
+   "kp": "ks4.induced-potential.2",
+   "new": "ks4:induced-potential:th#r3-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:induced-potential:th#r4-1": {
+   "kp": "ks4.induced-potential.9",
+   "new": "ks4:induced-potential:th#r4-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:induced-potential:th#start": {
+   "kp": "ks4.induced-potential.1",
+   "new": "ks4:induced-potential:th#start",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:loudspeakers-headphones:th#r1-1": {
+   "kp": "ks4.loudspeakers-headphones.1",
+   "new": "ks4:loudspeakers-headphones:th#r1-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:loudspeakers-headphones:th#r1-2": {
+   "kp": "ks4.loudspeakers-headphones.3",
+   "new": "ks4:loudspeakers-headphones:th#r1-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:loudspeakers-headphones:th#r2-1": {
+   "kp": "ks4.loudspeakers-headphones.1",
+   "new": "ks4:loudspeakers-headphones:th#r2-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:loudspeakers-headphones:th#r2-2": {
+   "kp": "ks4.loudspeakers-headphones.2",
+   "new": "ks4:loudspeakers-headphones:th#r2-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:loudspeakers-headphones:th#r3-1": {
+   "kp": "ks4.loudspeakers-headphones.1",
+   "new": "ks4:loudspeakers-headphones:th#r3-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:loudspeakers-headphones:th#r3-2": {
+   "kp": "ks4.loudspeakers-headphones.2",
+   "new": "ks4:loudspeakers-headphones:th#r3-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:loudspeakers-headphones:th#r4-1": {
+   "kp": "ks4.loudspeakers-headphones.1",
+   "new": "ks4:loudspeakers-headphones:th#r4-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:loudspeakers-headphones:th#start": {
+   "kp": "ks4.loudspeakers-headphones.2",
+   "new": "ks4:loudspeakers-headphones:th#start",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:magnetic-fields:cf#r1-1": {
+   "kp": "ks4.magnetic-fields.9",
+   "new": "ks4:magnetic-fields:cf#r1-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:magnetic-fields:cf#r1-2": {
+   "kp": "ks4.magnetic-fields.11",
+   "new": "ks4:magnetic-fields:cf#r1-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:magnetic-fields:cf#r2-1": {
+   "kp": "ks4.magnetic-fields.3",
+   "new": "ks4:magnetic-fields:cf#r2-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:magnetic-fields:cf#r2-2": {
+   "kp": "ks4.magnetic-fields.10",
+   "new": "ks4:magnetic-fields:cf#r2-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:magnetic-fields:cf#r3-1": {
+   "kp": "ks4.magnetic-fields.7",
+   "new": "ks4:magnetic-fields:cf#r3-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:magnetic-fields:cf#r3-2": {
+   "kp": "ks4.magnetic-fields.4",
+   "new": "ks4:magnetic-fields:cf#r3-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:magnetic-fields:cf#r4-1": {
+   "kp": "ks4.magnetic-fields.4",
+   "new": "ks4:magnetic-fields:cf#r4-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:magnetic-fields:cf#start": {
+   "kp": "ks4.magnetic-fields.4",
+   "new": "ks4:magnetic-fields:cf#start",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:magnetic-fields:ch#r1-1": {
+   "kp": "ks4.magnetic-fields.9",
+   "new": "ks4:magnetic-fields:ch#r1-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:magnetic-fields:ch#r1-2": {
+   "kp": "ks4.magnetic-fields.11",
+   "new": "ks4:magnetic-fields:ch#r1-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:magnetic-fields:ch#r2-1": {
+   "kp": "ks4.magnetic-fields.3",
+   "new": "ks4:magnetic-fields:ch#r2-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:magnetic-fields:ch#r2-2": {
+   "kp": "ks4.magnetic-fields.10",
+   "new": "ks4:magnetic-fields:ch#r2-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:magnetic-fields:ch#r3-1": {
+   "kp": "ks4.magnetic-fields.7",
+   "new": "ks4:magnetic-fields:ch#r3-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:magnetic-fields:ch#r3-2": {
+   "kp": "ks4.magnetic-fields.4",
+   "new": "ks4:magnetic-fields:ch#r3-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:magnetic-fields:ch#r4-1": {
+   "kp": "ks4.magnetic-fields.4",
+   "new": "ks4:magnetic-fields:ch#r4-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:magnetic-fields:ch#start": {
+   "kp": "ks4.magnetic-fields.4",
+   "new": "ks4:magnetic-fields:ch#start",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:magnetic-fields:tf#r1-1": {
+   "kp": "ks4.magnetic-fields.9",
+   "new": "ks4:magnetic-fields:tf#r1-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:magnetic-fields:tf#r1-2": {
+   "kp": "ks4.magnetic-fields.11",
+   "new": "ks4:magnetic-fields:tf#r1-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:magnetic-fields:tf#r2-1": {
+   "kp": "ks4.magnetic-fields.3",
+   "new": "ks4:magnetic-fields:tf#r2-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:magnetic-fields:tf#r2-2": {
+   "kp": "ks4.magnetic-fields.10",
+   "new": "ks4:magnetic-fields:tf#r2-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:magnetic-fields:tf#r3-1": {
+   "kp": "ks4.magnetic-fields.7",
+   "new": "ks4:magnetic-fields:tf#r3-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:magnetic-fields:tf#r3-2": {
+   "kp": "ks4.magnetic-fields.4",
+   "new": "ks4:magnetic-fields:tf#r3-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:magnetic-fields:tf#r4-1": {
+   "kp": "ks4.magnetic-fields.4",
+   "new": "ks4:magnetic-fields:tf#r4-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:magnetic-fields:tf#start": {
+   "kp": "ks4.magnetic-fields.4",
+   "new": "ks4:magnetic-fields:tf#start",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:magnetic-fields:th#r1-1": {
+   "kp": "ks4.magnetic-fields.9",
+   "new": "ks4:magnetic-fields:th#r1-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:magnetic-fields:th#r1-2": {
+   "kp": "ks4.magnetic-fields.11",
+   "new": "ks4:magnetic-fields:th#r1-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:magnetic-fields:th#r2-1": {
+   "kp": "ks4.magnetic-fields.3",
+   "new": "ks4:magnetic-fields:th#r2-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:magnetic-fields:th#r2-2": {
+   "kp": "ks4.magnetic-fields.10",
+   "new": "ks4:magnetic-fields:th#r2-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:magnetic-fields:th#r3-1": {
+   "kp": "ks4.magnetic-fields.7",
+   "new": "ks4:magnetic-fields:th#r3-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:magnetic-fields:th#r3-2": {
+   "kp": "ks4.magnetic-fields.4",
+   "new": "ks4:magnetic-fields:th#r3-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:magnetic-fields:th#r4-1": {
+   "kp": "ks4.magnetic-fields.4",
+   "new": "ks4:magnetic-fields:th#r4-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:magnetic-fields:th#start": {
+   "kp": "ks4.magnetic-fields.4",
+   "new": "ks4:magnetic-fields:th#start",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:microphones:th#r1-1": {
+   "kp": "ks4.microphones.3",
+   "new": "ks4:microphones:th#r1-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:microphones:th#r1-2": {
+   "kp": "ks4.microphones.1",
+   "new": "ks4:microphones:th#r1-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:microphones:th#r2-1": {
+   "kp": "ks4.microphones.5",
+   "new": "ks4:microphones:th#r2-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:microphones:th#r2-2": {
+   "kp": "ks4.microphones.2",
+   "new": "ks4:microphones:th#r2-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:microphones:th#r3-1": {
+   "kp": "ks4.microphones.2",
+   "new": "ks4:microphones:th#r3-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:microphones:th#r3-2": {
+   "kp": "ks4.microphones.4",
+   "new": "ks4:microphones:th#r3-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:microphones:th#r4-1": {
+   "kp": "ks4.microphones.2",
+   "new": "ks4:microphones:th#r4-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:microphones:th#start": {
+   "kp": "ks4.microphones.3",
+   "new": "ks4:microphones:th#start",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:poles-of-a-magnet:cf#r1-1": {
+   "kp": "ks4.poles-of-a-magnet.8",
+   "new": "ks4:poles-of-a-magnet:cf#r1-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:poles-of-a-magnet:cf#r1-2": {
+   "kp": "ks4.poles-of-a-magnet.2",
+   "new": "ks4:poles-of-a-magnet:cf#r1-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:poles-of-a-magnet:cf#r2-1": {
+   "kp": "ks4.poles-of-a-magnet.3",
+   "new": "ks4:poles-of-a-magnet:cf#r2-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:poles-of-a-magnet:cf#r2-2": {
+   "kp": "ks4.poles-of-a-magnet.4",
+   "new": "ks4:poles-of-a-magnet:cf#r2-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:poles-of-a-magnet:cf#r3-1": {
+   "kp": "ks4.poles-of-a-magnet.4",
+   "new": "ks4:poles-of-a-magnet:cf#r3-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:poles-of-a-magnet:cf#r3-2": {
+   "kp": "ks4.poles-of-a-magnet.4",
+   "new": "ks4:poles-of-a-magnet:cf#r3-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:poles-of-a-magnet:cf#r4-1": {
+   "kp": "ks4.poles-of-a-magnet.3",
+   "new": "ks4:poles-of-a-magnet:cf#r4-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:poles-of-a-magnet:cf#start": {
+   "kp": "ks4.poles-of-a-magnet.4",
+   "new": "ks4:poles-of-a-magnet:cf#start",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:poles-of-a-magnet:ch#r1-1": {
+   "kp": "ks4.poles-of-a-magnet.8",
+   "new": "ks4:poles-of-a-magnet:ch#r1-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:poles-of-a-magnet:ch#r1-2": {
+   "kp": "ks4.poles-of-a-magnet.2",
+   "new": "ks4:poles-of-a-magnet:ch#r1-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:poles-of-a-magnet:ch#r2-1": {
+   "kp": "ks4.poles-of-a-magnet.3",
+   "new": "ks4:poles-of-a-magnet:ch#r2-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:poles-of-a-magnet:ch#r2-2": {
+   "kp": "ks4.poles-of-a-magnet.4",
+   "new": "ks4:poles-of-a-magnet:ch#r2-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:poles-of-a-magnet:ch#r3-1": {
+   "kp": "ks4.poles-of-a-magnet.4",
+   "new": "ks4:poles-of-a-magnet:ch#r3-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:poles-of-a-magnet:ch#r3-2": {
+   "kp": "ks4.poles-of-a-magnet.4",
+   "new": "ks4:poles-of-a-magnet:ch#r3-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:poles-of-a-magnet:ch#r4-1": {
+   "kp": "ks4.poles-of-a-magnet.3",
+   "new": "ks4:poles-of-a-magnet:ch#r4-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:poles-of-a-magnet:ch#start": {
+   "kp": "ks4.poles-of-a-magnet.4",
+   "new": "ks4:poles-of-a-magnet:ch#start",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:poles-of-a-magnet:tf#r1-1": {
+   "kp": "ks4.poles-of-a-magnet.8",
+   "new": "ks4:poles-of-a-magnet:tf#r1-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:poles-of-a-magnet:tf#r1-2": {
+   "kp": "ks4.poles-of-a-magnet.2",
+   "new": "ks4:poles-of-a-magnet:tf#r1-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:poles-of-a-magnet:tf#r2-1": {
+   "kp": "ks4.poles-of-a-magnet.3",
+   "new": "ks4:poles-of-a-magnet:tf#r2-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:poles-of-a-magnet:tf#r2-2": {
+   "kp": "ks4.poles-of-a-magnet.4",
+   "new": "ks4:poles-of-a-magnet:tf#r2-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:poles-of-a-magnet:tf#r3-1": {
+   "kp": "ks4.poles-of-a-magnet.4",
+   "new": "ks4:poles-of-a-magnet:tf#r3-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:poles-of-a-magnet:tf#r3-2": {
+   "kp": "ks4.poles-of-a-magnet.4",
+   "new": "ks4:poles-of-a-magnet:tf#r3-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:poles-of-a-magnet:tf#r4-1": {
+   "kp": "ks4.poles-of-a-magnet.3",
+   "new": "ks4:poles-of-a-magnet:tf#r4-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:poles-of-a-magnet:tf#start": {
+   "kp": "ks4.poles-of-a-magnet.4",
+   "new": "ks4:poles-of-a-magnet:tf#start",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:poles-of-a-magnet:th#r1-1": {
+   "kp": "ks4.poles-of-a-magnet.8",
+   "new": "ks4:poles-of-a-magnet:th#r1-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:poles-of-a-magnet:th#r1-2": {
+   "kp": "ks4.poles-of-a-magnet.2",
+   "new": "ks4:poles-of-a-magnet:th#r1-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:poles-of-a-magnet:th#r2-1": {
+   "kp": "ks4.poles-of-a-magnet.3",
+   "new": "ks4:poles-of-a-magnet:th#r2-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:poles-of-a-magnet:th#r2-2": {
+   "kp": "ks4.poles-of-a-magnet.4",
+   "new": "ks4:poles-of-a-magnet:th#r2-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:poles-of-a-magnet:th#r3-1": {
+   "kp": "ks4.poles-of-a-magnet.4",
+   "new": "ks4:poles-of-a-magnet:th#r3-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:poles-of-a-magnet:th#r3-2": {
+   "kp": "ks4.poles-of-a-magnet.4",
+   "new": "ks4:poles-of-a-magnet:th#r3-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:poles-of-a-magnet:th#r4-1": {
+   "kp": "ks4.poles-of-a-magnet.3",
+   "new": "ks4:poles-of-a-magnet:th#r4-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:poles-of-a-magnet:th#start": {
+   "kp": "ks4.poles-of-a-magnet.4",
+   "new": "ks4:poles-of-a-magnet:th#start",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:transformers:th#r1-1": {
+   "kp": "ks4.transformers.1",
+   "new": "ks4:transformers:th#r1-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:transformers:th#r1-2": {
+   "kp": "ks4.transformers.5",
+   "new": "ks4:transformers:th#r1-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:transformers:th#r2-1": {
+   "kp": "ks4.transformers.4",
+   "new": "ks4:transformers:th#r2-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:transformers:th#r2-2": {
+   "kp": "ks4.transformers.6",
+   "new": "ks4:transformers:th#r2-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:transformers:th#r3-1": {
+   "kp": "ks4.transformers.2",
+   "new": "ks4:transformers:th#r3-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:transformers:th#r3-2": {
+   "kp": "ks4.transformers.7",
+   "new": "ks4:transformers:th#r3-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:transformers:th#r4-1": {
+   "kp": "ks4.transformers.5",
+   "new": "ks4:transformers:th#r4-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:transformers:th#start": {
+   "kp": "ks4.transformers.5",
+   "new": "ks4:transformers:th#start",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:uses-generator-effect:th#r1-1": {
+   "kp": "ks4.uses-generator-effect.2",
+   "new": "ks4:uses-generator-effect:th#r1-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:uses-generator-effect:th#r1-2": {
+   "kp": "ks4.uses-generator-effect.1",
+   "new": "ks4:uses-generator-effect:th#r1-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:uses-generator-effect:th#r2-1": {
+   "kp": "ks4.uses-generator-effect.5",
+   "new": "ks4:uses-generator-effect:th#r2-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:uses-generator-effect:th#r2-2": {
+   "kp": "ks4.uses-generator-effect.2",
+   "new": "ks4:uses-generator-effect:th#r2-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:uses-generator-effect:th#r3-1": {
+   "kp": "ks4.uses-generator-effect.1",
+   "new": "ks4:uses-generator-effect:th#r3-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:uses-generator-effect:th#r3-2": {
+   "kp": "ks4.uses-generator-effect.2",
+   "new": "ks4:uses-generator-effect:th#r3-2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:uses-generator-effect:th#r4-1": {
+   "kp": "ks4.uses-generator-effect.1",
+   "new": "ks4:uses-generator-effect:th#r4-1",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4:uses-generator-effect:th#start": {
+   "kp": "ks4.uses-generator-effect.8",
+   "new": "ks4:uses-generator-effect:th#start",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4c:electric-motors:match-1": {
+   "kp": "ks4.electric-motors.2",
+   "new": null,
+   "note": "the classic matching card is not on the lean page",
+   "status": "removed"
+  },
+  "ks4c:electric-motors:match-2": {
+   "kp": "ks4.electric-motors.2",
+   "new": null,
+   "note": "the classic matching card is not on the lean page",
+   "status": "removed"
+  },
+  "ks4c:electric-motors:match-3": {
+   "kp": "ks4.electric-motors.2",
+   "new": null,
+   "note": "the classic matching card is not on the lean page",
+   "status": "removed"
+  },
+  "ks4c:electric-motors:match-4": {
+   "kp": "ks4.electric-motors.2",
+   "new": null,
+   "note": "the classic matching card is not on the lean page",
+   "status": "removed"
+  },
+  "ks4c:electromagnetism:match-1": {
+   "kp": "ks4.electromagnetism.2",
+   "new": null,
+   "note": "the classic matching card is not on the lean page",
+   "status": "removed"
+  },
+  "ks4c:electromagnetism:match-2": {
+   "kp": "ks4.electromagnetism.4",
+   "new": null,
+   "note": "the classic matching card is not on the lean page",
+   "status": "removed"
+  },
+  "ks4c:electromagnetism:match-3": {
+   "kp": "ks4.electromagnetism.5",
+   "new": null,
+   "note": "the classic matching card is not on the lean page",
+   "status": "removed"
+  },
+  "ks4c:electromagnetism:match-4": {
+   "kp": "ks4.electromagnetism.6",
+   "new": null,
+   "note": "the classic matching card is not on the lean page",
+   "status": "removed"
+  },
+  "ks4c:electromagnetism:match-5": {
+   "kp": "ks4.electromagnetism.7",
+   "new": null,
+   "note": "the classic matching card is not on the lean page",
+   "status": "removed"
+  },
+  "ks4c:flemings-left-hand-rule:match-1": {
+   "kp": "ks4.flemings-left-hand-rule.6",
+   "new": null,
+   "note": "the classic matching card is not on the lean page",
+   "status": "removed"
+  },
+  "ks4c:flemings-left-hand-rule:match-2": {
+   "kp": "ks4.flemings-left-hand-rule.6",
+   "new": null,
+   "note": "the classic matching card is not on the lean page",
+   "status": "removed"
+  },
+  "ks4c:flemings-left-hand-rule:match-3": {
+   "kp": "ks4.flemings-left-hand-rule.6",
+   "new": null,
+   "note": "the classic matching card is not on the lean page",
+   "status": "removed"
+  },
+  "ks4c:flemings-left-hand-rule:match-4": {
+   "kp": "ks4.flemings-left-hand-rule.3",
+   "new": null,
+   "note": "the classic matching card is not on the lean page",
+   "status": "removed"
+  },
+  "ks4c:induced-potential:match-1": {
+   "kp": "ks4.induced-potential.2",
+   "new": null,
+   "note": "the classic matching card is not on the lean page",
+   "status": "removed"
+  },
+  "ks4c:induced-potential:match-2": {
+   "kp": "ks4.induced-potential.2",
+   "new": null,
+   "note": "the classic matching card is not on the lean page",
+   "status": "removed"
+  },
+  "ks4c:induced-potential:match-3": {
+   "kp": "ks4.induced-potential.2",
+   "new": null,
+   "note": "the classic matching card is not on the lean page",
+   "status": "removed"
+  },
+  "ks4c:induced-potential:match-4": {
+   "kp": "ks4.induced-potential.1",
+   "new": null,
+   "note": "the classic matching card is not on the lean page",
+   "status": "removed"
+  },
+  "ks4c:loudspeakers-headphones:match-1": {
+   "kp": "ks4.loudspeakers-headphones.1",
+   "new": null,
+   "note": "the classic matching card is not on the lean page",
+   "status": "removed"
+  },
+  "ks4c:loudspeakers-headphones:match-2": {
+   "kp": "ks4.loudspeakers-headphones.1",
+   "new": null,
+   "note": "the classic matching card is not on the lean page",
+   "status": "removed"
+  },
+  "ks4c:loudspeakers-headphones:match-3": {
+   "kp": "ks4.loudspeakers-headphones.3",
+   "new": null,
+   "note": "the classic matching card is not on the lean page",
+   "status": "removed"
+  },
+  "ks4c:loudspeakers-headphones:match-4": {
+   "kp": "ks4.loudspeakers-headphones.2",
+   "new": null,
+   "note": "the classic matching card is not on the lean page",
+   "status": "removed"
+  },
+  "ks4c:magnetic-fields:match-1": {
+   "kp": "ks4.magnetic-fields.2",
+   "new": null,
+   "note": "the classic matching card is not on the lean page",
+   "status": "removed"
+  },
+  "ks4c:magnetic-fields:match-2": {
+   "kp": "ks4.magnetic-fields.3",
+   "new": null,
+   "note": "the classic matching card is not on the lean page",
+   "status": "removed"
+  },
+  "ks4c:magnetic-fields:match-3": {
+   "kp": "ks4.magnetic-fields.3",
+   "new": null,
+   "note": "the classic matching card is not on the lean page",
+   "status": "removed"
+  },
+  "ks4c:magnetic-fields:match-4": {
+   "kp": "ks4.magnetic-fields.2",
+   "new": null,
+   "note": "the classic matching card is not on the lean page",
+   "status": "removed"
+  },
+  "ks4c:microphones:match-1": {
+   "kp": "ks4.microphones.7",
+   "new": null,
+   "note": "the classic matching card is not on the lean page",
+   "status": "removed"
+  },
+  "ks4c:microphones:match-2": {
+   "kp": "ks4.microphones.7",
+   "new": null,
+   "note": "the classic matching card is not on the lean page",
+   "status": "removed"
+  },
+  "ks4c:microphones:match-3": {
+   "kp": "ks4.microphones.7",
+   "new": null,
+   "note": "the classic matching card is not on the lean page",
+   "status": "removed"
+  },
+  "ks4c:microphones:match-4": {
+   "kp": "ks4.microphones.9",
+   "new": null,
+   "note": "the classic matching card is not on the lean page",
+   "status": "removed"
+  },
+  "ks4c:poles-of-a-magnet:match-1": {
+   "kp": "ks4.poles-of-a-magnet.3",
+   "new": null,
+   "note": "the classic matching card is not on the lean page",
+   "status": "removed"
+  },
+  "ks4c:poles-of-a-magnet:match-2": {
+   "kp": "ks4.poles-of-a-magnet.4",
+   "new": null,
+   "note": "the classic matching card is not on the lean page",
+   "status": "removed"
+  },
+  "ks4c:poles-of-a-magnet:match-3": {
+   "kp": "ks4.poles-of-a-magnet.4",
+   "new": null,
+   "note": "the classic matching card is not on the lean page",
+   "status": "removed"
+  },
+  "ks4c:poles-of-a-magnet:match-4": {
+   "kp": "ks4.poles-of-a-magnet.6",
+   "new": null,
+   "note": "the classic matching card is not on the lean page",
+   "status": "removed"
+  },
+  "ks4c:transformers:match-1": {
+   "kp": "ks4.transformers.5",
+   "new": null,
+   "note": "the classic matching card is not on the lean page",
+   "status": "removed"
+  },
+  "ks4c:transformers:match-2": {
+   "kp": "ks4.transformers.5",
+   "new": null,
+   "note": "the classic matching card is not on the lean page",
+   "status": "removed"
+  },
+  "ks4c:transformers:match-3": {
+   "kp": "ks4.transformers.7",
+   "new": null,
+   "note": "the classic matching card is not on the lean page",
+   "status": "removed"
+  },
+  "ks4c:transformers:match-4": {
+   "kp": "ks4.transformers.6",
+   "new": null,
+   "note": "the classic matching card is not on the lean page",
+   "status": "removed"
+  },
+  "ks4c:uses-generator-effect:match-1": {
+   "kp": "ks4.uses-generator-effect.1",
+   "new": null,
+   "note": "the classic matching card is not on the lean page",
+   "status": "removed"
+  },
+  "ks4c:uses-generator-effect:match-2": {
+   "kp": "ks4.uses-generator-effect.2",
+   "new": null,
+   "note": "the classic matching card is not on the lean page",
+   "status": "removed"
+  },
+  "ks4c:uses-generator-effect:match-3": {
+   "kp": "ks4.uses-generator-effect.9",
+   "new": null,
+   "note": "the classic matching card is not on the lean page",
+   "status": "removed"
+  },
+  "ks4c:uses-generator-effect:match-4": {
+   "kp": "ks4.uses-generator-effect.10",
+   "new": null,
+   "note": "the classic matching card is not on the lean page",
+   "status": "removed"
+  },
+  "ks4q:electric-motors:4f86df06ce": {
+   "kp": "ks4.electric-motors.5",
+   "new": "ks4q:electric-motors:4f86df06ce",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4q:electric-motors:59cdb6d8a2": {
+   "kp": "ks4.electric-motors.5",
+   "new": "ks4q:electric-motors:59cdb6d8a2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4q:electric-motors:77d849c2c5": {
+   "kp": "ks4.electric-motors.4",
+   "new": "ks4q:electric-motors:77d849c2c5",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4q:electric-motors:9873926ce5": {
+   "kp": "ks4.electric-motors.3",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "ks4q:electric-motors:98e0d5d54a": {
+   "kp": "ks4.electric-motors.8",
+   "new": "ks4q:electric-motors:98e0d5d54a",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4q:electric-motors:acf78d0e40": {
+   "kp": "ks4.electric-motors.4",
+   "new": "ks4q:electric-motors:acf78d0e40",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4q:electric-motors:b9c2e6171b": {
+   "kp": "ks4.electric-motors.7",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "ks4q:electromagnetism:2d20bdf1fa": {
+   "kp": "ks4.electromagnetism.6",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "ks4q:electromagnetism:3a87490ae4": {
+   "kp": "ks4.electromagnetism.4",
+   "new": "ks4q:electromagnetism:3a87490ae4",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4q:electromagnetism:b80d238697": {
+   "kp": "ks4.electromagnetism.6",
+   "new": "ks4q:electromagnetism:b80d238697",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4q:electromagnetism:c3795e2d31": {
+   "kp": "ks4.electromagnetism.4",
+   "new": "ks4q:electromagnetism:c3795e2d31",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4q:electromagnetism:da9e7ae554": {
+   "kp": "ks4.electromagnetism.2",
+   "new": "ks4q:electromagnetism:da9e7ae554",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4q:electromagnetism:e3de8f8e44": {
+   "kp": "ks4.electromagnetism.5",
+   "new": "ks4q:electromagnetism:e3de8f8e44",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4q:flemings-left-hand-rule:2ca3762d50": {
+   "kp": "ks4.flemings-left-hand-rule.1",
+   "new": "ks4q:flemings-left-hand-rule:2ca3762d50",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4q:flemings-left-hand-rule:3b5943cdd4": {
+   "kp": "ks4.flemings-left-hand-rule.2",
+   "new": "ks4q:flemings-left-hand-rule:3b5943cdd4",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4q:flemings-left-hand-rule:700216b050": {
+   "kp": "ks4.flemings-left-hand-rule.5",
+   "new": "ks4q:flemings-left-hand-rule:700216b050",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4q:flemings-left-hand-rule:827c630628": {
+   "kp": "ks4.flemings-left-hand-rule.7",
+   "new": "ks4q:flemings-left-hand-rule:827c630628",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4q:flemings-left-hand-rule:c73d8c86a3": {
+   "kp": "ks4.flemings-left-hand-rule.8",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "ks4q:flemings-left-hand-rule:f32841a88c": {
+   "kp": "ks4.flemings-left-hand-rule.3",
+   "new": "ks4q:flemings-left-hand-rule:f32841a88c",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4q:induced-potential:14d5e66965": {
+   "kp": "ks4.induced-potential.1",
+   "new": "ks4q:induced-potential:14d5e66965",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4q:induced-potential:1d8541a906": {
+   "kp": "ks4.induced-potential.3",
+   "new": "ks4q:induced-potential:1d8541a906",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4q:induced-potential:2969eb4fe0": {
+   "kp": "ks4.induced-potential.3",
+   "new": "ks4q:induced-potential:2969eb4fe0",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4q:induced-potential:2bb04cd597": {
+   "kp": "ks4.induced-potential.5",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "ks4q:induced-potential:50f3358631": {
+   "kp": "ks4.induced-potential.2",
+   "new": "ks4q:induced-potential:50f3358631",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4q:induced-potential:5f1333a39d": {
+   "kp": "ks4.induced-potential.1",
+   "new": "ks4q:induced-potential:5f1333a39d",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4q:loudspeakers-headphones:55af7487ac": {
+   "kp": "ks4.loudspeakers-headphones.2",
+   "new": "ks4q:loudspeakers-headphones:55af7487ac",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4q:loudspeakers-headphones:5bc089f963": {
+   "kp": "ks4.loudspeakers-headphones.2",
+   "new": "ks4q:loudspeakers-headphones:5bc089f963",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4q:loudspeakers-headphones:9634c6e6e3": {
+   "kp": "ks4.loudspeakers-headphones.2",
+   "new": "ks4q:loudspeakers-headphones:9634c6e6e3",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4q:loudspeakers-headphones:c59c63dab7": {
+   "kp": "ks4.loudspeakers-headphones.4",
+   "new": "ks4q:loudspeakers-headphones:c59c63dab7",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4q:loudspeakers-headphones:db5b231c20": {
+   "kp": "ks4.loudspeakers-headphones.1",
+   "new": "ks4q:loudspeakers-headphones:db5b231c20",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4q:magnetic-fields:129a2757d2": {
+   "kp": "ks4.magnetic-fields.9",
+   "new": "ks4q:magnetic-fields:129a2757d2",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4q:magnetic-fields:1844d70fc9": {
+   "kp": "ks4.magnetic-fields.7",
+   "new": "ks4q:magnetic-fields:1844d70fc9",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4q:magnetic-fields:442f5c90ac": {
+   "kp": "ks4.magnetic-fields.5",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "ks4q:magnetic-fields:5a1dd72f90": {
+   "kp": "ks4.magnetic-fields.10",
+   "new": "ks4q:magnetic-fields:5a1dd72f90",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4q:magnetic-fields:5d2cfebcd8": {
+   "kp": "ks4.magnetic-fields.2",
+   "new": "ks4q:magnetic-fields:5d2cfebcd8",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4q:magnetic-fields:7625c6943e": {
+   "kp": "ks4.magnetic-fields.3",
+   "new": "ks4q:magnetic-fields:7625c6943e",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4q:microphones:071ee4d060": {
+   "kp": "ks4.microphones.4",
+   "new": "ks4q:microphones:071ee4d060",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4q:microphones:1d272d0720": {
+   "kp": "ks4.microphones.7",
+   "new": "ks4q:microphones:1d272d0720",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4q:microphones:2bbbb746f0": {
+   "kp": "ks4.microphones.5",
+   "new": "ks4q:microphones:2bbbb746f0",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4q:microphones:3113a56502": {
+   "kp": "ks4.microphones.3",
+   "new": "ks4q:microphones:3113a56502",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4q:microphones:5fbec52358": {
+   "kp": "ks4.microphones.1",
+   "new": "ks4q:microphones:5fbec52358",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4q:poles-of-a-magnet:1cca5b268c": {
+   "kp": "ks4.poles-of-a-magnet.4",
+   "new": "ks4q:poles-of-a-magnet:1cca5b268c",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4q:poles-of-a-magnet:3dc7896f31": {
+   "kp": "ks4.poles-of-a-magnet.2",
+   "new": "ks4q:poles-of-a-magnet:3dc7896f31",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4q:poles-of-a-magnet:536c4d26ac": {
+   "kp": "ks4.poles-of-a-magnet.3",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "ks4q:poles-of-a-magnet:6c0776d7c4": {
+   "kp": "ks4.poles-of-a-magnet.4",
+   "new": "ks4q:poles-of-a-magnet:6c0776d7c4",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4q:poles-of-a-magnet:b974d29ef6": {
+   "kp": "ks4.poles-of-a-magnet.3",
+   "new": "ks4q:poles-of-a-magnet:b974d29ef6",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4q:poles-of-a-magnet:ca45eb93c3": {
+   "kp": "ks4.poles-of-a-magnet.2",
+   "new": "ks4q:poles-of-a-magnet:ca45eb93c3",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4q:transformers:11ee419d19": {
+   "kp": "ks4.transformers.6",
+   "new": "ks4q:transformers:11ee419d19",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4q:transformers:2c8d5d3eb5": {
+   "kp": "ks4.transformers.1",
+   "new": "ks4q:transformers:2c8d5d3eb5",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4q:transformers:2ef6e8bd98": {
+   "kp": "ks4.transformers.4",
+   "new": "ks4q:transformers:2ef6e8bd98",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4q:transformers:bc5f350558": {
+   "kp": "ks4.transformers.3",
+   "new": "ks4q:transformers:bc5f350558",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4q:transformers:d2334c43cc": {
+   "kp": "ks4.transformers.7",
+   "new": "ks4q:transformers:d2334c43cc",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4q:uses-generator-effect:1af8e65c8c": {
+   "kp": "ks4.uses-generator-effect.1",
+   "new": "ks4q:uses-generator-effect:1af8e65c8c",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks4q:uses-generator-effect:229ba0e9ee": {
+   "kp": "ks4.uses-generator-effect.6",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "ks4q:uses-generator-effect:501715ace9": {
+   "kp": "ks4.uses-generator-effect.1",
+   "new": "ks4q:uses-generator-effect:501715ace9",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4q:uses-generator-effect:8324a6666c": {
+   "kp": "ks4.uses-generator-effect.5",
+   "new": "ks4q:uses-generator-effect:8324a6666c",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4q:uses-generator-effect:fb24673821": {
+   "kp": "ks4.uses-generator-effect.11",
+   "new": "ks4q:uses-generator-effect:fb24673821",
+   "note": "a new question on the lean page",
+   "status": "added"
+  },
+  "ks4q:uses-generator-effect:fbbf1231ed": {
+   "kp": "ks4.uses-generator-effect.11",
+   "new": "ks4q:uses-generator-effect:fbbf1231ed",
+   "note": "a new question on the lean page",
+   "status": "added"
+  }
+ },
+ "scope": [
+  "electric-motors",
+  "electromagnetism",
+  "flemings-left-hand-rule",
+  "induced-potential",
+  "loudspeakers-headphones",
+  "magnetic-fields",
+  "microphones",
+  "poles-of-a-magnet",
+  "transformers",
+  "uses-generator-effect"
+ ]
+}

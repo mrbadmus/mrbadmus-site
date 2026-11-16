@@ -507,8 +507,25 @@ PATCH_UN = """(function () {
       if (v && typeof v === 'object') { var o = {}; Object.keys(v).sort().forEach(function (k) { if (!skip[k]) { o[k] = canon(v[k]); } }); return o; }
       return v;
     };
+    // ⊕ 14 Nov 2026 (Mide's ruling): which "Your turn" tab a worked-example
+    // block (Ks4Cfifa) shows is not an answer. On reload the page reopens on
+    // the first question not yet checked (the 25 Oct rule), so device A ends
+    // on whatever tab the drive last pressed and device B on that rule's tab.
+    // Every answer and tick (q) is still compared exactly; in place of the
+    // tab number, both devices must show A tab: a real question index, with
+    // the block drawn on screen.
+    var tab = function (e, st) {
+      var n = ((e.__mrbKs4.logic.props || {}).questions || []).length, x = st.qEx;
+      var real = typeof x === 'number' && x === Math.floor(x) && x >= 0 && x < Math.max(n, 1);
+      return real && e.childElementCount > 0 ? 'tab:shown' : 'tab:MISSING(' + JSON.stringify(x) + ' of ' + n + ')';
+    };
     return Array.prototype.filter.call(document.querySelectorAll('[data-dc-tpl]'), function (e) { return e.__mrbKs4 && ANSWER.test(e.__mrbKs4.comp || ''); })
-      .map(function (e) { return e.__mrbKs4.comp + ' ' + JSON.stringify(canon(e.__mrbKs4.logic.state)); });
+      .map(function (e) {
+        var comp = e.__mrbKs4.comp, st = e.__mrbKs4.logic.state || {};
+        if (comp !== 'Ks4Cfifa') { return comp + ' ' + JSON.stringify(canon(st)); }
+        var rest = {}; Object.keys(st).forEach(function (k) { if (k !== 'qEx') { rest[k] = st[k]; } });
+        return comp + ' ' + JSON.stringify(canon(rest)) + ' ' + tab(e, st);
+      });
   };
   window.__fillIn = function (sec) {
     Array.prototype.forEach.call(sec.querySelectorAll('textarea, input[type=text], input:not([type])'), function (f) {
@@ -520,6 +537,77 @@ PATCH_UN = """(function () {
     });
   };
 })();"""
+
+
+# ⊕ 14 Nov 2026 — Mide: "Explorations are not saved, that ruling stands. Change the save check
+# so it skips exploration widgets, rather than adding new question IDs." (the life-processes
+# seven-tests lamp taps). The rule is the RUNTIME's, not a list kept here. Its click capture in
+# shared/mrbadmus.v2.js handles a press inside an instrument block ([data-instrument], not a
+# keyed block) in this order: a kind with a <ks3-specs> entry is captured by that spec; a
+# KIND_B5C kind by adapter B5C; a KIND_A kind by adapter A, which saves the press ONLY when the
+# runtime's own `isOption()` calls the button an answer. Any other button pressed in a KIND_A
+# block is an exploration the runtime never saves, so device B cannot show it back. Those
+# controls, and only those, are left out of the device-A / device-B comparison, and each one is
+# printed by name. Every other block, and every answer control in a KIND_A block, is compared
+# exactly as before.
+RUNTIME_RULE = ("KIND_A", "KIND_B5C", "OPT_RE", "TAB_NOT_OPTION", "kindOf", "optAttr", "isOption")
+
+
+def runtime_rule_js(root):
+    """The runtime's own answer-or-exploration rule, cut VERBATIM out of shared/mrbadmus.v2.js
+    (the seven declarations in RUNTIME_RULE), as `window.__RT`. Refuses to run if any of them
+    cannot be found exactly once: a rule this check cannot read is not one it may assume."""
+    js = open(os.path.join(root, "shared", "mrbadmus.v2.js"), encoding="utf-8").read()
+    lines = js.split("\n")
+    parts = []
+    for name in RUNTIME_RULE:
+        at = [i for i, ln in enumerate(lines) if re.match(r"^(\s*)var %s = " % re.escape(name), ln)]
+        if len(at) != 1:
+            die("shared/mrbadmus.v2.js declares `var %s` %d times; the exploration rule cannot be read." % (name, len(at)))
+        i = at[0]
+        indent = re.match(r"^(\s*)", lines[i]).group(1)
+        j = i
+        if not lines[i].rstrip().endswith(";"):
+            while j + 1 < len(lines) and lines[j].rstrip() != indent + "};":
+                j += 1
+            if lines[j].rstrip() != indent + "};":
+                die("shared/mrbadmus.v2.js: the end of `var %s` was not found." % name)
+        parts.append("\n".join(lines[i:j + 1]))
+    return ("window.__RT = (function () {\n%s\nreturn { KIND_A: KIND_A, KIND_B5C: KIND_B5C, kindOf: kindOf, isOption: isOption };\n})();\n"
+            % "\n".join(parts)) + ANSWER_SIG_JS
+
+
+# The comparison's signature of a block: UN.sig's own controls, in its own order, minus the
+# controls the runtime treats as explorations in an adapter-A block. `kind` is null, and the
+# signature is exactly UN.sig's, for every other block.
+ANSWER_SIG_JS = r"""window.__answerSig = function (sec) {
+  if (sec.id === 's-ladder') { return { kind: null, sig: UN.sig(sec), skipped: [] }; }
+  var cap = window.MrBadmusAnswerCapture, RT = window.__RT;
+  if (!cap || !cap.ks3Specs) { throw new Error('no answer capture on the page, so the runtime rule cannot be read'); }
+  // The runtime's click capture, branch for branch: null = not an exploration.
+  var explores = function (b) {
+    var bs = b.closest('[data-instrument]');
+    if (!bs || bs.hasAttribute('data-keyedblock')) { return null; }
+    if (RT.kindOf(bs, cap.ks3Specs) || RT.kindOf(bs, RT.KIND_B5C)) { return null; }
+    var k = RT.kindOf(bs, RT.KIND_A);
+    return k && !b.closest('.ks3-ladder') && !RT.isOption(b) ? k : null;
+  };
+  var els = Array.prototype.filter.call(sec.querySelectorAll('[aria-pressed]'), function (b) {
+    return !/tab|seg-btn/.test(b.className || '') && !b.closest('[role="tablist"]');
+  });
+  if (els.length !== UN.sig(sec).length) { throw new Error('__answerSig no longer reads the controls UN.sig reads'); }
+  var keep = [], skipped = [], kinds = {};
+  els.forEach(function (b) {
+    var k = explores(b);
+    if (!k) { keep.push(b.getAttribute('aria-pressed') === 'true' ? '1' : '0'); return; }
+    kinds[k] = 1;
+    var label = (b.getAttribute('aria-label') || b.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 48);
+    skipped.push(String(b.className || b.tagName).split(' ')[0] + ' "' + label + '"');
+  });
+  if (!skipped.length) { return { kind: null, sig: UN.sig(sec), skipped: [] }; }
+  return { kind: Object.keys(kinds).join(', '), sig: keep.join(''), skipped: skipped };
+};
+"""
 
 
 def refuse_production():
@@ -539,6 +627,7 @@ def drive(pages, cur, args, chk):
     D.REPO = args.root
     site, sport = D.start(D.Site)
     api, aport = D.start(D.Api)
+    rt_js = runtime_rule_js(args.root)
     print("\nDrive: serving this checkout on 127.0.0.1 with the drive's pretend backend; every other host is blocked.")
     all_bodies, total = [], 0
 
@@ -560,6 +649,8 @@ def drive(pages, cur, args, chk):
             D.wait_saved(pg)
             pg.eval(D.UNITS_JS)
             pg.eval(PATCH_UN)
+            if r["kind"] != "ks4-rebuilt":
+                pg.eval(rt_js)
             for sel in blocks_of(r):
                 if sel == ".quiz-opt":
                     continue
@@ -570,9 +661,21 @@ def drive(pages, cur, args, chk):
                 if r["kind"] != "ks4-rebuilt":
                     pg.eval("__fillIn(UN.sec(%s))" % json.dumps(sel))
                 n0 = len(D.LEDGER.bodies)
-                res = json.loads(pg.eval("UN.go(%s)" % json.dumps(sel), timeout=90))
+                if r["kind"] == "ks4-rebuilt":
+                    res = json.loads(pg.eval("UN.go(%s)" % json.dumps(sel), timeout=90))
+                    ans = {"kind": None, "skipped": []}
+                else:
+                    # The answer signature is read in the same tick as UN.go's own `sig`.
+                    res = json.loads(pg.eval("UN.go(%s).then(function (r) { var o = JSON.parse(r); o.ans = __answerSig(UN.sec(%s)); return JSON.stringify(o); })"
+                                             % (json.dumps(sel), json.dumps(sel)), timeout=90))
+                    ans = res["ans"]
                 time.sleep(0.4)
-                sigs[sel] = (res["sig"], len(D.LEDGER.bodies) - n0)
+                if ans["kind"] and ans["skipped"]:
+                    named = collections.Counter(ans["skipped"])
+                    print("  skip  %s %s (%s): %d exploration control(s) the runtime does not save, left out of the device B comparison: %s"
+                          % (page, sel, ans["kind"], len(ans["skipped"]),
+                             "; ".join("%s x%d" % (k, v) if v > 1 else k for k, v in named.items())))
+                sigs[sel] = (ans["sig"] if ans["kind"] else res["sig"], len(D.LEDGER.bodies) - n0)
             time.sleep(0.8)
             states_a = pg.eval("UN.ks4States()") if r["kind"] == "ks4-rebuilt" else []
             errs = [e for e in pg.console_errors() if "ERR_BLOCKED" not in e and "429" not in e]
@@ -591,12 +694,14 @@ def drive(pages, cur, args, chk):
             time.sleep(1.2)
             pg.eval(D.UNITS_JS)
             pg.eval(PATCH_UN)
+            if r["kind"] != "ks4-rebuilt":
+                pg.eval(rt_js)
             if st != "done":
                 chk.fail("drive", "%s: device B never finished restoring (state %s)" % (page, st))
             for sel, (sig_a, posted) in sigs.items():
                 if not posted or r["kind"] == "ks4-rebuilt" or not pg.eval("!!UN.sec(%s)" % json.dumps(sel)):
                     continue
-                sig_b = pg.eval("UN.sig(UN.sec(%s))" % json.dumps(sel))
+                sig_b = pg.eval("__answerSig(UN.sec(%s)).sig" % json.dumps(sel))
                 compared += 1
                 # Something this block saved must be on screen on device B. A block
                 # showing one tab at a time ends device A on whichever tab was last
@@ -611,7 +716,8 @@ def drive(pages, cur, args, chk):
                 for x, y in zip(states_a, states_b):
                     if x != y:
                         back_ok = False
-                        chk.fail("drive", "%s: the saved state of %s did not come back on device B" % (page, x.split(" ")[0]))
+                        why = "no question tab open" if "tab:MISSING" in y else "the saved state"
+                        chk.fail("drive", "%s: %s of %s did not come back on device B" % (page, why, x.split(" ")[0]))
                 if len(states_a) != len(states_b):
                     back_ok = False
                     chk.fail("drive", "%s: device B drew %d answer blocks, device A %d" % (page, len(states_b), len(states_a)))

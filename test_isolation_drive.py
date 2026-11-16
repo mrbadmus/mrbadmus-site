@@ -234,7 +234,8 @@ def shoot(page, shots, name):
 
 
 PAGES = [
-    ("ks3-lesson", "/ks3/biology/cells-and-organisation/animal-and-plant-cells.html", True),
+    # ⊕ 14 Nov 2026: the hidden frozen classic copy of animal-and-plant-cells (ks3_fixtures/).
+    ("ks3-lesson", "/ks3/_fixtures/fixture-animal-and-plant-cells.html", True),
     ("ks4-page", "/combined/higher/chemistry/rates-equilibrium.html", True),
     ("student-class", "/student/class.html", False),
     ("consumer", "/consumer/signup.html", False),

@@ -44,7 +44,8 @@ ROOT = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(ROOT, "mrbadmus_site")
 
 PAGES = [
-    ("KS3", "/ks3/biology/cells-and-organisation/using-a-microscope.html", 0.5),
+    # ⊕ 14 Nov 2026: the hidden frozen classic copy of using-a-microscope (ks3_fixtures/).
+    ("KS3", "/ks3/_fixtures/fixture-using-a-microscope.html", 0.5),
     ("KS4", "/combined/foundation/biology/ecology/carbon-cycle.html", 0.45),
 ]
 SIZES = [(390, 844), (1280, 900)]

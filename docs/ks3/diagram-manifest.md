@@ -19,11 +19,11 @@ MRB-103 also flagged an **anatomical/structural diagram gap** (cells, organs) an
 | Status | Figures |
 |---|---|
 | `drafted` | 1 |
-| `drawn` | 35 |
+| `drawn` | 82 |
 | `final` | 1 |
 | `needed` | 3 |
 | `retired` | 6 |
-| **Total** | **46** |
+| **Total** | **93** |
 
 `needed` = declared by a lesson, not yet drawn. A lesson may ship with figures at `needed` — it is not a build blocker — but the need is then counted here rather than invisible.
 
@@ -32,7 +32,17 @@ MRB-103 also flagged an **anatomical/structural diagram gap** (cells, organs) an
 | Unit | Lesson | Figure ID | Kind | Status | Caption |
 |---|---|---|---|---|---|
 | B1 | `animal-and-plant-cells` | `b1-cell-bench` | css-art | `drafted` | The cell bench drawing: a leaf cell and a cheek cell, each as a textbook drawing and as a ×400 field of view. |
+| B1 | `animal-and-plant-cells` | `b1-cell-pair` | diagram | `drawn` | The plant cell has every part the animal cell has, plus three more. |
+| B1 | `levels-of-organisation` | `b1-levels` | diagram | `drawn` | Each level is made of the level before it. |
 | B1 | `life-processes` | `b1-candle-flame` | css-art | `final` | A burning candle: a flickering flame above the wick, with soot rising from it. |
+| B1 | `specialised-cells` | `b1-diffusion` | diagram | `drawn` | Particles diffuse from a high concentration to a low concentration. |
+| B1 | `specialised-cells` | `b1-specialised-cells` | diagram | `drawn` | The same basic parts, with a different shape or amount for each job. Not to scale. |
+| B1 | `unicellular-organisms` | `b1-cell-sizes` | diagram | `drawn` | Lengths drawn to scale. |
+| B1 | `unicellular-organisms` | `b1-unicellular` | diagram | `drawn` | Each one is a whole organism in a single cell. Not to scale. |
+| B1 | `using-a-microscope` | `b1-biological-drawing` | diagram | `drawn` | Single lines, ruled labels and the magnification. No shading. |
+| B1 | `using-a-microscope` | `b1-field-of-view` | diagram | `drawn` | Width of slide you can see with a ×10 eyepiece, to scale. |
+| B1 | `using-a-microscope` | `b1-light-microscope` | diagram | `drawn` | Light goes up from the lamp, through the slide and the lenses, to your eye. |
+| B1 | `using-a-microscope` | `b1-magnification-triangle` | diagram | `drawn` | Cover the one you want. Side by side means multiply. One over the other means divide. |
 | B1 | `using-a-microscope` | `b1-onion-epidermis-x100` | micrograph | `needed` | Onion epidermis, ×100. Cells countable, edges sharp. |
 | B1 | `using-a-microscope` | `b1-onion-epidermis-x400` | micrograph | `needed` | The same spot, ×400. One cell wall crossing an empty grey field. |
 | B10 | `chromosomes-genes-and-dna` | `b10-nested-scale` | diagram | `drawn` | One molecule, five magnifications. Each frame is a callout of the frame above it, and the orange strand you can trace from the top of the column to the bottom never stops being the same strand. Orange is DNA wherever it appears; ink and grey are everything that is not DNA. The gene in panel 04 is a marked length of the strand that was coiled in panel 03 — a section of it, not a separate object sitting on it. Nothing is swapped for anything else on the way down: a chromosome, a gene and DNA are not three things sitting side by side in the nucleus, they are one thing at three magnifications. Count the marks in panel 02 — there are 46, in 23 pairs — and the orange one is the member of one pair that the rest of the column follows. |
@@ -62,17 +72,54 @@ MRB-103 also flagged an **anatomical/structural diagram gap** (cells, organs) an
 | B5 | `seed-dispersal` | `b5-dispersal-specimens` | diagram | `drawn` | Eight fruits and seeds on one ground line at one scale, smallest first, numbered and named — and nothing else. The hooks, the hairs, the ring of holes under the rim, the flesh around a hard pip, the off-centre wing, the fibrous layer full of voids: all of it is drawn, none of it is captioned with a method. The scale is real, which is why the coconut is that size and the goosegrass is that size, and why one of them was never going to be moved by wind. The goosegrass detail is magnified four times and says so on the drawing. Measure any of them against the bar under the ground line: the coconut is 250 mm across, husk and all, the goosegrass pair is 9 mm, and both are drawn against that same bar. Then work out, from what is drawn and from nothing else, how each one gets away from the plant it grew on. |
 | B5 | `the-menstrual-cycle` | `b5-cycle-timeline` | diagram | `retired` | One cycle drawn as a timeline for each of the three lengths, 21, 28 and 35 days: the bleeding window at the start, the building phase, release a fortnight before the end, and the fortnight in which the lining is held ready — with the release marker landing on a different day in each of the three. |
 | B7 | `leaves-built-for-the-job` | `b7-leaf-section` | diagram | `drawn` | The whole slice is less than half a millimetre from top to bottom. Two of its features are claims you can check by looking: the palisade cells are the layer nearest the light, and they hold most of the chloroplasts — count them against the spongy cells below. The only break in either surface is the one pore, and it is underneath. Follow the arrow to see why that still works: carbon dioxide goes in through the pore, up through the air spaces, and into a palisade cell, without anything having to carry it. |
+| B7 | `the-photosynthesis-reaction` | `b7-word-summary` | diagram | `drawn` | The word summary for photosynthesis. |
+| B8 | `aerobic-respiration` | `b8-word-aerobic` | diagram | `drawn` | The word summary for aerobic respiration. |
+| B8 | `anaerobic-respiration-in-humans` | `b8-word-anaerobic` | diagram | `drawn` | The word summary for anaerobic respiration in humans. |
+| B8 | `fermentation` | `b8-word-fermentation` | diagram | `drawn` | The word summary for fermentation. |
+| B8 | `fermentation` | `b8-yeast-limewater` | diagram | `drawn` | Yeast and sugar solution, with a delivery tube into limewater. |
 | B9 | `disturbing-a-food-web` | `b9-oak-wood-web` | diagram | `drawn` | The wood, before anything is taken out of it. Count the arrows into and out of each organism before you choose one to remove — the ones with a single line are not always the ones that matter least. |
 | B9 | `food-chains-and-food-webs` | `b9-oak-wood-web-thread` | diagram | `drawn` | One oak wood.  The numbered orange chain is one route through it — the same four steps the bench above climbs. |
 | B9 | `predator-and-prey` | `b9-predator-prey-cycle` | diagram | `drawn` | The fox line is still going up while the rabbit line is already coming down, and it does not turn over until years later. That gap is the whole idea: foxes cannot become more foxes the moment there is more to eat — breeding takes time — so the fox peak always follows the rabbit peak rather than arriving with it. Look at when each peak happens, not how high it is: the two are counted on their own scales. |
+| C1 | `changes-of-state` | `c1-heating-curve` | graph | `drawn` | The temperature stays flat while the water melts and while it boils. |
+| C1 | `diffusion` | `c1-brownian` | diagram | `drawn` | Air particles hit the speck unevenly, so it moves in a random path. |
+| C1 | `diffusion` | `c1-spreading` | diagram | `drawn` | The particles spread from a high concentration to a low concentration. |
+| C1 | `gas-pressure` | `c1-wall-hits` | diagram | `drawn` | In half the space, the particles hit the walls more often. |
+| C1 | `particle-model` | `c1-mixing` | diagram | `drawn` | The small particles fit into gaps between the big ones. |
+| C1 | `solids-liquids-and-gases` | `c1-expansion` | diagram | `drawn` | Heating moves the particles slightly further apart. The particles do not grow. |
 | C1 | `solids-liquids-and-gases` | `c1-particle-states` | diagram | `drawn` | One substance, three states. Compare the particles inside each box with the reference particle underneath it. |
+| C1 | `solids-liquids-and-gases` | `c1-three-states` | diagram | `drawn` | The same particles in each state, arranged and moving differently. |
+| C2 | `chemical-symbols` | `c2-co-and-co` | diagram | `drawn` | CO is two elements joined. Co is one element. |
+| C2 | `compounds` | `c2-ecm-particles` | diagram | `drawn` | Look at the kinds of atom, and which ones are joined. |
+| C2 | `compounds` | `c2-iron-sulfur` | diagram | `drawn` | Mixed, iron and sulfur are separate. In iron sulfide, they are joined. |
+| C2 | `conservation-of-mass` | `c2-carbon-burns` | diagram | `drawn` | The same atoms before and after, so the same mass. |
+| C2 | `conservation-of-mass` | `c2-open-sealed` | diagram | `drawn` | Open, the gas escapes and the mass falls. Sealed, it stays the same. |
+| C2 | `conservation-of-mass` | `c2-word-magnesium` | diagram | `drawn` | The word equation for burning magnesium. |
+| C2 | `elements` | `c2-element-particles` | diagram | `drawn` | Copper and oxygen each have one kind of atom. Water has two. |
+| C2 | `formulae` | `c2-ammonia` | diagram | `drawn` | Count the atoms of each element. |
+| C2 | `formulae` | `c2-big-small` | diagram | `drawn` | The big number counts molecules. The small numbers count atoms. |
+| C2 | `formulae` | `c2-molecules` | diagram | `drawn` | Each formula counts the atoms in one molecule. |
+| C2 | `formulae` | `c2-salt-lattice` | diagram | `drawn` | Salt has no separate molecules. NaCl gives the ratio. |
+| C2 | `the-atom-daltons-model` | `c2-lead-gold-atoms` | diagram | `drawn` | Lead is only lead atoms. Gold is only gold atoms. |
 | C3 | `distillation` | `c3-distillation-apparatus` | diagram | `needed` | Distillation apparatus: round-bottomed flask over a Bunsen with anti-bumping granules, thermometer bulb level with the side arm, Liebig condenser with cold water entering at the bottom and leaving at the top, and a beaker collecting the distillate. The apparatus is open to the air at the collecting end. |
 | C3 | `filtration` | `particle-panels` | diagram | `drawn` | A grain of sand is a lump of many millions of particles stuck together, thousands of times wider than the gaps between the paper's fibres. A dissolved salt particle is on its own, and it is smaller than the gap by more than the gap is smaller than the grain. There is no filter paper that stops one and passes the other. |
 | C5 | `displacement` | `reactivity-series` | diagram | `drawn` | Nobody was told this order. It was assembled by doing what you are about to do — putting metals into each other's solutions and recording which way the swap went. The bench below covers four of these twelve; the same method extended down the list produces the rest of it. |
 | C6 | `the-ph-scale-and-indicators` | `ph-scale` | diagram | `drawn` | Fifteen whole numbers, one colour each. The reds and oranges are acid, green is neutral, and the blues and purples are alkali. The numbers matter more than the colours: colour-blind chemists use a pH meter and get the same answer. |
+| P1 | `conservation-of-energy` | `p1-pendulum-stores` | diagram | `drawn` | The bars change. The total stays at 120 J. |
+| P1 | `energy-transfers-before-and-after` | `p1-sankey-winch` | diagram | `drawn` | The width of each arrow shows the energy. 100 J in = 70 J + 30 J out. |
+| P1 | `simple-machines` | `p1-lever-trade` | diagram | `drawn` | Small force, big distance. Big force, small distance. |
+| P1 | `simple-machines` | `p1-triangle-wfd` | diagram | `drawn` | Cover the one you want to find. |
 | P10 | `how-a-motor-works` | `p10-motor-arrows-marked` | diagram | `drawn` | The coil from this lesson's bench, with its two force arrows marked. |
 | P10 | `magnetic-fields` | `p10-horseshoe-field-gap` | diagram | `drawn` | The gap between a horseshoe magnet's two poles. |
+| P2 | `calculating-energy-transferred` | `p2-energy-triangle` | diagram | `drawn` | Cover the one you want. Side by side means multiply. One over the other means divide. |
+| P2 | `energy-in-food` | `p2-food-triangle` | diagram | `drawn` | Cover the one you want. Side by side means multiply. One over the other means divide. |
+| P2 | `fuels-and-energy-resources` | `p2-fossil-fuels` | diagram | `drawn` | Coal formed from plants. Oil and gas formed from tiny sea organisms. |
+| P2 | `power-ratings-in-watts` | `p2-power-triangle` | diagram | `drawn` | Cover the one you want. Side by side means multiply. One over the other means divide. |
+| P3 | `speed` | `p3-speed-triangle` | diagram | `drawn` | Cover the one you want. Side by side means multiply. One over the other means divide. |
 | P4 | `drawing-and-adding-forces` | `p4-resultant-beam-recap` | diagram | `drawn` | The same beam as earlier in this lesson. |
+| P4 | `drawing-and-adding-forces` | `p4-sledge-arrows` | diagram | `drawn` | The 40 N pull and the 25 N pull, drawn to the same scale. |
+| P4 | `friction` | `p4-crate-steady` | diagram | `drawn` | A crate sliding along a floor at a steady speed. |
+| P4 | `what-a-force-is` | `p4-force-pair-wall` | diagram | `drawn` | The skater and the wall push on each other. |
+| P4 | `what-a-force-is` | `p4-newtonmeter-reading` | diagram | `drawn` | The pointer reads 3 N, so the shoe pulls down with 3 N. |
 | P8 | `conductors-and-insulators` | `p8-resistance-chart-recap` | diagram | `drawn` | The same chart as earlier in this lesson. |
 | P8 | `current-and-circuits` | `p8-lamp-symbol` | diagram | `drawn` | One of the eight symbols from this lesson's key, shown on its own. |
 | P9 | `electric-fields` | `p9-field-point-marked` | diagram | `drawn` | One point on a field map, marked. |

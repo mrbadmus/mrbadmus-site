@@ -92,6 +92,9 @@ def load_swaps(path):
 def built_pages():
     out = {}
     for root, _dirs, files in os.walk(BUILT):
+        # ⊕ 14 Nov 2026: the hidden check fixtures are frozen and never move with a swap; a
+        # fragment matching both a lesson and its fixture copy would be refused as ambiguous.
+        _dirs[:] = [d for d in _dirs if d != "_fixtures"]
         for f in files:
             if f.endswith(".html"):
                 p = os.path.join(root, f)

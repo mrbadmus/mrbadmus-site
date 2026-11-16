@@ -9,11 +9,13 @@ units at once without editing the same file.
 import json
 import re
 from ks3_art.kit import (
+    _SVG_ACCENT_TEXT,
     _SVG_BAND,
     _SVG_CARD,
     _SVG_GROUND,
     _SVG_INK,
     _SVG_INK_BODY,
+    _SVG_INK_FAINT,
     _circle,
     _dial_block,
     _dials,
@@ -291,7 +293,14 @@ def _leaf_section(fig):
     # One straight run of Design's, cut at the two boundaries it crosses. The
     # x is 434, which is inside the pore (420–450) and inside the seventh
     # palisade cell (404–442): the route is aimed, not decorative.
-    out.append(_line(434, 444, 434, 396, stroke=_SVG_INK, w=3,
+    # ⊕ Nov 2026 (Mide): the tail starts lower (y 490) and a second arrowhead
+    # sits just under the pore, so the arrow reads as going INTO the leaf
+    # before it reaches the leaf. Its label sits beside the tail, so no text is
+    # crossed. The arrowhead is a path, so step 1's `line` is still the one
+    # whose end meets step 2's start.
+    out.append(_line(434, 490, 434, 396, stroke=_SVG_INK, w=3,
+                     data_route="co2", data_step="1", data_start="outside"))
+    out.append(_path("M 427,428 L 441,428 L 434,414 Z", fill=_SVG_INK,
                      data_route="co2", data_step="1", data_start="outside"))
     out.append(_line(434, 396, 434, 342, stroke=_SVG_INK, w=3,
                      data_route="co2", data_step="2", data_through="stoma"))
@@ -330,7 +339,7 @@ def _leaf_section(fig):
                       data_surface="upper"))
     out.append(_path("M 596,128 L 574,121", stroke=_SVG_INK, w=1.4))
 
-    out.append(_label(600, 182, "palisade cells — the top layer", size=16,
+    out.append(_label(600, 182, "palisade cells — near the top", size=16,
                       weight="700", anchor="start", data_layer="palisade",
                       data_order=_B7_LEAF_ORDER["palisade"]))
     out.append(_label(600, 204, "packed with chloroplasts, and", size=16,
@@ -343,10 +352,15 @@ def _leaf_section(fig):
                       data_order=_B7_LEAF_ORDER["palisade"]))
     out.append(_path("M 596,190 L 574,190", stroke=_SVG_INK, w=1.4))
 
-    out.append(_label(600, 288, "spongy mesophyll", size=16, weight="400",
+    out.append(_label(600, 270, "spongy mesophyll", size=16, weight="400",
                       anchor="start", data_layer="spongy-mesophyll",
                       data_order=_B7_LEAF_ORDER["spongy-mesophyll"]))
-    out.append(_path("M 596,284 L 574,286", stroke=_SVG_INK, w=1.4))
+    out.append(_path("M 596,266 L 574,270", stroke=_SVG_INK, w=1.4))
+    # ⊕ Nov 2026: spongy cells DO photosynthesise; they hold fewer chloroplasts.
+    out.append(_label(600, 292, "fewer chloroplasts", size=16,
+                      fill=_SVG_INK_BODY, weight="400", anchor="start",
+                      data_layer="spongy-mesophyll",
+                      data_order=_B7_LEAF_ORDER["spongy-mesophyll"]))
     out.append(_label(600, 320, "air spaces between the cells", size=16,
                       fill=_SVG_INK_BODY, weight="400", anchor="start",
                       data_layer="spongy-mesophyll",
@@ -359,18 +373,20 @@ def _leaf_section(fig):
                       data_surface="lower"))
     out.append(_path("M 596,364 L 574,365", stroke=_SVG_INK, w=1.4))
 
-    out.append(_label(150, 430, "the stoma and its two guard cells", size=16,
+    # ⊕ Nov 2026 (Mide): stomata are MOSTLY on the underside, not "nowhere on
+    # top". The label moves left to x 24 so neither line reaches the CO2 arrow.
+    out.append(_label(24, 430, "the stoma and its two guard cells", size=16,
                       weight="700", anchor="start", data_stoma="1",
                       data_surface="lower"))
-    out.append(_label(150, 452, "— on the underside, and nowhere on top",
+    out.append(_label(24, 452, "— stomata are mostly on the underside",
                       size=16, weight="700", anchor="start", data_stoma="1",
                       data_surface="lower"))
-    out.append(_path("M 400,424 L 414,400", stroke=_SVG_INK, w=1.4))
+    out.append(_path("M 330,424 L 402,400", stroke=_SVG_INK, w=1.4))
 
-    out.append(_label(452, 470, "carbon dioxide, in through the stoma",
+    # beside the arrow's tail, so it needs no leader and crosses nothing
+    out.append(_label(448, 482, "carbon dioxide, in through the stoma",
                       size=16, weight="400", anchor="start",
                       data_route="co2"))
-    out.append(_path("M 448,466 L 436,450", stroke=_SVG_INK, w=1.4))
 
     out.append('</g>')
     out.append('</svg>')
@@ -1049,9 +1065,96 @@ def r_trace_it_back(a, act_id):
                "".join(panels), t(a["step_label"]), t(a["reset_label"])))
 
 
+# ── lean wave 1 · a generic word equation ─────────────────────────────────
+#
+# One drawer for every "word summary": reads fig["eq"] = {"left": [...], "right": [...],
+# "over": "...", "under": "..."} and draws it VERTICALLY (reactants, a drawn arrow, products)
+# so it reads at full size in a 326-unit card on a phone. The arrow is a line plus a drawn
+# triangle, never a typed arrow character.
+_WE_CHAR = 9.6          # estimated units per character at 17px bold
+_WE_MAX = 300
+
+
+def _we_side_lines(parts):
+    """Join with ' + '; if too wide, split at a ' + ' boundary (the '+' leads line two)."""
+    one = " + ".join(parts)
+    if len(one) * _WE_CHAR <= _WE_MAX or len(parts) < 2:
+        return [one]
+    best, best_gap = 1, None
+    for i in range(1, len(parts)):
+        a = " + ".join(parts[:i])
+        b = "+ " + " + ".join(parts[i:])
+        gap = abs(len(a) - len(b))
+        if best_gap is None or gap < best_gap:
+            best, best_gap = i, gap
+    return [" + ".join(parts[:best]), "+ " + " + ".join(parts[best:])]
+
+
+def _we_wrap(text):
+    """Two lines at the space nearest the middle, when there is more than one word."""
+    words = text.split()
+    if len(words) < 2:
+        return [text]
+    best, best_gap = 1, None
+    for i in range(1, len(words)):
+        gap = abs(len(" ".join(words[:i])) - len(" ".join(words[i:])))
+        if best_gap is None or gap < best_gap:
+            best, best_gap = i, gap
+    return [" ".join(words[:best]), " ".join(words[best:])]
+
+
+def _word_equation(fig):
+    from ks3_art.b4 import _b4_arrow
+    eq = fig.get("eq") or {}
+    left, right = list(eq.get("left") or []), list(eq.get("right") or [])
+    if not left or not right:
+        raise ValueError("figure %r: word-equation needs eq.left and eq.right" % fig.get("id"))
+    W, cx = 326, 163
+    LH = 24
+    L, R = _we_side_lines(left), _we_side_lines(right)
+    out_parts = []
+    y = 20
+    out_parts.append(_mono(cx, y, "REACTANTS" if len(eq["left"]) > 1 else "REACTANT", size=13, fill=_SVG_INK_FAINT, weight="600",
+                           anchor="middle", spacing="1.5", data_key="REACTANTS", data_part="tag"))
+    y += 28
+    for ln in L:
+        out_parts.append(_label(cx, y, ln, size=17, weight="700", data_part="reactants", data_key=ln))
+        y += LH
+    y -= LH
+    ay0 = y + 14
+    ay1 = ay0 + 70
+    out_parts.append(_b4_arrow(cx, ay0, cx, ay1, w=3, head=12, data_part="arrow"))
+    mid = (ay0 + ay1) / 2
+    over, under = eq.get("over"), eq.get("under")
+    if over:
+        ol = _we_wrap(over)
+        y0 = mid - (len(ol) - 1) * 8 + 5
+        for i, ln in enumerate(ol):
+            out_parts.append(_label(cx + 16, y0 + i * 17, ln, size=14, fill=_SVG_ACCENT_TEXT,
+                                    weight="600", anchor="start", data_part="over", data_key=over))
+    if under:
+        ul = _we_wrap(under)
+        y0 = mid - (len(ul) - 1) * 8 + 5
+        for i, ln in enumerate(ul):
+            out_parts.append(_label(cx - 16, y0 + i * 17, ln, size=14, fill=_SVG_ACCENT_TEXT,
+                                    weight="600", anchor="end", data_part="under", data_key=under))
+    y = ay1 + 28
+    for ln in R:
+        out_parts.append(_label(cx, y, ln, size=17, weight="700", data_part="products", data_key=ln))
+        y += LH
+    y -= LH
+    y += 24
+    out_parts.append(_mono(cx, y, "PRODUCTS" if len(eq["right"]) > 1 else "PRODUCT", size=13, fill=_SVG_INK_FAINT, weight="600",
+                           anchor="middle", spacing="1.5", data_key="PRODUCTS", data_part="tag"))
+    H = y + 10
+    return (_svg_open(fig, W, H) + '<g stroke-linecap="round" stroke-linejoin="round">'
+            + "".join(out_parts) + '</g></svg>')
+
+
 # ── registrations ────────────────────────────────────────────────────────
 ART = {
     'leaf-section': _leaf_section,
+    'word-equation': _word_equation,
 }
 
 KIND_SHELL = {
