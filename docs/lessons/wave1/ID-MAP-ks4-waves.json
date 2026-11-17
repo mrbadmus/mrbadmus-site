@@ -7816,7 +7816,11 @@
   "ks4q:properties-em-waves-1:425ded7394": {
    "kp": "ks4.properties-em-waves-1.3",
    "new": "ks4q:properties-em-waves-1:425ded7394",
-   "note": "the id is unchanged",
+   "note": "kept on the Higher pages, taken off the Foundation pages: explaining refraction by the change in speed and wavelength is Higher only (AQA 4.6.2.2 / 6.6.2.2)",
+   "off_routes": [
+    "CF",
+    "TF"
+   ],
    "status": "kept"
   },
   "ks4q:properties-em-waves-1:704571bcc9": {
