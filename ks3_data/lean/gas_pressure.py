@@ -56,9 +56,9 @@ LESSON = {
         {"kind": "card", "title": "Easy mistakes",
          "body": [{"mistakes": [
              ("Gas pressure is particles pushing against each other.",
-              "Gas pressure comes from particles hitting the walls."),
+              "Gas pressure comes from particles hitting the walls.", "PART-08"),
              ("Heating a gas makes its particles swell.",
-              "They move faster. Their size never changes."),
+              "They move faster. Their size never changes.", "PART-09"),
              ("The air in a pumped-up tyre is packed solid, its particles touching.",
               "They are closer than outside, but still far apart. It is still a gas."),
          ]}]},

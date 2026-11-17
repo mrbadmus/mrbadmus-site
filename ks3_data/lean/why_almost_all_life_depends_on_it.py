@@ -60,9 +60,9 @@ LESSON = {
         {"kind": "card", "title": "Easy mistakes",
          "body": [{"mistakes": [
              ("Plants make oxygen for animals to breathe.",
-              "Oxygen is a waste product. Plants and animals both use it in respiration."),
+              "Oxygen is a waste product. Plants and animals both use it in respiration.", "PLANT-08"),
              ("Only plants photosynthesise.",
-              "Algae do too. About half of all photosynthesis happens in the sea."),
+              "Algae do too. About half of all photosynthesis happens in the sea.", "PLANT-07"),
              ("A producer is at the top of a food chain.",
               "A producer is always at the start of a food chain."),
          ]}]},

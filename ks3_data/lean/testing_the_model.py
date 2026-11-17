@@ -66,9 +66,9 @@ LESSON = {
         {"kind": "card", "title": "Easy mistakes",
          "body": [{"mistakes": [
              ("One wrong prediction makes a model useless.",
-              "Keep using it where it works. Note where it fails."),
+              "Keep using it where it works. Note where it fails.", "NOS-01"),
              ("Once scientists agree, an idea never changes.",
-              "Ideas change when new evidence appears."),
+              "Ideas change when new evidence appears.", "NOS-02"),
              ("Rubber is not made of particles.",
               "It is. The simple model just cannot join them into chains."),
          ]}]},
