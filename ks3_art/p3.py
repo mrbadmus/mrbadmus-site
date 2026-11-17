@@ -899,3 +899,140 @@ KIND_FN = {
     'relative-frames': r_relative_frames,
     'passing-speeds':  r_passing_speeds,
 }
+
+
+# ══ lean wave · P3's drawn figure ════════════════════════════════════════
+#
+# "dist-time-line": a distance-time graph, drawn from its own points.
+#   data {"x_max", "y_max", "x_step", "y_step", "x_label", "y_label",
+#         "points": [[t, d], ...],              (t strictly increasing)
+#         "speeds": [{"seg": i, "dx": px, "dy": px, "anchor": "start|middle|end"}]}
+# Checked here, at build time, rather than trusted to the data:
+#   · every point sits inside the axes and time only moves forward;
+#   · a "speeds" label is NOT typed: it is the gradient of its own segment,
+#     (d2 - d1) / (t2 - t1), formatted in m/s. A drawing cannot say 3 m/s
+#     over a line that climbs at 1;
+#   · a speed label never touches the line, and stays inside the plate.
+# 340 wide so a 390px phone shows it whole; every label is 14px or more.
+
+from ks3_art.kit import (  # noqa: E402
+    _SVG_ACCENT_TEXT as _P3X_ACCENT,
+    _SVG_INK as _P3X_INK,
+    _SVG_INK_FAINT as _P3X_FAINT,
+    _SVG_INK_MUTED as _P3X_MUTED,
+    _SVG_RULE as _P3X_RULE,
+    _circle as _p3x_circle,
+    _label as _p3x_label,
+    _line as _p3x_line,
+    _n as _p3x_n,
+    _path as _p3x_path,
+    _svg_open as _p3x_svg_open,
+)
+
+_P3XW = 340
+
+
+def _p3x_num(v):
+    return ("%g" % v) if isinstance(v, (int, float)) else str(v)
+
+
+def _p3x_dist_to_polyline(px, py, pts):
+    """Shortest distance from a point to a polyline, in plate units."""
+    best = 1e9
+    for (x1, y1), (x2, y2) in zip(pts, pts[1:]):
+        dx, dy = x2 - x1, y2 - y1
+        ln2 = dx * dx + dy * dy
+        u = 0 if ln2 == 0 else max(0.0, min(1.0, ((px - x1) * dx + (py - y1) * dy) / ln2))
+        cx, cy = x1 + u * dx, y1 + u * dy
+        best = min(best, ((px - cx) ** 2 + (py - cy) ** 2) ** 0.5)
+    return best
+
+
+def _p3x_dist_time_line(fig):
+    d = fig.get("data") or {}
+    fid = fig.get("id")
+    xm, ym = d["x_max"], d["y_max"]
+    xs, ys = d["x_step"], d["y_step"]
+    pts = d["points"]
+    if len(pts) < 2:
+        raise ValueError("figure %r: a graph needs two points" % fid)
+    for (t1, _d1), (t2, _d2) in zip(pts, pts[1:]):
+        if t2 <= t1:
+            raise ValueError("figure %r: time must move forward" % fid)
+    for t, dist in pts:
+        if not (0 <= t <= xm and 0 <= dist <= ym):
+            raise ValueError("figure %r: point (%s, %s) is off the axes" % (fid, t, dist))
+    L, R, T, B = 58.0, 326.0, 14.0, 196.0
+    px = lambda t: L + (R - L) * t / float(xm)
+    py = lambda v: B - (B - T) * v / float(ym)
+    out = []
+    # grid and tick numbers
+    v = 0
+    while v <= ym + 1e-9:
+        out.append(_p3x_line(L, py(v), R, py(v), stroke=_P3X_RULE, w=1, data_part="grid", data_key=_p3x_num(v)))
+        out.append(_p3x_label(L - 8, py(v) + 5, _p3x_num(v), size=14, weight="500", anchor="end",
+                              fill=_P3X_MUTED, data_part="y-tick", data_key=_p3x_num(v)))
+        v += ys
+    v = 0
+    while v <= xm + 1e-9:
+        out.append(_p3x_line(px(v), B, px(v), B + 5, stroke=_P3X_INK, w=1.5, data_part="x-tick", data_key=_p3x_num(v)))
+        out.append(_p3x_label(px(v), B + 21, _p3x_num(v), size=14, weight="500", fill=_P3X_MUTED,
+                              data_part="x-number", data_key=_p3x_num(v)))
+        v += xs
+    # axes
+    out.append(_p3x_line(L, T, L, B, stroke=_P3X_INK, w=2.5, data_part="y-axis"))
+    out.append(_p3x_line(L, B, R, B, stroke=_P3X_INK, w=2.5, data_part="x-axis"))
+    out.append(_p3x_label((L + R) / 2.0, B + 42, d["x_label"], size=14, weight="700", data_part="x-title"))
+    ty = (T + B) / 2.0
+    out.append('<g transform="rotate(-90 14 %s)">%s</g>'
+               % (_p3x_n(ty), _p3x_label(14, ty + 5, d["y_label"], size=14, weight="700", data_part="y-title")))
+    # the line
+    dense = []
+    for (t1, d1), (t2, d2) in zip(pts, pts[1:]):
+        for k in range(0, 41):
+            u = k / 40.0
+            dense.append((px(t1 + (t2 - t1) * u), py(d1 + (d2 - d1) * u)))
+    path = "M " + " L ".join("%s,%s" % (_p3x_n(round(x, 2)), _p3x_n(round(y, 2))) for x, y in
+                              [(px(t), py(v)) for t, v in pts])
+    out.append(_p3x_path(path, stroke=_P3X_ACCENT, w=4, data_part="line"))
+    for t, dist in pts:
+        out.append(_p3x_circle(px(t), py(dist), 4.5, fill=_P3X_ACCENT, data_part="point"))
+    # gradient labels, computed from the segment they sit on
+    for sp in d.get("speeds") or []:
+        i = sp["seg"]
+        (t1, d1), (t2, d2) = pts[i], pts[i + 1]
+        speed = (d2 - d1) / float(t2 - t1)
+        text = "%s m/s" % _p3x_num(round(speed, 2))
+        mx, my = (px(t1) + px(t2)) / 2.0, (py(d1) + py(d2)) / 2.0
+        x, y = mx + sp["dx"], my + sp["dy"]
+        w = len(text) * 14 * 0.58
+        x0 = x - w / 2.0 if sp.get("anchor", "middle") == "middle" else (x if sp["anchor"] == "start" else x - w)
+        box = [(x0, y - 11), (x0 + w, y - 11), (x0, y + 3), (x0 + w, y + 3), (x0 + w / 2.0, y - 4)]
+        if not (4 <= x0 and x0 + w <= _P3XW - 4 and T <= y - 11 and y + 3 <= B):
+            raise ValueError("figure %r: the label %r leaves the plot" % (fid, text))
+        for bx, by in box:
+            if _p3x_dist_to_polyline(bx, by, dense) < 7:
+                raise ValueError("figure %r: the label %r touches the line" % (fid, text))
+        out.append(_p3x_label(x, y, text, size=14, weight="700", anchor=sp.get("anchor", "middle"),
+                              fill=_P3X_INK, data_part="speed-label", data_key=str(i)))
+    # free labels at a point of the graph (a curve has no one gradient to print)
+    for nt in d.get("notes") or []:
+        x, y = px(nt["t"]) + nt["dx"], py(nt["d"]) + nt["dy"]
+        w = len(nt["text"]) * 14 * 0.58
+        a = nt.get("anchor", "middle")
+        x0 = x - w / 2.0 if a == "middle" else (x if a == "start" else x - w)
+        box = [(x0, y - 11), (x0 + w, y - 11), (x0, y + 3), (x0 + w, y + 3), (x0 + w / 2.0, y - 4)]
+        if not (4 <= x0 and x0 + w <= _P3XW - 4 and T <= y - 11 and y + 3 <= B):
+            raise ValueError("figure %r: the note %r leaves the plot" % (fid, nt["text"]))
+        for bx, by in box:
+            if _p3x_dist_to_polyline(bx, by, dense) < 7:
+                raise ValueError("figure %r: the note %r touches the line" % (fid, nt["text"]))
+        out.append(_p3x_label(x, y, nt["text"], size=14, weight="700", anchor=a, fill=_P3X_INK,
+                              data_part="note"))
+    return (_p3x_svg_open(fig, _P3XW, int(B + 52)) + '<g stroke-linecap="round" stroke-linejoin="round">'
+            + "".join(out) + "</g></svg>")
+
+
+ART = {
+    'dist-time-line': _p3x_dist_time_line,
+}

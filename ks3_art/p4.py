@@ -2360,3 +2360,68 @@ ART.update({
     'force-arrows': _p4x_force_arrows,
     'newtonmeter': _p4x_newtonmeter,
 })
+
+
+# ══ lean wave · P4's balanced-beam drawer ════════════════════════════════
+#
+# "moments-beam": a plank on a pivot with downward forces at measured distances.
+#   data {"forces": [{"side": "left|right", "N": number, "m": distance in metres}, ...],
+#         "px_per_m": 60, "balanced": True|False}
+#   A force may carry "unknown": True. Its arrow is still drawn at its true distance (so the
+#   picture stays honest to scale), but the distance label reads "?" for a pupil to find.
+# Checked here: every arrow sits at pivot +/- m * px_per_m, so the drawn distance IS the
+# stated distance; each force label states its own N and distance; and when "balanced"
+# is True the clockwise moments (right side, down) must equal the anticlockwise ones
+# (left side, down), so the drawing cannot claim a balance that the numbers do not make.
+
+def _p4x_moments_beam(fig):
+    d = fig.get("data") or {}
+    fid = fig.get("id")
+    forces = d.get("forces") or []
+    k = d.get("px_per_m", 60)
+    if not forces:
+        raise ValueError("figure %r: moments-beam needs forces" % fid)
+    for f in forces:
+        if f.get("side") not in ("left", "right"):
+            raise ValueError("figure %r: force %r needs side left or right" % (fid, f))
+        if not (f.get("N", 0) > 0 and f.get("m", 0) > 0):
+            raise ValueError("figure %r: force %r needs positive N and m" % (fid, f))
+    anti = sum(f["N"] * f["m"] for f in forces if f["side"] == "left")
+    clock = sum(f["N"] * f["m"] for f in forces if f["side"] == "right")
+    if d.get("balanced") and abs(anti - clock) > 1e-9:
+        raise ValueError("figure %r: drawn as balanced but anticlockwise %s N m is not clockwise %s N m"
+                         % (fid, _p4x_num(anti), _p4x_num(clock)))
+    PX, BEAM_Y, GROUND = 170.0, 112.0, 148.0
+    out = []
+    out.append(_p4x_line(8, GROUND, _P4XW - 8, GROUND, stroke=_P4X_INK, w=2.5, data_part="ground"))
+    out.append(_p4x_path("M %s,%s L %s,%s L %s,%s Z" % (PX, BEAM_Y + 5, PX - 22, GROUND, PX + 22, GROUND),
+                         fill=_P4X_BAND, stroke=_P4X_INK, w=2.5, data_part="pivot"))
+    out.append(_p4x_rect(PX - 152, BEAM_Y - 5, 304, 10, rx=2, fill=_P4X_INSET, stroke=_P4X_INK, w=2.5,
+                         data_part="beam"))
+    out.append(_p4x_circle(PX, BEAM_Y, 4, fill=_P4X_INK, data_part="pivot-dot"))
+    dim_y = GROUND + 22
+    for f in forces:
+        sgn = -1 if f["side"] == "left" else 1
+        x = PX + sgn * f["m"] * k
+        if not (PX - 150 <= x <= PX + 150):
+            raise ValueError("figure %r: a force at %s m falls off the beam" % (fid, _p4x_num(f["m"])))
+        out.append(_p4x_arrow(x, 34, x, BEAM_Y - 6, _P4X_ACCENT_TEXT, data_part="force", data_key=f["side"],
+                              data_n=_p4x_num(f["N"]), data_m=_p4x_num(f["m"])))
+        out.append(_p4x_label(x, 22, "%s N" % _p4x_num(f["N"]), size=14, weight="700", fill=_P4X_INK,
+                              data_part="force-label", data_key=f["side"]))
+        # the distance: a measured line from the pivot to the force, a tick at each end
+        out.append(_p4x_line(x, BEAM_Y + 5, x, dim_y, stroke=_P4X_RULE_STRONG, w=1.5, dash="4 4",
+                             data_part="guide", data_key=f["side"]))
+        out.append(_p4x_line(PX, dim_y, x, dim_y, stroke=_P4X_INK, w=2, data_part="distance",
+                             data_key=f["side"]))
+        for xx in (PX, x):
+            out.append(_p4x_line(xx, dim_y - 6, xx, dim_y + 6, stroke=_P4X_INK, w=2, data_part="distance-tick"))
+        out.append(_p4x_label((PX + x) / 2.0, dim_y + 24,
+                              "? m" if f.get("unknown") else "%s m" % _p4x_num(f["m"]), size=14, weight="700",
+                              fill=_P4X_INK, data_part="distance-label", data_key=f["side"]))
+    return _p4x_svg(fig, int(dim_y + 34), out)
+
+
+ART.update({
+    'moments-beam': _p4x_moments_beam,
+})

@@ -98,8 +98,10 @@ WAVES = {
                                   "reading-a-fuel-bill", "fuels-and-energy-resources"]),
         # P3 and P4 (Y7 Phys 1, forces and motion): only the lessons Rainford's Phys 1 teaches; the
         # rest of both units is not lean yet.
-        ("P3", "describing-motion", ["speed"]),
-        ("P4", "forces", ["what-a-force-is", "drawing-and-adding-forces", "friction"]),
+        ("P3", "describing-motion", ["speed", "distance-time-graphs"]),
+        ("P4", "forces", ["what-a-force-is", "drawing-and-adding-forces", "friction", "moments"]),
+        # P12 (Space): mass-vs-weight only; the other five lessons are not lean yet.
+        ("P12", "space", ["mass-vs-weight"]),
         # B1: all six lessons. life-processes joined on 15 Nov 2026, with the quiz batch that
         # reworded its stored Rung 2 options (it had been held for that).
         ("B1", "cells-and-organisation", ["life-processes", "using-a-microscope", "animal-and-plant-cells",
@@ -210,8 +212,9 @@ _WHY = [
      "the instrument was removed from the lean page"),
     # ⊕ P3/P4 (Wave 1, Phys 1): the forces and speed benches, one id per press, and the
     # your-turn resultant calculation (a p4-attempt block, one id per question).
-    (r"#(board|sledge|drag|light-gates|compare-pairs)-\d", "the instrument was removed from the lean page"),
-    (r"#your-turn-resultant-\d", "the worked-calculation questions are not on the lean page"),
+    (r"#(board|sledge|drag|light-gates|compare-pairs|graph-plot|journey-match|spanner|bench)-\d",
+     "the instrument was removed from the lean page"),
+    (r"#your-turn-(resultant|moment|mass)-\d", "the worked-calculation questions are not on the lean page"),
     # ⊕ B1 (Wave 1): the cells benches, sorters and FIFA builder, one id per part.
     (r"#(sams-method|magnification-fifa-do|seven-parts-two-cells|wall-or-membrane|fit-the-cell|"
      r"s-break|s-hard|s-settle)-\d",
