@@ -221,15 +221,17 @@ class _Slots:
             from figlib import ks4lean
             return lean_blocks.fig_wrap(ks4lean.svg(name[4:]))
         if name.startswith("legacy-fig:"):
-            # a figure the legacy page already draws (`{{ <prop> }}` in its own bordered div):
-            # the same bordered div, wrapped for the card. The prop must be in the legacy
-            # template exactly once, as that div, or the build stops.
+            # a figure the legacy page already draws (`{{ <prop> }}`): a fresh bordered div,
+            # wrapped for the card. The prop must be in the legacy template exactly once, or the
+            # build stops. Its wrapper there may be the standard bordered div or the page's own
+            # (a max-width div, a tap-target container: Waves' spectrumFig, focusFig, buildFig
+            # ...); the slot's output is the standard div either way, so only the check widened.
             prop = name.split(":", 1)[1]
             if self.tpl is None:
                 raise ValueError("lean KS4 record %r: slot %r needs a legacy page" % (self.rec["slug"], name))
-            if self.tpl.count("{{ %s }}" % prop) != 1 or self.tpl.count(_FIG_DIV % prop) != 1:
+            if self.tpl.count("{{ %s }}" % prop) != 1:
                 raise SystemExit("lean_ks4: %s: slot %r: {{ %s }} is not in the legacy template "
-                                 "exactly once as its bordered figure div" % (self.rec["slug"], name, prop))
+                                 "exactly once" % (self.rec["slug"], name, prop))
             return lean_blocks.fig_wrap(_FIG_DIV % prop)
         if name in SIMPLE_FIG_SLOTS:
             return lean_blocks.fig_wrap(_FIG_DIV % SIMPLE_FIG_SLOTS[name])
@@ -456,6 +458,13 @@ _ASSIGN_HEAD = re.compile(r"(?<=return Object\.assign\()(\{\}, R, |c, )")
 
 def _legacy_logic(lesson, rec, logic, spec=None):
     what = lesson["slug"] + " logic"
+    # Some batch-4 logic names its rail `RAIL_BASE` (infrared-black-bodies): with no `RAIL` of its
+    # own and exactly one `const RAIL_BASE = [`, the name is read as RAIL everywhere it is used
+    # (the constant, KS4.observe, K.rail), so the RAIL edit below finds it. Anything else stops.
+    if "const RAIL = [" not in logic and "const RAIL_BASE = [" in logic:
+        if logic.count("const RAIL_BASE = [") != 1 or re.search(r"\bRAIL\b", logic):
+            raise SystemExit("lean_ks4: %s: RAIL_BASE is not the one rail constant" % what)
+        logic = re.sub(r"\bRAIL_BASE\b", "RAIL", logic)
     # RAIL is written on ONE line (Design's batch 10) or over several (the pilot's): the one-line
     # form first, so a multi-line match can never run on past it and swallow the next constant
     m = re.search(r"const RAIL = \[[^\n]*\];[ \t]*(?=\n)", logic)
