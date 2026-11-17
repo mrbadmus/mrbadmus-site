@@ -7519,8 +7519,9 @@ RETIRED_BY_LEAN = [(n, "biology/breathing-and-gas-exchange/how-breathing-works.h
     "the net bar is blue at the compensation point",
     "the verdict panel is ink on cream at the compensation point",
     "the photosynthesis bar is the ok green")]
-# ⊕ lean wave 1 (B7 photosynthesis, B8 respiration): eight of the nine lessons became lean pages
-# (why-almost-all-life-depends-on-it is held back, so its trace-it-back rows still run), so EVERY
+# ⊕ lean wave 1 (B7 photosynthesis, B8 respiration): all nine lessons are lean pages. The ninth,
+# why-almost-all-life-depends-on-it, joined with the 16 Nov quiz batch; its trace-it-back rows read
+# the hidden fixture now (B7_TRACE), not the lean page. So EVERY
 # component and contrast row registered on one of these pages measures an element the lean standard
 # removed (the nine benches and the .ks3-eqn equation block; the page now carries drawn figures).
 # Derived from the registry rather than listed, so a row added later for these pages is retired
