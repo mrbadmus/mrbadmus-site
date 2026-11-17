@@ -556,16 +556,20 @@ CASES = [
          check=lambda b: all(isinstance(x["is_correct"], bool) and x["correct_answer"] and x["self_checked"] is False for x in b if "#preds-" in x["question_id"]),
          back="""(function(){ var s = H.rootState(); return s.revealed[s.step] === true && H.v().revealed === true && s.preds[s.step][1] === 1; })()"""),
     dict(name="ks4-reveal-waves", page="/triple/higher/physics/waves/waves-detection-exploration.html", forms=True,
+         retired="the lean rebuild (Wave 1, Waves) took the two seismic-wave prediction benches off the page",
+         absent=['"e": "qOpts"', '"e": "uOpts"'],
          act="""H.click(H.rootBtn(H.v().qOpts[0].text)); await H.sleep(150); await H.call('onQReveal'); H.click(H.rootBtn(H.v().uOpts[1].text)); await H.sleep(150); await H.call('onUReveal'); await H.sleep(200);""",
-         want=["ks4:waves-detection-exploration:th#qpred-*", "ks4:waves-detection-exploration:th#upred-*"],
+         want=["ks4:waves-detection-exploration:th#qpred", "ks4:waves-detection-exploration:th#upred"],
          check=lambda b: all(isinstance(x["is_correct"], bool) and x["correct_answer"] for x in b if "pred-" in x["question_id"]),
          back="""(function(){ var v = H.v(), s = H.rootState(); return v.qShown === true && v.uShown === true && s.qPred[s.qStage] === 0 && s.uPred[s.uStage] === 1; })()"""),
     dict(name="ks4-reveal-sound", page="/triple/higher/physics/waves/sound-waves-hearing.html", forms=True,
+         retired="the lean rebuild (Wave 1, Waves) took the pitch and hearing-range prediction bench off the page",
+         absent=['"e": "pOpts"', '"e": "pTones"'],
          act="""H.click(H.rootBtn(H.v().pOpts[0].text)); await H.sleep(150); await H.call('onPReveal');
                 var st = 1; for (var k = 1; k <= 4 && !H.v().pTones.length; k += 1) { await H.set({ pStage: k }); st = k; }
                 var n = H.v().pTones.length; for (var i = 0; i < n; i += 1) { await H.call((function (j) { return function (v) { return v.pTones[j].opts[0].onClick; }; })(i)); }
                 await H.call('onPReveal'); await H.sleep(200); window.__st = st;""",
-         want=["ks4:sound-waves-hearing:th#ppred-*", "ks4:sound-waves-hearing:th#tpred-*-1"],
+         want=["ks4:sound-waves-hearing:th#ppred", "ks4:sound-waves-hearing:th#tpred"],
          check=lambda b: all(isinstance(x["is_correct"], bool) and x["correct_answer"] for x in b if "#ppred-" in x["question_id"]),
          back="""(function(){ var s = H.rootState(), n = H.v().pTones.length; return s.pShown[1] === true && n > 0 && s.pShown[s.pStage] === true && Object.keys(s.tPred).length === n; })()"""),
     # ── Answers found by reading the groups the classifier filed as not-an-answer ──
