@@ -128,7 +128,7 @@ LESSON = {
                       "Measure the abiotic factor at each quadrat, such as light intensity with a "
                       "light meter.",
                   ]},
-                  {"slot": "legacy-fig:trFig"}]},
+                  {"slot": "fig:belt-transect"}]},
         {"kind": "reveal", "title": "Daisies along the transect (made-up data)",
          "cols": ["Light (lux)", "Daisies in the quadrat"],
          "rows": [

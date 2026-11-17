@@ -79,7 +79,7 @@ LESSON = {
         {"kind": "card", "title": "The mole ratio",
          "body": ["2Mg + O₂ → 2MgO: 2 mol of magnesium reacts with 1 mol of oxygen to make 2 mol "
                   "of magnesium oxide.",
-                  {"slot": "legacy-fig:rFig"},
+                  {"slot": "fig:mole-ratio-bars"},
                   "The ratio stays the same whatever the amount. 0.2 mol of magnesium reacts with "
                   "0.1 mol of oxygen to make 0.2 mol of magnesium oxide.",
                   "To go from one substance to another: moles wanted = moles given × wanted "

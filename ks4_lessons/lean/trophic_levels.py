@@ -31,7 +31,7 @@ LESSON = {
                   "along the food chain.",
                   "Each arrow points from the organism that is eaten to the organism that eats "
                   "it.",
-                  {"slot": "legacy-fig:lvFig"}]},
+                  {"slot": "fig:oak-trophic-levels"}]},
         {"kind": "reveal", "title": "The four levels",
          "cols": ["Name", "Which organisms"],
          "rows": [("Level 1", "Producers", "Plants and algae. They make their own food."),

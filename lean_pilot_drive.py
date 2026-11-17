@@ -451,6 +451,32 @@ def figures(d):
             d.check(f["minpx"] >= 10.99, "%s draws text under 11px" % w)
 
 
+# ⊕ 17 Nov 2026: a formula with a subscript must reach the pupil whole. The display-time subscript
+# pass (ks4_lessons/batch5_ext.js) split "CaCO₃(s) → CaO(s) + CO₂(g)" into pieces that the
+# runtime's next redraw removed, so the live Chemistry pages showed "CaCO". The page's own static
+# HTML (the build's server render, with real <sub>) is the reference: no element that holds a
+# subscript there may be shown as a shorter start of that same text.
+FORMULAE = r"""
+var x=new XMLHttpRequest();x.open('GET',location.href,false);x.send();
+var doc=new DOMParser().parseFromString(x.responseText,'text/html');
+function norm(s){return s.replace(/[₀-₉]/g,function(c){return String(c.charCodeAt(0)-0x2080)}).replace(/\s+/g,' ').trim()}
+var st={};
+[].forEach.call(doc.querySelectorAll('#ks4-mount [data-dc-tpl]'),function(e){
+  if(e.querySelector('sub')&&[].every.call(e.children,function(c){return c.tagName==='SUB'}))st[e.getAttribute('data-dc-tpl')]=norm(e.textContent)});
+var bad=[],n=0;
+[].forEach.call(document.querySelectorAll('#ks4-mount [data-dc-tpl]'),function(e){
+  var k=e.getAttribute('data-dc-tpl');if(!(k in st)||e.closest('svg'))return;n++;
+  var a=norm(e.textContent),b=st[k];
+  if(a.length>0&&a.length<b.length&&b.indexOf(a)===0)bad.push(JSON.stringify(a)+' should read '+JSON.stringify(b.slice(0,70)))});
+return {n:n,bad:bad.slice(0,3),nbad:bad.length};
+"""
+
+
+def formulae_whole(d, when):
+    r = d.js(FORMULAE)
+    d.check(r["nbad"] == 0, "%d formula line(s) cut short after %s, e.g. %s" % (r["nbad"], when, r["bad"]))
+
+
 def touch_drag_slider(d):
     """A real touch drag along a slider inside a card moves the slider and leaves the card open."""
     n = d.js("return document.querySelectorAll('.lean-card input[type=range]').length")
@@ -695,6 +721,7 @@ def walk_light(page, base, ks, slug, route, path, rec, shots):
     if ks == 4:
         triangles(d, rec)
         ks4_words(d, route, next(p for p in path.split("/") if p in SPEC_TRIPLE), slug)
+        formulae_whole(d, "every card opened")
     else:
         ks3_words(d)
     figures(d)
@@ -706,6 +733,8 @@ def walk_light(page, base, ks, slug, route, path, rec, shots):
     d.js("document.querySelectorAll('.lean-card-btn').forEach(function(b){var c=b.closest('.lean-card');if(c.hasAttribute('data-lean-open'))b.click()});1")
     survival(d, ks, answer)
     overflow(d, "answers shown")
+    if ks == 4:
+        formulae_whole(d, "answers shown")
     errs = [e for e in page.console_errors() if "ERR_BLOCKED_BY_CLIENT" not in e and config_env.PROD_BACKEND_HOST not in e]
     d.check(not errs, "console errors: %s" % errs[:3])
     return d.checks

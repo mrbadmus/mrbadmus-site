@@ -34,7 +34,7 @@ LESSON = {
              "carbon dioxide too.",
          ]},
                   "Look at the arrows for photosynthesis, burning and decay.",
-                  {"slot": "legacy-fig:fFig"}]},
+                  {"slot": "fig:deforestation-carbon"}]},
         {"kind": "card", "title": "What happens to biodiversity",
          "body": ["Clearing the forest destroys the habitat of many species.",
                   "They lose their food and shelter, so biodiversity is reduced."]},
