@@ -115,7 +115,7 @@ LESSON = {
                   "If one species is removed it can affect the whole community. This is called "
                   "interdependence.",
                   "In this woodland web, solid arrows point from the food to the eater.",
-                  {"slot": "legacy-fig:wFig"}]},
+                  {"slot": "fig:woodland-web"}]},
         {"kind": "reveal", "title": "Take one species out of the wood",
          "cols": ["What happens next"],
          "rows": [

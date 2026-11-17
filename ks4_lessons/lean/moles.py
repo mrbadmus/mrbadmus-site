@@ -89,7 +89,7 @@ LESSON = {
                               "One mole of water, H₂O (M<sub>r</sub> 18), has a mass of 18 g.",
                               "One mole of sodium chloride, NaCl (M<sub>r</sub> 58.5), has a mass "
                               "of 58.5 g."]},
-                  {"slot": "legacy-fig:pFig"}]},
+                  {"slot": "fig:one-mole-masses"}]},
         {"kind": "card", "title": "The Avogadro constant",
          "body": ["One mole of a substance contains the same number of the stated particles, "
                   "atoms, molecules or ions as one mole of any other substance.",

@@ -8,7 +8,7 @@
   "review_state": "examiner-reviewed"
  },
  "amounts-in-equations": {
-  "hash": "807ce5c32356c7f1af4f1310bbca697be0a685b7c62eb2228665d97ae8078847",
+  "hash": "0bea97cf314acaacb656a6e252fc8f4f4792c49d11cad512ecb3568a7b6dea67",
   "review_state": "examiner-reviewed"
  },
  "atom-economy": {
@@ -28,7 +28,7 @@
   "review_state": "examiner-reviewed"
  },
  "chemical-measurements": {
-  "hash": "fb85c9ee26f5b82a8b24165b11fdd61c61303cb9330355286e3e1e8932aaecb5",
+  "hash": "e90d5dea7587b5e1042a8caf3d0f6a1d393795d5fbc61ddc265b92c1934b8197",
   "review_state": "examiner-reviewed"
  },
  "concentration-of-solutions": {
@@ -44,11 +44,11 @@
   "review_state": "examiner-reviewed"
  },
  "deforestation": {
-  "hash": "fbbca44159d8a4678d7f67aa934160573ee23eddea8c6c518f39f5b148afd0bf",
+  "hash": "93305f6e3bd527a273a21e3a9469739cddf7deec45106ffd5591b1072b6883b1",
   "review_state": "examiner-reviewed"
  },
  "ecosystems": {
-  "hash": "ed45f1278f9d1020a5126775a75a12ff1fd5c1066b21203ae9b481775118aa66",
+  "hash": "09eff31af5e29a4a07093adb723a5d068a51cf042e5d79716aea4d8ddbc2d450",
   "review_state": "examiner-reviewed"
  },
  "efficiency": {
@@ -96,7 +96,7 @@
   "review_state": "examiner-reviewed"
  },
  "food-chains-webs": {
-  "hash": "c9dafe2bcd6a7977d87a8eddc60b8f9c99b75506ea57eee9a2ce216320061e9f",
+  "hash": "27ea100b73ba66108e22bbcaff5ae3a3fc3faade11283a5c41826a95b071cb81",
   "review_state": "examiner-reviewed"
  },
  "gas-volumes": {
@@ -124,11 +124,11 @@
   "review_state": "examiner-reviewed"
  },
  "maintaining-biodiversity": {
-  "hash": "0f5411b0f76a1b9226f7ea269aaa47c6dc3d7c18754271fee5f55b557f762a2b",
+  "hash": "737568613158e66527dad43a9aef2aaec39205bf576c75212a3ab8fdc5d5f2f8",
   "review_state": "examiner-reviewed"
  },
  "mass-changes-reactions": {
-  "hash": "507a4fce9ff146d84fbc82140873ab0f4b46ae2697a0733dd5649246ec857414",
+  "hash": "6056a5c5be96040632059c60d32fb35d3c4d3e3dcb896cd2e98327565a49d3da",
   "review_state": "examiner-reviewed"
  },
  "microphones": {
@@ -136,7 +136,7 @@
   "review_state": "examiner-reviewed"
  },
  "moles": {
-  "hash": "39b2c84b49204b8333952bcccee13b7c947c5d91d621d1a20e1e1c90b27be482",
+  "hash": "bbe83474ebe87494ed86bbf4e3c9586e24ad6c3de72c7fc3a482bb77db667abf",
   "review_state": "examiner-reviewed"
  },
  "percentage-yield": {
@@ -148,7 +148,7 @@
   "review_state": "examiner-reviewed"
  },
  "population-competition": {
-  "hash": "eadc603f48fed13418e711a1056b25907030d82e727cedbea7a8b035a795818b",
+  "hash": "b54ec81c65147cff7881a110027818305c754e37610daf42f8ee8d18f75b9557",
   "review_state": "examiner-reviewed"
  },
  "power": {
@@ -156,7 +156,7 @@
   "review_state": "examiner-reviewed"
  },
  "pyramids-of-biomass": {
-  "hash": "69f9ac348af453036f40d25b3b2aed4096922cc23cd9f72b4eaa6cd81b603b32",
+  "hash": "387f8ffaaa7f2a39acd524b90b71417cb541c1d8a54e8d512d98e347d13cd816",
   "review_state": "examiner-reviewed"
  },
  "relative-formula-mass": {
@@ -168,7 +168,7 @@
   "review_state": "examiner-reviewed"
  },
  "sampling-techniques": {
-  "hash": "079faf4e56c0289eb6ad74e5a857b5c4296106e976801498aef83a8ea8a3e472",
+  "hash": "819f10d95b81b6bc3e11cebdc5cfdb1193c1be62855d33671b95e78844e007f3",
   "review_state": "examiner-reviewed"
  },
  "sustainable-fisheries": {
@@ -180,7 +180,7 @@
   "review_state": "examiner-reviewed"
  },
  "transfer-of-biomass": {
-  "hash": "c90971d6438794f4088ccf8f6407825e23c223f4c799a879dfab8235d45daa91",
+  "hash": "ae90c00a837617d6323bd2812cdb5ac3ed5856140685d86a3848d9717f57cf7b",
   "review_state": "examiner-reviewed"
  },
  "transformers": {
@@ -188,7 +188,7 @@
   "review_state": "examiner-reviewed"
  },
  "trophic-levels": {
-  "hash": "a533f40f8d9d63a11fe2e1ee74669daa031be829495ed17f7ba8dbb9111bd5f2",
+  "hash": "5ae6da156033fa9289bf69de5f249367904f29e8c3585984997a6f604436f4e7",
   "review_state": "examiner-reviewed"
  },
  "uses-generator-effect": {

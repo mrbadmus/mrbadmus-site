@@ -108,7 +108,7 @@ LESSON = {
                   "CaCO₃(s) → CaO(s) + CO₂(g)",
                   "Marble chips and acid in an open flask lose mass the same way:",
                   "CaCO₃(s) + 2HCl(aq) → CaCl₂(aq) + H₂O(l) + CO₂(g)",
-                  {"slot": "legacy-fig:bFig"}]},
+                  {"slot": "fig:open-sealed-flasks"}]},
         {"kind": "card", "title": "When the reading rises",
          "body": ["A metal reacts with oxygen from the air.",
                   "The mass of the oxide produced is greater than the mass of the metal, because "

@@ -28,7 +28,7 @@ LESSON = {
         {"kind": "card", "title": "About 10% is passed on",
          "body": ["Only approximately 10% of the biomass from each trophic level is transferred "
                   "to the level above it.",
-                  {"slot": "legacy-fig:lFig"}]},
+                  {"slot": "fig:rabbit-biomass-losses"}]},
         {"kind": "card", "title": "Where the rest goes",
          "body": [{"points": [
                       "Not all the ingested material is absorbed. Some is egested as faeces.",

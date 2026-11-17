@@ -13,6 +13,13 @@
   var RE = /[₀-₉]+/;
   var RE_G = /[₀-₉]+/g;
   var made = new WeakMap();
+  // ⊕ 17 Nov 2026: the runtime keeps each text node and, on every redraw, sets the element's
+  // children back to [that node]. That removed the pieces split() had added after it and left
+  // only the head ("CaCO₃(s) → CaO(s) + CO₂(g)" showed as "CaCO"); the runtime never rewrites
+  // the node, because its own record still says the full text. So the full text is kept here,
+  // and a node found holding only its head without its pieces is restored and split again.
+  var orig = new WeakMap();   // text node -> { full, head }
+  var owner = new WeakMap();  // added piece -> the text node it was split from
   var SVGNS = 'http://www.w3.org/2000/svg';
   var SKIP = { SCRIPT: 1, STYLE: 1, TEXTAREA: 1, INPUT: 1, SVG: 1, svg: 1 };
 
@@ -27,8 +34,21 @@
     for (var i = 0; i < run.length; i++) s += String(run.charCodeAt(i) - 0x2080);
     return s;
   }
+  function intact(n) {
+    var list = made.get(n);
+    if (!list || !list.length) return false;
+    var ref = n;
+    for (var i = 0; i < list.length; i++) { if (ref.nextSibling !== list[i]) return false; ref = list[i]; }
+    return true;
+  }
   function split(n) {
+    var o = orig.get(n);
+    if (o && n.nodeValue === o.head) {
+      if (intact(n)) return;
+      n.nodeValue = o.full;
+    }
     clear(n);
+    orig.delete(n);
     var txt = n.nodeValue;
     if (!RE.test(txt)) return;
     var parent = n.parentNode;
@@ -51,16 +71,17 @@
       } else if (p.sub !== undefined) { node = document.createElement('sub'); node.textContent = p.sub; }
       else { if (!p.t) continue; node = document.createTextNode(p.t); }
       parent.insertBefore(node, ref.nextSibling);
-      ref = node; added.push(node);
+      ref = node; added.push(node); owner.set(node, n);
     }
     made.set(n, added);
+    orig.set(n, { full: txt, head: parts[0].t });
   }
   function scan(root) {
     if (root.nodeType === 3) { split(root); return; }
     // an added <svg> (a figure redrawn after a tap) is scanned too: its labels get SVG tspans
     if (root.nodeType !== 1 || (SKIP[root.nodeName] && root.nodeName !== 'svg' && root.nodeName !== 'SVG')) return;
     var w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null, false), list = [], x;
-    while ((x = w.nextNode())) if (RE.test(x.nodeValue)) list.push(x);
+    while ((x = w.nextNode())) if (RE.test(x.nodeValue) || orig.has(x)) list.push(x);
     list.forEach(split);
   }
   var cfg = { childList: true, subtree: true, characterData: true };
@@ -69,7 +90,14 @@
     try {
       muts.forEach(function (mu) {
         if (mu.type === 'characterData') split(mu.target);
-        else mu.addedNodes.forEach(scan);
+        else {
+          mu.addedNodes.forEach(scan);
+          // a piece taken away by a redraw: put its text node back together
+          mu.removedNodes.forEach(function (r) {
+            var n = owner.get(r);
+            if (n && n.isConnected) split(n);
+          });
+        }
       });
     } finally { obs.observe(host, cfg); }
   });
