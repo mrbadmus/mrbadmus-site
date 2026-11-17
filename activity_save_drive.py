@@ -1102,7 +1102,15 @@ def run_drafts(sport, aport, width, ok, only=None):
             ok(not LEDGER.bodies, "a draft posts nothing", LEDGER.bodies)
             if d.get("send"):
                 run_act(pg, d["send"])
+                # ⊕ 17 Nov 2026: wait for the answer to arrive (up to 5 s) instead of a fixed
+                # 0.5 s. In a long full run the post sometimes lands later than that, and the
+                # check failed on an empty ledger (2 of 4 full runs; 0 of 6 on its own). The
+                # assertion is unchanged: a body that arrives with too short a time still fails.
+                t_end = time.time() + 5.0
                 time.sleep(0.5)
+                while not LEDGER.bodies and time.time() < t_end:
+                    time.sleep(0.2)
+                time.sleep(0.3)
                 ok(bool(d["sent"](LEDGER.bodies)), "the answer's time includes the draft", [(x.get("question_id"), x.get("time_spent_seconds")) for x in LEDGER.bodies])
                 LEDGER.reset()
         with KB.Browser() as br:
