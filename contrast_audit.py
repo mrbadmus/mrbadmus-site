@@ -518,8 +518,11 @@ _page("ks4 pilot/nanoparticles [Triple Foundation]",
 # report — rather than one this lane introduced or should paper over.)
 _page("ks3 year page", "ks3/year-7/index.html")
 _page("ks3 unit page", "ks3/physics/electric-circuits/index.html")
+# ⊕ 14 Nov 2026 (Mide: checks do not depend on real lessons): the hidden frozen classic copy of
+# solids-liquids-and-gases (ks3_fixtures/), so this sample keeps its state-bench after C1 goes
+# lean. Was ks3/chemistry/particles-and-their-behaviour/solids-liquids-and-gases.html.
 _page("ks3 lesson [chemistry, instrument]",
-      "ks3/chemistry/particles-and-their-behaviour/solids-liquids-and-gases.html")
+      "ks3/_fixtures/fixture-solids-liquids-and-gases.html")
 _page("ks3 lesson [physics, instrument]",
       "ks3/physics/electric-circuits/current-and-circuits.html")
 
@@ -921,10 +924,12 @@ _DRAWER_OPEN_JS = r"""
 for _lbl, _path, _pre in (
         ("E1 classic page, drawer open [signed out]", "past-papers.html", None),
         ("E2 landing, drawer open [signed in teacher]", "index.html", _SIGNED_IN_PRE),
+        # ⊕ 14 Nov 2026: the hidden frozen classic copy of specialised-cells (ks3_fixtures/);
+        # was ks3/biology/cells-and-organisation/specialised-cells.html.
         ("E3 ks3 lesson, drawer open [signed in teacher]",
-         "ks3/biology/cells-and-organisation/specialised-cells.html", _SIGNED_IN_PRE),
+         "ks3/_fixtures/fixture-specialised-cells.html", _SIGNED_IN_PRE),
         ("E4 ks3 lesson, drawer open [signed out]",
-         "ks3/biology/cells-and-organisation/specialised-cells.html", None)):
+         "ks3/_fixtures/fixture-specialised-cells.html", None)):
     _ipage(_lbl, _path, setup=_DRAWER_OPEN_JS, wait=1.4, prescript=_pre, widths=[1280, 390])
 
 # ── E5–E6 (front door run 2, 16 Oct 2026): THE SIGNED-OUT DRAWER ON THE GCSE

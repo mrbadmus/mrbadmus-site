@@ -50,6 +50,7 @@ _OLD_FORMAT = {
 _UNITS = {
     ("physics", "magnetism"): "Magnetism and electromagnetism",
     ("biology", "ecology"): "Ecology",
+    ("chemistry", "quantitative"): "Quantitative chemistry",
 }
 # The family label (the eyebrow's last word) is a ruled choice per lesson, drawn from the
 # labels the existing batches use: Model, Quantitative, Process, Classify, Contrast,
@@ -68,6 +69,7 @@ _FAMILY = {
     "uses-generator-effect": "Process",
     "microphones": "Process",
     "transformers": "Quantitative",
+    "gas-volumes": "Quantitative",
     # Ecology's eight old-format lessons (the fifteen legacy ones keep batch 10's own family)
     "biodiversity": "Model",
     "waste-management": "Process",
@@ -103,6 +105,28 @@ _SPEC = {
     "decomposition": ("4.7.2.2", "4.7.2.3"),
     "factors-affecting-food-security": "4.7.5.1",
 }
+# Chemistry numbers its sections differently in the two specs: AQA Combined Science (8464)
+# writes 5.3.x.y, AQA Chemistry (8462) writes 4.3.x.y (the sub-numbers happen to agree in this
+# unit, but are written out per lesson, never derived). slug -> (8464 number, 8462 number), each
+# taken from the lesson's curriculum table (docs/lessons/wave1/ks4-<slug>.md, its Sources line).
+# percentage-yield and atom-economy exist on TF/TH only (8462 4.3.3.x, "chemistry only"), so
+# their Combined slot is None. The lean page's eyebrow is built from this table when the legacy
+# header writes a literal "AQA Chemistry 5.3.x.y" (moles, amounts-in-equations,
+# chemical-measurements, mass-changes-reactions); the other six legacy pages bind eyebrowLine /
+# specRef per route themselves, and lean_pilot_drive checks every route's number against this table.
+CHEM_EYEBROW = {
+    "conservation-of-mass": ("5.3.1.1", "4.3.1.1"),
+    "relative-formula-mass": ("5.3.1.2", "4.3.1.2"),
+    "mass-changes-reactions": ("5.3.1.3", "4.3.1.3"),
+    "chemical-measurements": ("5.3.1.4", "4.3.1.4"),
+    "moles": ("5.3.2.1", "4.3.2.1"),
+    "amounts-in-equations": ("5.3.2.2", "4.3.2.2"),
+    "using-moles-calculations": ("5.3.2.3\u20135.3.2.4", "4.3.2.3\u20134.3.2.4"),
+    "concentration-of-solutions": ("5.3.2.5", "4.3.2.5"),
+    "percentage-yield": (None, "4.3.3.1"),
+    "atom-economy": (None, "4.3.3.2"),
+    "gas-volumes": (None, "4.3.5"),
+}
 # Words kept capitalised by sentence_case() beyond the first word.
 _KEEP_CAPS = {"Fleming's"}
 
@@ -110,11 +134,15 @@ _SUBTOPIC_MODULES = {
     "physics": {"CF": "all_subtopics_physics", "CH": "all_subtopics_physics_higher",
                 "TF": "all_subtopics_physics_triple_foundation",
                 "TH": "all_subtopics_physics_triple_higher"},
+    "chemistry": {"CF": "all_subtopics_chemistry", "CH": "all_subtopics_chemistry_higher",
+                  "TF": "all_subtopics_chemistry_triple_foundation",
+                  "TH": "all_subtopics_chemistry_triple_higher"},
     "biology": {"CF": "all_subtopics_biology", "CH": "all_subtopics_biology_higher",
                 "TF": "all_subtopics_biology_triple_foundation",
                 "TH": "all_subtopics_biology_triple_higher"},
 }
-_SUBTOPIC_ATTR = {"physics": "PHYSICS_SUBTOPICS_ALL", "biology": "BIOLOGY_SUBTOPICS_ALL"}
+_SUBTOPIC_ATTR = {"physics": "PHYSICS_SUBTOPICS_ALL", "biology": "BIOLOGY_SUBTOPICS_ALL",
+                  "chemistry": "CHEMISTRY_SUBTOPICS_ALL"}
 _DATA = {}
 
 
@@ -218,6 +246,8 @@ def _lesson(slug, rec):
     else:
         d = _derive(slug)
         unit = d.pop("unit")
+    if slug in CHEM_EYEBROW:
+        d["eyebrow_spec"] = CHEM_EYEBROW[slug]
     d.update(batch=B, staged=False, lean=rec, unit=unit,
              block_map=dict(_BLOCK_MAP))
     return d

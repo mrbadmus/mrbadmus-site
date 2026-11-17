@@ -89,7 +89,14 @@ LESSON = {
     "typical_year": 7,
     "typical_minutes": 60,
 
-    "requires": ["insulation"],
+    # ⊕ Nov 2026 (Mide): "Before this lesson" pointed at Insulation, which this
+    # lesson does not build on. It needs forces in newtons, so it requires P4's
+    # first lesson. Not `moments`: Rainford's Y7 SOW teaches simple machines and
+    # moments in the same lesson (12a), and the lean page explains a lever by
+    # work done, not by moments. `conservation-of-energy` is already the
+    # "Connects to" link, so naming it here too would say it twice. Default
+    # sequence: what-a-force-is is Y7 HT2, this lesson Y8 HT2, so no forward edge.
+    "requires": ["what-a-force-is"],
     "assumes": [],
     "references": ["conservation-of-energy"],
     "ks4_links": [],

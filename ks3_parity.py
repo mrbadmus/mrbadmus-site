@@ -434,7 +434,14 @@ def check_structure(ks3_root):
 
 TOL_PX = 1.0
 
-LESSON = "chemistry/particles-and-their-behaviour/gas-pressure.html"
+# ⊕ 14 Nov 2026 (Mide: "our checks should not depend on real lessons. Every time a unit goes
+# lean we will hit this again."). This page constant names the hidden frozen classic copy
+# of the lesson (ks3_fixtures/, built at ks3/_fixtures/fixture-<slug>.html) instead of the
+# real page, so every row on it keeps measuring after the real lesson goes lean. Only the
+# page moved: the rows, selectors, drives and expected values are unchanged. The same is
+# true of every constant below marked "(fixture, see LESSON)". It was
+#     LESSON = "chemistry/particles-and-their-behaviour/gas-pressure.html"
+LESSON = "_fixtures/fixture-gas-pressure.html"
 # MRB-198 — the two new instrument kinds, each gated on the page whose
 # payload exercises it hardest: the microscope on L2 (three slides), and
 # system-parts on L5 (five levels of a stomach, including the one_of_many
@@ -442,18 +449,18 @@ LESSON = "chemistry/particles-and-their-behaviour/gas-pressure.html"
 # kinds' locked covers, captions, controls and readouts are all measured
 # on the ink-dark ground here; the amber-ground cover pair stays measured
 # on the C1 lesson above.
-B1_MICRO = "biology/cells-and-organisation/using-a-microscope.html"
-B1_PARTS = "biology/cells-and-organisation/levels-of-organisation.html"
+B1_MICRO = "_fixtures/fixture-using-a-microscope.html"   # was biology/cells-and-organisation/using-a-microscope.html (fixture, see LESSON)
+B1_PARTS = "_fixtures/fixture-levels-of-organisation.html"   # was biology/cells-and-organisation/levels-of-organisation.html (fixture, see LESSON)
 # ⊕ B1 round two. A component is registered on a page that RENDERS it — a
 # component measured on a page that lacks it reports "selector not present" and
 # passes, which is the absence-of-assertion failure this gate exists to close.
-B1_LIFE = "biology/cells-and-organisation/life-processes.html"
+B1_LIFE = "_fixtures/fixture-life-processes.html"   # was biology/cells-and-organisation/life-processes.html (fixture, see LESSON)
 # ⊕ MRB-245 — the two live pages whose statement-panel cards shipped EMPTY.
 # See `_rule_card` in build_ks3.py: six pills, two closing sentences and four
 # problem cards were authored, drawn by Design, and rendered as blank `<li>`s.
-B1_CELLS = "biology/cells-and-organisation/animal-and-plant-cells.html"
-B1_SPEC = "biology/cells-and-organisation/specialised-cells.html"
-B1_UNI = "biology/cells-and-organisation/unicellular-organisms.html"
+B1_CELLS = "_fixtures/fixture-animal-and-plant-cells.html"   # was biology/cells-and-organisation/animal-and-plant-cells.html (fixture, see LESSON)
+B1_SPEC = "_fixtures/fixture-specialised-cells.html"   # was biology/cells-and-organisation/specialised-cells.html (fixture, see LESSON)
+B1_UNI = "_fixtures/fixture-unicellular-organisms.html"   # was biology/cells-and-organisation/unicellular-organisms.html (fixture, see LESSON)
 
 # ⊕ B2 · Movement (MRB-220). Same rule as B1's: a component is registered on
 # the page that RENDERS it. `job-sort` is on three pages and is measured on
@@ -708,8 +715,8 @@ LANDING = "index.html"
 YEAR = "year-7/index.html"
 
 # ═══ BEGIN C1 ═══
-C1_PRESSURE = "chemistry/particles-and-their-behaviour/gas-pressure.html"
-C1_TEST = "chemistry/particles-and-their-behaviour/testing-the-model.html"
+C1_PRESSURE = "_fixtures/fixture-gas-pressure.html"   # was chemistry/particles-and-their-behaviour/gas-pressure.html (fixture, see LESSON)
+C1_TEST = "_fixtures/fixture-testing-the-model.html"   # was chemistry/particles-and-their-behaviour/testing-the-model.html (fixture, see LESSON)
 # ⊕ MRB-267 — the host `shared/mrbadmus.v2.js` pings to keep Render warm.
 # Its console failure is demoted out of the pass/fail set; see
 # `drain_console`. Named once so the smoke gate and this one filter the
@@ -720,10 +727,10 @@ import config_env  # noqa: E402 — shared/config.js's worlds
 # The production backend's host, read out of shared/config.js (B2C unit 6).
 BACKEND_HOST = config_env.PROD_BACKEND_HOST
 
-C1_MODEL = "chemistry/particles-and-their-behaviour/particle-model.html"
-C1_STATE = "chemistry/particles-and-their-behaviour/changes-of-state.html"
-C1_DIFF = "chemistry/particles-and-their-behaviour/diffusion.html"
-C1_STATES = "chemistry/particles-and-their-behaviour/solids-liquids-and-gases.html"
+C1_MODEL = "_fixtures/fixture-particle-model.html"   # was chemistry/particles-and-their-behaviour/particle-model.html (fixture, see LESSON)
+C1_STATE = "_fixtures/fixture-changes-of-state.html"   # was chemistry/particles-and-their-behaviour/changes-of-state.html (fixture, see LESSON)
+C1_DIFF = "_fixtures/fixture-diffusion.html"   # was chemistry/particles-and-their-behaviour/diffusion.html (fixture, see LESSON)
+C1_STATES = "_fixtures/fixture-solids-liquids-and-gases.html"   # was chemistry/particles-and-their-behaviour/solids-liquids-and-gases.html (fixture, see LESSON)
 # ═══ END C1 ═══
 
 
@@ -763,7 +770,7 @@ B6_CLAIMS = "biology/health-and-drugs/substance-misuse-and-decisions.html"
 B7_BENCH  = "biology/photosynthesis/the-photosynthesis-reaction.html"
 B7_TUNER  = "biology/photosynthesis/leaves-built-for-the-job.html"
 B7_METHOD = "biology/photosynthesis/testing-a-leaf-for-starch.html"
-B7_TRACE  = "biology/photosynthesis/why-almost-all-life-depends-on-it.html"
+B7_TRACE  = "_fixtures/fixture-why-almost-all-life-depends-on-it.html"   # was biology/photosynthesis/why-almost-all-life-depends-on-it.html (fixture, see LESSON)
 # ═══ END B7 ═══
 # ═══ BEGIN B8 ═══
 # ⊕ MRB-248. Five instruments, five pages, all five on ink.
@@ -1551,17 +1558,17 @@ COMPONENTS = [
          sel=".ks3-case-verdict", props={"background-color": "#221E1B"}),
 
     dict(name="bench cell picker is a full-width ROW, not a segment",
-         on="biology/cells-and-organisation/specialised-cells.html",
+         on=B1_SPEC,
          sel=".ks3-bench-cell",
          props={"min-height": "56px", "text-align": "left",
                 "border-top-left-radius": "16px"}),
     dict(name="tuning dial is a fixed 74px mono chip",
-         on="biology/cells-and-organisation/specialised-cells.html",
+         on=B1_SPEC,
          sel=".ks3-tune-dial",
          props={"font-family": "DM Mono", "font-size": "12px",
                 "border-top-width": "2px"}),
     dict(name="sabotage chain's first link is the cell itself",
-         on="biology/cells-and-organisation/specialised-cells.html",
+         on=B1_SPEC,
          sel=".ks3-chain-link:first-child",
          props={"background-color": "#F4E9D8", "border-top-color": "#221E1B"}),
 
@@ -1579,17 +1586,17 @@ COMPONENTS = [
          props={"background-color": "#FBF3E6", "color": "#221E1B"}),
 
     dict(name="cell-bench part row carries a numbered badge",
-         on="biology/cells-and-organisation/animal-and-plant-cells.html",
+         on=B1_CELLS,
          sel=".ks3-part-num",
          props={"width": "28px", "font-family": "Bricolage Grotesque",
                 "font-weight": "800"}),
     dict(name="cell-bench readout name is display 800 at 25px",
-         on="biology/cells-and-organisation/animal-and-plant-cells.html",
+         on=B1_CELLS,
          sel=".ks3-readout-name",
          props={"font-family": "Bricolage Grotesque", "font-weight": "800",
                 "font-size": "25px"}),
     dict(name="pair row is the sorter's sibling, not the sorter",
-         on="biology/cells-and-organisation/animal-and-plant-cells.html",
+         on=B1_CELLS,
          sel=".ks3-pairrow",
          props={"background-color": "#FFFCF5",
                 "border-top-left-radius": "20px"}),
@@ -1599,11 +1606,11 @@ COMPONENTS = [
     # catch the implementation drifting, and this one did not. Re-pointed at
     # the reference, and given the two properties that make a pill a pill.
     dict(name="fit-parts installs as a wrapping row of pills",
-         on="biology/cells-and-organisation/animal-and-plant-cells.html",
+         on=B1_CELLS,
          sel=".ks3-fit-parts",
          props={"display": "flex", "flex-wrap": "wrap"}),
     dict(name="a fit chip is a pill on the dark block, not a light option row",
-         on="biology/cells-and-organisation/animal-and-plant-cells.html",
+         on=B1_CELLS,
          sel=".ks3-fit-part",
          props={"border-top-left-radius": "999px", "min-height": "48px",
                 "border-top-color": "#C6B9A7", "color": "#FBF3E6"}),
@@ -1626,16 +1633,16 @@ COMPONENTS = [
     # the zeroed border rather than asserting 0px as correct. `shared/ks3.css`
     # is not this lane's to change; named in the MRB-297 report.
     dict(name="an installed fit chip's badge is the accent slab, not amber",
-         on="biology/cells-and-organisation/animal-and-plant-cells.html",
+         on=B1_CELLS,
          drive="b1-fit-part-installed",
          sel='.ks3-dark .ks3-fit-part[aria-pressed="true"] .ks3-part-num',
          props={"background-color": "#221E1B", "border-color": "#E4572E",
                 "color": "#FBF3E6"}),
     dict(name="the fit job panel is the dark nested panel, not a cream inset",
-         on="biology/cells-and-organisation/animal-and-plant-cells.html",
+         on=B1_CELLS,
          sel=".ks3-fit-job", props={"background-color": "#3E3730"}),
     dict(name="the fit results card re-declares ink on its own cream ground",
-         on="biology/cells-and-organisation/animal-and-plant-cells.html",
+         on=B1_CELLS,
          sel=".ks3-fit-out",
          props={"background-color": "#FBF3E6", "color": "#221E1B"}),
 
@@ -7273,11 +7280,10 @@ _DONE_SIGNALS = (
 # `ks3_rail_manifest.py` already derives these two as mirrors from Design's own
 # `isDone()` — its docstring names them — so the completion they need may
 # already exist on the instrument beside them.
-_TICK_EXEMPT = {
-    ("chemistry/particles-and-their-behaviour/diffusion.html", "s-scale"),
-    ("chemistry/particles-and-their-behaviour/solids-liquids-and-gases.html",
-     "s-matrix"),
-}
+# ⊕ 14 Nov 2026: both entries removed, as the list's own rule says (a stale entry fails). The lean
+# rebuild (Wave 1, C1) took `#s-scale` off diffusion and `#s-matrix` off solids-liquids-and-gases.
+# (_lesson_pages does not read the hidden fixtures under _fixtures/, so their copies need no entry.)
+_TICK_EXEMPT = set()
 
 
 def check_nothing_ticks_on_load(ks3_root):
@@ -18478,8 +18484,7 @@ def run_browser_layers(ks3_root, browser_mod):
         # ⊕ MRB-257 phase 4 — the chemistry sweep's flagship finding: a dial
         # that was drawn and never modelled, on the lesson's first prediction.
         vol_problems = check_container_dial_is_modelled(
-            browser_mod, _url, "chemistry/particles-and-their-behaviour/"
-                               "gas-pressure.html")
+            browser_mod, _url, C1_PRESSURE)   # ⊕ 14 Nov 2026: the fixture copy (see LESSON)
         problems.extend(vol_problems)
         style_rows.append(
             ("⊕ phase 4 · the container dial IS one over the volume",

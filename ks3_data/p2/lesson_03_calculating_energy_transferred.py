@@ -456,7 +456,7 @@ LESSON = {
             # rewriting them attaches every explanation to the wrong
             # option, silently.
             "options": [
-                "Nothing is wrong — that working is correct",
+                "Nothing is wrong with that working",
                 "The time must be in seconds, not minutes",
                 "The power should have been given in kilowatts",
                 "They should have divided rather than multiplied",

@@ -147,6 +147,10 @@ def ks3(tables, shapes):
     rows = []
     lessons = 0
     for p in sorted(glob.glob(os.path.join(REPO, 'ks3', '**', '*.html'), recursive=True)):
+        # ⊕ 14 Nov 2026: the hidden check fixtures (ks3/_fixtures/, ks3_fixtures/) are frozen
+        # copies of real lessons, not lessons; counting them would count those lessons twice.
+        if os.sep + '_fixtures' + os.sep in p:
+            continue
         html = open(p, encoding='utf-8').read()
         if 'data-lesson' not in html:
             continue

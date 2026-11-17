@@ -1,0 +1,379 @@
+{
+ "aerobic-vs-anaerobic#apply": {
+  "0": [
+   "Aerobic supplies energy at a faster rate; anaerobic is slower but gets more from each glucose"
+  ],
+  "1": [
+   "Anaerobic releases more energy from each glucose, so a sprinter uses it to get more out"
+  ],
+  "2": [
+   "They release the same energy per glucose, and anaerobic differs only by leaving a harmful waste product"
+  ]
+ },
+ "aerobic-vs-anaerobic#recall": {
+  "0": [
+   "It releases energy from glucose, so a cell that needs energy has to use this route"
+  ],
+  "2": [
+   "The glucose is only partly broken down, so a product is left that still holds energy"
+  ]
+ },
+ "anaerobic-respiration-in-humans#apply": {
+  "0": [
+   "You are taking in the oxygen you could not get during the sprint, to deal with the lactic acid — the oxygen debt"
+  ],
+  "1": [
+   "Your lungs take time to slow down after being worked hard, so the breathing runs on under its own momentum"
+  ],
+  "2": [
+   "Your muscles are still working after you stop, so they go on needing oxygen at the same rate as during the sprint"
+  ],
+  "3": [
+   "You are cooling down, and breathing out is how the extra heat leaves, so the rate stays up until you have cooled"
+  ]
+ },
+ "animal-and-plant-cells#apply": {
+  "0": [
+   "Root cells build chloroplasts like every other plant cell, but leave the green pigment out of them"
+  ],
+  "1": [
+   "Roots are green under the soil, so a root cell is green wherever you dig it up"
+  ],
+  "2": [
+   "The green is stored in the vacuole, so a cell with a clear vacuole is not a plant cell"
+  ],
+  "3": [
+   "Chloroplasts are only built where light reaches, so a plant cell without them is still a plant cell"
+  ]
+ },
+ "calculating-energy-transferred#apply": {
+  "0": [
+   "Nothing is wrong — that working is correct"
+  ]
+ },
+ "changes-of-state#apply": {
+  "1": [
+   "Nothing — it is being lost to the room"
+  ]
+ },
+ "chemical-symbols#apply": {
+  "0": [
+   "Cobalt — one element, and a metal"
+  ],
+  "3": [
+   "Nothing — Co is not an element"
+  ]
+ },
+ "compounds#apply": {
+  "2": [
+   "A mixture, because the amounts were wrong"
+  ]
+ },
+ "conservation-of-energy#apply": {
+  "2": [
+   "It is exactly the same — it is just all in the thermal store now"
+  ]
+ },
+ "conservation-of-mass#apply": {
+  "2": [
+   "Water has been absorbed into the metal"
+  ]
+ },
+ "drawing-and-adding-forces#apply": {
+  "3": [
+   "The two forces are equal in size, so the resultant force is 0 N."
+  ]
+ },
+ "energy-in-food#apply": {
+  "1": [
+   "They are the same energy in different units — 1 kcal is about 4.18 kJ"
+  ]
+ },
+ "energy-stores#apply": {
+  "1": [
+   "Gravitational becomes kinetic on the way down, then the kinetic energy disappears"
+  ],
+  "2": [
+   "Gravitational store empties, kinetic fills, then thermal fills as the brakes warm"
+  ]
+ },
+ "energy-stores#recall": {
+  "0": [
+   "Elastic"
+  ]
+ },
+ "energy-transfers-before-and-after#apply": {
+  "0": [
+   "It is lost, the way water is lost down a drain"
+  ]
+ },
+ "energy-transfers-before-and-after#recall": {
+  "1": [
+   "The two totals are equal"
+  ]
+ },
+ "fermentation#apply": {
+  "0": [
+   "It evaporates in the oven — ethanol boils well below the temperature of baking"
+  ]
+ },
+ "formulae#apply": {
+  "0": [
+   "The same atoms in the same numbers make the same substance, however the formula is written"
+  ],
+  "1": [
+   "The big number counts particles and the small number counts atoms, so 2CO2 holds more atoms altogether"
+  ],
+  "2": [
+   "2CO2 is two particles of carbon dioxide; C2O4 would be a single particle with twice as much in it"
+  ],
+  "3": [
+   "A number written in front makes a mixture, and a number written below makes a compound"
+  ]
+ },
+ "friction#apply": {
+  "1": [
+   "Friction acts up the slope, matching the pull down the slope, so the resultant is 0 N."
+  ]
+ },
+ "friction#recall": {
+  "0": [
+   "40 N, backwards along the snow."
+  ],
+  "1": [
+   "0 N — it is moving, so friction has been overcome."
+  ]
+ },
+ "fuels-and-energy-resources#recall": {
+  "0": [
+   "The store refills on a human timescale, so it will not run out"
+  ]
+ },
+ "leaves-built-for-the-job#apply": {
+  "0": [
+   "Green light is weaker than red light, so a plant under a green filter receives less energy"
+  ],
+  "1": [
+   "Chlorophyll reflects green light rather than absorbing it, so green light delivers almost no energy to the plant"
+  ],
+  "2": [
+   "A green filter blocks carbon dioxide as well as light, so the pondweed runs short of the gas it needs"
+  ],
+  "3": [
+   "A leaf is already full of green, so adding more green light cannot top it up any further"
+  ]
+ },
+ "levels-of-organisation#apply": {
+  "1": [
+   "Digestion needs a big enough mass of cells, so a small dish can never manage it"
+  ],
+  "2": [
+   "Stomach cells only line the stomach, so digesting food is a job for a different kind of cell"
+  ],
+  "3": [
+   "Enzymes only work inside a living body, so cells in a dish cannot digest anything at all"
+  ]
+ },
+ "levels-of-organisation#start": {
+  "1": [
+   "Cells arranged in layers"
+  ]
+ },
+ "life-processes#apply": {
+  "0": [
+   "It is alive — it does three of the seven"
+  ],
+  "1": [
+   "It is not alive — nothing built by people is alive"
+  ],
+  "3": [
+   "It is not alive — it is not made of cells"
+  ]
+ },
+ "mass-vs-weight#apply": {
+  "0": [
+   "It is easier to lift, because that works against its weight, and just as hard to swing, because that works against its mass."
+  ],
+  "1": [
+   "It is easier both to lift and to swing, because everything is lighter on the Moon and lighter things move more easily."
+  ],
+  "2": [
+   "It behaves exactly as it does on Earth, because it is the same hammer and a hammer’s mass and weight both travel with it."
+  ],
+  "3": [
+   "It is harder to swing, because there is no air to help, and without air resistance a moving tool is harder to control."
+  ]
+ },
+ "mass-vs-weight#recall": {
+  "0": [
+   "450 kg — multiply by 10"
+  ],
+  "1": [
+   "45 kg — the balance reads the mass directly"
+  ],
+  "3": [
+   "4.5 N — the answer is still a force"
+  ]
+ },
+ "moments#apply": {
+  "0": [
+   "They give the same moment, because the moment is decided by how hard you pull, and the length of the handle only changes how comfortable it is."
+  ],
+  "1": [
+   "The long spanner gives 20 N m against 5 N m — four times the turning effect for the same pull."
+  ],
+  "2": [
+   "The short spanner gives more, because the force acts closer to the bolt that is being turned."
+  ]
+ },
+ "moments#recall": {
+  "1": [
+   "75 N m — divide the force by the distance"
+  ],
+  "2": [
+   "12 N — a turning effect is a force, so it is in newtons"
+  ],
+  "3": [
+   "30 N m — the moment is the force, and the distance only sets which way it turns"
+  ]
+ },
+ "particle-model#apply": {
+  "0": [
+   "No knife is thin enough to fit"
+  ],
+  "1": [
+   "Particles are too hard to cut"
+  ],
+  "3": [
+   "The piece is too small to see, so the cut cannot be aimed"
+  ]
+ },
+ "solids-liquids-and-gases#apply": {
+  "3": [
+   "A liquid’s particles are already touching, so there is no space to squash out"
+  ]
+ },
+ "specialised-cells#apply": {
+  "0": [
+   "Every cell in your body keeps its nucleus, so anything without one is a fragment rather than a cell"
+  ],
+  "1": [
+   "A red blood cell keeps its nucleus all its life, and it is only too small to see under a school microscope"
+  ],
+  "2": [
+   "It started with a nucleus and destroyed it as it matured, which is why it cannot repair itself and lasts about 120 days"
+  ],
+  "3": [
+   "A cell can switch its nucleus off when it is not needed, and switch it back on when it is"
+  ]
+ },
+ "testing-a-leaf-for-starch#apply": {
+  "0": [
+   "That the plant photosynthesised today, because a leaf makes its starch and uses it within a day"
+  ],
+  "1": [
+   "That the leaf contains chlorophyll, since iodine turns blue-black when it reaches the green pigment in a leaf"
+  ],
+  "3": [
+   "Almost nothing — without destarching first, there is no way to know when the starch was made"
+  ]
+ },
+ "testing-the-model#apply": {
+  "0": [
+   "Throw it out — a model that gets something wrong is worthless"
+  ]
+ },
+ "the-atom-daltons-model#apply": {
+  "0": [
+   "A model is kept while it is simple enough to teach, and swapped for the truth later on"
+  ],
+  "1": [
+   "It still explains everything it was built to explain, and the parts that are wrong are outside chemistry"
+  ],
+  "2": [
+   "A model stays in use until someone replaces it, so a wrong model survives while no better one exists"
+  ]
+ },
+ "the-photosynthesis-reaction#apply": {
+  "0": [
+   "Carbon dioxide from the air, built into glucose and then into the plant’s structures"
+  ],
+  "2": [
+   "The water it was given, taken up by the roots and turned into new plant tissue"
+  ]
+ },
+ "unicellular-organisms#apply": {
+  "0": [
+   "The bacterium still has its DNA, loose in the cytoplasm; the red blood cell lost its DNA with its nucleus"
+  ],
+  "1": [
+   "A smaller cell divides more easily, so the smallest cells are the ones that divide fastest"
+  ],
+  "2": [
+   "A cell that loses its nucleus later in life can still divide, because it had one to begin with"
+  ],
+  "3": [
+   "Dividing needs no instructions at all, so any cell without a nucleus can still copy itself freely"
+  ]
+ },
+ "unicellular-organisms#recall": {
+  "1": [
+   "Whether it feeds itself, or is fed"
+  ]
+ },
+ "using-a-microscope#recall": {
+  "0": [
+   "The ×4 — the lowest power"
+  ],
+  "1": [
+   "The ×40 — the highest power"
+  ],
+  "2": [
+   "The ×10 — somewhere in the middle"
+  ]
+ },
+ "what-a-force-is#recall": {
+  "1": [
+   "The ball has force stored in it, and the force is used up when it hits the head."
+  ],
+  "2": [
+   "The head gives its force to the ball, and the ball keeps that force until it stops."
+  ]
+ },
+ "why-almost-all-life-depends-on-it#apply": {
+  "0": [
+   "No — an organism that takes its food straight from the compost it grows in is making its own, so it needs no producer"
+  ],
+  "1": [
+   "No — a fungus takes its energy from the minerals in the soil, so sunlight never enters its chain"
+  ],
+  "2": [
+   "Yes — it feeds on dead material that a photosynthetic organism built, so it sits at the end of the same chain"
+  ],
+  "3": [
+   "Only if it is growing on a living plant — what is dead has stopped being part of any chain"
+  ]
+ },
+ "why-almost-all-life-depends-on-it#recall": {
+  "0": [
+   "It builds its own organic molecules from simple raw materials, instead of eating something else’s"
+  ],
+  "1": [
+   "It makes the oxygen other organisms breathe, so its role in a chain is supplying air"
+  ],
+  "2": [
+   "It produces more offspring than it needs, so the word is about quantity rather than food"
+  ]
+ },
+ "why-every-cell-respires#apply": {
+  "0": [
+   "Nothing — without light a plant shuts down until morning"
+  ],
+  "1": [
+   "The plant respires instead of photosynthesising, which is the swap plants make at night"
+  ],
+  "2": [
+   "Respiration continues in every cell, using oxygen and releasing carbon dioxide"
+  ]
+ }
+}

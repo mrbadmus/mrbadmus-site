@@ -571,8 +571,7 @@ LESSON = {
             # option, silently.
             "options": [
                 "The kJ figure includes energy your body cannot use",
-                "They are the same energy in different units — 1 kcal "
-                "is about 4.18 kJ",
+                "They show the same energy in two different units",
                 "Calories measure fat and joules measure everything",
                 "The kcal figure is per bag and the kJ figure is per 100 g",
             ],

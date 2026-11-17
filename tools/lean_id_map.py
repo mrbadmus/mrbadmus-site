@@ -83,8 +83,10 @@ PILOT_KS3 = ["alveoli-built-for-exchange", "exercise-asthma-and-smoking", "how-b
 # wave -> [(unit code, unit name, [lesson slugs])]; a unit's maps are named by it.
 WAVES = {
     "wave1": [
+        # B7: why-almost-all-life-depends-on-it joined on 15 Nov 2026, with the quiz batch that
+        # reworded its stored Rung 2 options (it had been held for that).
         ("B7", "photosynthesis", ["the-photosynthesis-reaction", "leaves-built-for-the-job",
-                                  "testing-a-leaf-for-starch"]),
+                                  "testing-a-leaf-for-starch", "why-almost-all-life-depends-on-it"]),
         ("B8", "respiration", ["aerobic-respiration", "why-every-cell-respires",
                                "anaerobic-respiration-in-humans", "fermentation", "aerobic-vs-anaerobic"]),
         ("C2", "atoms-elements-and-compounds", ["the-atom-daltons-model", "elements", "compounds",
@@ -98,6 +100,12 @@ WAVES = {
         # rest of both units is not lean yet.
         ("P3", "describing-motion", ["speed"]),
         ("P4", "forces", ["what-a-force-is", "drawing-and-adding-forces", "friction"]),
+        # B1: all six lessons. life-processes joined on 15 Nov 2026, with the quiz batch that
+        # reworded its stored Rung 2 options (it had been held for that).
+        ("B1", "cells-and-organisation", ["life-processes", "using-a-microscope", "animal-and-plant-cells",
+                                          "specialised-cells", "levels-of-organisation", "unicellular-organisms"]),
+        ("C1", "particles-and-their-behaviour", ["particle-model", "solids-liquids-and-gases", "changes-of-state",
+                                                 "gas-pressure", "diffusion", "testing-the-model"]),
     ],
 }
 
@@ -109,6 +117,13 @@ WAVES = {
 EXTRA_RETIRED = {
     "energy-in-food": {"energy-in-food#food-calorimeter-run":
                        "the calorimeter bench is not on the lean page; each recorded run was its own numeric row"},
+    # ⊕ B1 (Wave 1): the two microscope labs' commit-first question. A `.ks3-option` press in a
+    # section with no instrument shell sends `<slug>#<activity>` (shared/mrbadmus.v2.js,
+    # commitNoReveal); the activity's kind is `lab`, which no inventory lists.
+    "using-a-microscope": {"using-a-microscope#microscope-lab":
+                           "the microscope lab is not on the lean page; its commit-first question went with it"},
+    "unicellular-organisms": {"unicellular-organisms#microscope-bench":
+                              "the microscope bench is not on the lean page; its commit-first question went with it"},
 }
 
 # old id -> (new id, reason). Empty on purpose: the pilot keeps every surviving id.
@@ -120,6 +135,8 @@ CHANGED = {}
 REPLACED = {
     "ks4q:population-competition:b4d4451a57":
         "practice Q2 (intraspecific vs interspecific competition) is replaced by an on-spec item in the lean record",
+    "ks4q:mass-changes-reactions:9dd627e1ec":
+        "practice Q2 (why the mass of iron increases when it rusts) is replaced by the magnesium-burning item: rusting is not in this spec point",
 }
 
 _ROUTE_DIRS = {"cf": "combined/foundation", "ch": "combined/higher", "tf": "triple/foundation", "th": "triple/higher"}
@@ -195,6 +212,19 @@ _WHY = [
     # your-turn resultant calculation (a p4-attempt block, one id per question).
     (r"#(board|sledge|drag|light-gates|compare-pairs)-\d", "the instrument was removed from the lean page"),
     (r"#your-turn-resultant-\d", "the worked-calculation questions are not on the lean page"),
+    # ⊕ B1 (Wave 1): the cells benches, sorters and FIFA builder, one id per part.
+    (r"#(sams-method|magnification-fifa-do|seven-parts-two-cells|wall-or-membrane|fit-the-cell|"
+     r"s-break|s-hard|s-settle)-\d",
+     "the instrument was removed from the lean page"),
+    # ⊕ C1 (Wave 1): the particle benches, sorters and the evidence bench, one id per press,
+    # and the single-press activities (Think first, the reveal, the verdict) the lean page dropped.
+    (r"#(cut-bench|gap-rig|state-bench|the-heating-bench|melt-or-dissolve|count-the-hits|three-predictions|"
+     r"walk-bench|seven-observations)-\d", "the instrument was removed from the lean page"),
+    (r"#(think-swelling-particles|think-spread)$", "the Think first question is not on the lean page"),
+    (r"#(same-particles-reveal|the-bubble|settled-science|the-verdict)$", "this activity is not on the lean page"),
+    # ⊕ B1 life-processes (Wave 1, 15 Nov 2026): the seven-tests board and the living,
+    # once-living, never-living sort, one id per part.
+    (r"#(seven-tests|living-once-never)-\d", "the instrument was removed from the lean page"),
 ]
 
 

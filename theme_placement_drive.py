@@ -88,7 +88,8 @@ BLOCK_NAV = r"""
 PAGES = [
     ("ks4-classic", "combined/higher/physics/atomic-structure/development-atomic-model.html", "site", None, {}),
     ("ks4-pilot", "combined/foundation/biology/cell-biology/chromosomes-mitosis.html", "site", None, {}),
-    ("ks3-lesson", "ks3/biology/cells-and-organisation/animal-and-plant-cells.html", "site", None, {}),
+    # ⊕ 14 Nov 2026: the hidden frozen classic copy of animal-and-plant-cells (ks3_fixtures/).
+    ("ks3-lesson", "ks3/_fixtures/fixture-animal-and-plant-cells.html", "site", None, {}),
     ("student-class", "student/class-fixture.html", "site", None, {}),
     ("teacher-generated", "teacher_fixtures/class-detail-fixture.html", "repo", None, {}),
     ("teacher-today", "teacher/today.html", "site", "teacher", {}),

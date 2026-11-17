@@ -558,7 +558,7 @@ LESSON = {
                  "doing during those six minutes?",
             "options": [
                 "Breaking the particles free from their fixed positions",
-                "Nothing — it is being lost to the room",
+                "It is all escaping to the room, so the ice takes in none",
                 "Warming the beaker instead of the water",
                 "Making the water particles bigger",
             ],

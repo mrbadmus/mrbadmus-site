@@ -108,12 +108,15 @@ KS3_OUT = os.path.join("mrbadmus_site", "ks3")
 #   * the hub and one unit index — the browse layer is built by a different
 #     path from lesson pages and has its own crumb row (`.ks3-crumbs`), which
 #     MRB-229 had to fix separately for exactly that reason.
+# ⊕ 14 Nov 2026 (Mide: checks do not depend on real lessons): the canvas pages are the hidden
+# frozen classic copies of the five C1 canvas lessons (ks3_fixtures/), so they stay in the
+# sample after C1 goes lean. They were chemistry/particles-and-their-behaviour/<slug>.html.
 CANVAS_PAGES = (
-    "chemistry/particles-and-their-behaviour/particle-model.html",
-    "chemistry/particles-and-their-behaviour/changes-of-state.html",
-    "chemistry/particles-and-their-behaviour/diffusion.html",
-    "chemistry/particles-and-their-behaviour/gas-pressure.html",
-    "chemistry/particles-and-their-behaviour/solids-liquids-and-gases.html",
+    "_fixtures/fixture-particle-model.html",
+    "_fixtures/fixture-changes-of-state.html",
+    "_fixtures/fixture-diffusion.html",
+    "_fixtures/fixture-gas-pressure.html",
+    "_fixtures/fixture-solids-liquids-and-gases.html",
 )
 
 BROWSE_PAGES = (

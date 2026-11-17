@@ -792,7 +792,7 @@ def r_hook(lesson, block=None):
     # on all six rails and could therefore never tick.
     commit = ""
     if p.get("guess"):
-        commit = _hook_guess(p)
+        commit = _hook_guess(p, lesson["slug"])
     elif p.get("commit") or p.get("options") or p.get("reveal"):
         bits = []
         if p.get("commit"):
@@ -819,7 +819,7 @@ def r_hook(lesson, block=None):
             '%s%s</section>' % (_id_attr(block or {}), body, commit))
 
 
-def _hook_guess(p):
+def _hook_guess(p, slug=""):
     """The "Start here" guess (ks3_data/start_here.py): two options, a reply
     to each, then the bridge everyone reads.
 
@@ -828,7 +828,7 @@ def _hook_guess(p):
     R3 the options are never marked and stay re-choosable; the reply's first
     words are the only response to which one was picked, as in KS4's
     `Ks4Guess`."""
-    buttons = "".join(_option_li(i, o, ' aria-pressed="false"')
+    buttons = "".join(_option_li(i, o, ' aria-pressed="false"' + _was_attr(slug + "#start", i))
                       for i, o in enumerate(p["options"]))
     replies = "".join(
         '<p class="ks3-keyed-reply" data-reply="%d" hidden><strong>%s</strong>'
@@ -3194,7 +3194,27 @@ def _rung_heading(num, name, q, plain):
     return "Rung %d · %s" % (num, e(_rung_title(name, q)))
 
 
-def _rung_marked(key, num, name, q, plain=False):
+# ⊕ 15 Nov 2026 — restore alias (Mide's ruling, Lean Wave 1 KS3 quiz batch). A child's saved
+# pick is the text the option SENT, and the page puts it back by exact text match (shared/ks3.js
+# saved ladder, shared/mrbadmus.v2.js Start here). Options reworded since carry what they used to
+# send, as a JSON list on `data-was`, so an old pick still comes back. Display and restore only:
+# nothing sends it. The source of truth is ks3_data/option_history.json ({qid: {index: [old]}}).
+_OPTION_HISTORY = None
+
+
+def _was_attr(qid, i):
+    global _OPTION_HISTORY
+    if _OPTION_HISTORY is None:
+        with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "ks3_data",
+                               "option_history.json"), encoding="utf-8") as f:
+            _OPTION_HISTORY = json.load(f)
+    old = (_OPTION_HISTORY.get(qid) or {}).get(str(i))
+    if not old:
+        return ""
+    return ' data-was="%s"' % _json_attr([option_labels.sent_text(sci(t)) for t in old])
+
+
+def _rung_marked(key, num, name, q, plain=False, slug=""):
     """Rungs the PAGE marks: options, one right answer, per-option correction.
 
     This is the only place in the whole generator where `data-correct` appears.
@@ -3219,7 +3239,8 @@ def _rung_marked(key, num, name, q, plain=False):
         full = option_labels.full_attr(lp["labels"][i], o, sent=option_labels.sent_text(sci(o)))
         opts.append(_option_li(
             i, lp["labels"][i],
-            ' data-correct="%s" data-feedback="%s"%s' % (correct, e(fb), full)))
+            ' data-correct="%s" data-feedback="%s"%s%s'
+            % (correct, e(fb), full, _was_attr("%s#%s" % (slug, key), i))))
     return ('<div class="ks3-rung" data-rung="%s" data-mode="marked">'
             '<h3 tabindex="-1">%s</h3>'
             '<p class="ks3-rung-q">%s</p>'
@@ -3312,7 +3333,7 @@ def r_ladder(lesson, block=None):
         if not q:
             continue
         if q.get("options"):
-            rungs.append(_rung_marked(key, num, name, q, plain))
+            rungs.append(_rung_marked(key, num, name, q, plain, slug))
         elif q.get("success"):
             rungs.append(_rung_self(slug, key, num, name, q, plain))
             self_marked.append(num)
@@ -4144,7 +4165,7 @@ def r_lean_start(lesson, block):
     _LEAN_CTX[lesson["slug"]] = lean_blocks.Ctx(
         prefix="lean", fmt=rich, state_attrs=True, part=_lean_figure_part(lesson), defs=defs)
     setup = ('<p class="ks3-hook-prompt">%s</p>' % rich(st["setup"])) if st.get("setup") else ""
-    buttons = "".join(_option_li(i, o[0], ' aria-pressed="false"')
+    buttons = "".join(_option_li(i, o[0], ' aria-pressed="false"' + _was_attr(lesson["slug"] + "#start", i))
                       for i, o in enumerate(st["options"]))
     replies = "".join('<p class="ks3-keyed-reply" data-reply="%d" hidden>%s</p>'
                       % (i, rich(o[1])) for i, o in enumerate(st["options"]))
@@ -6022,6 +6043,16 @@ def build_ks3(output_dir=OUT_ROOT, mirror_to_root=True, repo_root="."):
                 n += 1
     lesson_tree = n
 
+    # ⊕ Hidden check fixtures (Mide, 14 Nov 2026): "our checks should not depend on real
+    # lessons". Frozen classic copies of the lessons the checks read, at
+    # ks3/_fixtures/fixture-<slug>.html, rendered by the same lesson_page(). They are NOT in
+    # `units`, so no index, browse page, next/previous or "Before this" can reach them, and
+    # they are not counted in `n` (the lesson tree). See ks3_fixtures/__init__.py.
+    import ks3_fixtures
+    fixture_pages = ks3_fixtures.render(units_by_code, registry, neighbours, lesson_page, canon)
+    for relpath, page in fixture_pages:
+        write(relpath, page)
+
     # ── the browse layer (§4.5.2) ────────────────────────────────────────
     # Index pages only. Every href above is a lesson URL that already exists and
     # is untouched by anything below; year and half term reach these paths and
@@ -6049,6 +6080,17 @@ def build_ks3(output_dir=OUT_ROOT, mirror_to_root=True, repo_root="."):
           % (n, ks3_out, lesson_tree, browse_pages))
     print("  ✅ browse layer covers %d lesson slots across %d years"
           % (placed, len(YEARS)))
+
+    # The fixtures stay hidden: a page anywhere in this tree that links to one, or a fixture
+    # that lost its noindex tag or its own save keys, stops the build.
+    fixture_problems = ks3_fixtures.audit(output_dir, KS3_DIR, scan_root=ks3_out)
+    if fixture_problems:
+        print("\n❌ BUILD FAILED — ks3_fixtures, %d problem(s):\n" % len(fixture_problems))
+        for p in fixture_problems:
+            print("   • %s" % p)
+        raise SystemExit(1)
+    print("  ✅ %d hidden check fixture(s) → %s/%s/ (noindex, fixture- save keys, linked from "
+          "nowhere)" % (len(fixture_pages), ks3_out, ks3_fixtures.DIR))
 
     # Shared assets. Cloudflare serves from mrbadmus_site/, so a KS3 page that
     # links /shared/ks3.css gets a 404 unless the file is copied there.
