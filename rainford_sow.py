@@ -545,11 +545,7 @@ MAP = {
         'Concentration of Solutions':                                                         "concentration-of-solutions",
         '(CHEM) Titrations RP 1':                                                             "titrations",
         '(CHEM) Titration RP 2':                                                              "titrations",
-        '(CHEM) Gas Calculations': absent(
-            'AQA 4.3.4.3 "use of amount of substance in relation to volumes '
-            'of gases" — the molar gas volume, 24 dm3. No platform subtopic '
-            "mentions it; the quantitative topic's ten pages stop at "
-            'concentration.'),
+        '(CHEM) Gas Calculations':                                                            "gas-volumes",
         'Quantitative Chemistry Test':                                                        ASSESSMENT,
         'Quantitative Chemistry Test Review':                                                 ASSESSMENT,
         'Ionic Bonding':                                                                      "ionic-bonding",

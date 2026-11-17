@@ -907,11 +907,9 @@ LESSON = {
             # already present. Option C is `RESP-03` in its most persuasive
             # form and is the longest option on the rung.
             "options": [
-                "Nothing — without light a plant shuts down until morning",
-                "The plant respires instead of photosynthesising, which is the "
-                "swap plants make at night",
-                "Respiration continues in every cell, using oxygen and "
-                "releasing carbon dioxide",
+                "Nothing, because without light a plant shuts down until morning",
+                "Plants respire only in the dark, and photosynthesise instead when it is light",
+                "Every living cell keeps respiring, using oxygen and releasing carbon dioxide",
                 "Only the root cells respire, because the leaves "
                 "photosynthesise",
             ],
@@ -919,9 +917,7 @@ LESSON = {
             "feedback": {
                 0: "A cell that shuts down is dead. Photosynthesis stops in "
                    "the dark; respiration does not, and cannot.",
-                1: "Close, and the word instead is the problem. Respiration "
-                   "never stopped — it was running all day too, underneath the "
-                   "photosynthesis.",
+                1: "Plants respire all the time. In the light, respiration runs underneath the photosynthesis.",
                 3: "Every living cell respires, leaves included. A leaf cell "
                    "does both when there is light and just the one when there "
                    "is not.",

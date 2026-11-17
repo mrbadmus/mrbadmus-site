@@ -105,8 +105,6 @@ LESSON = {
     "ladder_stem": {
         "recall": "A single cell moves on its own. It has mitochondria and is about 0.05 mm long. Which "
                   "fact would best show whether it is an organism or part of one?",
-        "apply": "A red blood cell has no nucleus and can never divide. A bacterium has no nucleus and "
-                 "can divide every twenty minutes. What explains the difference?",
         "explain": "A Paramecium and your cheek cell are both single cells. Explain why the Paramecium needs "
                    "cilia, an oral groove and a contractile vacuole. Explain why your cheek cell needs none "
                    "of them.",

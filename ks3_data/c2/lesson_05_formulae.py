@@ -389,10 +389,10 @@ LESSON = {
             # wrong RULES, in the same shape as the correct option. The
             # correct option and its index are unchanged.
             "options": [
-                "The same atoms in the same numbers make the same substance, however the formula is written",
-                "The big number counts particles and the small number counts atoms, so 2CO2 holds more atoms altogether",
-                "2CO2 is two particles of carbon dioxide; C2O4 would be a single particle with twice as much in it",
-                "A number written in front makes a mixture, and a number written below makes a compound",
+                "Nothing, because the same atoms in the same numbers make the same substance",
+                "2CO2 holds more atoms altogether, because the number in front counts molecules",
+                "2CO2 is two molecules of carbon dioxide, but C2O4 would be one bigger molecule",
+                "A number in front makes a mixture, and a small number below makes a compound",
             ],
             "answer": 2,
             "feedback": {

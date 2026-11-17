@@ -341,11 +341,10 @@ LESSON = {
     # ⚠️ MRB-278 · POSITION IS AUTHORED. This lesson takes indices 0 and 1.
     "ladder": {
         "recall": {
-            "q": "A sledge is pulled across level snow at a steady speed "
-                 "with a 40 N pull. What is the friction on it?",
+            "q": "A sledge is pulled across level snow by a horizontal 40 N pull. It moves at a steady speed. Ignore air resistance. What is the friction on it?",
             "options": [
-                "40 N, backwards along the snow.",
-                "0 N — it is moving, so friction has been overcome.",
+                "40 N, acting backwards along the snow, against the pull.",
+                "0 N, because friction stops once the sledge is moving.",
                 "More than 40 N, because the snow is resisting.",
                 "It cannot be worked out without the mass of the sledge.",
             ],
@@ -367,8 +366,7 @@ LESSON = {
                  "slide. Which statement is right?",
             "options": [
                 "There is no friction, because nothing is sliding.",
-                "Friction acts up the slope, matching the pull down the "
-                "slope, so the resultant is 0 N.",
+                "Friction acts up the slope and balances the pull down it.",
                 "Friction acts down the slope, holding it against the roof.",
                 "Friction is 0 N now and will appear the instant it starts "
                 "to slide.",

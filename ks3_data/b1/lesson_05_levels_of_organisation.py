@@ -683,28 +683,22 @@ LESSON = {
             }},
         "apply": {
             "title": "Rung 2 · The one that catches people",
-            "q": "A dish of living stomach cells cannot digest a sandwich, "
-                 "even though every cell is healthy and doing its job. Why "
-                 "not?",
+            "q": "A dish of living stomach cells makes acid and enzymes. It still cannot do the job of a stomach. Why not?",
             # ⊕ MRB-177, ruled 17 Aug 2026 — the three distractors now state
             # wrong RULES, in the same shape as the correct option. The
             # correct option and its index are unchanged.
             "options": [
                 "They are not organised into tissues and layers that work on "
                 "the food together",
-                "Digestion needs a big enough mass of cells, so a small dish "
-                "can never manage it",
-                "Stomach cells only line the stomach, so digesting food is a "
-                "job for a different kind of cell",
-                "Enzymes only work inside a living body, so cells in a dish "
-                "cannot digest anything at all",
+                "Digestion needs a big mass of cells, so a small dish can never manage it",
+                "Every stomach cell can churn and digest, so the dish just needs more time",
+                "Enzymes only work inside a living body, so cells in a dish digest nothing",
             ],
             "answer": 0,
             "feedback": {
                 1: "Add a thousand times more and it still will not digest "
                    "anything. The problem is not quantity.",
-                2: "They are exactly the right cells — the same ones that are "
-                   "doing it in you right now.",
+                2: "Lining cells cannot churn food. That needs muscle tissue, working with the lining.",
                 3: "They do work outside one. These enzymes are being made "
                    "and released — just into a dish rather than into a "
                    "stomach.",

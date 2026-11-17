@@ -7280,11 +7280,10 @@ _DONE_SIGNALS = (
 # `ks3_rail_manifest.py` already derives these two as mirrors from Design's own
 # `isDone()` — its docstring names them — so the completion they need may
 # already exist on the instrument beside them.
-_TICK_EXEMPT = {
-    ("chemistry/particles-and-their-behaviour/diffusion.html", "s-scale"),
-    ("chemistry/particles-and-their-behaviour/solids-liquids-and-gases.html",
-     "s-matrix"),
-}
+# ⊕ 14 Nov 2026: both entries removed, as the list's own rule says (a stale entry fails). The lean
+# rebuild (Wave 1, C1) took `#s-scale` off diffusion and `#s-matrix` off solids-liquids-and-gases.
+# (_lesson_pages does not read the hidden fixtures under _fixtures/, so their copies need no entry.)
+_TICK_EXEMPT = set()
 
 
 def check_nothing_ticks_on_load(ks3_root):

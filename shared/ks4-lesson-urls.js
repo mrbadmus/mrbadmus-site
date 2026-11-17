@@ -16,7 +16,7 @@
          + entry.topic + / + slug + .html
 
    Built from ks4_data.classify() and checked against the built
-   tree: every one of these 264 subtopics had a page on disk,
+   tree: every one of these 265 subtopics had a page on disk,
    under at least one pathway/tier for its subject, when this
    was written.
    ══════════════════════════════════════════════════════════ */
@@ -132,6 +132,7 @@ window.MRB_KS4_TOPICS = {
   "free-body-diagrams": [{subject: "physics", topic: "forces"}],
   "fuel-cells": [{subject: "chemistry", topic: "energy-changes"}],
   "fungal-protist-diseases": [{subject: "biology", topic: "infection-response"}],
+  "gas-volumes": [{subject: "chemistry", topic: "quantitative"}],
   "genetic-engineering": [{subject: "biology", topic: "inheritance"}],
   "genetic-inheritance": [{subject: "biology", topic: "inheritance"}],
   "giant-covalent-structures": [{subject: "chemistry", topic: "bonding"}],

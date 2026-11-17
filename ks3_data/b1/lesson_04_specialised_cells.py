@@ -1080,17 +1080,10 @@ LESSON = {
                          # shape as the correct option. The correct option
                          # and its index are unchanged.
                          "options": [
-                             "Every cell in your body keeps its nucleus, so "
-                             "anything without one is a fragment rather "
-                             "than a cell",
-                             "A red blood cell keeps its nucleus all its "
-                             "life, and it is only too small to see under a "
-                             "school microscope",
-                             "It started with a nucleus and destroyed it as "
-                             "it matured, which is why it cannot repair "
-                             "itself and lasts about 120 days",
-                             "A cell can switch its nucleus off when it is "
-                             "not needed, and switch it back on when it is",
+                             "Every cell in your body keeps its nucleus, so one without is only a fragment",
+                             "It keeps its nucleus all its life, but it is too small to see",
+                             "It began with a nucleus and pushed it out as it matured, to make room",
+                             "A cell can switch its nucleus off when not needed, then switch it back on",
                          ],
                          "answer": 2,
                          "feedback": {0: "It has a membrane and cytoplasm "

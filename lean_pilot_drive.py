@@ -31,6 +31,16 @@ import time
 import config_env
 import glob
 import ks3_browser as cdp
+import re
+
+
+def plain(t):
+    """The text a pupil reads: the page draws H₂O and M<sub>r</sub> as real subscripts, so its
+    textContent is H2O / Mr. Compare record and page in that one form."""
+    if t is None:
+        return None
+    t = re.sub(r"</?su[bp]>", "", t)
+    return t.translate(str.maketrans("₀₁₂₃₄₅₆₇₈₉", "0123456789"))
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 os.chdir(ROOT)
@@ -160,8 +170,8 @@ def structure(d, rec, ks, route, slug):
                 continue
             r = it.get("routes")
             if not r or route in set(r):
-                want.add(it["title"])
-        got = set(s["titles"])
+                want.add(plain(it["title"]))
+        got = set(plain(t) for t in s["titles"])
         d.check(got == want, "route cards on %s: extra %s, missing %s"
                 % (route, sorted(got - want), sorted(want - got)))
         if slug == "energy-changes-in-systems":
@@ -178,6 +188,8 @@ def structure(d, rec, ks, route, slug):
 def start_here(d, rec, ks, route):
     st = rec["start"]
     replies = {o[0]: o[1] for o in st["options"]}
+    if ks == 4:
+        replies = {plain(k): plain(v) for k, v in replies.items()}
     if ks == 3:
         n = d.js("return document.querySelectorAll('#s-hook .ks3-option').length")
         d.check(n == 2, "Start here has %d options" % n)
@@ -208,7 +220,7 @@ def start_here(d, rec, ks, route):
             d.js("document.querySelectorAll('#s-hook button')[%d].click();1" % idx)
             time.sleep(0.4)
             seen.append(want)
-            txt = d.js("var s=document.querySelector('#s-hook [role=status]');return s?s.textContent.trim():null")
+            txt = plain(d.js("var s=document.querySelector('#s-hook [role=status]');return s?s.textContent.trim():null"))
             lab = next((k for k in replies if want.endswith(k) or k in want), None)
             d.check(txt is not None and lab is not None and txt == replies[lab],
                     "Start here option %r: reply %r, want %r" % (want, txt, replies.get(lab)))
@@ -476,7 +488,7 @@ SPEC_TRIPLE = {"biology": "8461", "chemistry": "8462", "physics": "8463"}
 SPEC_COMBINED_PART = {"biology": "4", "chemistry": "5", "physics": "6"}
 
 
-def ks4_words(d, route, subject):
+def ks4_words(d, route, subject, slug=None):
     h2 = d.js("return [].map.call(document.querySelectorAll('h2'),function(h){return h.textContent.trim()})")
     d.check("Practice" in h2 and "Exam ladder" not in h2, "practice heading: %s" % h2)
     d.check("Questions on this lesson" in h2 and not any(x.startswith("Five questions") for x in h2), "quiz heading: %s" % h2)
@@ -492,6 +504,14 @@ def ks4_words(d, route, subject):
     mine = SPEC_TRIPLE[subject] if tri else "8464"
     d.check(want in eb and not any(c in eb for c in others if c != mine),
             "spec eyebrow on %s reads %r" % (route, eb))
+    if subject == "chemistry":
+        # chemistry numbers differ by spec (8464 5.3.x.y, 8462 4.3.x.y): the number itself is the
+        # ruled one in batch_lean.CHEM_EYEBROW (a lesson that is not in the table is not checked)
+        from ks4_lessons.batch_lean import CHEM_EYEBROW
+        if slug in CHEM_EYEBROW:
+            num = CHEM_EYEBROW[slug][1 if tri else 0]
+            d.check(num is not None and num in eb,
+                    "chemistry spec number on %s reads %r, the table says %r" % (route, eb, num))
 
 
 def tap_targets(d, ks):
@@ -674,7 +694,7 @@ def walk_light(page, base, ks, slug, route, path, rec, shots):
     overflow(d)
     if ks == 4:
         triangles(d, rec)
-        ks4_words(d, route, next(p for p in path.split("/") if p in SPEC_TRIPLE))
+        ks4_words(d, route, next(p for p in path.split("/") if p in SPEC_TRIPLE), slug)
     else:
         ks3_words(d)
     figures(d)

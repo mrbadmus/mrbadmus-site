@@ -1092,7 +1092,7 @@
   "key_stage": "KS3",
   "keys": {
    "aerobic-vs-anaerobic#apply": "Aerobic gets more energy from each glucose; anaerobic supplies energy at a faster rate",
-   "aerobic-vs-anaerobic#recall": "The glucose is only partly broken down, so a product is left that still holds energy",
+   "aerobic-vs-anaerobic#recall": "The glucose is only partly broken down, leaving a product that still holds energy",
    "aerobic-vs-anaerobic#start": "The one without oxygen"
   },
   "points": [
@@ -1667,7 +1667,7 @@
  "anaerobic-respiration-in-humans": {
   "key_stage": "KS3",
   "keys": {
-   "anaerobic-respiration-in-humans#apply": "You are taking in the oxygen you could not get during the sprint, to deal with the lactic acid — the oxygen debt",
+   "anaerobic-respiration-in-humans#apply": "You need extra oxygen to break down the lactic acid made during the sprint",
    "anaerobic-respiration-in-humans#recall": "glucose gives lactic acid",
    "anaerobic-respiration-in-humans#start": "They keep using it too"
   },
@@ -1818,7 +1818,7 @@
  "animal-and-plant-cells": {
   "key_stage": "KS3",
   "keys": {
-   "animal-and-plant-cells#apply": "Chloroplasts are only built where light reaches, so a plant cell without them is still a plant cell",
+   "animal-and-plant-cells#apply": "Not every plant cell has chloroplasts, so not being green does not rule it out",
    "animal-and-plant-cells#recall": "A cheek cell",
    "animal-and-plant-cells#start": "No, not one"
   },
@@ -3769,8 +3769,7 @@
   "keys": {
    "changes-of-state#apply": "Breaking the particles free from their fixed positions",
    "changes-of-state#recall": "Condensing",
-   "changes-of-state#start": "Exactly 50 g",
-   "changes-of-state#the-bubble": "Water that has turned into a gas"
+   "changes-of-state#start": "Exactly 50 g"
   },
   "points": [
    {
@@ -4065,7 +4064,7 @@
  "chemical-symbols": {
   "key_stage": "KS3",
   "keys": {
-   "chemical-symbols#apply": "Cobalt — one element, and a metal",
+   "chemical-symbols#apply": "Cobalt, which is one element and a metal",
    "chemical-symbols#recall": "Two",
    "chemical-symbols#start": "H2O, as here"
   },
@@ -5400,7 +5399,7 @@
  "conservation-of-energy": {
   "key_stage": "KS3",
   "keys": {
-   "conservation-of-energy#apply": "It is exactly the same — it is just all in the thermal store now",
+   "conservation-of-energy#apply": "It is unchanged, with the energy now spread in thermal stores nearby",
    "conservation-of-energy#recall": "transferred between stores",
    "conservation-of-energy#start": "Yes, a tiny bit warmer"
   },
@@ -7029,7 +7028,7 @@
  "drawing-and-adding-forces": {
   "key_stage": "KS3",
   "keys": {
-   "drawing-and-adding-forces#apply": "The two forces are equal in size, so the resultant force is 0 N.",
+   "drawing-and-adding-forces#apply": "The forces are equal and opposite, so the resultant is 0 N.",
    "drawing-and-adding-forces#recall": "56 N forwards",
    "drawing-and-adding-forces#start": "15 N to the right"
   },
@@ -8090,7 +8089,7 @@
  "energy-in-food": {
   "key_stage": "KS3",
   "keys": {
-   "energy-in-food#apply": "They are the same energy in different units — 1 kcal is about 4.18 kJ",
+   "energy-in-food#apply": "They show the same energy in two different units",
    "energy-in-food#recall": "510 kJ",
    "energy-in-food#start": "The same thing"
   },
@@ -8371,15 +8370,9 @@
  "energy-stores": {
   "key_stage": "KS3",
   "keys": {
-   "energy-stores#apply": "Gravitational store empties, kinetic fills, then thermal fills as the brakes warm",
-   "energy-stores#recall": "Elastic",
-   "energy-stores#start": "It went somewhere else",
-   "energy-stores#store-pathway-sort-1": "A store",
-   "energy-stores#store-pathway-sort-2": "A pathway",
-   "energy-stores#store-pathway-sort-3": "A store",
-   "energy-stores#store-pathway-sort-4": "A pathway",
-   "energy-stores#store-pathway-sort-5": "A store",
-   "energy-stores#store-pathway-sort-6": "A pathway"
+   "energy-stores#apply": "Gravitational potential store empties, kinetic fills, then thermal fills as the brakes warm",
+   "energy-stores#recall": "Elastic potential",
+   "energy-stores#start": "It went somewhere else"
   },
   "points": [
    {
@@ -8525,12 +8518,8 @@
   "key_stage": "KS3",
   "keys": {
    "energy-transfers-before-and-after#apply": "It fills a thermal store in the bulb and the room",
-   "energy-transfers-before-and-after#recall": "The two totals are equal",
-   "energy-transfers-before-and-after#start": "No, it is not stuff",
-   "energy-transfers-before-and-after#waste-sort-1": "Wasted",
-   "energy-transfers-before-and-after#waste-sort-2": "The point",
-   "energy-transfers-before-and-after#waste-sort-3": "Wasted",
-   "energy-transfers-before-and-after#waste-sort-4": "The point"
+   "energy-transfers-before-and-after#recall": "The total afterwards is the same as the total before",
+   "energy-transfers-before-and-after#start": "No, it is not stuff"
   },
   "points": [
    {
@@ -9289,7 +9278,7 @@
  "fermentation": {
   "key_stage": "KS3",
   "keys": {
-   "fermentation#apply": "It evaporates in the oven — ethanol boils well below the temperature of baking",
+   "fermentation#apply": "It evaporates in the oven, because ethanol boils well below baking temperature",
    "fermentation#recall": "Ethanol and carbon dioxide",
    "fermentation#start": "A gas the yeast gave off"
   },
@@ -10319,7 +10308,7 @@
  "formulae": {
   "key_stage": "KS3",
   "keys": {
-   "formulae#apply": "2CO2 is two particles of carbon dioxide; C2O4 would be a single particle with twice as much in it",
+   "formulae#apply": "2CO2 is two molecules of carbon dioxide, but C2O4 would be one bigger molecule",
    "formulae#recall": "Seven",
    "formulae#start": "No, it would not"
   },
@@ -10610,8 +10599,8 @@
  "friction": {
   "key_stage": "KS3",
   "keys": {
-   "friction#apply": "Friction acts up the slope, matching the pull down the slope, so the resultant is 0 N.",
-   "friction#recall": "40 N, backwards along the snow.",
+   "friction#apply": "Friction acts up the slope and balances the pull down it.",
+   "friction#recall": "40 N, acting backwards along the snow, against the pull.",
    "friction#start": "A little easier"
   },
   "points": [
@@ -10752,7 +10741,7 @@
   "key_stage": "KS3",
   "keys": {
    "fuels-and-energy-resources#apply": "Nuclear",
-   "fuels-and-energy-resources#recall": "The store refills on a human timescale, so it will not run out",
+   "fuels-and-energy-resources#recall": "It is naturally replaced as it is used, so it will not run out",
    "fuels-and-energy-resources#start": "Burning wood"
   },
   "points": [
@@ -14029,7 +14018,7 @@
  "leaves-built-for-the-job": {
   "key_stage": "KS3",
   "keys": {
-   "leaves-built-for-the-job#apply": "Chlorophyll reflects green light rather than absorbing it, so green light delivers almost no energy to the plant",
+   "leaves-built-for-the-job#apply": "Chlorophyll absorbs green light poorly, so the plant can use less of its energy",
    "leaves-built-for-the-job#recall": "They hold the chloroplasts, and the light is strongest nearest the upper surface",
    "leaves-built-for-the-job#start": "On the underside"
   },
@@ -14316,7 +14305,7 @@
   "keys": {
    "levels-of-organisation#apply": "They are not organised into tissues and layers that work on the food together",
    "levels-of-organisation#recall": "A tissue",
-   "levels-of-organisation#start": "Cells arranged in layers"
+   "levels-of-organisation#start": "Cells in tissues"
   },
   "points": [
    {
@@ -14473,7 +14462,7 @@
  "life-processes": {
   "key_stage": "KS3",
   "keys": {
-   "life-processes#apply": "It is not alive — it is not made of cells",
+   "life-processes#apply": "It is not alive, because it is not made of cells",
    "life-processes#recall": "It is made of one or more cells",
    "life-processes#start": "No, it is not alive"
   },
@@ -15509,7 +15498,7 @@
  "mass-vs-weight": {
   "key_stage": "KS3",
   "keys": {
-   "mass-vs-weight#apply": "It is easier to lift, because that works against its weight, and just as hard to swing, because that works against its mass.",
+   "mass-vs-weight#apply": "Easier to lift, with less weight, but as hard to swing, with the same mass.",
    "mass-vs-weight#recall": "4.5 kg",
    "mass-vs-weight#start": "Just as hard"
   },
@@ -16282,7 +16271,7 @@
  "moments": {
   "key_stage": "KS3",
   "keys": {
-   "moments#apply": "The long spanner gives 20 N m against 5 N m — four times the turning effect for the same pull.",
+   "moments#apply": "The long spanner gives 20 N m, while the short one gives 5 N m.",
    "moments#recall": "12 N m",
    "moments#start": "No, it hardly moves"
   },
@@ -20430,7 +20419,7 @@
  "solids-liquids-and-gases": {
   "key_stage": "KS3",
   "keys": {
-   "solids-liquids-and-gases#apply": "A liquid’s particles are already touching, so there is no space to squash out",
+   "solids-liquids-and-gases#apply": "Liquid particles are already touching, so there is no space to squash out",
    "solids-liquids-and-gases#recall": "Liquid",
    "solids-liquids-and-gases#start": "The gaps between them"
   },
@@ -20862,7 +20851,7 @@
  "specialised-cells": {
   "key_stage": "KS3",
   "keys": {
-   "specialised-cells#apply": "It started with a nucleus and destroyed it as it matured, which is why it cannot repair itself and lasts about 120 days",
+   "specialised-cells#apply": "It began with a nucleus and pushed it out as it matured, to make room",
    "specialised-cells#recall": "Absorbing water and minerals from soil",
    "specialised-cells#start": "More room inside"
   },
@@ -21021,9 +21010,6 @@
   "key_stage": "KS3",
   "keys": {
    "speed#apply": "4 m/s",
-   "speed#compare-pairs-1": "Cyclist — 400 m in 32 s",
-   "speed#compare-pairs-2": "Plane — 15 000 m in 60 s, 10 km up",
-   "speed#compare-pairs-3": "A dead heat",
    "speed#recall": "2.5 m/s",
    "speed#start": "The plane"
   },
@@ -21899,7 +21885,7 @@
  "testing-a-leaf-for-starch": {
   "key_stage": "KS3",
   "keys": {
-   "testing-a-leaf-for-starch#apply": "Almost nothing — without destarching first, there is no way to know when the starch was made",
+   "testing-a-leaf-for-starch#apply": "Only that it has starch, because without destarching you cannot tell when it was made",
    "testing-a-leaf-for-starch#recall": "To remove the chlorophyll so a colour change can be seen",
    "testing-a-leaf-for-starch#start": "To remove its green"
   },
@@ -22046,8 +22032,7 @@
   "keys": {
    "testing-the-model#apply": "Keep using it where it works, and note the limit",
    "testing-the-model#recall": "Why ice floats on water",
-   "testing-the-model#start": "It sinks",
-   "testing-the-model#the-verdict": "Keep using it where it works, and record exactly where it fails"
+   "testing-the-model#start": "It sinks"
   },
   "points": [
    {
@@ -22199,7 +22184,7 @@
  "the-atom-daltons-model": {
   "key_stage": "KS3",
   "keys": {
-   "the-atom-daltons-model#apply": "It still explains everything it was built to explain, and the parts that are wrong are outside chemistry",
+   "the-atom-daltons-model#apply": "It still gives the right answers for chemical reactions, which it was built to explain",
    "the-atom-daltons-model#recall": "The smallest particle of an element",
    "the-atom-daltons-model#start": "No, however good the kit"
   },
@@ -23231,7 +23216,7 @@
  "the-photosynthesis-reaction": {
   "key_stage": "KS3",
   "keys": {
-   "the-photosynthesis-reaction#apply": "Carbon dioxide from the air, built into glucose and then into the plant’s structures",
+   "the-photosynthesis-reaction#apply": "Carbon dioxide from the air, built into glucose and then into stems and leaves",
    "the-photosynthesis-reaction#recall": "carbon dioxide + water gives glucose + oxygen",
    "the-photosynthesis-reaction#start": "Almost the same"
   },
@@ -24583,8 +24568,8 @@
  "unicellular-organisms": {
   "key_stage": "KS3",
   "keys": {
-   "unicellular-organisms#apply": "The bacterium still has its DNA, loose in the cytoplasm; the red blood cell lost its DNA with its nucleus",
-   "unicellular-organisms#recall": "Whether it feeds itself, or is fed",
+   "unicellular-organisms#apply": "The bacterium has DNA loose in its cytoplasm, but the red blood cell has none",
+   "unicellular-organisms#recall": "Whether it does every life process itself",
    "unicellular-organisms#start": "It does every job itself"
   },
   "points": [
@@ -24883,7 +24868,7 @@
   "key_stage": "KS3",
   "keys": {
    "using-a-microscope#apply": "×600",
-   "using-a-microscope#recall": "The ×4 — the lowest power",
+   "using-a-microscope#recall": "The ×4",
    "using-a-microscope#start": "The weakest lens"
   },
   "points": [
@@ -26819,8 +26804,8 @@
  "why-almost-all-life-depends-on-it": {
   "key_stage": "KS3",
   "keys": {
-   "why-almost-all-life-depends-on-it#apply": "Yes — it feeds on dead material that a photosynthetic organism built, so it sits at the end of the same chain",
-   "why-almost-all-life-depends-on-it#recall": "It builds its own organic molecules from simple raw materials, instead of eating something else’s",
+   "why-almost-all-life-depends-on-it#apply": "Yes, because it feeds on dead material that was built by photosynthesis",
+   "why-almost-all-life-depends-on-it#recall": "It makes its own food from simple raw materials, instead of eating other organisms",
    "why-almost-all-life-depends-on-it#start": "Food a plant made"
   },
   "points": [
@@ -26959,7 +26944,7 @@
  "why-every-cell-respires": {
   "key_stage": "KS3",
   "keys": {
-   "why-every-cell-respires#apply": "Respiration continues in every cell, using oxygen and releasing carbon dioxide",
+   "why-every-cell-respires#apply": "Every living cell keeps respiring, using oxygen and releasing carbon dioxide",
    "why-every-cell-respires#recall": "Active transport of minerals into a root hair cell",
    "why-every-cell-respires#start": "Hardly any"
   },

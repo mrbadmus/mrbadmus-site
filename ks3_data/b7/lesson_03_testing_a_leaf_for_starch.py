@@ -802,14 +802,11 @@ LESSON = {
             # 1 is Design's, byte-identical. Each distractor now states the
             # wrong rule a student would have to believe to pick it.
             "options": [
-                "That the plant photosynthesised today, because a leaf makes "
-                "its starch and uses it within a day",
-                "That the leaf contains chlorophyll, since iodine turns "
-                "blue-black when it reaches the green pigment in a leaf",
+                "That it photosynthesised today, because a leaf makes and uses its starch in a day",
+                "That the leaf has chlorophyll, because iodine turns blue-black with the green pigment",
                 "That light is needed for photosynthesis, because this leaf "
                 "had light and it made starch",
-                "Almost nothing — without destarching first, there is no way "
-                "to know when the starch was made",
+                "Only that it has starch, because without destarching you cannot tell when it was made",
             ],
             "answer": 3,
             # All three are Design's own corrections, byte-identical. Each

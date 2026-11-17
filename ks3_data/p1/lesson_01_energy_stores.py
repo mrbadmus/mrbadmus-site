@@ -438,7 +438,7 @@ LESSON = {
         "recall": {
             "q": "A stretched elastic band holds energy in which store?",
             "options": [
-                "Elastic",
+                "Elastic potential",
                 "Kinetic",
                 "Chemical",
                 "Elastic energy is not a store, it is a pathway",
@@ -458,10 +458,8 @@ LESSON = {
             "options": [
                 "The energy is gradually used up by the brakes until "
                 "none remains",
-                "Gravitational becomes kinetic on the way down, then the "
-                "kinetic energy disappears",
-                "Gravitational store empties, kinetic fills, then thermal "
-                "fills as the brakes warm",
+                "Gravitational potential becomes kinetic on the way down, then the kinetic energy disappears",
+                "Gravitational potential store empties, kinetic fills, then thermal fills as the brakes warm",
                 "The cyclist creates new kinetic energy by pedalling on "
                 "the way down",
             ],

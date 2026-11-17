@@ -19,11 +19,11 @@ MRB-103 also flagged an **anatomical/structural diagram gap** (cells, organs) an
 | Status | Figures |
 |---|---|
 | `drafted` | 1 |
-| `drawn` | 75 |
+| `drawn` | 83 |
 | `final` | 1 |
 | `needed` | 3 |
 | `retired` | 6 |
-| **Total** | **86** |
+| **Total** | **94** |
 
 `needed` = declared by a lesson, not yet drawn. A lesson may ship with figures at `needed` — it is not a build blocker — but the need is then counted here rather than invisible.
 
@@ -73,6 +73,7 @@ MRB-103 also flagged an **anatomical/structural diagram gap** (cells, organs) an
 | B5 | `the-menstrual-cycle` | `b5-cycle-timeline` | diagram | `retired` | One cycle drawn as a timeline for each of the three lengths, 21, 28 and 35 days: the bleeding window at the start, the building phase, release a fortnight before the end, and the fortnight in which the lining is held ready — with the release marker landing on a different day in each of the three. |
 | B7 | `leaves-built-for-the-job` | `b7-leaf-section` | diagram | `drawn` | The whole slice is less than half a millimetre from top to bottom. Two of its features are claims you can check by looking: the palisade cells are the layer nearest the light, and they hold most of the chloroplasts — count them against the spongy cells below. The only break in either surface is the one pore, and it is underneath. Follow the arrow to see why that still works: carbon dioxide goes in through the pore, up through the air spaces, and into a palisade cell, without anything having to carry it. |
 | B7 | `the-photosynthesis-reaction` | `b7-word-summary` | diagram | `drawn` | The word summary for photosynthesis. |
+| B7 | `why-almost-all-life-depends-on-it` | `b7-food-chain-grass` | diagram | `drawn` | A food chain starts with a producer. |
 | B8 | `aerobic-respiration` | `b8-word-aerobic` | diagram | `drawn` | The word summary for aerobic respiration. |
 | B8 | `anaerobic-respiration-in-humans` | `b8-word-anaerobic` | diagram | `drawn` | The word summary for anaerobic respiration in humans. |
 | B8 | `fermentation` | `b8-word-fermentation` | diagram | `drawn` | The word summary for fermentation. |
@@ -80,7 +81,14 @@ MRB-103 also flagged an **anatomical/structural diagram gap** (cells, organs) an
 | B9 | `disturbing-a-food-web` | `b9-oak-wood-web` | diagram | `drawn` | The wood, before anything is taken out of it. Count the arrows into and out of each organism before you choose one to remove — the ones with a single line are not always the ones that matter least. |
 | B9 | `food-chains-and-food-webs` | `b9-oak-wood-web-thread` | diagram | `drawn` | One oak wood.  The numbered orange chain is one route through it — the same four steps the bench above climbs. |
 | B9 | `predator-and-prey` | `b9-predator-prey-cycle` | diagram | `drawn` | The fox line is still going up while the rabbit line is already coming down, and it does not turn over until years later. That gap is the whole idea: foxes cannot become more foxes the moment there is more to eat — breeding takes time — so the fox peak always follows the rabbit peak rather than arriving with it. Look at when each peak happens, not how high it is: the two are counted on their own scales. |
+| C1 | `changes-of-state` | `c1-heating-curve` | graph | `drawn` | The temperature stays flat while the water melts and while it boils. |
+| C1 | `diffusion` | `c1-brownian` | diagram | `drawn` | Air particles hit the speck unevenly, so it moves in a random path. |
+| C1 | `diffusion` | `c1-spreading` | diagram | `drawn` | The particles spread from a high concentration to a low concentration. |
+| C1 | `gas-pressure` | `c1-wall-hits` | diagram | `drawn` | In half the space, the particles hit the walls more often. |
+| C1 | `particle-model` | `c1-mixing` | diagram | `drawn` | The small particles fit into gaps between the big ones. |
+| C1 | `solids-liquids-and-gases` | `c1-expansion` | diagram | `drawn` | Heating moves the particles slightly further apart. The particles do not grow. |
 | C1 | `solids-liquids-and-gases` | `c1-particle-states` | diagram | `drawn` | One substance, three states. Compare the particles inside each box with the reference particle underneath it. |
+| C1 | `solids-liquids-and-gases` | `c1-three-states` | diagram | `drawn` | The same particles in each state, arranged and moving differently. |
 | C2 | `chemical-symbols` | `c2-co-and-co` | diagram | `drawn` | CO is two elements joined. Co is one element. |
 | C2 | `compounds` | `c2-ecm-particles` | diagram | `drawn` | Look at the kinds of atom, and which ones are joined. |
 | C2 | `compounds` | `c2-iron-sulfur` | diagram | `drawn` | Mixed, iron and sulfur are separate. In iron sulfide, they are joined. |

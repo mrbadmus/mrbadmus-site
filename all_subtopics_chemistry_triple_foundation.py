@@ -4217,19 +4217,19 @@ CHEMISTRY_SUBTOPICS_ALL = {
                      ('Unbalanced equations produce different products', False),
                      ('Equations must be balanced to follow international chemical naming rules', False)],
             'q': 'Why must chemical equations be balanced?',
-            'wrong_explanations': {1: 'Readability is a benefit but not the fundamental reason — conservation of mass '
-                                      'is.',
-                                   2: 'An unbalanced equation can still show the correct reactants and products — it '
-                                      "just doesn't correctly represent the quantitative relationship between them.",
-                                   3: 'Balancing is a scientific law requirement (conservation of mass), not a naming '
-                                      'convention.'}},
+            'wrong_explanations': {1: 'Being easy to read is not the reason. No atoms are lost or made, so each side '
+                                      'has the same atoms.',
+                                   2: 'Balancing does not change the products. It makes the numbers of atoms match on '
+                                      'both sides.',
+                                   3: 'Naming rules are not the reason. No atoms are lost or made, so each side has '
+                                      'the same atoms.'}},
            {'opts': [('16 g — conservation of mass: mass of O₂ = 40 − 24 = 16 g', True),
                      ('40 g — the oxygen has the same mass as the product', False),
                      ('64 g — added the mass of magnesium to the mass of product (24 + 40)', False),
                      ('Cannot be determined without the balanced equation', False)],
             'q': '24 g of magnesium reacts completely with oxygen to form magnesium oxide. 40 g of magnesium oxide is '
                  'produced. How much oxygen reacted?',
-            'wrong_explanations': {1: 'The product contains both magnesium AND oxygen, so the oxygen is only part of '
+            'wrong_explanations': {1: 'The product contains both magnesium and oxygen, so the oxygen is only part of '
                                       'its 40 g. Mass in = mass out: 40 − 24 = 16 g of oxygen.',
                                    2: 'Adding gives 24 + 40 = 64 g, more than the product itself. The magnesium is '
                                       'already inside the 40 g of product, so subtract it: 40 − 24 = 16 g.',
@@ -4240,11 +4240,24 @@ CHEMISTRY_SUBTOPICS_ALL = {
                      ('2Fe + O₂ → Fe₂O₃', False),
                      ('Fe + 3O₂ → 2Fe₂O₃', False)],
             'q': 'Which of these is a correctly balanced equation?',
-            'wrong_explanations': {1: 'Fe + O₂ → Fe₂O₃: left has 1 Fe, 2 O; right has 2 Fe, 3 O — not balanced.',
-                                   2: '2Fe + O₂ → Fe₂O₃: left has 2 Fe, 2 O; right has 2 Fe, 3 O — oxygen not '
-                                      'balanced.',
-                                   3: 'Fe + 3O₂ → 2Fe₂O₃: left has 1 Fe, 6 O; right has 4 Fe, 6 O — iron not '
-                                      'balanced.'}}],
+            'wrong_explanations': {1: 'Left: 1 Fe and 2 O. Right: 2 Fe and 3 O. Neither element balances.',
+                                   2: 'Left: 2 Fe and 2 O. Right: 2 Fe and 3 O. The oxygen does not balance.',
+                                   3: 'Left: 1 Fe and 6 O. Right: 4 Fe and 6 O. The iron does not balance.'}},
+           {'opts': [('3 C and 6 O', True), ('3 C and 2 O', False), ('1 C and 6 O', False), ('1 C and 2 O', False)],
+            'q': 'How many atoms of each element are shown in 3CO₂?',
+            'wrong_explanations': {1: 'The 3 in front multiplies the whole formula, so the oxygen is 3 × 2 = 6.',
+                                   2: 'The 3 in front multiplies the carbon too: 3 C.',
+                                   3: 'That is one CO₂. The 3 in front means three of them: 3 C and 6 O.'}},
+           {'opts': [('It changes the formula of water', True),
+                     ('The hydrogen atoms do not balance', False),
+                     ('The oxygen atoms do not balance', False),
+                     ('Numbers can only go in front of reactants', False)],
+            'q': 'A student balances H₂ + O₂ → H₂O by writing H₂ + O₂ → H₂O₂. Why is this wrong?',
+            'wrong_explanations': {1: 'There are 2 H on each side, so the hydrogen does balance. The fault is the '
+                                      'changed formula.',
+                                   2: 'There are 2 O on each side, so the oxygen does balance. The fault is the '
+                                      'changed formula.',
+                                   3: 'Big numbers can go in front of products too, as in 2H₂ + O₂ → 2H₂O.'}}],
   'rp': None,
   'spec': '5.3.1.1',
   'summary': 'Explain the law of conservation of mass and balance symbol equations.',
@@ -4335,10 +4348,11 @@ CHEMISTRY_SUBTOPICS_ALL = {
                      ('116 — (40) + (12) + (4 × 16) — counting four oxygens', False),
                      ('52 — (40) + (12) — forgetting the oxygens', False)],
             'q': 'What is the relative formula mass of calcium carbonate (CaCO₃)? Ar: Ca=40, C=12, O=16.',
-            'wrong_explanations': {1: 'CaCO₃ has only ONE oxygen — but the subscript 3 after O means THREE oxygens: 3 '
-                                      '× 16 = 48.',
-                                   2: 'CO₃ means 3 oxygen atoms, not 4. Only CO₄ would have 4 oxygens.',
-                                   3: 'The oxygen cannot be ignored — CaCO₃ has a carbon AND three oxygens.'}},
+            'wrong_explanations': {1: 'CaCO₃ has three oxygen atoms, not one: the 3 after O counts them. 40 + 12 + (3 '
+                                      '× 16) = 100.',
+                                   2: 'CO₃ means three oxygen atoms, not four: 3 × 16 = 48. 40 + 12 + 48 = 100.',
+                                   3: 'The oxygen atoms count too. CaCO₃ has one Ca, one C and three O: 40 + 12 + 48 = '
+                                      '100.'}},
            {'opts': [('148 — Mg(24) + 2N(28) + 6O(96)', True),
                      ('86 — Mg(24) + N(14) + 3O(48)', False),
                      ('100 — Mg(24) + 2N(28) + 3O(48)', False),
@@ -4348,7 +4362,24 @@ CHEMISTRY_SUBTOPICS_ALL = {
                                       'and 3 O. Mr = 24 + 28 + 96 = 148.',
                                    2: 'Mg(NO₃)₂ means 2 groups of NO₃: so 2N and 6O total. Only counting 3O ignores '
                                       'the ×2 multiplier.',
-                                   3: 'Each NO₃ has 3 O; multiplied by 2 = 6 O total, not 4.'}}],
+                                   3: 'Each NO₃ has 3 O; multiplied by 2 = 6 O total, not 4.'}},
+           {'opts': [('44', True), ('28', False), ('32', False), ('60', False)],
+            'q': 'What is the relative formula mass (Mr) of carbon dioxide, CO₂? Ar: C = 12, O = 16.',
+            'wrong_explanations': {1: 'That counts only one oxygen. CO₂ has two: 12 + (2 × 16) = 44.',
+                                   2: 'That is the two oxygens only. Add the carbon too: 12 + 32 = 44.',
+                                   3: 'That counts three oxygens. CO₂ has two: 12 + (2 × 16) = 44.'}},
+           {'opts': [('88.9%', True), ('11.1%', False), ('33.3%', False), ('94.1%', False)],
+            'q': 'What is the percentage by mass of oxygen in water, H₂O? Ar: H = 1, O = 16.',
+            'wrong_explanations': {1: 'That is the hydrogen: 2 ÷ 18 × 100. Oxygen is 16 ÷ 18 × 100 = 88.9%.',
+                                   2: 'That counts atoms, 1 O out of 3. Use masses: 16 ÷ 18 × 100 = 88.9%.',
+                                   3: 'That uses only one hydrogen, so Mr = 17. H₂O has two: Mr = 18, and 16 ÷ 18 × '
+                                      '100 = 88.9%.'}},
+           {'opts': [('36', True), ('34', False), ('18', False), ('20', False)],
+            'q': '2H₂ + O₂ → 2H₂O. What is the total relative formula mass of the reactants, in the quantities shown? '
+                 'Ar: H = 1, O = 16.',
+            'wrong_explanations': {1: 'That counts only one H₂. The 2 in front means two: (2 × 2) + 32 = 36.',
+                                   2: '18 is the Mr of one H₂O. The reactants are 2H₂ and O₂: 4 + 32 = 36.',
+                                   3: 'O₂ has two oxygen atoms, so its Mr is 32, not 16: 4 + 32 = 36.'}}],
   'rp': None,
   'spec': '5.3.1.2',
   'summary': 'Calculate relative formula mass (Mr) from relative atomic masses and use it in calculations.',
@@ -4677,23 +4708,43 @@ CHEMISTRY_SUBTOPICS_ALL = {
             'q': 'A reaction has a theoretical yield of 20 g but only 14 g is obtained. What is the percentage yield?',
             'wrong_explanations': {1: '14 ÷ 20 = 0.7 is the fraction of the theoretical yield obtained, not a '
                                       'percentage. Multiply by 100: 0.7 × 100 = 70%.',
-                                   2: 'Must divide actual by theoretical — not theoretical by actual. That gives a '
-                                      'value over 100%, which is impossible for yield.',
-                                   3: '30% is the percentage LOSS — the question asks for the percentage YIELD, which '
-                                      'is 70%.'}},
-           {'opts': [('Practical losses during separation, incomplete reactions, side reactions and reversible '
-                      'reactions all reduce the amount of product collected',
-                      True),
+                                   2: 'Divide the actual yield by the theoretical yield. The other way round gives '
+                                      'more than 100%, which is impossible.',
+                                   3: '30% is the percentage lost. The percentage yield is 70%.'}},
+           {'opts': [('Some product is lost when it is separated from the reaction mixture', True),
                      ('The law of conservation of mass means mass must be lost during reactions', False),
                      ('Theoretical yield calculations always overestimate because chemists round up', False),
-                     ('Products decompose after forming — all products eventually revert to reactants', False)],
+                     ('The catalyst is used up during the reaction', False)],
             'q': 'Why is the actual yield of a reaction almost always less than the theoretical yield?',
-            'wrong_explanations': {1: 'Conservation of mass means total mass is conserved — but some mass ends up as '
-                                      'by-products, waste or losses, not the desired product.',
-                                   2: "Theoretical yield calculations are based on exact stoichiometry — they don't "
-                                      'systematically overestimate.',
-                                   3: 'Not all products decompose — the reasons are specific: losses, incomplete '
-                                      'reactions, reversibility, side reactions.'}}],
+            'wrong_explanations': {1: 'Mass is conserved in every reaction. Product is lost along the way, not '
+                                      'destroyed.',
+                                   2: 'The theoretical yield is calculated exactly from the balanced equation.',
+                                   3: 'A catalyst is not used up. It changes the rate, not the maximum mass of '
+                                      'product.'}},
+           {'opts': [('80%', True), ('125%', False), ('20%', False), ('0.8%', False)],
+            'q': 'A reaction could make a maximum of 50 g of product. The student collects 40 g. What is the '
+                 'percentage yield?',
+            'wrong_explanations': {1: 'The fraction is upside down. Mass actually made ÷ maximum mass: 40 ÷ 50 × 100 = '
+                                      '80%.',
+                                   2: '20% is the percentage lost. The percentage yield is 80%.',
+                                   3: 'Multiply by 100: 0.8 × 100 = 80%.'}},
+           {'opts': [('The reaction is reversible', True),
+                     ('Atoms are destroyed in the reaction', False),
+                     ('A catalyst was added', False),
+                     ('The masses were measured in grams', False)],
+            'q': 'Which of these is a reason why a reaction may not give the calculated mass of product?',
+            'wrong_explanations': {1: 'No atoms are gained or lost in a chemical reaction.',
+                                   2: 'A catalyst changes the rate, not the maximum mass of product.',
+                                   3: 'Grams are the right unit. The unit does not change the mass made.'}},
+           {'opts': [('The product was not fully dried', True),
+                     ('The reaction is reversible', False),
+                     ('Some product stayed on the filter paper', False),
+                     ('Mass was made in the reaction', False)],
+            'q': "A student's percentage yield is 112%. What is the most likely reason?",
+            'wrong_explanations': {1: 'A reversible reaction gives a yield below 100%, not above it.',
+                                   2: 'Losing product gives a yield below 100%, not above it.',
+                                   3: 'Mass is never made in a reaction. Something else, such as water, was weighed '
+                                      'with the product.'}}],
   'rp': None,
   'spec': '4.3.3.1',
   'summary': 'Calculate percentage yield and explain why the actual yield is often less than the theoretical yield.',
@@ -4795,12 +4846,10 @@ CHEMISTRY_SUBTOPICS_ALL = {
                      ('125% — (100 ÷ 80) × 100 (turned the fraction upside down)', False)],
             'q': 'In a balanced equation, the reactants have a total Mr of 100. The desired product has a total Mr of '
                  '80 and the waste product has a total Mr of 20. What is the atom economy?',
-            'wrong_explanations': {1: '20% is the proportion of WASTE — atom economy = desired ÷ total reactants = 80 '
-                                      '÷ 100 = 80%.',
-                                   2: 'Must divide the desired product by the TOTAL Mr of all the reactants — not by '
-                                      'the waste alone.',
-                                   3: 'The fraction is upside down — the desired product goes on top. Atom economy = '
-                                      '(80 ÷ 100) × 100 = 80%, and it can never be more than 100%.'}},
+            'wrong_explanations': {1: '20% is the share that is waste. Atom economy = 80 ÷ 100 × 100 = 80%.',
+                                   2: 'Divide by the total Mr of all the reactants, not by the waste.',
+                                   3: 'The fraction is upside down. The desired product goes on top: 80 ÷ 100 × 100 = '
+                                      '80%. It can never be more than 100%.'}},
            {'opts': [('Only one product is formed — all atoms from the reactants end up in the single product with no '
                       'by-products',
                       True),
@@ -4808,13 +4857,31 @@ CHEMISTRY_SUBTOPICS_ALL = {
                      ('Addition reactions release energy — energy counts as a product increasing the total', False),
                      ('Addition reactions use a catalyst, which is not used up — so no atoms are lost', False)],
             'q': 'Why do addition reactions always have an atom economy of 100%?',
-            'wrong_explanations': {1: '100% atom economy relates to NO by-products — not to whether the reaction is '
-                                      'complete. A complete reaction with by-products still has less than 100% atom '
-                                      'economy.',
+            'wrong_explanations': {1: 'Atom economy is about by-products, not about whether the reaction is complete. '
+                                      'A complete reaction with by-products still has less than 100%.',
                                    2: 'Energy is not counted as a chemical product in atom economy calculations.',
                                    3: 'A catalyst is not a reactant, so it plays no part in the atom economy '
                                       'calculation. The 100% comes from there being only one product: every reactant '
-                                      'atom ends up in it.'}}],
+                                      'atom ends up in it.'}},
+           {'opts': [('56%', True), ('44%', False), ('100%', False), ('179%', False)],
+            'q': 'CaCO₃ → CaO + CO₂. Mr: CaCO₃ = 100, CaO = 56. What is the atom economy for making calcium oxide?',
+            'wrong_explanations': {1: '44% is the share that becomes carbon dioxide, the waste.',
+                                   2: 'Carbon dioxide is made as well, so not every atom ends up in the calcium oxide.',
+                                   3: 'The fraction is upside down. 56 ÷ 100 × 100 = 56%.'}},
+           {'opts': [('1.2%', True), ('2.0%', False), ('98.8%', False), ('0.6%', False)],
+            'q': 'Zn + H₂SO₄ → ZnSO₄ + H₂. Mr: Zn = 65, H₂SO₄ = 98, H₂ = 2. What is the atom economy for making '
+                 'hydrogen?',
+            'wrong_explanations': {1: 'Add every reactant on the bottom: 65 + 98 = 163. 2 ÷ 163 × 100 = 1.2%.',
+                                   2: '98.8% is the atom economy for making zinc sulfate.',
+                                   3: 'Hydrogen gas is H₂, so the top is 2, not 1.'}},
+           {'opts': [('Less of the starting materials is wasted', True),
+                     ('The reaction goes faster', False),
+                     ('The percentage yield is always 100%', False),
+                     ('No energy is needed to start the reaction', False)],
+            'q': 'Why is it important to use reactions with a high atom economy?',
+            'wrong_explanations': {1: 'Atom economy says nothing about the rate.',
+                                   2: 'Atom economy comes from the equation. It does not fix the yield.',
+                                   3: 'Atom economy says nothing about the energy a reaction needs.'}}],
   'rp': None,
   'spec': '4.3.3.2',
   'summary': 'Calculate atom economy and explain its importance for sustainable and efficient chemistry.',
@@ -4923,22 +4990,40 @@ CHEMISTRY_SUBTOPICS_ALL = {
                      ('0.05 g/dm³ — concentration = 25 ÷ 500', False),
                      ('12500 g/dm³ — concentration = 25 × 500', False),
                      ('2.5 g/dm³ — concentration = 25 ÷ 10', False)],
-            'q': '25 g of glucose is dissolved in 500 cm³ of water. What is the concentration in g/dm³?',
-            'wrong_explanations': {1: 'This uses 500 cm³ directly without converting to dm³ — gives an answer 1000× '
-                                      'too small. Must convert: 500 cm³ = 0.5 dm³.',
-                                   2: 'This multiplies instead of divides — and still fails to convert units.',
-                                   3: 'This divides by 10 instead of 0.5 — an incorrect conversion. 500 cm³ = 0.5 dm³, '
-                                      'not 10 dm³.'}},
+            'q': '25 g of glucose is dissolved in water to make 500 cm³ of solution. What is the concentration in '
+                 'g/dm³?',
+            'wrong_explanations': {1: 'That divides by 500 cm³ without converting, so it is 1000 times too small. 500 '
+                                      'cm³ = 0.5 dm³, and 25 ÷ 0.5 = 50 g/dm³.',
+                                   2: 'That multiplies. Concentration = mass ÷ volume = 25 ÷ 0.5 = 50 g/dm³.',
+                                   3: 'That divides by 10. 500 cm³ = 0.5 dm³, so 25 ÷ 0.5 = 50 g/dm³.'}},
            {'opts': [('20 g — mass = 80 × 0.25 dm³ = 20 g', True),
                      ('20000 g — mass = 80 × 250 (forgetting to convert cm³ to dm³)', False),
                      ('0.32 g — mass = 80 ÷ 250', False),
                      ('2000 g — mass = 80 × (250 ÷ 10)', False)],
             'q': 'A solution has a concentration of 80 g/dm³. What mass of solute is in 250 cm³ of this solution?',
-            'wrong_explanations': {1: 'Using 250 directly without converting gives 80 × 250 = 20,000 — not 20. Always '
-                                      'convert: 250 cm³ = 0.25 dm³.',
+            'wrong_explanations': {1: '80 × 250 uses cm³. Convert first: 250 cm³ = 0.25 dm³, so 80 × 0.25 = 20 g.',
                                    2: 'Dividing concentration by volume does not give a mass. mass = concentration × '
                                       'volume = 80 × 0.25 = 20 g.',
-                                   3: '250 ÷ 10 = 25 — but the conversion is 250 ÷ 1000 = 0.25 dm³.'}}],
+                                   3: 'Dividing by 10 is the wrong conversion. 250 cm³ ÷ 1000 = 0.25 dm³, so 80 × 0.25 '
+                                      '= 20 g.'}},
+           {'opts': [('0.25 dm³', True), ('2.5 dm³', False), ('25 dm³', False), ('250 000 dm³', False)],
+            'q': 'What is 250 cm³ in dm³?',
+            'wrong_explanations': {1: 'That divides by 100. There are 1000 cm³ in a dm³: 250 ÷ 1000 = 0.25 dm³.',
+                                   2: 'That divides by 10. There are 1000 cm³ in a dm³: 250 ÷ 1000 = 0.25 dm³.',
+                                   3: 'That multiplies by 1000. A dm³ is bigger than a cm³, so divide: 0.25 dm³.'}},
+           {'opts': [('20 g', True), ('80 g', False), ('0.0125 g', False), ('40 g', False)],
+            'q': 'A solution has a concentration of 40 g/dm³. What mass of solute is in 0.5 dm³ of it?',
+            'wrong_explanations': {1: 'That divides. mass = concentration × volume = 40 × 0.5 = 20 g.',
+                                   2: 'That divides the volume by the concentration. mass = 40 × 0.5 = 20 g.',
+                                   3: '40 g is in a whole dm³. Half a dm³ holds half as much: 20 g.'}},
+           {'opts': [('10 g in 0.1 dm³', True),
+                     ('20 g in 1 dm³', False),
+                     ('50 g in 2 dm³', False),
+                     ('5 g in 0.25 dm³', False)],
+            'q': 'Which solution has the highest concentration?',
+            'wrong_explanations': {1: '20 ÷ 1 = 20 g/dm³. 10 g in 0.1 dm³ is 10 ÷ 0.1 = 100 g/dm³.',
+                                   2: '50 ÷ 2 = 25 g/dm³. 10 g in 0.1 dm³ is 100 g/dm³.',
+                                   3: '5 ÷ 0.25 = 20 g/dm³. 10 g in 0.1 dm³ is 100 g/dm³.'}}],
   'rp': None,
   'spec': '5.3.2.5',
   'summary': 'Define concentration and calculate it from mass and volume.',

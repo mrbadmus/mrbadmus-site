@@ -351,8 +351,7 @@ LESSON = {
         "recall": {
             "q": "What does it mean to call an energy resource renewable?",
             "options": [
-                "The store refills on a human timescale, so it will not run "
-                "out",
+                "It is naturally replaced as it is used, so it will not run out",
                 "It comes from nature rather than from a fuel, so nothing is "
                 "being consumed",
                 "It produces no carbon dioxide, so it does not add to the "

@@ -287,26 +287,23 @@ LESSON = {
         {"type": "formula",
          "id": "light-speed-rule",
          "eyebrow": "Writing it down · the shape of this relationship",
-         "statement": "Distance = speed of light × time",
+         "statement": "Distance (s) = speed of light (c) × time (t)",
          "triangle": {
              "eyebrow": "The triangle",
              "heading": "Cover the one you want",
-             "aria_label": "A formula triangle. The distance d sits above a "
-                           "dividing line; the speed of light c and the time "
-                           "t sit below it, multiplied together. Covering "
-                           "one letter leaves the way to work it out.",
+             "aria_label": "A formula triangle. The distance s sits above a dividing line; the speed of light c and the time t sit below it, multiplied together. Covering one letter leaves the way to work it out.",
              "order": ["top", "left", "right"],
              "covered": "top",
-             "top":   {"label": "d", "button": "Cover d",
-                       "result": "d = c × t", "text": ""},
+             "top":   {"label": "s", "button": "Cover s",
+                       "result": "s = c × t", "text": ""},
              "left":  {"label": "c", "button": "Cover c",
-                       "result": "c = d ÷ t", "text": ""},
+                       "result": "c = s ÷ t", "text": ""},
              "right": {"label": "t", "button": "Cover t",
-                       "result": "t = d ÷ c", "text": ""},
+                       "result": "t = s ÷ c", "text": ""},
              "close": {
                  "rule": "Two things side by side means multiply. One thing "
                          "over another means divide.",
-                 "units": ["d · distance the light travels · m",
+                 "units": ["s · distance the light travels · m",
                            "c · speed of light in a vacuum · m/s",
                            "t · time it takes · s"],
                  "condition": "The speed is the one for a vacuum, and air is "
@@ -350,8 +347,7 @@ LESSON = {
                       "seconds, so there is nothing to convert."},
              {"letter": "F", "label": "Formula",
               "line": "distance = speed of light × time",
-              "note": "Cover d on the triangle: c and t sit side by side, so "
-                      "you multiply."},
+              "note": "Cover s on the triangle: c and t sit side by side, so you multiply."},
              {"letter": "I", "label": "Insert",
               "line": "distance = 300 000 000 m/s × 500 s",
               "note": "The speed is the one for a vacuum, and space is very "
@@ -386,8 +382,7 @@ LESSON = {
                       "in seconds before it can multiply."},
              {"letter": "F", "label": "Formula",
               "line": "distance = speed of light × time",
-              "note": "Cover d on the triangle: c and t sit side by side, so "
-                      "you multiply."},
+              "note": "Cover s on the triangle: c and t sit side by side, so you multiply."},
              {"letter": "I", "label": "Insert",
               "line": "distance = 300 000 000 m/s × 480 s",
               "note": "The converted time goes in. The 8.0 never does."},
@@ -428,9 +423,8 @@ LESSON = {
                    "note": "Metres per second multiplied by seconds gives "
                            "metres, so there is nothing to convert."},
                   {"letter": "F", "label": "Formula",
-                   "line": "t = d ÷ c",
-                   "note": "Cover t on the triangle: d sits over c, so you "
-                           "divide."},
+                   "line": "t = s ÷ c",
+                   "note": "Cover t on the triangle: s sits over c, so you divide."},
                   {"letter": "I", "label": "Insert",
                    "line": "t = {dgrp} m ÷ 300 000 000 m/s",
                    "note": "The gap comes from your slider; the speed is "
@@ -461,8 +455,7 @@ LESSON = {
                            "millisecond is a thousandth of a second."},
                   {"letter": "F", "label": "Formula",
                    "line": "distance = speed of light × time",
-                   "note": "Cover d on the triangle: c and t sit side by "
-                           "side, so you multiply."},
+                   "note": "Cover s on the triangle: c and t sit side by side, so you multiply."},
                   {"letter": "I", "label": "Insert",
                    "line": "distance = 300 000 000 m/s × 1.3 s",
                    "note": "The converted time goes in. The 1300 never "
@@ -545,9 +538,7 @@ LESSON = {
             ],
             "answer": 2,
             "feedback": {
-                0: "That is the calculation upside down. Cover t on the "
-                   "triangle and d sits over c, so the distance is the one "
-                   "being divided.",
+                0: "That is the calculation upside down. Cover t on the triangle and s sits over c, so the distance is the one being divided.",
                 1: "Multiplying gives a distance back when you already have "
                    "one. To find a time you share the distance out at so "
                    "many metres per second, so you divide.",
