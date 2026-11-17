@@ -277,7 +277,11 @@ def _route_wrap(flag, out):
 # show it on every Triple route, so the literal becomes `{{ leanEyebrow }}`, which the logic
 # resolves from the route (the same mechanism power and changes-in-energy already use).
 
-_EYEBROW_LITERAL = re.compile(r'<p class="ks3-eyebrow">AQA Physics (6\.[\d.]+)</p>')
+_EYEBROW_LITERAL = re.compile(r'<p class="ks3-eyebrow">AQA Physics (6\.[\d.]+|4\.[\d.]+(?:\u2013[\d.]+)?)'
+                             r'(?: \u00b7 Physics only)?</p>')
+# ⊕ 17 Nov 2026 (Waves): a Triple-only legacy physics header (infrared-black-bodies, batch 4) writes
+# the 8463 number, "AQA Physics 4.6.3.1–4.6.3.2 · Physics only", with no spec code. It is
+# rebuilt as "AQA Physics (8463) <number> · <family>"; a 4.x number on a Combined route is refused.
 # Biology numbers 4.7.x in BOTH specs (8464 and 8461). A legacy biology header writes one literal
 # for every route, "AQA Biology 4.7.1.2 and 4.7.1.3 \u00b7 Combined and Triple", which names a
 # single spec on routes of the other: the spec numbers are kept, the rest is rebuilt per route.
@@ -290,7 +294,12 @@ _EYEBROW_LITERAL_BIO = re.compile(r'<p class="ks3-eyebrow">AQA Biology (4\.7\.\d
 
 def _eyebrow_js(lesson, spec):
     tail = (" \u00b7 %s" % lesson["family"]) if lesson.get("family") else ""
-    if lesson["subject"] == "physics":
+    if lesson["subject"] == "physics" and spec.startswith("4."):
+        if set(lesson.get("routes") or ["CF"]) - {"TF", "TH"}:
+            raise SystemExit("lean_ks4: %s: a physics-only (8463) eyebrow %r on a Combined route"
+                             % (lesson["slug"], spec))
+        comb = tri = "AQA Physics (8463) %s%s" % (spec, tail)
+    elif lesson["subject"] == "physics":
         if not spec.startswith("6."):
             raise SystemExit("lean_ks4: %s: the 6.x to 4.x eyebrow rule is for physics sections, got %r"
                              % (lesson["slug"], spec))
@@ -375,7 +384,12 @@ def _legacy_template(lesson, rec, tpl):
     m = {"biology": _EYEBROW_LITERAL_BIO, "chemistry": _EYEBROW_LITERAL_CHEM}.get(
         lesson["subject"], _EYEBROW_LITERAL).search(hdr)
     slots.spec = m.group(1) if m else None
-    if m:
+    if m and lesson["subject"] == "physics" and slots.spec.startswith("4."):
+        # Triple-only (8463): one wording on both of its routes, so it is written in, not bound
+        ey = json.loads(_eyebrow_js(lesson, slots.spec)[len("const LEAN_EYEBROW = "):-2])["t"]
+        hdr = hdr.replace(m.group(0), '<p class="ks3-eyebrow">%s</p>' % html.escape(ey), 1)
+        slots.spec = None
+    elif m:
         hdr = hdr.replace(m.group(0), '<p class="ks3-eyebrow">{{ leanEyebrow }}</p>', 1)
 
     words_know_fact_try, deeper = _lean_sections(rec, slots)
@@ -581,6 +595,14 @@ def source(lesson, legacy=None):
         tpl, logic, report = legacy
         template, slots = _legacy_template(lesson, rec, tpl)
         logic = _legacy_logic(lesson, rec, logic, slots.spec)
+        # ⊕ 17 Nov 2026 (Waves): a route-gated card on a legacy page is wrapped in a flag the
+        # legacy logic must bind. infrared-black-bodies' TH card was gated on isTH, which the
+        # batch-4 logic never sets, so the card was silently absent on every route.
+        for it in rec["knowledge"] + rec["deeper"]:
+            flag = lean_blocks.route_flag(it.get("routes"))
+            if flag and not re.search(r"\b%s\b|Object\.assign\(\{\}, R, " % flag, logic):
+                raise SystemExit("lean_ks4: %s: card %r is gated on %s, which the legacy logic does "
+                                 "not bind" % (lesson["slug"], it.get("title"), flag))
     else:
         template, slots = _generic_template(lesson, rec)
         logic, report = _generic_logic(lesson, rec), {}

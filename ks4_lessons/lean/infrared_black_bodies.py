@@ -82,7 +82,9 @@ LESSON = {
                   "Matt black radiates the most infrared. Shiny silver radiates the least.",
                   "Keep the distance from the detector the same for every face, and take every "
                   "reading at the same water temperature, so the test is fair."]},
-        {"kind": "card", "title": "Absorbing and emitting together", "routes": ["TH"],
+        # routes CH+TH = isHigher, the flag the batch-4 logic binds; the lesson exists on TF/TH only,
+        # so this card shows on TH only (17 Nov 2026: ["TH"] gated it on isTH, never bound here).
+        {"kind": "card", "title": "Absorbing and emitting together", "routes": ["CH", "TH"],
          "body": ["Whether a body's temperature rises, falls or stays constant depends on the "
                   "balance between the radiation it absorbs and the radiation it emits.",
                   "This is in the lesson on radiation balance and the Earth's temperature."]},

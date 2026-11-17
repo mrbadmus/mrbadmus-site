@@ -370,11 +370,11 @@ def earth_radiation_balance():
     b.append(txt(140, 74, "Sun", FS, "start"))
     # sunlight absorbed by the surface
     b.append(arrow(62, 110, 34, gy - 4, AMBER, 5, 24))
-    b.append(txt(58, 460, "absorbed", 27, "start"))
+    b.append(txt(50, 520, "absorbed", 27, "start"))
     # sunlight onto ice and snow, reflected back up into space
     b.append(arrow(96, 100, 232, gy - 4, AMBER, 5, 24))
     b.append(arrow(252, gy - 4, 318, 24, AMBER, 5, 24))
-    b.append(lines(196, 150, ["reflected", "into space"], 27, "start", INK, 600, 32))
+    b.append(lines(284, 150, ["reflected", "into space"], 27, "end", INK, 600, 32))
     # infrared emitted by the surface, out into space
     b.append(arrow(380, gy - 4, 380, 24, RED, 5, 24))
     b.append(lines(396, 44, ["infrared emitted", "into space"], 27, "start", INK, 600, 32))

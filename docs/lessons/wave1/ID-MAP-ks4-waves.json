@@ -1,5 +1,5 @@
 {
- "base": "c00e2674c87b411c372261b43e6cf2401fd85e5d",
+ "base": "04601e6d8fdd189ca4158ffde8a84d1854804fe3",
  "ids": {
   "cs-phys-em-hazards-4": {
    "kp": "ks4.properties-em-waves-2.3",
@@ -4863,39 +4863,39 @@
   },
   "ks4:lenses:tf#cpick": {
    "kp": "ks4.lenses.3",
-   "new": "ks4:lenses:tf#cpick",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
   },
   "ks4:lenses:tf#cpick-1": {
    "kp": "ks4.lenses.3",
-   "new": "ks4:lenses:tf#cpick-1",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
   },
   "ks4:lenses:tf#preds": {
    "kp": "ks4.lenses.4",
-   "new": "ks4:lenses:tf#preds",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the lesson's own activity (bQs) is not drawn on the lean page",
+   "status": "removed"
   },
   "ks4:lenses:tf#preds-cx30-s": {
    "kp": "ks4.lenses.4",
-   "new": "ks4:lenses:tf#preds-cx30-s",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
   },
   "ks4:lenses:tf#preds-cx30-t": {
    "kp": "ks4.lenses.4",
-   "new": "ks4:lenses:tf#preds-cx30-t",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
   },
   "ks4:lenses:tf#preds-cx30-w": {
    "kp": "ks4.lenses.4",
-   "new": "ks4:lenses:tf#preds-cx30-w",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
   },
   "ks4:lenses:tf#r1": {
    "kp": "ks4.lenses.4",
@@ -4989,39 +4989,39 @@
   },
   "ks4:lenses:th#cpick": {
    "kp": "ks4.lenses.3",
-   "new": "ks4:lenses:th#cpick",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
   },
   "ks4:lenses:th#cpick-1": {
    "kp": "ks4.lenses.3",
-   "new": "ks4:lenses:th#cpick-1",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
   },
   "ks4:lenses:th#preds": {
    "kp": "ks4.lenses.4",
-   "new": "ks4:lenses:th#preds",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the lesson's own activity (bQs) is not drawn on the lean page",
+   "status": "removed"
   },
   "ks4:lenses:th#preds-cx30-s": {
    "kp": "ks4.lenses.4",
-   "new": "ks4:lenses:th#preds-cx30-s",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
   },
   "ks4:lenses:th#preds-cx30-t": {
    "kp": "ks4.lenses.4",
-   "new": "ks4:lenses:th#preds-cx30-t",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
   },
   "ks4:lenses:th#preds-cx30-w": {
    "kp": "ks4.lenses.4",
-   "new": "ks4:lenses:th#preds-cx30-w",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
   },
   "ks4:lenses:th#r1": {
    "kp": "ks4.lenses.4",
@@ -5979,15 +5979,15 @@
   },
   "ks4:sound-waves-hearing:th#ppred": {
    "kp": "ks4.sound-waves-hearing.10",
-   "new": "ks4:sound-waves-hearing:th#ppred",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the lesson's own activity (pOpts) is not drawn on the lean page",
+   "status": "removed"
   },
   "ks4:sound-waves-hearing:th#ppred-2": {
    "kp": "ks4.sound-waves-hearing.8",
-   "new": "ks4:sound-waves-hearing:th#ppred-2",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
   },
   "ks4:sound-waves-hearing:th#r1": {
    "kp": "ks4.sound-waves-hearing.3",
@@ -6063,9 +6063,9 @@
   },
   "ks4:sound-waves-hearing:th#tpred": {
    "kp": "ks4.sound-waves-hearing.3",
-   "new": "ks4:sound-waves-hearing:th#tpred",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the lesson's own activity (pTones) is not drawn on the lean page",
+   "status": "removed"
   },
   "ks4:transverse-longitudinal-waves:cf#r1-1": {
    "kp": "ks4.transverse-longitudinal-waves.2",
@@ -6285,27 +6285,27 @@
   },
   "ks4:types-of-em-waves:cf#preds": {
    "kp": "ks4.types-of-em-waves.3",
-   "new": "ks4:types-of-em-waves:cf#preds",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the lesson's own activity (pairQs) is not drawn on the lean page",
+   "status": "removed"
   },
   "ks4:types-of-em-waves:cf#preds-1-1": {
    "kp": "ks4.types-of-em-waves.3",
-   "new": "ks4:types-of-em-waves:cf#preds-1-1",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
   },
   "ks4:types-of-em-waves:cf#preds-1-2": {
    "kp": "ks4.types-of-em-waves.3",
-   "new": "ks4:types-of-em-waves:cf#preds-1-2",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
   },
   "ks4:types-of-em-waves:cf#preds-1-3": {
    "kp": "ks4.types-of-em-waves.1",
-   "new": "ks4:types-of-em-waves:cf#preds-1-3",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
   },
   "ks4:types-of-em-waves:cf#r1": {
    "kp": "ks4.types-of-em-waves.1",
@@ -6363,27 +6363,27 @@
   },
   "ks4:types-of-em-waves:ch#preds": {
    "kp": "ks4.types-of-em-waves.3",
-   "new": "ks4:types-of-em-waves:ch#preds",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the lesson's own activity (pairQs) is not drawn on the lean page",
+   "status": "removed"
   },
   "ks4:types-of-em-waves:ch#preds-1-1": {
    "kp": "ks4.types-of-em-waves.3",
-   "new": "ks4:types-of-em-waves:ch#preds-1-1",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
   },
   "ks4:types-of-em-waves:ch#preds-1-2": {
    "kp": "ks4.types-of-em-waves.3",
-   "new": "ks4:types-of-em-waves:ch#preds-1-2",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
   },
   "ks4:types-of-em-waves:ch#preds-1-3": {
    "kp": "ks4.types-of-em-waves.1",
-   "new": "ks4:types-of-em-waves:ch#preds-1-3",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
   },
   "ks4:types-of-em-waves:ch#r1": {
    "kp": "ks4.types-of-em-waves.1",
@@ -6441,27 +6441,27 @@
   },
   "ks4:types-of-em-waves:tf#preds": {
    "kp": "ks4.types-of-em-waves.3",
-   "new": "ks4:types-of-em-waves:tf#preds",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the lesson's own activity (pairQs) is not drawn on the lean page",
+   "status": "removed"
   },
   "ks4:types-of-em-waves:tf#preds-1-1": {
    "kp": "ks4.types-of-em-waves.3",
-   "new": "ks4:types-of-em-waves:tf#preds-1-1",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
   },
   "ks4:types-of-em-waves:tf#preds-1-2": {
    "kp": "ks4.types-of-em-waves.3",
-   "new": "ks4:types-of-em-waves:tf#preds-1-2",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
   },
   "ks4:types-of-em-waves:tf#preds-1-3": {
    "kp": "ks4.types-of-em-waves.1",
-   "new": "ks4:types-of-em-waves:tf#preds-1-3",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
   },
   "ks4:types-of-em-waves:tf#r1": {
    "kp": "ks4.types-of-em-waves.1",
@@ -6519,27 +6519,27 @@
   },
   "ks4:types-of-em-waves:th#preds": {
    "kp": "ks4.types-of-em-waves.3",
-   "new": "ks4:types-of-em-waves:th#preds",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the lesson's own activity (pairQs) is not drawn on the lean page",
+   "status": "removed"
   },
   "ks4:types-of-em-waves:th#preds-1-1": {
    "kp": "ks4.types-of-em-waves.3",
-   "new": "ks4:types-of-em-waves:th#preds-1-1",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
   },
   "ks4:types-of-em-waves:th#preds-1-2": {
    "kp": "ks4.types-of-em-waves.3",
-   "new": "ks4:types-of-em-waves:th#preds-1-2",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
   },
   "ks4:types-of-em-waves:th#preds-1-3": {
    "kp": "ks4.types-of-em-waves.1",
-   "new": "ks4:types-of-em-waves:th#preds-1-3",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
   },
   "ks4:types-of-em-waves:th#r1": {
    "kp": "ks4.types-of-em-waves.1",
@@ -7257,15 +7257,15 @@
   },
   "ks4:waves-detection-exploration:th#qpred": {
    "kp": "ks4.waves-detection-exploration.2",
-   "new": "ks4:waves-detection-exploration:th#qpred",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the lesson's own activity (qOpts) is not drawn on the lean page",
+   "status": "removed"
   },
   "ks4:waves-detection-exploration:th#qpred-2": {
    "kp": "ks4.waves-detection-exploration.3",
-   "new": "ks4:waves-detection-exploration:th#qpred-2",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
   },
   "ks4:waves-detection-exploration:th#r1": {
    "kp": "ks4.waves-detection-exploration.3",
@@ -7347,15 +7347,15 @@
   },
   "ks4:waves-detection-exploration:th#upred": {
    "kp": "ks4.waves-detection-exploration.4",
-   "new": "ks4:waves-detection-exploration:th#upred",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the lesson's own activity (uOpts) is not drawn on the lean page",
+   "status": "removed"
   },
   "ks4:waves-detection-exploration:th#upred-2": {
    "kp": "ks4.waves-detection-exploration.3",
-   "new": "ks4:waves-detection-exploration:th#upred-2",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
   },
   "ks4c:infrared-black-bodies:match-1": {
    "kp": "ks4.infrared-black-bodies.2",
@@ -7779,9 +7779,9 @@
   },
   "ks4q:lenses:1982baa165": {
    "kp": "ks4.lenses.6",
-   "new": "ks4q:lenses:1982baa165",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
   },
   "ks4q:lenses:3fb31de065": {
    "kp": "ks4.lenses.5",
@@ -8019,9 +8019,9 @@
   },
   "ks4q:sound-waves-hearing:1a4ed34640": {
    "kp": "ks4.sound-waves-hearing.7",
-   "new": "ks4q:sound-waves-hearing:1a4ed34640",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
   },
   "ks4q:sound-waves-hearing:20e416220e": {
    "kp": "ks4.sound-waves-hearing.3",
@@ -8055,9 +8055,9 @@
   },
   "ks4q:sound-waves-hearing:fba321a39f": {
    "kp": "ks4.sound-waves-hearing.5",
-   "new": "ks4q:sound-waves-hearing:fba321a39f",
-   "note": "the id is unchanged",
-   "status": "kept"
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
   },
   "ks4q:transverse-longitudinal-waves:42bafe97a3": {
    "kp": "ks4.transverse-longitudinal-waves.4",

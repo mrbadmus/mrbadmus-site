@@ -24690,7 +24690,7 @@
   "key_stage": "KS4",
   "keys": {
    "ks4:lenses:tf#choice-1": "A concave (diverging) lens",
-   "ks4:lenses:tf#r1": "Less than 10 cm from the lens — the object must be inside the focal length to produce a virtual, magnified image",
+   "ks4:lenses:tf#r1": "Less than 10 cm from the lens",
    "ks4:lenses:tf#sort-1-1": "Convex only",
    "ks4:lenses:tf#sort-1-2": "Concave only",
    "ks4:lenses:tf#sort-1-3": "Convex only",
@@ -24700,7 +24700,7 @@
    "ks4:lenses:tf#sort-1-7": "Convex only",
    "ks4:lenses:tf#start": "Upside down",
    "ks4:lenses:th#choice-1": "A concave (diverging) lens",
-   "ks4:lenses:th#r1": "Less than 10 cm from the lens — the object must be inside the focal length to produce a virtual, magnified image",
+   "ks4:lenses:th#r1": "Less than 10 cm from the lens",
    "ks4:lenses:th#sort-1-1": "Convex only",
    "ks4:lenses:th#sort-1-2": "Concave only",
    "ks4:lenses:th#sort-1-3": "Convex only",
@@ -45997,13 +45997,13 @@
  "types-of-em-waves": {
   "key_stage": "KS4",
   "keys": {
-   "ks4:types-of-em-waves:cf#r1": "Speed — all travel at 3 × 10⁸ m/s regardless of wavelength or frequency",
+   "ks4:types-of-em-waves:cf#r1": "Speed",
    "ks4:types-of-em-waves:cf#start": "Only a small part",
-   "ks4:types-of-em-waves:ch#r1": "Speed — all travel at 3 × 10⁸ m/s regardless of wavelength or frequency",
+   "ks4:types-of-em-waves:ch#r1": "Speed",
    "ks4:types-of-em-waves:ch#start": "Only a small part",
-   "ks4:types-of-em-waves:tf#r1": "Speed — all travel at 3 × 10⁸ m/s regardless of wavelength or frequency",
+   "ks4:types-of-em-waves:tf#r1": "Speed",
    "ks4:types-of-em-waves:tf#start": "Only a small part",
-   "ks4:types-of-em-waves:th#r1": "Speed — all travel at 3 × 10⁸ m/s regardless of wavelength or frequency",
+   "ks4:types-of-em-waves:th#r1": "Speed",
    "ks4:types-of-em-waves:th#start": "Only a small part",
    "ks4c:types-of-em-waves:match-1": "Radio waves",
    "ks4c:types-of-em-waves:match-2": "Microwaves",
@@ -48692,7 +48692,7 @@
  "waves-detection-exploration": {
   "key_stage": "KS4",
   "keys": {
-   "ks4:waves-detection-exploration:th#r1": "Earth has a liquid outer core — S-waves cannot travel through liquids, so they are blocked",
+   "ks4:waves-detection-exploration:th#r1": "The Earth has a liquid outer core",
    "ks4:waves-detection-exploration:th#sort-1-1": "P-waves only",
    "ks4:waves-detection-exploration:th#sort-1-2": "S-waves only",
    "ks4:waves-detection-exploration:th#sort-1-3": "P-waves only",
