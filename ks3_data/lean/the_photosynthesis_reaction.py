@@ -98,8 +98,6 @@ LESSON = {
     "figure_caption": {"b7-word-summary": None},      # the card text already says it
     "ladder_stem": {
         "recall": "Which line shows the reactants and products of photosynthesis?",
-        "apply": "A sunflower seed of 0.1 g grows into a large plant. The plant is dried out. "
-                 "Its dry mass is 300 g. Where did almost all of this dry mass come from?",
         "explain": "A leaf is green in the middle and white at the edges. The plant is kept in the dark "
                    "for two days. This destarches it. Then it is left in bright light for a day. "
                    "The leaf is tested with iodine. The middle turns blue-black. The edges stay "

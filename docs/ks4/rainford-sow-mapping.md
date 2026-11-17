@@ -257,7 +257,7 @@ them. Every one is named in the seed SQL's `⚠️ UNMAPPED` block.
 | 11 | Bio | 101 | Plant Hormones | **AQA 4.5.4** — auxin, phototropism, gravitropism. *No platform subtopic mentions any of the three.* |
 | 11 | Bio | 102 | Growth of seedling RP | **AQA 4.5.4 RP** — light/gravity on seedling growth. Same gap. |
 | 11 | Bio | 103 | Growth of seedling RP2 | second period of the same RP. |
-| 11 | Chem | 80 | (CHEM) Gas Calculations | **AQA 4.3.4.3** — molar gas volume, 24 dm³. The quantitative topic's ten pages stop at concentration. |
+| 11 | Chem | 80 | (CHEM) Gas Calculations | Gap now filled by `gas-volumes` (AQA 8462 4.3.5, molar gas volume, 24 dm³; TH only). |
 
 ➤ **Six of the eight are one gap: AQA 4.5.3.4 + 4.5.4 — osmoregulation and
 plant hormones.** Between them that is roughly a fortnight of Year 11 Biology

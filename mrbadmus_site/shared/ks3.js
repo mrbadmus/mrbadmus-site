@@ -1275,13 +1275,21 @@
           var row = latest[slug + "#" + r.key];
           if (!row) { return; }
           if (r.mode === "marked" && row.answer_kind === "choice" && !r.resolved && r.restore) {
-            var hit = null;
+            var hit = null, alias = null;
+            var said = String(row.answer == null ? "" : row.answer).replace(/\s+/g, " ").trim();
             r.options.forEach(function (b) {
               var lab = b.querySelector(".ks3-opt-label");
               var t = ((lab ? lab.textContent : b.textContent) || "").replace(/\s+/g, " ").trim();
               if (b.hasAttribute("data-full")) { t = (b.getAttribute("data-full") || "").replace(/\s+/g, " ").trim(); }
-              if (!hit && t === String(row.answer == null ? "" : row.answer).replace(/\s+/g, " ").trim()) { hit = b; }
+              if (!hit && t === said) { hit = b; }
+              /* ⊕ 15 Nov 2026 restore alias: a reworded option keeps what it used to send on
+                 `data-was` (build_ks3.py _was_attr), so a pick saved before the rewording still
+                 comes back. The current text wins; nothing here is sent. */
+              var was = [];
+              try { was = JSON.parse(b.getAttribute("data-was") || "[]"); } catch (e) { was = []; }
+              if (!alias && was.some(function (w) { return String(w).replace(/\s+/g, " ").trim() === said; })) { alias = b; }
             });
+            hit = hit || alias;
             if (hit) { r.restore(hit); any = true; }
           } else if (r.mode === "self" && row.answer_kind === "written" && r.restoreSaved) {
             r.restoreSaved(row);

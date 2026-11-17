@@ -586,8 +586,7 @@ LESSON = {
             }},
         "apply": {
             "title": "Rung 2 · The one that catches people",
-            "q": "A gas can be squashed into a fifth of its volume. A liquid "
-                 "hardly squashes at all. Why not?",
+            "q": "Steam can be squashed into a fifth of its volume. Liquid water hardly squashes at all. Why not?",
             # ⚖️ **CORRECTED FROM DESIGN — the distractors were too short
             # (MRB-177 length parity, measured under MRB-228).**
             #
@@ -608,8 +607,7 @@ LESSON = {
                 "in the container",
                 "Liquids are heavier than gases, so they push back harder "
                 "against the squash",
-                "A liquid’s particles are already touching, so there is "
-                "no space to squash out",
+                "Liquid particles are already touching, so there is no space to squash out",
             ],
             "answer": 3,
             "feedback": {

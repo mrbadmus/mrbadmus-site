@@ -434,12 +434,9 @@ LESSON = {
             # wrong RULES, in the same shape as the correct option. The
             # correct option and its index are unchanged.
             "options": [
-                "A model is kept while it is simple enough to teach, and "
-                "swapped for the truth later on",
-                "It still explains everything it was built to explain, and "
-                "the parts that are wrong are outside chemistry",
-                "A model stays in use until someone replaces it, so a wrong "
-                "model survives while no better one exists",
+                "A model is kept while it is simple to teach, then swapped for the truth",
+                "It still gives the right answers for chemical reactions, which it was built to explain",
+                "A wrong model stays in use until a better one exists, and none does yet",
                 "A model is only disproved by a perfect experiment, so "
                 "faulty results leave it standing",
             ],

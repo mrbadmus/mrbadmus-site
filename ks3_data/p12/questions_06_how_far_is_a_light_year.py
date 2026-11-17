@@ -121,8 +121,7 @@ QUESTIONS = [
              "why": "That is the whole ROUND TRIP. The satellite is half that "
                     "far away, because the light went out and came back."},
             {"text": "1.2 × 10^8 m", "correct": False,
-             "why": "That divides the speed by the time. Cover d on the "
-                    "triangle and c sits beside t, so they multiply."},
+             "why": "That divides the speed by the time. Cover s on the triangle and c sits beside t, so they multiply."},
             {"text": "2.6 × 10^8 m", "correct": False,
              "why": "The time has been given the wrong unit rather than put "
                     "through the formula."},
@@ -140,8 +139,7 @@ QUESTIONS = [
                     "become seconds before it multiplies."},
             {"text": "5.4 × 10^10 m", "correct": True},
             {"text": "1.0 × 10^8 m", "correct": False,
-             "why": "That divides where the triangle says multiply. Cover d "
-                    "and c sits beside t."},
+             "why": "That divides where the triangle says multiply. Cover s and c sits beside t."},
             {"text": "1.8 × 10^2 m", "correct": False,
              "why": "That is just the time in seconds, with metres written "
                     "after it. The speed has not been used."},
@@ -647,22 +645,20 @@ QUESTIONS = [
         {
             "id": "p12-06-e16",
             "band": "easier",
-            "text": "Light travels at speed c. The distance d it covers in a "
-                    "time t is d = c × t. Which equation finds the time?",
+            "text": "Light travels at speed c. The distance s it covers in a time t is s = c × t. Which equation finds the time?",
             "options": [
-                {"text": "t = d − c",
+                {"text": "t = s − c",
                  "correct": False,
                  "why": "A distance and a speed cannot be subtracted. To "
                         "undo × c, divide by c."},
-                {"text": "t = d × c",
+                {"text": "t = s × c",
                  "correct": False,
                  "why": "Multiplying by c makes the number bigger. To undo × "
                         "c, divide by c."},
-                {"text": "t = c ÷ d",
+                {"text": "t = c ÷ s",
                  "correct": False,
-                 "why": "That has the division the wrong way round. It is d "
-                        "that is divided by c."},
-                {"text": "t = d ÷ c",
+                 "why": "That has the division the wrong way round. It is s that is divided by c."},
+                {"text": "t = s ÷ c",
                  "correct": True},
             ],
             "figure": None,
@@ -672,10 +668,10 @@ QUESTIONS = [
             "band": 'easier',
             "text": 'You know how far something travelled and how long it took. Which rearrangement of the triangle works out its speed?',
             "options": [
-                {"text": 'c = d ÷ t', "correct": True},
-                {"text": 'c = d + t', "correct": False, "why": 'A formula triangle never adds two quantities together; it only multiplies or divides.'},
-                {"text": 'c = t ÷ d', "correct": False, "why": 'That divides the wrong quantity by the other; d sits on top, so it is d that gets divided by t.'},
-                {"text": 'c = d × t', "correct": False, "why": 'Multiplying d and t together gives neither a speed nor anything meaningful here.'},
+                {"text": "c = s ÷ t", "correct": True},
+                {"text": "c = s + t", "correct": False, "why": 'A formula triangle never adds two quantities together; it only multiplies or divides.'},
+                {"text": "c = t ÷ s", "correct": False, "why": "That divides the wrong quantity by the other; s sits on top, so it is s that gets divided by t."},
+                {"text": "c = s × t", "correct": False, "why": "Multiplying s and t together gives neither a speed nor anything meaningful here."},
             ],
             "figure": None,
         },
@@ -1030,7 +1026,7 @@ QUESTIONS = [
         {
             "id": 'p12-06-s25',
             "band": 'standard',
-            "text": "A pupil calculates a spacecraft's distance using d = c × t but forgets to convert minutes into seconds first. What happens to their final answer?",
+            "text": "A pupil calculates a spacecraft's distance using s = c × t but forgets to convert minutes into seconds first. What happens to their final answer?",
             "options": [
                 {"text": 'It comes out sixty times smaller than the correct distance', "correct": True},
                 {"text": 'It comes out sixty times larger than the correct distance', "correct": False, "why": 'Leaving minutes unconverted UNDERCOUNTS the time in seconds, which makes the answer too small, not too large.'},
@@ -1246,10 +1242,10 @@ QUESTIONS = [
         {
             "id": 'p12-06-h21',
             "band": 'harder',
-            "text": 'Explain why a pupil who has mastered d = c × t for the Moon and the Sun should expect the SAME formula, not a different one, to work for Andromeda.',
+            "text": "Explain why a pupil who has mastered s = c × t for the Moon and the Sun should expect the SAME formula, not a different one, to work for Andromeda.",
             "options": [
                 {"text": 'The distance-speed-time relationship does not depend on the object', "correct": True},
-                {"text": 'A different formula is needed once distances grow large enough', "correct": False, "why": 'The same d = c × t relationship works from the Moon right out to Andromeda.'},
+                {"text": 'A different formula is needed once distances grow large enough', "correct": False, "why": "The same s = c × t relationship works from the Moon right out to Andromeda."},
                 {"text": 'The formula is restricted to objects inside the solar system', "correct": False, "why": "The same formula produces Andromeda's distance too, well outside the solar system."},
                 {"text": 'Andromeda requires an extra step because its light is millions of years old', "correct": False, "why": "The age of the light does not change the formula used; it is simply a consequence of the same formula's result."},
             ],
@@ -1260,7 +1256,7 @@ QUESTIONS = [
             "band": 'harder',
             "text": "A pupil says that because the Moon's light-travel time (1.28 s) rounds almost to a whole number, it must be a 'neater', more fundamental fact than Neptune's less tidy 15 000-second figure. Assess that reasoning.",
             "options": [
-                {"text": 'Sound — a distance that rounds more neatly is always the physically simpler one', "correct": False, "why": 'Neither figure is simpler physically; both come from the same d = c × t relationship, just with different numbers.'},
+                {"text": 'Sound — a distance that rounds more neatly is always the physically simpler one', "correct": False, "why": "Neither figure is simpler physically; both come from the same s = c × t relationship, just with different numbers."},
                 {"text": 'Flawed — how tidily a number happens to round is an accident of arithmetic', "correct": True},
                 {"text": "Sound — Neptune's distance must be measured less accurately, which is why it looks untidy", "correct": False, "why": "Neptune's figure is measured with good accuracy; it simply happens not to round to a tidy number."},
                 {"text": "The reasoning cannot be judged without knowing each object's exact size", "correct": False, "why": "Each object's size plays no part in how tidily its light-travel time happens to round."},
@@ -1342,11 +1338,11 @@ QUESTIONS = [
         {
             "id": 'p12-06-h29',
             "band": 'harder',
-            "text": 'A pupil argues that since d = c × t rearranges to give three different formulae, there must really be three separate physical laws hidden inside a formula triangle. Explain the flaw.',
+            "text": "A pupil argues that since s = c × t rearranges to give three different formulae, there must really be three separate physical laws hidden inside a formula triangle. Explain the flaw.",
             "options": [
                 {"text": 'All three simply express one single relationship, not three separate laws', "correct": True},
                 {"text": 'The pupil is correct — each rearrangement is its own law', "correct": False, "why": 'All three forms come from rearranging the very same single relationship, not from three separate laws.'},
-                {"text": 'Only d = c × t is a real law; the other two are wrong', "correct": False, "why": 'All three rearrangements are equally valid; they are the same relationship written three different ways.'},
+                {"text": "Only s = c × t is a real law; the other two are wrong", "correct": False, "why": 'All three rearrangements are equally valid; they are the same relationship written three different ways.'},
                 {"text": 'The three rearrangements apply to three different kinds of object', "correct": False, "why": 'The same three rearrangements apply to any object at all, from the Moon to Andromeda.'},
             ],
             "figure": None,
@@ -1358,7 +1354,7 @@ QUESTIONS = [
             "options": [
                 {"text": 'Each of the three objects needs its own separate version of the speed of light', "correct": False, "why": 'One single fixed speed of light is used for the Moon, Voyager and Andromeda alike.'},
                 {"text": 'The same relationship scales up unchanged, second or millions of years alike', "correct": True},
-                {"text": 'The idea explains the Moon and Voyager; Andromeda needs a completely different explanation', "correct": False, "why": "The very same d = c × t relationship produces Andromeda's distance too, just with a far larger time."},
+                {"text": 'The idea explains the Moon and Voyager; Andromeda needs a completely different explanation', "correct": False, "why": "The very same s = c × t relationship produces Andromeda's distance too, just with a far larger time."},
                 {"text": 'The range of distances shows the speed of light must vary with scale', "correct": False, "why": 'One fixed speed, applied to very different times, is exactly what produces this huge range of distances.'},
             ],
             "figure": None,

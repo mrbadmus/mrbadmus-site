@@ -908,10 +908,10 @@ QUESTIONS = [
     {
         "id": "p7-01-e27",
         "band": "easier",
-        "text": "In d = c × t, what does t stand for?",
+        "text": "In s = c × t, what does t stand for?",
         "options": [
             {"text": "The total distance travelled by light", "correct": False,
-             "why": "That is what d stands for, not t."},
+             "why": "That is what s stands for, not t."},
             {"text": "The temperature of the material", "correct": False,
              "why": "Temperature plays no part in this formula at all."},
             {"text": "The time the light takes to travel", "correct": True},

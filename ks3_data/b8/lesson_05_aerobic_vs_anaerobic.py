@@ -866,8 +866,7 @@ LESSON = {
                  "but not of aerobic respiration?",
             "options": [
                 # 16w — Design's, unchanged.
-                "It releases energy from glucose, so a cell that needs energy "
-                "has to use this route",
+                "It releases energy from glucose, so a cell that needs energy must use this route",
                 # 16w — `RESP-09` wearing a rule: energy release is what marks
                 # this route out. Was "It releases energy" (3w).
                 "It happens in the mitochondria, so a cell with few "
@@ -876,8 +875,7 @@ LESSON = {
                 # happens in the mitochondria" (5w). The consequence is the
                 # exact claim the comparison's *Where in the cell* row denies,
                 # which is where a student can go and check it.
-                "The glucose is only partly broken down, so a product is left "
-                "that still holds energy",
+                "The glucose is only partly broken down, leaving a product that still holds energy",
                 # 13w — human anaerobic respiration makes carbon dioxide. Was
                 # "It produces carbon dioxide" (4w). The new clause supplies the
                 # reason a student actually has for believing it — you do breathe
@@ -901,22 +899,19 @@ LESSON = {
             "q": "Which describes the difference correctly?",
             "options": [
                 # 14w — Design's, unchanged.
-                "Aerobic supplies energy at a faster rate; anaerobic is slower "
-                "but gets more from each glucose",
+                "Aerobic supplies energy at a faster rate; anaerobic gets more from each glucose",
                 # 16w — `RESP-09`, and the cleanest instance of the MRB-177
                 # construct in the key stage: the correct answer's own two
                 # clauses with the labels swapped. Was "Aerobic is faster;
                 # anaerobic is slower but more efficient" (9w), and Design's
                 # correction already reads "Both halves are the wrong way
                 # round", which is now literally true of the option.
-                "Anaerobic releases more energy from each glucose, so a "
-                "sprinter uses it to get more out",
+                "Anaerobic releases more energy from each glucose, so a sprinter uses it to get more",
                 # 16w — `RESP-09` again, from the yield side. Was "Anaerobic
                 # releases more energy overall, which is why sprinters use it"
                 # (11w). The sprinter stays in the option because the
                 # correction answers the sprinter.
-                "They release the same energy per glucose, and anaerobic "
-                "differs only by leaving a harmful waste product",
+                "They release the same energy per glucose, but anaerobic leaves a harmful waste product",
                 # 17w — was "They release the same energy, but anaerobic makes a
                 # harmful waste product" (12w). The rewritten clause makes the
                 # claim a RULE about what the difference IS, which is what the

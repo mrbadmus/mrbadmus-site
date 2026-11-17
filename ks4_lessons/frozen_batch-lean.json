@@ -7,6 +7,14 @@
   "hash": "0c4ff0eb5db3107aa628dc7ba2a196d522333c607f0bef0d03c465a22480844d",
   "review_state": "examiner-reviewed"
  },
+ "amounts-in-equations": {
+  "hash": "807ce5c32356c7f1af4f1310bbca697be0a685b7c62eb2228665d97ae8078847",
+  "review_state": "examiner-reviewed"
+ },
+ "atom-economy": {
+  "hash": "3ea16b6fd25da676a1e12051b389e59f4a73eabc67f19116bd9fd83f0c64afe9",
+  "review_state": "examiner-reviewed"
+ },
  "biodiversity": {
   "hash": "d534b615be40a09b61b4f9541a137fa5997701aa828fb8607735ca950cf348a6",
   "review_state": "examiner-reviewed"
@@ -17,6 +25,18 @@
  },
  "changes-in-energy": {
   "hash": "f8fd88be0c54419f6fb57f24b4d0ddf7cd66058dbffccf0ccd18cc2a42648beb",
+  "review_state": "examiner-reviewed"
+ },
+ "chemical-measurements": {
+  "hash": "fb85c9ee26f5b82a8b24165b11fdd61c61303cb9330355286e3e1e8932aaecb5",
+  "review_state": "examiner-reviewed"
+ },
+ "concentration-of-solutions": {
+  "hash": "2686439933e2909109cffa5e4664d970f6b4378d1c5961c5a59bec7376efacba",
+  "review_state": "examiner-reviewed"
+ },
+ "conservation-of-mass": {
+  "hash": "c3676a366782059c2ac1fe6f4676c1b7a8aa73c333c29762ab41544289f0ee51",
   "review_state": "examiner-reviewed"
  },
  "decomposition": {
@@ -79,6 +99,10 @@
   "hash": "c9dafe2bcd6a7977d87a8eddc60b8f9c99b75506ea57eee9a2ce216320061e9f",
   "review_state": "examiner-reviewed"
  },
+ "gas-volumes": {
+  "hash": "c02da3ac71c2f00c3415673615a444e99963e7206568e484698dc0b5139f5d88",
+  "review_state": "examiner-reviewed"
+ },
  "global-warming": {
   "hash": "88a654490ab81153ab26a2faef197ef22606265109f78a67c55b44789f5d8973",
   "review_state": "examiner-reviewed"
@@ -103,8 +127,20 @@
   "hash": "0f5411b0f76a1b9226f7ea269aaa47c6dc3d7c18754271fee5f55b557f762a2b",
   "review_state": "examiner-reviewed"
  },
+ "mass-changes-reactions": {
+  "hash": "507a4fce9ff146d84fbc82140873ab0f4b46ae2697a0733dd5649246ec857414",
+  "review_state": "examiner-reviewed"
+ },
  "microphones": {
   "hash": "e5edf42b841d9fe13ee705a0694c35b09b8a79ba26ed466edb0b3420c6ee4104",
+  "review_state": "examiner-reviewed"
+ },
+ "moles": {
+  "hash": "39b2c84b49204b8333952bcccee13b7c947c5d91d621d1a20e1e1c90b27be482",
+  "review_state": "examiner-reviewed"
+ },
+ "percentage-yield": {
+  "hash": "80fe2b88cb6c6f8be07f53cfcd061deadf831424843d5cc51068bd340a92d3dd",
   "review_state": "examiner-reviewed"
  },
  "poles-of-a-magnet": {
@@ -121,6 +157,10 @@
  },
  "pyramids-of-biomass": {
   "hash": "69f9ac348af453036f40d25b3b2aed4096922cc23cd9f72b4eaa6cd81b603b32",
+  "review_state": "examiner-reviewed"
+ },
+ "relative-formula-mass": {
+  "hash": "5584890bdd72f08f9745a109b6fcd20f6a8e83426a043ea69bb844dbca9c5139",
   "review_state": "examiner-reviewed"
  },
  "role-of-biotechnology": {
@@ -153,6 +193,10 @@
  },
  "uses-generator-effect": {
   "hash": "c303a977199c80a88131d891597e3911287dad59048a3a8c7e774df3e5b48b61",
+  "review_state": "examiner-reviewed"
+ },
+ "using-moles-calculations": {
+  "hash": "0bbd72bf16d230fb6ca986f0c55ed93aeb72819a368276075c65e312f7a4a082",
   "review_state": "examiner-reviewed"
  },
  "waste-management": {

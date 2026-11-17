@@ -90,9 +90,6 @@ LESSON = {
     "tutor_body": "Want to check which leaf features suit a habitat?",
     "figure_caption": {"b7-leaf-section": "Most leaves are less than half a millimetre thick."},
     "ladder_stem": {
-        "apply": "Pondweed is put under a green filter, then a red filter. Both let through the same "
-                 "amount of light energy. It gives off far fewer bubbles under green. Which is the best "
-                 "explanation?",
         "explain": "A leaf is usually less than half a millimetre thick. Explain why being thin helps. "
                    "Then explain why a leaf twice as thick would not photosynthesise twice as fast.",
         "produce": "Design a leaf for a plant on a dark rainforest floor, where water is plentiful. Then "

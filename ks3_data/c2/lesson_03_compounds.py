@@ -343,7 +343,7 @@ LESSON = {
             "options": [
                 "A compound with twice as much sulfur in it",
                 "Twice as much iron sulfide",
-                "A mixture, because the amounts were wrong",
+                "No reaction, because the amounts were not in the right ratio",
                 "Iron sulfide, with 4 g of sulfur left over unreacted",
             ],
             "answer": 3,

@@ -21,6 +21,24 @@ html, body { margin: 0; padding: 0; background: #FBF3E6; }
   @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
   button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
 
+/* from relative-formula-mass.dc.html */
+/* relative-formula-mass · unpacker and pan motion. Every element's resting (un-animated) state is the END state. */
+  .rfm-pop { transform-box: fill-box; transform-origin: center; animation: rfm-pop .35s ease-out backwards; }
+  @keyframes rfm-pop { from { transform: scale(0); opacity: 0; } }
+  .rfm-grow { transform-box: fill-box; transform-origin: left center; animation: rfm-grow .3s ease-out backwards; }
+  @keyframes rfm-grow { from { transform: scaleX(0); } }
+  .rfm-fade { animation: rfm-fade .4s ease-out backwards; }
+  @keyframes rfm-fade { from { opacity: 0; } }
+  .rfm-drop { animation: rfm-drop .45s cubic-bezier(.5, 0, .8, .4) backwards; }
+  @keyframes rfm-drop { from { transform: translate(0px, -140px); opacity: 0; } }
+  .rfm-beam { transform-box: view-box; transform-origin: 450px 110px; animation: rfm-tilt 2.4s ease-in-out; }
+  @keyframes rfm-tilt { 40%, 55% { transform: rotate(-7deg); } }
+  .rfm-lpan { animation: rfm-lpan 2.4s ease-in-out; }
+  @keyframes rfm-lpan { 40%, 55% { transform: translate(0px, 36px); } }
+  .rfm-rpan { animation: rfm-rpan 2.4s ease-in-out; }
+  @keyframes rfm-rpan { 40%, 55% { transform: translate(0px, -36px); } }
+  @media (prefers-reduced-motion: reduce) { .rfm-pop, .rfm-grow, .rfm-fade, .rfm-drop, .rfm-beam, .rfm-lpan, .rfm-rpan { animation: none !important; } }
+
 /* from Ks4Triangle.dc.html */
 @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
   [data-arrive] { animation: ks4-arrive .3s ease-out both; }

@@ -12,10 +12,10 @@ Sources: Rainford Year 7 Bio 1, lesson 1b "Animal cells" (first outcome only); N
 **Gaps and mismatches.** The scheme of work has no lesson on life processes or MRS GREN; the site's lesson 1 has no SOW row. It meets SOW 1b's first outcome ("all living things are made from cells"), which the SOW puts inside the animal cells lesson. NC B1's second half (observing cells with a light microscope) is on Using a microscope.
 
 **Quiz notes.**
-- **HELD: Rung 2 (apply) cannot ship as stored.** Three of its four options carry a spaced dash, and shortening them would leave two options both reading "It is not alive". The lean page drive refuses any spaced dash. It needs Mide's production reload of `ks3_ladder_questions` (see NOTES.md, For Mide). The record is ready for when that happens.
+- **Landed 15 Nov 2026 (was held).** Rung 2 (apply) could not ship as stored: three of its four options carried a spaced dash, and shortening them would have left two options both reading "It is not alive". Mide approved the reworded options in the KS3 quiz batch (lean/ks3-quiz-batch); the key stays option D, and the ladder pool reload goes with that batch. Option B's feedback now answers its new wording ("Plants cannot think, and they are alive").
 - Rung 2 and Rung 4 stems reworded to sentences of 15 words or fewer (render only). Three ticks rewritten (dashes, over 15 words). Feedback written for every wrong option of Rungs 1 and 2.
 - Rung 4 needs "what cells look like down a microscope". Card: Every living thing is made of cells now says it.
-- `before_this` reads "Nothing — this is where the unit starts." on the stored lesson. The record carries a dash-free version, but `ks3_data/lean/__init__.py` `apply()` needs `before_this` added beside `ks4_becomes` and `safety_note` for it to take effect.
+- `before_this` reads "Nothing — this is where the unit starts." on the stored lesson. The record carries a dash-free version, which `ks3_data/lean/__init__.py` `apply()` overlays (added with C1).
 
 **Review fixes (examiner pass and blind key pass, 14 Nov).** A flame now "seems to do" life processes (start reply, card, Easy mistakes, Rung 2 feedback); burning only imitates respiration. Rung 3 tick 1 reworded to match (render only). Yeast in the Alive table "respires, grows and reproduces" (it does not swim). Viruses: "Many biologists… Others disagree." Two new ticks shortened. Blind pass: Rung 2 option B reaches the right verdict for a wrong reason; the stored rewording in NOTES.md fixes that too.
 

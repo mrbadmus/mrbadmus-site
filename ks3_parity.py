@@ -7280,11 +7280,10 @@ _DONE_SIGNALS = (
 # `ks3_rail_manifest.py` already derives these two as mirrors from Design's own
 # `isDone()` — its docstring names them — so the completion they need may
 # already exist on the instrument beside them.
-_TICK_EXEMPT = {
-    ("chemistry/particles-and-their-behaviour/diffusion.html", "s-scale"),
-    ("chemistry/particles-and-their-behaviour/solids-liquids-and-gases.html",
-     "s-matrix"),
-}
+# ⊕ 14 Nov 2026: both entries removed, as the list's own rule says (a stale entry fails). The lean
+# rebuild (Wave 1, C1) took `#s-scale` off diffusion and `#s-matrix` off solids-liquids-and-gases.
+# (_lesson_pages does not read the hidden fixtures under _fixtures/, so their copies need no entry.)
+_TICK_EXEMPT = set()
 
 
 def check_nothing_ticks_on_load(ks3_root):
@@ -7520,8 +7519,9 @@ RETIRED_BY_LEAN = [(n, "biology/breathing-and-gas-exchange/how-breathing-works.h
     "the net bar is blue at the compensation point",
     "the verdict panel is ink on cream at the compensation point",
     "the photosynthesis bar is the ok green")]
-# ⊕ lean wave 1 (B7 photosynthesis, B8 respiration): eight of the nine lessons became lean pages
-# (why-almost-all-life-depends-on-it is held back, so its trace-it-back rows still run), so EVERY
+# ⊕ lean wave 1 (B7 photosynthesis, B8 respiration): all nine lessons are lean pages. The ninth,
+# why-almost-all-life-depends-on-it, joined with the 16 Nov quiz batch; its trace-it-back rows read
+# the hidden fixture now (B7_TRACE), not the lean page. So EVERY
 # component and contrast row registered on one of these pages measures an element the lean standard
 # removed (the nine benches and the .ks3-eqn equation block; the page now carries drawn figures).
 # Derived from the registry rather than listed, so a row added later for these pages is retired

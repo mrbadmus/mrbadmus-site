@@ -8,9 +8,9 @@ LESSON = {
         "question": "If you had to guess, what lets a stomach do what the dish cannot?",
         "options": [
             ("Many more cells",
-             "The layers. Each layer is a tissue of similar cells, such as muscle to churn food."),
-            ("Cells arranged in layers",
-             "The layers. Each layer is a tissue of similar cells, such as muscle to churn food."),
+             "Tissues. Each tissue is a group of similar cells, such as muscle to churn food."),
+            ("Cells in tissues",
+             "Tissues. Each tissue is a group of similar cells, such as muscle to churn food."),
         ],
         "answer": 1,
     },
@@ -93,8 +93,7 @@ LESSON = {
     ],
     "try": None,
     "ladder_stem": {
-        "apply": "A dish of living stomach cells makes acid and enzymes. Even a huge dish cannot digest a "
-                 "sandwich like a stomach can. Why not?",
+        "apply": "A dish of living stomach cells makes acid and enzymes. It still cannot do the job of a stomach. Why not?",
         "explain": "A leaf is called an organ. The palisade layer inside it is called a tissue. Explain why. "
                    "Use the word “tissues” in your answer.",
         "produce": "A laboratory grows a sheet of living heart muscle cells. It beats steadily on its own. A "
@@ -137,7 +136,7 @@ LESSON = {
         },
         "apply": {
             1: "A thousand times more cells would still not digest it. Number is not the problem.",
-            2: "They are the right cells. The same cells help digest food in you.",
+            2: "Lining cells cannot churn food. That needs muscle tissue working with the lining.",
             3: "Enzymes do work in a dish. But nothing churns the food to mix them in.",
         },
     },

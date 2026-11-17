@@ -151,6 +151,9 @@ RETIRED_BY_LEAN = {
                    "the leaf-tuner bench is not on the lean page"),
     "method-breaker": ("biology/photosynthesis/testing-a-leaf-for-starch.html",
                        "the method-breaker bench is not on the lean page"),
+    # (why-almost-all-life-depends-on-it joined on 15 Nov 2026, after the quiz batch.)
+    "trace-it-back": ("biology/photosynthesis/why-almost-all-life-depends-on-it.html",
+                      "replaced by the drawn figure b7-food-chain-grass"),
     "mass-ledger": ("biology/respiration/aerobic-respiration.html",
                     "replaced by the drawn figure b8-word-aerobic"),
     "cell-demand": ("biology/respiration/why-every-cell-respires.html",
@@ -223,9 +226,13 @@ RETIRED_BY_LEAN = {
                     "the light-gates bench is not on the lean page (figure p3-speed-triangle)"),
     "compare-pairs": ("physics/describing-motion/speed.html",
                       "the compare-pairs bench is not on the lean page"),
-    # ⊕ lean wave 1 (B1 cells and organisation): five of the six lessons are lean pages, and no
-    # other built page emits any of these families. life-processes is held back (classic), so its
-    # test-board and sort-rows still run and are not listed here.
+    # ⊕ lean wave 1 (B1 cells and organisation): all six lessons are lean pages, and no other
+    # built page emits any of these families. (life-processes joined on 15 Nov 2026; its hidden
+    # fixture under ks3/_fixtures/ is not a lesson page and is not scanned here.)
+    "test-board": ("biology/cells-and-organisation/life-processes.html",
+                   "the seven-tests board is not on the lean page"),
+    "sort-rows": ("biology/cells-and-organisation/life-processes.html",
+                  "the living, once-living, never-living sort is not on the lean page (a reveal table)"),
     "critique-steps": ("biology/cells-and-organisation/using-a-microscope.html",
                        "the method-critique steps are not on the lean page"),
     "fifa-construct": ("biology/cells-and-organisation/using-a-microscope.html",
@@ -248,6 +255,33 @@ RETIRED_BY_LEAN = {
                       "the removal cases are not on the lean page"),
     "settles-it": ("biology/cells-and-organisation/unicellular-organisms.html",
                    "the settles-it cases are not on the lean page (figure b1-unicellular)"),
+    # ⊕ lean wave 1 (C1 particles and their behaviour): twelve of C1's thirteen families had only
+    # C1 pages, and no other built page emits them. keyed-commit is not here: every lean page's
+    # Start here still emits it.
+    "halving-bench": ("chemistry/particles-and-their-behaviour/particle-model.html",
+                      "the halving bench is not on the lean page (figure c1-mixing)"),
+    "gap-test-rig": ("chemistry/particles-and-their-behaviour/particle-model.html",
+                     "the gap-test rig is not on the lean page (figure c1-mixing)"),
+    "state-bench": ("chemistry/particles-and-their-behaviour/solids-liquids-and-gases.html",
+                    "replaced by the drawn figure c1-three-states"),
+    "state-matrix": ("chemistry/particles-and-their-behaviour/solids-liquids-and-gases.html",
+                     "the state matrix is not on the lean page (a reveal table carries it)"),
+    "heating-bench": ("chemistry/particles-and-their-behaviour/changes-of-state.html",
+                      "replaced by the drawn figure c1-heating-curve"),
+    "sort-cards": ("chemistry/particles-and-their-behaviour/changes-of-state.html",
+                   "the melt-or-dissolve sort cards are not on the lean page"),
+    "collision-counter": ("chemistry/particles-and-their-behaviour/gas-pressure.html",
+                          "replaced by the drawn figure c1-wall-hits"),
+    "prediction-stack": ("chemistry/particles-and-their-behaviour/gas-pressure.html",
+                         "the three-predictions stack is not on the lean page"),
+    "random-walk-bench": ("chemistry/particles-and-their-behaviour/diffusion.html",
+                          "replaced by the drawn figures c1-spreading and c1-brownian"),
+    "scale-cards": ("chemistry/particles-and-their-behaviour/diffusion.html",
+                    "the scale cards are not on the lean page"),
+    "evidence-bench": ("chemistry/particles-and-their-behaviour/testing-the-model.html",
+                       "the seven-observations evidence bench is not on the lean page"),
+    "model-timeline": ("chemistry/particles-and-their-behaviour/testing-the-model.html",
+                       "the model timeline is not on the lean page"),
     # ⊕ lean wave 1 (rest of Forces): each family had exactly one lesson, and no other built page
     # emits it. mass-vs-weight's p12-attempt is not here: the other P12 lessons (classic) still place it.
     "graph-plot": ("physics/describing-motion/distance-time-graphs.html",

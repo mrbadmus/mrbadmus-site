@@ -3524,11 +3524,16 @@ try {
           var a = el.getAttribute('data-activity');
           if (a && !acts[a] && !el.closest('.ks3-ladder')) { acts[a] = el; }
         });
+        // ⊕ 15 Nov 2026 restore alias: a reworded option keeps what it used to send on `data-was`
+        // (build_ks3.py _was_attr). The current text is tried first; nothing here is sent.
+        var wasOf = function (b) { try { return JSON.parse(b.getAttribute('data-was') || '[]'); } catch (e) { return []; } };
         var pressOpt = function (list, label) {
-          for (var i = 0; i < list.length; i += 1) {
-            if (same(optLabel(list[i]), label)) {
-              if (list[i].getAttribute('aria-pressed') !== 'true' && !list[i].disabled) { list[i].click(); }
-              return;
+          for (var pass = 0; pass < 2; pass += 1) {
+            for (var i = 0; i < list.length; i += 1) {
+              if (pass === 0 ? same(optLabel(list[i]), label) : wasOf(list[i]).some(function (w) { return same(w, label); })) {
+                if (list[i].getAttribute('aria-pressed') !== 'true' && !list[i].disabled) { list[i].click(); }
+                return;
+              }
             }
           }
         };

@@ -296,26 +296,23 @@ LESSON = {
         {"type": "formula",
          "id": "speed-rule",
          "eyebrow": "Writing it down · the shape of this relationship",
-         "statement": "Distance = speed × time",
+         "statement": "Distance (s) = speed (v) × time (t)",
          "triangle": {
              "eyebrow": "The triangle",
              "heading": "Cover the one you want",
-             "aria_label": "A formula triangle. Distance d sits above a "
-                           "dividing line; speed v and time t sit below it, "
-                           "multiplied together. Covering one letter leaves "
-                           "the way to work it out.",
+             "aria_label": "A formula triangle. Distance s sits above a dividing line; speed v and time t sit below it, multiplied together. Covering one letter leaves the way to work it out.",
              "order": ["top", "left", "right"],
              "covered": "left",
-             "top":   {"label": "d", "button": "Cover d",
-                       "result": "d = v × t", "text": ""},
+             "top":   {"label": "s", "button": "Cover s",
+                       "result": "s = v × t", "text": ""},
              "left":  {"label": "v", "button": "Cover v",
-                       "result": "v = d ÷ t", "text": ""},
+                       "result": "v = s ÷ t", "text": ""},
              "right": {"label": "t", "button": "Cover t",
-                       "result": "t = d ÷ v", "text": ""},
+                       "result": "t = s ÷ v", "text": ""},
              "close": {
                  "rule": "Two things side by side means multiply. One thing "
                          "over another means divide.",
-                 "units": ["d · distance · m",
+                 "units": ["s · distance · m",
                            "v · speed of sound in that material · m/s",
                            "t · time · s"],
                  "condition": "The speed belongs to the MATERIAL, not to the "
@@ -359,8 +356,7 @@ LESSON = {
                       "in seconds, so there is nothing to convert."},
              {"letter": "F", "label": "Formula",
               "line": "speed = distance ÷ time",
-              "note": "Cover v on the triangle: d sits over t, so you "
-                      "divide."},
+              "note": "Cover v on the triangle: s sits over t, so you divide."},
              {"letter": "I", "label": "Insert",
               "line": "speed = 1000 m ÷ 0.20 s",
               "note": "The distance is the length of the rail, because the "
@@ -393,8 +389,7 @@ LESSON = {
                       "kilometre is a thousand of them."},
              {"letter": "F", "label": "Formula",
               "line": "speed = distance ÷ time",
-              "note": "Cover v on the triangle: d sits over t, so you "
-                      "divide."},
+              "note": "Cover v on the triangle: s sits over t, so you divide."},
              {"letter": "I", "label": "Insert",
               "line": "speed = 2400 m ÷ 0.48 s",
               "note": "The converted distance goes in. The 2.4 never does."},
@@ -438,9 +433,8 @@ LESSON = {
                            "is what m/s needs, so there is nothing to "
                            "convert."},
                   {"letter": "F", "label": "Formula",
-                   "line": "t = d ÷ v",
-                   "note": "Cover t on the triangle: d sits over v, so you "
-                           "divide."},
+                   "line": "t = s ÷ v",
+                   "note": "Cover t on the triangle: s sits over v, so you divide."},
                   {"letter": "I", "label": "Insert",
                    "line": "t = {dist} m ÷ {v} m/s",
                    "note": "The gap comes from your slider; the speed is "
@@ -473,8 +467,7 @@ LESSON = {
                            "so multiply the kilometres by 1000."},
                   {"letter": "F", "label": "Formula",
                    "line": "speed = distance ÷ time",
-                   "note": "Cover v on the triangle: d sits over t, so you "
-                           "divide."},
+                   "note": "Cover v on the triangle: s sits over t, so you divide."},
                   {"letter": "I", "label": "Insert",
                    "line": "speed = 1500 m ÷ 1.0 s",
                    "note": "The converted distance goes in. The 1.5 never "
@@ -558,9 +551,7 @@ LESSON = {
             ],
             "answer": 2,
             "feedback": {
-                0: "That is the calculation upside down. Cover t on the "
-                   "triangle and d sits over v, so the distance is the one "
-                   "being divided.",
+                0: "That is the calculation upside down. Cover t on the triangle and s sits over v, so the distance is the one being divided.",
                 1: "The arithmetic is right and the unit is wrong. Metres "
                    "divided by metres per second leaves seconds, and the "
                    "question asked how long.",

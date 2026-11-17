@@ -529,13 +529,13 @@ LESSON = {
             "options": [
                 "Rust is denser than iron",
                 "Oxygen from the air has joined the iron, and it has mass",
-                "Water has been absorbed into the metal",
+                "Water has soaked into the metal, and it will dry out again",
                 "Mass is not conserved when something is left for a long time",
             ],
             "answer": 1,
             "feedback": {
                 0: "Density is mass in a given space. The balance measures mass, and mass does not increase by rearranging what is already there.",
-                2: "Water speeds rusting up, but the extra mass is oxygen that has chemically joined the iron.",
+                2: "Water does not just soak in. Oxygen and water react with the iron, and most of the extra mass is oxygen.",
                 3: "Time changes nothing. The nail was simply never a closed system — the air was part of the reaction all along.",
             }},
         "explain": {

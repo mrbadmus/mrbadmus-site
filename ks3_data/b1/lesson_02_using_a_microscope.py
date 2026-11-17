@@ -581,9 +581,9 @@ LESSON = {
         "recall": {
             "q": "You have just clipped a new slide onto the stage. Which "
                  "objective do you turn in first?",
-            "options": ["The ×4 — the lowest power",
-                        "The ×40 — the highest power",
-                        "The ×10 — somewhere in the middle",
+            "options": ["The ×4",
+                        "The ×40",
+                        "The ×10",
                         "Whichever one is already in place"],
             "answer": 0,
             "feedback": {

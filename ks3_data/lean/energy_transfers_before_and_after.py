@@ -150,7 +150,7 @@ LESSON = {
             3: "Efficiency tells you how the energy is shared out. The total never changes.",
         },
         "apply": {
-            0: "It is not lost. A thermometer would find it in the room.",
+            0: "Energy cannot disappear. The 57 J heats the bulb and the room.",
             1: "Energy is never used up. Say which store it went to.",
             2: "An electric current is a pathway, not a store.",
         },

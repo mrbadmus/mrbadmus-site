@@ -833,21 +833,16 @@ LESSON = {
             }},
         "apply": {
             "title": "Rung 2 · The one that catches people",
-            "q": "Pondweed under a green filter bubbles far more slowly than "
-                 "under a red one, although the room looks bright. Why?",
+            "q": "Pondweed is put under a green filter, then a red filter. Both let through the same amount of light energy. It gives off far fewer bubbles under green. Which is the best explanation?",
             "options": [
                 # ⊕ MRB-177, 17 Aug 2026. Each distractor now states a WRONG
                 # RULE in the correct answer's own shape, with the misconception
                 # as the consequence. The beliefs are Design's and did not move,
                 # so all three corrections below are unchanged.
-                "Green light is weaker than red light, so a plant under a "
-                "green filter receives less energy",
-                "Chlorophyll reflects green light rather than absorbing it, so "
-                "green light delivers almost no energy to the plant",
-                "A green filter blocks carbon dioxide as well as light, so the "
-                "pondweed runs short of the gas it needs",
-                "A leaf is already full of green, so adding more green light "
-                "cannot top it up any further",
+                "The green filter lets through less light, so the plant gets less energy",
+                "Chlorophyll absorbs green light poorly, so the plant can use less of its energy",
+                "A green filter also blocks carbon dioxide, so the pondweed runs short of it",
+                "The leaf is already full of green, so extra green light cannot top it up",
             ],
             "answer": 1,
             "feedback": {
@@ -856,9 +851,7 @@ LESSON = {
                    "plant can absorb it.",
                 2: "A filter changes the light and nothing else. Everything "
                    "else about the tube is unchanged.",
-                3: "Colour is not a supply of anything. The leaf looks green "
-                   "because green is what it sends back — it cannot use it, so "
-                   "it does not keep it.",
+                3: "Colour is not a supply of anything. The leaf looks green because it reflects much of the green light.",
             }},
         "explain": {
             "title": "Rung 3 · Explain the thinness",

@@ -485,14 +485,12 @@ LESSON = {
         # ⚖️ This rung is why FLOOR is 24 and not a round number: the stem
         # counts the cuts in words.
         "apply": {
-            "q": "A student halves a sugar cube twenty-four times, each cut "
-                 "leaving a piece half as wide, and reaches one particle. "
-                 "Why can they not make the twenty-fifth cut?",
+            "q": "A student keeps cutting sugar, each piece half as wide as the last. After 24 halvings, one sugar particle is left. Why can they never get a smaller piece of sugar?",
             "options": [
-                "No knife is thin enough to fit",
-                "Particles are too hard to cut",
+                "Nothing can ever split a particle, so the cutting has to stop",
+                "Particles are too hard, so no blade can get through them",
                 "They can cut it, but what comes out is no longer sugar",
-                "The piece is too small to see, so the cut cannot be aimed",
+                "The last particle has no mass, so there is nothing left to cut",
             ],
             "answer": 2,
             "feedback": {
@@ -500,8 +498,7 @@ LESSON = {
                    "mechanical.",
                 1: "Hardness is a property of a large lump of a substance, not "
                    "of one particle.",
-                3: "Difficulty in aiming is a practical problem. The model "
-                   "makes a stronger claim than that.",
+                3: "Every particle has mass. The limit is that a split particle is no longer sugar.",
             }},
         "explain": {
             "q": "Explain, using the particle model, why 50 ml of water added "

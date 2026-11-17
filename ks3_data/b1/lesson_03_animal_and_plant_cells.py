@@ -769,17 +769,10 @@ LADDER = {"recall": {"title": "Rung 1 · Read the list",
                     # now state wrong RULES, in the same shape as the
                     # correct option. The correct option and its index are
                     # unchanged.
-                    "options": ["Root cells build chloroplasts like every "
-                                "other plant cell, but leave the green "
-                                "pigment out of them",
-                                "Roots are green under the soil, so a root "
-                                "cell is green wherever you dig it up",
-                                "The green is stored in the vacuole, so a "
-                                "cell with a clear vacuole is not a plant "
-                                "cell",
-                                "Chloroplasts are only built where light "
-                                "reaches, so a plant cell without them is "
-                                "still a plant cell"],
+                    "options": ["Root cells build chloroplasts like other plant cells, but leave out the green",
+                                "Roots are green under the soil, so a root cell is always green",
+                                "The green is stored in the vacuole, which a root hair cell does not have",
+                                "Not every plant cell has chloroplasts, so not being green does not rule it out"],
                     "answer": 3,
                     "feedback": {0: "Close to something true about other "
                                     "structures in a root, but not this. A "
