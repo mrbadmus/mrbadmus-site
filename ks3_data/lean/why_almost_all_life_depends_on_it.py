@@ -59,10 +59,10 @@ LESSON = {
                   "Burning coal puts that carbon dioxide back into the air."]},
         {"kind": "card", "title": "Easy mistakes",
          "body": [{"mistakes": [
-             ("Plants make oxygen for animals to breathe.",
+             ("Plants make oxygen so that we can breathe.",
               "Oxygen is a waste product. Plants and animals both use it in respiration.", "PLANT-08"),
-             ("Only plants photosynthesise.",
-              "Algae do too. About half of all photosynthesis happens in the sea.", "PLANT-07"),
+             ("Trees are the lungs of the planet, doing the same job as our lungs.",
+              "In sunlight, trees take in carbon dioxide and give out oxygen overall. Lungs do the opposite.", "PLANT-07"),
              ("A producer is at the top of a food chain.",
               "A producer is always at the start of a food chain."),
          ]}]},

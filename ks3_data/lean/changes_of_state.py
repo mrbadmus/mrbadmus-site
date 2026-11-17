@@ -108,8 +108,9 @@ LESSON = {
          "body": [{"mistakes": [
              ("Some mass is lost when ice melts.",
               "The mass stays the same. No particles are lost.", "PART-05"),
-             ("Sugar melts in tea.",
-              "It dissolves. Melting needs only one substance, heated.", "PART-06"),
+             ("Melting and dissolving are the same thing.",
+              "They are easy to mix up, but different. Melting turns a solid to liquid by heating. "
+              "Dissolving spreads a solid through a liquid, like sugar in tea.", "PART-06"),
              ("The bubbles in boiling water are air.",
               "They are water as a gas.", "PART-07"),
              ("Water only turns to gas at 100 °C.",

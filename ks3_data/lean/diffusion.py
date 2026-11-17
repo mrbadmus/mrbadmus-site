@@ -62,7 +62,7 @@ LESSON = {
              ("Diffusion needs a draught or stirring.",
               "Particles spread on their own. Stirring moves whole parts of a liquid at once.", "PART-10"),
              ("Particles move to fill the empty space on purpose.",
-              "They move at random. More leave the crowded side because more are there.", "PART-11"),
+              "They move at random, in all directions. More start on the crowded side, so more leave it.", "PART-11"),
              ("When the colour is even, the particles stop.",
               "They keep moving. Equal numbers cross each way."),
              ("Heating changes the direction particles move.",

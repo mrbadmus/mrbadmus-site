@@ -79,8 +79,9 @@ LESSON = {
          "body": [{"mistakes": [
              ("If it moves, it is alive.",
               "A flame moves but is not alive. A tree stays in one place and is alive.", "LIFE-01"),
-             ("Doing some life processes makes a thing alive.",
-              "Non-living things can seem to do some. Every living thing is made of cells.", "LIFE-02"),
+             ("If something grows on its own, it is alive.",
+              "Fire and crystals both grow, but neither is alive. "
+              "Living things do all seven life processes and are made of cells.", "LIFE-02"),
              ("A seed in a packet is dead.",
               "Its cells are alive and respiring very slowly."),
              ("Every living thing takes in oxygen.",

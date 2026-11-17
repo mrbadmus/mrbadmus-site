@@ -54,8 +54,8 @@ LESSON = {
          "body": [{"mistakes": [
              ("The gaps between particles are full of air.",
               "Air is made of particles too. The gaps hold nothing.", "PART-02"),
-             ("A sharper knife could cut sugar smaller forever.",
-              "One particle is the smallest piece of sugar.", "PART-01"),
+             ("You stopped cutting sugar because the knife was too blunt.",
+              "A sharper knife would still stop at one particle. A particle is the smallest piece of sugar.", "PART-01"),
              ("Matter is all one piece, with no gaps in it.",
               "Matter is made of separate particles with empty space between them."),
          ]}]},
