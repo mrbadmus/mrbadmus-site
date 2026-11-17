@@ -108,7 +108,7 @@ LESSON = {
         {"kind": "card", "title": "Showing the spread",
          "body": ["Plot the readings on a number line to show how they are spread. The mean sits "
                   "in the middle, and the uncertainty reaches half the range on each side.",
-                  {"slot": "legacy-fig:nlFig"}]},
+                  {"slot": "fig:measurement-number-line"}]},
         {"kind": "card", "title": "Worked examples",
          "body": ["Convert first if the readings are in different units: 1 dm³ = 1000 cm³.",
                   {"slot": "cfifa"}]},
@@ -159,7 +159,7 @@ LESSON = {
                   "25.0 cm³, and a burette to add a volume you do not know in advance.",
                   "A burette's scale runs downwards. The volume added is the final reading minus "
                   "the first reading.",
-                  {"slot": "legacy-fig:apFig"}]},
+                  {"slot": "fig:volume-apparatus"}]},
         {"kind": "card", "title": "Command words",
          "body": [{"points": [
              "<strong>Calculate</strong>: the mean, leaving out anomalies, or the uncertainty as "
