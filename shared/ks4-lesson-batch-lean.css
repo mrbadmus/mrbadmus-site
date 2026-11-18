@@ -96,4 +96,5 @@ html, body { margin: 0; padding: 0; background: #FBF3E6; }
   #ks4-mount input[type="text"]::placeholder { font-size: 10px; }
 }
 
+/* KS4 lean reveal tables: hyphenate long words (Organisation walk, 18 Nov 2026) */
 html .lean-table thead th, html .lean-table tbody th, html .lean-table .lean-cell { overflow-wrap: break-word; -webkit-hyphens: auto; hyphens: auto; }
