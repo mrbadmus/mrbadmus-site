@@ -213,15 +213,23 @@ def leaf_cross_section():
     for dx in (-17, 0, 17):
         b.append(circ(VX + dx, 368 + (0 if dx else 3), 7.5, PHL, INK, 2.6))
     # lower epidermis, with a gap for the stoma
+    # Each cell keeps only its part outside the gap; a part under 12 px is folded into its
+    # neighbour on the same side, so no sliver (or negative width) is ever drawn.
     n = 6; cw = (R - L) / float(n)
+    GL, GR = SX - 34, SX + 34
+    left, right = [], []
     for i in range(n):
         x0 = L + i * cw; x1 = x0 + cw
-        if x1 <= SX - 34 or x0 >= SX + 34:
-            b.append(rect(x0, yl0, cw, yl1 - yl0, EPI, INK, 2.6))
-        elif x1 <= SX:
-            b.append(rect(x0, yl0, SX - 34 - x0, yl1 - yl0, EPI, INK, 2.6))
-        else:
-            b.append(rect(SX + 34, yl0, x1 - SX - 34, yl1 - yl0, EPI, INK, 2.6))
+        if x0 < GL:
+            left.append([x0, min(x1, GL)])
+        if x1 > GR:
+            right.append([max(x0, GR), x1])
+    if len(left) > 1 and left[-1][1] - left[-1][0] < 12:
+        sliver = left.pop(); left[-1][1] = sliver[1]
+    if len(right) > 1 and right[0][1] - right[0][0] < 12:
+        sliver = right.pop(0); right[0][0] = sliver[0]
+    for x0, x1 in left + right:
+        b.append(rect(x0, yl0, x1 - x0, yl1 - yl0, EPI, INK, 2.6))
     # lower cuticle, broken at the pore
     b.append(rect(L, yl1, SX - 7 - L, 6, CUTICLE, INK, 2.6))
     b.append(rect(SX + 7, yl1, R - SX - 7, 6, CUTICLE, INK, 2.6))

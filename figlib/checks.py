@@ -342,6 +342,13 @@ def check_figure(fid, svg):
             probs.append("%s: <%s> is not in the manifest's element set "
                          "(%s)" % (fid, tag, ", ".join(sorted(ALLOWED))))
             continue
+        # a negative size is invalid SVG: the browser logs a console error and drops the shape
+        for att in {"rect": ("width", "height"), "circle": ("r",),
+                    "ellipse": ("rx", "ry")}.get(tag, ()):
+            v = _nums(el.get(att) or "")
+            if v and v[0] < 0:
+                probs.append("%s: <%s> has a negative %s (%g) — invalid SVG, "
+                             "the browser drops it" % (fid, tag, att, v[0]))
         extra = set(el.attrib) - ALLOWED[tag]
         if extra:
             probs.append("%s: <%s> carries attribute(s) outside the set: %s"
