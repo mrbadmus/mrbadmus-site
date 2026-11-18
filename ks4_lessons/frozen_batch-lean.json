@@ -19,6 +19,14 @@
   "hash": "d534b615be40a09b61b4f9541a137fa5997701aa828fb8607735ca950cf348a6",
   "review_state": "examiner-reviewed"
  },
+ "blood": {
+  "hash": "d0f97757e26af6fdd43060e8f2efc105095aec94604e2cf7888755302d460b81",
+  "review_state": "examiner-reviewed"
+ },
+ "cancer": {
+  "hash": "b933d282f27c208209feec5aae54627fd2b004295db89f25fb77f8c0874886ce",
+  "review_state": "examiner-reviewed"
+ },
  "carbon-cycle": {
   "hash": "a56b2b71e7aafe9d00bb0cb83abf66adadc2467bb3b618d24bb3ab9404301299",
   "review_state": "examiner-reviewed"
@@ -39,12 +47,20 @@
   "hash": "c3676a366782059c2ac1fe6f4676c1b7a8aa73c333c29762ab41544289f0ee51",
   "review_state": "examiner-reviewed"
  },
+ "coronary-heart-disease": {
+  "hash": "96be2e98d27c6c5f2fe87aeef4ddd0283143602d63a15ca294f8c958d0f851fe",
+  "review_state": "examiner-reviewed"
+ },
  "decomposition": {
   "hash": "e89b43a8e57ecd1c32f3f8938dfe3f46205a06cf2627ec210fd27a65b18c21be",
   "review_state": "examiner-reviewed"
  },
  "deforestation": {
   "hash": "93305f6e3bd527a273a21e3a9469739cddf7deec45106ffd5591b1072b6883b1",
+  "review_state": "examiner-reviewed"
+ },
+ "digestive-system": {
+  "hash": "01297c13fe339de1222c9b16d8b89e82940d654aa3e805a531221f92c2efb340",
   "review_state": "examiner-reviewed"
  },
  "ecosystems": {
@@ -83,6 +99,10 @@
   "hash": "967e86debeaed0f02a90e6c4749bb8dc58771911505547318bf6fc9260914ad8",
   "review_state": "examiner-reviewed"
  },
+ "enzymes": {
+  "hash": "bd0ac24ed65f4c58c9a1f086ef347e8e11c0ab3562e8b31169f80e7f75db3939",
+  "review_state": "examiner-reviewed"
+ },
  "factors-affecting-food-security": {
   "hash": "e140a0e436930069366288d990740b9750d0a61598ccd6768d3374c760b7e14c",
   "review_state": "examiner-reviewed"
@@ -105,6 +125,14 @@
  },
  "global-warming": {
   "hash": "88a654490ab81153ab26a2faef197ef22606265109f78a67c55b44789f5d8973",
+  "review_state": "examiner-reviewed"
+ },
+ "health-disease": {
+  "hash": "42bac2be83a85458a36b8eb226e8fe00b21d194dfdf9a70b5052f98269c60bf6",
+  "review_state": "examiner-reviewed"
+ },
+ "heart-blood-vessels": {
+  "hash": "88f91481566ee0083012084f14064e60f347aa712bbd969002229d3daf5113c2",
   "review_state": "examiner-reviewed"
  },
  "induced-potential": {
@@ -151,6 +179,10 @@
   "hash": "80fe2b88cb6c6f8be07f53cfcd061deadf831424843d5cc51068bd340a92d3dd",
   "review_state": "examiner-reviewed"
  },
+ "plant-tissues": {
+  "hash": "9a86b92f4b6fb92ca3e4dc6e7c8b82df6729cf9bb234e21a237158e70086489e",
+  "review_state": "examiner-reviewed"
+ },
  "poles-of-a-magnet": {
   "hash": "cb8996c71ac8f61ff215609dc32271d2350168ddc840a538500e99260e1ab7ac",
   "review_state": "examiner-reviewed"
@@ -161,6 +193,10 @@
  },
  "power": {
   "hash": "d48969ef96b9bea6d0227051862fede97cf0f9b3e8238aa9d04e857e1d650461",
+  "review_state": "examiner-reviewed"
+ },
+ "principles-of-organisation": {
+  "hash": "2ae6303d78cb5bd218d4127dc367518b4f5f97077bba99fe89494ecae2646125",
   "review_state": "examiner-reviewed"
  },
  "properties-em-waves-1": {
@@ -221,6 +257,14 @@
  },
  "transformers": {
   "hash": "0982b232072d3804609b809c4e8d6d08a6504936005b941f7fbbb2b5d9584c34",
+  "review_state": "examiner-reviewed"
+ },
+ "translocation": {
+  "hash": "4b211183652eca0c45cb8d20f57e7951fe7397d3bdda637c821511cdd93da165",
+  "review_state": "examiner-reviewed"
+ },
+ "transpiration": {
+  "hash": "f3ca4c5dc0f96860e948bc7c524d12d5596e8c5b689afe938b8539bb581088ca",
   "review_state": "examiner-reviewed"
  },
  "transverse-longitudinal-waves": {

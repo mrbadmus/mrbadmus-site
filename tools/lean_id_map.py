@@ -144,6 +144,14 @@ REPLACED = {
         "practice Q2 (intraspecific vs interspecific competition) is replaced by an on-spec item in the lean record",
     "ks4q:mass-changes-reactions:9dd627e1ec":
         "practice Q2 (why the mass of iron increases when it rusts) is replaced by the magnesium-burning item: rusting is not in this spec point",
+    # ⊕ 18 Nov 2026 (Organisation): practice-set stems swapped by logic_edits in the lean record.
+    # The inventory reads the Design BANK before the edits, so without these the map says `kept`.
+    "ks4q:blood:c37b43a96d":
+        "practice item (which substance plasma does NOT transport) is replaced: a little oxygen does dissolve in plasma, so it was arguable",
+    "ks4q:cancer:c34f0b2d7e":
+        "practice item (how UV radiation causes skin cancer) is replaced: the mutation mechanism is beyond the spec",
+    "ks4q:plant-tissues:54931bb3db":
+        "practice item (why xylem cells are dead) is replaced: the spec says only hollow tubes strengthened by lignin",
 }
 
 # ⊕ 17 Nov 2026 (Waves): a classic quiz id the lesson still asks on SOME routes but took off the

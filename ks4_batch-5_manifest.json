@@ -29,7 +29,6 @@
   "shared/tutor-panel.css": "64c3ef2e4205417d70a21edb2bff78159bc549e61657286f308e780ae3ef98f9"
  },
  "pages": {
-  "mrbadmus_site/combined/foundation/biology/organisation/plant-tissues.html": "5808e427fe8cc1bb529a4c472b8d8e85e2dd9b97cb9cfabf147d06ab7919ba2f",
   "mrbadmus_site/combined/foundation/chemistry/atomic-structure/group-0.html": "e813e02613e955f8986e594bf414a8879969fb45454f4a7019d17f186d753371",
   "mrbadmus_site/combined/foundation/chemistry/atomic-structure/metals-non-metals.html": "3e2d6644213e5151afe9c860ccfc5aab873a1753f50b855d52d0ba96db3e4bbc",
   "mrbadmus_site/combined/foundation/chemistry/chemical-changes/extraction-of-metals.html": "968dc829760df8344e4b8e44ea0d9545b2f50a44499c0363c2e3be3a4c2ed518",
@@ -39,7 +38,6 @@
   "mrbadmus_site/combined/foundation/physics/atomic-structure/development-atomic-model.html": "85292d5ae2ca47861381dcda9ce0d6ad136fe227f145c3c62d86226dd9bf0b22",
   "mrbadmus_site/combined/foundation/physics/atomic-structure/radioactive-decay.html": "01b1adac48e2582c86dc066a176b1928e003ce96eab757a05a68c19328b0dee7",
   "mrbadmus_site/combined/foundation/physics/atomic-structure/structure-of-atom.html": "b0cc1f543a9e7e9877322af779aafc7711919235e74b522b9b5a4d814d2ddfdb",
-  "mrbadmus_site/combined/higher/biology/organisation/plant-tissues.html": "c5237eb605fb0cfa28ebc508e25d8f789f744f1eba3a88df0e0030271eaece29",
   "mrbadmus_site/combined/higher/chemistry/atomic-structure/group-0.html": "e4e71570d01b9d3bfdfe8c2353f3e1a0e8d211b8f23691964c123941ff8b044e",
   "mrbadmus_site/combined/higher/chemistry/atomic-structure/metals-non-metals.html": "64cd53fad7c27539a5af5a81334f566ab37d4ab81f68f57e78a840daeffaab27",
   "mrbadmus_site/combined/higher/chemistry/chemical-changes/extraction-of-metals.html": "8ad8d7e40646d172ca38fa705e5f0c322bcc7dbbd294ca67bb7841be6dca4b55",
@@ -49,7 +47,6 @@
   "mrbadmus_site/combined/higher/physics/atomic-structure/development-atomic-model.html": "7a10130b8e145180258f63c83f5198c8f3f947413102655c53e662cd4eafb0cf",
   "mrbadmus_site/combined/higher/physics/atomic-structure/radioactive-decay.html": "4b3ed51a961f81adbfecc0aa0776708ab1d22661225391d48e633515cb643df3",
   "mrbadmus_site/combined/higher/physics/atomic-structure/structure-of-atom.html": "f4e65059fda2f0cb0d9d9da81126df2f0319a1a1aa1d0c17bc4a71e718fb0623",
-  "mrbadmus_site/triple/foundation/biology/organisation/plant-tissues.html": "58683f227538d9b7efd9cfdcf898446d049dea109f6f6c7e4469cf3259bcf033",
   "mrbadmus_site/triple/foundation/chemistry/atomic-structure/group-0.html": "4c2d3be77a10bf619866a2044c75727b24dad71ea8dcbf0088843f9df0b121ef",
   "mrbadmus_site/triple/foundation/chemistry/atomic-structure/metals-non-metals.html": "2f14ee89c43afd12ff6e9b673b6dd13479018e0a2eaec461f0787f17a155b5d0",
   "mrbadmus_site/triple/foundation/chemistry/chemical-changes/extraction-of-metals.html": "a9feeb5b379d50e24d0a4097349d3786805380e91eb63b9fc9322b7ea3f7730d",
@@ -60,7 +57,6 @@
   "mrbadmus_site/triple/foundation/physics/atomic-structure/radioactive-decay.html": "7afe92504fbc7ff83dd7e78e34054f5caf32ff7207320ba5e1709833c3ac5048",
   "mrbadmus_site/triple/foundation/physics/atomic-structure/structure-of-atom.html": "f64ca941bfaa8a861f7f752e6f4420d6e786fd1c9a8a29d8da6ced271b85e4b4",
   "mrbadmus_site/triple/foundation/physics/space/red-shift-big-bang.html": "6195fc76f9beba67b5a5033c1e1bc64187f7f959e6fb4755c43bf03eae0150e6",
-  "mrbadmus_site/triple/higher/biology/organisation/plant-tissues.html": "e25163bb450ef89eb30ffa3014a6503b6843394a9659f899d8a4c0235db5bbec",
   "mrbadmus_site/triple/higher/chemistry/atomic-structure/group-0.html": "645f145c5cb24f60de7b982ea0175ca7aa3c2d9d2aef229e76ad386ac96e067e",
   "mrbadmus_site/triple/higher/chemistry/atomic-structure/metals-non-metals.html": "606e56d59e2642c8d91b7fb6408bd482b099ec35a31226fcdf58043cb25b7b00",
   "mrbadmus_site/triple/higher/chemistry/chemical-changes/extraction-of-metals.html": "28b43866ddfee5a2998f8704eb367f1199f35204220fd6e59ee5224617197a4a",
