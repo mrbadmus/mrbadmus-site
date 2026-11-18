@@ -70,9 +70,9 @@ LESSON = {
         {"kind": "card", "title": "Easy mistakes",
          "body": [{"mistakes": [
              ("An organ is just a bigger tissue.",
-              "An organ has several different kinds of tissue working together."),
+              "An organ has several different kinds of tissue working together.", "CELL-06"),
              ("Blood cannot be a tissue, because it is a liquid.",
-              "Blood is a tissue. It is cells in a liquid, working together."),
+              "Blood is a tissue. It is cells in a liquid, working together.", "CELL-07"),
              ("Skin is a tissue.",
               "Skin is an organ. It is made of several tissues."),
              ("Plants do not have organs.",

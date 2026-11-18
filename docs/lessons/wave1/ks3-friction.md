@@ -37,3 +37,5 @@ Sources: National Curriculum P18; Rainford Year 7 Phys 1 lessons 10b Friction an
 **Left out because unsure.** The old "break-away is about a fifth above sliding" rule (a bench model, not a law). "About a fifth of the world's energy is lost to friction" (old Going further).
 
 **Removed or moved.** Removed: the drag lane and its gate, the four-rules band (its ideas are now cards and the reveal table), the two Think-again essays, the convention note. Moved to Dive deeper: only the bumps touch (and why area does not matter); walking needs friction. Added a safety note for the investigation (slotted masses).
+
+**Easy mistakes rule (16 Nov).** Each Easy mistakes line is tagged with the misconception it names (FORCE-29, FORCE-30, FORCE-31, FORCE-28); the page marks it `data-misconception`. New Easy mistakes line for FORCE-28 (starting versus sliding). (Mide, 16 Nov 2026)

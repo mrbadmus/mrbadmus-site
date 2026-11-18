@@ -18,3 +18,5 @@ Sources: Rainford Year 8 Bio 4, lesson 3b "Fermentation"; National Curriculum B2
 **Removed or moved.** Removed: the one-vessel-four-dials bench and its eight result panels, the two long "Think again" essays, Going further. Moved to Dive deeper: why brewers keep air out, roots in waterlogged soil.
 
 **Review fixes (12 Nov).** Blind answer check agreed with every key. Rung 3 ticks: one needed pH and curdling, which the page does not teach, and two counted the same point; rewritten. The yeast practical now has its control (boiled yeast gives no bubbles). Start here set-up: dough rises while it is left somewhere warm, not in the oven.
+
+**Easy mistakes rule (16 Nov).** Each Easy mistakes line is tagged with the misconception it names (RESP-07, RESP-08); the page marks it `data-misconception`. Misconception RESP-07 reworded to "Fermentation needs oxygen." RESP-07 sits on the existing oxygen line, right-hand side reworded. New line for RESP-08 (yeast is a powder). (Mide, 16 Nov 2026)

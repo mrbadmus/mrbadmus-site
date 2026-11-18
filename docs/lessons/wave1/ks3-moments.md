@@ -29,3 +29,5 @@ Sources: National Curriculum P17; Rainford Year 7 Phys 1 lesson 12b More moments
 **Left out because unsure.** Nothing.
 
 **Removed or moved.** Removed: the spanner rig bench, the Think-longer-spanner essay, the your-turn attempt (now two worked-example cards). Moved to Dive deeper: levers, why a door is hard to open near the hinge.
+
+**Easy mistakes rule (16 Nov).** Each Easy mistakes line is tagged with the misconception it names (FORCE-36, FORCE-37, FORCE-38, FORCE-39); the page marks it `data-misconception`. Worked example sentence reworded to a statement (no question mark in teaching text). (Mide, 16 Nov 2026)

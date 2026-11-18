@@ -52,9 +52,12 @@ LESSON = {
         {"kind": "card", "title": "Easy mistakes",
          "body": [{"mistakes": [
              ("Being out of breath means your lungs cannot hold enough air.",
-              "Your muscles need more oxygen and make more carbon dioxide."),
+              "Your muscles need more oxygen and make more carbon dioxide.", "BREATH-09"),
              ("In an asthma attack there is not enough oxygen in the air.",
-              "The air is the same. The airways have narrowed."),
+              "The air is the same. The airways have narrowed.", "BREATH-10"),
+             ("Tar is the only harmful part of smoke.",
+              "Tar causes cancer, but it isn't the only harm. Carbon monoxide means blood carries less oxygen, and nicotine is addictive.",
+              "BREATH-11"),
          ]}]},
     ],
     "key_fact": "Exercise raises breathing rate, and this reverses after you stop. In an asthma "

@@ -70,11 +70,11 @@ LESSON = {
         {"kind": "card", "title": "Easy mistakes",
          "body": [{"mistakes": [
              ("Plants get their food from the soil.",
-              "Plants make their own food, glucose, by photosynthesis."),
+              "Plants make their own food, glucose, by photosynthesis.", "PLANT-01"),
              ("Light is a reactant.",
               "Light gives the energy. It is written beside the arrow."),
              ("Photosynthesis makes energy.",
-              "Energy cannot be made. Energy from light is stored in glucose."),
+              "Energy cannot be made. Energy from light is stored in glucose.", "PLANT-02"),
          ]}]},
     ],
     "key_fact": "Photosynthesis happens in the chloroplasts of leaves. Carbon dioxide and water react "

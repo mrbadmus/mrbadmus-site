@@ -22,3 +22,5 @@ Sources: Rainford Year 8 Phys 4, lesson 9a "Energy stores" (state the law of con
 - "None of it has been destroyed".
 - AQA store names in the Rung 3 ticks.
 - The pendulum figure's title and store label include the surroundings.
+
+**Easy mistakes rule (16 Nov).** Each Easy mistakes line is tagged with the misconception it names (ENER-12); the page marks it `data-misconception`. No wording change. (Mide, 16 Nov 2026)

@@ -22,3 +22,5 @@ Sources: National Curriculum B5 (no Rainford SOW row). KS3 has one route.
 **Removed or moved.** Removed: the pond-water microscope bench, the four mystery cells (their discriminations are now Card: Telling an organism from part of one and Easy mistakes), the two "Think again" essays, the key note. The side-by-side table is kept as a reveal table. Mystery cell 1's verdict ("green and makes its own food settles it") was wrong, as a palisade cell is green and part of a plant; it is not carried over. Added to Dive deeper: Euglena as plant or animal, cilia in your airways.
 
 **Pupil walk fixes (390 px).** Rung 4 stem drops "changes shape a little", which clashed with the wall clue (render only).
+
+**Easy mistakes rule (16 Nov).** Each Easy mistakes line is tagged with the misconception it names (LIFE-03, CELL-13, CELL-08); the page marks it `data-misconception`. No wording change. (Mide, 16 Nov 2026)

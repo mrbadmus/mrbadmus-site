@@ -63,11 +63,14 @@ LESSON = {
         {"kind": "card", "title": "Easy mistakes",
          "body": [{"mistakes": [
              ("A thrown ball carries a force that slowly runs out.",
-              "Nothing carries a force. Air resistance and gravity act on the ball as it flies."),
+              "Nothing carries a force. Air resistance and gravity act on the ball as it flies.", "FORCE-12"),
              ("A table does nothing to a book resting on it.",
-              "The table pushes up on the book. That is why the book does not fall through."),
+              "The table pushes up on the book. That is why the book does not fall through.", "FORCE-13"),
              ("The force is in the ball's movement.",
-              "Movement is not a force. A force is one object pushing or pulling another."),
+              "Movement is not a force. A force is one object pushing or pulling another.", "FORCE-15"),
+             ("Forces only act between things that are touching.",
+              "Gravity, magnetism and static electricity act without touching. They are non-contact forces.",
+              "FORCE-14"),
          ]}]},
     ],
     "key_fact": "A force is a push or a pull between two objects, measured in newtons (N). "

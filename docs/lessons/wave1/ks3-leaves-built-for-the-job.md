@@ -18,3 +18,5 @@ Sources: Rainford Year 8 Bio 4, lesson 2c "Stomata investigation"; National Curr
 **Removed or moved.** Removed: the build-a-leaf bench, the two long "Think again" essays, Going further, the 80-word figure caption. Moved to Dive deeper: why leaves look green, autumn colours, pine needles.
 
 **Review fixes (12 Nov).** Blind answer check agreed with every key. Rung 2 stem now says both filters let through the same light energy, so the "green light is weaker" option is plainly wrong. Added the upper epidermis row; stomata now let water vapour out too; guard cells open in the light and close at night. Rung 4 ticks now credit what the stem asks (three features each, and what each leaf gives up); Rung 3's "cost of a thicker leaf" tick replaced with one about the rate. Start here question shortened.
+
+**Easy mistakes rule (16 Nov).** Each Easy mistakes line is tagged with the misconception it names (PLANT-04, PLANT-03); the page marks it `data-misconception`. New Easy mistakes line for PLANT-03 (why leaves look green). (Mide, 16 Nov 2026)

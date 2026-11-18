@@ -94,9 +94,9 @@ LESSON = {
         {"kind": "card", "title": "Easy mistakes",
          "body": [{"mistakes": [
              ("A compound is a very well stirred mixture.",
-              "In a compound the atoms are chemically joined. Stirring never joins them."),
+              "In a compound the atoms are chemically joined. Stirring never joins them.", "ATOM-06"),
              ("The iron is still in iron sulfide, so it is still magnetic.",
-              "The iron is chemically joined to sulfur. The new substance is not iron."),
+              "The iron is chemically joined to sulfur. The new substance is not iron.", "ATOM-07"),
              ("Any substance with more than one atom is a compound.",
               "The atoms must be of different elements. Oxygen gas is an element."),
          ]}]},

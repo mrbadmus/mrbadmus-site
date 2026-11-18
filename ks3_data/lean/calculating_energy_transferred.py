@@ -64,11 +64,11 @@ LESSON = {
         {"kind": "card", "title": "Easy mistakes",
          "body": [{"mistakes": [
              ("2000 W for 3 minutes is 2000 × 3 = 6000 J.",
-              "Convert first. 3 minutes is 180 s, so it is 360 000 J."),
+              "Convert first. 3 minutes is 180 s, so it is 360 000 J.", "ENER-23"),
              ("A kilowatt-hour is a unit of power.",
               "It is a unit of energy: 1 kW for 1 hour."),
              ("A few thousand joules will boil a kettle.",
-              "Boiling a kettle takes hundreds of thousands of joules."),
+              "Boiling a kettle takes hundreds of thousands of joules.", "ENER-24"),
          ]}]},
     ],
     "key_fact": "Energy transferred = power × time. Use watts with seconds to get joules. Use kilowatts "

@@ -421,7 +421,7 @@ before the IDs were referenced; it is opened here and the IDs are permanent.
 | `ATOM-07` | The elements are still in there behaving as themselves, so the compound keeps their properties. | `think-commit-magnet` | `think-reveal-magnet` | `compounds` |
 | `ATOM-08` | A symbol is the English name shortened, so any sensible abbreviation will do. | `think-commit-co` | `think-reveal-co` | `chemical-symbols` |
 | `ATOM-09` | The small number in a formula changes how much of the substance there is. | `builder-gate` | `formula-builder` | `formulae` |
-| `ATOM-10` | 2H₂O and H₂O₂ are the same thing written two ways. | `think-commit-big-small` | `think-reveal-big-small` | `formulae` |
+| `ATOM-10` | 2H2O and H2O2 have the same number of atoms. | `think-commit-big-small` | `think-reveal-big-small` | `formulae` |
 | `ATOM-11` | Burning destroys matter — the mass turns into heat and light. | `think-commit-burning` | `sealed-flask-run` | `conservation-of-mass` |
 
 **Where these are expected to resurface:**
@@ -1010,9 +1010,9 @@ faked with an invented anchor.
 | `RESP-04` | You respire when you need energy — when you exercise. | `s-jobs` | `s-think` | `why-every-cell-respires` |
 | `RESP-05` | Lactic acid is why your legs ache two days after a hard session. | — | `two-wrong-ideas` | `anaerobic-respiration-in-humans` |
 | `RESP-06` | When you sprint, you switch from aerobic to anaerobic respiration. | `s-hook` | `two-wrong-ideas` | `anaerobic-respiration-in-humans` |
-| `RESP-07` | Fermenting is just food going off in a controlled way. | `s-think` | `s-think` | `fermentation` |
+| `RESP-07` | Fermentation needs oxygen. | `s-think` | `s-think` | `fermentation` |
 | `RESP-08` | Yeast is a powder — a raising agent, like baking powder. | `s-bench` | `s-think` | `fermentation` |
-| `RESP-09` | Aerobic respiration is the fast one, because that is the one athletes train for. | `s-bench` | `s-think` | `aerobic-vs-anaerobic` |
+| `RESP-09` | Anaerobic respiration releases as much energy as aerobic. | `s-bench` | `s-think` | `aerobic-vs-anaerobic` |
 | `RESP-10` | Anaerobic respiration is the emergency backup — something has gone wrong when it happens. | `s-hook` | `s-think` | `aerobic-vs-anaerobic` |
 
 ---
@@ -1406,7 +1406,10 @@ turn the MRB-244 gate red rather than quietly breaking the pointer.
 | `ENER-27` | Renewable means clean, and non-renewable means polluting. | `s-hook` | `two-axis-grid` | `fuels-and-energy-resources` |
 | `ENER-28` | Temperature and heat are two words for the same thing. | `s-think` | `think-hot-is-not-a-lot` | `temperature-and-internal-energy` |
 | `ENER-29` | Adding energy to something always makes it hotter. | `s-think` | `think-hot-is-not-a-lot` | `temperature-and-internal-energy` |
+| `ENER-30` | Electricity is an energy resource. | `s-think` | `s-think` | `fuels-and-energy-resources` |
 | `ENER-13` | Temperature and energy are the same thing — if something is hotter it must hold more energy. | `s-hook` | `bench` | `temperature-and-internal-energy` |
+
+⊕ **`ENER-30` ADDED 16 Nov 2026 (Mide) BY `fuels-and-energy-resources`.** The lesson's second quote ("electricity is a clean energy resource") was recorded as `ENER-10` re-confronted. Mide ruled it its own belief: "Electricity is an energy resource." It replaces `ENER-10` in that lesson only; `ENER-10` stays with `energy-stores` and `energy-transfers-before-and-after`. Also 16 Nov 2026 (Mide): `RESP-07`, `RESP-09` and `ATOM-10` were reworded so each is a plain wrong belief the lean Easy mistakes card can name; the ids are unchanged.
 
 ⊕ **`ENER-28` AND `ENER-29` ADDED 25 Aug 2026 BY P11 `temperature-and-internal-energy`.**
 Both are minted from Design's own two Think-again quotes on that page. `ENER-28` sits

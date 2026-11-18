@@ -23,3 +23,5 @@ Sources: Rainford Year 8 Chem 4, lesson 5a "Atoms"; National Curriculum C3, C4, 
 **Left out because unsure.** "Fifteen hundred years" of alchemy (the page says "centuries"). The year 1803 for Dalton's model (the page says "over 200 years ago").
 
 **Removed or moved.** Removed: the switch-a-claim-off bench, the zoom-until-you-find-one scale bench, the copper atom "Think again" essay (its point is now an Easy mistakes line), Going further. Moved to Dive deeper: how small an atom is, the nuclear atom at GCSE.
+
+**Easy mistakes rule (16 Nov).** Each Easy mistakes line is tagged with the misconception it names (ATOM-01, ATOM-02); the page marks it `data-misconception`. No wording change. (Mide, 16 Nov 2026)

@@ -24,3 +24,5 @@ Sources: Rainford Year 8 Phys 4, lesson 10a "Work done" and lesson 11b "Energy e
 - Easy mistakes reworded.
 - "More energy than the load gains".
 - The forearm line is corrected.
+
+**Easy mistakes rule (16 Nov).** Each Easy mistakes line is tagged with the misconception it names (ENER-19); the page marks it `data-misconception`. No wording change. (Mide, 16 Nov 2026)

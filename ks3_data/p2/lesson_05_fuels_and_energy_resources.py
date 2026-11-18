@@ -56,12 +56,11 @@ Not inferred from the family name.
 
 `ENER-27` is the renewable/clean collapse, and it is Design's `ENERGY-14`.
 
-The SECOND quote — "electricity is a clean energy resource" — mints
-nothing. It is `ENER-10` ("light, sound and electricity are kinds of energy
-that things store") doing work in a new situation: electricity is a
-PATHWAY, not a store and not a resource, and the answer is the same
-distinction `p1-01` drew and `p1-02` re-used. Following P1's own precedent,
-a belief that is an established one wearing new clothes takes no new row.
+The SECOND quote — "electricity is a clean energy resource" — was first
+read as `ENER-10` ("light, sound and electricity are kinds of energy that
+things store") doing work in a new situation. ⊕ 16 Nov 2026 (Mide): it is its
+own belief, "Electricity is an energy resource", and now carries `ENER-30`.
+`ENER-10` is untouched in `energy-stores` and `energy-transfers-before-and-after`.
 """
 
 LESSON = {
@@ -136,10 +135,11 @@ LESSON = {
                       "polluting.",
          "elicited_by": "s-hook",
          "confronted_by": "two-axis-grid"},
-        # ⚖️ RE-USED, NOT MINTED. See the note at the top of this file.
-        {"id": "ENER-10",
-         "statement": "Light, sound and electricity are kinds of energy that "
-                      "things store.",
+        # ⚖️ MINTED 16 Nov 2026 (Mide). This was `ENER-10` re-used; the lean
+        # Easy mistakes card needs a line that names THIS lesson's belief, which
+        # is about resources, so it has its own id. See the note at the top.
+        {"id": "ENER-30",
+         "statement": "Electricity is an energy resource.",
          "elicited_by": "s-think",
          "confronted_by": "s-think"},
     ],
@@ -311,7 +311,7 @@ LESSON = {
                   "accept rather than avoiding all of them.",
               ]},
              {"quote": "Electricity is a clean energy resource.",
-              "targets": "ENER-10",
+              "targets": "ENER-30",
               "body": [
                   "Electricity is not a resource at all. It is a "
                   "<em>pathway</em> — a way of moving energy from "

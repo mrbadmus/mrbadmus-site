@@ -63,9 +63,9 @@ LESSON = {
         {"kind": "card", "title": "Easy mistakes",
          "body": [{"mistakes": [
              ("Particles in a solid are completely still.",
-              "They vibrate about fixed positions."),
+              "They vibrate about fixed positions.", "PART-04"),
              ("Particles get bigger when a substance is heated or melts.",
-              "They move more. Their size never changes."),
+              "They move more. Their size never changes.", "PART-03"),
              ("Particles in a liquid are far apart.",
               "They touch, but are not in a pattern."),
              ("Gas and air mean the same thing.",

@@ -28,3 +28,5 @@ Sources: Rainford Year 7 Bio 1, lesson 1a "Microscopes" and skills lesson 2c "Sc
 **Removed or moved.** Removed: Sam's method critique (its three faults are now Card: Making a slide, Card: Finding the cells and Easy mistakes), the cover-the-triangle instrument (now a drawn triangle), the "Now you" FIFA construct, the microscope lab (its readout values are now the reveal table and the scale figure), the "Think again" essay, the key note. Two micrograph slots that were never photographed are not used.
 
 **Pupil walk fixes (390 px).** The biological-drawing caption is dropped (it repeated the bullets). Finding the cells step 4 says the lens and slide move apart.
+
+**Easy mistakes rule (16 Nov).** Each Easy mistakes line is tagged with the misconception it names (CELL-02, CELL-01); the page marks it `data-misconception`. No wording change. (Mide, 16 Nov 2026)

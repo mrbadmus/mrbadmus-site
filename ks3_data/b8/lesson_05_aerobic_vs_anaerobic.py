@@ -606,8 +606,8 @@ LESSON = {
         # `#s-think`'s first paragraph then takes apart — two meanings of fast,
         # yield against rate.
         {"id": "RESP-09",
-         "statement": "Aerobic respiration is the fast one, because that is the "
-                      "one athletes train for.",
+         "statement": "Anaerobic respiration releases as much energy as "
+                      "aerobic.",
          "elicited_by": "s-bench",
          "confronted_by": "s-think"},
         # Elicited in the hook. "So why does anaerobic respiration exist at

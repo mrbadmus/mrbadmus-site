@@ -29,3 +29,5 @@ Sources: Rainford Year 7 Bio 1, lessons 1b "Animal cells" and 2a "Plant cells"; 
 **Left out because unsure.** Cheek and onion cell sizes. Bank `b1-03-h04` says the membrane is hidden in a cheek cell; the page now says the visible edge marks it (listed for Mide). The old safety line "it does not wash out" is dropped.
 
 **Removed or moved.** Removed: the cell bench (seven parts, two specimens, two views), the wall-or-membrane sort (now Card: Wall and membrane), the fit-the-cell builder, the "Think again" essays, the key note. The "What settles it" rule is now Card: Animal and plant cells.
+
+**Easy mistakes rule (16 Nov).** Each Easy mistakes line is tagged with the misconception it names (CELL-04, CELL-03); the page marks it `data-misconception`. Easy mistakes: the right-hand lines for CELL-04 and CELL-03 reworded. (Mide, 16 Nov 2026)

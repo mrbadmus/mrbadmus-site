@@ -29,3 +29,5 @@ Sources: National Curriculum P59 (and P18, P19, P22); Rainford Year 7 Phys 1 les
 **Left out because unsure.** The old "two masses" stretch (gravitational and inertial mass equal to one part in 10^15). The old bench's slider and weight bars.
 
 **Removed or moved.** Removed: the four-place bench (the reveal table replaces it), the Think-again essay, the two CFIFA worked blocks and your-turn attempt (now two worked-example cards), the convention note. Moved to Dive deeper: orbit, the Apollo hammer and feather, Jupiter's cloud tops.
+
+**Easy mistakes rule (16 Nov).** Each Easy mistakes line is tagged with the misconception it names (SPACE-04, SPACE-05, SPACE-06, SPACE-07); the page marks it `data-misconception`. No wording change. (Mide, 16 Nov 2026)

@@ -24,3 +24,5 @@ Sources: National Curriculum P13; Rainford Year 7 Phys 1 lesson 11b Distance-tim
 **Left out because unsure.** Nothing.
 
 **Removed or moved.** Removed: the plotting grid bench, the journey matcher, the Think-uphill essay. Moved to Dive deeper: two lines on one graph, the tangent at GCSE.
+
+**Easy mistakes rule (16 Nov).** Each Easy mistakes line is tagged with the misconception it names (FORCE-06, FORCE-07, FORCE-08); the page marks it `data-misconception`. No wording change. (Mide, 16 Nov 2026)

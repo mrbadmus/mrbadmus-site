@@ -22,3 +22,5 @@ Sources: Rainford Year 7 Bio 1, lesson 3b "Organisation in organisms"; National 
 **Removed or moved.** Removed: the zoom instrument (now Card: Five levels with a new drawing, plus the reveal table), the eight-item awkward sort (blood, skin, xylem and chloroplast are now card lines and Easy mistakes; brain and femur dropped), the take-a-level-out cases (the stomach with no muscle is now a card line), the key note. Added to Dive deeper: populations, a donated kidney.
 
 **Pupil walk fixes (390 px).** The B7 leaf-section drawing is dropped from this page (an arrow crossed a label, and it is B7's drawer); the leaf card reads without it. "A tree's root system" was one kind of organ, so it is replaced by the plant transport system: roots, stem and leaves. Start reply now says each layer is a tissue of similar cells.
+
+**Easy mistakes rule (16 Nov).** Each Easy mistakes line is tagged with the misconception it names (CELL-06, CELL-07); the page marks it `data-misconception`. No wording change. (Mide, 16 Nov 2026)

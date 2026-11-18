@@ -42,3 +42,5 @@ Sources: Rainford Year 8 Phys 4 lessons 12a Fossil fuels and 12b Renewable energ
 - "Problems with fossil fuels" ends with "Renewable resources are the main alternative to fossil fuels" (Rainford 12b).
 - Rung 1 feedback C now reads "Wood is renewable, but burning it releases carbon dioxide."
 - The figure description for panel 2 now uses its full label.
+
+**Easy mistakes rule (16 Nov).** Each Easy mistakes line is tagged with the misconception it names (ENER-27, ENER-30); the page marks it `data-misconception`. Misconception ENER-10 replaced here by new ENER-30, "Electricity is an energy resource." The existing line now carries it, right-hand side reworded. (Mide, 16 Nov 2026)

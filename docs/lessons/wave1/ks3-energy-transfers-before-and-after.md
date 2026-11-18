@@ -28,3 +28,5 @@ Sources: Rainford Year 8 Phys 4, lesson 9b "Energy transfers" and lesson 11b "En
 - The wasted-energy and sweat lines are reworded.
 - AQA store name in Rung 3.
 - The GCSE line now reads "efficiency from power".
+
+**Easy mistakes rule (16 Nov).** Each Easy mistakes line is tagged with the misconception it names (ENER-11, ENER-10); the page marks it `data-misconception`. New Easy mistakes lines for ENER-11 (flat battery) and ENER-10 (stores and pathways). (Mide, 16 Nov 2026)

@@ -45,11 +45,11 @@ LESSON = {
         {"kind": "card", "title": "Easy mistakes",
          "body": [{"mistakes": [
              ("In a sprint, muscles switch from aerobic to anaerobic respiration.",
-              "Aerobic respiration carries on. Anaerobic respiration adds to it."),
+              "Aerobic respiration carries on. Anaerobic respiration adds to it.", "RESP-06"),
              ("Anaerobic respiration in humans makes carbon dioxide.",
               "In human muscles, it makes lactic acid only."),
              ("Lactic acid makes your legs ache two days later.",
-              "That ache comes from tiny damage to muscle fibres. The lactic acid is long gone."),
+              "That ache comes from tiny damage to muscle fibres. The lactic acid is long gone.", "RESP-05"),
          ]}]},
     ],
     "key_fact": "When muscles cannot get enough oxygen, they also respire anaerobically. Glucose is broken "

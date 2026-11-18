@@ -52,7 +52,7 @@ LESSON = {
         {"kind": "card", "title": "Easy mistakes",
          "body": [{"mistakes": [
              ("A stopped object has run out of energy.",
-              "Its kinetic store is empty. The energy is now in other stores."),
+              "Its kinetic store is empty. The energy is now in other stores.", "ENER-12"),
              ("Friction destroys energy.",
               "Friction transfers energy to thermal stores."),
              ("Only efficient machines conserve energy.",

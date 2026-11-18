@@ -69,7 +69,7 @@ LESSON = {
         {"kind": "card", "title": "Easy mistakes",
          "body": [{"mistakes": [
              ("When something burns, its mass is destroyed.",
-              "Its atoms leave as gases. Their mass is still there."),
+              "Its atoms leave as gases. Their mass is still there.", "ATOM-11"),
              ("Heat and light carry the mass away.",
               "Heat and light are energy. They have no mass to weigh."),
              ("A rusty nail is heavier, so mass was made.",

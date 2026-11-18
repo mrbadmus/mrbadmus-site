@@ -67,7 +67,10 @@ LESSON = {
              ("Bread rises because the yeast cells swell.",
               "Bubbles of carbon dioxide make the dough rise."),
              ("Fermentation needs oxygen.",
-              "Fermentation is anaerobic. It happens without oxygen."),
+              "Fermentation is anaerobic respiration by yeast. It needs no oxygen.", "RESP-07"),
+             ("Yeast is just a powder, like baking powder.",
+              "Yeast is a living single-celled fungus, even when dried. Baking powder is not alive.",
+              "RESP-08"),
          ]}]},
     ],
     "key_fact": "Fermentation is anaerobic respiration in yeast. Yeast turns glucose into ethanol and "

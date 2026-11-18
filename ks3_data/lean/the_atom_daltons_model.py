@@ -56,9 +56,9 @@ LESSON = {
         {"kind": "card", "title": "Easy mistakes",
          "body": [{"mistakes": [
              ("A copper atom is orange, shiny and conducts electricity.",
-              "Those properties come from many atoms together. One atom does not have them."),
+              "Those properties come from many atoms together. One atom does not have them.", "ATOM-01"),
              ("A model with one wrong part should be thrown away.",
-              "A model is kept while it explains what it is used for."),
+              "A model is kept while it explains what it is used for.", "ATOM-02"),
              ("Heating or mixing can turn one element into another.",
               "Chemical reactions only rearrange atoms. The kinds of atom stay the same."),
          ]}]},

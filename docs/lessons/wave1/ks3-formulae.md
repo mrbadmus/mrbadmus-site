@@ -22,3 +22,5 @@ Sources: Rainford Year 8 Chem 4, lessons 5c "Chemical formula" and 6a "Compounds
 **Left out because unsure.** "You are about 60% water" from the old builder. That concentrated hydrogen peroxide has been used as rocket fuel (true, but not needed, and not on the page).
 
 **Removed or moved.** Removed: the build-a-formula bench, the where-the-model-runs-out panel (its point is now Card: Giant structures, drawn), the 2H2O and H2O2 "Think again" essay (now a card and an Easy mistakes line). Moved to Dive deeper: same ratio, different substance.
+
+**Easy mistakes rule (16 Nov).** Each Easy mistakes line is tagged with the misconception it names (ATOM-09, ATOM-10); the page marks it `data-misconception`. Misconception ATOM-10 reworded to "2H2O and H2O2 have the same number of atoms." The big-number line is kept, untagged, and the ATOM-10 line follows it (stored flat, subscripts at display). (Mide, 16 Nov 2026)

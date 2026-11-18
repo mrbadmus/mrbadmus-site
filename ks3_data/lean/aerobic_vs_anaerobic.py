@@ -52,12 +52,13 @@ LESSON = {
                   "The oxygen in the air was added later, by photosynthesis."]},
         {"kind": "card", "title": "Easy mistakes",
          "body": [{"mistakes": [
-             ("Anaerobic respiration releases more energy.",
-              "It releases energy faster, but much less from each glucose."),
+             ("Anaerobic respiration releases as much energy as aerobic.",
+              "Anaerobic releases much less energy from each glucose.",
+              "RESP-09"),
              ("In humans, both kinds make carbon dioxide.",
               "Anaerobic respiration in humans makes lactic acid only."),
              ("Anaerobic respiration only happens when something goes wrong.",
-              "Yeast uses it whenever oxygen is short. Some bacteria use it all the time."),
+              "Yeast uses it whenever oxygen is short. Some bacteria use it all the time.", "RESP-10"),
          ]}]},
     ],
     "key_fact": "Aerobic respiration uses oxygen and breaks glucose down completely. It releases much "

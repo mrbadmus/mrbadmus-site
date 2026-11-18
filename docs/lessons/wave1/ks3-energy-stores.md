@@ -20,3 +20,5 @@ Sources: Rainford Year 8 Phys 4, lesson 9a "Energy stores"; National Curriculum 
 **Removed or moved.** Removed: the store-audit ledger, the store-or-pathway sort, the explainer, Going further. Moved to Dive deeper: energy is not a substance. Added to Dive deeper: where the Sun's energy comes from.
 
 **Review fixes (13 Nov).** Blind answer check agreed with every key. The conservation card now says to count every store, including the surroundings. The Sun card says light and infrared carry the energy to Earth. Rung 3 ticks now credit the force on the handle as a pathway, and accept "by waves", "by radiation" and "electrical work". Rung 2 option D feedback reworded. Added an Ask MrBadmus prompt. Stored options left for Mide: Rung 1 key "Elastic" and Rung 2 key "Gravitational store empties" use the old store names (the page teaches elastic potential and gravitational potential).
+
+**Easy mistakes rule (16 Nov).** Each Easy mistakes line is tagged with the misconception it names (ENER-09, ENER-10); the page marks it `data-misconception`. No wording change. (Mide, 16 Nov 2026)

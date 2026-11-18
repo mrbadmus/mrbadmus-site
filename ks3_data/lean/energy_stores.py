@@ -62,11 +62,11 @@ LESSON = {
         {"kind": "card", "title": "Easy mistakes",
          "body": [{"mistakes": [
              ("Energy gets used up.",
-              "Energy is never used up. It is transferred to other stores."),
+              "Energy is never used up. It is transferred to other stores.", "ENER-09"),
              ("A battery stores electrical energy.",
               "A battery has a chemical store. The electric current is a pathway."),
              ("Light and sound are energy stores.",
-              "They are pathways. They carry energy from one store to another."),
+              "They are pathways. They carry energy from one store to another.", "ENER-10"),
          ]}]},
     ],
     "key_fact": "Energy is held in stores, such as kinetic, thermal and chemical. It is transferred "

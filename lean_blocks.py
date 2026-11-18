@@ -132,12 +132,15 @@ def _part(ctx, p):
                     % "".join("<li>%s</li>" % ctx.fmt(x) for x in p["points"]))
         if "mistakes" in p:
             rows = []
-            for wrong, right in p["mistakes"]:
+            for pair in p["mistakes"]:
+                wrong, right = pair[0], pair[1]
+                # an optional third item is the misconception id this line names
+                mid = (' data-misconception="%s"' % esc(pair[2])) if len(pair) > 2 else ""
                 rows.append(
-                    '<li class="lean-mistake">'
+                    '<li class="lean-mistake"%s>'
                     '<p class="lean-wrong">%s<span class="lean-sr">Wrong: </span>%s</p>'
                     '<p class="lean-right">%s<span class="lean-sr">Right: </span>%s</p></li>'
-                    % (MARK_WRONG, ctx.fmt(wrong), MARK_RIGHT, ctx.fmt(right)))
+                    % (mid, MARK_WRONG, ctx.fmt(wrong), MARK_RIGHT, ctx.fmt(right)))
             return '<ul class="lean-mistakes">%s</ul>' % "".join(rows)
         if "slot" in p or "figure" in p:
             out = ctx.part(p) if ctx.part else None

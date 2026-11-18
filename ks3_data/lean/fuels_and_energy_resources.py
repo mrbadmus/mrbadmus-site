@@ -96,11 +96,11 @@ LESSON = {
         {"kind": "card", "title": "Easy mistakes",
          "body": [{"mistakes": [
              ("Renewable means clean.",
-              "Renewable means it will not run out. Burning wood still releases carbon dioxide."),
+              "Renewable means it will not run out. Burning wood still releases carbon dioxide.", "ENER-27"),
              ("Nuclear power releases lots of carbon dioxide.",
               "It releases almost none while it runs. Its problem is radioactive waste."),
              ("Electricity is an energy resource.",
-              "Electricity is made using energy resources, such as gas or wind."),
+              "Electricity isn't a resource. It is generated from resources such as fossil fuels, wind and sunlight.", "ENER-30"),
          ]}]},
     ],
     "key_fact": "Coal, oil and natural gas are fossil fuels. They formed over millions of years, so "

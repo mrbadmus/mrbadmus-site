@@ -28,3 +28,5 @@ Sources: National Curriculum P12 (and P14 in part); Rainford Year 7 Phys 1 lesso
 **Review fixes (examiner).** Reaction time about 0.2 s; a longer distance makes it matter less (it does not reduce it). Instantaneous speed added. `ks4_becomes` no longer says acceleration is built on distance ÷ time. Easy mistake 1 adds start times. Rung 4 last tick says "Names one fix". "A unit of speed" (km/h is taught too). Not done: the triangle desc split (figure entries frozen for the art executor) and the triangle's symbols (For Mide).
 
 **Removed or moved.** Removed: the light-gate bench and its gate, the compare-pairs block, the two CFIFA steppers (now cards), the keyword flip cards, the two Think-again essays. Moved to Dive deeper: speed cameras; some speeds.
+
+**Easy mistakes rule (16 Nov).** Each Easy mistakes line is tagged with the misconception it names (FORCE-01, FORCE-02, FORCE-03, FORCE-04, FORCE-05); the page marks it `data-misconception`. New Easy mistakes line for FORCE-05 (speed camera). (Mide, 16 Nov 2026)

@@ -65,10 +65,10 @@ LESSON = {
                   "Today's models have been tested more than any before them."]},
         {"kind": "card", "title": "Easy mistakes",
          "body": [{"mistakes": [
-             ("One wrong prediction makes a model useless.",
-              "Keep using it where it works. Note where it fails."),
+             ("If new evidence does not fit a model, the model was useless.",
+              "New evidence changing a model is how science works. Scientists improve the model and keep what still works.", "NOS-01"),
              ("Once scientists agree, an idea never changes.",
-              "Ideas change when new evidence appears."),
+              "Ideas change when new evidence appears.", "NOS-02"),
              ("Rubber is not made of particles.",
               "It is. The simple model just cannot join them into chains."),
          ]}]},
