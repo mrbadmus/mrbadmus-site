@@ -15,12 +15,12 @@ Old page: Design batch-6 (`ks4-biology-4.2.2.1-digestive-system.dc.html`), famil
 | Lipases break down lipids (fats) to glycerol and fatty acids | Reveal; card 'Word equations'; Rung 1 Q1 | CF CH TF TH | ✓ |
 | The products of digestion are used to build new carbohydrates, lipids and proteins. Some glucose is used in respiration | Card 'Word equations' | CF CH TF TH | ✓ |
 | Bile: made in the liver, stored in the gall bladder; alkaline to neutralise hydrochloric acid from the stomach; emulsifies fat to small droplets, increasing surface area; alkaline conditions and large surface area increase the rate of fat breakdown by lipase | Card 'Bile'; Easy mistakes; Rung 1 Q2; Rung 3 chain 1; practice Q1 | CF CH TF TH | ✓ |
-| RP 3 / RP 4: food tests (Benedict's, iodine, Biuret; lipids) | Card 'Required practical 3: food tests' (CF CH) / 'Required practical 4: food tests' (TF TH); Rung 2; Rung 4. Lipids: the live page's ethanol emulsion test, restored after the examiner pass (reagent choice is Mide's) | CF CH TF TH | ✓ |
+| RP 3 / RP 4: food tests (Benedict's, iodine, Biuret; lipids) | Card 'Required practical 3: food tests' (CF CH) / 'Required practical 4: food tests' (TF TH); Rung 2; Rung 4. Lipids: Sudan III (red-stained oily layer on top), with the ethanol emulsion test as a one-line alternative (supervising ruling, 18 Nov) | CF CH TF TH | ✓ |
 | Enzyme nature, temperature and pH; lock and key; rate calculations; amylase pH RP | Enzymes lesson; Dive deeper 'How enzymes work' links to it | CF CH TF TH | ✓ (other lesson) |
 
 **Gaps and mismatches.**
 - None in the spec lines. The two lessons split 4.2.2.1: this one = organs, enzymes' sites and products, bile, food tests; Enzymes = enzyme action, temperature, pH, the amylase RP.
-- The RP lists "lipids" in its title but names only three reagents. The page uses the ethanol emulsion test for lipids; that is a standard school method (AQA's practical handbook also allows Sudan III). Keep, flagged in Unsure.
+- The RP lists "lipids" in its title but names only three reagents. Ruled 18 Nov: the page teaches Sudan III (AQA's required practical handbook) as the main lipid test and the ethanol emulsion test as a one-line alternative, because exam questions use either.
 - Rainford's "microvilli" and "mechanical digestion": not in 4.2.2.1. Villi are in 4.1.3.1 (exchange surfaces). Leave microvilli out.
 
 **Practice set source.** Hard-coded `bankSrc`, five items, identical on every route. Fixes are `logic_edits`.
@@ -37,15 +37,15 @@ Old page: Design batch-6 (`ks4-biology-4.2.2.1-digestive-system.dc.html`), famil
 **Old subtopic data.** spec "4.2.2.1" ✓. rp "RP4 — Food tests…" on all four routes: wrong on CF CH (8464 RP 3). CH and TH carry a "higher" block (bile, villi and microvilli): 4.2 has no HT content, so it is mislabelled. The page does not read either field.
 
 **Unsure (left out until checked).**
-- Ethanol emulsion test for lipids (not named by the spec; standard method).
+- Sudan III and the ethanol emulsion test for lipids (the spec names neither; Sudan III is the handbook's method).
 - Benedict's colour range "green, yellow or orange means less sugar": standard, not spec wording.
 - Sites of amylase production "salivary glands, pancreas, small intestine" and protease "stomach, pancreas, small intestine": AQA's mark schemes accept these; keep.
 
 **Removed or moved.**
 - Design benches (follow the meal, food tests bench), Think again: off the page.
-- Lipid test (ethanol emulsion): left out in the first draft, then restored (see the examiner/blind line below).
+- Lipid test: left out in the first draft, restored as ethanol emulsion, then ruled (18 Nov) Sudan III first with ethanol as the alternative.
 - Pepsin, maltose, lacteals, microvilli, mechanical digestion: gone from options and replies (not in the spec).
 - Old subtopic data: CH/TH 'higher' block (bile, villi, microvilli) is not Higher content; RP number wrong on CF CH. Not rendered; the builder takes the RP numbers from the record.
 - Practice set: options and replies rewritten (Q1 to Q5). Stems kept, so ids kept.
-- Examiner/blind (18 Nov): **lipid test restored** (the live page's ethanol emulsion test, word for word; reagent choice is Mide's, UNSURE 1); Rung 2's 'A cloudy white emulsion' option kept.
+- Examiner/blind (18 Nov): **lipid test restored** (the live page's ethanol emulsion test, word for word; reagent then ruled: Sudan III first, see above); Rung 2's 'A cloudy white emulsion' option kept.
 - Benedict's list now includes orange; 'They are absorbed in the small intestine' (not 'This happens…'); gut figure label 'small intestine' (no '(coiled)', it ran off the edge).
