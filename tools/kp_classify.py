@@ -1637,13 +1637,34 @@ def write_json(path, obj):
 
 # ── the top-up (round 4, 13 Oct 2026): from the COMMITTED JSON ──────────
 
+def removed_ids():
+    """Ids the lean rebuilds retired from their pages (docs/lessons/<pilot or wave>/ID-MAP-*.json,
+    status "removed"; tools/lean_id_map.py writes them). A child's saved or still-queued answer to
+    one of these must still resolve: its TAG stays (so it shows under its knowledge point) and its
+    KEY stays (so the backend can mark a late-arriving answer, consumer/answers.js). The keys were
+    checked equal to the page's right option while the question was live, and never change again."""
+    out = set()
+    for path in glob.glob(os.path.join(REPO, "docs", "lessons", "*", "ID-MAP-*.json")):
+        with open(path, encoding="utf-8") as fh:
+            for qid, e in (json.load(fh).get("ids") or {}).items():
+                if e.get("status") == "removed":
+                    out.add(qid)
+    return out
+
+
 def write_keys(data):
     """Every scope's `keys`: the right option's text, exactly as the page
-    renders it, for each tagged lesson-page question that has exactly one."""
+    renders it, for each tagged lesson-page question that has exactly one.
+    ⊕ 18 Nov 2026: plus the committed key of every still-tagged RETIRED id
+    (removed_ids()), which no page renders any more. Regenerating used to drop
+    them (576 keys), so the tool could not reproduce main."""
     keys = answer_keys()
+    removed = removed_ids()
     for ks in ("KS3", "KS4"):
         for e in data[ks].values():
+            old = e.get("keys") or {}
             k = {q: keys[q][0] for q in e["questions"] if q in keys and keys[q][0] is not None}
+            k.update({q: v for q, v in old.items() if q in removed and q in e["questions"] and q not in keys})
             if k:
                 e["keys"] = dict(sorted(k.items()))
             else:
@@ -1694,6 +1715,7 @@ def top_up(a):
     # their ids are not position-derived, and the gate checks them.
     known = {it[0] for items in want.values() for it in items}
     keys_now = answer_keys()
+    removed = removed_ids()
     pruned, changed = [], []
     for ks in data:
         for ref, e in data[ks].items():
@@ -1705,6 +1727,10 @@ def top_up(a):
                 if src in ("exam", "ks3_bank", "ks4_bank"):
                     continue
                 if q not in known:
+                    if q in removed:
+                        # ⊕ 18 Nov 2026: a retired id (an ID map lists it "removed") keeps
+                        # its tag and key, so a saved or late answer still resolves.
+                        continue
                     pruned.append((q, e["questions"].pop(q)))
                     ek.pop(q, None)
                     continue
