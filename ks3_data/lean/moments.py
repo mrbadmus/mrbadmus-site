@@ -162,9 +162,9 @@ LESSON = {
             3: "Distance changes the size of the moment. At 0.80 m, the same 30 N gives twice as much.",
         },
         "apply": {
-            0: "A moment is force × distance. Same force, four times the distance, four times the moment.",
+            0: "50 N is the force, not the moment. Moment = force × distance, so 5 N m and 20 N m.",
             2: "Closer to the pivot gives a smaller moment, as at the door hinge.",
-            3: "The weight of the spanner is not the reason. The longer spanner has more distance.",
+            3: "Both pull with 50 N. The longer handle adds distance, not force.",
         },
     },
 }

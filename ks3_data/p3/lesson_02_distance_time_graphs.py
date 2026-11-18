@@ -333,7 +333,7 @@ LESSON = {
             "q": "A distance–time graph is horizontal between 20 s and 35 s. "
                  "What was happening in those fifteen seconds?",
             "options": ["It was slowing down", "It was going back to the "
-                        "start", "The object was stopped",
+                        "start", "It was standing still",
                         "It was moving at a steady speed"],
             "answer": 2,
             "feedback": {
