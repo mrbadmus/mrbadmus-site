@@ -643,7 +643,7 @@ MAP = {
         'Electrcity Test':                                                                    ASSESSMENT,
         'Waves prop':                                                                         "properties-of-waves",
         'Wave RP':                                                                            "properties-of-waves",
-        '(PHYS) Reflection RP':                                                               "properties-em-waves-1",
+        '(PHYS) Reflection RP':                                                               "required-practical-light",
         'Refraction RP':                                                                      "properties-em-waves-1",
         '(PHYS)Lenses':                                                                       "lenses",
         '(PHYS)Sounds and sonar':                                                             "sound-waves-hearing",

@@ -111,8 +111,16 @@
   "hash": "039fe1dda5b681d5d82f579741888c687733841e0830ba103d1199ff755b224e",
   "review_state": "examiner-reviewed"
  },
+ "infrared-black-bodies": {
+  "hash": "d826a8ad86a4a94b6f79d585fade1a72b6ce817e1a4ddfa78631b889bba6d739",
+  "review_state": "examiner-reviewed"
+ },
  "land-use": {
   "hash": "581e6c8541f941b231416a42fb24ae1d7d6fe75a2e3b3e0ca0d605b998c92bae",
+  "review_state": "examiner-reviewed"
+ },
+ "lenses": {
+  "hash": "9fb5bdef2243ffd3969b80a68ec0f8d90595f99dc72fd20fca7596fe2c4875e9",
   "review_state": "examiner-reviewed"
  },
  "loudspeakers-headphones": {
@@ -155,12 +163,36 @@
   "hash": "d48969ef96b9bea6d0227051862fede97cf0f9b3e8238aa9d04e857e1d650461",
   "review_state": "examiner-reviewed"
  },
+ "properties-em-waves-1": {
+  "hash": "27faf8c5ca42c61771f183b3c081fa041a59bed0d89cc585fad7a648d44deec8",
+  "review_state": "examiner-reviewed"
+ },
+ "properties-em-waves-2": {
+  "hash": "e47833e989c8742956bda9166a7e8dc4e2c2fd6f9d45b908c01e5575d6a26df6",
+  "review_state": "examiner-reviewed"
+ },
+ "properties-of-waves": {
+  "hash": "76016d0f1406dd045f299a9c8a4bc12bf91ff08faf6fbfb3757b4cd4b1288593",
+  "review_state": "examiner-reviewed"
+ },
  "pyramids-of-biomass": {
   "hash": "387f8ffaaa7f2a39acd524b90b71417cb541c1d8a54e8d512d98e347d13cd816",
   "review_state": "examiner-reviewed"
  },
+ "radiation-balance-temperature": {
+  "hash": "618c1b5c21321a53c7ce6796b079cc5f80b9966460e92de8d70959549f8777a1",
+  "review_state": "examiner-reviewed"
+ },
+ "reflection-of-waves": {
+  "hash": "173781b4280c869a9f3d49d4a080c8c06a02b12e0339f2fc78e7c8584944f8e0",
+  "review_state": "examiner-reviewed"
+ },
  "relative-formula-mass": {
   "hash": "5584890bdd72f08f9745a109b6fcd20f6a8e83426a043ea69bb844dbca9c5139",
+  "review_state": "examiner-reviewed"
+ },
+ "required-practical-light": {
+  "hash": "b9ce828c123f0ede3b0ffa67bc6d0acac3e171b79ade4e0fe2a669fdc3db8f31",
   "review_state": "examiner-reviewed"
  },
  "role-of-biotechnology": {
@@ -169,6 +201,10 @@
  },
  "sampling-techniques": {
   "hash": "819f10d95b81b6bc3e11cebdc5cfdb1193c1be62855d33671b95e78844e007f3",
+  "review_state": "examiner-reviewed"
+ },
+ "sound-waves-hearing": {
+  "hash": "c38409d8fcbf313aeb62c7623926568f0c64bdba221ed4010189e84e25551f51",
   "review_state": "examiner-reviewed"
  },
  "sustainable-fisheries": {
@@ -187,8 +223,20 @@
   "hash": "0982b232072d3804609b809c4e8d6d08a6504936005b941f7fbbb2b5d9584c34",
   "review_state": "examiner-reviewed"
  },
+ "transverse-longitudinal-waves": {
+  "hash": "6f01a51bf65c657d6c14a267c624c057719171e7b0a290b943d7fb157b77a034",
+  "review_state": "examiner-reviewed"
+ },
  "trophic-levels": {
   "hash": "5ae6da156033fa9289bf69de5f249367904f29e8c3585984997a6f604436f4e7",
+  "review_state": "examiner-reviewed"
+ },
+ "types-of-em-waves": {
+  "hash": "78cde62e198e4e3c8f8809a5aeba3f779317ef68ce775bdc72dcbc5e47bb5b57",
+  "review_state": "examiner-reviewed"
+ },
+ "uses-em-waves": {
+  "hash": "95de33553523247237090e31bde0cf5e00b235b902d9b6f2100da546700802f6",
   "review_state": "examiner-reviewed"
  },
  "uses-generator-effect": {
@@ -199,12 +247,24 @@
   "hash": "0bbd72bf16d230fb6ca986f0c55ed93aeb72819a368276075c65e312f7a4a082",
   "review_state": "examiner-reviewed"
  },
+ "visible-light": {
+  "hash": "67e5da1aff44294d0872aa79b146b9637720032910d014799004976b6af49ec8",
+  "review_state": "examiner-reviewed"
+ },
  "waste-management": {
   "hash": "0571a6cb396ea89290ad12c8ab6c021c828ab29a112324501c98456c74489d3d",
   "review_state": "examiner-reviewed"
  },
  "water-cycle": {
   "hash": "2802adf2a2094ac6949f60ca370624a177d75286db3598bb8589b89c4386262a",
+  "review_state": "examiner-reviewed"
+ },
+ "wave-front-refraction": {
+  "hash": "994faac16c03c8015050a88d4d7980db5c6508dfaa2c572031673f24c1790cb8",
+  "review_state": "examiner-reviewed"
+ },
+ "waves-detection-exploration": {
+  "hash": "f05dc82899a9483daa8da80c69e13467ec84faaf6532086eace67ed3880e9890",
   "review_state": "examiner-reviewed"
  }
 }

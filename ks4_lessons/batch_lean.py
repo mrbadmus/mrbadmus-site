@@ -32,7 +32,9 @@ SLUGS = ["efficiency", "changes-in-energy", "power", "thermal-conductivity",
 # Slugs the lean batch registers when their record exists: the eight above first (their order
 # is part of the Energy pages' bytes), then every other record in ks4_lessons/lean/, by slug.
 # Wave 1 (docs/lessons/LEAN-PLAN.md): Physics Magnetism (ten old-format lessons), then Biology
-# Ecology (eight old-format lessons derived below, fifteen legacy batch-10 lessons).
+# Ecology (eight old-format lessons derived below, fifteen legacy batch-10 lessons), Chemistry
+# Quantitative, then Physics Waves (six old-format lessons, three new ones, six legacy lessons
+# from batches 2, 3 and 4).
 
 # Lessons that have no legacy page: identity comes from here (the subtopic data's own
 # title and spec, 6.1.1.1 / 6.1.1.3 / 6.1.2.1). The three Energy ones are written out so
@@ -51,6 +53,7 @@ _UNITS = {
     ("physics", "magnetism"): "Magnetism and electromagnetism",
     ("biology", "ecology"): "Ecology",
     ("chemistry", "quantitative"): "Quantitative chemistry",
+    ("physics", "waves"): "Waves",
 }
 # The family label (the eyebrow's last word) is a ruled choice per lesson, drawn from the
 # labels the existing batches use: Model, Quantitative, Process, Classify, Contrast,
@@ -79,6 +82,17 @@ _FAMILY = {
     "water-cycle": "Model",
     "decomposition": "Process",
     "factors-affecting-food-security": "Classify",
+    # Waves: six old-format lessons rebuilt, and three new physics-only lessons (8463 4.6.1.3,
+    # Required practical activity 9, 4.6.2.6). The six legacy ones keep their batch's own family.
+    "transverse-longitudinal-waves": "Model",
+    "properties-of-waves": "Quantitative",
+    "properties-em-waves-1": "Model",
+    "properties-em-waves-2": "Classify",
+    "wave-front-refraction": "Model",
+    "radiation-balance-temperature": "Process",
+    "reflection-of-waves": "Model",
+    "required-practical-light": "Required practical",
+    "visible-light": "Model",
 }
 # Ecology lessons whose record has no `legacy` but which were live Design lessons in an earlier
 # batch: the lean page is built from the record alone and replaces that page. slug -> the one
@@ -104,6 +118,17 @@ _SPEC = {
     "water-cycle": "4.7.2.2",
     "decomposition": ("4.7.2.2", "4.7.2.3"),
     "factors-affecting-food-security": "4.7.5.1",
+}
+# The 8464 section number of an old-format PHYSICS lesson whose subtopic data has it wrong, so
+# the eyebrow is not derived from that data (docs/lessons/wave1/ks4-<slug>.md, its Sources line).
+# The physics eyebrow rule turns 6.x into 8463's 4.x. wave-front-refraction's data says
+# "6.6.2 (HT only)": it is 6.6.2.2 / 4.6.2.2. radiation-balance-temperature's data says
+# "6.6.5.4": it is 8463 4.6.3.2, and 8464 has no such point; "6.6.3.2" is written so the rule
+# gives "AQA Physics (8463) 4.6.3.2" on TH, its only route (its Combined form is never shown, as
+# for transformers, TH only, 6.7.3.4).
+_PHYS_SPEC = {
+    "wave-front-refraction": "6.6.2.2",
+    "radiation-balance-temperature": "6.6.3.2",
 }
 # Chemistry numbers its sections differently in the two specs: AQA Combined Science (8464)
 # writes 5.3.x.y, AQA Chemistry (8462) writes 4.3.x.y (the sub-numbers happen to agree in this
@@ -181,6 +206,8 @@ def _derive(slug):
             raise ValueError("batch_lean: %r has no family label in _FAMILY" % slug)
         canon = found.get("TH") or next(iter(found.values()))   # TH is the 'everything' tier
         spec, spec_c = clean_spec(canon["spec"]), None
+        if subject == "physics" and slug in _PHYS_SPEC:
+            spec = _PHYS_SPEC[slug]
         if subject == "biology":
             if slug not in _SPEC:
                 raise ValueError("batch_lean: %r has no section number in _SPEC" % slug)

@@ -23340,7 +23340,7 @@
   "key_stage": "KS4",
   "keys": {
    "ks4:infrared-black-bodies:tf#choice-1": "Yes",
-   "ks4:infrared-black-bodies:tf#r1-1": "An object that absorbs all of the radiation incident on it",
+   "ks4:infrared-black-bodies:tf#r1-1": "An object that absorbs all radiation",
    "ks4:infrared-black-bodies:tf#r1-2": "Matt black",
    "ks4:infrared-black-bodies:tf#r2-1": "Higher at every wavelength, with its peak at a shorter wavelength",
    "ks4:infrared-black-bodies:tf#r2-2": "Infrared",
@@ -23352,7 +23352,7 @@
    "ks4:infrared-black-bodies:tf#sort-1-6": "False",
    "ks4:infrared-black-bodies:tf#start": "They start to glow",
    "ks4:infrared-black-bodies:th#choice-1": "Yes",
-   "ks4:infrared-black-bodies:th#r1-1": "An object that absorbs all of the radiation incident on it",
+   "ks4:infrared-black-bodies:th#r1-1": "An object that absorbs all radiation",
    "ks4:infrared-black-bodies:th#r1-2": "Matt black",
    "ks4:infrared-black-bodies:th#r2-1": "Higher at every wavelength, with its peak at a shorter wavelength",
    "ks4:infrared-black-bodies:th#r2-2": "Infrared",
@@ -23368,7 +23368,7 @@
    "ks4c:infrared-black-bodies:match-3": "Hotter object",
    "ks4c:infrared-black-bodies:match-4": "Blue-white star",
    "ks4q:infrared-black-bodies:199c2094cf": "An object that absorbs all of the radiation incident on it",
-   "ks4q:infrared-black-bodies:64a6cd0619": "It emits more at every wavelength, and the distribution is shifted to shorter wavelengths",
+   "ks4q:infrared-black-bodies:64a6cd0619": "It emits more, with its peak at shorter wavelengths",
    "ks4q:infrared-black-bodies:8ac5d813c3": "All objects, whatever their temperature",
    "ks4q:infrared-black-bodies:9af8ecb171": "As temperature increases, the peak emission shifts to shorter wavelengths — from infrared through red to shorter visible wavelengths approaching white",
    "ks4q:infrared-black-bodies:9d1846838f": "Silvered walls are poor emitters and poor absorbers of infrared — they reflect radiation back, reducing thermal energy transfer by radiation"
@@ -24690,7 +24690,7 @@
   "key_stage": "KS4",
   "keys": {
    "ks4:lenses:tf#choice-1": "A concave (diverging) lens",
-   "ks4:lenses:tf#r1": "Less than 10 cm from the lens — the object must be inside the focal length to produce a virtual, magnified image",
+   "ks4:lenses:tf#r1": "Less than 10 cm from the lens",
    "ks4:lenses:tf#sort-1-1": "Convex only",
    "ks4:lenses:tf#sort-1-2": "Concave only",
    "ks4:lenses:tf#sort-1-3": "Convex only",
@@ -24700,7 +24700,7 @@
    "ks4:lenses:tf#sort-1-7": "Convex only",
    "ks4:lenses:tf#start": "Upside down",
    "ks4:lenses:th#choice-1": "A concave (diverging) lens",
-   "ks4:lenses:th#r1": "Less than 10 cm from the lens — the object must be inside the focal length to produce a virtual, magnified image",
+   "ks4:lenses:th#r1": "Less than 10 cm from the lens",
    "ks4:lenses:th#sort-1-1": "Convex only",
    "ks4:lenses:th#sort-1-2": "Concave only",
    "ks4:lenses:th#sort-1-3": "Convex only",
@@ -24714,7 +24714,11 @@
    "ks4c:lenses:match-3": "Diverging lens",
    "ks4c:lenses:match-4": "Myopia correction",
    "ks4q:lenses:1982baa165": "A diverging (concave) lens — it spreads the light before it enters the eye, so the image forms further back on the retina rather than in front of it",
-   "ks4q:lenses:ca73e93b6a": "Less than 10 cm from the lens — the object must be inside the focal length to produce a virtual, magnified image"
+   "ks4q:lenses:ca73e93b6a": "Less than 10 cm from the lens",
+   "ks4q:lenses:0f37580aad": "The distance from the lens to the principal focus",
+   "ks4q:lenses:3fb31de065": "2.5",
+   "ks4q:lenses:8acd127c8f": "An image formed where rays of light meet",
+   "ks4q:lenses:dd7cc6bd50": "A concave lens"
   },
   "points": [
    {
@@ -24744,6 +24748,11 @@
    {
     "id": "ks4.lenses.7",
     "label": "The eye focuses light onto the retina; ciliary muscles change the lens shape to adjust focus"
+   },
+   {
+    "added": "round-4",
+    "id": "ks4.lenses.8",
+    "label": "Focal length is the distance from a lens to its principal focus"
    }
   ],
   "questions": {
@@ -24864,7 +24873,11 @@
    "ks4c:lenses:match-3": "ks4.lenses.4",
    "ks4c:lenses:match-4": "ks4.lenses.6",
    "ks4q:lenses:1982baa165": "ks4.lenses.6",
-   "ks4q:lenses:ca73e93b6a": "ks4.lenses.4"
+   "ks4q:lenses:ca73e93b6a": "ks4.lenses.4",
+   "ks4q:lenses:0f37580aad": "ks4.lenses.8",
+   "ks4q:lenses:3fb31de065": "ks4.lenses.5",
+   "ks4q:lenses:8acd127c8f": "ks4.lenses.3",
+   "ks4q:lenses:dd7cc6bd50": "ks4.lenses.2"
   },
   "scope_ref": "lenses",
   "subject": "physics",
@@ -33543,8 +33556,32 @@
    "ks4c:properties-em-waves-1:match-2": "Glass → air",
    "ks4c:properties-em-waves-1:match-3": "Along the normal (0°)",
    "ks4c:properties-em-waves-1:match-4": "Frequency during refraction",
-   "ks4q:properties-em-waves-1:1d53ad3243": "It bends towards the normal — angle of refraction is less than 40°, because light slows down in glass",
-   "ks4q:properties-em-waves-1:425ded7394": "Wavelength and speed both decrease — frequency stays constant"
+   "ks4q:properties-em-waves-1:1d53ad3243": "It bends towards the normal: the angle of refraction is less than 40°",
+   "ks4q:properties-em-waves-1:425ded7394": "Its speed and its wavelength",
+   "ks4:properties-em-waves-1:cf#r1-1": "A line at 90° to the boundary",
+   "ks4:properties-em-waves-1:cf#r1-2": "Towards the normal",
+   "ks4:properties-em-waves-1:cf#r2-1": "Straight on, along the normal",
+   "ks4:properties-em-waves-1:cf#r2-2": "Bigger than 30°: it bends away from the normal",
+   "ks4:properties-em-waves-1:cf#start": "The light from it changes direction",
+   "ks4:properties-em-waves-1:ch#r1-1": "A line at 90° to the boundary",
+   "ks4:properties-em-waves-1:ch#r1-2": "Towards the normal",
+   "ks4:properties-em-waves-1:ch#r2-1": "Straight on, along the normal",
+   "ks4:properties-em-waves-1:ch#r2-2": "Bigger than 30°: it bends away from the normal",
+   "ks4:properties-em-waves-1:ch#start": "The light from it changes direction",
+   "ks4:properties-em-waves-1:tf#r1-1": "A line at 90° to the boundary",
+   "ks4:properties-em-waves-1:tf#r1-2": "Towards the normal",
+   "ks4:properties-em-waves-1:tf#r2-1": "Straight on, along the normal",
+   "ks4:properties-em-waves-1:tf#r2-2": "Bigger than 30°: it bends away from the normal",
+   "ks4:properties-em-waves-1:tf#start": "The light from it changes direction",
+   "ks4:properties-em-waves-1:th#r1-1": "A line at 90° to the boundary",
+   "ks4:properties-em-waves-1:th#r1-2": "Towards the normal",
+   "ks4:properties-em-waves-1:th#r2-1": "Straight on, along the normal",
+   "ks4:properties-em-waves-1:th#r2-2": "Bigger than 30°: it bends away from the normal",
+   "ks4:properties-em-waves-1:th#start": "The light from it changes direction",
+   "ks4q:properties-em-waves-1:704571bcc9": "It does not change",
+   "ks4q:properties-em-waves-1:c796ee63c6": "Away from the normal",
+   "ks4q:properties-em-waves-1:d5d60f169e": "The normal",
+   "ks4q:properties-em-waves-1:d65d0271d7": "A change in direction as a wave passes into a new medium"
   },
   "points": [
    {
@@ -33579,6 +33616,11 @@
     "added": "round-2",
     "id": "ks4.properties-em-waves-1.8",
     "label": "A wave hitting a boundary along the normal passes straight through without bending"
+   },
+   {
+    "added": "round-4",
+    "id": "ks4.properties-em-waves-1.9",
+    "label": "A ray passing through a boundary refracts at entry and exit, travelling straight between them."
    }
   ],
   "questions": {
@@ -33651,7 +33693,43 @@
    "ks4c:properties-em-waves-1:match-3": "ks4.properties-em-waves-1.8",
    "ks4c:properties-em-waves-1:match-4": "ks4.properties-em-waves-1.3",
    "ks4q:properties-em-waves-1:1d53ad3243": "ks4.properties-em-waves-1.2",
-   "ks4q:properties-em-waves-1:425ded7394": "ks4.properties-em-waves-1.3"
+   "ks4q:properties-em-waves-1:425ded7394": "ks4.properties-em-waves-1.3",
+   "ks4:properties-em-waves-1:cf#r1-1": "ks4.properties-em-waves-1.4",
+   "ks4:properties-em-waves-1:cf#r1-2": "ks4.properties-em-waves-1.2",
+   "ks4:properties-em-waves-1:cf#r2-1": "ks4.properties-em-waves-1.8",
+   "ks4:properties-em-waves-1:cf#r2-2": "ks4.properties-em-waves-1.2",
+   "ks4:properties-em-waves-1:cf#r3-1": "ks4.properties-em-waves-1.4",
+   "ks4:properties-em-waves-1:cf#r3-2": "ks4.properties-em-waves-1.9",
+   "ks4:properties-em-waves-1:cf#r4-1": "ks4.properties-em-waves-1.9",
+   "ks4:properties-em-waves-1:cf#start": "ks4.properties-em-waves-1.1",
+   "ks4:properties-em-waves-1:ch#r1-1": "ks4.properties-em-waves-1.4",
+   "ks4:properties-em-waves-1:ch#r1-2": "ks4.properties-em-waves-1.2",
+   "ks4:properties-em-waves-1:ch#r2-1": "ks4.properties-em-waves-1.8",
+   "ks4:properties-em-waves-1:ch#r2-2": "ks4.properties-em-waves-1.2",
+   "ks4:properties-em-waves-1:ch#r3-1": "ks4.properties-em-waves-1.4",
+   "ks4:properties-em-waves-1:ch#r3-2": "ks4.properties-em-waves-1.9",
+   "ks4:properties-em-waves-1:ch#r4-1": "ks4.properties-em-waves-1.9",
+   "ks4:properties-em-waves-1:ch#start": "ks4.properties-em-waves-1.1",
+   "ks4:properties-em-waves-1:tf#r1-1": "ks4.properties-em-waves-1.4",
+   "ks4:properties-em-waves-1:tf#r1-2": "ks4.properties-em-waves-1.2",
+   "ks4:properties-em-waves-1:tf#r2-1": "ks4.properties-em-waves-1.8",
+   "ks4:properties-em-waves-1:tf#r2-2": "ks4.properties-em-waves-1.2",
+   "ks4:properties-em-waves-1:tf#r3-1": "ks4.properties-em-waves-1.4",
+   "ks4:properties-em-waves-1:tf#r3-2": "ks4.properties-em-waves-1.9",
+   "ks4:properties-em-waves-1:tf#r4-1": "ks4.properties-em-waves-1.9",
+   "ks4:properties-em-waves-1:tf#start": "ks4.properties-em-waves-1.1",
+   "ks4:properties-em-waves-1:th#r1-1": "ks4.properties-em-waves-1.4",
+   "ks4:properties-em-waves-1:th#r1-2": "ks4.properties-em-waves-1.2",
+   "ks4:properties-em-waves-1:th#r2-1": "ks4.properties-em-waves-1.8",
+   "ks4:properties-em-waves-1:th#r2-2": "ks4.properties-em-waves-1.2",
+   "ks4:properties-em-waves-1:th#r3-1": "ks4.properties-em-waves-1.4",
+   "ks4:properties-em-waves-1:th#r3-2": "ks4.properties-em-waves-1.9",
+   "ks4:properties-em-waves-1:th#r4-1": "ks4.properties-em-waves-1.9",
+   "ks4:properties-em-waves-1:th#start": "ks4.properties-em-waves-1.1",
+   "ks4q:properties-em-waves-1:704571bcc9": "ks4.properties-em-waves-1.8",
+   "ks4q:properties-em-waves-1:c796ee63c6": "ks4.properties-em-waves-1.2",
+   "ks4q:properties-em-waves-1:d5d60f169e": "ks4.properties-em-waves-1.4",
+   "ks4q:properties-em-waves-1:d65d0271d7": "ks4.properties-em-waves-1.1"
   },
   "scope_ref": "properties-em-waves-1",
   "subject": "physics",
@@ -33664,8 +33742,28 @@
    "ks4c:properties-em-waves-2:match-2": "Ultraviolet",
    "ks4c:properties-em-waves-2:match-3": "X-rays",
    "ks4c:properties-em-waves-2:match-4": "Gamma rays",
-   "ks4q:properties-em-waves-2:fb1dae5e00": "Ultraviolet — UV has enough energy to penetrate skin cells and damage DNA, causing mutations",
-   "ks4q:properties-em-waves-2:fb5bb720bf": "X-rays are ionising — they have enough energy to remove electrons from atoms, damaging DNA. Infrared only heats tissue."
+   "ks4q:properties-em-waves-2:fb1dae5e00": "Ultraviolet",
+   "ks4q:properties-em-waves-2:fb5bb720bf": "X-rays are ionising radiation; infrared is not",
+   "ks4:properties-em-waves-2:cf#r1-1": "Gamma rays",
+   "ks4:properties-em-waves-2:cf#r1-2": "It increases the risk of skin cancer",
+   "ks4:properties-em-waves-2:cf#r2-2": "Scan B carries the bigger risk of harm, because its dose is bigger",
+   "ks4:properties-em-waves-2:cf#start": "Ultraviolet",
+   "ks4:properties-em-waves-2:ch#r1-1": "Gamma rays",
+   "ks4:properties-em-waves-2:ch#r1-2": "It increases the risk of skin cancer",
+   "ks4:properties-em-waves-2:ch#r2-2": "Scan B carries the bigger risk of harm, because its dose is bigger",
+   "ks4:properties-em-waves-2:ch#start": "Ultraviolet",
+   "ks4:properties-em-waves-2:tf#r1-1": "Gamma rays",
+   "ks4:properties-em-waves-2:tf#r1-2": "It increases the risk of skin cancer",
+   "ks4:properties-em-waves-2:tf#r2-2": "Scan B carries the bigger risk of harm, because its dose is bigger",
+   "ks4:properties-em-waves-2:tf#start": "Ultraviolet",
+   "ks4:properties-em-waves-2:th#r1-1": "Gamma rays",
+   "ks4:properties-em-waves-2:th#r1-2": "It increases the risk of skin cancer",
+   "ks4:properties-em-waves-2:th#r2-2": "Scan B carries the bigger risk of harm, because its dose is bigger",
+   "ks4:properties-em-waves-2:th#start": "Ultraviolet",
+   "ks4q:properties-em-waves-2:04d1ad1b52": "The type of radiation and the size of the dose",
+   "ks4q:properties-em-waves-2:20960c12db": "0.0035 Sv",
+   "ks4q:properties-em-waves-2:3e67ac603f": "Changes in the nucleus",
+   "ks4q:properties-em-waves-2:8e8c87373f": "An alternating current at the same frequency"
   },
   "points": [
    {
@@ -33699,6 +33797,11 @@
    {
     "id": "ks4.properties-em-waves-2.8",
     "label": "When EM radiation is absorbed by a material, its energy is transferred to that material"
+   },
+   {
+    "added": "round-4",
+    "id": "ks4.properties-em-waves-2.9",
+    "label": "Radiation dose is measured in sieverts (Sv); a larger dose means greater risk of harm"
    }
   ],
   "questions": {
@@ -33772,7 +33875,43 @@
    "ks4c:properties-em-waves-2:match-3": "ks4.properties-em-waves-2.3",
    "ks4c:properties-em-waves-2:match-4": "ks4.properties-em-waves-2.6",
    "ks4q:properties-em-waves-2:fb1dae5e00": "ks4.properties-em-waves-2.3",
-   "ks4q:properties-em-waves-2:fb5bb720bf": "ks4.properties-em-waves-2.5"
+   "ks4q:properties-em-waves-2:fb5bb720bf": "ks4.properties-em-waves-2.5",
+   "ks4:properties-em-waves-2:cf#r1-1": "ks4.properties-em-waves-2.6",
+   "ks4:properties-em-waves-2:cf#r1-2": "ks4.properties-em-waves-2.3",
+   "ks4:properties-em-waves-2:cf#r2-1": "ks4.properties-em-waves-2.9",
+   "ks4:properties-em-waves-2:cf#r2-2": "ks4.properties-em-waves-2.9",
+   "ks4:properties-em-waves-2:cf#r3-1": "ks4.properties-em-waves-2.4",
+   "ks4:properties-em-waves-2:cf#r3-2": "ks4.properties-em-waves-2.3",
+   "ks4:properties-em-waves-2:cf#r4-1": "ks4.properties-em-waves-2.4",
+   "ks4:properties-em-waves-2:cf#start": "ks4.properties-em-waves-2.1",
+   "ks4:properties-em-waves-2:ch#r1-1": "ks4.properties-em-waves-2.6",
+   "ks4:properties-em-waves-2:ch#r1-2": "ks4.properties-em-waves-2.3",
+   "ks4:properties-em-waves-2:ch#r2-1": "ks4.properties-em-waves-2.9",
+   "ks4:properties-em-waves-2:ch#r2-2": "ks4.properties-em-waves-2.9",
+   "ks4:properties-em-waves-2:ch#r3-1": "ks4.properties-em-waves-2.4",
+   "ks4:properties-em-waves-2:ch#r3-2": "ks4.properties-em-waves-2.3",
+   "ks4:properties-em-waves-2:ch#r4-1": "ks4.properties-em-waves-2.4",
+   "ks4:properties-em-waves-2:ch#start": "ks4.properties-em-waves-2.1",
+   "ks4:properties-em-waves-2:tf#r1-1": "ks4.properties-em-waves-2.6",
+   "ks4:properties-em-waves-2:tf#r1-2": "ks4.properties-em-waves-2.3",
+   "ks4:properties-em-waves-2:tf#r2-1": "ks4.properties-em-waves-2.9",
+   "ks4:properties-em-waves-2:tf#r2-2": "ks4.properties-em-waves-2.9",
+   "ks4:properties-em-waves-2:tf#r3-1": "ks4.properties-em-waves-2.4",
+   "ks4:properties-em-waves-2:tf#r3-2": "ks4.properties-em-waves-2.3",
+   "ks4:properties-em-waves-2:tf#r4-1": "ks4.properties-em-waves-2.4",
+   "ks4:properties-em-waves-2:tf#start": "ks4.properties-em-waves-2.1",
+   "ks4:properties-em-waves-2:th#r1-1": "ks4.properties-em-waves-2.6",
+   "ks4:properties-em-waves-2:th#r1-2": "ks4.properties-em-waves-2.3",
+   "ks4:properties-em-waves-2:th#r2-1": "ks4.properties-em-waves-2.9",
+   "ks4:properties-em-waves-2:th#r2-2": "ks4.properties-em-waves-2.9",
+   "ks4:properties-em-waves-2:th#r3-1": "ks4.properties-em-waves-2.4",
+   "ks4:properties-em-waves-2:th#r3-2": "ks4.properties-em-waves-2.3",
+   "ks4:properties-em-waves-2:th#r4-1": "ks4.properties-em-waves-2.4",
+   "ks4:properties-em-waves-2:th#start": "ks4.properties-em-waves-2.1",
+   "ks4q:properties-em-waves-2:04d1ad1b52": "ks4.properties-em-waves-2.4",
+   "ks4q:properties-em-waves-2:20960c12db": "ks4.properties-em-waves-2.9",
+   "ks4q:properties-em-waves-2:3e67ac603f": "ks4.properties-em-waves-2.6",
+   "ks4q:properties-em-waves-2:8e8c87373f": "ks4.properties-em-waves-2.7"
   },
   "scope_ref": "properties-em-waves-2",
   "subject": "physics",
@@ -34127,8 +34266,24 @@
    "ks4c:properties-of-waves:match-3": "Frequency (f)",
    "ks4c:properties-of-waves:match-4": "Period (T)",
    "ks4c:properties-of-waves:match-5": "Wave speed (v)",
-   "ks4q:properties-of-waves:808c17c6ec": "0.005 s — T = 1 ÷ f = 1 ÷ 200 = 0.005 s",
-   "ks4q:properties-of-waves:d092a4bd5e": "1 × 10⁸ Hz — f = v ÷ λ = 3×10⁸ ÷ 3 = 1×10⁸ Hz"
+   "ks4q:properties-of-waves:808c17c6ec": "0.005 s",
+   "ks4q:properties-of-waves:d092a4bd5e": "1 × 10⁸ Hz",
+   "ks4:properties-of-waves:cf#r1-1": "The number of waves passing a point each second",
+   "ks4:properties-of-waves:cf#r1-2": "hertz (Hz)",
+   "ks4:properties-of-waves:cf#start": "It gets shorter",
+   "ks4:properties-of-waves:ch#r1-1": "The number of waves passing a point each second",
+   "ks4:properties-of-waves:ch#r1-2": "hertz (Hz)",
+   "ks4:properties-of-waves:ch#start": "It gets shorter",
+   "ks4:properties-of-waves:tf#r1-1": "The number of waves passing a point each second",
+   "ks4:properties-of-waves:tf#r1-2": "hertz (Hz)",
+   "ks4:properties-of-waves:tf#start": "It gets shorter",
+   "ks4:properties-of-waves:th#r1-1": "The number of waves passing a point each second",
+   "ks4:properties-of-waves:th#r1-2": "hertz (Hz)",
+   "ks4:properties-of-waves:th#start": "It gets shorter",
+   "ks4q:properties-of-waves:4b4abbc938": "It stays the same",
+   "ks4q:properties-of-waves:5acc483a3c": "v = f λ",
+   "ks4q:properties-of-waves:87e33ba8a5": "The maximum displacement from the undisturbed position",
+   "ks4q:properties-of-waves:ef1647d40c": "3.0 Hz"
   },
   "points": [
    {
@@ -34235,7 +34390,51 @@
    "ks4c:properties-of-waves:match-4": "ks4.properties-of-waves.3",
    "ks4c:properties-of-waves:match-5": "ks4.properties-of-waves.4",
    "ks4q:properties-of-waves:808c17c6ec": "ks4.properties-of-waves.3",
-   "ks4q:properties-of-waves:d092a4bd5e": "ks4.properties-of-waves.5"
+   "ks4q:properties-of-waves:d092a4bd5e": "ks4.properties-of-waves.5",
+   "ks4:properties-of-waves:cf#cfifa-1-1": "ks4.properties-of-waves.4",
+   "ks4:properties-of-waves:cf#cfifa-1-2": "ks4.properties-of-waves.4",
+   "ks4:properties-of-waves:cf#r1-1": "ks4.properties-of-waves.2",
+   "ks4:properties-of-waves:cf#r1-2": "ks4.properties-of-waves.2",
+   "ks4:properties-of-waves:cf#r2-1": "ks4.properties-of-waves.4",
+   "ks4:properties-of-waves:cf#r2-2": "ks4.properties-of-waves.3",
+   "ks4:properties-of-waves:cf#r3-1": "ks4.properties-of-waves.8",
+   "ks4:properties-of-waves:cf#r3-2": "ks4.properties-of-waves.8",
+   "ks4:properties-of-waves:cf#r4-1": "ks4.properties-of-waves.8",
+   "ks4:properties-of-waves:cf#start": "ks4.properties-of-waves.2",
+   "ks4:properties-of-waves:ch#cfifa-1-1": "ks4.properties-of-waves.4",
+   "ks4:properties-of-waves:ch#cfifa-1-2": "ks4.properties-of-waves.4",
+   "ks4:properties-of-waves:ch#r1-1": "ks4.properties-of-waves.2",
+   "ks4:properties-of-waves:ch#r1-2": "ks4.properties-of-waves.2",
+   "ks4:properties-of-waves:ch#r2-1": "ks4.properties-of-waves.4",
+   "ks4:properties-of-waves:ch#r2-2": "ks4.properties-of-waves.3",
+   "ks4:properties-of-waves:ch#r3-1": "ks4.properties-of-waves.8",
+   "ks4:properties-of-waves:ch#r3-2": "ks4.properties-of-waves.8",
+   "ks4:properties-of-waves:ch#r4-1": "ks4.properties-of-waves.8",
+   "ks4:properties-of-waves:ch#start": "ks4.properties-of-waves.2",
+   "ks4:properties-of-waves:tf#cfifa-1-1": "ks4.properties-of-waves.4",
+   "ks4:properties-of-waves:tf#cfifa-1-2": "ks4.properties-of-waves.4",
+   "ks4:properties-of-waves:tf#r1-1": "ks4.properties-of-waves.2",
+   "ks4:properties-of-waves:tf#r1-2": "ks4.properties-of-waves.2",
+   "ks4:properties-of-waves:tf#r2-1": "ks4.properties-of-waves.4",
+   "ks4:properties-of-waves:tf#r2-2": "ks4.properties-of-waves.3",
+   "ks4:properties-of-waves:tf#r3-1": "ks4.properties-of-waves.8",
+   "ks4:properties-of-waves:tf#r3-2": "ks4.properties-of-waves.8",
+   "ks4:properties-of-waves:tf#r4-1": "ks4.properties-of-waves.8",
+   "ks4:properties-of-waves:tf#start": "ks4.properties-of-waves.2",
+   "ks4:properties-of-waves:th#cfifa-1-1": "ks4.properties-of-waves.4",
+   "ks4:properties-of-waves:th#cfifa-1-2": "ks4.properties-of-waves.4",
+   "ks4:properties-of-waves:th#r1-1": "ks4.properties-of-waves.2",
+   "ks4:properties-of-waves:th#r1-2": "ks4.properties-of-waves.2",
+   "ks4:properties-of-waves:th#r2-1": "ks4.properties-of-waves.4",
+   "ks4:properties-of-waves:th#r2-2": "ks4.properties-of-waves.3",
+   "ks4:properties-of-waves:th#r3-1": "ks4.properties-of-waves.8",
+   "ks4:properties-of-waves:th#r3-2": "ks4.properties-of-waves.8",
+   "ks4:properties-of-waves:th#r4-1": "ks4.properties-of-waves.8",
+   "ks4:properties-of-waves:th#start": "ks4.properties-of-waves.2",
+   "ks4q:properties-of-waves:4b4abbc938": "ks4.properties-of-waves.6",
+   "ks4q:properties-of-waves:5acc483a3c": "ks4.properties-of-waves.4",
+   "ks4q:properties-of-waves:87e33ba8a5": "ks4.properties-of-waves.1",
+   "ks4q:properties-of-waves:ef1647d40c": "ks4.properties-of-waves.4"
   },
   "scope_ref": "properties-of-waves",
   "subject": "physics",
@@ -34755,7 +34954,17 @@
    "ks4c:radiation-balance-temperature:match-3": "Natural greenhouse effect",
    "ks4c:radiation-balance-temperature:match-4": "Enhanced greenhouse effect",
    "ks4q:radiation-balance-temperature:db5174f879": "About −18°C — without greenhouse gas insulation, Earth would radiate enough heat to space to maintain a much colder equilibrium",
-   "ks4q:radiation-balance-temperature:ed8865a9f2": "Greenhouse gases are transparent to visible light but absorb infrared — the molecular vibrations of CO₂ and H₂O match infrared wavelengths, not visible wavelengths"
+   "ks4q:radiation-balance-temperature:ed8865a9f2": "Greenhouse gases are transparent to visible light but absorb infrared — the molecular vibrations of CO₂ and H₂O match infrared wavelengths, not visible wavelengths",
+   "ks4:radiation-balance-temperature:th#r1-1": "It absorbs and emits at the same rate",
+   "ks4:radiation-balance-temperature:th#r1-2": "It increases",
+   "ks4:radiation-balance-temperature:th#r2-1": "Rising in the morning, constant at midday",
+   "ks4:radiation-balance-temperature:th#r2-2": "More radiation is absorbed, so the temperature rises",
+   "ks4:radiation-balance-temperature:th#start": "Yes, as fast as it emits it",
+   "ks4q:radiation-balance-temperature:4aff6bc2b7": "It falls",
+   "ks4q:radiation-balance-temperature:56de423a77": "It decreases",
+   "ks4q:radiation-balance-temperature:6bab19ee7e": "Radiation from the Sun absorbed by the surface",
+   "ks4q:radiation-balance-temperature:79356f773b": "It emits more radiation each second",
+   "ks4q:radiation-balance-temperature:9c40ad1ed2": "It increases"
   },
   "points": [
    {
@@ -34785,6 +34994,11 @@
    {
     "id": "ks4.radiation-balance-temperature.7",
     "label": "Compare planets: atmosphere thickness and composition explain huge surface temperature differences"
+   },
+   {
+    "added": "round-4",
+    "id": "ks4.radiation-balance-temperature.8",
+    "label": "A body's temperature rises when it absorbs radiation faster than it emits it"
    }
   ],
   "questions": {
@@ -34847,7 +35061,20 @@
    "ks4c:radiation-balance-temperature:match-3": "ks4.radiation-balance-temperature.3",
    "ks4c:radiation-balance-temperature:match-4": "ks4.radiation-balance-temperature.5",
    "ks4q:radiation-balance-temperature:db5174f879": "ks4.radiation-balance-temperature.3",
-   "ks4q:radiation-balance-temperature:ed8865a9f2": "ks4.radiation-balance-temperature.3"
+   "ks4q:radiation-balance-temperature:ed8865a9f2": "ks4.radiation-balance-temperature.3",
+   "ks4:radiation-balance-temperature:th#r1-1": "ks4.radiation-balance-temperature.1",
+   "ks4:radiation-balance-temperature:th#r1-2": "ks4.radiation-balance-temperature.8",
+   "ks4:radiation-balance-temperature:th#r2-1": "ks4.radiation-balance-temperature.8",
+   "ks4:radiation-balance-temperature:th#r2-2": "ks4.radiation-balance-temperature.4",
+   "ks4:radiation-balance-temperature:th#r3-1": "ks4.radiation-balance-temperature.8",
+   "ks4:radiation-balance-temperature:th#r3-2": "ks4.radiation-balance-temperature.3",
+   "ks4:radiation-balance-temperature:th#r4-1": "ks4.radiation-balance-temperature.6",
+   "ks4:radiation-balance-temperature:th#start": "ks4.radiation-balance-temperature.1",
+   "ks4q:radiation-balance-temperature:4aff6bc2b7": "ks4.radiation-balance-temperature.4",
+   "ks4q:radiation-balance-temperature:56de423a77": "ks4.radiation-balance-temperature.1",
+   "ks4q:radiation-balance-temperature:6bab19ee7e": "ks4.radiation-balance-temperature.2",
+   "ks4q:radiation-balance-temperature:79356f773b": "ks4.radiation-balance-temperature.8",
+   "ks4q:radiation-balance-temperature:9c40ad1ed2": "ks4.radiation-balance-temperature.1"
   },
   "scope_ref": "radiation-balance-temperature",
   "subject": "physics",
@@ -36886,6 +37113,102 @@
   "subject": "chemistry",
   "title": "Ways of Reducing the Use of Resources"
  },
+ "reflection-of-waves": {
+  "key_stage": "KS4",
+  "keys": {
+   "ks4:reflection-of-waves:tf#r1-1": "It passes on into the second material",
+   "ks4:reflection-of-waves:tf#r1-2": "The normal",
+   "ks4:reflection-of-waves:tf#r2-1": "60°",
+   "ks4:reflection-of-waves:tf#r2-2": "Most is transmitted and a little is reflected",
+   "ks4:reflection-of-waves:tf#start": "Some of it bounces back",
+   "ks4:reflection-of-waves:th#r1-1": "It passes on into the second material",
+   "ks4:reflection-of-waves:th#r1-2": "The normal",
+   "ks4:reflection-of-waves:th#r2-1": "60°",
+   "ks4:reflection-of-waves:th#r2-2": "Most is transmitted and a little is reflected",
+   "ks4:reflection-of-waves:th#start": "Some of it bounces back",
+   "ks4c:reflection-of-waves:match-1": "Reflected",
+   "ks4c:reflection-of-waves:match-2": "Absorbed",
+   "ks4c:reflection-of-waves:match-3": "Transmitted",
+   "ks4c:reflection-of-waves:match-4": "Normal",
+   "ks4q:reflection-of-waves:02a4b2dc99": "50°",
+   "ks4q:reflection-of-waves:1e09fb7cda": "Most goes through and a little reflects",
+   "ks4q:reflection-of-waves:f0153924cd": "The material takes in its energy",
+   "ks4q:reflection-of-waves:f1ed929d26": "Soft materials absorb more of the sound",
+   "ks4q:reflection-of-waves:f6348e53cf": "The normal"
+  },
+  "points": [
+   {
+    "id": "ks4.reflection-of-waves.1",
+    "label": "A wave at a boundary can be reflected, absorbed or transmitted"
+   },
+   {
+    "id": "ks4.reflection-of-waves.2",
+    "label": "Reflection bounces a wave back from a boundary"
+   },
+   {
+    "id": "ks4.reflection-of-waves.3",
+    "label": "Transmission lets a wave pass through into the next material"
+   },
+   {
+    "id": "ks4.reflection-of-waves.4",
+    "label": "Absorption transfers a wave's energy to the material at the boundary"
+   },
+   {
+    "id": "ks4.reflection-of-waves.5",
+    "label": "The normal is drawn at 90° to the surface at the point where a ray meets it"
+   },
+   {
+    "id": "ks4.reflection-of-waves.6",
+    "label": "Angle of incidence equals angle of reflection, both measured from the normal"
+   },
+   {
+    "id": "ks4.reflection-of-waves.7",
+    "label": "Angles of incidence and reflection are measured from the normal, not the surface"
+   }
+  ],
+  "questions": {
+   "ks4-reflection-of-waves-e01": "ks4.reflection-of-waves.2",
+   "ks4-reflection-of-waves-e02": "ks4.reflection-of-waves.3",
+   "ks4-reflection-of-waves-e03": "ks4.reflection-of-waves.5",
+   "ks4-reflection-of-waves-e04": "ks4.reflection-of-waves.6",
+   "ks4-reflection-of-waves-h01": "ks4.reflection-of-waves.6",
+   "ks4-reflection-of-waves-h02": "ks4.reflection-of-waves.1",
+   "ks4-reflection-of-waves-h03": "ks4.reflection-of-waves.6",
+   "ks4-reflection-of-waves-h04": "ks4.reflection-of-waves.4",
+   "ks4-reflection-of-waves-s01": "ks4.reflection-of-waves.7",
+   "ks4-reflection-of-waves-s02": "ks4.reflection-of-waves.1",
+   "ks4-reflection-of-waves-s03": "ks4.reflection-of-waves.7",
+   "ks4-reflection-of-waves-s04": "ks4.reflection-of-waves.4",
+   "ks4:reflection-of-waves:tf#r1-1": "ks4.reflection-of-waves.3",
+   "ks4:reflection-of-waves:tf#r1-2": "ks4.reflection-of-waves.5",
+   "ks4:reflection-of-waves:tf#r2-1": "ks4.reflection-of-waves.6",
+   "ks4:reflection-of-waves:tf#r2-2": "ks4.reflection-of-waves.1",
+   "ks4:reflection-of-waves:tf#r3-1": "ks4.reflection-of-waves.7",
+   "ks4:reflection-of-waves:tf#r3-2": "ks4.reflection-of-waves.2",
+   "ks4:reflection-of-waves:tf#r4-1": "ks4.reflection-of-waves.1",
+   "ks4:reflection-of-waves:tf#start": "ks4.reflection-of-waves.1",
+   "ks4:reflection-of-waves:th#r1-1": "ks4.reflection-of-waves.3",
+   "ks4:reflection-of-waves:th#r1-2": "ks4.reflection-of-waves.5",
+   "ks4:reflection-of-waves:th#r2-1": "ks4.reflection-of-waves.6",
+   "ks4:reflection-of-waves:th#r2-2": "ks4.reflection-of-waves.1",
+   "ks4:reflection-of-waves:th#r3-1": "ks4.reflection-of-waves.7",
+   "ks4:reflection-of-waves:th#r3-2": "ks4.reflection-of-waves.2",
+   "ks4:reflection-of-waves:th#r4-1": "ks4.reflection-of-waves.1",
+   "ks4:reflection-of-waves:th#start": "ks4.reflection-of-waves.1",
+   "ks4c:reflection-of-waves:match-1": "ks4.reflection-of-waves.2",
+   "ks4c:reflection-of-waves:match-2": "ks4.reflection-of-waves.4",
+   "ks4c:reflection-of-waves:match-3": "ks4.reflection-of-waves.3",
+   "ks4c:reflection-of-waves:match-4": "ks4.reflection-of-waves.5",
+   "ks4q:reflection-of-waves:02a4b2dc99": "ks4.reflection-of-waves.6",
+   "ks4q:reflection-of-waves:1e09fb7cda": "ks4.reflection-of-waves.3",
+   "ks4q:reflection-of-waves:f0153924cd": "ks4.reflection-of-waves.4",
+   "ks4q:reflection-of-waves:f1ed929d26": "ks4.reflection-of-waves.4",
+   "ks4q:reflection-of-waves:f6348e53cf": "ks4.reflection-of-waves.5"
+  },
+  "scope_ref": "reflection-of-waves",
+  "subject": "physics",
+  "title": "Reflection of Waves"
+ },
  "reflex-actions": {
   "key_stage": "KS4",
   "keys": {
@@ -37573,6 +37896,112 @@
   "scope_ref": "relative-formula-mass",
   "subject": "chemistry",
   "title": "Relative Formula Mass"
+ },
+ "required-practical-light": {
+  "key_stage": "KS4",
+  "keys": {
+   "ks4:required-practical-light:tf#r1-1": "A ray box",
+   "ks4:required-practical-light:tf#r1-2": "The angle of refraction",
+   "ks4:required-practical-light:tf#r2-1": "25°",
+   "ks4:required-practical-light:tf#r2-2": "So the line through them has an accurate direction",
+   "ks4:required-practical-light:tf#start": "Towards the normal",
+   "ks4:required-practical-light:th#r1-1": "A ray box",
+   "ks4:required-practical-light:th#r1-2": "The angle of refraction",
+   "ks4:required-practical-light:th#r2-1": "25°",
+   "ks4:required-practical-light:th#r2-2": "So the line through them has an accurate direction",
+   "ks4:required-practical-light:th#start": "Towards the normal",
+   "ks4c:required-practical-light:match-1": "Independent variable",
+   "ks4c:required-practical-light:match-2": "Dependent variable",
+   "ks4c:required-practical-light:match-3": "Control variable",
+   "ks4c:required-practical-light:match-4": "Measured with",
+   "ks4q:required-practical-light:011a21c7e9": "Its lamp gets hot",
+   "ks4q:required-practical-light:4a70abca4e": "The ray bends towards the normal",
+   "ks4q:required-practical-light:5092acf60e": "30°",
+   "ks4q:required-practical-light:ccfcac6f73": "It is scattered in many directions",
+   "ks4q:required-practical-light:fbe7f1c7f6": "A protractor"
+  },
+  "points": [
+   {
+    "id": "ks4.required-practical-light.1",
+    "label": "Use a protractor to measure angles of incidence, reflection and refraction"
+   },
+   {
+    "id": "ks4.required-practical-light.2",
+    "label": "Always measure angles of incidence, reflection and refraction from the normal"
+   },
+   {
+    "id": "ks4.required-practical-light.3",
+    "label": "For a plane mirror, the angle of reflection equals the angle of incidence"
+   },
+   {
+    "id": "ks4.required-practical-light.4",
+    "label": "Rough surfaces scatter light instead of producing a single reflected ray"
+   },
+   {
+    "id": "ks4.required-practical-light.5",
+    "label": "Light entering glass or water bends towards the normal; different substances refract by different amounts"
+   },
+   {
+    "id": "ks4.required-practical-light.6",
+    "label": "Mark each ray with two crosses placed far apart to draw an accurate direction"
+   },
+   {
+    "id": "ks4.required-practical-light.7",
+    "label": "The ray box lamp gets hot — do not touch it during the practical"
+   },
+   {
+    "added": "round-4",
+    "id": "ks4.required-practical-light.8",
+    "label": "A ray box with a narrow slit produces a single ray of light."
+   },
+   {
+    "added": "round-4",
+    "id": "ks4.required-practical-light.9",
+    "label": "Change the angle of incidence systematically and record the angle of refraction each time."
+   }
+  ],
+  "questions": {
+   "ks4-required-practical-light-e01": "ks4.required-practical-light.1",
+   "ks4-required-practical-light-e02": "ks4.required-practical-light.2",
+   "ks4-required-practical-light-e03": "ks4.required-practical-light.3",
+   "ks4-required-practical-light-e04": "ks4.required-practical-light.7",
+   "ks4-required-practical-light-h01": "ks4.required-practical-light.5",
+   "ks4-required-practical-light-h02": "ks4.required-practical-light.3",
+   "ks4-required-practical-light-h03": "ks4.required-practical-light.5",
+   "ks4-required-practical-light-h04": "ks4.required-practical-light.5",
+   "ks4-required-practical-light-s01": "ks4.required-practical-light.5",
+   "ks4-required-practical-light-s02": "ks4.required-practical-light.6",
+   "ks4-required-practical-light-s03": "ks4.required-practical-light.5",
+   "ks4-required-practical-light-s04": "ks4.required-practical-light.4",
+   "ks4:required-practical-light:tf#r1-1": "ks4.required-practical-light.8",
+   "ks4:required-practical-light:tf#r1-2": "ks4.required-practical-light.2",
+   "ks4:required-practical-light:tf#r2-1": "ks4.required-practical-light.5",
+   "ks4:required-practical-light:tf#r2-2": "ks4.required-practical-light.6",
+   "ks4:required-practical-light:tf#r3-1": "ks4.required-practical-light.5",
+   "ks4:required-practical-light:tf#r3-2": "ks4.required-practical-light.4",
+   "ks4:required-practical-light:tf#r4-1": "ks4.required-practical-light.9",
+   "ks4:required-practical-light:tf#start": "ks4.required-practical-light.5",
+   "ks4:required-practical-light:th#r1-1": "ks4.required-practical-light.8",
+   "ks4:required-practical-light:th#r1-2": "ks4.required-practical-light.2",
+   "ks4:required-practical-light:th#r2-1": "ks4.required-practical-light.5",
+   "ks4:required-practical-light:th#r2-2": "ks4.required-practical-light.6",
+   "ks4:required-practical-light:th#r3-1": "ks4.required-practical-light.5",
+   "ks4:required-practical-light:th#r3-2": "ks4.required-practical-light.4",
+   "ks4:required-practical-light:th#r4-1": "ks4.required-practical-light.9",
+   "ks4:required-practical-light:th#start": "ks4.required-practical-light.5",
+   "ks4c:required-practical-light:match-1": "ks4.required-practical-light.1",
+   "ks4c:required-practical-light:match-2": "ks4.required-practical-light.2",
+   "ks4c:required-practical-light:match-3": "ks4.required-practical-light.1",
+   "ks4c:required-practical-light:match-4": "ks4.required-practical-light.1",
+   "ks4q:required-practical-light:011a21c7e9": "ks4.required-practical-light.7",
+   "ks4q:required-practical-light:4a70abca4e": "ks4.required-practical-light.5",
+   "ks4q:required-practical-light:5092acf60e": "ks4.required-practical-light.3",
+   "ks4q:required-practical-light:ccfcac6f73": "ks4.required-practical-light.4",
+   "ks4q:required-practical-light:fbe7f1c7f6": "ks4.required-practical-light.1"
+  },
+  "scope_ref": "required-practical-light",
+  "subject": "physics",
+  "title": "Required Practical 9: Reflection and Refraction"
  },
  "resistant-bacteria": {
   "key_stage": "KS4",
@@ -40148,7 +40577,12 @@
    "ks4c:sound-waves-hearing:match-3": "Bat echolocation",
    "ks4c:sound-waves-hearing:match-4": "Elephant communication",
    "ks4q:sound-waves-hearing:1a4ed34640": "Ultrasound is non-ionising — it doesn't damage cells or DNA like X-rays can; it's safe for the developing baby",
-   "ks4q:sound-waves-hearing:fba321a39f": "The pulse travels to the reflecting surface AND back — the total time is twice the one-way travel time"
+   "ks4q:sound-waves-hearing:fba321a39f": "The pulse travels to the reflecting surface AND back — the total time is twice the one-way travel time",
+   "ks4q:sound-waves-hearing:20e416220e": "20 Hz to 20 kHz",
+   "ks4q:sound-waves-hearing:32bef131d0": "0.5 m",
+   "ks4q:sound-waves-hearing:53c3ec5c3c": "A window rattling as a loud lorry passes",
+   "ks4q:sound-waves-hearing:714e402c1f": "Vibrate at the same frequency as the sound",
+   "ks4q:sound-waves-hearing:eb18b16a63": "Its frequency is above 20 kHz"
   },
   "points": [
    {
@@ -40192,6 +40626,11 @@
     "added": "round-2",
     "id": "ks4.sound-waves-hearing.10",
     "label": "Sound waves make solids vibrate; vibrating solids produce sound waves"
+   },
+   {
+    "added": "round-4",
+    "id": "ks4.sound-waves-hearing.11",
+    "label": "Sound waves cause the eardrum to vibrate, allowing the ear to detect sound"
    }
   ],
   "questions": {
@@ -40272,7 +40711,12 @@
    "ks4c:sound-waves-hearing:match-3": "ks4.sound-waves-hearing.9",
    "ks4c:sound-waves-hearing:match-4": "ks4.sound-waves-hearing.9",
    "ks4q:sound-waves-hearing:1a4ed34640": "ks4.sound-waves-hearing.7",
-   "ks4q:sound-waves-hearing:fba321a39f": "ks4.sound-waves-hearing.5"
+   "ks4q:sound-waves-hearing:fba321a39f": "ks4.sound-waves-hearing.5",
+   "ks4q:sound-waves-hearing:20e416220e": "ks4.sound-waves-hearing.3",
+   "ks4q:sound-waves-hearing:32bef131d0": "ks4.sound-waves-hearing.8",
+   "ks4q:sound-waves-hearing:53c3ec5c3c": "ks4.sound-waves-hearing.10",
+   "ks4q:sound-waves-hearing:714e402c1f": "ks4.sound-waves-hearing.11",
+   "ks4q:sound-waves-hearing:eb18b16a63": "ks4.sound-waves-hearing.3"
   },
   "scope_ref": "sound-waves-hearing",
   "subject": "physics",
@@ -45171,8 +45615,31 @@
    "ks4c:transverse-longitudinal-waves:match-3": "Longitudinal",
    "ks4c:transverse-longitudinal-waves:match-4": "Longitudinal",
    "ks4c:transverse-longitudinal-waves:match-5": "Transverse",
-   "ks4q:transverse-longitudinal-waves:6dec15f62c": "Parallel — particles oscillate back and forth along the same direction as the wave travels",
-   "ks4q:transverse-longitudinal-waves:fb8af6c605": "Light is a transverse electromagnetic wave — needs no medium. Sound is longitudinal and needs particles to compress and rarefy."
+   "ks4q:transverse-longitudinal-waves:6dec15f62c": "Back and forth, parallel to the direction of travel",
+   "ks4q:transverse-longitudinal-waves:fb8af6c605": "Sound needs particles to travel through; light does not",
+   "ks4:transverse-longitudinal-waves:cf#r1-1": "At right angles to it",
+   "ks4:transverse-longitudinal-waves:cf#r1-2": "Sound waves in air",
+   "ks4:transverse-longitudinal-waves:cf#r2-1": "Compression",
+   "ks4:transverse-longitudinal-waves:cf#r2-2": "Longitudinal",
+   "ks4:transverse-longitudinal-waves:cf#start": "No, it bobs up and down",
+   "ks4:transverse-longitudinal-waves:ch#r1-1": "At right angles to it",
+   "ks4:transverse-longitudinal-waves:ch#r1-2": "Sound waves in air",
+   "ks4:transverse-longitudinal-waves:ch#r2-1": "Compression",
+   "ks4:transverse-longitudinal-waves:ch#r2-2": "Longitudinal",
+   "ks4:transverse-longitudinal-waves:ch#start": "No, it bobs up and down",
+   "ks4:transverse-longitudinal-waves:tf#r1-1": "At right angles to it",
+   "ks4:transverse-longitudinal-waves:tf#r1-2": "Sound waves in air",
+   "ks4:transverse-longitudinal-waves:tf#r2-1": "Compression",
+   "ks4:transverse-longitudinal-waves:tf#r2-2": "Longitudinal",
+   "ks4:transverse-longitudinal-waves:tf#start": "No, it bobs up and down",
+   "ks4:transverse-longitudinal-waves:th#r1-1": "At right angles to it",
+   "ks4:transverse-longitudinal-waves:th#r1-2": "Sound waves in air",
+   "ks4:transverse-longitudinal-waves:th#r2-1": "Compression",
+   "ks4:transverse-longitudinal-waves:th#r2-2": "Longitudinal",
+   "ks4:transverse-longitudinal-waves:th#start": "No, it bobs up and down",
+   "ks4q:transverse-longitudinal-waves:42bafe97a3": "A region where the particles are further apart",
+   "ks4q:transverse-longitudinal-waves:7a22583a9b": "The sound wave",
+   "ks4q:transverse-longitudinal-waves:9d73727ba3": "Ripples on a water surface"
   },
   "points": [
    {
@@ -45202,6 +45669,11 @@
    {
     "id": "ks4.transverse-longitudinal-waves.7",
     "label": "Calculate wave speed from distance and time"
+   },
+   {
+    "added": "round-4",
+    "id": "ks4.transverse-longitudinal-waves.8",
+    "label": "Compare transverse and longitudinal waves, giving an example of each"
    }
   ],
   "questions": {
@@ -45275,7 +45747,42 @@
    "ks4c:transverse-longitudinal-waves:match-4": "ks4.transverse-longitudinal-waves.4",
    "ks4c:transverse-longitudinal-waves:match-5": "ks4.transverse-longitudinal-waves.6",
    "ks4q:transverse-longitudinal-waves:6dec15f62c": "ks4.transverse-longitudinal-waves.3",
-   "ks4q:transverse-longitudinal-waves:fb8af6c605": "ks4.transverse-longitudinal-waves.5"
+   "ks4q:transverse-longitudinal-waves:fb8af6c605": "ks4.transverse-longitudinal-waves.5",
+   "ks4:transverse-longitudinal-waves:cf#r1-1": "ks4.transverse-longitudinal-waves.2",
+   "ks4:transverse-longitudinal-waves:cf#r1-2": "ks4.transverse-longitudinal-waves.3",
+   "ks4:transverse-longitudinal-waves:cf#r2-1": "ks4.transverse-longitudinal-waves.4",
+   "ks4:transverse-longitudinal-waves:cf#r2-2": "ks4.transverse-longitudinal-waves.4",
+   "ks4:transverse-longitudinal-waves:cf#r3-1": "ks4.transverse-longitudinal-waves.4",
+   "ks4:transverse-longitudinal-waves:cf#r3-2": "ks4.transverse-longitudinal-waves.1",
+   "ks4:transverse-longitudinal-waves:cf#r4-1": "ks4.transverse-longitudinal-waves.8",
+   "ks4:transverse-longitudinal-waves:cf#start": "ks4.transverse-longitudinal-waves.1",
+   "ks4:transverse-longitudinal-waves:ch#r1-1": "ks4.transverse-longitudinal-waves.2",
+   "ks4:transverse-longitudinal-waves:ch#r1-2": "ks4.transverse-longitudinal-waves.3",
+   "ks4:transverse-longitudinal-waves:ch#r2-1": "ks4.transverse-longitudinal-waves.4",
+   "ks4:transverse-longitudinal-waves:ch#r2-2": "ks4.transverse-longitudinal-waves.4",
+   "ks4:transverse-longitudinal-waves:ch#r3-1": "ks4.transverse-longitudinal-waves.4",
+   "ks4:transverse-longitudinal-waves:ch#r3-2": "ks4.transverse-longitudinal-waves.1",
+   "ks4:transverse-longitudinal-waves:ch#r4-1": "ks4.transverse-longitudinal-waves.8",
+   "ks4:transverse-longitudinal-waves:ch#start": "ks4.transverse-longitudinal-waves.1",
+   "ks4:transverse-longitudinal-waves:tf#r1-1": "ks4.transverse-longitudinal-waves.2",
+   "ks4:transverse-longitudinal-waves:tf#r1-2": "ks4.transverse-longitudinal-waves.3",
+   "ks4:transverse-longitudinal-waves:tf#r2-1": "ks4.transverse-longitudinal-waves.4",
+   "ks4:transverse-longitudinal-waves:tf#r2-2": "ks4.transverse-longitudinal-waves.4",
+   "ks4:transverse-longitudinal-waves:tf#r3-1": "ks4.transverse-longitudinal-waves.4",
+   "ks4:transverse-longitudinal-waves:tf#r3-2": "ks4.transverse-longitudinal-waves.1",
+   "ks4:transverse-longitudinal-waves:tf#r4-1": "ks4.transverse-longitudinal-waves.8",
+   "ks4:transverse-longitudinal-waves:tf#start": "ks4.transverse-longitudinal-waves.1",
+   "ks4:transverse-longitudinal-waves:th#r1-1": "ks4.transverse-longitudinal-waves.2",
+   "ks4:transverse-longitudinal-waves:th#r1-2": "ks4.transverse-longitudinal-waves.3",
+   "ks4:transverse-longitudinal-waves:th#r2-1": "ks4.transverse-longitudinal-waves.4",
+   "ks4:transverse-longitudinal-waves:th#r2-2": "ks4.transverse-longitudinal-waves.4",
+   "ks4:transverse-longitudinal-waves:th#r3-1": "ks4.transverse-longitudinal-waves.4",
+   "ks4:transverse-longitudinal-waves:th#r3-2": "ks4.transverse-longitudinal-waves.1",
+   "ks4:transverse-longitudinal-waves:th#r4-1": "ks4.transverse-longitudinal-waves.8",
+   "ks4:transverse-longitudinal-waves:th#start": "ks4.transverse-longitudinal-waves.1",
+   "ks4q:transverse-longitudinal-waves:42bafe97a3": "ks4.transverse-longitudinal-waves.4",
+   "ks4q:transverse-longitudinal-waves:7a22583a9b": "ks4.transverse-longitudinal-waves.1",
+   "ks4q:transverse-longitudinal-waves:9d73727ba3": "ks4.transverse-longitudinal-waves.6"
   },
   "scope_ref": "transverse-longitudinal-waves",
   "subject": "physics",
@@ -45490,21 +45997,24 @@
  "types-of-em-waves": {
   "key_stage": "KS4",
   "keys": {
-   "ks4:types-of-em-waves:cf#r1": "Speed — all travel at 3 × 10⁸ m/s regardless of wavelength or frequency",
+   "ks4:types-of-em-waves:cf#r1": "Speed",
    "ks4:types-of-em-waves:cf#start": "Only a small part",
-   "ks4:types-of-em-waves:ch#r1": "Speed — all travel at 3 × 10⁸ m/s regardless of wavelength or frequency",
+   "ks4:types-of-em-waves:ch#r1": "Speed",
    "ks4:types-of-em-waves:ch#start": "Only a small part",
-   "ks4:types-of-em-waves:tf#r1": "Speed — all travel at 3 × 10⁸ m/s regardless of wavelength or frequency",
+   "ks4:types-of-em-waves:tf#r1": "Speed",
    "ks4:types-of-em-waves:tf#start": "Only a small part",
-   "ks4:types-of-em-waves:th#r1": "Speed — all travel at 3 × 10⁸ m/s regardless of wavelength or frequency",
+   "ks4:types-of-em-waves:th#r1": "Speed",
    "ks4:types-of-em-waves:th#start": "Only a small part",
    "ks4c:types-of-em-waves:match-1": "Radio waves",
    "ks4c:types-of-em-waves:match-2": "Microwaves",
    "ks4c:types-of-em-waves:match-3": "Infrared",
    "ks4c:types-of-em-waves:match-4": "Visible light",
    "ks4c:types-of-em-waves:match-5": "Gamma rays",
-   "ks4q:types-of-em-waves:0012ef98d1": "Speed — all travel at 3 × 10⁸ m/s regardless of wavelength or frequency",
-   "ks4q:types-of-em-waves:6e6f818fae": "Gamma rays — at the short-wavelength end of the spectrum; highest frequency and energy"
+   "ks4q:types-of-em-waves:0012ef98d1": "Speed",
+   "ks4q:types-of-em-waves:6e6f818fae": "Gamma rays",
+   "ks4q:types-of-em-waves:9312257e41": "Visible light only",
+   "ks4q:types-of-em-waves:bcfa228d18": "3000 m",
+   "ks4q:types-of-em-waves:f9abb091ca": "Radio waves, microwaves, infrared"
   },
   "points": [
    {
@@ -45539,6 +46049,11 @@
     "added": "round-2",
     "id": "ks4.types-of-em-waves.8",
     "label": "EM waves transfer energy from a source to an absorber through a vacuum."
+   },
+   {
+    "added": "round-4",
+    "id": "ks4.types-of-em-waves.9",
+    "label": "The eyes detect visible light only, not other electromagnetic waves"
    }
   ],
   "questions": {
@@ -45664,7 +46179,10 @@
    "ks4c:types-of-em-waves:match-4": "ks4.types-of-em-waves.7",
    "ks4c:types-of-em-waves:match-5": "ks4.types-of-em-waves.2",
    "ks4q:types-of-em-waves:0012ef98d1": "ks4.types-of-em-waves.1",
-   "ks4q:types-of-em-waves:6e6f818fae": "ks4.types-of-em-waves.3"
+   "ks4q:types-of-em-waves:6e6f818fae": "ks4.types-of-em-waves.3",
+   "ks4q:types-of-em-waves:9312257e41": "ks4.types-of-em-waves.9",
+   "ks4q:types-of-em-waves:bcfa228d18": "ks4.types-of-em-waves.4",
+   "ks4q:types-of-em-waves:f9abb091ca": "ks4.types-of-em-waves.2"
   },
   "scope_ref": "types-of-em-waves",
   "subject": "physics",
@@ -45969,11 +46487,11 @@
    "ks4c:uses-em-waves:match-4": "X-rays",
    "ks4c:uses-em-waves:match-5": "Gamma rays",
    "ks4q:uses-em-waves:01d587a47b": "Infrared: electrical heaters",
-   "ks4q:uses-em-waves:182e931e0d": "A coating inside the lamp absorbs the ultraviolet and gives out visible light",
+   "ks4q:uses-em-waves:182e931e0d": "A coating absorbs it and gives out visible light",
    "ks4q:uses-em-waves:223573813f": "Infrared",
-   "ks4q:uses-em-waves:437caa72c9": "They are absorbed by water molecules in the food, transferring energy to its thermal store",
+   "ks4q:uses-em-waves:437caa72c9": "Water molecules in the food absorb them",
    "ks4q:uses-em-waves:5cb1b4eae5": "Microwaves pass through the ionosphere — radio waves reflect off it, preventing them from reaching satellites in orbit",
-   "ks4q:uses-em-waves:61a169690d": "Ultraviolet can make skin age prematurely and increases the risk of skin cancer",
+   "ks4q:uses-em-waves:61a169690d": "Ultraviolet increases the risk of skin cancer",
    "ks4q:uses-em-waves:a399f7905b": "Microwaves",
    "ks4q:uses-em-waves:c560d1e2dc": "UV has enough energy to damage DNA in microorganisms — killing or inactivating bacteria and viruses",
    "ks4q:uses-em-waves:d0eb330137": "Medical imaging and treatments"
@@ -47474,6 +47992,102 @@
   "subject": "biology",
   "title": "Viral Diseases"
  },
+ "visible-light": {
+  "key_stage": "KS4",
+  "keys": {
+   "ks4:visible-light:tf#r1-1": "Specular reflection",
+   "ks4:visible-light:tf#r1-2": "It reflects all wavelengths equally",
+   "ks4:visible-light:tf#r2-1": "Black",
+   "ks4:visible-light:tf#r2-2": "Translucent, because it transmits light but scatters it",
+   "ks4:visible-light:tf#start": "It reflects red and absorbs the rest",
+   "ks4:visible-light:th#r1-1": "Specular reflection",
+   "ks4:visible-light:th#r1-2": "It reflects all wavelengths equally",
+   "ks4:visible-light:th#r2-1": "Black",
+   "ks4:visible-light:th#r2-2": "Translucent, because it transmits light but scatters it",
+   "ks4:visible-light:th#start": "It reflects red and absorbs the rest",
+   "ks4c:visible-light:match-1": "Specular reflection",
+   "ks4c:visible-light:match-2": "Diffuse reflection",
+   "ks4c:visible-light:match-3": "Translucent",
+   "ks4c:visible-light:match-4": "Colour filter",
+   "ks4q:visible-light:4ca8415d1f": "Blue",
+   "ks4q:visible-light:9b59faa04b": "It transmits green and absorbs the rest",
+   "ks4q:visible-light:a948efea08": "The wavelengths it reflects most",
+   "ks4q:visible-light:cb12246748": "Wavelength and frequency",
+   "ks4q:visible-light:da2d5e69bc": "Light is scattered by a rough surface"
+  },
+  "points": [
+   {
+    "id": "ks4.visible-light.1",
+    "label": "Specular reflection is when a smooth surface reflects light in one direction"
+   },
+   {
+    "id": "ks4.visible-light.2",
+    "label": "Diffuse reflection is when a rough surface scatters light in many directions"
+   },
+   {
+    "id": "ks4.visible-light.3",
+    "label": "Each colour of visible light has its own narrow band of wavelength and frequency"
+   },
+   {
+    "id": "ks4.visible-light.4",
+    "label": "An opaque object's colour is the wavelengths it reflects most strongly; white reflects all, black absorbs all"
+   },
+   {
+    "id": "ks4.visible-light.5",
+    "label": "An object can only reflect colours present in the light shining on it"
+   },
+   {
+    "id": "ks4.visible-light.6",
+    "label": "A colour filter transmits its own colour and absorbs all other colours"
+   },
+   {
+    "id": "ks4.visible-light.7",
+    "label": "Translucent materials transmit light but scatter it so no clear image is seen"
+   }
+  ],
+  "questions": {
+   "ks4-visible-light-e01": "ks4.visible-light.1",
+   "ks4-visible-light-e02": "ks4.visible-light.4",
+   "ks4-visible-light-e03": "ks4.visible-light.6",
+   "ks4-visible-light-e04": "ks4.visible-light.7",
+   "ks4-visible-light-h01": "ks4.visible-light.5",
+   "ks4-visible-light-h02": "ks4.visible-light.6",
+   "ks4-visible-light-h03": "ks4.visible-light.6",
+   "ks4-visible-light-h04": "ks4.visible-light.3",
+   "ks4-visible-light-s01": "ks4.visible-light.4",
+   "ks4-visible-light-s02": "ks4.visible-light.5",
+   "ks4-visible-light-s03": "ks4.visible-light.2",
+   "ks4-visible-light-s04": "ks4.visible-light.6",
+   "ks4:visible-light:tf#r1-1": "ks4.visible-light.1",
+   "ks4:visible-light:tf#r1-2": "ks4.visible-light.4",
+   "ks4:visible-light:tf#r2-1": "ks4.visible-light.5",
+   "ks4:visible-light:tf#r2-2": "ks4.visible-light.7",
+   "ks4:visible-light:tf#r3-1": "ks4.visible-light.4",
+   "ks4:visible-light:tf#r3-2": "ks4.visible-light.6",
+   "ks4:visible-light:tf#r4-1": "ks4.visible-light.5",
+   "ks4:visible-light:tf#start": "ks4.visible-light.4",
+   "ks4:visible-light:th#r1-1": "ks4.visible-light.1",
+   "ks4:visible-light:th#r1-2": "ks4.visible-light.4",
+   "ks4:visible-light:th#r2-1": "ks4.visible-light.5",
+   "ks4:visible-light:th#r2-2": "ks4.visible-light.7",
+   "ks4:visible-light:th#r3-1": "ks4.visible-light.4",
+   "ks4:visible-light:th#r3-2": "ks4.visible-light.6",
+   "ks4:visible-light:th#r4-1": "ks4.visible-light.5",
+   "ks4:visible-light:th#start": "ks4.visible-light.4",
+   "ks4c:visible-light:match-1": "ks4.visible-light.1",
+   "ks4c:visible-light:match-2": "ks4.visible-light.2",
+   "ks4c:visible-light:match-3": "ks4.visible-light.7",
+   "ks4c:visible-light:match-4": "ks4.visible-light.6",
+   "ks4q:visible-light:4ca8415d1f": "ks4.visible-light.5",
+   "ks4q:visible-light:9b59faa04b": "ks4.visible-light.6",
+   "ks4q:visible-light:a948efea08": "ks4.visible-light.4",
+   "ks4q:visible-light:cb12246748": "ks4.visible-light.3",
+   "ks4q:visible-light:da2d5e69bc": "ks4.visible-light.2"
+  },
+  "scope_ref": "visible-light",
+  "subject": "physics",
+  "title": "Visible Light"
+ },
  "waste-management": {
   "key_stage": "KS4",
   "keys": {
@@ -47941,7 +48555,19 @@
    "ks4c:wave-front-refraction:match-3": "Wave front orientation",
    "ks4c:wave-front-refraction:match-4": "Radio wave reception",
    "ks4q:wave-front-refraction:4fd0f5ea6f": "By oscillating electrical currents in an aerial (antenna) — the frequency of oscillation equals the frequency of the radio wave emitted",
-   "ks4q:wave-front-refraction:e75548fa2e": "Wavelength decreases, frequency stays the same — v = fλ, so if v decreases and f is constant, λ must decrease"
+   "ks4q:wave-front-refraction:e75548fa2e": "Wavelength decreases, frequency stays the same",
+   "ks4:wave-front-refraction:ch#r1-1": "The wave speed changes at the boundary",
+   "ks4:wave-front-refraction:ch#r1-2": "Towards the normal",
+   "ks4:wave-front-refraction:ch#r2-2": "Speed lower, wavelength shorter, frequency the same",
+   "ks4:wave-front-refraction:ch#start": "Yes, they turn",
+   "ks4:wave-front-refraction:th#r1-1": "The wave speed changes at the boundary",
+   "ks4:wave-front-refraction:th#r1-2": "Towards the normal",
+   "ks4:wave-front-refraction:th#r2-2": "Speed lower, wavelength shorter, frequency the same",
+   "ks4:wave-front-refraction:th#start": "Yes, they turn",
+   "ks4q:wave-front-refraction:26b105c61e": "It bends towards the normal and its wavelength gets shorter",
+   "ks4q:wave-front-refraction:5bfb9d381d": "4.0 × 10⁻⁷ m",
+   "ks4q:wave-front-refraction:6a1b9a710c": "One end of each wave front changes speed before the rest",
+   "ks4q:wave-front-refraction:763c8ed299": "It does not change"
   },
   "points": [
    {
@@ -48037,7 +48663,27 @@
    "ks4c:wave-front-refraction:match-3": "ks4.wave-front-refraction.1",
    "ks4c:wave-front-refraction:match-4": "ks4.wave-front-refraction.7",
    "ks4q:wave-front-refraction:4fd0f5ea6f": "ks4.wave-front-refraction.6",
-   "ks4q:wave-front-refraction:e75548fa2e": "ks4.wave-front-refraction.4"
+   "ks4q:wave-front-refraction:e75548fa2e": "ks4.wave-front-refraction.4",
+   "ks4:wave-front-refraction:ch#r1-1": "ks4.wave-front-refraction.3",
+   "ks4:wave-front-refraction:ch#r1-2": "ks4.wave-front-refraction.3",
+   "ks4:wave-front-refraction:ch#r2-1": "ks4.wave-front-refraction.5",
+   "ks4:wave-front-refraction:ch#r2-2": "ks4.wave-front-refraction.4",
+   "ks4:wave-front-refraction:ch#r3-1": "ks4.wave-front-refraction.3",
+   "ks4:wave-front-refraction:ch#r3-2": "ks4.wave-front-refraction.2",
+   "ks4:wave-front-refraction:ch#r4-1": "ks4.wave-front-refraction.3",
+   "ks4:wave-front-refraction:ch#start": "ks4.wave-front-refraction.3",
+   "ks4:wave-front-refraction:th#r1-1": "ks4.wave-front-refraction.3",
+   "ks4:wave-front-refraction:th#r1-2": "ks4.wave-front-refraction.3",
+   "ks4:wave-front-refraction:th#r2-1": "ks4.wave-front-refraction.5",
+   "ks4:wave-front-refraction:th#r2-2": "ks4.wave-front-refraction.4",
+   "ks4:wave-front-refraction:th#r3-1": "ks4.wave-front-refraction.3",
+   "ks4:wave-front-refraction:th#r3-2": "ks4.wave-front-refraction.2",
+   "ks4:wave-front-refraction:th#r4-1": "ks4.wave-front-refraction.3",
+   "ks4:wave-front-refraction:th#start": "ks4.wave-front-refraction.3",
+   "ks4q:wave-front-refraction:26b105c61e": "ks4.wave-front-refraction.3",
+   "ks4q:wave-front-refraction:5bfb9d381d": "ks4.wave-front-refraction.5",
+   "ks4q:wave-front-refraction:6a1b9a710c": "ks4.wave-front-refraction.3",
+   "ks4q:wave-front-refraction:763c8ed299": "ks4.wave-front-refraction.3"
   },
   "scope_ref": "wave-front-refraction",
   "subject": "physics",
@@ -48046,7 +48692,7 @@
  "waves-detection-exploration": {
   "key_stage": "KS4",
   "keys": {
-   "ks4:waves-detection-exploration:th#r1": "Earth has a liquid outer core — S-waves cannot travel through liquids, so they are blocked",
+   "ks4:waves-detection-exploration:th#r1": "The Earth has a liquid outer core",
    "ks4:waves-detection-exploration:th#sort-1-1": "P-waves only",
    "ks4:waves-detection-exploration:th#sort-1-2": "S-waves only",
    "ks4:waves-detection-exploration:th#sort-1-3": "P-waves only",
@@ -48060,8 +48706,11 @@
    "ks4c:waves-detection-exploration:match-2": "S-waves (Secondary)",
    "ks4c:waves-detection-exploration:match-3": "S-wave shadow zone",
    "ks4c:waves-detection-exploration:match-4": "Seismic surveying",
-   "ks4q:waves-detection-exploration:b77f01caa2": "300 m — d = 1500 × 0.4 / 2 = 600 / 2 = 300 m",
-   "ks4q:waves-detection-exploration:c0ef7bf976": "Earth has a liquid outer core — S-waves cannot travel through liquids, so they are blocked"
+   "ks4q:waves-detection-exploration:b77f01caa2": "300 m",
+   "ks4q:waves-detection-exploration:c0ef7bf976": "The Earth has a liquid outer core",
+   "ks4q:waves-detection-exploration:9d02db6906": "P-waves",
+   "ks4q:waves-detection-exploration:bd1881ce5a": "Higher than 20 kHz",
+   "ks4q:waves-detection-exploration:dbb36e6999": "Part of it is reflected and the rest travels on"
   },
   "points": [
    {
@@ -48100,6 +48749,11 @@
     "added": "round-2",
     "id": "ks4.waves-detection-exploration.9",
     "label": "Both P-waves and S-waves are produced by earthquakes and detected by seismometers."
+   },
+   {
+    "added": "round-4",
+    "id": "ks4.waves-detection-exploration.10",
+    "label": "Ultrasound has frequency above 20 kHz; part reflects at tissue boundaries for imaging"
    }
   ],
   "questions": {
@@ -48181,7 +48835,10 @@
    "ks4c:waves-detection-exploration:match-3": "ks4.waves-detection-exploration.3",
    "ks4c:waves-detection-exploration:match-4": "ks4.waves-detection-exploration.7",
    "ks4q:waves-detection-exploration:b77f01caa2": "ks4.waves-detection-exploration.5",
-   "ks4q:waves-detection-exploration:c0ef7bf976": "ks4.waves-detection-exploration.3"
+   "ks4q:waves-detection-exploration:c0ef7bf976": "ks4.waves-detection-exploration.3",
+   "ks4q:waves-detection-exploration:9d02db6906": "ks4.waves-detection-exploration.1",
+   "ks4q:waves-detection-exploration:bd1881ce5a": "ks4.waves-detection-exploration.10",
+   "ks4q:waves-detection-exploration:dbb36e6999": "ks4.waves-detection-exploration.10"
   },
   "scope_ref": "waves-detection-exploration",
   "subject": "physics",

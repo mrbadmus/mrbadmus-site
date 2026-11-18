@@ -149,8 +149,10 @@ The brief asked whether `(BIO)`/`(CHEM)`/`(PHYS)` really marks Triple-only
 content. `check_triple_prefix()` measures it on every run, against the site's
 own `triple_only` flag:
 
-- **66 mapped entries carry a prefix; 58 map to a subtopic the site
-  independently flags `triple_only`** (88%).
+- **66 mapped entries carry a prefix; 59 map to a subtopic the site
+  independently flags `triple_only`** (89%). (`(PHYS) Reflection RP` moved
+  from `properties-em-waves-1` to the new physics-only `required-practical-light`,
+  8463 Required practical activity 9.)
 - 7 unprefixed entries map to a `triple_only` subtopic.
 
 **Conclusion: the reading is correct, and the two are not substitutes for each
@@ -158,12 +160,11 @@ other.** Every disagreement is explained by granularity — Rainford marks a
 *lesson*, the platform flags a *page*, and one page often carries both shared
 and Triple-only material.
 
-Prefixed, but the page is not flagged Triple (8):
+Prefixed, but the page is not flagged Triple (7):
 
 | entry | maps to | why |
 |---|---|---|
 | `(PHYS) Pressure and volume` | `particle-motion-pressure` | p₁V₁ = p₂V₂ is Physics-only; the page also carries the Combined particle-motion content |
-| `(PHYS) Reflection RP` | `properties-em-waves-1` | the reflection RP is Physics-only; the page is not |
 | `(BIO)  Decomposition`, `(BIO) Anaerobic decay & biogas`, `(BIO) Decay RP`, `(BIO) Decay RP 2` | `decomposition` | rate of decay and biogas are Biology-only; decomposition itself is not |
 | `(PHYS) Braking forces` | `stopping-distance-braking` | the Physics-only extension of a shared page |
 | `(PHYS) Changing momentum` | `momentum` | F = Δp/Δt is Physics-only HT |

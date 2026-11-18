@@ -793,7 +793,7 @@ def ledger_sql(idmap, used):
     print("-- Moves saved answers onto the new ids. Retired ids (null) stay as they are.")
     print("begin;")
     for old, new in sorted(idmap.items()):
-        if new is not None:
+        if new is not None and new != old:   # an id mapped to itself (lean_id_map OFF_ROUTES) moves nothing
             print("update public.child_answers set question_id = '%s' where question_id = '%s';" % (new.replace("'", "''"), old.replace("'", "''")))
     print("commit;")
 

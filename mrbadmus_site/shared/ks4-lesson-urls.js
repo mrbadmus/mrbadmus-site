@@ -16,7 +16,7 @@
          + entry.topic + / + slug + .html
 
    Built from ks4_data.classify() and checked against the built
-   tree: every one of these 265 subtopics had a page on disk,
+   tree: every one of these 268 subtopics had a page on disk,
    under at least one pathway/tier for its subject, when this
    was written.
    ══════════════════════════════════════════════════════════ */
@@ -224,9 +224,11 @@ window.MRB_KS4_TOPICS = {
   "reactivity-series": [{subject: "chemistry", topic: "chemical-changes"}],
   "red-shift-big-bang": [{subject: "physics", topic: "space"}],
   "reducing-use-of-resources": [{subject: "chemistry", topic: "resources"}],
+  "reflection-of-waves": [{subject: "physics", topic: "waves"}],
   "reflex-actions": [{subject: "biology", topic: "homeostasis"}],
   "relative-atomic-mass": [{subject: "chemistry", topic: "atomic-structure"}],
   "relative-formula-mass": [{subject: "chemistry", topic: "quantitative"}],
+  "required-practical-light": [{subject: "physics", topic: "waves"}],
   "resistant-bacteria": [{subject: "biology", topic: "inheritance"}],
   "resistors": [{subject: "physics", topic: "electricity"}],
   "resolving-forces": [{subject: "physics", topic: "forces"}],
@@ -281,6 +283,7 @@ window.MRB_KS4_TOPICS = {
   "vaccination": [{subject: "biology", topic: "infection-response"}],
   "variation": [{subject: "biology", topic: "inheritance"}],
   "viral-diseases": [{subject: "biology", topic: "infection-response"}],
+  "visible-light": [{subject: "physics", topic: "waves"}],
   "waste-management": [{subject: "biology", topic: "ecology"}],
   "water-cycle": [{subject: "biology", topic: "ecology"}],
   "wave-front-refraction": [{subject: "physics", topic: "waves"}],

@@ -27,6 +27,8 @@ per lesson. NEW set: every id the lean pages can send, from tools/kp_classify's 
           listed `removed` here, and still fails on any other unknown id.
 `added`   a new question; its tag is in knowledge_points/ks4.json.
 `changed` never produced by default: a changed id needs a reason written into CHANGED below.
+A `kept` entry may also carry "off_routes": the routes whose page no longer asks it (OFF_ROUTES
+below). It is still a live question on the lesson's other routes.
 
 Written to docs/lessons/pilot/ID-MAP-ks3-breathing-and-gas-exchange.json and
 docs/lessons/pilot/ID-MAP-ks4-energy.json.
@@ -63,8 +65,11 @@ B2C_FILES = {"KS3": "B4.json", "KS4": "physics-energy.json"}
 
 
 def b2c_map(m):
+    # an OFF_ROUTES id maps to ITSELF: lesson_contract_check checks page by page, so the pages
+    # that dropped it need it named here, while a child's saved answer keeps its id (still live
+    # on the other routes, so never null: null would read as retired everywhere)
     return {q: e["new"] for q, e in sorted(m["ids"].items())
-            if e["status"] in ("removed", "changed")}
+            if e["status"] in ("removed", "changed") or e.get("off_routes")}
 
 
 def render_b2c(m):
@@ -139,6 +144,15 @@ REPLACED = {
         "practice Q2 (intraspecific vs interspecific competition) is replaced by an on-spec item in the lean record",
     "ks4q:mass-changes-reactions:9dd627e1ec":
         "practice Q2 (why the mass of iron increases when it rusts) is replaced by the magnesium-burning item: rusting is not in this spec point",
+}
+
+# ⊕ 17 Nov 2026 (Waves): a classic quiz id the lesson still asks on SOME routes but took off the
+# others. The map is per lesson, so it is `kept` (its tag stands); lesson_contract_check is per
+# page, so the pages that dropped it fail "id vanished" unless the b2c map names it. id -> (routes, why).
+OFF_ROUTES = {
+    "ks4q:properties-em-waves-1:425ded7394":
+        (["CF", "TF"], "kept on the Higher pages, taken off the Foundation pages: explaining refraction by "
+                       "the change in speed and wavelength is Higher only (AQA 4.6.2.2 / 6.6.2.2)"),
 }
 
 _ROUTE_DIRS = {"cf": "combined/foundation", "ch": "combined/higher", "tf": "triple/foundation", "th": "triple/higher"}
@@ -400,6 +414,8 @@ def build(base="origin/main", unit=None, ref=None, wave=None):
                     if qid.endswith("#start"):
                         note = _start_note(ks, ref, lean3)
                     ids[qid] = {"status": "kept", "new": qid, "kp": old_q[qid], "note": note}
+                    if qid in OFF_ROUTES:
+                        ids[qid]["off_routes"], ids[qid]["note"] = OFF_ROUTES[qid]
                 elif qid in old_q:
                     if qid.startswith(("cs-", "bv2-")):
                         # A consumer exam-bank row in the database, never asked on a lesson
