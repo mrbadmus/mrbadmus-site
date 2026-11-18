@@ -1026,7 +1026,7 @@ LESSON = {
     "ladder": {
         "recall": {
             "title": "Rung 1 · Advantage in context",
-            "q": "Pale sandy fur is an advantage in snow and a disadvantage on "
+            "q": "Very pale fur is an advantage in snow and a disadvantage on "
                  "dark soil. What does that show?",
             # Design's four, UNTOUCHED. All four answer "what does that show?"
             # in the same grammar, three of them beginning "That…" and stating
@@ -1039,11 +1039,10 @@ LESSON = {
             #      the Lamarckian error b11-02 owns, met here first
             #   D  authored belief: one variation outranks the rest everywhere
             "options": [
-                "That pale fur is generally a poor variation to have",
-                "That the mouse can change its fur colour to suit the ground",
-                "Whether a variation is an advantage depends on the "
-                "environment",
-                "That camouflage matters more than anything else",
+                "Pale fur is generally a poor variation to have",
+                "The mouse can change its fur colour to match the ground it is on",
+                "Whether a variation is an advantage depends on the environment",
+                "Camouflage matters more than anything else",
             ],
             "answer": 2,
             # All three corrections are Design's, byte-identical.
@@ -1076,14 +1075,10 @@ LESSON = {
             #   D  "most advanced" → and highest up the tree of life: the
             #      scala naturae in the student's own words.
             "options": [
-                "The strongest and healthiest individuals, and the ones that "
-                "win a direct fight",
-                "The individuals that live the longest, and the ones that "
-                "avoid dying young",
-                "Best fitted to the current conditions, and leaving the most "
-                "surviving offspring",
-                "The most advanced or highly evolved, and the ones highest up "
-                "the tree of life",
+                "The strongest and healthiest individuals, and the ones that win every direct fight",
+                "The individuals that live the longest, and the ones that avoid dying young",
+                "The ones best fitted to current conditions, and leaving the most offspring",
+                "The most advanced or highly evolved, and the ones highest up the tree of life",
             ],
             "answer": 2,
             # ⛔ ALL THREE CORRECTIONS ARE DESIGN'S, BYTE-IDENTICAL AND

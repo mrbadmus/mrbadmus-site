@@ -1095,7 +1095,7 @@ LESSON = {
                 # 12w. Was "That the phosphates are on the outside" (7w). The
                 # consequence the belief licenses: that measuring the whole
                 # molecule chemically tells you where its parts sit.
-                "That A pairs with T and C pairs with G",
+                "That A pairs with T and C with G, because the amounts match",
             ],
             "answer": 3,
             # All three unchanged from Design, and each still answers exactly
@@ -1116,14 +1116,13 @@ LESSON = {
         # parity falls out of the construct.
         "apply": {
             "title": "Rung 2 · The one that catches people",
-            "q": "What did Watson and Crick actually do in 1953?",
+            "q": "What did Watson and Crick do in 1953 to help us understand DNA?",
+            # Lean Wave 2: 15 words or fewer, no dashes, key not the longest.
             "options": [
-                "They worked out its structure, by building models that fitted "
-                "other people’s measurements",
-                "They discovered DNA",
-                "They proved DNA carries genetic information",
-                "They took the X-ray photographs that revealed the double "
-                "helix",
+                "They worked out its shape by building models to fit others' data",
+                "They discovered DNA by finding it inside cells for the first time",
+                "They proved DNA carries genetic information, using experiments on bacteria",
+                "They took the X-ray photographs that showed DNA is a double helix",
             ],
             "answer": 0,
             "feedback": {

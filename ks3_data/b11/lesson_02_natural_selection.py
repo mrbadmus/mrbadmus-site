@@ -1086,14 +1086,10 @@ LESSON = {
             #   C  the environment applied the colour
             #   D  the individual learned, and taught its offspring
             "options": [
-                "The moths themselves gradually darkened, because an "
-                "individual living on sooty bark changes colour to match it",
-                "The proportions in the population — more of the moths born "
-                "were dark, because dark parents survived to breed",
-                "The soot stained the moths dark, because anything resting on "
-                "a blackened trunk is blackened too",
-                "The pale moths learned to hide better, and passed what they "
-                "had learned on to their offspring",
+                "Each moth darkened, because a moth living on sooty bark changes colour to match",
+                "The proportion of dark moths rose, because dark parents survived to breed",
+                "The soot stained the moths, because anything resting on a black trunk turns dark",
+                "The pale moths learned to hide, and passed what they learned to their young",
             ],
             "answer": 1,
             # All three corrections are Design's, byte-identical. Each answers
@@ -1128,14 +1124,10 @@ LESSON = {
             #   C  denies the feeding
             #   D  denies the direction of the change
             "options": [
-                "Because giraffes cannot stretch their necks at all, so there "
-                "is nothing to pass on",
-                "Because giraffes do not eat from tall trees, so no stretching "
-                "ever happened",
-                "Because necks got shorter, not longer, so the direction in "
-                "the story is wrong",
-                "Because changes made during an animal’s life do not "
-                "alter the genetic information it passes on",
+                "Because giraffes cannot stretch their necks at all, so there is nothing to pass on",
+                "Because giraffes do not eat from tall trees, so no stretching ever happened",
+                "Because necks got shorter, not longer, so the direction in the story is wrong",
+                "Because stretching does not change the giraffe's genes, so calves cannot inherit it",
             ],
             "answer": 3,
             # All three corrections are Design's, byte-identical. D's is the one

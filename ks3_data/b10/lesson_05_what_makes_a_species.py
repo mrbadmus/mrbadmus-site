@@ -941,8 +941,7 @@ LESSON = {
     "ladder": {
         "recall": {
             "title": "Rung 1 · Apply the definition",
-            "q": "Two birds mate and produce healthy chicks. The chicks grow "
-                 "up and are unable to have young of their own. Same species?",
+            "q": "Two birds mate and produce healthy chicks. The chicks grow up and are unable to have young of their own. Are the two parent birds the same species?",
             # ⊕ MRB-177, 18 Aug 2026. Options 1, 2 and 3 rewritten as wrong
             # RULES in the correct answer's shape — a verdict, then what that
             # verdict implies about the species question. Option 0 and `answer`
@@ -955,27 +954,12 @@ LESSON = {
             #      resemblance as the thing that settles it
             #   D  authored belief: a single result cannot settle a
             #      classification, so infertility is not evidence
+            # Lean Wave 2: 15 words or fewer, no dashes, key not the longest.
             "options": [
-                # 15w — Design's, unchanged.
-                "Yes — they produced offspring, which is the test, so the "
-                "parents count as one species",
-                # 16w. Was "Yes — they produced offspring, which is the test"
-                # (9w). The added clause is GENE-10 stated as a rule with its
-                # classification consequence, which is what the correction's
-                # "Half the test" answers.
-                "No — the offspring must be fertile for the parents to count "
-                "as one species",
-                # 15w. Was "Yes, if the chicks look like both parents" (8w).
-                # Now states resemblance as the deciding rule, which
-                # "Appearance is not part of the definition at all"
-                # contradicts precisely.
-                "Yes, if the chicks look like both parents, because "
-                "resemblance is what settles the species",
-                # 16w. Was "It cannot be decided without seeing more pairs"
-                # (8w). The consequence the belief licenses: that the observed
-                # result carries no information.
-                "It cannot be decided without seeing more pairs, so one "
-                "infertile brood proves nothing either way",
+                "Yes, they had offspring, so the parents count as one species",
+                "No, the offspring must be fertile for the parents to be one species",
+                "Yes, if the chicks look like both parents, as looks decide the species",
+                "It cannot be decided, as one infertile brood proves nothing either way",
             ],
             "answer": 1,
             # All three unchanged from Design, and each still answers exactly
@@ -1003,11 +987,12 @@ LESSON = {
             #   C  authored belief: chromosome number is the test — the one the
             #      hook's option D also offers
             #   D  authored belief: shared ancestry is the test
+            # Lean Wave 2: 15 words or fewer, no dashes, key not the longest.
             "options": [
                 "Because they are both called dogs",
-                "Because their offspring can themselves have offspring",
-                "Because they have the same number of chromosomes",
-                "Because they were bred from the same original animal",
+                "Because their puppies can grow up and have puppies",
+                "Because they have exactly the same DNA",
+                "Because they live in the same homes and eat the same food",
             ],
             "answer": 1,
             "feedback": {

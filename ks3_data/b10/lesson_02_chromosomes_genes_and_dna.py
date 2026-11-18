@@ -953,7 +953,7 @@ LESSON = {
             }},
         "apply": {
             "title": "Rung 2 · The one that catches people",
-            "q": "Does a cell in your foot contain the gene for eye colour?",
+            "q": "Does a cell in your foot contain the genes for eye colour?",
             # ⊕ MRB-177, 18 Aug 2026. Options 0, 2 and 3 rewritten as wrong
             # RULES in the correct answer's shape — where the genes are, and
             # what follows from their being there. Option 1 and `answer` are
@@ -965,26 +965,12 @@ LESSON = {
             #   C  authored belief: a gene is only present in the people who
             #      show the characteristic
             #   D  authored belief: genes travel to where they are needed
+            # Lean Wave 2: 15 words or fewer, no dashes, key not the longest.
             "options": [
-                # 22w. Was "No — that gene is only in the cells of the eye"
-                # (12w). The added clause is the sorting-by-destination rule
-                # head-on, which is what the correction's second sentence
-                # denies in the same words.
-                "Yes — every cell with a nucleus has the complete set, but "
-                "only some genes are switched on in each cell",
-                # 21w — Design's, unchanged.
-                "No — that gene is only in the cells of the eye, so each cell "
-                "carries only the genes its organ uses",
-                # 21w. Was "Only if you have brown eyes" (6w). Now states the
-                # presence-follows-appearance reading as a rule, which "the
-                # gene is present in everyone" contradicts precisely.
-                "Only if you have brown eyes, because a gene for a "
-                "characteristic is only present in the people who show it",
-                # 21w. Was "No — genes move to the organs that need them"
-                # (10w). The consequence the belief licenses: a gene with a
-                # destination.
-                "No — genes move to the organs that need them, so a gene ends "
-                "up in whichever cells are using it",
+                "Yes, as every body cell with a nucleus has all your genes",
+                "No, as those genes are only found in the cells of the eye",
+                "Only if you have brown eyes, as only they carry those genes",
+                "No, as genes move to the organs that need to use them",
             ],
             "answer": 0,
             # All three unchanged from Design, and each still answers exactly

@@ -1078,14 +1078,10 @@ LESSON = {
             #      about
             #   D  only badly adapted species go extinct
             "options": [
-                "No — species only die out when people damage the "
-                "environment, by hunting or by clearing habitat",
-                "Yes — over 99% of all species that ever lived are extinct, "
-                "mostly long before humans existed",
-                "Yes, and that means current extinctions are nothing to worry "
-                "about, since the process would happen anyway",
-                "Only for species that were badly adapted in the first place, "
-                "since a well adapted one survives",
+                "No. Species only die out when people hunt them or clear their habitat",
+                "Yes. Most species that have ever lived died out long before humans existed",
+                "Yes, so today’s extinctions are nothing to worry about, as they would happen anyway",
+                "Only for badly adapted species, because a well adapted species always survives",
             ],
             "answer": 1,
             # All three corrections are Design's, byte-identical. C's is the one

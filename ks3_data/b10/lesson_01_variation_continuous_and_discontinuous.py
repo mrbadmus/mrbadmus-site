@@ -929,7 +929,7 @@ LESSON = {
             "options": [
                 "Arm length",
                 "Body mass",
-                "Number of brothers and sisters",
+                "Number of petals on a flower",
                 "Length of the leaves on a tree",
             ],
             "answer": 2,
@@ -945,8 +945,8 @@ LESSON = {
             }},
         "apply": {
             "title": "Rung 2 · The one that catches people",
-            "q": "Height is continuous. What does that tell you about its "
-                 "cause?",
+            "q": "Height varies continuously. What causes the variation in "
+                 "height?",
             # Design's four, untouched, and the construct is why the gate is
             # quiet: three of them begin "That…" and name a wrong CAUSE, and
             # the correct one refuses the question the stem asks. Same
@@ -957,12 +957,12 @@ LESSON = {
             #   C  the mirror-image error: continuous, therefore genes alone
             #   D  authored belief: genes can only ever produce categories,
             #      so a smooth range rules genes out altogether
+            # Lean Wave 2: 15 words or fewer, no dashes, key not the longest.
             "options": [
-                "That it is caused by the environment rather than by genes",
-                "That it is caused by genes alone",
-                "Nothing on its own — shape and cause are separate questions",
-                "That no genes are involved, since genes give discrete "
-                "categories",
+                "The environment alone, so tall parents never pass height to their children",
+                "Genes alone, as height is passed on from parents",
+                "Many genes and the environment together, as diet affects height too",
+                "No genes at all, since genes only ever give separate groups like blood type",
             ],
             "answer": 2,
             # All three corrections are Design's, byte-identical. Each answers

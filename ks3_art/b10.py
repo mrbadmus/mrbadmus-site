@@ -694,7 +694,7 @@ def _punnett(fig):
                          % (_n(x0), _n(by), _n(by + 12), _n(x1), _n(by)),
                          stroke=_SVG_ACCENT, w=2.4))
         out.append(_label((x0 + x1) / 2, by + 36,
-                          "%d of the four — %s" % (count, word),
+                          "%d of the four: %s" % (count, word),
                           size=15, weight="700", fill=_SVG_ACCENT_TEXT,
                           data_tally=word, data_tally_count=count,
                           data_tally_from=span[0]["n"],
@@ -708,8 +708,13 @@ def _punnett(fig):
     out.append(_mono(24, by + 118,
                      "filled flower = %s  ·  open flower = %s" % (dom, rec),
                      size=13, fill=_SVG_INK_MUTED))
+    # ⊕ Lean Wave 2 examiner fix: "beats" read as "stronger"; the dominance rule
+    # now says what it is, on two lines so it clears the ratio on its left.
+    out.append(_label(W - 30, by + 70, "P is dominant over p.",
+                      size=14, weight="600", anchor="end",
+                      fill=_SVG_INK_BODY))
     out.append(_label(W - 30, by + 88,
-                      "P beats p. A plant is %s only if it gets p from "
+                      "A plant is %s only if it gets p from "
                       "both parents." % rec,
                       size=14, weight="600", anchor="end",
                       fill=_SVG_INK_BODY))
@@ -786,7 +791,7 @@ _NESTED_SCALE_CAPTIONS = (
     (556, "03", "A chromosome", "0.002 mm long",
      ("One DNA molecule, coiled and wound",
       "around proteins. Not a different",
-      "substance from DNA — DNA, packed.")),
+      "substance from DNA. It is DNA, packed.")),
     (852, "04", "A gene", "a section of the same strand",
      ("A length of it, carrying the instruction",
       "for one characteristic. Part of the",
@@ -1142,7 +1147,7 @@ def _nested_scale(fig):
     out.append(_path("M 36,1348 H 824", stroke=_SVG_RULE, w=2))
     out.append(_path("M 44,1376 h 34", stroke=_SVG_ACCENT, w=6,
                      data_legend="dna"))
-    out.append(_label(88, 1382, "DNA — the same molecule in all five panels",
+    out.append(_label(88, 1382, "DNA: the same molecule in all five panels",
                       size=17, fill=_SVG_INK, weight="700", anchor="start",
                       data_legend="dna"))
     out.append(_path("M 470,1376 h 34", stroke=_SVG_INK, w=6,
@@ -2478,11 +2483,14 @@ def _frequency_bars(fig):
         raise ValueError(
             "frequency-bars figure %r has no bins." % fig.get("id"))
     x_label, x_unit = d.get("x_label"), d.get("x_unit")
-    if not x_unit:
+    touching = bool(d.get("touching"))
+    # ⊕ Lean Wave 2: a chart of separate GROUPS (blood group) has no unit to
+    # give, so `x_unit` may be omitted only when the bars sit apart. A
+    # histogram of measurements still refuses to draw without one.
+    if not x_unit and touching:
         raise ValueError(
             "frequency-bars figure %r has no x_unit. A chart without units "
             "is an accuracy defect, not a style omission." % fig.get("id"))
-    touching = bool(d.get("touching"))
     y_label = d.get("y_label") or "number of students"
 
     W, H = 760, 380
@@ -2516,14 +2524,256 @@ def _frequency_bars(fig):
                           weight="700"))
         out.append(_label(x + bw / 2.0, MT + ph + 20, b["label"], size=13,
                           fill=_SVG_INK_MUTED, weight="600"))
-    out.append(_label(ML + pw / 2.0, H - 14, "%s / %s" % (x_label, x_unit),
+    out.append(_label(ML + pw / 2.0, H - 14,
+                      ("%s / %s" % (x_label, x_unit)) if x_unit else x_label,
                       size=14, fill=_SVG_INK_BODY, weight="700"))
     out.append('</svg>')
     return "".join(out)
 
 
+# ── ⊕ Lean Wave 2 (Nov 2026): three phone-width figures ──────────────────
+#
+# Drawn at 340 wide, like the Wave 1 biology figures, so they sit on a 390 px
+# phone without a sideways scroll. Every number on them is computed from the
+# figure's data, never typed beside it.
+
+_B10_W = 340
+
+
+def _b10_open(fig, h, body):
+    return (_svg_open(fig, _B10_W, int(math.ceil(h)))
+            + '<g stroke-linecap="round" stroke-linejoin="round">'
+            + "".join(body) + "</g></svg>")
+
+
+def _b10_dom_first(a, b):
+    """A genotype written dominant first: `Pp`, never `pP` (the bench's spelling)."""
+    return (a + b) if a.isupper() or not b.isupper() else (b + a)
+
+
+def _b10_punnett_cross(fig):
+    """Any one-gene cross on a 2 x 2 grid, with the probability of one result.
+
+    data: parent1, parent2 (two letters each, P and/or p), dominant, recessive
+    (the two colour words), find ("dominant" or "recessive": the result whose
+    squares are shaded and counted). Each parent's TWO versions head a column
+    or a row, repeated letters included, so all four squares are equally likely.
+    """
+    d = fig.get("data") or {}
+    p1, p2 = d.get("parent1") or "", d.get("parent2") or ""
+    dom, rec = d.get("dominant") or "purple", d.get("recessive") or "white"
+    find = d.get("find") or "recessive"
+    for who, g in (("parent1", p1), ("parent2", p2)):
+        if len(g) != 2 or any(ch not in "Pp" for ch in g):
+            raise ValueError("figure %r: %s must be two of P and p, got %r"
+                             % (fig.get("id"), who, g))
+    if find not in ("dominant", "recessive"):
+        raise ValueError("figure %r: find must be dominant or recessive" % fig.get("id"))
+
+    def pheno(g):
+        return dom if any(ch.isupper() for ch in g) else rec
+
+    cols = sorted(p1, key=lambda c: (c.islower(), c))
+    rows = sorted(p2, key=lambda c: (c.islower(), c))
+    want = dom if find == "dominant" else rec
+    GX, GY, C = 112.0, 92.0, 108.0
+    col_cx = [GX + C * 0.5, GX + C * 1.5]
+    row_cy = [GY + C * 0.5, GY + C * 1.5]
+    o = []
+    # parent 1 across the top, its two versions heading the columns
+    o.append(_mono(GX + C, 22, "PARENT 1: %s, %s" % (p1, pheno(p1)), size=13,
+                   anchor="middle", fill=_SVG_INK_MUTED, data_part="parent", data_key="parent1"))
+    # parent 2 down the side, its two versions heading the rows
+    o.append(_mono(12, 96, "PARENT 2:", size=13, fill=_SVG_INK_MUTED,
+                   data_part="parent", data_key="parent2"))
+    o.append(_mono(12, 114, "%s, %s" % (p2, pheno(p2)), size=13, fill=_SVG_INK_MUTED,
+                   data_part="parent", data_key="parent2"))
+    for j, letter in enumerate(cols):
+        o.append(_punnett_gamete(col_cx[j], 58, letter, 17.0))
+    for i, letter in enumerate(rows):
+        o.append(_punnett_gamete(78, row_cy[i], letter, 17.0))
+    cells = []
+    for i, rl in enumerate(rows):
+        for j, cl in enumerate(cols):
+            g = _b10_dom_first(cl, rl)
+            cells.append((g, pheno(g), col_cx[j], row_cy[i]))
+    hits = 0
+    for n, (g, ph, cx, cy) in enumerate(cells, 1):
+        mark = ph == want
+        hits += mark
+        o.append(_rect(cx - C / 2, cy - C / 2, C, C, rx=12,
+                       fill=_SVG_ACCENT_TINT if mark else _SVG_CARD, stroke=_SVG_INK, w=2.5,
+                       data_cell=n, data_genotype=g, data_phenotype=ph))
+        o.append(_label(cx, cy - 14, g, size=26, weight="800", family=_SVG_MONO,
+                        data_cell_genotype=n))
+        o.append(_punnett_flower(cx, cy + 12, ph == dom, scale=0.6))
+        o.append(_label(cx, cy + 46, ph, size=13, weight="700", fill=_SVG_INK_BODY))
+    total = len(cells)
+    k = math.gcd(hits, total) or 1
+    pct = 100.0 * hits / total
+    pct_s = ("%d" % pct) if pct == int(pct) else ("%.1f" % pct)
+    y0 = GY + 2 * C + 34
+    o.append(_label(12, y0, "%s: %d of the %d squares" % (want.capitalize(), hits, total),
+                    size=15, weight="700", anchor="start", data_part="count"))
+    parts = ["%d/%d" % (hits, total)]
+    if k > 1 and total // k > 1:
+        parts.append("%d/%d" % (hits // k, total // k))
+    parts += ["%s%%" % pct_s]
+    if hits:
+        parts.append(("1 in %d" % (total // hits)) if total % hits == 0 else ("%d in %d" % (hits, total)))
+    o.append(_mono(12, y0 + 26, " = ".join(parts), size=14, fill=_SVG_ACCENT_TEXT,
+                   weight="700", data_part="probability"))
+    o.append(_mono(12, y0 + 50, "filled flower = %s, open = %s" % (dom, rec), size=13,
+                   data_part="key"))
+    return _b10_open(fig, y0 + 64, o)
+
+
+def _b10_double_helix(fig):
+    """Two strands twisted round each other, joined by base pairs, with a gene bracketed.
+
+    data: pairs (list of [left, right] letters for the widest rungs, A-T or C-G only).
+    """
+    d = fig.get("data") or {}
+    pairs = d.get("pairs") or [("A", "T"), ("C", "G"), ("T", "A"), ("G", "C")]
+    ok = {("A", "T"), ("T", "A"), ("C", "G"), ("G", "C")}
+    for pr in pairs:
+        if tuple(pr) not in ok:
+            raise ValueError("figure %r: %r is not a real base pair" % (fig.get("id"), pr))
+    cx, amp, y0, y1, period = 92.0, 50.0, 46.0, 346.0, 150.0
+
+    def xs(y, sign):
+        return cx + sign * amp * math.sin(2 * math.pi * (y - y0) / period)
+
+    o = []
+    o.append(_mono(12, 22, "DOUBLE HELIX", size=13, spacing="1.2", data_part="title"))
+    # rungs first, so the strands sit over their ends
+    rung_ys = [y0 + 12 + 15 * k for k in range(int((y1 - y0 - 12) / 15))]
+    lettered, pi = [], 0
+    for y in rung_ys:
+        xa, xb = xs(y, 1), xs(y, -1)
+        if abs(xa - xb) < 16:
+            continue
+        o.append(_line(xa, y, xb, y, stroke=_SVG_INK_FAINT, w=3, data_part="rung"))
+        if abs(xa - xb) > 84 and pi < len(pairs) and (not lettered or y - lettered[-1] >= 30):
+            l, r = pairs[pi]
+            pi += 1
+            lx, rx_ = min(xa, xb), max(xa, xb)
+            o.append(_rect(lx + 8, y - 9, 22, 18, rx=4, fill=_SVG_CARD, stroke=_SVG_INK, w=1.5))
+            o.append(_label(lx + 19, y + 5, l, size=13, weight="800", family=_SVG_MONO,
+                            data_part="base"))
+            o.append(_rect(rx_ - 30, y - 9, 22, 18, rx=4, fill=_SVG_CARD, stroke=_SVG_INK, w=1.5))
+            o.append(_label(rx_ - 19, y + 5, r, size=13, weight="800", family=_SVG_MONO,
+                            data_part="base"))
+            lettered.append(y)
+    for sign, paint in ((1, _SVG_ACCENT), (-1, _SVG_INK)):
+        pts = ["%s,%s" % (_n(xs(y0 + t, sign)), _n(y0 + t)) for t in range(0, int(y1 - y0) + 1, 3)]
+        o.append(_path("M " + " L ".join(pts), stroke=paint, w=5, data_part="strand"))
+    # labels on the right, each with a leader to the thing it names
+    lx = 176.0
+    ys = y0 + period * 0.25          # strand A at its widest, on the right
+    o.append(_label(lx, ys - 8, "Two strands,", size=14, anchor="start", data_part="label"))
+    o.append(_label(lx, ys + 10, "twisted together", size=14, anchor="start", data_part="label"))
+    o.append(_line(lx - 4, ys, xs(ys, 1) + 6, ys, stroke=_SVG_INK_MUTED, w=1.5, data_part="leader"))
+    if not lettered:
+        raise ValueError("figure %r: no rung was wide enough to letter" % fig.get("id"))
+    yb = min(lettered, key=lambda y: abs(y - (y0 + period * 0.75)))   # clear of the strand label
+    o.append(_label(lx, yb - 8, "Bases pair across:", size=14, anchor="start", data_part="label"))
+    o.append(_label(lx, yb + 10, "A with T, C with G", size=14, anchor="start", data_part="label"))
+    o.append(_line(lx - 4, yb, max(xs(yb, 1), xs(yb, -1)) + 2, yb, stroke=_SVG_INK_MUTED, w=1.5,
+                   data_part="leader"))
+    # one gene: a bracketed section of the same molecule
+    g0, g1 = y0 + period * 1.25, y1 - 6
+    bx = 160.0
+    o.append(_path("M %s,%s H %s V %s H %s" % (_n(bx - 8), _n(g0), _n(bx), _n(g1), _n(bx - 8)),
+                   stroke=_SVG_ACCENT_TEXT, w=2.5, data_part="gene"))
+    gm = (g0 + g1) / 2
+    o.append(_label(lx, gm - 8, "A gene is one", size=14, anchor="start", fill=_SVG_ACCENT_TEXT,
+                    data_part="label"))
+    o.append(_label(lx, gm + 10, "section of the DNA", size=14, anchor="start",
+                    fill=_SVG_ACCENT_TEXT, data_part="label"))
+    return _b10_open(fig, y1 + 14, o)
+
+
+# The beetles in each half of a panel, as (x, y) inside a 150 x 80 box.
+_B10_BEETLES = ((22, 18), (70, 14), (118, 22), (44, 44), (96, 46), (20, 66), (72, 68), (124, 62))
+
+
+def _b10_beetle(cx, cy, fill, ang=0):
+    legs = []
+    for dx in (-4, 0, 4):
+        legs.append(_line(cx + dx, cy - 4, cx + dx - 2, cy - 9, stroke=_SVG_INK, w=1.4))
+        legs.append(_line(cx + dx, cy + 4, cx + dx - 2, cy + 9, stroke=_SVG_INK, w=1.4))
+    body = ("".join(legs)
+            + _ellipse(cx, cy, 9, 6, fill=fill, stroke=_SVG_INK, w=1.6)
+            + _circle(cx + 11, cy, 3.6, fill=_SVG_INK_BODY, stroke=_SVG_INK, w=1.2))
+    return '<g data-part="beetle" transform="rotate(%s %s %s)">%s</g>' % (_n(ang), _n(cx), _n(cy), body)
+
+
+def _b10_speciation(fig):
+    """One population, split by a barrier, changing on each side, then two species.
+
+    data: stages (four headings), barrier ("mountains"), sides (two condition
+    labels). The change is drawn as beetle shade (pale on one side, dark on the
+    other), and said in words in each heading; no colour carries it alone.
+    """
+    d = fig.get("data") or {}
+    stages = d.get("stages") or []
+    sides = d.get("sides") or []
+    if len(stages) != 4 or len(sides) != 2:
+        raise ValueError("figure %r: speciation needs four stages and two sides" % fig.get("id"))
+    o = []
+    PH, BOX = 132.0, 92.0
+    mid = _B10_W / 2.0
+    for k, head in enumerate(stages):
+        top = 8 + k * PH
+        o.append(_circle(20, top + 12, 11, fill=_SVG_INSET, stroke=_SVG_INK, w=1.6))
+        o.append(_label(20, top + 17, str(k + 1), size=13, weight="800", family=_SVG_MONO))
+        o.append(_label(38, top + 17, head, size=14, weight="700", anchor="start",
+                        data_part="stage", data_key=str(k + 1)))
+        bt = top + 28
+        o.append(_rect(8, bt, _B10_W - 16, BOX, rx=10, fill=_SVG_GROUND, stroke=_SVG_RULE, w=1.5,
+                       data_part="habitat"))
+        if k in (1, 2):
+            # the barrier: a ridge of mountains down the middle
+            for j in range(3):
+                yb = bt + 6 + j * 29
+                o.append(_path("M %s,%s L %s,%s L %s,%s Z"
+                               % (_n(mid - 15), _n(yb + 26), _n(mid), _n(yb), _n(mid + 15), _n(yb + 26)),
+                               fill=_SVG_INSET, stroke=_SVG_INK, w=1.6, data_part="barrier"))
+        if k == 2:
+            o.append(_mono(84, bt + BOX - 6, sides[0], size=13, anchor="middle",
+                           fill=_SVG_ACCENT_TEXT, data_part="side"))
+            o.append(_mono(_B10_W - 84, bt + BOX - 6, sides[1], size=13, anchor="middle",
+                           fill=_SVG_ACCENT_TEXT, data_part="side"))
+        for half in (0, 1):
+            x0 = 14 + half * 172
+            if k in (0, 1):
+                shade = _SVG_BAND
+            else:
+                shade = _SVG_INK_BODY if half == 0 else _SVG_CARD
+            spots = _B10_BEETLES
+            if k == 3:                   # keep the middle clear for the pair that meets
+                spots = [s for s in spots if (s[0] < 80) == (half == 0)]
+            for n, (bx, by) in enumerate(spots):
+                if k in (2, 3) and by > 60:
+                    continue             # leave the bottom row for the label
+                o.append(_b10_beetle(x0 + bx, bt + 6 + by * 0.95, shade, ang=(n * 47) % 60 - 30))
+        if k == 3:
+            # the two kinds meet; any offspring cannot breed
+            o.append(_b10_beetle(mid - 30, bt + 30, _SVG_INK_BODY, ang=0))
+            o.append(_b10_beetle(mid + 24, bt + 30, _SVG_CARD, ang=180))
+            o.append(_line(mid - 9, bt + 46, mid + 9, bt + 64, stroke=_SVG_ACCENT_TEXT, w=3.5))
+            o.append(_line(mid + 9, bt + 46, mid - 9, bt + 64, stroke=_SVG_ACCENT_TEXT, w=3.5))
+            o.append(_mono(mid, bt + BOX - 8, "no fertile offspring", size=13, anchor="middle",
+                           fill=_SVG_ACCENT_TEXT, weight="700", data_part="result"))
+    return _b10_open(fig, 8 + 4 * PH - 4, o)
+
+
 # ── registrations ────────────────────────────────────────────────────────
 ART = {
+    'b10-double-helix': _b10_double_helix,
+    'b10-punnett-cross': _b10_punnett_cross,
+    'b10-speciation': _b10_speciation,
     'base-pairs': _base_pairs,
     'frequency-bars': _frequency_bars,
     'nested-scale': _nested_scale,

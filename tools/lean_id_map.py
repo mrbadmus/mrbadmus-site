@@ -114,6 +114,14 @@ WAVES = {
         ("C1", "particles-and-their-behaviour", ["particle-model", "solids-liquids-and-gases", "changes-of-state",
                                                  "gas-pressure", "diffusion", "testing-the-model"]),
     ],
+    # Wave 2 KS3 (spring-term units), in the order of the Rainford KS3 scheme of work.
+    "wave2": [
+        # Y8 Bio 5 Genetics and evolution: all of B10 and B11.
+        ("B10", "inheritance", ["variation-continuous-and-discontinuous", "chromosomes-genes-and-dna",
+                                "how-we-worked-out-dna", "passing-it-on-heredity", "what-makes-a-species"]),
+        ("B11", "evolution", ["variation-and-competitive-success", "natural-selection",
+                              "when-the-environment-changes-extinction", "biodiversity-and-gene-banks"]),
+    ],
 }
 
 # ⊕ P2 (Wave 1): rows an old bench saved that no inventory lists, so knowledge_points never held

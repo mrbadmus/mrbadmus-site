@@ -1058,12 +1058,12 @@ LESSON = {
             #      distractor is the dangerous one
             #   D  authored belief: the doubling happens before fertilisation
             #      rather than the halving happening before it
+            # Lean Wave 2: 15 words or fewer, no dashes, key not the longest.
             "options": [
-                "46 — every cell in the body has the same number",
-                "23 — because half the chromosomes are lost when the sperm is "
-                "made",
-                "92 — the chromosomes double before fertilisation",
-                "23 — one from each pair, so the fertilised egg has 46 again",
+                "46, as every cell in the body has the same number",
+                "23, as each chromosome is cut in half to make the sperm",
+                "92, as the chromosomes double before fertilisation",
+                "23, one from each pair, so the fertilised egg has 46",
             ],
             "answer": 3,
             # Design's three, byte-identical. B's is the strongest correction on
@@ -1095,13 +1095,12 @@ LESSON = {
             #      which is the version that survives meeting the 3:1
             #   D  authored belief: an environmental cause for a proportion that
             #      is far too clean to be environmental
+            # Lean Wave 2: 15 words or fewer, no dashes, key not the longest.
             "options": [
-                "A new white version appeared by mutation in the offspring",
-                "The white parents’ characteristics blended and separated "
-                "again",
-                "Something in the soil turned those flowers white",
-                "Both parents were carrying the white version without showing "
-                "it",
+                "A new white version of the gene appeared by mutation in the offspring",
+                "The parents' colours blended together, then separated again in the offspring",
+                "Something in the soil turned a quarter of the flowers white",
+                "Both parents were carrying the white version without showing it",
             ],
             "answer": 3,
             # Design's three, byte-identical. Each answers the belief its option

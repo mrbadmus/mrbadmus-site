@@ -46,6 +46,34 @@
    "Chloroplasts are only built where light reaches, so a plant cell without them is still a plant cell"
   ]
  },
+ "biodiversity-and-gene-banks#apply": {
+  "0": [
+   "Seeds do not survive freezing, so a stored sample is already dead by the time anyone needs it"
+  ],
+  "1": [
+   "Gene banks are too expensive to be worth building, so the money would always be better spent somewhere else"
+  ],
+  "2": [
+   "Nobody knows how to plant a seed from a gene bank, so a species stored in one could never be brought back at all"
+  ],
+  "3": [
+   "The seed can be regrown, but the ecosystem it depended on — pollinators, soil fungi, seed dispersers — is not in the bank"
+  ]
+ },
+ "biodiversity-and-gene-banks#recall": {
+  "0": [
+   "A thousand potato plants, all clones of one variety"
+  ],
+  "1": [
+   "A field with fifty plant species in it"
+  ],
+  "2": [
+   "A field with ten potato varieties"
+  ],
+  "3": [
+   "A field with two species of grass"
+  ]
+ },
  "calculating-energy-transferred#apply": {
   "0": [
    "Nothing is wrong — that working is correct"
@@ -62,6 +90,20 @@
   ],
   "3": [
    "Nothing — Co is not an element"
+  ]
+ },
+ "chromosomes-genes-and-dna#apply": {
+  "0": [
+   "Yes — every cell with a nucleus has the complete set, but only some genes are switched on in each cell"
+  ],
+  "1": [
+   "No — that gene is only in the cells of the eye, so each cell carries only the genes its organ uses"
+  ],
+  "2": [
+   "Only if you have brown eyes, because a gene for a characteristic is only present in the people who show it"
+  ],
+  "3": [
+   "No — genes move to the organs that need them, so a gene ends up in whichever cells are using it"
   ]
  },
  "compounds#apply": {
@@ -147,6 +189,25 @@
  "fuels-and-energy-resources#recall": {
   "0": [
    "The store refills on a human timescale, so it will not run out"
+  ]
+ },
+ "how-we-worked-out-dna#apply": {
+  "0": [
+   "They worked out its structure, by building models that fitted other people’s measurements"
+  ],
+  "1": [
+   "They discovered DNA"
+  ],
+  "2": [
+   "They proved DNA carries genetic information"
+  ],
+  "3": [
+   "They took the X-ray photographs that revealed the double helix"
+  ]
+ },
+ "how-we-worked-out-dna#recall": {
+  "3": [
+   "That A pairs with T and C pairs with G"
   ]
  },
  "leaves-built-for-the-job#apply": {
@@ -237,6 +298,25 @@
    "30 N m — the moment is the force, and the distance only sets which way it turns"
   ]
  },
+ "natural-selection#apply": {
+  "3": [
+   "Because changes made during an animal’s life do not alter the genetic information it passes on"
+  ]
+ },
+ "natural-selection#recall": {
+  "0": [
+   "The moths themselves gradually darkened, because an individual living on sooty bark changes colour to match it"
+  ],
+  "1": [
+   "The proportions in the population — more of the moths born were dark, because dark parents survived to breed"
+  ],
+  "2": [
+   "The soot stained the moths dark, because anything resting on a blackened trunk is blackened too"
+  ],
+  "3": [
+   "The pale moths learned to hide better, and passed what they had learned on to their offspring"
+  ]
+ },
  "particle-model#apply": {
   "0": [
    "No knife is thin enough to fit"
@@ -246,6 +326,31 @@
   ],
   "3": [
    "The piece is too small to see, so the cut cannot be aimed"
+  ]
+ },
+ "passing-it-on-heredity#apply": {
+  "0": [
+   "A new white version appeared by mutation in the offspring"
+  ],
+  "1": [
+   "The white parents’ characteristics blended and separated again"
+  ],
+  "2": [
+   "Something in the soil turned those flowers white"
+  ]
+ },
+ "passing-it-on-heredity#recall": {
+  "0": [
+   "46 — every cell in the body has the same number"
+  ],
+  "1": [
+   "23 — because half the chromosomes are lost when the sperm is made"
+  ],
+  "2": [
+   "92 — the chromosomes double before fertilisation"
+  ],
+  "3": [
+   "23 — one from each pair, so the fertilised egg has 46 again"
   ]
  },
  "solids-liquids-and-gases#apply": {
@@ -332,12 +437,89 @@
    "The ×10 — somewhere in the middle"
   ]
  },
+ "variation-and-competitive-success#apply": {
+  "0": [
+   "The strongest and healthiest individuals, and the ones that win a direct fight"
+  ],
+  "2": [
+   "Best fitted to the current conditions, and leaving the most surviving offspring"
+  ]
+ },
+ "variation-and-competitive-success#recall": {
+  "0": [
+   "That pale fur is generally a poor variation to have"
+  ],
+  "1": [
+   "That the mouse can change its fur colour to suit the ground"
+  ],
+  "3": [
+   "That camouflage matters more than anything else"
+  ]
+ },
+ "variation-continuous-and-discontinuous#apply": {
+  "1": [
+   "That it is caused by genes alone"
+  ],
+  "2": [
+   "Nothing on its own — shape and cause are separate questions"
+  ],
+  "3": [
+   "That no genes are involved, since genes give discrete categories"
+  ],
+  "0": [
+   "That it is caused by the environment rather than by genes"
+  ]
+ },
+ "variation-continuous-and-discontinuous#recall": {
+  "2": [
+   "Number of brothers and sisters"
+  ]
+ },
  "what-a-force-is#recall": {
   "1": [
    "The ball has force stored in it, and the force is used up when it hits the head."
   ],
   "2": [
    "The head gives its force to the ball, and the ball keeps that force until it stops."
+  ]
+ },
+ "what-makes-a-species#apply": {
+  "1": [
+   "Because their offspring can themselves have offspring"
+  ],
+  "2": [
+   "Because they have the same number of chromosomes"
+  ],
+  "3": [
+   "Because they were bred from the same original animal"
+  ]
+ },
+ "what-makes-a-species#recall": {
+  "0": [
+   "Yes — they produced offspring, which is the test, so the parents count as one species"
+  ],
+  "1": [
+   "No — the offspring must be fertile for the parents to count as one species"
+  ],
+  "2": [
+   "Yes, if the chicks look like both parents, because resemblance is what settles the species"
+  ],
+  "3": [
+   "It cannot be decided without seeing more pairs, so one infertile brood proves nothing either way"
+  ]
+ },
+ "when-the-environment-changes-extinction#apply": {
+  "0": [
+   "No — species only die out when people damage the environment, by hunting or by clearing habitat"
+  ],
+  "1": [
+   "Yes — over 99% of all species that ever lived are extinct, mostly long before humans existed"
+  ],
+  "2": [
+   "Yes, and that means current extinctions are nothing to worry about, since the process would happen anyway"
+  ],
+  "3": [
+   "Only for species that were badly adapted in the first place, since a well adapted one survives"
   ]
  },
  "why-almost-all-life-depends-on-it#apply": {

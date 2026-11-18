@@ -3956,15 +3956,15 @@ START_HERE = {
         question="If you had to guess, how does two metres of DNA fit inside "
                  "one tiny nucleus?",
         options=[
-            ("Most of it is kept elsewhere",
-             "It is a very small space. But the whole two metres is inside the"
-             " nucleus. It fits because it is very thin and coiled up tightly."),
             ("It is coiled up tightly",
              "DNA is incredibly thin, and it is wound round proteins, then "
              "coiled again and again. All two metres really are inside the "
              "nucleus."),
+            ("Most of it is kept elsewhere",
+             "It is a very small space. But the whole two metres is inside the"
+             " nucleus. It fits because it is very thin and coiled up tightly."),
         ],
-        answer=1,
+        answer=0,
         bridge="The coiled packages are called chromosomes, and the pieces "
                "inside them have names too. Next: zoom in from a whole person "
                "down to the letters that spell out an instruction.",
@@ -4041,16 +4041,16 @@ START_HERE = {
         question="If you had to guess, are a horse and a donkey the same "
                  "species?",
         options=[
-            ("Yes, the same species",
-             "They can have a foal together, so it is easy to think so. But a "
-             "mule almost never has young of its own, and that makes a horse "
-             "and a donkey two species."),
             ("No, two different species",
              "Their mule is healthy, but it almost never has young of its own."
              " To be one species, the offspring must be able to have young "
              "too."),
+            ("Yes, the same species",
+             "They can have a foal together, so it is easy to think so. But a "
+             "mule almost never has young of its own, and that makes a horse "
+             "and a donkey two species."),
         ],
-        answer=1,
+        answer=0,
         bridge="Even this test will not settle every pair. Next: seven tricky "
                "cases to judge, and the last few are ones that biologists "
                "still argue about.",
@@ -4100,16 +4100,16 @@ START_HERE = {
         question="If you had to guess, how did giraffes end up with such long "
                  "necks?",
         options=[
-            ("Stretching, then passing it on",
-             "That was once a leading scientific idea, and it sounds sensible."
-             " But stretching changes only that one giraffe's body, and its "
-             "babies are not born with the extra length."),
             ("Long-necked giraffes had more babies",
              "Some giraffes were born with longer necks than others. In hard "
              "times they reached more food, so more of them survived to have "
              "babies with long necks too."),
+            ("Stretching, then passing it on",
+             "That was once a leading scientific idea, and it sounds sensible."
+             " But stretching changes only that one giraffe's body, and its "
+             "babies are not born with the extra length."),
         ],
-        answer=1,
+        answer=0,
         bridge="It is the group that changes, one generation at a time. Next: "
                "watch it happen with pale and dark moths on a tree trunk.",
         big_question="Over many generations, a whole species can change its "

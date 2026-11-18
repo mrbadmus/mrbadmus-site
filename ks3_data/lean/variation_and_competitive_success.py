@@ -1,0 +1,143 @@
+# -*- coding: utf-8 -*-
+"""Variation and competitive success, in the lean shape.
+Spec table: docs/lessons/wave2/ks3-variation-and-competitive-success.md."""
+
+LESSON = {
+    "slug": "variation-and-competitive-success",
+    "start": {
+        "setup": "In a long drought, food and water run short.",
+        "question": "If you had to guess, which mouse needs less food and water to stay alive?",
+        "options": [
+            ("The big, strong one",
+             "The small one. A big body needs more food and water to keep going."),
+            ("The small, quick one",
+             "Yes. A small body needs less food and water, so it copes better."),
+        ],
+        "answer": 1,
+    },
+    "words": ["competition", "resources", "variation", "adapted"],
+    "word_defs": {
+        "competition": "When organisms need the same limited resource, so not all of them get enough.",
+        "resources": "Things an organism needs, such as food, water, light, space and mates.",
+        "variation": "The differences between individuals of the same species, or between species.",
+        "adapted": "Having features that suit an organism to where it lives.",
+    },
+    "knowledge": [
+        {"kind": "card", "title": "Living things compete",
+         "body": ["Every organism needs resources. There is never enough for all of them.",
+                  "So organisms compete for them.",
+                  {"points": ["Animals compete for food, water, space (territory) and mates.",
+                              "Plants compete for light, water, minerals from the soil and space."]},
+                  "Members of the same species compete too, because they need the same things."]},
+        {"kind": "card", "title": "More are born than survive",
+         "body": ["Most animals and plants produce far more young than can survive.",
+                  "A frog lays thousands of eggs. Only a few grow into adult frogs.",
+                  "Some get enough resources to survive and breed.",
+                  "The rest die young or never breed."]},
+        {"kind": "card", "title": "Variation decides who does best",
+         "body": ["Individuals of the same species vary. They differ in size, coat, colour and speed.",
+                  "Some variations help an individual get resources or escape predators.",
+                  "These individuals compete more successfully. They are better adapted.",
+                  "So they are more likely to survive and reproduce."]},
+        {"kind": "reveal", "title": "The same mice in two different conditions",
+         "cols": ["A hard winter", "A long hot drought"],
+         "rows": [
+             ("Thick coat", "Keeps it warm. Most likely to survive.",
+              "Traps heat it needs to lose. Least likely to survive."),
+             ("Small and quick", "Loses heat fast. Struggles to survive.",
+              "Needs little water and food. Most likely to survive."),
+             ("Large and heavy", "Loses heat slowly, but needs a lot of food.",
+              "Needs more water and food than it can find. Struggles."),
+         ]},
+        {"kind": "card", "title": "Camouflage depends on the background",
+         "body": ["A mouse with very pale fur is hard for an owl to see on snow.",
+                  "On dark soil, the same pale fur stands out. Owls catch it more easily.",
+                  "The mouse has not changed. The conditions have."]},
+        {"kind": "card", "title": "An advantage depends on the conditions",
+         "body": ["Usually, a variation is only better in certain conditions.",
+                  "Change the conditions, and a different individual may do best."]},
+        {"kind": "card", "title": "Competing with other species",
+         "body": ["Different species can need the same resources.",
+                  "Variation between species means one may compete more successfully.",
+                  "Grey squirrels were brought to Britain from North America.",
+                  "They are bigger than red squirrels and digest acorns better.",
+                  "Grey squirrels get more of the food.",
+                  "Greys also carry a virus that kills red squirrels.",
+                  "Red squirrels have died out in many woods."]},
+        {"kind": "card", "title": "What fittest means",
+         "body": ["Natural selection is often summed up as survival of the fittest.",
+                  "Fittest means best suited to the conditions. It does not mean strongest.",
+                  "What counts is surviving long enough to breed and pass on genes."]},
+        {"kind": "card", "title": "Why a species needs variation",
+         "body": ["Nobody can know which variation will matter in future.",
+                  "A new disease might kill every mouse except a few that happen to resist it.",
+                  "With lots of variation, some individuals are likely to survive a change.",
+                  "They breed and pass on their genes, so the population recovers.",
+                  "A population of only a few individuals has very little variation.",
+                  "One change could wipe it out."]},
+        {"kind": "card", "title": "Easy mistakes",
+         "body": [{"mistakes": [
+             ("Survival of the fittest means the strongest survive.",
+              "Fittest means best suited to the conditions. Often that is not the strongest.",
+              "EVOL-01"),
+             ("Some individuals are just better than others.",
+              "Whether a feature helps depends on the conditions. Change them and another may do best.",
+              "EVOL-02"),
+             ("Organisms only compete with other species.",
+              "Members of one species compete too, because they need the same things."),
+             ("Plants do not compete.",
+              "Plants compete for light, water, minerals and space."),
+         ]}]},
+    ],
+    "key_fact": "Individuals of a species vary, and resources are limited. So some individuals compete more "
+                "successfully, and are more likely to survive and reproduce. Which variation helps depends "
+                "on the conditions.",
+    "deeper": [
+        {"kind": "card", "title": "Finches that changed in a few years",
+         "body": ["Peter and Rosemary Grant measured finches on a Galápagos island for forty years.",
+                  "In the 1977 drought, only large, tough seeds were left.",
+                  "Finches with deeper, stronger beaks survived better.",
+                  "The next generation had deeper beaks on average.",
+                  "After heavy rains in 1983, small soft seeds came back.",
+                  "Then smaller beaks did better, and the average beak got smaller again."]},
+    ],
+    "try": None,
+    "tutor_body": "Want to test a variation against conditions of your own?",
+    "ks4_becomes": "Competition between organisms, and how adaptations help them survive.",
+    "ladder_stem": {
+        "explain": "A mouse with a thick coat is the most likely to survive a hard winter. It is the least "
+                   "likely to survive a long hot drought. Explain both results. Say what this means for the "
+                   "idea of a \"better\" animal.",
+        "produce": "A new disease spreads through a population of mice. None of their visible features "
+                   "protects them. Explain why a population still benefits from lots of variation. Say what "
+                   "this means for a population of very few individuals.",
+    },
+    "ladder_ticks": [
+        ["Makes clear the mouse itself did not change — only the conditions did.",
+         "Makes clear the mouse did not change. Only the conditions did."],
+        ["States that there is therefore no generally better individual, only one better suited to "
+         "current conditions.",
+         "States there is no generally better animal, only one better suited to the conditions."],
+        ["Says a population with more variation is more likely to contain some individuals that happen to "
+         "survive it.",
+         "Says more variation makes it likelier that some individuals happen to survive."],
+        ["Says those survivors pass their versions on, so the population recovers.",
+         "Says the survivors breed and pass on their genes, so the population recovers."],
+        ["Concludes that such a population is much more likely to be wiped out by a change it happens to "
+         "be unsuited to.",
+         "Concludes a tiny population is more likely to be wiped out by a change."],
+    ],
+    "figures": [],
+    "ladder_feedback": {
+        "recall": {
+            0: "Pale fur helps on snow. It is only poor on dark soil.",
+            1: "A mouse cannot change its fur. The conditions decide if its fur helps.",
+            3: "Camouflage is one advantage. Which one matters depends on the conditions.",
+        },
+        "apply": {
+            0: "Strength is one variation. In a drought, the mouse needing least water does best.",
+            1: "A long life counts for nothing if the animal never breeds.",
+            3: "Biology does not rank species as advanced. Fittest means best suited to conditions.",
+        },
+    },
+}

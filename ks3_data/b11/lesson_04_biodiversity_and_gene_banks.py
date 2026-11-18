@@ -913,10 +913,10 @@ LESSON = {
             #   D  EVOL-07 — the fewest SPECIES, and therefore the answer a
             #      student who reads biodiversity as a species count must give
             "options": [
-                "A thousand potato plants, all clones of one variety",
-                "A field with fifty plant species in it",
-                "A field with ten potato varieties",
-                "A field with two species of grass",
+                "A field with a thousand clones of one potato variety",
+                "A field with fifty different plant species growing in it together",
+                "A field with ten potato varieties, a hundred plants of each",
+                "A field with two species of wild grass",
             ],
             "answer": 0,
             # Design's three corrections, byte-identical. D's is the one doing
@@ -934,9 +934,8 @@ LESSON = {
             }},
         "apply": {
             "title": "Rung 2 · The one that catches people",
-            "q": "A conservation charity says a seed bank means a plant "
-                 "species can never truly be lost. What is the strongest "
-                 "objection?",
+            "q": "A charity says a seed bank means a plant species can never "
+                 "truly be lost. What is the strongest objection?",
             # ⊕ MRB-177 — THE CORRECT OPTION IS DESIGN'S, UNTOUCHED AT 23 WORDS.
             # The three distractors were 5 / 9 / 10 and are now 18 / 19 / 24,
             # each extended into the same claim-plus-consequence shape the
@@ -953,14 +952,10 @@ LESSON = {
             #   D  extended: nobody knows how to plant one → so a stored species
             #      could never come back at all
             "options": [
-                "Seeds do not survive freezing, so a stored sample is already "
-                "dead by the time anyone needs it",
-                "Gene banks are too expensive to be worth building, so the "
-                "money would always be better spent somewhere else",
-                "Nobody knows how to plant a seed from a gene bank, so a "
-                "species stored in one could never be brought back at all",
-                "The seed can be regrown, but the ecosystem it depended on — "
-                "pollinators, soil fungi, seed dispersers — is not in the bank",
+                "Seeds do not survive freezing, so every stored sample is dead before it is needed",
+                "Gene banks cost too much, so the money is always better spent somewhere else",
+                "Nobody knows how to grow a stored seed, so it can never come back",
+                "Its pollinators and soil fungi are not stored, so it may not survive",
             ],
             "answer": 3,
             "feedback": {
