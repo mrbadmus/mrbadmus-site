@@ -240,17 +240,22 @@ def sender_reads_full_errors():
 
 
 def removed_ids():
-    """Ids the lean pilot retired from their pages (docs/lessons/<pilot or wave>/ID-MAP-*.json,
-    status "removed"; tools/lean_id_map.py writes them). A child's saved answer to one of
-    these still resolves, so the tag stays in knowledge_points/*.json and the check below
-    accepts it. It accepts NOTHING else that no loader knows."""
+    """Ids the lean rebuilds retired from their pages: kp_classify.removed_ids() (one list, used by
+    the key writer, the top-up and this check alike). A child's saved answer to one of these still
+    resolves, so its tag and key stay and the check below accepts them. It accepts NOTHING else that
+    no loader knows."""
+    return kpc.removed_ids()
+
+
+def removed_tags():
+    """{retired id: the knowledge point its ID map recorded}, for removed ids that had one."""
     import glob
-    out = set()
+    out = {}
     for path in glob.glob(os.path.join(REPO, "docs", "lessons", "*", "ID-MAP-*.json")):
         with open(path, encoding="utf-8") as fh:
             for qid, e in (json.load(fh).get("ids") or {}).items():
-                if e.get("status") == "removed":
-                    out.add(qid)
+                if e.get("status") == "removed" and e.get("kp"):
+                    out[qid] = e["kp"]
     return out
 
 
@@ -310,6 +315,14 @@ def check(data=None, inv=None, quiet=False):
             for p in pts:
                 if p.get("id") not in used:
                     errs.append("%s has no questions" % p.get("id"))
+
+    # ⊕ 18 Nov 2026: a retired id keeps its tag (kp_classify.top_up used to prune them, and each
+    # unit restored them by hand with nothing checking). Every id an ID map lists "removed" with a
+    # tag must still be tagged.
+    for qid, kp in sorted(removed_tags().items()):
+        if qid not in where:
+            errs.append("%s: retired (ID map: removed) but no longer tagged — it was %s; a saved "
+                        "answer to it would lose its knowledge point" % (qid, kp))
 
     unt = data["untagged"].get("questions") or {}
     for qid, info in unt.items():
