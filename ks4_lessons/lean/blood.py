@@ -119,7 +119,7 @@ LESSON = {
              ("A", "A small disc with a pale centre and no nucleus. The most common cell.",
               "Red blood cell"),
              ("B", "Larger, with a nucleus in several lobes", "Phagocyte, a white blood cell"),
-             ("C", "Almost filled by one large round nucleus", "Lymphocyte, a white blood cell"),
+             ("C", "Almost filled by one large round nucleus", "Lympho\u00adcyte, a white blood cell"),
              ("D", "Tiny fragments with no nucleus", "Platelets"),
          ]},
         {"kind": "card", "title": "Easy mistakes",

@@ -76,7 +76,8 @@ LESSON = {
                   ]}]},
         {"kind": "card", "title": "The transpiration stream",
          "body": ["Xylem tissue transports water and mineral ions from the roots to the stems and "
-                  "leaves. It is made of hollow tubes strengthened by lignin, adapted for the "
+                  "leaves. It is made of hollow tubes strengthened by lignin (a tough, woody substance), "
+                  "adapted for the "
                   "transport of water in the transpiration stream.",
                   {"points": [
                       "Water evaporates from the leaves and diffuses out through the stomata as "
@@ -101,7 +102,7 @@ LESSON = {
          "rows": [
              ("Higher temperature", "Faster",
               "Water evaporates and diffuses faster"),
-             ("Higher humidity", "Slower",
+             ("Higher humidity (more water vapour in the air)", "Slower",
               "There is less difference in water vapour between inside and outside the leaf"),
              ("More air movement", "Faster",
               "Wind blows water vapour away from the leaf, so it diffuses out faster"),

@@ -11,7 +11,7 @@
 <link rel="stylesheet" href="/shared/ks4-ds.css?v=a4b73a36">
 <link rel="stylesheet" href="/shared/ks4-theme.css?v=b2b12407">
 <link rel="stylesheet" href="/shared/ks4-lesson.css?v=956a68af">
-<link rel="stylesheet" href="/shared/ks4-lesson-batch-lean.css?v=090cf1f8">
+<link rel="stylesheet" href="/shared/ks4-lesson-batch-lean.css?v=5223e4f1">
 <link rel="stylesheet" href="/shared/lean.css?v=d7f0f8a9">
 <link rel="stylesheet" href="/shared/topbar.css?v=d857b6c3">
 <link rel="stylesheet" href="/shared/drawer.css?v=d5f3f86f">
@@ -961,8 +961,8 @@ class Component extends DCLogic {
       const ex = EX.filter((e, j) => placed[j] !== undefined && e.a === i).map((e) => e.t);
       if (ex.length) b += D.T(350, y + 34, ex.join(' \u00b7 '), 13, { anchor: 'start', weight: 'normal', fill: C.stroke });
     });
-    b += D.line(330, 40, 330, 386, 2, C.muted, ' stroke-dasharray="4 4"') + D.T(256, 30, 'typical size', 12, { anchor: 'start', weight: 'normal', fill: C.muted });
-    return D.svg(560, 400, b, 'Ladder of organisation: cell (about 50 \u00b5m), tissue (about 1 mm), organ (about 10 cm), organ system (tens of cm), organism (about 1.5 m).');
+    b += D.T(256, 30, 'typical size', 12, { anchor: 'start', weight: 'normal', fill: C.muted });
+    return D.svg(360, 400, b, 'Ladder of organisation: cell (about 50 \u00b5m), tissue (about 1 mm), organ (about 10 cm), organ system (tens of cm), organism (about 1.5 m).');
   }
   seg(on, st) {
     const bc = st === 'right' ? 'var(--ks3-accent)' : on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)';

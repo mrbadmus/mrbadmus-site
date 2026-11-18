@@ -95,3 +95,5 @@ html, body { margin: 0; padding: 0; background: #FBF3E6; }
 @media (max-width: 380px) {
   #ks4-mount input[type="text"]::placeholder { font-size: 10px; }
 }
+
+html .lean-table thead th, html .lean-table tbody th, html .lean-table .lean-cell { overflow-wrap: break-word; -webkit-hyphens: auto; hyphens: auto; }

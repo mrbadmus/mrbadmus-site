@@ -115,8 +115,8 @@ LESSON = {
                       "Genetic: inheriting certain faulty genes increases the risk of some "
                       "cancers, such as some breast cancers.",
                   ]},
-                  "Carcinogens, including ionising radiation, are on Health, disease and risk "
-                  "factors."]},
+                  "Carcinogens are substances that can cause cancer. They, and ionising "
+                  "radiation, are in the lesson Health, disease and risk factors."]},
         {"kind": "card", "title": "Easy mistakes",
          "body": [{"mistakes": [
              ("All tumours are cancer.", "Only malignant tumours are cancer."),

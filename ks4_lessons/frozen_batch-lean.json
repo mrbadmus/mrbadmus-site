@@ -20,11 +20,11 @@
   "review_state": "examiner-reviewed"
  },
  "blood": {
-  "hash": "d0f97757e26af6fdd43060e8f2efc105095aec94604e2cf7888755302d460b81",
+  "hash": "d6c05f5c534142479b5d453e471a610bd770ca6c66758b88b51644127caf60ee",
   "review_state": "examiner-reviewed"
  },
  "cancer": {
-  "hash": "b933d282f27c208209feec5aae54627fd2b004295db89f25fb77f8c0874886ce",
+  "hash": "6907d6dd0dd032b8c7c890698c723b5356da26fae20d7f29897c4a1bfdb6a3c6",
   "review_state": "examiner-reviewed"
  },
  "carbon-cycle": {
@@ -48,7 +48,7 @@
   "review_state": "examiner-reviewed"
  },
  "coronary-heart-disease": {
-  "hash": "96be2e98d27c6c5f2fe87aeef4ddd0283143602d63a15ca294f8c958d0f851fe",
+  "hash": "9fef0f1f6de906d198e9261f6d7c4f25912981822f890115c96051b2c7a5a947",
   "review_state": "examiner-reviewed"
  },
  "decomposition": {
@@ -60,7 +60,7 @@
   "review_state": "examiner-reviewed"
  },
  "digestive-system": {
-  "hash": "01297c13fe339de1222c9b16d8b89e82940d654aa3e805a531221f92c2efb340",
+  "hash": "814f08d002640ffe8dde74d79d4c145dc4fb1087992b5a5f7c02cdf384202c51",
   "review_state": "examiner-reviewed"
  },
  "ecosystems": {
@@ -100,7 +100,7 @@
   "review_state": "examiner-reviewed"
  },
  "enzymes": {
-  "hash": "bd0ac24ed65f4c58c9a1f086ef347e8e11c0ab3562e8b31169f80e7f75db3939",
+  "hash": "9a9efe8615064e3b75cc2cd2d93cb987feab2ad125c4498d90b696fac32c6a3f",
   "review_state": "examiner-reviewed"
  },
  "factors-affecting-food-security": {
@@ -132,7 +132,7 @@
   "review_state": "examiner-reviewed"
  },
  "heart-blood-vessels": {
-  "hash": "88f91481566ee0083012084f14064e60f347aa712bbd969002229d3daf5113c2",
+  "hash": "b033f8f1261ffe8a432de8b12ad5d64dc4a66ed132ac36974438ae5d3a5bed40",
   "review_state": "examiner-reviewed"
  },
  "induced-potential": {
@@ -180,7 +180,7 @@
   "review_state": "examiner-reviewed"
  },
  "plant-tissues": {
-  "hash": "9a86b92f4b6fb92ca3e4dc6e7c8b82df6729cf9bb234e21a237158e70086489e",
+  "hash": "3ec5e0e8e69f1aed1beec7842dd96be0f3e8fea585cf8f0da0dfc6189e6f00f5",
   "review_state": "examiner-reviewed"
  },
  "poles-of-a-magnet": {
@@ -196,7 +196,7 @@
   "review_state": "examiner-reviewed"
  },
  "principles-of-organisation": {
-  "hash": "2ae6303d78cb5bd218d4127dc367518b4f5f97077bba99fe89494ecae2646125",
+  "hash": "62841ca7c2809d31ae30b4bb8237d67b852eb23941cb6eeb736b241894f57623",
   "review_state": "examiner-reviewed"
  },
  "properties-em-waves-1": {
@@ -260,11 +260,11 @@
   "review_state": "examiner-reviewed"
  },
  "translocation": {
-  "hash": "4b211183652eca0c45cb8d20f57e7951fe7397d3bdda637c821511cdd93da165",
+  "hash": "a7e841a7e93dce8ae406a76599980bd7a640da199f8c1f3848da4ea323a77550",
   "review_state": "examiner-reviewed"
  },
  "transpiration": {
-  "hash": "f3ca4c5dc0f96860e948bc7c524d12d5596e8c5b689afe938b8539bb581088ca",
+  "hash": "c86340b070d897aec1c4c9563c400de5c7bfe2eea19a1165a87b92d838eecf8a",
   "review_state": "examiner-reviewed"
  },
  "transverse-longitudinal-waves": {

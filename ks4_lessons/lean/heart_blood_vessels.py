@@ -135,7 +135,7 @@ LESSON = {
          "rows": [
              ("Artery", "Thick muscular wall with elastic fibres",
               "Carries blood away from the heart at high pressure"),
-             ("Vein", "Thinner wall, wide lumen, and valves",
+             ("Vein", "Thinner wall, wide lumen (the space inside), and valves",
               "Carries blood back to the heart at low pressure; the valves stop it flowing "
               "backwards"),
              ("Capillary", "Wall one cell thick, in a dense network",

@@ -263,7 +263,13 @@ _BLOCK_MAP = {"s-words": "keyword", "s-knowledge": "explainer", "s-fact": "key-f
 
 def _extra_css():
     from . import batch_4
-    return batch_4.EXTRA_CSS   # the line-input placeholder rule the Steps and Cfifa blocks need
+    # ⊕ 18 Nov 2026 (Organisation pupil walk): at 390 px shared/lean.css's overflow-wrap:anywhere
+    # split long words in reveal-table cells with no hyphen ("Carbohydra|tes"). On KS4 pages only
+    # (lean.css is shared with KS3), hyphenate at a real break point first; a word with none
+    # still wraps rather than overflowing.
+    table = ("\nhtml .lean-table thead th, html .lean-table tbody th, html .lean-table .lean-cell "
+             "{ overflow-wrap: break-word; -webkit-hyphens: auto; hyphens: auto; }\n")
+    return batch_4.EXTRA_CSS + table   # + the line-input placeholder rule the Steps and Cfifa blocks need
 
 
 EXTRA_CSS = _extra_css()

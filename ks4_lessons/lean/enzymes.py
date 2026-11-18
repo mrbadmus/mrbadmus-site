@@ -36,7 +36,8 @@ LOGIC_EDITS = [
 _RP = [
     {"slot": "legacy-fig:rigFig"},
     {"points": [
-        "Put amylase solution with a pH buffer in one tube, and starch solution in another. Stand "
+        "Put amylase solution with a pH buffer (a solution that keeps the pH steady) in one "
+        "tube, and starch solution in another. Stand "
         "both in a water bath, for example at 35 °C, so they reach the same temperature.",
         "Put a drop of iodine solution in each well of a spotting tile.",
         "Mix the amylase and the starch, and start a stopwatch.",

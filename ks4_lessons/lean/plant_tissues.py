@@ -98,9 +98,9 @@ LESSON = {
              ("Lower epidermis", "Has many stomata", "Lets carbon dioxide in, and oxygen and "
                                                      "water vapour out"),
              ("Guard cells", "A pair of cells around each stoma", "Open and close the stoma"),
-             ("Xylem", "Hollow tubes strengthened by lignin",
+             ("Xylem", "Hollow tubes strengthened by lignin (a tough, woody substance)",
               "Brings water and mineral ions into the leaf"),
-             ("Phloem", "Tubes of elongated cells",
+             ("Phloem", "Tubes of elongated (long, thin) cells",
               "Carries dissolved sugars from the leaf to the rest of the plant"),
          ]},
         {"kind": "card", "title": "Meristem",

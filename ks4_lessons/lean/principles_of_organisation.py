@@ -64,6 +64,13 @@ _EDITS += [
      'organ (about 10 cm)'),
     ("'Cells, e.g. a muscle cell, about 50 µm.'",
      "'Cells, e.g. a muscle cell, tens of µm across.'"),
+    # Pupil walk, 18 Nov 2026: the lean page has no example-placing bench, so ladderFig's
+    # right-hand examples column (x 350+) is always empty, and its dashed divider at x 330 ran
+    # through the ends of the size labels. Drop the divider and trim the figure to what it draws.
+    ("b += D.line(330, 40, 330, 386, 2, C.muted, ' stroke-dasharray=\"4 4\"') + D.T(256, 30, 'typical size',",
+     "b += D.T(256, 30, 'typical size',"),
+    ("return D.svg(560, 400, b, 'Ladder of organisation",
+     "return D.svg(360, 400, b, 'Ladder of organisation"),
 ]
 
 LESSON = {

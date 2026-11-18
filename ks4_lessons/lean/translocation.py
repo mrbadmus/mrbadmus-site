@@ -110,9 +110,9 @@ LESSON = {
                   "source; a place where they are used or stored is a sink."]},
         {"kind": "card", "title": "Phloem and xylem tubes",
          "body": [{"slot": "legacy-fig:tubeFig"},
-                  "Phloem is made of tubes of elongated cells. Cell sap can move from one phloem "
+                  "Phloem is made of tubes of elongated (long, thin) cells. Cell sap can move from one phloem "
                   "cell to the next through pores in the end walls.",
-                  "Xylem is made of hollow tubes strengthened by lignin.",
+                  "Xylem is made of hollow tubes strengthened by lignin (a tough, woody substance).",
                   "You do not need the detailed structure of phloem, or how the sap is moved."]},
         {"kind": "reveal", "title": "Xylem and phloem compared",
          "cols": ["Xylem", "Phloem"],
@@ -122,7 +122,7 @@ LESSON = {
               "From the leaves to the rest of the plant, up or down"),
              ("Structure", "Hollow tubes strengthened by lignin",
               "Tubes of elongated cells with pores in the end walls"),
-             ("The movement is called", "The transpiration stream", "Translocation"),
+             ("The movement is called", "The transpiration stream", "Trans\u00adlocation"),
          ]},
         {"kind": "card", "title": "Easy mistakes",
          "body": [{"mistakes": [

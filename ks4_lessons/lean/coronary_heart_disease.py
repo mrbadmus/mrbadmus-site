@@ -106,7 +106,7 @@ LESSON = {
                   "wait for a heart transplant, or to allow the heart to rest as an aid to "
                   "recovery."]},
         {"kind": "reveal", "title": "Weighing up the treatments",
-         "cols": ["Advantages", "Disadvantages"],
+         "cols": ["Advantages", "Dis\u00adadvantages"],
          "rows": [
              ("Statins", "No surgery; slow the build-up of fatty material",
               "Must be taken for a long time; can have side effects; act slowly"),

@@ -74,7 +74,16 @@ _FOOD_TESTS = [
 # edits above, and occurs exactly once (validate.py checks).
 _EDITS += [
     ("D.T(330, 300, 'small intestine (coiled)', 13,",
-     "D.T(330, 300, 'small intestine', 13,"),
+     "D.line(252, 297, 326, 297, 2, C.stroke) + D.circ(252, 297, 3.5, C.stroke, C.stroke, 1) + D.T(330, 300, 'small intestine', 13,"),
+    # Pupil walk, 18 Nov 2026: the labels to the right had no pointers, so "small intestine"
+    # read as naming the tan loop beside it (the large intestine). Each now has a leader, the
+    # small intestine's ending on the dark coil; the green gall bladder gets its label.
+    ("D.T(320, 252, 'pancreas', 13,",
+     "D.line(300, 249, 316, 249, 2, C.stroke) + D.T(320, 252, 'pancreas', 13,"),
+    ("D.T(330, 372, 'large intestine', 13,",
+     "D.line(320, 368, 326, 368, 2, C.stroke) + D.T(330, 372, 'large intestine', 13,"),
+    ("st('liver', '#7FC07A') + '/>';",
+     "st('liver', '#7FC07A') + '/>' + D.line(146, 190, 92, 205, 2, C.stroke) + D.T(52, 212, 'gall bladder', 13, { fill: C.stroke });"),
 ]
 
 LESSON = {
@@ -103,7 +112,7 @@ LESSON = {
         {"kind": "reveal", "title": "Three kinds of enzyme",
          "cols": ["Breaks down", "Into"],
          "rows": [
-             ("Carbohydrases, such as amylase", "Carbohydrates, such as starch", "Simple sugars"),
+             ("Carbo\u00adhydrases, such as amylase", "Carbo\u00adhydrates, such as starch", "Simple sugars"),
              ("Proteases", "Proteins", "Amino acids"),
              ("Lipases", "Lipids (fats)", "Glycerol and fatty acids"),
          ]},
