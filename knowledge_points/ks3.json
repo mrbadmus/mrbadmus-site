@@ -6591,7 +6591,7 @@
    "distance-time-graphs#graph-plot-1": "Standing still",
    "distance-time-graphs#graph-plot-2": "8 to 12 s",
    "distance-time-graphs#graph-plot-3": "3 m/s",
-   "distance-time-graphs#recall": "The object was stopped",
+   "distance-time-graphs#recall": "It was standing still",
    "distance-time-graphs#start": "It goes flat"
   },
   "points": [
@@ -16271,7 +16271,7 @@
  "moments": {
   "key_stage": "KS3",
   "keys": {
-   "moments#apply": "The long spanner gives 20 N m, while the short one gives 5 N m.",
+   "moments#apply": "The long spanner gives 20 N m, because moment = force × distance.",
    "moments#recall": "12 N m",
    "moments#start": "No, it hardly moves"
   },
