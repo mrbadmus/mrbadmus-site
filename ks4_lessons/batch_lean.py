@@ -267,7 +267,10 @@ def _extra_css():
     # split long words in reveal-table cells with no hyphen ("Carbohydra|tes"). On KS4 pages only
     # (lean.css is shared with KS3), hyphenate at a real break point first; a word with none
     # still wraps rather than overflowing.
-    table = ("\nhtml .lean-table thead th, html .lean-table tbody th, html .lean-table .lean-cell "
+    # (The comment re-stamps the file: the first stamp's URL was cached at the edge with the
+    # previous bytes by a live check that ran before the deploy landed.)
+    table = ("\n/* KS4 lean reveal tables: hyphenate long words (Organisation walk, 18 Nov 2026) */"
+             "\nhtml .lean-table thead th, html .lean-table tbody th, html .lean-table .lean-cell "
              "{ overflow-wrap: break-word; -webkit-hyphens: auto; hyphens: auto; }\n")
     return batch_4.EXTRA_CSS + table   # + the line-input placeholder rule the Steps and Cfifa blocks need
 
