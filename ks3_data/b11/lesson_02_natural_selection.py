@@ -1096,14 +1096,9 @@ LESSON = {
             # exactly the belief its own option states, and each still lands on
             # the rebuilt option — which is the test the repair had to pass.
             "feedback": {
-                0: "No moth changed colour at any point. A moth is the colour "
-                   "it hatched, and it stays that colour.",
-                2: "Then washing one would turn it pale, and its offspring "
-                   "would be pale anyway. The colour is inherited, not "
-                   "applied.",
-                3: "Learning is not inherited, and it is not what the graph "
-                   "shows — the pale ones did not survive better, there were "
-                   "simply fewer of them being born.",
+                0: "No moth changed colour. Each moth keeps the colour it was born with.",
+                2: "Soot does not change the colour a moth is born with. Colour is inherited.",
+                3: "Learning is not inherited. Fewer pale moths survived to breed.",
             }},
         "apply": {
             # ⚖️ THE RUNG THAT MARKS LAMARCK. The stem hands the student the
@@ -1135,12 +1130,9 @@ LESSON = {
             # then re-asks the only question that matters — by animals changing,
             # or by which animals bred.
             "feedback": {
-                0: "They can stretch, and it makes no difference — stretching "
-                   "does not change the DNA in the gametes.",
-                1: "They do. The feeding is real; the mechanism of inheritance "
-                   "in the story is what fails.",
-                2: "They got longer. The question is how — by animals "
-                   "changing, or by which animals bred.",
+                0: "Giraffes can stretch. Stretching does not change the genes they pass on.",
+                1: "Giraffes do feed from tall trees. The idea about inheritance is what is wrong.",
+                2: "Giraffe necks did get longer. The question is how that happened.",
             }},
         "explain": {
             # ⚖️ THE RUNG THE FIVE STEP CARDS ARE WRITTEN FOR, and the fifth

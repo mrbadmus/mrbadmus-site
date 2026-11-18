@@ -1102,12 +1102,9 @@ LESSON = {
             # the belief its rewritten distractor states — which is the test of
             # whether the rewrite changed what the question measures.
             "feedback": {
-                0: "That came from the X-ray diffraction pattern. Chargaff "
-                   "worked with chemical amounts, not images.",
-                1: "The number of strands came from the measured width in the "
-                   "diffraction pattern.",
-                2: "That came from Franklin’s work on how much water DNA takes "
-                   "up.",
+                0: "The helix came from Franklin's X-ray pattern. Chargaff measured amounts of bases.",
+                1: "The number of strands came from the X-ray measurements of width.",
+                2: "The backbones being outside came from Franklin's measurements.",
             }},
         # ⚖️ Design's, untouched, and the rung that carries `GENE-05`: option A
         # is the belief word for word, which is why the misconception names
@@ -1126,13 +1123,9 @@ LESSON = {
             ],
             "answer": 0,
             "feedback": {
-                1: "DNA was discovered in 1869 by Miescher. It had been known "
-                   "for over eighty years.",
-                2: "Avery, MacLeod and McCarty had shown that in 1944 — which "
-                   "is why the structure was worth chasing.",
-                3: "Those were taken at King’s College London by Franklin and "
-                   "Gosling. Watson and Crick did no experiments on DNA at "
-                   "all.",
+                1: "DNA was found in 1869, by Friedrich Miescher.",
+                2: "Avery's team showed that in 1944, before the model was built.",
+                3: "Franklin and Gosling took the X-ray images at King's College London.",
             }},
         # ⚖️ Criterion 5 is the rung's whole point: it asks WHY equal amounts of
         # A and T imply pairing, which is the one step in the lesson that is an

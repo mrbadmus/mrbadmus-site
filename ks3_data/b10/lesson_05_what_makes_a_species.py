@@ -966,13 +966,9 @@ LESSON = {
             # the belief its rewritten distractor states — which is the test of
             # whether the rewrite changed what the question measures.
             "feedback": {
-                0: "Half the test. The offspring must be able to reproduce, or "
-                   "the two lines are still going nowhere together.",
-                2: "Appearance is not part of the definition at all. A mule "
-                   "looks like both its parents and settles nothing.",
-                3: "More pairs would confirm it, but the result described — "
-                   "healthy but infertile offspring — is exactly the signature "
-                   "of two species.",
+                0: "Having offspring is only half the test. The offspring must be fertile.",
+                2: "Looks do not decide a species. A mule looks like both its parents.",
+                3: "Healthy but infertile offspring is the sign of two species.",
             }},
         "apply": {
             "title": "Rung 2 · The one that catches people",
@@ -996,14 +992,9 @@ LESSON = {
             ],
             "answer": 1,
             "feedback": {
-                0: "A name is a decision people made. The species question is "
-                   "about biology, and the answer here happens to agree with "
-                   "the name — but not because of it.",
-                2: "True, and it is a reason the breeding works rather than "
-                   "the test itself. Some different species share a chromosome "
-                   "number.",
-                3: "Sharing an ancestor is a fact about history. Two species "
-                   "also share ancestors, further back.",
+                0: "A name is something people chose. The test is fertile offspring.",
+                2: "Dogs do not have identical DNA. That is why breeds look so different.",
+                3: "Food has nothing to do with the species test.",
             }},
         # ⚖️ Criterion 1 is the definition WITH the word `fertile` in it and
         # criterion 5's last clause is `GENE-10` refused explicitly — "producing

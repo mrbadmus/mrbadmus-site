@@ -934,14 +934,9 @@ LESSON = {
             ],
             "answer": 2,
             "feedback": {
-                0: "Any value between the shortest and longest arm is "
-                   "possible, so it is continuous — even though it is "
-                   "measured in whole centimetres for convenience.",
-                1: "Continuous. The scale reads to a decimal place because "
-                   "every value in between genuinely exists.",
-                3: "Continuous, and a good one to survey — leaf length grades "
-                   "smoothly from the smallest to the largest on a single "
-                   "branch.",
+                0: "Arm length can take any value in a range. It is continuous.",
+                1: "Body mass can take any value, such as 45.3 kg. It is continuous.",
+                3: "Leaf length can take any value in a range. It is continuous.",
             }},
         "apply": {
             "title": "Rung 2 · The one that catches people",
@@ -970,15 +965,9 @@ LESSON = {
             # that does the lesson's real work: it concedes the genetics and
             # then refuses the inference.
             "feedback": {
-                0: "Height is one of the most strongly inherited "
-                   "characteristics there is. Continuous does not mean "
-                   "environmental.",
-                1: "Also no. Nutrition in childhood affects adult height, "
-                   "which is why average height has risen so much in a "
-                   "century.",
-                3: "One gene tends to give categories. Hundreds of genes each "
-                   "adding a little give a smooth range — which is exactly "
-                   "what height is.",
+                0: "Height is continuous and strongly inherited. Continuous does not mean environmental.",
+                1: "Diet in childhood also affects height. So genes alone is wrong.",
+                3: "Many genes, each adding a little, give a smooth range like height.",
             }},
         "explain": {
             # ⚖️ THE RUNG THE KEY FACT IS WRITTEN FOR. It hands the student

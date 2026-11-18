@@ -944,12 +944,9 @@ LESSON = {
             ],
             "answer": 1,
             "feedback": {
-                0: "The nucleus is the container — all 46 chromosomes sit "
-                   "inside it.",
-                2: "A gene is a section of a chromosome, so it must be smaller "
-                   "than the whole chromosome.",
-                3: "That is almost exactly backwards. The base is the smallest "
-                   "unit, not the largest.",
+                0: "The nucleus holds the chromosomes, so it is the largest.",
+                2: "A gene is a section of a chromosome, so it is smaller.",
+                3: "The nucleus holds everything else, so it comes first.",
             }},
         "apply": {
             "title": "Rung 2 · The one that catches people",
@@ -977,12 +974,9 @@ LESSON = {
             # the belief its rewritten distractor states — which is the test of
             # whether the rewrite changed what the question measures.
             "feedback": {
-                1: "Every cell with a nucleus carries the complete set of "
-                   "instructions. Nothing sorts them out by destination.",
-                2: "The gene is present in everyone; what differs between "
-                   "people is the version of it they carry.",
-                3: "Genes cannot move. They are sections of the chromosomes, "
-                   "which stay in the nucleus of their own cell.",
+                1: "Every body cell with a nucleus has every gene. Genes are not sorted by organ.",
+                2: "Everyone has the eye colour genes. People differ in which versions they carry.",
+                3: "Genes cannot move. They are sections of the chromosomes in each nucleus.",
             }},
         # ⚖️ Criterion 4 is the rung's whole point and it is why the question
         # hands the student a sentence to REPAIR rather than a definition to

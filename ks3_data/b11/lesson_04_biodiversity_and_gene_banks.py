@@ -923,14 +923,9 @@ LESSON = {
             # the real work: it CONCEDES that two species is low and then makes
             # the distinction the belief is missing.
             "feedback": {
-                1: "Fifty species is high biodiversity by any measure. The "
-                   "question is looking for the least variety, not the most "
-                   "plants.",
-                2: "Ten varieties is far more variation than one. Not as much "
-                   "as a mixed population, but nothing like the lowest.",
-                3: "Low, but each species is a population of individuals that "
-                   "differ from one another. A clone field has no variation at "
-                   "all.",
+                1: "Fifty species is a lot of variety. Look for the least variation.",
+                2: "Ten varieties have far more variation than one clone variety.",
+                3: "Each grass plant differs a little. Clones have no variation at all.",
             }},
         "apply": {
             "title": "Rung 2 · The one that catches people",
@@ -959,15 +954,9 @@ LESSON = {
             ],
             "answer": 3,
             "feedback": {
-                0: "Many do, which is what makes seed banks work. Some species "
-                   "have seeds that cannot be dried or frozen, and those are a "
-                   "real and separate problem.",
-                1: "They are cheap relative to what they protect, and the "
-                   "Svalbard example shows they get used. Cost is not the "
-                   "objection that matters.",
-                2: "It has been done, repeatedly and successfully. The "
-                   "difficulty is what the seedling comes back to, not the "
-                   "planting.",
+                0: "Many seeds survive drying and freezing. That is why seed banks work.",
+                1: "Seed banks are cheap for what they protect. Cost is not the main objection.",
+                2: "Stored seeds can be grown. The problem is the habitat they return to.",
             }},
         "explain": {
             # ⚖️ THE RUNG THE BENCH IS BUILT FOR. Criterion 4 is the one that

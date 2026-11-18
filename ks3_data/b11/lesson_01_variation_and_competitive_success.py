@@ -1047,12 +1047,9 @@ LESSON = {
             "answer": 2,
             # All three corrections are Design's, byte-identical.
             "feedback": {
-                0: "It is excellent in one of the two environments described. "
-                   "General is the word that does not apply.",
-                1: "It cannot. The fur an animal has is the fur it has — the "
-                   "environment does the choosing, not the mouse.",
-                3: "It mattered against the owl and was irrelevant to the "
-                   "disease. That is the same point again.",
+                0: "Pale fur helps on snow. It is only poor on dark soil.",
+                1: "A mouse cannot change its fur. The conditions decide if its fur helps.",
+                3: "Camouflage is one advantage. Which one matters depends on the conditions.",
             }},
         "apply": {
             "title": "Rung 2 · The one that catches people",
@@ -1086,15 +1083,9 @@ LESSON = {
             # touching: each still answers the belief its own option states,
             # and A's answers the repaired form better than the original.
             "feedback": {
-                0: "Strength is one variation among many, and it is often the "
-                   "wrong one. In a drought the animal that needs least water "
-                   "wins.",
-                1: "Length of life counts for nothing on its own. An organism "
-                   "that lives fifty years and never breeds leaves nothing "
-                   "behind.",
-                3: "There is no ranking of advancement in biology. A bacterium "
-                   "that thrives where nothing else can is superbly fitted to "
-                   "it.",
+                0: "Strength is one variation. In a drought, the mouse needing least water does best.",
+                1: "A long life counts for nothing if the animal never breeds.",
+                3: "Biology does not rank species as advanced. Fittest means best suited to conditions.",
             }},
         "explain": {
             # ⚖️ THE RUNG THE BENCH IS BUILT FOR, and `EVOL-02`'s
