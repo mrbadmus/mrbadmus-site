@@ -34,7 +34,8 @@ SLUGS = ["efficiency", "changes-in-energy", "power", "thermal-conductivity",
 # Wave 1 (docs/lessons/LEAN-PLAN.md): Physics Magnetism (ten old-format lessons), then Biology
 # Ecology (eight old-format lessons derived below, fifteen legacy batch-10 lessons), Chemistry
 # Quantitative, then Physics Waves (six old-format lessons, three new ones, six legacy lessons
-# from batches 2, 3 and 4).
+# from batches 2, 3 and 4), then Biology Organisation (eleven legacy lessons from batches 2, 4, 5
+# and 6; see BIO_EYEBROW below).
 
 # Lessons that have no legacy page: identity comes from here (the subtopic data's own
 # title and spec, 6.1.1.1 / 6.1.1.3 / 6.1.2.1). The three Energy ones are written out so
@@ -54,6 +55,7 @@ _UNITS = {
     ("biology", "ecology"): "Ecology",
     ("chemistry", "quantitative"): "Quantitative chemistry",
     ("physics", "waves"): "Waves",
+    ("biology", "organisation"): "Organisation",
 }
 # The family label (the eyebrow's last word) is a ruled choice per lesson, drawn from the
 # labels the existing batches use: Model, Quantitative, Process, Classify, Contrast,
@@ -118,6 +120,26 @@ _SPEC = {
     "water-cycle": "4.7.2.2",
     "decomposition": ("4.7.2.2", "4.7.2.3"),
     "factors-affecting-food-security": "4.7.5.1",
+}
+# The AQA section number of each Biology Organisation lesson (8464 and 8461 number section 4.2 the
+# same, word for word), from the lesson's curriculum table (docs/lessons/wave1/ks4-<slug>.md). All
+# eleven are legacy Design pages, so the number on the page comes from the legacy header's literal
+# ("AQA Biology 4.2.x", rebuilt per route by lean_ks4) or, for enzymes, from its own logic. The
+# subtopic data's `spec` is wrong on nine of the eleven (enzymes "4.2.2.2", blood "4.2.3.2", ...)
+# and is never read for them; this table is what the build checks the page's number against
+# (lean_ks4 stops on a mismatch, and on a self-bound eyebrow that does not name it on both routes).
+BIO_EYEBROW = {
+    "principles-of-organisation": "4.2.1",
+    "digestive-system": "4.2.2.1",
+    "enzymes": "4.2.2.1",
+    "heart-blood-vessels": "4.2.2.2",
+    "blood": "4.2.2.3",
+    "coronary-heart-disease": "4.2.2.4",
+    "health-disease": "4.2.2.5\u20134.2.2.6",
+    "cancer": "4.2.2.7",
+    "plant-tissues": "4.2.3.1",
+    "transpiration": "4.2.3.2",
+    "translocation": "4.2.3.2",
 }
 # The 8464 section number of an old-format PHYSICS lesson whose subtopic data has it wrong, so
 # the eyebrow is not derived from that data (docs/lessons/wave1/ks4-<slug>.md, its Sources line).
@@ -275,6 +297,8 @@ def _lesson(slug, rec):
         unit = d.pop("unit")
     if slug in CHEM_EYEBROW:
         d["eyebrow_spec"] = CHEM_EYEBROW[slug]
+    if slug in BIO_EYEBROW:
+        d["bio_spec"] = BIO_EYEBROW[slug]
     d.update(batch=B, staged=False, lean=rec, unit=unit,
              block_map=dict(_BLOCK_MAP))
     return d

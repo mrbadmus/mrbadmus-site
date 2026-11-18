@@ -347,6 +347,8 @@ CASES = [
          back="(function(){ var s = H.rootState(), el = document.getElementById('dec-rate'); return s.rate === '0.01' && s.rateChecked && s.own[40] === 100 && s.own[60] === null && !!el && el.value === '0.01'; })()"),
     # Selected and judged at once, then typed.
     dict(name="ks4-select-anom", page="/triple/higher/biology/organisation/enzymes.html", forms=True,
+         retired="the lean rebuild (Wave 1, Organisation) took the amylase results bench (anomaly and mean) off the page",
+         absent=['"e": "anomOpts"', '"e": "phTabs"', 'enz-anom'],
          act="""H.click(document.querySelector('#ks4-mount [aria-label^="Graph A"]')); await H.sleep(200);
                 var own = {}; H.v().phTabs.forEach(function (t) { own[+t.label.replace('pH ', '')] = 120; }); await H.set({ own: own });
                 var L = H.L(), right = null; H.v().anomOpts.forEach(function (o) { L.state.anom = o.value; if (o.value && /^Yes/.test(L.renderVals().anomWord)) { right = o.value; } }); L.state.anom = '';
@@ -581,8 +583,10 @@ CASES = [
          check=lambda b: isinstance(b[-1]["is_correct"], bool) and b[-1]["answer"],
          back="""(function(){ var s = H.rootState(); return s.picks[0] !== undefined && s.picks[0] !== null && H.v().headDone === true; })()"""),
     dict(name="ks4-read-levels", page="/triple/higher/biology/organisation/principles-of-organisation.html", forms=True,
+         retired="the lean rebuild (Wave 1, Organisation) took the levels-of-organisation reading activity off the page",
+         absent=['"e": "levelBtns"'],
          act="""H.click(H.exact(H.v().levelBtns[0].label)); await H.sleep(300);""",
-         want=["ks4:principles-of-organisation:th#picks-1"],
+         want=["ks4:principles-of-organisation:th#picks"],
          check=lambda b: isinstance(b[-1]["is_correct"], bool) and b[-1]["answer"],
          back="""(function(){ return H.v().exDone === true; })()"""),
     dict(name="ks4-read-methods", page="/triple/higher/chemistry/chemical-changes/extraction-of-metals.html", forms=True,
@@ -620,9 +624,11 @@ CASES = [
          back="""(function(){ var s = H.rootState(); return s.logDone === true && s.ans[0] === 0; })()"""),
     # Real presses: these two read the words on the control the child pressed.
     dict(name="ks4-name-cell", page="/triple/higher/biology/organisation/blood.html", forms=True,
+         retired="the lean rebuild (Wave 1, Organisation) took the blood-smear name-the-cell bench off the page",
+         absent=['"e": "choices"', '"e": "targets"'],
          act="""var c = H.v().choices; var byT = function (t) { return Array.prototype.filter.call(document.querySelectorAll('#ks4-mount button'), function (b) { return (b.textContent || '').trim() === t; })[0]; };
                 for (var i = 0; i < c.length; i += 1) { H.click(byT(H.v().choices[i].text)); await H.sleep(120); if (H.rootState().stage !== 'name') { break; } } await H.sleep(200);""",
-         want=["ks4:blood:th#cell-1-name"],
+         want=["ks4:blood:th#cell"],
          back="(function(){ return H.rootState().stage === 'job' && H.rootState().sel === 0; })()"),
     dict(name="ks4-order-links", page="/triple/higher/physics/space/red-shift-big-bang.html", forms=True,
          act="""var t = H.v().links; var byText = function (x) { return Array.prototype.filter.call(document.querySelectorAll('#ks4-mount button'), function (b) { return (b.textContent || '').indexOf(x) >= 0; })[0]; };

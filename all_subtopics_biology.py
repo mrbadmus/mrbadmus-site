@@ -1390,68 +1390,51 @@ BIOLOGY_SUBTOPICS_ALL = {
                          ('Optimum temperature', 'The temperature at which an enzyme works at its maximum rate'),
                          ('Lock and key model', 'Explains why each enzyme only works with one specific substrate')],
                'title': 'Match the Enzyme Concept'},
-  'quiz': [{'opts': [('It denatures — the active site shape permanently changes and the substrate can no longer bind',
-                      True),
-                     ('It works faster because higher temperature gives more energy', False),
+  'quiz': [{'opts': [('Its active site changes shape, so it is denatured', True),
                      ('It is killed by the heat', False),
-                     ('It becomes temporarily inactive but recovers when cooled', False)],
+                     ('Its active site grows, so more substrate fits', False),
+                     ('It is used up as it catalyses the reaction', False)],
             'q': 'An enzyme is heated to 80°C. What happens to it?',
-            'wrong_explanations': {1: 'Up to the optimum (~37°C for human enzymes), the rate does increase — but 80°C '
-                                      'is far above the optimum, causing denaturation, not faster activity.',
-                                   2: "Enzymes are proteins, not living organisms — they cannot be 'killed'. "
-                                      'Denaturation is the correct term.',
-                                   3: 'Denaturation is PERMANENT. Once the active site shape is changed, cooling does '
-                                      'NOT restore it.'}},
-           {'opts': [('Pepsin works in the stomach where HCl creates pH 2 — the active site shape is optimal at this '
-                      'pH',
-                      True),
-                     ('All enzymes work best at pH 2 — it is the universal optimum', False),
-                     ('pH 2 provides more substrate molecules for pepsin to work on', False),
-                     ('Pepsin denatures at any pH above 2', False)],
-            'q': 'Why does pepsin work best at pH 2?',
-            'wrong_explanations': {1: 'Different enzymes have different optimum pH values. Salivary amylase works best '
-                                      'at pH 7, pancreatic enzymes at pH 7–8. Only pepsin has an optimum around pH 2.',
-                                   2: 'pH does not affect the number of substrate molecules — it affects the SHAPE of '
-                                      'the active site.',
-                                   3: 'Pepsin can work at a range of acidic pH values — though its optimum is around '
-                                      "pH 2. It doesn't instantly denature above pH 2."}},
-           {'opts': [("Amylase's active site is shaped to fit starch molecules only — proteins have a different shape "
-                      'and cannot bind',
-                      True),
-                     ('Amylase is only produced in the mouth, where no proteins are found', False),
-                     ('Amylase is too small to interact with large protein molecules', False),
-                     ('Proteins repel enzymes and cannot form enzyme-substrate complexes', False)],
+            'wrong_explanations': {1: 'Enzymes are proteins, not living things. The word is denatured.',
+                                   2: 'The heat changes the shape of the active site, so the substrate no longer fits.',
+                                   3: 'Enzymes are not used up. The heat denatures it.'}},
+           {'opts': [('The shape of the active site changes', True),
+                     ('The enzyme is used up more quickly', False),
+                     ('The substrate molecules move more slowly', False),
+                     ('The enzyme makes more products', False)],
+            'q': 'Why does the rate of an enzyme-controlled reaction fall at a very high or very low pH?',
+            'wrong_explanations': {1: 'Enzymes are not used up at any pH.',
+                                   2: 'pH does not change how fast molecules move. It changes the shape of the active '
+                                      'site.',
+                                   3: 'The rate falls, so fewer products are made each second.'}},
+           {'opts': [('Only starch fits the shape of its active site', True),
+                     ('Amylase is too small to bind to proteins', False),
+                     ('Amylase is only made in the mouth, where there is no protein', False),
+                     ('Proteins are digested by bile instead', False)],
             'q': 'According to the lock and key model, why can amylase only digest starch — not proteins?',
-            'wrong_explanations': {1: 'Amylase is produced in the mouth AND pancreas — it encounters proteins, but its '
-                                      "active site shape doesn't match protein structure.",
-                                   2: "Enzyme size is not the issue — it's the shape of the ACTIVE SITE that "
-                                      'determines which substrate can bind.',
-                                   3: "Proteins don't repel enzymes — proteases bind to proteins very effectively. "
-                                      "It's specifically amylase whose active site doesn't fit proteins."}},
-           {'opts': [('Rate increases — more substrate molecules collide with active sites — until all active sites '
-                      'are occupied',
-                      True),
-                     ('Rate stays the same — substrate concentration does not affect enzyme activity', False),
-                     ('Rate decreases — more substrate molecules compete for fewer active sites', False),
-                     ('Rate immediately reaches maximum as soon as any substrate is added', False)],
-            'q': 'What happens to the rate of an enzyme-catalysed reaction when substrate concentration increases?',
-            'wrong_explanations': {1: 'Substrate concentration absolutely affects rate — more substrate = more '
-                                      'collisions = faster rate (up to a limit).',
-                                   2: "Substrates don't 'compete' — each active site accepts substrate molecules one "
-                                      'at a time. More substrate means MORE active sites occupied at any given moment.',
-                                   3: 'Rate only reaches maximum when ALL active sites are occupied — the enzyme is '
-                                      'then saturated. At low substrate concentrations, many active sites are empty.'}},
-           {'opts': [('It is released unchanged and can catalyse another reaction — it is not used up', True),
-                     ('It is permanently bonded to the product and cannot be reused', False),
-                     ('It is broken down and must be rebuilt before working again', False),
-                     ('It loses its active site after each reaction and must reform it', False)],
+            'wrong_explanations': {1: 'Size is not the reason. The shape of the active site decides which substrate '
+                                      'fits.',
+                                   2: 'Amylase is also made in the pancreas and small intestine, and food in the mouth '
+                                      'contains protein.',
+                                   3: 'Bile is not an enzyme. Proteases digest proteins.'}},
+           {'opts': [('It increases', True),
+                     ('It decreases', False),
+                     ('It stays the same', False),
+                     ('It falls to zero', False)],
+            'q': 'What happens to the rate of an enzyme-controlled reaction as the temperature rises towards the '
+                 'optimum?',
+            'wrong_explanations': {1: 'Below the optimum, a higher temperature makes the molecules collide more often, '
+                                      'so the rate increases.',
+                                   2: 'Temperature changes the rate. Up to the optimum, the rate increases.',
+                                   3: 'The rate only falls once the temperature goes above the optimum.'}},
+           {'opts': [('It is unchanged and can be used again', True),
+                     ('It is broken down and must be made again', False),
+                     ('It stays joined to the products for ever', False),
+                     ('It loses its active site', False)],
             'q': 'After an enzyme-catalysed reaction, what happens to the enzyme?',
-            'wrong_explanations': {1: 'Enzymes form temporary enzyme-SUBSTRATE complexes — once products are released, '
-                                      'the enzyme is free and fully intact.',
-                                   2: "Enzymes are not broken down during catalysis — that's what makes them "
-                                      'catalysts. They are reused many times.',
-                                   3: "Active sites are a permanent part of the enzyme's structure — they reform "
-                                      'automatically because the enzyme is unchanged.'}}],
+            'wrong_explanations': {1: 'Enzymes are not broken down. They are used many times.',
+                                   2: 'The products are released, so the enzyme is free to work again.',
+                                   3: 'The active site is part of the enzyme. It is still there after the reaction.'}}],
   'rp': 'RP3 — Investigate the effect of pH on the rate of amylase activity. Use iodine solution to test for starch at '
         'regular intervals. Compare time taken to digest starch at different pH values.',
   'spec': '4.2.2.2',

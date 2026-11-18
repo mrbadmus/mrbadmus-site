@@ -288,8 +288,13 @@ _EYEBROW_LITERAL = re.compile(r'<p class="ks3-eyebrow">AQA Physics (6\.[\d.]+|4\
 # Chemistry (8464 5.3.x.y / 8462 4.3.x.y): a batch-11 header writes "AQA Chemistry 5.3.x.y \u00b7 <tag>"
 # for every route. The numbers come from batch_lean.CHEM_EYEBROW (lesson["eyebrow_spec"]).
 _EYEBROW_LITERAL_CHEM = re.compile(r'<p class="ks3-eyebrow">AQA Chemistry (5\.3\.\d+\.\d+)(?: \u00b7 [^<]*)?</p>')
-_EYEBROW_LITERAL_BIO = re.compile(r'<p class="ks3-eyebrow">AQA Biology (4\.7\.\d+\.\d+(?: and 4\.7\.\d+\.\d+)?)'
+_EYEBROW_LITERAL_BIO = re.compile(r'<p class="ks3-eyebrow">AQA Biology (4\.7\.\d+\.\d+(?: and 4\.7\.\d+\.\d+)?'
+                                  r'|4\.2\.\d+(?:\.\d+)?(?:\u20134\.2\.\d+(?:\.\d+)?)?)'
                                   r'(?: \u00b7 [^<]*)?</p>')
+# ⊕ 18 Nov 2026 (Organisation): the Organisation headers (batches 4, 5 and 6) write
+# "AQA Biology 4.2.x" with no spec code and no family, and health-disease a range with an en dash,
+# "4.2.2.5–4.2.2.6". 4.2 is numbered the same in 8464 and 8461, so they are rebuilt per route like
+# Ecology's 4.7.x; the number must be the one in batch_lean.BIO_EYEBROW (lesson["bio_spec"]).
 
 
 def _eyebrow_js(lesson, spec):
@@ -308,9 +313,12 @@ def _eyebrow_js(lesson, spec):
     elif lesson["subject"] == "biology":
         # the same number in both specs; a lesson may carry a different one per spec family
         # (batch_lean `spec_c`: the Combined number when it differs from the Triple one)
-        if not spec.startswith("4.7."):
-            raise SystemExit("lean_ks4: %s: a biology eyebrow spec must be 4.7.x, got %r"
+        if not spec.startswith(("4.7.", "4.2.")):
+            raise SystemExit("lean_ks4: %s: a biology eyebrow spec must be 4.7.x or 4.2.x, got %r"
                              % (lesson["slug"], spec))
+        if lesson.get("bio_spec") and spec != lesson["bio_spec"]:
+            raise SystemExit("lean_ks4: %s: biology eyebrow: the literal %r is not the number in "
+                             "batch_lean.BIO_EYEBROW %r" % (lesson["slug"], spec, lesson["bio_spec"]))
         comb = "AQA Combined Science (8464) %s%s" % (lesson.get("spec_c") or spec, tail)
         tri = "AQA Biology (8461) %s%s" % (spec, tail)
     elif lesson["subject"] == "chemistry":
@@ -603,6 +611,15 @@ def source(lesson, legacy=None):
             if flag and not re.search(r"\b%s\b|Object\.assign\(\{\}, R, " % flag, logic):
                 raise SystemExit("lean_ks4: %s: card %r is gated on %s, which the legacy logic does "
                                  "not bind" % (lesson["slug"], it.get("title"), flag))
+        # ⊕ 18 Nov 2026 (Organisation): a legacy biology page that binds its own eyebrow (enzymes,
+        # batch 2: `eyebrow: R.isTriple ? ... : ...`, no literal for the rule above) must name the
+        # batch_lean.BIO_EYEBROW number in both route wordings, or the build stops.
+        bs = lesson.get("bio_spec")
+        if bs and slots.spec is None:
+            for want in ("AQA Combined Science (8464) %s" % bs, "AQA Biology (8461) %s" % bs):
+                if want not in logic:
+                    raise SystemExit("lean_ks4: %s: the page binds its own eyebrow, and %r is not "
+                                     "in its logic" % (lesson["slug"], want))
     else:
         template, slots = _generic_template(lesson, rec)
         logic, report = _generic_logic(lesson, rec), {}
