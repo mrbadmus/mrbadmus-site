@@ -36,7 +36,7 @@ LESSON = {
                   "A always pairs with T. C always pairs with G.",
                   "The order of the bases along the DNA is the code."]},
         {"kind": "card", "title": "From nucleus to base",
-         "body": [{"figure": "b10-nested-scale"},
+         "body": [{"figure": "b10-nucleus-to-base"},
                   "The nucleus holds the chromosomes.",
                   "Each chromosome is one long DNA molecule, coiled up tightly.",
                   "A gene is a section of the DNA in a chromosome.",
@@ -101,10 +101,23 @@ LESSON = {
                  "is one section of the DNA.",
          "caption": "DNA is two strands twisted into a double helix, joined by pairs of bases.",
          "data": {"pairs": [["A", "T"], ["C", "G"], ["T", "A"], ["G", "C"]]}},
+        {"id": "b10-nucleus-to-base", "kind": "diagram", "status": "drawn", "art": "b10-nucleus-to-base",
+         "title": "Chromosomes, genes and DNA: one strand at five magnifications",
+         "desc": "Five numbered frames, one under another. Each frame is a close-up of a dashed ring "
+                 "in the frame above. A widening band joins each ring to the next frame. Frame 1 is a cell, "
+                 "0.02 mm across. One orange fleck in its nucleus is the strand we follow. Frame 2 is that "
+                 "nucleus, 0.006 mm across. It holds 46 grey chromosomes in 23 pairs. One of them is orange. "
+                 "Frame 3 is that chromosome, 0.002 mm long. It is an orange strand coiled round grey "
+                 "proteins, unwinding at the bottom. Labels say proteins and coiled DNA. Frame 4 is the "
+                 "unwound strand: two orange backbones with rungs between them. A bracket marks one length "
+                 "as one gene. Frame 5 shows four rungs of that length. Each is a pair of lettered boxes. "
+                 "They read A with T, C with G, T with A and G with C. The bases are 0.0000003 mm apart. "
+                 "A key says orange is DNA, one molecule in every panel. Dark ink is not DNA.",
+         "caption": "One DNA molecule, from the nucleus down to its bases.",
+         "data": {}},
     ],
     "figure_caption": {
         "b10-double-helix": None,
-        "b10-nested-scale": "One DNA molecule, from the nucleus down to its bases.",
     },
     "ladder_stem": {
         "explain": "A student says \"the nucleus contains chromosomes and DNA and genes\". "

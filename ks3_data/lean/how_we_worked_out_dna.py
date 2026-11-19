@@ -52,7 +52,7 @@ LESSON = {
                   "In every species, the amount of A equals the amount of T.",
                   "The amount of C equals the amount of G.",
                   "This fits if A always pairs with T, and C always pairs with G.",
-                  {"figure": "b10-base-pairs"},
+                  {"figure": "b10-base-ladder"},
                   "Each pair is one big base and one small base. So every rung is the same width."]},
         {"kind": "card", "title": "Building the model",
          "body": ["Watson and Crick did no experiments on DNA themselves.",
@@ -98,9 +98,26 @@ LESSON = {
     "try": None,
     "tutor_body": "Want to talk through what each scientist added to the DNA model?",
     "ks4_becomes": "The structure of DNA in more detail, and how scientific ideas are tested and shared.",
-    "figure_caption": {
-        "b10-base-pairs": "A big base always pairs with a small one. Every rung is the same width.",
-    },
+    "figures": [
+        {"id": "b10-base-ladder", "kind": "diagram", "status": "drawn", "art": "b10-base-ladder",
+         "title": "How the bases pair across the two strands of DNA, and the same ladder twisted",
+         "desc": "Two backbones run down the sides, labelled backbone, with five rungs between them. "
+                 "Each rung is one base from the left and one from the right. From the top, the rungs are "
+                 "A with T, T with A and C with G. Then come G with C, and A with T. A and G are drawn wide. C and T are drawn "
+                 "narrow. A line measures across the first rung and another across the last. They are the "
+                 "same length, labelled every rung the same width. Below, the same ladder is twisted into "
+                 "a double helix. Two dashed lines mark its widest points. A third line measures across "
+                 "them, labelled still the same width. A key says A and G are the big bases. "
+                 "C and T are the small bases.",
+         "caption": "A big base always pairs with a small one.",
+         "data": {"rungs": [["A", "T"], ["T", "A"], ["C", "G"], ["G", "C"], ["A", "T"]],
+                  "guide_label": "every rung the same width"}},
+    ],
+    # The lesson's own "A note on the credit" (the lesson file's `support` layer) is cut on the
+    # lean page: the Giving credit card already says every settled fact in it, and the note's
+    # claim about the cause of Franklin's cancer is contested. lean.apply() reads this key.
+    "support": [],
+    "figure_caption": {"b10-base-ladder": None},
     "ladder_stem": {
         "explain": "The DNA model has two strands, bases on the inside, and A paired with T. "
                    "For each feature, say which evidence showed it, and how.",

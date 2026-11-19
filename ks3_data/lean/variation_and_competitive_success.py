@@ -35,7 +35,7 @@ LESSON = {
                   "Some get enough resources to survive and breed.",
                   "The rest die young or never breed."]},
         {"kind": "card", "title": "Variation decides who does best",
-         "body": ["Individuals of the same species vary. They differ in size, coat, colour and speed.",
+         "body": ["Individuals of the same species vary. They differ in size, speed, coat thickness and fur colour.",
                   "Some variations help an individual get resources or escape predators.",
                   "These individuals compete more successfully. They are better adapted.",
                   "So they are more likely to survive and reproduce."]},

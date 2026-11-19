@@ -1,0 +1,15 @@
+/* KS3 lean pages only (build_ks3.py links it after shared/lean.css, on a page with a
+   lean record). KS4 lean pages never load it, so their stamps never move.
+
+   Reveal tables: wrap at word boundaries and hyphenate a word too long for its
+   column. shared/lean.css says overflow-wrap:anywhere, which at 390 px split
+   "Environmental" mid-word with no hyphen and left a full stop alone at the start
+   of a line (Lean Wave 2 KS3 walk, 19 Nov 2026). KS4 has the same rule in
+   ks4-lesson-batch-lean.css. */
+html .lean-table thead th,
+html .lean-table tbody th,
+html .lean-table .lean-cell {
+  overflow-wrap: break-word;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+}

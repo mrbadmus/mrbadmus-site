@@ -858,14 +858,18 @@ CASES = [
          want=["testing-a-leaf-for-starch#run-it-badly-1"],
          check=lambda b: len(b) == 1 and b[0]["answer"].count("\n") >= 4,
          back="""H.pressed(document.querySelectorAll('.ks3-mb-block .ks3-mb-opt[data-step="boil"]')[1])"""),
-    dict(name="ks3-commit-check", page="/ks3/biology/inheritance-and-dna/what-makes-a-species.html",
+    # ⊕ 19 Nov 2026 (Mide, 14 Nov: checks do not depend on real lessons): B10 went lean (Wave 2) and
+    # lost its benches, so these two cases and ks3-live-model below press the hidden frozen classic
+    # copy (ks3_fixtures/). Was /ks3/biology/inheritance-and-dna/what-makes-a-species.html.
+    dict(name="ks3-commit-check", page="/ks3/_fixtures/fixture-what-makes-a-species.html",
          act="""var s = document.querySelector('.ks3-sc-block'), p = s.querySelector('[data-sc-panel="dogs"]'), o = p.querySelectorAll('.ks3-sc-verdict'); H.click(o[1]); await H.sleep(120); H.click(o[2]); await H.sleep(120); H.click(s.querySelector('[data-sc-check]')); await H.sleep(300);""",
-         want=["what-makes-a-species#same-species-or-not-1"],
+         want=["fixture-what-makes-a-species#same-species-or-not-1"],
          check=lambda b: len(b) == 1 and b[0]["is_correct"] is False and b[0]["correct_answer"] == "Same species",
          back="""H.pressed(document.querySelector('.ks3-sc-block [data-sc-panel="dogs"]').querySelectorAll('.ks3-sc-verdict')[2])"""),
-    dict(name="ks3-commit-plot", page="/ks3/biology/inheritance-and-dna/variation-continuous-and-discontinuous.html",
+    # was /ks3/biology/inheritance-and-dna/variation-continuous-and-discontinuous.html (fixture, see above)
+    dict(name="ks3-commit-plot", page="/ks3/_fixtures/fixture-variation-continuous-and-discontinuous.html",
          act="""var s = document.querySelector('.ks3-vp-block'), o = s.querySelectorAll('[data-vp-pred]'); H.click(o[0]); await H.sleep(120); H.click(o[1]); await H.sleep(120); H.click(s.querySelector('[data-vp-plot]')); await H.sleep(300);""",
-         want=["variation-continuous-and-discontinuous#*-1"],
+         want=["fixture-variation-continuous-and-discontinuous#*-1"],
          check=lambda b: len(b) == 1 and isinstance(b[0]["is_correct"], bool) and b[0]["correct_answer"],
          back="""H.pressed(document.querySelectorAll('.ks3-vp-block [data-vp-pred]')[1])"""),
     dict(name="ks4-readings", page="/combined/higher/physics/electricity/resistors.html",
@@ -974,13 +978,15 @@ CASES = [
          check=lambda b: [x for x in b if x["kind"] == "order"][0]["answer"].count("\n") >= 3 and bool([x for x in b if x["kind"] == "order"][0]["correct_answer"]),
          back="(function(){ var s = document.querySelector('.ks3-morder-block'); return !!s.querySelector('[data-morder-answer]') && !s.querySelector('[data-morder-answer]').hidden; })()"),
     # ⊕ 8 Nov 2026: the two live puzzles (no Check; the page judges every press).
-    dict(name="ks3-live-model", page="/ks3/biology/inheritance-and-dna/how-we-worked-out-dna.html",
+    # ⊕ 19 Nov 2026: the hidden frozen classic copy (B10 went lean and lost the model-builder bench).
+    # Was /ks3/biology/inheritance-and-dna/how-we-worked-out-dna.html.
+    dict(name="ks3-live-model", page="/ks3/_fixtures/fixture-how-we-worked-out-dna.html",
          act="""var s = document.querySelector('.ks3-dh-block');
                 H.click(s.querySelector('.ks3-dh-opt[data-dh-dial="strands"][data-dh-opt="2"]')); await H.sleep(200);
                 var want = JSON.parse(s.querySelector('[data-dh]').getAttribute('data-target'));
                 Object.keys(want).forEach(function (k) { var b = s.querySelector('.ks3-dh-opt[data-dh-dial="' + k + '"][data-dh-opt="' + want[k] + '"]'); if (b.getAttribute('aria-pressed') !== 'true') { H.click(b); } });
                 await H.sleep(400);""",
-         want=["how-we-worked-out-dna#build-a-model-that-fits-all-of-it-1"],
+         want=["fixture-how-we-worked-out-dna#build-a-model-that-fits-all-of-it-1"],
          check=lambda b: b[0]["is_correct"] is False and b[-1]["is_correct"] is True and b[-1]["answer"].count("\n") == 2,
          back="""(function(){ var s = document.querySelector('.ks3-dh-block'); var want = JSON.parse(s.querySelector('[data-dh]').getAttribute('data-target'));
                 return Object.keys(want).every(function (k) { return H.pressed(s.querySelector('.ks3-dh-opt[data-dh-dial="' + k + '"][data-dh-opt="' + want[k] + '"]')); }); })()"""),

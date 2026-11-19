@@ -201,6 +201,9 @@ VERSIONED_ASSETS = ("tokens.css", "styles.css", "nav.css", "ks3.css", "ks3.js",
                      # ⊕ lean pilot (Nov 2026) — loaded ONLY by pages that carry a
                      # lean record, so no other page's bytes change.
                      "lean.css", "lean.js",
+                     # ⊕ Lean Wave 2 KS3 (19 Nov 2026): KS3-only lean overrides,
+                     # so a KS3 fix never restamps the KS4 lean pages.
+                     "ks3-lean.css",
                      "class-entry.js", "mrbadmus.v2.js",
                      # ⊕ Front door (12 Oct 2026) — the one map of who goes where;
                      # class-entry.js asks it. A stale copy would route a person
@@ -4857,6 +4860,7 @@ def lesson_page(unit, lesson, registry, units_by_code, neighbours=None):
     tail = tutor_mount(disc, "%s — %s" % (unit["title"], lesson["title"]))
     if lesson.get("lean"):
         head_links += '<link rel="stylesheet" href="/shared/lean.css"/>\n'
+        head_links += '<link rel="stylesheet" href="/shared/ks3-lean.css"/>\n'
         tail += '<script src="/shared/lean.js" defer></script>\n'
 
     return shell(lesson["title"], "\n".join(x for x in body if x), trail, disc,

@@ -1428,10 +1428,16 @@ def _b11l_open(fig, h, body):
             + '<g stroke-linecap="round" stroke-linejoin="round">' + "".join(body) + "</g></svg>")
 
 
-def _b11l_moth(cx, cy, tone, line, scale, dark=_B11L_DARK):
+# ⊕ phone walk (Nov 2026): a dark moth on sooty bark is outlined in a mid grey, thinly,
+# so it reads as a DARK moth that is hard to see. A pale outline made it a ghost moth.
+_B11L_DARK_ON_SOOT_LINE = "#8A8178"
+
+
+def _b11l_moth(cx, cy, tone, line, scale, dark=_B11L_DARK, w=1.5):
     if tone not in _B11_MOTH_TONES:
         raise ValueError("b11 lean figure: moth tone %r (pale or dark only)" % tone)
-    return _moth(cx, cy, tone, _B11L_PALE if tone == "pale" else dark, line, scale=scale)
+    m = _moth(cx, cy, tone, _B11L_PALE if tone == "pale" else dark, line, scale=scale)
+    return m if w == 1.5 else m.replace('stroke-width="1.5"', 'stroke-width="%s"' % _n(w))
 
 
 def _b11l_cross(cx, cy, r=10):
@@ -1474,7 +1480,10 @@ def _b11l_moth_barks(fig):
         for j, m in enumerate(sorted(p["moths"], key=lambda x: _B11_MOTH_TONES.index(x["tone"]))):
             cx = X0 + PW * (0.3 if j == 0 else 0.7)
             cy = py + 78
-            o.append(_b11l_moth(cx, cy, m["tone"], line, 0.6))
+            if not lichen and m["tone"] == "dark":
+                o.append(_b11l_moth(cx, cy, "dark", _B11L_DARK_ON_SOOT_LINE, 0.6, w=1))
+            else:
+                o.append(_b11l_moth(cx, cy, m["tone"], line, 0.6))
             o.append(_line(cx, cy + 27, cx, py + 136, stroke=_SVG_INK_MUTED, w=1.5, dash="3 3",
                            data_part="leader"))
             o.append(_label(cx, py + 152, m["label"], size=14, weight="700", data_part="moth-label",
@@ -1496,7 +1505,9 @@ def _b11l_selection_steps(fig):
     if len(steps) != 5:
         raise ValueError("figure %r: b11-selection-steps draws exactly five steps" % fig.get("id"))
     o = []
-    X0, SW, SH, CELL = 8, 324, 38, 36
+    # ⊕ phone walk: cells 35 wide for moths 0.22 the full size (about 29 across with their
+    # outline), so no two moths touch and the end moths clear the strip edge.
+    X0, SW, SH, CELL = 8, 324, 38, 35
     for i, s in enumerate(steps):
         row = s.get("row") or ""
         if not s.get("title") or not s.get("note") or not row:
@@ -1528,10 +1539,13 @@ def _b11l_selection_steps(fig):
                                                              _n(cx + 4), _n(cy + 6)),
                                fill=_B11L_ARROW, data_part="arrow"))
             else:
-                o.append(_b11l_moth(cx, cy, "pale" if ch in "Pp" else "dark", _B11L_ARROW, 0.27,
-                                    dark=_B11L_STRIP_DARK))
+                if ch in "Pp":
+                    o.append(_b11l_moth(cx, cy + 1, "pale", _B11L_ARROW, 0.22, w=1.2))
+                else:
+                    o.append(_b11l_moth(cx, cy + 1, "dark", _B11L_DARK_ON_SOOT_LINE, 0.22,
+                                        dark=_B11L_STRIP_DARK, w=1))
                 if ch in "pd":
-                    o.append(_b11l_cross(cx, cy))
+                    o.append(_b11l_cross(cx, cy, 9))
             x += CELL
         if i < 4:
             o.append(_line(170, y0 + 87, 170, y0 + 93, stroke=_SVG_INK_MUTED, w=2.5, data_part="next"))

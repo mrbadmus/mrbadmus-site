@@ -165,6 +165,11 @@ def apply(lesson):
         lesson["convention_note"] = rec["convention_note"]
     else:
         lesson.pop("convention_note", None)
+    # the "Need a hand?" support layer is kept as the lesson authored it, unless the record
+    # replaces it (`"support": []` clears it). B6's referral blocks are safeguarding text:
+    # a record that does not name `support` never touches them.
+    if "support" in rec:
+        lesson["support"] = copy.deepcopy(rec["support"])
     # the record's own figures join the lesson's (a drawn figure needs its art registered)
     have = {f["id"] for f in lesson.get("figures") or []}
     lesson["figures"] = list(lesson.get("figures") or []) + [

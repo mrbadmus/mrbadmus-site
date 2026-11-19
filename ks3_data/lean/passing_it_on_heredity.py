@@ -70,7 +70,7 @@ LESSON = {
                   "Each of the four squares is an equally likely outcome."]},
         {"kind": "card", "title": "Worked example: two Pp parents",
          "body": ["Two purple pea plants are both Pp. Find the probability that an offspring is white.",
-                  {"figure": "b10-punnett-pp"},
+                  {"figure": "b10-punnett-pp-cross"},
                   {"points": ["Convert: write each parent as letters. Both are Pp, so each passes on P or p.",
                               "Formula: probability = squares with that result ÷ total squares",
                               "Insert: 1 square is pp, which is white. There are 4 squares. So 1 ÷ 4.",
@@ -118,19 +118,29 @@ LESSON = {
     "tutor_body": "Want to work out the chances for a cross of your own?",
     "ks4_becomes": "Alleles, genotype and phenotype, Punnett squares, and inherited disorders.",
     "figures": [
+        {"id": "b10-punnett-pp-cross", "kind": "diagram", "status": "drawn", "art": "b10-punnett-cross",
+         "title": "A Punnett square for two Pp plants",
+         "desc": "Parent 1, Pp and purple, is written across the top. Its two versions, P and p, head the "
+                 "two columns. Parent 2, Pp and purple, is written down the side. Its two versions, P and p, "
+                 "head the two rows. The four squares read PP, Pp, Pp and pp. The PP and Pp squares have a "
+                 "purple flower and say purple. The pp square is shaded, with a white flower, and says white. "
+                 "Under the grid: white, 1 of the 4 squares; 1/4 = 25% = 1 in 4.",
+         "caption": "One of the four squares is pp. The chance of white is 1 in 4.",
+         "data": {"parent1": "Pp", "parent2": "Pp", "dominant": "purple", "recessive": "white",
+                  "find": "recessive"}},
         {"id": "b10-punnett-pp-pp", "kind": "diagram", "status": "drawn", "art": "b10-punnett-cross",
          "title": "A Punnett square for a Pp plant crossed with a pp plant",
          "desc": "Parent 1, Pp and purple, is written across the top. Its two versions, P and p, head the "
                  "two columns. Parent 2, pp and white, is written down the side. Its two versions, p and p, "
-                 "head the two rows. The four squares read Pp, pp, Pp and pp. The two Pp squares have a filled "
-                 "flower and say purple. The two pp squares are shaded, with an open flower, and say white. "
+                 "head the two rows. The four squares read Pp, pp, Pp and pp. The two Pp squares have a purple "
+                 "flower and say purple. The two pp squares are shaded, with a white flower, and say white. "
                  "Under the grid: white, 2 of the 4 squares; 2/4 = 1/2 = 50% = 1 in 2.",
          "caption": "Two of the four squares are pp, so the chance of white is 1 in 2.",
          "data": {"parent1": "Pp", "parent2": "pp", "dominant": "purple", "recessive": "white",
                   "find": "recessive"}},
     ],
     "figure_caption": {
-        "b10-punnett-pp": "Two Pp parents. Three squares are purple and one is white.",
+        "b10-punnett-pp-cross": None,
         "b10-punnett-pp-pp": None,
     },
     "ladder_stem": {

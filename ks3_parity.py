@@ -828,12 +828,16 @@ _B9_SLUGS = ("food-chains-and-food-webs", "predator-and-prey",
 # the lesson's title is "How we worked out DNA's structure" — a plausible
 # `how-we-worked-out-dnas-structure` here would be a typo that buys every row
 # on that page permanent silence, which is what `_B10_SLUGS` refuses.
+#
+# ⊕ 19 Nov 2026 (Mide, 14 Nov: checks do not depend on real lessons): all five B10 lessons went
+# lean (Wave 2) and lost their benches, rule cards and classic figures, so these five constants
+# name the hidden frozen classic copies (ks3_fixtures/), as LESSON does. Only the page moved.
 _B10_UNIT = "biology/inheritance-and-dna/"
-B10_PLOT    = _B10_UNIT + "variation-continuous-and-discontinuous.html"
-B10_ZOOM    = _B10_UNIT + "chromosomes-genes-and-dna.html"
-B10_MODEL   = _B10_UNIT + "how-we-worked-out-dna.html"
-B10_CROSS   = _B10_UNIT + "passing-it-on-heredity.html"
-B10_SPECIES = _B10_UNIT + "what-makes-a-species.html"
+B10_PLOT    = "_fixtures/fixture-variation-continuous-and-discontinuous.html"   # was biology/inheritance-and-dna/variation-continuous-and-discontinuous.html (fixture, see LESSON)
+B10_ZOOM    = "_fixtures/fixture-chromosomes-genes-and-dna.html"   # was biology/inheritance-and-dna/chromosomes-genes-and-dna.html (fixture, see LESSON)
+B10_MODEL   = "_fixtures/fixture-how-we-worked-out-dna.html"   # was biology/inheritance-and-dna/how-we-worked-out-dna.html (fixture, see LESSON)
+B10_CROSS   = "_fixtures/fixture-passing-it-on-heredity.html"   # was biology/inheritance-and-dna/passing-it-on-heredity.html (fixture, see LESSON)
+B10_SPECIES = "_fixtures/fixture-what-makes-a-species.html"   # was biology/inheritance-and-dna/what-makes-a-species.html (fixture, see LESSON)
 
 _B10_SLUGS = ("variation-continuous-and-discontinuous",
               "chromosomes-genes-and-dna", "how-we-worked-out-dna",
@@ -861,11 +865,15 @@ _B10_SLUGS = ("variation-continuous-and-discontinuous",
 # which is what `_B11_SLUGS` refuses. L3's is
 # `when-the-environment-changes-extinction` — no colon, no hyphen where the
 # title has one.
+#
+# ⊕ 19 Nov 2026 (same ruling): all four B11 lessons went lean (Wave 2) and lost their benches and
+# the moth-pair figure, so these four constants name the hidden frozen classic copies
+# (ks3_fixtures/). Only the page moved.
 _B11_UNIT = "biology/evolution-extinction-and-biodiversity/"
-B11_ADV    = _B11_UNIT + "variation-and-competitive-success.html"
-B11_SEL    = _B11_UNIT + "natural-selection.html"
-B11_PRESS  = _B11_UNIT + "when-the-environment-changes-extinction.html"
-B11_BLIGHT = _B11_UNIT + "biodiversity-and-gene-banks.html"
+B11_ADV    = "_fixtures/fixture-variation-and-competitive-success.html"   # was biology/evolution-extinction-and-biodiversity/variation-and-competitive-success.html (fixture, see LESSON)
+B11_SEL    = "_fixtures/fixture-natural-selection.html"   # was biology/evolution-extinction-and-biodiversity/natural-selection.html (fixture, see LESSON)
+B11_PRESS  = "_fixtures/fixture-when-the-environment-changes-extinction.html"   # was biology/evolution-extinction-and-biodiversity/when-the-environment-changes-extinction.html (fixture, see LESSON)
+B11_BLIGHT = "_fixtures/fixture-biodiversity-and-gene-banks.html"   # was biology/evolution-extinction-and-biodiversity/biodiversity-and-gene-banks.html (fixture, see LESSON)
 
 _B11_SLUGS = ("variation-and-competitive-success", "natural-selection",
               "when-the-environment-changes-extinction",
@@ -15800,7 +15808,7 @@ FIGURE_TRUTH = [
                    % (got["n"], got["base"], got["span"])])),
 
     dict(fig="b10-punnett-pp",
-         page="biology/inheritance-and-dna/passing-it-on-heredity.html",
+         page=B10_CROSS,   # ⊕ 19 Nov 2026: the fixture copy (see LESSON); the lean page does not draw b10-punnett-pp. Was biology/inheritance-and-dna/passing-it-on-heredity.html
          name="⊕ MRB-254 · every Punnett square is its own column × row",
          claim="all 4 squares: genotype = column + row gamete, phenotype "
                "white iff pp, flower filled iff purple",
@@ -16146,7 +16154,7 @@ FIGURE_TRUTH = [
               "section is that the count across it is checkable" % got["n"]])),
 
     dict(fig="b10-nested-scale",
-         page="biology/inheritance-and-dna/chromosomes-genes-and-dna.html",
+         page=B10_ZOOM,   # ⊕ 19 Nov 2026: the fixture copy (see LESSON); the lean page does not draw b10-nested-scale. Was biology/inheritance-and-dna/chromosomes-genes-and-dna.html
          name="⊕ MRB-254 · all 46 chromosomes, 23 pairs, and ONE accent "
               "thread through all five panels",
          claim="46 marks indexed 1-46 in 23 pairs of two; five data-followed "
@@ -18449,8 +18457,7 @@ def run_browser_layers(ks3_root, browser_mod):
         # ⊕ MRB-257 decision 4 — content truth on the one figure whose
         # encoding carried a fact, and got it backwards.
         truth_problems = check_figure_content_truth(
-            browser_mod, _url, "biology/inheritance-and-dna/"
-                               "how-we-worked-out-dna.html")
+            browser_mod, _url, B10_MODEL)   # ⊕ 19 Nov 2026: the fixture copy (see LESSON); the lean page draws b10-base-ladder, not b10-base-pairs
         problems.extend(truth_problems)
         style_rows.append(
             ("⊕ decision 4 · the base-pair fills encode base SIZE",

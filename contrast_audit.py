@@ -954,8 +954,11 @@ for _slug, _path in (
     ("alcohol-and-smoking", "ks3/biology/health-and-drugs/alcohol-and-smoking.html"),
     ("what-drugs-do-to-the-body",
      "ks3/biology/health-and-drugs/what-drugs-do-to-the-body.html"),
+    # ⊕ 19 Nov 2026 (Mide, 14 Nov: checks do not depend on real lessons): the hidden frozen classic
+    # copy (ks3_fixtures/); the lean page cut the "A note on the credit" support box this measures.
+    # Was ks3/biology/inheritance-and-dna/how-we-worked-out-dna.html.
     ("how-we-worked-out-dna",
-     "ks3/biology/inheritance-and-dna/how-we-worked-out-dna.html"),
+     "ks3/_fixtures/fixture-how-we-worked-out-dna.html"),
 ):
     _ipage("D2 ks3 safeguarding box [%s]" % _slug, _path, setup=None, wait=0.2)
 

@@ -124,7 +124,7 @@ LESSON = {
                   "touching": False, "x_label": "blood group", "y_label": "number of students"}},
     ],
     "figure_caption": {
-        "b10-height-bars-touching": "Heights of sixty students. The bars touch, because the ranges join up.",
+        "b10-height-bars-touching": "Heights of sixty students, in 5 cm ranges.",
         "b10-blood-group-bars": None,
     },
     "ladder_stem": {

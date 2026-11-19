@@ -290,6 +290,27 @@ RETIRED_BY_LEAN = {
                       "the journey-match cards are not on the lean page"),
     "spanner-rig": ("physics/forces/moments.html",
                     "the spanner rig is not on the lean page (figures p4-moment-triangle and p4-moments-seesaw)"),
+    # ⊕ lean wave 2 (B10 inheritance and DNA, B11 evolution): each family had exactly one
+    # lesson, and no other built page emits it. The frozen classic copies in ks3_fixtures/ keep
+    # the benches for the parity and save checks.
+    "variation-plotter": ("biology/inheritance-and-dna/variation-continuous-and-discontinuous.html",
+                          "replaced by the drawn figure b10-blood-group-bars and the height bars"),
+    "zoom-bench": ("biology/inheritance-and-dna/chromosomes-genes-and-dna.html",
+                   "replaced by the drawn figure b10-nucleus-to-base"),
+    "model-builder": ("biology/inheritance-and-dna/how-we-worked-out-dna.html",
+                      "replaced by the drawn figure b10-base-ladder"),
+    "pea-cross": ("biology/inheritance-and-dna/passing-it-on-heredity.html",
+                  "replaced by the drawn Punnett squares b10-punnett-pp-cross and b10-punnett-pp-pp"),
+    "species-cases": ("biology/inheritance-and-dna/what-makes-a-species.html",
+                      "the species-cases bench is not on the lean page"),
+    "advantage-bench": ("biology/evolution-extinction-and-biodiversity/variation-and-competitive-success.html",
+                        "the advantage bench is not on the lean page"),
+    "selection-runner": ("biology/evolution-extinction-and-biodiversity/natural-selection.html",
+                         "replaced by the drawn figures b11-moth-barks and b11-selection-steps"),
+    "pressure-bench": ("biology/evolution-extinction-and-biodiversity/when-the-environment-changes-extinction.html",
+                       "the pressure bench is not on the lean page"),
+    "blight-bench": ("biology/evolution-extinction-and-biodiversity/biodiversity-and-gene-banks.html",
+                     "the blight bench is not on the lean page"),
 }
 
 

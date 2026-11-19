@@ -19,11 +19,11 @@ MRB-103 also flagged an **anatomical/structural diagram gap** (cells, organs) an
 | Status | Figures |
 |---|---|
 | `drafted` | 1 |
-| `drawn` | 95 |
+| `drawn` | 98 |
 | `final` | 1 |
 | `needed` | 3 |
 | `retired` | 6 |
-| **Total** | **106** |
+| **Total** | **109** |
 
 `needed` = declared by a lesson, not yet drawn. A lesson may ship with figures at `needed` — it is not a build blocker — but the need is then counted here rather than invisible.
 
@@ -47,8 +47,11 @@ MRB-103 also flagged an **anatomical/structural diagram gap** (cells, organs) an
 | B1 | `using-a-microscope` | `b1-onion-epidermis-x400` | micrograph | `needed` | The same spot, ×400. One cell wall crossing an empty grey field. |
 | B10 | `chromosomes-genes-and-dna` | `b10-double-helix` | diagram | `drawn` | DNA is two strands twisted into a double helix, joined by pairs of bases. |
 | B10 | `chromosomes-genes-and-dna` | `b10-nested-scale` | diagram | `drawn` | One molecule, five magnifications. Each frame is a callout of the frame above it, and the orange strand you can trace from the top of the column to the bottom never stops being the same strand. Orange is DNA wherever it appears; ink and grey are everything that is not DNA. The gene in panel 04 is a marked length of the strand that was coiled in panel 03 — a section of it, not a separate object sitting on it. Nothing is swapped for anything else on the way down: a chromosome, a gene and DNA are not three things sitting side by side in the nucleus, they are one thing at three magnifications. Count the marks in panel 02 — there are 46, in 23 pairs — and the orange one is the member of one pair that the rest of the column follows. |
+| B10 | `chromosomes-genes-and-dna` | `b10-nucleus-to-base` | diagram | `drawn` | One DNA molecule, from the nucleus down to its bases. |
+| B10 | `how-we-worked-out-dna` | `b10-base-ladder` | diagram | `drawn` | A big base always pairs with a small one. |
 | B10 | `how-we-worked-out-dna` | `b10-base-pairs` | diagram | `drawn` | The reason is width. Every rung is one big and one small and every rung comes out the same length. Two big bases would bulge; two small ones would pinch — and twisting the ladder up into the shape you already know does not change it, because that width has become the width of the spiral. |
 | B10 | `passing-it-on-heredity` | `b10-punnett-pp` | diagram | `drawn` | Each parent has two versions and passes one, so there are four ways the pair can land — and the grid is all four. Three of them contain at least one P, and P beats p, so three of the four flower purple. The fourth got p from both parents. That is where three to one comes from, and it is why a white plant can appear from two purple ones. |
+| B10 | `passing-it-on-heredity` | `b10-punnett-pp-cross` | diagram | `drawn` | One of the four squares is pp. The chance of white is 1 in 4. |
 | B10 | `passing-it-on-heredity` | `b10-punnett-pp-pp` | diagram | `drawn` | Two of the four squares are pp, so the chance of white is 1 in 2. |
 | B10 | `variation-continuous-and-discontinuous` | `b10-blood-group-bars` | diagram | `drawn` | Blood groups of sixty students. The bars have gaps, because the groups are separate. |
 | B10 | `variation-continuous-and-discontinuous` | `b10-height-bars-touching` | diagram | `drawn` | Height, in centimetres, for sixty students. The bars touch — there is no gap between one range and the next. |
