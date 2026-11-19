@@ -19,11 +19,11 @@ MRB-103 also flagged an **anatomical/structural diagram gap** (cells, organs) an
 | Status | Figures |
 |---|---|
 | `drafted` | 1 |
-| `drawn` | 89 |
+| `drawn` | 95 |
 | `final` | 1 |
 | `needed` | 3 |
 | `retired` | 6 |
-| **Total** | **100** |
+| **Total** | **106** |
 
 `needed` = declared by a lesson, not yet drawn. A lesson may ship with figures at `needed` — it is not a build blocker — but the need is then counted here rather than invisible.
 
@@ -45,11 +45,17 @@ MRB-103 also flagged an **anatomical/structural diagram gap** (cells, organs) an
 | B1 | `using-a-microscope` | `b1-magnification-triangle` | diagram | `drawn` | Cover the one you want. Side by side means multiply. One over the other means divide. |
 | B1 | `using-a-microscope` | `b1-onion-epidermis-x100` | micrograph | `needed` | Onion epidermis, ×100. Cells countable, edges sharp. |
 | B1 | `using-a-microscope` | `b1-onion-epidermis-x400` | micrograph | `needed` | The same spot, ×400. One cell wall crossing an empty grey field. |
+| B10 | `chromosomes-genes-and-dna` | `b10-double-helix` | diagram | `drawn` | DNA is two strands twisted into a double helix, joined by pairs of bases. |
 | B10 | `chromosomes-genes-and-dna` | `b10-nested-scale` | diagram | `drawn` | One molecule, five magnifications. Each frame is a callout of the frame above it, and the orange strand you can trace from the top of the column to the bottom never stops being the same strand. Orange is DNA wherever it appears; ink and grey are everything that is not DNA. The gene in panel 04 is a marked length of the strand that was coiled in panel 03 — a section of it, not a separate object sitting on it. Nothing is swapped for anything else on the way down: a chromosome, a gene and DNA are not three things sitting side by side in the nucleus, they are one thing at three magnifications. Count the marks in panel 02 — there are 46, in 23 pairs — and the orange one is the member of one pair that the rest of the column follows. |
 | B10 | `how-we-worked-out-dna` | `b10-base-pairs` | diagram | `drawn` | The reason is width. Every rung is one big and one small and every rung comes out the same length. Two big bases would bulge; two small ones would pinch — and twisting the ladder up into the shape you already know does not change it, because that width has become the width of the spiral. |
 | B10 | `passing-it-on-heredity` | `b10-punnett-pp` | diagram | `drawn` | Each parent has two versions and passes one, so there are four ways the pair can land — and the grid is all four. Three of them contain at least one P, and P beats p, so three of the four flower purple. The fourth got p from both parents. That is where three to one comes from, and it is why a white plant can appear from two purple ones. |
+| B10 | `passing-it-on-heredity` | `b10-punnett-pp-pp` | diagram | `drawn` | Two of the four squares are pp, so the chance of white is 1 in 2. |
+| B10 | `variation-continuous-and-discontinuous` | `b10-blood-group-bars` | diagram | `drawn` | Blood groups of sixty students. The bars have gaps, because the groups are separate. |
 | B10 | `variation-continuous-and-discontinuous` | `b10-height-bars-touching` | diagram | `drawn` | Height, in centimetres, for sixty students. The bars touch — there is no gap between one range and the next. |
+| B10 | `what-makes-a-species` | `b10-speciation` | diagram | `drawn` | Split, change on each side, and the two groups can no longer interbreed. |
+| B11 | `natural-selection` | `b11-moth-barks` | diagram | `drawn` | The same two moths on two kinds of bark. |
 | B11 | `natural-selection` | `b11-moth-pair` | diagram | `drawn` | Neither moth changed. The bark did. Being found is the whole of the disadvantage. |
+| B11 | `natural-selection` | `b11-selection-steps` | diagram | `drawn` | Natural selection in peppered moths on sooty bark. |
 | B3 | `absorption-and-the-small-intestine` | `b3-villus-labelled` | diagram | `drawn` | Each frame is drawn from a callout of the frame before it, so the folding is one thing at three sizes rather than three separate facts: the tube is ridged, every ridge is covered in villi, and every cell of every villus is covered in microvilli. The panel underneath shows why it is worth doing. Count the cells across the wall of the villus — there is one. On the far side of that single cell is a capillary, which is why a glucose molecule in the gut is in the bloodstream a moment later. |
 | B3 | `the-digestive-system` | `b3-digestion-timing` | diagram | `drawn` | Hours spent in each organ, to scale. |
 | B3 | `the-digestive-system` | `b3-gut-labelled` | diagram | `drawn` | One tube, from 01 at the top to 07 at the bottom, with the orange line running down the middle of it the whole way. The small intestine is the long narrow coiled run; the large intestine below it is visibly wider and shorter. Stop 05 — pancreas, liver and gall bladder — sits inside the dashed boundary, with ducts leading out of it into the tube. That is the distinction the bench’s own stop 05 rests on: those three send juices in, and food never passes through them. Put a finger on 01 and follow the orange line down: it does not stop, branch or start again anywhere between there and 07, and it never once goes into the dashed boundary. |

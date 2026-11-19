@@ -2574,8 +2574,8 @@
  "biodiversity-and-gene-banks": {
   "key_stage": "KS3",
   "keys": {
-   "biodiversity-and-gene-banks#apply": "The seed can be regrown, but the ecosystem it depended on — pollinators, soil fungi, seed dispersers — is not in the bank",
-   "biodiversity-and-gene-banks#recall": "A thousand potato plants, all clones of one variety",
+   "biodiversity-and-gene-banks#apply": "Its pollinators and soil fungi are not stored, so it may not survive",
+   "biodiversity-and-gene-banks#recall": "A field with a thousand clones of one potato variety",
    "biodiversity-and-gene-banks#start": "They all share one weak spot"
   },
   "points": [
@@ -4523,7 +4523,7 @@
  "chromosomes-genes-and-dna": {
   "key_stage": "KS3",
   "keys": {
-   "chromosomes-genes-and-dna#apply": "Yes — every cell with a nucleus has the complete set, but only some genes are switched on in each cell",
+   "chromosomes-genes-and-dna#apply": "Yes, as every body cell with a nucleus has all your genes",
    "chromosomes-genes-and-dna#recall": "Nucleus, chromosome, gene, base",
    "chromosomes-genes-and-dna#start": "It is coiled up tightly"
   },
@@ -13265,8 +13265,8 @@
  "how-we-worked-out-dna": {
   "key_stage": "KS3",
   "keys": {
-   "how-we-worked-out-dna#apply": "They worked out its structure, by building models that fitted other people’s measurements",
-   "how-we-worked-out-dna#recall": "That A pairs with T and C pairs with G",
+   "how-we-worked-out-dna#apply": "They worked out its shape by building models to fit others' data",
+   "how-we-worked-out-dna#recall": "That A pairs with T and C with G, because the amounts match",
    "how-we-worked-out-dna#start": "Several teams together"
   },
   "points": [
@@ -16419,8 +16419,8 @@
  "natural-selection": {
   "key_stage": "KS3",
   "keys": {
-   "natural-selection#apply": "Because changes made during an animal’s life do not alter the genetic information it passes on",
-   "natural-selection#recall": "The proportions in the population — more of the moths born were dark, because dark parents survived to breed",
+   "natural-selection#apply": "Because stretching does not change the giraffe's genes, so calves cannot inherit it",
+   "natural-selection#recall": "The proportion of dark moths rose, because dark parents survived to breed",
    "natural-selection#start": "Long-necked giraffes had more babies"
   },
   "points": [
@@ -17186,7 +17186,7 @@
   "key_stage": "KS3",
   "keys": {
    "passing-it-on-heredity#apply": "Both parents were carrying the white version without showing it",
-   "passing-it-on-heredity#recall": "23 — one from each pair, so the fertilised egg has 46 again",
+   "passing-it-on-heredity#recall": "23, one from each pair, so the fertilised egg has 46",
    "passing-it-on-heredity#start": "Hidden, but still there"
   },
   "points": [
@@ -25028,7 +25028,7 @@
  "variation-and-competitive-success": {
   "key_stage": "KS3",
   "keys": {
-   "variation-and-competitive-success#apply": "Best fitted to the current conditions, and leaving the most surviving offspring",
+   "variation-and-competitive-success#apply": "The ones best fitted to current conditions, and leaving the most offspring",
    "variation-and-competitive-success#recall": "Whether a variation is an advantage depends on the environment",
    "variation-and-competitive-success#start": "The small, quick one"
   },
@@ -25168,8 +25168,8 @@
  "variation-continuous-and-discontinuous": {
   "key_stage": "KS3",
   "keys": {
-   "variation-continuous-and-discontinuous#apply": "Nothing on its own — shape and cause are separate questions",
-   "variation-continuous-and-discontinuous#recall": "Number of brothers and sisters",
+   "variation-continuous-and-discontinuous#apply": "Many genes and the environment together, as diet affects height too",
+   "variation-continuous-and-discontinuous#recall": "Number of petals on a flower",
    "variation-continuous-and-discontinuous#start": "More like blood group"
   },
   "points": [
@@ -25888,8 +25888,8 @@
  "what-makes-a-species": {
   "key_stage": "KS3",
   "keys": {
-   "what-makes-a-species#apply": "Because their offspring can themselves have offspring",
-   "what-makes-a-species#recall": "No — the offspring must be fertile for the parents to count as one species",
+   "what-makes-a-species#apply": "Because their puppies can grow up and have puppies",
+   "what-makes-a-species#recall": "No, the offspring must be fertile for the parents to be one species",
    "what-makes-a-species#start": "No, two different species"
   },
   "points": [
@@ -26494,7 +26494,7 @@
  "when-the-environment-changes-extinction": {
   "key_stage": "KS3",
   "keys": {
-   "when-the-environment-changes-extinction#apply": "Yes — over 99% of all species that ever lived are extinct, mostly long before humans existed",
+   "when-the-environment-changes-extinction#apply": "Yes. Most species that have ever lived died out long before humans existed",
    "when-the-environment-changes-extinction#recall": "It eats only one kind of food and breeds slowly",
    "when-the-environment-changes-extinction#start": "Breeding fast, eating anything"
   },
