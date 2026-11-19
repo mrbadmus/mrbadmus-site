@@ -9,7 +9,9 @@ breaks.
     python3 check_ks4_live.py --batch batch-2          # every batch-2 page
     python3 check_ks4_live.py --batch pilot --sample   # one page per route
 
-Run AFTER the push and after Cloudflare Pages reports the deploy done.
+Run AFTER the push. The script itself now waits for Cloudflare Pages to report the deploy done
+(GitHub check run), for a live page to name this build's asset stamps, and 90 s more, and checks
+each asset under a throwaway query first: no stamped asset URL is fetched before that (18 Nov 2026).
 
 Two proofs per page, in this order (the order matters — see the immutable
 cache trap below):
@@ -39,7 +41,9 @@ import hashlib
 import json
 import re
 import sys
+import random
 import subprocess
+import time
 
 BASE = "https://mrbadmus.com"
 STAMP_RE = re.compile(r'/shared/(ks4-[a-z0-9-]+\.(?:js|css))\?v=([a-f0-9]{8})')
@@ -64,6 +68,67 @@ def fetch(url):
     return int(status), final, body
 
 
+REPO_SLUG = "mrbadmus/mrbadmus-site"
+SETTLE_S = 90          # after the page flips: an edge can still route assets to the old deploy
+
+
+def _head():
+    return subprocess.run(["git", "rev-parse", "HEAD"], capture_output=True, text=True,
+                          check=True).stdout.strip()
+
+
+def wait_for_deploy(sha, timeout=1800, poll=20):
+    """Block until GitHub shows Cloudflare Pages' check run for `sha` completed. Fail closed:
+    no gh, no run, a failed run or a timeout all refuse, because every asset fetch before the
+    deploy lands can pin last deploy's bytes under the new stamp for a year (immutable)."""
+    t_end = time.time() + timeout
+    while True:
+        out = subprocess.run(
+            ["gh", "api", "repos/%s/commits/%s/check-runs" % (REPO_SLUG, sha),
+             "--jq", '.check_runs[] | select(.name == "Cloudflare Pages") | [.status, (.conclusion // ""), (.completed_at // "")] | @tsv'],
+            capture_output=True, text=True)
+        if out.returncode != 0:
+            raise SystemExit("check_ks4_live: cannot read Cloudflare's deploy status for %s from GitHub "
+                             "(gh: %s). Refusing to fetch any stamped asset before the deploy is known "
+                             "to be finished." % (sha[:10], out.stderr.strip()[:200]))
+        rows = [r.split("\t") for r in out.stdout.strip().splitlines() if r.strip()]
+        done = [r for r in rows if r[0] == "completed"]
+        if done:
+            if all(r[1] == "success" for r in done):
+                print("deploy: Cloudflare Pages finished %s for %s" % (done[-1][2], sha[:10]))
+                return
+            raise SystemExit("check_ks4_live: Cloudflare Pages reports %s for %s: not live."
+                             % (done[-1][1], sha[:10]))
+        if time.time() > t_end:
+            raise SystemExit("check_ks4_live: no finished Cloudflare Pages deploy for %s after %d s "
+                             "(is it pushed?)." % (sha[:10], timeout))
+        print("deploy: waiting for Cloudflare Pages on %s (%s)…" % (sha[:10], rows[0][0] if rows else "no run yet"))
+        time.sleep(poll)
+
+
+def wait_for_stamps(url, want, timeout=900, poll=15):
+    """Block until the live page at `url` names every asset stamp in `want` ({name: stamp})."""
+    t_end = time.time() + timeout
+    while True:
+        try:
+            status, _, body = fetch(url)
+            have = dict(STAMP_RE.findall(body.decode("utf-8", "replace")))
+        except Exception as e:  # noqa: BLE001
+            status, have = "ERR %s" % e, {}
+        missing = {n: s for n, s in want.items() if have.get(n) != s}
+        if status == 200 and not missing:
+            return
+        if time.time() > t_end:
+            raise SystemExit("check_ks4_live: %s still does not name this build's assets: %s"
+                             % (url, ", ".join("%s?v=%s" % kv for kv in sorted(missing.items()))))
+        time.sleep(poll)
+
+
+def nonce_ok(name, stamp):
+    """md5 of the asset fetched under a throwaway query, so the real cache key is never touched."""
+    _, _, abody = fetch("%s/shared/%s?v=%s&nonce=%d" % (BASE, name, stamp, random.randrange(10**9)))
+    return hashlib.md5(abody).hexdigest()[:8] == stamp
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--batch", default="pilot",
@@ -86,6 +151,32 @@ def main():
             if route not in seen:
                 seen.add(route); picked.append((path, sha))
         pages = picked
+
+    # ⊕ 18 Nov 2026 (supervising ruling): THE DEPLOY-FINISHED RULE. Fetching a stamped asset before
+    # Cloudflare has published can pin last deploy's bytes under the new stamp for a year
+    # (immutable), and a flipped page is not proof enough (an edge can still route the asset to the
+    # old deploy for a moment). So, before ANY asset is fetched at its real URL:
+    #   1. GitHub's "Cloudflare Pages" check run for this commit is completed and successful;
+    #   2. a live page names every asset stamp this build wrote;
+    #   3. SETTLE_S more seconds;
+    #   4. each asset, fetched under a throwaway &nonce=, already hashes to its stamp.
+    # Any failure stops here, with the real cache keys untouched. There is no flag to skip it.
+    sha = _head()
+    wait_for_deploy(sha)
+    want, probe = {}, None
+    for path, _sha in pages:
+        local = dict(STAMP_RE.findall(open(path, encoding="utf-8").read()))
+        want.update(local)
+        probe = probe or (path, local)
+    probe_url = BASE + "/" + probe[0].split("mrbadmus_site/", 1)[1]
+    wait_for_stamps(probe_url, probe[1])
+    print("deploy: %s names this build's assets; settling %d s" % (probe_url, SETTLE_S))
+    time.sleep(SETTLE_S)
+    unready = sorted("%s?v=%s" % kv for kv in want.items() if not nonce_ok(*kv))
+    if unready:
+        print("❌ the origin is not serving these assets' new bytes yet (checked under a throwaway "
+              "query; the real URLs were NOT fetched): %s" % ", ".join(unready))
+        return 1
 
     bad = 0
     asset_cache = {}

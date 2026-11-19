@@ -10,7 +10,7 @@ Old page: Design batch-6 (`ks4-biology-4.2.2.5-health-disease.dc.html`), family 
 | Health is the state of physical and mental well-being | Card 'Health and disease'; Key fact; Easy mistakes; Rung 1 Q1 | CF CH TF TH | ✓ |
 | Diseases, both communicable and non-communicable, are major causes of ill health. Diet, stress and life situations may have a profound effect on physical and mental health | Card 'Health and disease'; practice Q1 | CF CH TF TH | ✓ |
 | Different types of disease may interact (immune defects → infectious diseases; viruses in cells can trigger cancers; immune reactions caused by a pathogen can trigger allergies such as skin rashes and asthma; severe physical ill health can lead to depression and other mental illness) | Card 'Diseases can interact' (all four); Rung 2 Q2 | CF CH TF TH | ✓ |
-| Translate disease incidence information between graphical and numerical forms; frequency tables, bar charts, histograms; scatter diagram for correlation | Card 'From a table to a bar chart' (frequency table, fig:lung-cancer-bar-chart, reading back); card 'Reading a scatter graph' (scatterFig, now drawn complete); Rung 2 Q1; practice Q4 | CF CH TF TH | ✓ |
+| Translate disease incidence information between graphical and numerical forms; frequency tables, bar charts, histograms; scatter diagram for correlation | Card 'From a table to a bar chart' (frequency table, fig:lung-cancer-bar-chart, reading back); card 'Reading a histogram' (fig:chd-age-histogram, continuous data in equal class intervals, touching bars, reading the modal class); card 'Reading a scatter graph' (scatterFig, now drawn complete); Rung 2 Q1; practice Q4 | CF CH TF TH | ✓ |
 | Principles of sampling applied to scientific data, including epidemiological data | Card 'Reading a scatter graph' (large random sample); practice Q5 | CF CH TF TH | ✓ |
 | 4.2.2.6 Discuss the human and financial cost of these non-communicable diseases to an individual, a local community, a nation or globally | Card 'The cost of non-communicable diseases'; Rung 4 | CF CH TF TH | ✓ |
 | Explain the effect of lifestyle factors including diet, alcohol and smoking on the incidence of non-communicable diseases at local, national and global levels | Card 'The cost of non-communicable diseases' (local, national, global); reveal 'Risk factors and their effects' | CF CH TF TH | ✓ |
@@ -21,7 +21,7 @@ Old page: Design batch-6 (`ks4-biology-4.2.2.5-health-disease.dc.html`), family 
 | Sampling, graphs and scatter diagrams "in terms of risk factors" | Cards 'Reading a scatter graph' and 'From a table to a bar chart' (both risk-factor data) | CF CH TF TH | ✓ |
 
 **Gaps and mismatches.**
-- Frequency tables, bar charts and histograms (MS 2c): a frequency table to a bar chart is now taught (card 'From a table to a bar chart'). **Histograms are NOT taught: a spec gap** (lead's ruling, 18 Nov 2026; UNSURE 27 for Mide).
+- Frequency tables, bar charts and histograms (MS 2c): a frequency table to a bar chart is taught (card 'From a table to a bar chart'). **Histograms ARE taught here** (supervising ruling, 18 Nov 2026): the spec lists them twice, in 4.2.2.5's own skills line (disease incidence data) and in the maths skills appendix (MS 2c), and this lesson is where Organisation uses disease-incidence data, so one drawn example is taught (card 'Reading a histogram', fig:chd-age-histogram, made-up data). Equal class intervals only, so bar height is the number of people.
 - "Local, national and global levels" for lifestyle effects is only in the Rung 4 mark points.
 - Rainford "why the Government encourages a healthy lifestyle": not spec wording; it fits "financial cost … to a nation". One line at most.
 
@@ -51,4 +51,4 @@ Old page: Design batch-6 (`ks4-biology-4.2.2.5-health-disease.dc.html`), family 
 - Old subtopic data CH/TH 'higher' block (confounding variables, statistics): not Higher content.
 - Practice set: options and replies tidied. Stems kept (the 'LIFESTYLE' capitals stay, for the id).
 - Examiner/blind (18 Nov): Rung 1 (i) wrong options lengthened; Rung 3 (ii) correlation chain rewritten as ONE order (a correlation only shows they change together → so another factor or chance could explain it → to rule these out, a causal mechanism must be found).
-- Histograms: NOT taught (spec gap; lead's ruling; UNSURE 27).
+- Histograms: taught, one drawn example (supervising ruling 18 Nov; was a spec gap).

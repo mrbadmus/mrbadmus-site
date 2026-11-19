@@ -153,6 +153,17 @@ LESSON = {
                   "bar is the number of cases.",
                   "Reading back: people who smoke now have 150 ÷ 15 = 10 times as many cases as "
                   "people who never smoked."]},
+        # Supervising ruling, 18 Nov 2026: spec 4.2.2.5 and MS 2c both name histograms, and this
+        # lesson's disease-incidence data is where they are used, so one drawn example is taught.
+        {"kind": "card", "title": "Reading a histogram",
+         "body": ["Made-up data: the ages at which 200 people were diagnosed with coronary heart "
+                  "disease.",
+                  {"slot": "fig:chd-age-histogram"},
+                  "Age is continuous data, so it is grouped into equal class intervals, such as 60 "
+                  "to 70 years. The bars touch, because each interval runs straight into the next. "
+                  "A bar chart of separate groups has gaps instead.",
+                  "The height of each bar is the number of people in that interval. Most people "
+                  "were diagnosed aged 70 to 80: 70 of the 200."]},
         {"kind": "card", "title": "Easy mistakes",
          "body": [{"mistakes": [
              ("A risk factor means you will get the disease.",

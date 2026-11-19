@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""figlib.ks4lean_org: lean Biology Organisation lesson figures (5), drafted 18 Nov 2026.
+"""figlib.ks4lean_org: lean Biology Organisation lesson figures (6), drafted 18 Nov 2026.
 Pure standard library. REGISTRY: name -> no-arg fn returning SVG.
 
 Drawn in figlib/ks4lean_eco.py's conventions and with its helpers (one 720 viewBox, Georgia 28,
@@ -13,6 +13,8 @@ Every plotted number is computed from the record's own data and asserted:
   enzyme-rate-ph           peaks at pH 2 and pH 7, each zero 3 pH units from its peak
                            (enzymes.py, card "pH"; EXAMINER ruling 9)
   lung-cancer-bar-chart    15, 60, 150 per 100 000 (health_disease.py, "From a table to a bar chart")
+  chd-age-histogram        12, 30, 58, 70, 30 people in 10-year classes, 40 to 90 (health_disease.py,
+                           "Reading a histogram"; spec 4.2.2.5 and MS 2c; supervising ruling 18 Nov)
   leaf-cross-section       the nine parts the brief names plus "air spaces" (plant_tissues.py's
                            reveal row "Loosely packed cells with air spaces between them")
   transpiration-temperature-graph  15, 30, 45 mm in 5 min -> 3, 6, 9 mm/min (transpiration.py,
@@ -160,6 +162,43 @@ def lung_cancer_bar_chart():
     return svg(W, H, "A bar chart with gaps between the bars. The vertical axis is lung cancer cases per 100 000 people, from 0 to 160 in steps of 20. Never smoked: 15. Smoked in the past: 60. Smoke now: 150.", b)
 
 
+# ------------------------------------------------------------------ 3b health-disease, a histogram
+CHD_AGES = [(40, 50, 12), (50, 60, 30), (60, 70, 58), (70, 80, 70), (80, 90, 30)]
+
+
+def chd_age_histogram():
+    """Made-up data (health_disease.py, card "Reading a histogram"): the ages at which 200 people
+    were diagnosed with coronary heart disease, in equal 10-year class intervals. Continuous data,
+    so the bars touch; the x-axis is a number line marked at the class boundaries."""
+    W, H = 720, 710
+    x0, x1, yb, yt = 150, 670, 560, 40
+    lo, hi = CHD_AGES[0][0], CHD_AGES[-1][1]
+    X = lambda age: x0 + (age - lo) * (x1 - x0) / float(hi - lo)
+    Y = lambda v: yb - v * (yb - yt) / 80.0
+    assert sum(n for _, _, n in CHD_AGES) == 200
+    assert all(b - a == 10 for a, b, _ in CHD_AGES)
+    assert max(CHD_AGES, key=lambda c: c[2])[:2] == (70, 80)
+    b = []
+    for v in range(10, 81, 10):
+        b.append(grid(x0, Y(v), x1, Y(v)))
+    for a, c, n in CHD_AGES:                                    # touching bars: no gaps
+        b.append(rect(X(a), Y(n), X(c) - X(a), Y(0) - Y(n), BAR, INK, 3))
+    b.append(line(x0, yt - 6, x0, yb, INK, 4, "butt"))
+    b.append(line(x0, yb, x1, yb, INK, 4, "butt"))
+    for v in range(0, 81, 10):
+        b.append(line(x0 - 10, Y(v), x0, Y(v), INK, 3, "butt"))
+        b.append(num(x0 - 16, Y(v) + 10, str(v), "end"))
+    for age in range(lo, hi + 1, 10):                           # boundaries, not bar centres
+        b.append(line(X(age), yb, X(age), yb + 10, INK, 3, "butt"))
+        b.append(num(X(age), yb + 56, str(age)))
+    b.append(txt((x0 + x1) / 2.0, yb + 116, "age at diagnosis in years", FS, "middle"))
+    b.append(vtxt(52, (yt + yb) / 2, "number of people"))
+    return svg(W, H, "A histogram with no gaps between the bars. The horizontal axis is age at "
+               "diagnosis in years, marked 40, 50, 60, 70, 80 and 90. The vertical axis is number of "
+               "people, from 0 to 80 in steps of 10. 40 to 50 years: 12. 50 to 60: 30. 60 to 70: 58. "
+               "70 to 80: 70. 80 to 90: 30.", b)
+
+
 # ------------------------------------------------------------------ 4  plant-tissues, the leaf
 def _guard_cell(cx, top, bot, side):
     """a kidney-shaped guard cell; side -1 = left of the pore, +1 = right. Its inner (pore-side)
@@ -301,6 +340,7 @@ REGISTRY = {
     "enzyme-rate-temperature": enzyme_rate_temperature,
     "enzyme-rate-ph": enzyme_rate_ph,
     "lung-cancer-bar-chart": lung_cancer_bar_chart,
+    "chd-age-histogram": chd_age_histogram,
     "leaf-cross-section": leaf_cross_section,
     "transpiration-temperature-graph": transpiration_temperature_graph,
 }

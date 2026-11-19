@@ -8,9 +8,9 @@ the page's own hard-coded `bankSrc` (same five items on every route), so its fix
 logic_edits. No practice-set stem is edited, so every ks4q: id survives; rung prompts keep their
 positions, so rung ids survive.
 
-The lipid test is the live Design page's ethanol emulsion test, restored word for word after the
-examiner pass (the practical's own line is 'carbohydrates, lipids and proteins'); which lipid
-reagent to teach is Mide's call (UNSURE.md). The rung option naming it stays.
+Lipid test (supervising ruling, 18 Nov 2026): Sudan III is the main test (AQA's required practical
+handbook; a red-stained oily layer on top), with the ethanol emulsion test as a one-line alternative
+because exam questions use either. Rung 2's option naming the emulsion stays: it is still true.
 """
 
 
@@ -65,7 +65,9 @@ _FOOD_TESTS = [
         "minutes. Blue turns green, yellow, orange or brick-red if a sugar is present. The more sugar, the "
         "further along that list the colour goes.",
         "<strong>Protein</strong>: add Biuret reagent. Blue turns purple if protein is present.",
-        "<strong>Lipids</strong>: shake the food with ethanol, then pour into water. A cloudy white "
+        "<strong>Lipids</strong>: add a few drops of Sudan III stain to the food in water and shake "
+        "gently. A red-stained oily layer forms on top if lipid is present.",
+        "Another lipid test you may meet: shake the food with ethanol, then add water. A milky white "
         "emulsion forms if lipid is present. Ethanol is flammable, so keep it away from any flame.",
     ]},
 ]
