@@ -35,7 +35,8 @@ SLUGS = ["efficiency", "changes-in-energy", "power", "thermal-conductivity",
 # Ecology (eight old-format lessons derived below, fifteen legacy batch-10 lessons), Chemistry
 # Quantitative, then Physics Waves (six old-format lessons, three new ones, six legacy lessons
 # from batches 2, 3 and 4), then Biology Organisation (eleven legacy lessons from batches 2, 4, 5
-# and 6; see BIO_EYEBROW below).
+# and 6; see BIO_EYEBROW below), then Chemistry Chemical analysis (six old-format lessons and
+# two legacy batch-2 lessons).
 
 # Lessons that have no legacy page: identity comes from here (the subtopic data's own
 # title and spec, 6.1.1.1 / 6.1.1.3 / 6.1.2.1). The three Energy ones are written out so
@@ -56,6 +57,7 @@ _UNITS = {
     ("chemistry", "quantitative"): "Quantitative chemistry",
     ("physics", "waves"): "Waves",
     ("biology", "organisation"): "Organisation",
+    ("chemistry", "analysis"): "Chemical analysis",
 }
 # The family label (the eyebrow's last word) is a ruled choice per lesson, drawn from the
 # labels the existing batches use: Model, Quantitative, Process, Classify, Contrast,
@@ -95,6 +97,13 @@ _FAMILY = {
     "reflection-of-waves": "Model",
     "required-practical-light": "Required practical",
     "visible-light": "Model",
+    # Chemical analysis: six old-format lessons rebuilt (the two legacy ones keep batch 2's family)
+    "pure-substances": "Contrast",
+    "formulations": "Classify",
+    "chromatography": "Required practical",
+    "testing-for-gases": "Classify",
+    "flame-tests": "Classify",
+    "instrumental-methods": "Process",
 }
 # Ecology lessons whose record has no `legacy` but which were live Design lessons in an earlier
 # batch: the lean page is built from the record alone and replaces that page. slug -> the one
@@ -173,6 +182,15 @@ CHEM_EYEBROW = {
     "percentage-yield": (None, "4.3.3.1"),
     "atom-economy": (None, "4.3.3.2"),
     "gas-volumes": (None, "4.3.5"),
+    # Chemical analysis (8464 5.8 / 8462 4.8); the Triple-only lessons have no Combined slot
+    "pure-substances": ("5.8.1.1", "4.8.1.1"),
+    "formulations": ("5.8.1.2", "4.8.1.2"),
+    "chromatography": ("5.8.1.3", "4.8.1.3"),
+    "testing-for-gases": ("5.8.2.1\u20135.8.2.4", "4.8.2.1\u20134.8.2.4"),
+    "flame-tests": (None, "4.8.3.1"),
+    "instrumental-methods": (None, "4.8.3.6\u20134.8.3.7"),
+    "metal-hydroxides": (None, "4.8.3.2"),
+    "carbonates-halides-sulfates": (None, "4.8.3.3\u20134.8.3.5"),
 }
 # Words kept capitalised by sentence_case() beyond the first word.
 _KEEP_CAPS = {"Fleming's"}

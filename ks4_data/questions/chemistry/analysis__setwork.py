@@ -110,23 +110,15 @@ QUESTIONS = [
         "band": "harder",
         "tier": "foundation",
         "triple_only": False,
-        "text": "A chemist has a colourless liquid that is either pure "
-                "ethanol (boiling point 78 °C) or pure propanone (boiling "
-                "point 56 °C). Describe how one measurement identifies it, "
-                "and what a boiling RANGE would instead show.",
+        "text": 'A chemist has a colourless liquid that is either pure ethanol (boiling point 78 °C) or pure propanone (boiling point 56 °C). Describe how one measurement identifies it, and what a boiling range would instead show.',
         "options": [
-            "Measure the boiling point: a sharp 78 °C means ethanol and 56 "
-            "°C means propanone, while a range means a mixture",
-            "Measure the melting point instead, because a pure liquid melts "
-            "at the same temperature as it boils",
-            "Measure the mass of 1 cm3, because ethanol is the heavier of "
-            "the two",
-            "Measure the colour, because propanone is faintly yellow and "
-            "ethanol is not",
+            'Measure the boiling point: 78 °C is ethanol, 56 °C is propanone, a range is a mixture',
+            'Measure the melting point instead, because a pure liquid melts at the same temperature as it boils',
+            'Measure the mass of 1 cm³, because ethanol is twice as heavy as propanone',
+            'Measure the colour, because propanone is faintly yellow and ethanol is not',
         ],
         "correct_index": 0,
-        "why": "A pure liquid boils at one temperature that identifies it; "
-               "a range means neither, because the sample is not pure.",
+        "why": 'A pure liquid boils at one temperature that identifies it; a range means neither, because the sample is not pure.',
     },
     {
         "id": "ks4-pure-substances-h06",
@@ -712,22 +704,14 @@ QUESTIONS = [
         "band": "harder",
         "tier": "foundation",
         "triple_only": False,
-        "text": "Magnesium reacts with dilute sulfuric acid and 48 cm3 of "
-                "gas is collected in a syringe. Describe the test that "
-                "identifies the gas, the result, and name the salt left in "
-                "solution.",
+        "text": 'Magnesium reacts with dilute sulfuric acid and 48 cm³ of gas is collected in a syringe. Describe the test that identifies the gas, the result, and name the salt left in solution.',
         "options": [
-            "A glowing splint relights, showing oxygen, and the salt is "
-            "magnesium sulfate",
-            "A lit splint gives a squeaky pop, showing hydrogen, and the "
-            "salt is magnesium sulfide",
-            "Limewater turns milky, showing carbon dioxide, and the salt is "
-            "magnesium sulfide",
-            "A lit splint gives a squeaky pop, showing hydrogen, and the "
-            "salt is magnesium sulfate",
+            'A glowing splint relights, showing oxygen, and the salt is magnesium sulfate',
+            'A burning splint gives a squeaky pop, showing hydrogen, and the salt is magnesium sulfide',
+            'Limewater turns milky, showing carbon dioxide, and the salt is magnesium sulfide',
+            'A burning splint gives a squeaky pop, showing hydrogen, and the salt is magnesium sulfate',
         ],
         "correct_index": 3,
-        "why": "A metal and an acid give hydrogen plus a salt, and sulfuric "
-               "acid always gives a sulfate.",
+        "why": 'A metal and an acid give a salt and hydrogen, and sulfuric acid always gives a sulfate.',
     },
 ]

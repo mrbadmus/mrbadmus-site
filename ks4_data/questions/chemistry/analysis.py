@@ -502,23 +502,15 @@ QUESTIONS = [
         "band": "harder",
         "tier": "foundation",
         "triple_only": False,
-        "text": "Sports drink A contains 6 g of sugar and 0.20 g of sodium "
-                "per 100 cm3. Drink B contains 12 g of sugar and 0.02 g of "
-                "sodium per 100 cm3. Suggest which is better formulated for "
-                "rehydrating an athlete.",
+        "text": 'Sports drink A contains 6 g of sugar and 0.05 g of sodium per 100 cm³. Drink B contains 12 g of sugar and 0.02 g of sodium per 100 cm³. Suggest which is better formulated for rehydrating an athlete.',
         "options": [
-            "Drink B, because more sugar always means energy is delivered to "
-            "the muscles faster",
-            "Drink B, because a lower sodium content makes it less salty and "
-            "much easier to drink",
-            "Drink A, because it replaces the sodium lost in sweat at a "
-            "useful concentration",
-            "Neither, because a rehydration drink should contain water and "
-            "nothing else added",
+            'Drink B, because more sugar always means energy is delivered to the muscles faster',
+            'Drink B, because a lower sodium content makes it less salty and much easier to drink',
+            'Drink A, because it replaces the sodium lost in sweat at a useful concentration',
+            'Neither, because a rehydration drink should contain water and nothing else added',
         ],
         "correct_index": 2,
-        "why": "Sweat loses sodium as well as water, so a rehydration "
-               "formulation is designed around electrolytes, not just sugar.",
+        "why": 'Sweat loses sodium as well as water, so a rehydration formulation is designed around electrolytes, not just sugar.',
     },
 
     # ── chromatography ──────────────────────────────────────────────────
