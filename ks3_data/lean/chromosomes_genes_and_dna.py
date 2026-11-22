@@ -107,12 +107,13 @@ LESSON = {
                  "in the frame above. A widening band joins each ring to the next frame. Frame 1 is a cell, "
                  "0.02 mm across. One orange fleck in its nucleus is the strand we follow. Frame 2 is that "
                  "nucleus, 0.006 mm across. It holds 46 grey chromosomes in 23 pairs. One of them is orange. "
-                 "Frame 3 is that chromosome, 0.002 mm long. It is an orange strand coiled round grey "
+                 "Frame 3 is that chromosome, 0.002 mm long. It is an orange strand coiled round "
                  "proteins, unwinding at the bottom. Labels say proteins and coiled DNA. Frame 4 is the "
-                 "unwound strand: two orange backbones with rungs between them. A bracket marks one length "
-                 "as one gene. Frame 5 shows four rungs of that length. Each is a pair of lettered boxes. "
-                 "They read A with T, C with G, T with A and G with C. The bases are 0.0000003 mm apart. "
-                 "A key says orange is DNA, one molecule in every panel. Dark ink is not DNA.",
+                 "unwound strand: two orange backbones with orange rungs between them. A bracket marks one "
+                 "length as one gene. Frame 5 shows four rungs of that length. Each is a pair of orange "
+                 "lettered boxes. They read A with T, C with G, T with A and G with C. The bases are "
+                 "0.0000003 mm apart. A key says orange is the one DNA molecule we follow. Grey is the "
+                 "other chromosomes, which are DNA too.",
          "caption": "One DNA molecule, from the nucleus down to its bases.",
          "data": {}},
     ],

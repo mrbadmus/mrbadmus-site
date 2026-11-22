@@ -1,15 +1,46 @@
 /* KS3 lean pages only (build_ks3.py links it after shared/lean.css, on a page with a
    lean record). KS4 lean pages never load it, so their stamps never move.
 
-   Reveal tables: wrap at word boundaries and hyphenate a word too long for its
-   column. shared/lean.css says overflow-wrap:anywhere, which at 390 px split
+   Reveal tables. shared/lean.css says overflow-wrap:anywhere, which at 390 px split
    "Environmental" mid-word with no hyphen and left a full stop alone at the start
-   of a line (Lean Wave 2 KS3 walk, 19 Nov 2026). KS4 has the same rule in
-   ks4-lesson-batch-lean.css. */
+   of a line (Lean Wave 2 KS3 walk, 19 Nov 2026). KS4 has its own rule in
+   ks4-lesson-batch-lean.css.
+
+   Header cells (thead th, tbody th) never split a word. Chrome never auto-hyphenates
+   a capitalised word, so hyphens:auto alone cannot help "Environmental" or
+   "Discontinuous", and overflow-wrap:break-word then split them anywhere
+   ("Environment" / "al", Lean Wave 2 KS3 second walk, 20 Nov 2026). With
+   overflow-wrap:normal a header word stays whole; hyphens:auto still breaks a long
+   lower-case word.
+
+   For a whole word to widen its column the table must use automatic layout:
+   under shared/lean.css's table-layout:fixed a word too long for its cell would
+   spill over the next column. Each column is given an equal share, which is what
+   fixed layout gave it (fixed layout reads only the first row, the header row, whose
+   cells have no width, so lean.css's 27% on tbody th never applied). With every
+   column's share set, revealing a cell's text never reflows the table; a column
+   grows past its share only when its longest word needs it.
+
+   Answer cells (.lean-cell) keep break-word plus hyphens, as before. */
+html .lean-table { table-layout: auto; }
 html .lean-table thead th,
-html .lean-table tbody th,
+html .lean-table tbody th {
+  overflow-wrap: normal;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+}
 html .lean-table .lean-cell {
   overflow-wrap: break-word;
   -webkit-hyphens: auto;
   hyphens: auto;
 }
+/* Equal shares, keyed on how many header cells the table has (2, 3 or 4 on KS3). */
+html .lean-table tbody th { width: auto; }
+html .lean-table thead th:first-child:nth-last-child(2),
+html .lean-table thead th:first-child:nth-last-child(2) ~ th { width: 50%; }
+html .lean-table thead th:first-child:nth-last-child(3),
+html .lean-table thead th:first-child:nth-last-child(3) ~ th { width: 33.333%; }
+html .lean-table thead th:first-child:nth-last-child(4),
+html .lean-table thead th:first-child:nth-last-child(4) ~ th { width: 25%; }
+html .lean-table thead th:first-child:nth-last-child(5),
+html .lean-table thead th:first-child:nth-last-child(5) ~ th { width: 20%; }

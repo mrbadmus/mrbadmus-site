@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 """Variation, in the lean shape. Spec table: docs/lessons/wave2/ks3-variation-continuous-and-discontinuous.md."""
+# The height bins are the lesson's own survey, referenced rather than retyped.
+from ks3_data.b10.lesson_01_variation_continuous_and_discontinuous import CHARACTERISTICS as _CHARS
 
 LESSON = {
     "slug": "variation-continuous-and-discontinuous",
@@ -64,7 +66,7 @@ LESSON = {
                               "Height: a tape measure, in centimetres. Mass: scales, in kilograms.",
                               "For separate groups, count how many fall into each group. A tally chart helps."]}]},
         {"kind": "card", "title": "Histograms for continuous data",
-         "body": [{"figure": "b10-height-bars-touching"},
+         "body": [{"figure": "b10-height-bars-lean"},
                   "Put the measurements into equal ranges, such as 145 to 150 cm.",
                   "Draw a histogram. The bars touch, because the ranges join up.",
                   "Most people are near the middle. Few are very short or very tall."]},
@@ -113,6 +115,18 @@ LESSON = {
     "ks4_becomes": "Variation caused by genes and the environment, and how new variation arises by mutation.",
     "convention_note": "The height and blood group data on this page are made up for the lesson. They follow real patterns.",
     "figures": [
+        # The lesson's b10-height-bars-touching, drawn by 'frequency-bars-lean' so the
+        # last axis label clears the frame. A new id: apply() ignores a record figure
+        # whose id the lesson already has.
+        {"id": "b10-height-bars-lean", "kind": "diagram", "status": "drawn", "art": "frequency-bars-lean",
+         "title": "A histogram of student heights, with every bar touching the next",
+         "desc": "A histogram of the heights of sixty students. Seven bars stand side by side "
+                 "with no gaps. The axis along the bottom is height in centimetres. It is marked "
+                 "every 5 cm, from 145 up to 180. The bars count 3, 7, 13, 16, 12, 6 and 3 students. "
+                 "The tallest bar is in the middle.",
+         "caption": "Heights of sixty students, in 5 cm ranges.",
+         "data": {"bins": _CHARS[0]["bins"], "x_label": "height", "x_unit": "cm",
+                  "y_label": "number of students", "touching": True}},
         {"id": "b10-blood-group-bars", "kind": "diagram", "status": "drawn", "art": "frequency-bars",
          "title": "A bar chart of blood groups, with gaps between the bars",
          "desc": "A bar chart of the blood groups of sixty students. Four separate bars, with a gap "
@@ -124,7 +138,7 @@ LESSON = {
                   "touching": False, "x_label": "blood group", "y_label": "number of students"}},
     ],
     "figure_caption": {
-        "b10-height-bars-touching": "Heights of sixty students, in 5 cm ranges.",
+        "b10-height-bars-lean": "Heights of sixty students, in 5 cm ranges.",
         "b10-blood-group-bars": None,
     },
     "ladder_stem": {

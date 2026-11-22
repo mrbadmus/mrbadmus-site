@@ -128,7 +128,7 @@ LESSON = {
         "recall": {
             0: "Having offspring is only half the test. The offspring must be fertile.",
             2: "Looks do not decide a species. A mule looks like both its parents.",
-            3: "Healthy but infertile offspring is the sign of two species.",
+            3: "Where they live does not decide it. The test is fertile offspring.",
         },
         "apply": {
             0: "A name is something people chose. The test is fertile offspring.",

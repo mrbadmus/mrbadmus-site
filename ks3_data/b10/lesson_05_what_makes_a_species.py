@@ -952,23 +952,27 @@ LESSON = {
             #   B  GENE-10 — "they produced offspring, which is the test"
             #   C  GENE-09 applied to the OFFSPRING rather than the parents:
             #      resemblance as the thing that settles it
-            #   D  authored belief: a single result cannot settle a
-            #      classification, so infertility is not evidence
+            #   D  belief that sharing a habitat decides a species.
+            #      ⊕ Second phone walk, 20 Nov 2026: replaces "It cannot be
+            #      decided, as one infertile brood proves nothing either way",
+            #      which was defensible: the page teaches that a clear answer may
+            #      not exist yet, and Rung 4 asks why. Old text kept in
+            #      ks3_data/option_history.json for the restore alias.
             # Lean Wave 2: 15 words or fewer, no dashes, key not the longest.
             "options": [
                 "Yes, they had offspring, so the parents count as one species",
                 "No, the offspring must be fertile for the parents to be one species",
                 "Yes, if the chicks look like both parents, as looks decide the species",
-                "It cannot be decided, as one infertile brood proves nothing either way",
+                "No, they must live in the same place to be one species",
             ],
             "answer": 1,
-            # All three unchanged from Design, and each still answers exactly
-            # the belief its rewritten distractor states — which is the test of
+            # 0 and 2 unchanged from Design, 3 rewritten with its option, and each
+            # still answers exactly the belief its distractor states — which is the test of
             # whether the rewrite changed what the question measures.
             "feedback": {
                 0: "Having offspring is only half the test. The offspring must be fertile.",
                 2: "Looks do not decide a species. A mule looks like both its parents.",
-                3: "Healthy but infertile offspring is the sign of two species.",
+                3: "Where they live does not decide it. The test is fertile offspring.",
             }},
         "apply": {
             "title": "Rung 2 · The one that catches people",

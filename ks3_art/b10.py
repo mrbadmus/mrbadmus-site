@@ -2461,8 +2461,14 @@ def r_species_cases(a, act_id):
 
 # ── the touching-bars frequency chart (b10-01, ⊕ MRB-352) ────────────────
 
-def _frequency_bars(fig):
+def _frequency_bars(fig, edge_clear=None):
     """A frequency chart, drawn with its bars TOUCHING or SEPARATED.
+
+    `edge_clear` (lean pages only, via ART 'frequency-bars-lean'): an edge label
+    is moved in until it clears the figure's left and right edges by this many
+    px. Without it the drawing is exactly what the frozen fixture
+    (ks3_fixtures/variation_continuous_and_discontinuous.py) and the question
+    bank draw, so neither moves.
 
     ⚖️ TOUCHING IS THE SCIENCE (b10-01's own confrontation), not a style
     choice. A continuous variable's classes are ranges that join up, so the
@@ -2548,13 +2554,24 @@ def _frequency_bars(fig):
         for i, ev in enumerate(edges):
             ex = ML + i * bw
             out.append(_line(ex, MT + ph, ex, MT + ph + 6, stroke=_SVG_INK, w=2))
-            out.append(_mono(ex, MT + ph + 21, ev, size=13, anchor="middle",
+            lx = ex
+            if edge_clear is not None:
+                half = len(ev) * 13 * 0.6 / 2.0        # DM Mono: 0.6 em a character
+                lx = min(max(ex, edge_clear + half), W - edge_clear - half)
+            out.append(_mono(lx, MT + ph + 21, ev, size=13, anchor="middle",
                              data_part="edge"))
     out.append(_label(ML + pw / 2.0, H - 12,
                       ("%s / %s" % (x_label, x_unit)) if x_unit else x_label,
                       size=14, fill=_SVG_INK_BODY, weight="700", data_part="x-label"))
     out.append('</svg>')
     return "".join(out)
+
+
+def _frequency_bars_lean(fig):
+    """`_frequency_bars` for a lean page: the last edge label ("180") sat on the
+    figure's right edge (second phone walk, 20 Nov 2026), so it is moved in to
+    clear both edges by 4 px. A new ART key, so the fixture keeps its drawing."""
+    return _frequency_bars(fig, edge_clear=4)
 
 
 # ── ⊕ Lean Wave 2 (Nov 2026): three phone-width figures ──────────────────
@@ -2977,7 +2994,7 @@ def _b10_nucleus_to_base(fig):
     zig += (" C %s,%s %s,%s %s,%s C %s,%s %s,%s 340,%s"
             % (_n(CX + 24), _n(yy + 6), _n(CX + 40), _n(end_y - 2), _n(end_x - 50), _n(end_y - 2),
                _n(end_x), _n(end_y - 2), _n(318), _n(end_y), _n(end_y + 2)))
-    o.append(_path(zig, stroke=_SVG_INK, w=10))
+    o.append(_path(zig, stroke=_SVG_CARD, w=10))      # a gap round the strand, not a colour
     o.append(_path(zig, stroke=_SVG_ACCENT, w=6, data_followed="1", data_panel="3"))
     o.append('</g>')
     o.append(_mono(232, T3 + 64, "proteins", size=13, data_part="label"))
@@ -3002,7 +3019,7 @@ def _b10_nucleus_to_base(fig):
     o.append(_path("M %s,%s H %s M %s,%s H %s" % (_n(g0), _n(ya - 1), _n(g1), _n(g0), _n(yb + 1), _n(g1)),
                    stroke=_SVG_ACCENT, w=8, data_gene="1", data_gene_from=_n(g0), data_gene_to=_n(g1)))
     o.append(_path(" ".join("M %d,%s V %s" % (24 + 22 * i, _n(ya + 3), _n(yb - 3)) for i in range(14)),
-                   stroke=_SVG_INK, w=2.2, data_rungs=14))
+                   stroke=_SVG_ACCENT, w=2.2, data_rungs=14))
     o.append('</g>')
     o.append(_path("M %s,%s v 10 H %s v -10" % (_n(g0), _n(yb + 18), _n(g1)), stroke=_SVG_INK, w=2.5,
                    data_gene="1", data_gene_from=_n(g0), data_gene_to=_n(g1)))
@@ -3023,26 +3040,32 @@ def _b10_nucleus_to_base(fig):
     for y0, y1, part in ((T5 + 54, T5 + 66, "upper"), (T5 + 90, T5 + 96, "bond"),
                          (T5 + 120, T5 + 130, "lower")):
         o.append(_path(" ".join("M %d,%s V %s" % (x, _n(y0), _n(y1)) for x in xs),
-                       stroke=_SVG_INK, w=2.2, data_rung_part=part))
+                       stroke=_SVG_ACCENT, w=2.2, data_rung_part=part))
     for pair, (x, (top, bottom)) in enumerate(zip(xs, [(b[1], b[2]) for b in _NESTED_SCALE_BASES]), 1):
         for y, letter, side in ((T5 + 66, top, "top"), (T5 + 96, bottom, "bottom")):
-            o.append(_rect(x - 20, y, 40, 24, rx=7, fill=_SVG_BAND, stroke=_SVG_INK, w=2,
+            o.append(_rect(x - 20, y, 40, 24, rx=7, fill=_SVG_ACCENT_TINT, stroke=_SVG_ACCENT, w=2,
                            data_base_pair=pair, data_base_side=side, data_base=letter))
-        o.append(_mono(x, T5 + 84, top, size=16, fill=_SVG_INK, weight="700", anchor="middle",
+        o.append(_mono(x, T5 + 84, top, size=16, fill=_SVG_ACCENT_TEXT, weight="700", anchor="middle",
                        data_base_pair=pair, data_base_side="top", data_base=top,
                        data_base_partner=bottom))
-        o.append(_mono(x, T5 + 114, bottom, size=16, fill=_SVG_INK, weight="700", anchor="middle",
+        o.append(_mono(x, T5 + 114, bottom, size=16, fill=_SVG_ACCENT_TEXT, weight="700", anchor="middle",
                        data_base_pair=pair, data_base_side="bottom", data_base=bottom,
                        data_base_partner=top))
 
     # ── the key ──
+    # Everything that is DNA is in one of these two colours, and neither line
+    # calls anything "not DNA" (second phone walk, 20 Nov 2026: the bases, the
+    # rungs and the other 45 chromosomes were drawn in the "not DNA" colour).
+    # The followed molecule, its rungs and its bases are orange in every panel;
+    # the other chromosomes are grey. Proteins are labelled where they are drawn.
     L = T5 + H5 + 26
     o.append(_path("M 12,%s h 26" % _n(L - 5), stroke=_SVG_ACCENT, w=6, data_legend="dna"))
-    o.append(_label(48, L, "DNA: one molecule, in every panel", size=13, weight="700",
+    o.append(_label(48, L, "The one DNA molecule we follow", size=13, weight="700",
                     anchor="start", data_legend="dna"))
-    o.append(_path("M 12,%s h 26" % _n(L + 17), stroke=_SVG_INK, w=6, data_legend="not-dna"))
-    o.append(_label(48, L + 22, "Not DNA, such as proteins", size=13, weight="600",
-                    anchor="start", fill=_SVG_INK_BODY, data_legend="not-dna"))
+    o.append(_path("M 12,%s h 26" % _n(L + 17), stroke=_SVG_INK_FAINT, w=4,
+                   data_legend="other-chromosomes"))
+    o.append(_label(48, L + 22, "Other chromosomes, which are DNA too", size=13, weight="600",
+                    anchor="start", fill=_SVG_INK_BODY, data_legend="other-chromosomes"))
     return _b10_open(fig, L + 32, o)
 
 
@@ -3050,7 +3073,7 @@ def _b10_base_ladder(fig):
     """The bases paired across the two strands, why every rung is the same width,
     and the same ladder twisted into a helix underneath. Phone width.
 
-    data: rungs (pairs of letters), guide_label (optional). A and G are the big
+    data: rungs (pairs of letters), guide_label (optional; None for no words). A and G are the big
     bases and C and T the small ones, drawn to their relative widths; a rung that
     pairs two big or two small bases stops the build, as `_base_pairs` does.
     Box hooks (`data-base`, `data-size`, the tint per base) are `_base_pairs`'s.
@@ -3098,8 +3121,12 @@ def _b10_base_ladder(fig):
     first_cy, last_cy = top + ROW / 2.0, top + (len(rungs) - 1) * ROW + ROW / 2.0
     o += dim(first_cy + 22)
     o += dim(last_cy + 22)
-    o.append(_label(_B10_W / 2.0, bot + 20, d.get("guide_label") or "every rung the same width",
-                    size=13, weight="700", fill=_SVG_ACCENT_TEXT, data_part="guide"))
+    # guide_label None drops the words: the lean page's body line already says
+    # "So every rung is the same width." (second phone walk, 20 Nov 2026).
+    guide = d.get("guide_label", "every rung the same width")
+    if guide:
+        o.append(_label(_B10_W / 2.0, bot + 20, guide,
+                        size=13, weight="700", fill=_SVG_ACCENT_TEXT, data_part="guide"))
 
     # the same ladder, twisted: its diameter is the rung width, by construction
     hy0 = bot + 70
@@ -3172,6 +3199,7 @@ ART = {
     'b10-speciation': _b10_speciation,
     'base-pairs': _base_pairs,
     'frequency-bars': _frequency_bars,
+    'frequency-bars-lean': _frequency_bars_lean,
     'nested-scale': _nested_scale,
     'punnett': _punnett,
 }

@@ -5,7 +5,7 @@ Spec table: docs/lessons/wave2/ks3-when-the-environment-changes-extinction.md.""
 LESSON = {
     "slug": "when-the-environment-changes-extinction",
     "start": {
-        "setup": "Half of a wood is cut down. Wood mice and dormice both live there.",
+        "setup": "Half of a wood is cut down. Brown rats and hazel dormice both live there.",
         "question": "If you had to guess, what helps an animal most when its home changes?",
         "options": [
             ("Breeding fast, eating anything",

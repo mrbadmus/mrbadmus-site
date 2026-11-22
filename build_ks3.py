@@ -4140,6 +4140,42 @@ def _require_slug(entry):
 
 _LEAN_CTX = {}
 
+# A number and its unit never part at a line end (Lean Wave 2 KS3 second walk,
+# 20 Nov 2026: "4" / "g of sulfur", "gives 5" / "N m."). The space between a
+# whole number token and a following unit becomes U+00A0, and so do the spaces
+# inside the number ("10 000") and inside "N m". The character, not "&nbsp;":
+# every text check (lean_check._norm, lean_wordcount, ks3_prose_swap,
+# verify_questions, ks3_parity) reads U+00A0 as whitespace through Python's
+# Unicode `\s` or `str.split()`, and some of them never unescape, so "&nbsp;"
+# would reach them as a word. KS3 lean prose only (the Ctx fmt below);
+# lean_blocks.py and KS4 are untouched.
+_LEAN_UNITS = ("N m", "N/kg", "kJ/g", "km/h", "m/s²", "m/s", "kWh", "kcal", "°C",
+               "cm³", "cm3", "cm²", "m²", "m³", "kJ", "kW", "kN", "kg", "mg", "cm",
+               "mm", "km", "ml", "MJ", "J", "W", "N", "g", "m", "s", "h", "%")
+_LEAN_UNIT_RE = re.compile(
+    r"(?<![\w.,#&])(\d{1,3}(?:[ ,]\d{3})+(?:\.\d+)?|\d+(?:\.\d+)?) ("
+    + "|".join(re.escape(u) for u in _LEAN_UNITS) + r")(?![\w/²³])")
+_LEAN_TAG_RE = re.compile(r"<[^>]*>")
+
+
+def _keep_unit(m):
+    return m.group(1).replace(" ", " ") + " " + m.group(2).replace(" ", " ")
+
+
+def keep_units(s):
+    """Join each number to its unit with U+00A0. Text inside a tag is never touched."""
+    out, last = [], 0
+    for m in _LEAN_TAG_RE.finditer(s):
+        out.append(_LEAN_UNIT_RE.sub(_keep_unit, s[last:m.start()]))
+        out.append(m.group(0))
+        last = m.end()
+    out.append(_LEAN_UNIT_RE.sub(_keep_unit, s[last:]))
+    return "".join(out)
+
+
+def _lean_rich(s):
+    return keep_units(rich(s))
+
 
 def _lean_ctx(lesson):
     return _LEAN_CTX[lesson["slug"]]
@@ -4166,7 +4202,7 @@ def r_lean_start(lesson, block):
             if v.get("term") and v.get("definition")}
     defs.update({k.lower(): v for k, v in (rec.get("word_defs") or {}).items()})   # the record's own wording wins
     _LEAN_CTX[lesson["slug"]] = lean_blocks.Ctx(
-        prefix="lean", fmt=rich, state_attrs=True, part=_lean_figure_part(lesson), defs=defs)
+        prefix="lean", fmt=_lean_rich, state_attrs=True, part=_lean_figure_part(lesson), defs=defs)
     setup = ('<p class="ks3-hook-prompt">%s</p>' % rich(st["setup"])) if st.get("setup") else ""
     buttons = "".join(_option_li(i, o[0], ' aria-pressed="false"' + _was_attr(lesson["slug"] + "#start", i))
                       for i, o in enumerate(st["options"]))

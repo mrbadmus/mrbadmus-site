@@ -4,7 +4,8 @@
 LESSON = {
     "slug": "how-we-worked-out-dna",
     "start": {
-        "setup": None,
+        "setup": "In 1953, a short paper described DNA as a double helix. "
+                 "It had only two names on it.",
         "question": "If you had to guess, was the shape of DNA worked out by one brilliant person, "
                     "or by several teams?",
         "options": [
@@ -103,15 +104,15 @@ LESSON = {
          "title": "How the bases pair across the two strands of DNA, and the same ladder twisted",
          "desc": "Two backbones run down the sides, labelled backbone, with five rungs between them. "
                  "Each rung is one base from the left and one from the right. From the top, the rungs are "
-                 "A with T, T with A and C with G. Then come G with C, and A with T. A and G are drawn wide. C and T are drawn "
+                 "A with T, T with A, C with G. Then come G with C, and A with T. A and G are drawn wide. C and T are drawn "
                  "narrow. A line measures across the first rung and another across the last. They are the "
-                 "same length, labelled every rung the same width. Below, the same ladder is twisted into "
+                 "same length. Below, the same ladder is twisted into "
                  "a double helix. Two dashed lines mark its widest points. A third line measures across "
                  "them, labelled still the same width. A key says A and G are the big bases. "
                  "C and T are the small bases.",
          "caption": "A big base always pairs with a small one.",
          "data": {"rungs": [["A", "T"], ["T", "A"], ["C", "G"], ["G", "C"], ["A", "T"]],
-                  "guide_label": "every rung the same width"}},
+                  "guide_label": None}},   # the body line says it; the drawing does not repeat it
     ],
     # The lesson's own "A note on the credit" (the lesson file's `support` layer) is cut on the
     # lean page: the Giving credit card already says every settled fact in it, and the note's
