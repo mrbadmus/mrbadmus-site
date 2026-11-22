@@ -94,11 +94,11 @@ LESSON = {
     "figures": [
         {"id": "b10-double-helix", "kind": "diagram", "status": "drawn", "art": "b10-double-helix",
          "title": "The double helix of DNA",
-         "desc": "Two strands twist round each other down the page, one orange and one dark. Rungs join "
-                 "the two strands. Four of the widest rungs are labelled with their bases: A with T, "
-                 "C with G, T with A and G with C. Labels say: two strands, twisted together; bases pair "
-                 "across, A with T, C with G. A bracket beside the lower part of the molecule says a gene "
-                 "is one section of the DNA.",
+         "desc": "Two dark strands twist round each other down the page. Rungs join the two strands. "
+                 "Four of the widest rungs carry base letters. They read A with T, C with G, T with A "
+                 "and G with C. Labels say: two strands, twisted together; bases pair across, A with T, "
+                 "C with G. The lower part of the molecule is orange, both strands and rungs. A bracket "
+                 "beside it says a gene is one section of the DNA.",
          "caption": "DNA is two strands twisted into a double helix, joined by pairs of bases.",
          "data": {"pairs": [["A", "T"], ["C", "G"], ["T", "A"], ["G", "C"]]}},
         {"id": "b10-nucleus-to-base", "kind": "diagram", "status": "drawn", "art": "b10-nucleus-to-base",

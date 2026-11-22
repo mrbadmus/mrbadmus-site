@@ -2701,6 +2701,10 @@ def _b10_double_helix(fig):
     """Two strands twisted round each other, joined by base pairs, with a gene bracketed.
 
     data: pairs (list of [left, right] letters for the widest rungs, A-T or C-G only).
+    Both strands are ink. Only the bracketed gene is orange, strands and rungs, so the
+    highlight means "this section is the gene" and nothing else (third walk, 22 Nov 2026:
+    a whole orange strand read as the gene, and the next figure's orange means "the one
+    molecule we follow").
     """
     d = fig.get("data") or {}
     pairs = d.get("pairs") or [("A", "T"), ("C", "G"), ("T", "A"), ("G", "C")]
@@ -2713,6 +2717,7 @@ def _b10_double_helix(fig):
     def xs(y, sign):
         return cx + sign * amp * math.sin(2 * math.pi * (y - y0) / period)
 
+    g0, g1 = y0 + period * 1.25, y1 - 6     # the gene: the bracketed stretch
     o = []
     o.append(_mono(12, 22, "DOUBLE HELIX", size=13, spacing="1.2", data_part="title"))
     # rungs first, so the strands sit over their ends
@@ -2722,7 +2727,9 @@ def _b10_double_helix(fig):
         xa, xb = xs(y, 1), xs(y, -1)
         if abs(xa - xb) < 16:
             continue
-        o.append(_line(xa, y, xb, y, stroke=_SVG_INK_FAINT, w=3, data_part="rung"))
+        in_gene = g0 <= y <= g1
+        o.append(_line(xa, y, xb, y, stroke=_SVG_ACCENT if in_gene else _SVG_INK_FAINT, w=3,
+                       data_part="gene-rung" if in_gene else "rung"))
         if abs(xa - xb) > 84 and pi < len(pairs) and (not lettered or y - lettered[-1] >= 30):
             l, r = pairs[pi]
             pi += 1
@@ -2734,9 +2741,13 @@ def _b10_double_helix(fig):
             o.append(_label(rx_ - 19, y + 5, r, size=13, weight="800", family=_SVG_MONO,
                             data_part="base"))
             lettered.append(y)
-    for sign, paint in ((1, _SVG_ACCENT), (-1, _SVG_INK)):
+    for sign in (1, -1):
         pts = ["%s,%s" % (_n(xs(y0 + t, sign)), _n(y0 + t)) for t in range(0, int(y1 - y0) + 1, 3)]
-        o.append(_path("M " + " L ".join(pts), stroke=paint, w=5, data_part="strand"))
+        o.append(_path("M " + " L ".join(pts), stroke=_SVG_INK, w=5, data_part="strand"))
+    for sign in (1, -1):                  # the gene's stretch of both strands, over the ink
+        ty = [g0] + [y0 + t for t in range(0, int(y1 - y0) + 1, 3) if g0 < y0 + t < g1] + [g1]
+        pts = ["%s,%s" % (_n(xs(y, sign)), _n(y)) for y in ty]
+        o.append(_path("M " + " L ".join(pts), stroke=_SVG_ACCENT, w=5, data_part="gene-strand"))
     # labels on the right, each with a leader to the thing it names
     lx = 176.0
     ys = y0 + period * 0.25          # strand A at its widest, on the right
@@ -2751,7 +2762,6 @@ def _b10_double_helix(fig):
     o.append(_line(lx - 4, yb, max(xs(yb, 1), xs(yb, -1)) + 2, yb, stroke=_SVG_INK_MUTED, w=1.5,
                    data_part="leader"))
     # one gene: a bracketed section of the same molecule
-    g0, g1 = y0 + period * 1.25, y1 - 6
     bx = 160.0
     o.append(_path("M %s,%s H %s V %s H %s" % (_n(bx - 8), _n(g0), _n(bx), _n(g1), _n(bx - 8)),
                    stroke=_SVG_ACCENT_TEXT, w=2.5, data_part="gene"))

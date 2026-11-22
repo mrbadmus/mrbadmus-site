@@ -1090,11 +1090,13 @@ LESSON = {
                 # 12w. Was "That there are two strands" (5w). Two pairs of
                 # bases therefore two strands is the non sequitur; the
                 # correction hands the strand count back to the measured width.
-                "That the phosphates are on the outside, because he measured "
+                "That the backbones are on the outside, because he measured "
                 "whole molecules",
                 # 12w. Was "That the phosphates are on the outside" (7w). The
                 # consequence the belief licenses: that measuring the whole
                 # molecule chemically tells you where its parts sit.
+                # Lean Wave 2 third walk, 22 Nov 2026: "phosphates" became
+                # "backbones", the page's own word; the belief is unchanged.
                 "That A pairs with T and C with G, because the amounts match",
             ],
             "answer": 3,

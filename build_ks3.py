@@ -4149,27 +4149,56 @@ _LEAN_CTX = {}
 # Unicode `\s` or `str.split()`, and some of them never unescape, so "&nbsp;"
 # would reach them as a word. KS3 lean prose only (the Ctx fmt below);
 # lean_blocks.py and KS4 are untouched.
+#
+# Third walk, 22 Nov 2026. (1) The number joins its unit only when the joined
+# token is _LEAN_JOIN_MAX characters or fewer, counting a leading minus ("4 g",
+# "20 N m", "4.5 mm", "−18 °C"). In a narrow reveal-table column "0.45 mm" as
+# one token could not fit, so the browser split the unit itself ("0.45 m" /
+# "m"); breaking at the space is better. The spaces inside a number and inside
+# "N m" stay joined at any length: a number or a unit never splits. (2) A ratio
+# "1 in 4" joins both spaces, under the same cap. (3) After ÷, × or = followed by
+# a number, the space after the operator joins, so a line never ends on an
+# operator. The space before it stays ordinary, so the line breaks before it.
+_LEAN_JOIN_MAX = 6
 _LEAN_UNITS = ("N m", "N/kg", "kJ/g", "km/h", "m/s²", "m/s", "kWh", "kcal", "°C",
                "cm³", "cm3", "cm²", "m²", "m³", "kJ", "kW", "kN", "kg", "mg", "cm",
                "mm", "km", "ml", "MJ", "J", "W", "N", "g", "m", "s", "h", "%")
+_LEAN_NUM = r"(\d{1,3}(?:[ ,]\d{3})+(?:\.\d+)?|\d+(?:\.\d+)?)"
 _LEAN_UNIT_RE = re.compile(
-    r"(?<![\w.,#&])(\d{1,3}(?:[ ,]\d{3})+(?:\.\d+)?|\d+(?:\.\d+)?) ("
+    r"(?<![\w.,#&])([−-]?)(?<![\w.,#&])" + _LEAN_NUM + r" ("
     + "|".join(re.escape(u) for u in _LEAN_UNITS) + r")(?![\w/²³])")
+_LEAN_RATIO_RE = re.compile(r"(?<![\w.,#&])(\d+) in (\d+)(?![\w²³]|[.,]\d)")
+_LEAN_OP_RE = re.compile(r"([÷×=]) (?=[−-]?\d)")
 _LEAN_TAG_RE = re.compile(r"<[^>]*>")
 
 
 def _keep_unit(m):
-    return m.group(1).replace(" ", " ") + " " + m.group(2).replace(" ", " ")
+    sign, num, unit = m.group(1), m.group(2).replace(" ", "\u00a0"), m.group(3).replace(" ", "\u00a0")
+    gap = "\u00a0" if len(sign) + len(num) + 1 + len(unit) <= _LEAN_JOIN_MAX else " "
+    return sign + num + gap + unit
+
+
+def _keep_ratio(m):
+    if len(m.group(0)) > _LEAN_JOIN_MAX:
+        return m.group(0)
+    return m.group(1) + "\u00a0in\u00a0" + m.group(2)
+
+
+def _keep_text(t):
+    t = _LEAN_UNIT_RE.sub(_keep_unit, t)
+    t = _LEAN_RATIO_RE.sub(_keep_ratio, t)
+    return _LEAN_OP_RE.sub("\\1\u00a0", t)
 
 
 def keep_units(s):
-    """Join each number to its unit with U+00A0. Text inside a tag is never touched."""
+    """Join number and unit, "1 in 4", and an operator to the number after it,
+    with U+00A0, under the length cap. Text inside a tag is never touched."""
     out, last = [], 0
     for m in _LEAN_TAG_RE.finditer(s):
-        out.append(_LEAN_UNIT_RE.sub(_keep_unit, s[last:m.start()]))
+        out.append(_keep_text(s[last:m.start()]))
         out.append(m.group(0))
         last = m.end()
-    out.append(_LEAN_UNIT_RE.sub(_keep_unit, s[last:]))
+    out.append(_keep_text(s[last:]))
     return "".join(out)
 
 

@@ -1130,7 +1130,7 @@ LESSON = {
                   "risk factors, and say what the other two would and would "
                   "not fix.",
             "field_label": "Your answer",
-            "placeholder": "The problem I would prioritise is…",
+            "placeholder": "The option I would choose is…",
             "success": [
                 "Identifies which risk factor each option addresses — range, "
                 "fragmentation and genetic variation, or numbers.",

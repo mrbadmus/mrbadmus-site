@@ -38,13 +38,15 @@ LESSON = {
                   "He also bred pigeons, and saw how much breeding could change them."]},
         {"kind": "card", "title": "Natural selection in five steps",
          "body": [{"figure": "b11-selection-steps"},
-                  {"points": ["1 Variation: individuals in a species are different from each other.",
-                              "2 Competition: more are born than can survive. They compete for food, "
+                  # a bulleted list (lean_blocks draws only <ul>), so no typed numbers: the
+                  # figure above numbers the steps, and each line starts with its step's name
+                  {"points": ["Variation: individuals in a species are different from each other.",
+                              "Competition: more are born than can survive. They compete for food, "
                               "space and mates.",
-                              "3 The best adapted survive: individuals with useful features are more "
+                              "The best adapted survive: individuals with useful features are more "
                               "likely to survive.",
-                              "4 They reproduce: the survivors breed and pass on their genes.",
-                              "5 Over many generations, the useful feature becomes common. The species "
+                              "They reproduce: the survivors breed and pass on their genes.",
+                              "Over many generations: the useful feature becomes common. The species "
                               "has changed."]}]},
         {"kind": "card", "title": "The peppered moth",
          "body": ["Peppered moths rest on tree bark in the day. Birds hunt them by sight.",
