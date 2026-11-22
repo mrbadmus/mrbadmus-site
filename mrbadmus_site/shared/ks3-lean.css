@@ -1,15 +1,34 @@
 /* KS3 lean pages only (build_ks3.py links it after shared/lean.css, on a page with a
    lean record). KS4 lean pages never load it, so their stamps never move.
 
-   Reveal tables: wrap at word boundaries and hyphenate a word too long for its
-   column. shared/lean.css says overflow-wrap:anywhere, which at 390 px split
-   "Environmental" mid-word with no hyphen and left a full stop alone at the start
-   of a line (Lean Wave 2 KS3 walk, 19 Nov 2026). KS4 has the same rule in
-   ks4-lesson-batch-lean.css. */
+   Reveal tables keep shared/lean.css's fixed layout (equal columns). Words wrap at
+   word boundaries and a word too long for its column is hyphenated. shared/lean.css
+   says overflow-wrap:anywhere, which at 390 px split "Environmental" mid-word with
+   no hyphen and left a full stop alone at the start of a line (Lean Wave 2 KS3 walk,
+   19 Nov 2026). KS4 has its own rule in ks4-lesson-batch-lean.css.
+
+   Capitalised header words. Chrome never auto-hyphenates a word that starts with a
+   capital letter (it treats it as a name), so "Environmental" and "Discontinuous"
+   still split with no hyphen (second walk, 20 Nov 2026), and so did answers such as
+   "Contain" / "s" and "Touchin" / "g". Giving a header's or a revealed answer's first
+   letter its own ::first-letter box makes Chrome hyphenate the rest of the word
+   ("Environ-" / "mental"), tested in headless Chrome 22 Nov 2026. The rule changes
+   nothing visible. overflow-wrap:break-word stays as the last resort for a word that
+   has no hyphenation point and still cannot fit.
+
+   Two other fixes were tried and dropped (table check over all 57 KS3 lean pages,
+   22 Nov 2026): automatic table layout let answer words widen a column and pushed
+   two pages 15 px past the edge; with answer cells set to break anywhere it
+   squeezed them instead, splitting "Contains" and "Touching" mid-word. */
 html .lean-table thead th,
 html .lean-table tbody th,
 html .lean-table .lean-cell {
   overflow-wrap: break-word;
   -webkit-hyphens: auto;
   hyphens: auto;
+}
+html .lean-table thead th::first-letter,
+html .lean-table tbody th::first-letter,
+html .lean-table .lean-cell-text::first-letter {
+  color: inherit;
 }

@@ -1,46 +1,34 @@
 /* KS3 lean pages only (build_ks3.py links it after shared/lean.css, on a page with a
    lean record). KS4 lean pages never load it, so their stamps never move.
 
-   Reveal tables. shared/lean.css says overflow-wrap:anywhere, which at 390 px split
-   "Environmental" mid-word with no hyphen and left a full stop alone at the start
-   of a line (Lean Wave 2 KS3 walk, 19 Nov 2026). KS4 has its own rule in
-   ks4-lesson-batch-lean.css.
+   Reveal tables keep shared/lean.css's fixed layout (equal columns). Words wrap at
+   word boundaries and a word too long for its column is hyphenated. shared/lean.css
+   says overflow-wrap:anywhere, which at 390 px split "Environmental" mid-word with
+   no hyphen and left a full stop alone at the start of a line (Lean Wave 2 KS3 walk,
+   19 Nov 2026). KS4 has its own rule in ks4-lesson-batch-lean.css.
 
-   Header cells (thead th, tbody th) never split a word. Chrome never auto-hyphenates
-   a capitalised word, so hyphens:auto alone cannot help "Environmental" or
-   "Discontinuous", and overflow-wrap:break-word then split them anywhere
-   ("Environment" / "al", Lean Wave 2 KS3 second walk, 20 Nov 2026). With
-   overflow-wrap:normal a header word stays whole; hyphens:auto still breaks a long
-   lower-case word.
+   Capitalised header words. Chrome never auto-hyphenates a word that starts with a
+   capital letter (it treats it as a name), so "Environmental" and "Discontinuous"
+   still split with no hyphen (second walk, 20 Nov 2026), and so did answers such as
+   "Contain" / "s" and "Touchin" / "g". Giving a header's or a revealed answer's first
+   letter its own ::first-letter box makes Chrome hyphenate the rest of the word
+   ("Environ-" / "mental"), tested in headless Chrome 22 Nov 2026. The rule changes
+   nothing visible. overflow-wrap:break-word stays as the last resort for a word that
+   has no hyphenation point and still cannot fit.
 
-   For a whole word to widen its column the table must use automatic layout:
-   under shared/lean.css's table-layout:fixed a word too long for its cell would
-   spill over the next column. Each column is given an equal share, which is what
-   fixed layout gave it (fixed layout reads only the first row, the header row, whose
-   cells have no width, so lean.css's 27% on tbody th never applied). With every
-   column's share set, revealing a cell's text never reflows the table; a column
-   grows past its share only when its longest word needs it.
-
-   Answer cells (.lean-cell) keep break-word plus hyphens, as before. */
-html .lean-table { table-layout: auto; }
+   Two other fixes were tried and dropped (table check over all 57 KS3 lean pages,
+   22 Nov 2026): automatic table layout let answer words widen a column and pushed
+   two pages 15 px past the edge; with answer cells set to break anywhere it
+   squeezed them instead, splitting "Contains" and "Touching" mid-word. */
 html .lean-table thead th,
-html .lean-table tbody th {
-  overflow-wrap: normal;
-  -webkit-hyphens: auto;
-  hyphens: auto;
-}
+html .lean-table tbody th,
 html .lean-table .lean-cell {
   overflow-wrap: break-word;
   -webkit-hyphens: auto;
   hyphens: auto;
 }
-/* Equal shares, keyed on how many header cells the table has (2, 3 or 4 on KS3). */
-html .lean-table tbody th { width: auto; }
-html .lean-table thead th:first-child:nth-last-child(2),
-html .lean-table thead th:first-child:nth-last-child(2) ~ th { width: 50%; }
-html .lean-table thead th:first-child:nth-last-child(3),
-html .lean-table thead th:first-child:nth-last-child(3) ~ th { width: 33.333%; }
-html .lean-table thead th:first-child:nth-last-child(4),
-html .lean-table thead th:first-child:nth-last-child(4) ~ th { width: 25%; }
-html .lean-table thead th:first-child:nth-last-child(5),
-html .lean-table thead th:first-child:nth-last-child(5) ~ th { width: 20%; }
+html .lean-table thead th::first-letter,
+html .lean-table tbody th::first-letter,
+html .lean-table .lean-cell-text::first-letter {
+  color: inherit;
+}

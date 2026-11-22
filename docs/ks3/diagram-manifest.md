@@ -19,11 +19,11 @@ MRB-103 also flagged an **anatomical/structural diagram gap** (cells, organs) an
 | Status | Figures |
 |---|---|
 | `drafted` | 1 |
-| `drawn` | 98 |
+| `drawn` | 99 |
 | `final` | 1 |
 | `needed` | 3 |
 | `retired` | 6 |
-| **Total** | **109** |
+| **Total** | **110** |
 
 `needed` = declared by a lesson, not yet drawn. A lesson may ship with figures at `needed` — it is not a build blocker — but the need is then counted here rather than invisible.
 
@@ -54,6 +54,7 @@ MRB-103 also flagged an **anatomical/structural diagram gap** (cells, organs) an
 | B10 | `passing-it-on-heredity` | `b10-punnett-pp-cross` | diagram | `drawn` | One of the four squares is pp. The chance of white is 1 in 4. |
 | B10 | `passing-it-on-heredity` | `b10-punnett-pp-pp` | diagram | `drawn` | Two of the four squares are pp, so the chance of white is 1 in 2. |
 | B10 | `variation-continuous-and-discontinuous` | `b10-blood-group-bars` | diagram | `drawn` | Blood groups of sixty students. The bars have gaps, because the groups are separate. |
+| B10 | `variation-continuous-and-discontinuous` | `b10-height-bars-lean` | diagram | `drawn` | Heights of sixty students, in 5 cm ranges. |
 | B10 | `variation-continuous-and-discontinuous` | `b10-height-bars-touching` | diagram | `drawn` | Height, in centimetres, for sixty students. The bars touch — there is no gap between one range and the next. |
 | B10 | `what-makes-a-species` | `b10-speciation` | diagram | `drawn` | Split, change on each side, and the two groups can no longer interbreed. |
 | B11 | `natural-selection` | `b11-moth-barks` | diagram | `drawn` | The same two moths on two kinds of bark. |
