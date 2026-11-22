@@ -40,7 +40,7 @@ LESSON = {
         {"kind": "card", "title": "Melting and boiling points",
          "body": ["Pure elements and compounds melt and boil at specific temperatures.",
                   {"points": [
-                      "Pure water melts at 0 °C and boils at 100 °C.",
+                      "Pure water melts at 0\u00a0°C and boils at 100\u00a0°C.",
                       "A mixture melts and boils over a range of temperatures.",
                   ]},
                   "So melting point and boiling point data can be used to distinguish pure "
@@ -57,10 +57,10 @@ LESSON = {
         {"kind": "card", "title": "Using melting point data",
          "body": ["Compare the melting point you measure with the melting point of the pure "
                   "substance.",
-                  "Pure compound X melts at 122 °C. Two samples are tested.",
+                  "Pure compound X melts at 122\u00a0°C. Two samples are tested.",
                   {"points": [
-                      "Sample A melts at 122 °C. It is pure X.",
-                      "Sample B melts from 115 °C to 119 °C. It melts over a range, so "
+                      "Sample A melts at 122\u00a0°C. It is pure X.",
+                      "Sample B melts from 115\u00a0°C to 119\u00a0°C. It melts over a range, so "
                       "it is impure: a mixture.",
                   ]}]},
         {"kind": "card", "title": "Easy mistakes",
@@ -121,15 +121,15 @@ LESSON = {
                  {"text": "Over a range of temperatures", "correct": False,
                   "reply": "That is how a mixture melts."},
                  {"text": "At a specific temperature", "correct": True},
-                 {"text": "At any temperature above 0 °C", "correct": False,
-                  "reply": "Each pure substance has its own melting point. 0 °C is the "
+                 {"text": "At any temperature above 0\u00a0°C", "correct": False,
+                  "reply": "Each pure substance has its own melting point. 0\u00a0°C is the "
                            "melting point of water."},
              ]},
         ],
         "r2": [
             {"kind": "mcq", "command": "Use", "marks": 2,
-             "prompt": "Pure compound Y melts at 81 °C. Sample P melts at 81 °C. Sample Q "
-                       "melts from 74 °C to 78 °C. Which statement is correct?",
+             "prompt": "Pure compound Y melts at 81\u00a0°C. Sample P melts at 81\u00a0°C. Sample Q "
+                       "melts from 74\u00a0°C to 78\u00a0°C. Which statement is correct?",
              "why": "P melts at the specific melting point of Y, so it is pure Y. Q melts over a "
                     "range, so it is impure.",
              "options": [
@@ -160,22 +160,22 @@ LESSON = {
         ],
         "r3": [
             {"kind": "chain", "command": "Explain", "marks": 3,
-             "prompt": "Pure compound Z melts at 136 °C. A student heats a white solid that is "
-                       "thought to be Z. It starts to melt at 128 °C and has all melted at "
-                       "133 °C. Explain what her results show. Put the links in order.",
-             "links": ["The solid starts to melt at 128 °C and has all melted at 133 °C.",
+             "prompt": "Pure compound Z melts at 136\u00a0°C. A student heats a white solid that is "
+                       "thought to be Z. It starts to melt at 128\u00a0°C and has all melted at "
+                       "133\u00a0°C. Explain what her results show. Put the links in order.",
+             "links": ["The solid starts to melt at 128\u00a0°C and has all melted at 133\u00a0°C.",
                        "So it melts over a range of temperatures, not at one specific temperature.",
                        "So the solid is a mixture: it is not pure Z."],
-             "herrings": [{"text": "The solid melts at 136 °C, so it is pure Z.",
-                           "why": "It melts from 128 °C to 133 °C, never at 136 °C."},
+             "herrings": [{"text": "The solid melts at 136\u00a0°C, so it is pure Z.",
+                           "why": "It melts from 128\u00a0°C to 133\u00a0°C, never at 136\u00a0°C."},
                           {"text": "Melting over a range shows that the solid is pure.",
                            "why": "A pure substance melts at one specific temperature."}]},
             {"kind": "chain", "command": "Explain", "marks": 3,
              "prompt": "A colourless liquid is thought to be pure water. Explain how its boiling "
                        "point shows whether it is pure. Put the links in order.",
              "links": ["Heat the liquid and measure the temperature at which it boils.",
-                       "Compare it with the boiling point of pure water, 100 °C.",
-                       "If it boils at 100 °C it is pure water; if it boils over a range of "
+                       "Compare it with the boiling point of pure water, 100\u00a0°C.",
+                       "If it boils at 100\u00a0°C it is pure water; if it boils over a range of "
                        "temperatures it is a mixture."],
              "herrings": [{"text": "It is colourless, so it must be pure water.",
                            "why": "Many mixtures, such as salt water, are colourless."},
@@ -192,9 +192,9 @@ LESSON = {
                         "with any other substance.",
                         "Distilled water is only water, so it is a pure substance.",
                         "Spring water has minerals dissolved in it, so it is a mixture.",
-                        "Pure water boils at a specific temperature, 100 °C.",
+                        "Pure water boils at a specific temperature, 100\u00a0°C.",
                         "The spring water boils over a range of temperatures, not at exactly "
-                        "100 °C."],
+                        "100\u00a0°C."],
              "reject": ["“Spring water is purer because it is natural.” Natural does not "
                         "mean pure in chemistry.",
                         "“Both are pure, because the labels say so.” The labels use the "

@@ -115,14 +115,14 @@ LESSON = {
         ],
         "r2": [
             {"kind": "mcq", "command": "Identify", "marks": 2,
-             "prompt": "Solid A gives a green flame. Solid B gives a yellow flame. Solid C gives a "
+             "prompt": "Solid X gives a green flame. Solid Y gives a yellow flame. Solid Z gives a "
                        "lilac flame. Identify the metal ion in each solid.",
              "why": "Green is copper, yellow is sodium and lilac is potassium.",
              "options": [
-                 {"text": "A copper, B potassium, C sodium", "correct": False,
+                 {"text": "X copper, Y potassium, Z sodium", "correct": False,
                   "reply": "Yellow is sodium and lilac is potassium."},
-                 {"text": "A copper, B sodium, C potassium", "correct": True},
-                 {"text": "A calcium, B sodium, C lithium", "correct": False,
+                 {"text": "X copper, Y sodium, Z potassium", "correct": True},
+                 {"text": "X calcium, Y sodium, Z lithium", "correct": False,
                   "reply": "Calcium is orange-red and lithium is crimson."},
              ]},
             {"kind": "mcq", "command": "Explain", "marks": 2,
@@ -150,16 +150,17 @@ LESSON = {
                                   "the colour."}]},
             {"kind": "chain", "command": "Identify", "marks": 3,
              "prompt": "A white solid gives a crimson flame. With dilute nitric acid and silver "
-                       "nitrate solution it gives a yellow precipitate. Identify the compound. Put "
+                       "nitrate solution it gives a white precipitate. Identify the compound. Put "
                        "the links in order.",
              "links": ["The flame test identifies the metal ion: a crimson flame is lithium.",
-                       "The silver nitrate test then identifies the negative ion: yellow is "
-                       "iodide.",
-                       "Lithium ions with iodide ions make lithium iodide."],
+                       "The silver nitrate test then identifies the negative ion: white is "
+                       "chloride.",
+                       "Lithium ions with chloride ions make lithium chloride."],
              "herrings": [{"text": "A crimson flame is sodium.",
                            "why": "Sodium gives a yellow flame. Crimson is lithium."},
-                          {"text": "A yellow precipitate is bromide.",
-                           "why": "Bromide gives a cream precipitate. Yellow is iodide."}]},
+                          {"text": "A white precipitate with silver nitrate is sulfate.",
+                           "why": "Sulfate is tested with barium chloride. White with silver "
+                                  "nitrate is chloride."}]},
         ],
         "r4": [
             {"kind": "write", "command": "Describe", "marks": 4,

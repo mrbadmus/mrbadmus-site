@@ -68,8 +68,8 @@ LESSON = {
         {"kind": "reveal", "title": "Which metal ions are in each sample",
          "cols": ["Metal ions present"],
          "rows": [
-             ("Sample X: lines at 589, 610 and 671 nm", "Sodium and lithium"),
-             ("Sample Y: lines at 404 and 766 nm", "Potassium only"),
+             ("Sample X: lines at 589, 610 and 671\u00a0nm", "Sodium and lithium"),
+             ("Sample Y: lines at 404 and 766\u00a0nm", "Potassium only"),
          ]},
         {"kind": "card", "title": "Easy mistakes",
          "body": [{"mistakes": [
@@ -131,17 +131,17 @@ LESSON = {
         ],
         "r2": [
             {"kind": "mcq", "command": "Use", "marks": 2,
-             "prompt": "Reference lines: sodium 589 nm; potassium 404 nm and 766 nm; lithium 610 nm "
-                       "and 671 nm. A sample's spectrum has lines at 404, 589 and 766 nm. Which "
+             "prompt": "Reference lines: sodium 589\u00a0nm; potassium 404\u00a0nm and 766\u00a0nm; lithium 610\u00a0nm "
+                       "and 671\u00a0nm. A sample's spectrum has lines at 404, 589 and 766\u00a0nm. Which "
                        "metal ions are in the sample?",
-             "why": "589 nm matches sodium, and 404 nm and 766 nm match potassium. Lithium's lines "
+             "why": "589\u00a0nm matches sodium, and 404\u00a0nm and 766\u00a0nm match potassium. Lithium's lines "
                     "are missing.",
              "options": [
                  {"text": "Sodium and lithium", "correct": False,
-                  "reply": "There are no lines at 610 nm or 671 nm, so lithium is not there."},
+                  "reply": "There are no lines at 610\u00a0nm or 671\u00a0nm, so lithium is not there."},
                  {"text": "Sodium and potassium", "correct": True},
                  {"text": "Potassium only", "correct": False,
-                  "reply": "The line at 589 nm is sodium, so sodium is there too."},
+                  "reply": "The line at 589\u00a0nm is sodium, so sodium is there too."},
              ]},
             {"kind": "mcq", "command": "Explain", "marks": 2,
              "prompt": "A solution contains sodium ions and potassium ions. Explain why flame "

@@ -28,7 +28,7 @@ _METHOD = [
     "Investigate how paper chromatography can be used to separate and tell the difference between "
     "coloured substances. Calculate Rf values.",
     {"points": [
-        "1. Draw a start line in pencil about 2 cm from the bottom of the chromatography paper.",
+        "1. Draw a start line in pencil about 2\u00a0cm from the bottom of the chromatography paper.",
         "2. Put a small spot of each ink or food colouring on the start line.",
         "3. Stand the paper in a beaker with a little solvent, such as water. The solvent must be "
         "below the start line.",
@@ -114,7 +114,7 @@ LESSON = {
                   "solvent, but a pure compound will produce a single spot in all solvents.",
                   "One spot in one solvent does not prove a substance is pure. Run it in two or "
                   "three different solvents. A single spot in every solvent suggests it is pure."]},
-        {"kind": "card", "title": "Required practical activity 12", "routes": ["CF", "CH"],
+        {"kind": "card", "title": "Required practical 12", "routes": ["CF", "CH"],
          "body": _METHOD},
         {"kind": "card", "title": "Required practical 6", "routes": ["TF", "TH"],
          "body": _METHOD},
@@ -175,7 +175,7 @@ LESSON = {
         "examples": [
             {"tab": "Rf from two distances", "eq": "EQ_RF", "find": "Rf",
              "next": "Now one with two different units.",
-             "head": "A spot moves 3.6 cm from the start line. The solvent front is 8.0 cm from the "
+             "head": "A spot moves 3.6\u00a0cm from the start line. The solvent front is 8.0\u00a0cm from the "
                      "start line. Calculate the Rf value.",
              "steps": [["C", "Convert", "Nothing to convert: both distances are in cm."],
                        ["F", "Formula", "Rf = d₁ ÷ d₂"],
@@ -184,9 +184,9 @@ LESSON = {
                        ["A", "Answer", "Rf = 0.45 (no unit)"]]},
             {"tab": "Convert first", "eq": "EQ_RF", "find": "Rf",
              "next": "Now the triangle the other way.",
-             "head": "A spot moves 27 mm from the start line. The solvent front is 6.0 cm from the "
+             "head": "A spot moves 27\u00a0mm from the start line. The solvent front is 6.0\u00a0cm from the "
                      "start line. Calculate the Rf value.",
-             "steps": [["C", "Convert", "6.0 cm × 10 = 60 mm",
+             "steps": [["C", "Convert", "6.0\u00a0cm × 10 = 60\u00a0mm",
                         "Both distances must be in the same unit."],
                        ["F", "Formula", "Rf = d₁ ÷ d₂"],
                        ["I", "Insert", "Rf = 27 ÷ 60"],
@@ -194,26 +194,26 @@ LESSON = {
                        ["A", "Answer", "Rf = 0.45 (no unit)"]]},
             {"tab": "Distance from Rf", "eq": "EQ_RF", "find": "d₁",
              "next": "Now yours, below.",
-             "head": "A dye has an Rf value of 0.60 in water. The solvent front moves 7.5 cm. "
+             "head": "A dye has an Rf value of 0.60 in water. The solvent front moves 7.5\u00a0cm. "
                      "Calculate how far the dye moves.",
              "steps": [["C", "Convert", "Nothing to convert: the distance is in cm."],
                        ["F", "Formula", "d₁ = Rf × d₂"],
                        ["I", "Insert", "d₁ = 0.60 × 7.5"],
                        ["F", "Fine-tune", "d₁ = 4.5"],
-                       ["A", "Answer", "The dye moves 4.5 cm"]]},
+                       ["A", "Answer", "The dye moves 4.5\u00a0cm"]]},
         ],
         "questions": [
             {"tab": "Question 1", "id": "rf-q1",
-             "head": "A spot moves 2.4 cm from the start line. The solvent front is 6.0 cm from the "
+             "head": "A spot moves 2.4\u00a0cm from the start line. The solvent front is 6.0\u00a0cm from the "
                      "start line. Calculate the Rf value.",
              "close": "Substance over solvent: 2.4 ÷ 6.0 = 0.40.",
              "steps": _q(["Nothing to convert: both are in cm.", "Rf = d₁ ÷ d₂",
                           "Rf = 2.4 ÷ 6.0", "Rf = 0.40", "0.40 (no unit)"])},
             {"tab": "Question 2", "id": "rf-q2",
-             "head": "A spot moves 45 mm from the start line. The solvent front is 9.0 cm from the "
+             "head": "A spot moves 45\u00a0mm from the start line. The solvent front is 9.0\u00a0cm from the "
                      "start line. Calculate the Rf value.",
-             "close": "Same unit first: 9.0 cm = 90 mm. Then 45 ÷ 90 = 0.50.",
-             "steps": _q(["9.0 cm × 10 = 90 mm", "Rf = d₁ ÷ d₂",
+             "close": "Same unit first: 9.0\u00a0cm = 90\u00a0mm. Then 45 ÷ 90 = 0.50.",
+             "steps": _q(["9.0\u00a0cm × 10 = 90\u00a0mm", "Rf = d₁ ÷ d₂",
                           "Rf = 45 ÷ 90", "Rf = 0.50", "0.50 (no unit)"],
                          "same unit first?")},
         ],
@@ -247,10 +247,10 @@ LESSON = {
         ],
         "r2": [
             {"kind": "calc", "command": "Calculate", "marks": 2,
-             "prompt": "A spot moves 4.2 cm from the start line. The solvent front is 6.0 cm from "
+             "prompt": "A spot moves 4.2\u00a0cm from the start line. The solvent front is 6.0\u00a0cm from "
                        "the start line. Calculate the Rf value.",
              "convOptions": ["Nothing to convert: both are in cm", "Convert cm to mm: multiply by 10",
-                             "Convert only 4.2 cm to mm"],
+                             "Convert only 4.2\u00a0cm to mm"],
              "convAnswer": 0, "answer": 0.7, "tol": 0.005, "unit": "no unit",
              "units": ["no unit", "cm", "mm", "cm²"],
              "right": "4.2 ÷ 6.0 = 0.70. An Rf value has no unit.",
@@ -260,16 +260,16 @@ LESSON = {
                        "I · Rf = 4.2 ÷ 6.0", "F · Rf = 0.70",
                        "A · 0.70 (no unit)"]},
             {"kind": "calc", "command": "Calculate", "marks": 2,
-             "prompt": "A spot moves 18 mm from the start line. The solvent front is 6.0 cm from the "
+             "prompt": "A spot moves 18\u00a0mm from the start line. The solvent front is 6.0\u00a0cm from the "
                        "start line. Calculate the Rf value.",
-             "convOptions": ["Nothing to convert", "Convert 6.0 cm to mm: multiply by 10",
-                             "Convert 18 mm to cm: multiply by 10"],
+             "convOptions": ["Nothing to convert", "Convert 6.0\u00a0cm to mm: multiply by 10",
+                             "Convert 18\u00a0mm to cm: multiply by 10"],
              "convAnswer": 1, "answer": 0.3, "tol": 0.005, "unit": "no unit",
              "units": ["no unit", "cm", "mm", "cm²"],
-             "right": "6.0 cm = 60 mm, and 18 ÷ 60 = 0.30.",
-             "wrong": "Put both distances in the same unit first: 6.0 cm = 60 mm. Then Rf = 18 "
+             "right": "6.0\u00a0cm = 60\u00a0mm, and 18 ÷ 60 = 0.30.",
+             "wrong": "Put both distances in the same unit first: 6.0\u00a0cm = 60\u00a0mm. Then Rf = 18 "
                       "÷ 60 = 0.30.",
-             "model": ["C · 6.0 cm × 10 = 60 mm", "F · Rf = d₁ ÷ d₂",
+             "model": ["C · 6.0\u00a0cm × 10 = 60\u00a0mm", "F · Rf = d₁ ÷ d₂",
                        "I · Rf = 18 ÷ 60", "F · Rf = 0.30",
                        "A · 0.30 (no unit)"]},
         ],

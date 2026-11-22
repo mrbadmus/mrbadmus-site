@@ -27,6 +27,15 @@ LOGIC_EDITS = [
      "marks: 1, why: 'Iron(II) hydroxide is green. Iron(III) hydroxide is brown.' }),"),
 ]
 
+# ⊕ 22 Nov 2026 (Chemical analysis pupil walk): at 390 px Rung 2's four-column results table
+# was wider than the card, so the deciding column started off-screen. Drawn again with two-line
+# cells (same D.svg / D.T / D.line helpers, same data, same 19/21 type) so it fits a phone, and
+# "ppt" is written out as "precipitate".
+LOGIC_EDITS += [
+    ("figureSvg: D.table(['Solution', 'Few drops of NaOH', 'Excess NaOH', 'Flame test'], [['P', 'white precipitate', 'dissolves', 'not done'], ['Q', 'green precipitate', 'stays', 'not done'], ['R', 'white precipitate', 'stays', 'orange-red']],\n            { widths: [130, 250, 170, 170], alt: 'Table. P: white precipitate that dissolves in excess. Q: green precipitate that stays. R: white precipitate that stays, and an orange-red flame.' }),",
+     'figureSvg: (function (head, rows, cw, alt) {\n            var rh = 80, x0 = 20, y0 = 20, W = cw.reduce(function (a, b) { return a + b; }, 0) + 40, H = rh * (rows.length + 1) + 40, x = x0;\n            var body = \'<rect x="20" y="20" width="\' + (W - 40) + \'" height="\' + (H - 40) + \'" fill="#FFFDF8" stroke="\' + D.C.stroke + \'" stroke-width="2.5"/>\';\n            var cell = function (cx, cy, t, size, o) { var ls = String(t).split(\'\\n\'); return ls.map(function (s, j) { return D.T(cx, cy + (j - (ls.length - 1) / 2) * (size + 4), s, size, o); }).join(\'\'); };\n            cw.forEach(function (w, i) {\n              if (i) body += D.line(x, y0, x, H - 20, 2, D.C.stroke);\n              body += cell(x + w / 2, y0 + rh / 2 + 7, head[i], 19, { fill: D.C.label });\n              rows.forEach(function (r, k) { body += cell(x + w / 2, y0 + rh * (k + 1) + rh / 2 + 7, r[i], 21, { fill: D.C.stroke, weight: i === 0 ? \'bold\' : \'normal\' }); });\n              x += w;\n            });\n            for (var k = 0; k <= rows.length; k++) body += D.line(x0, y0 + rh * (k + 1), W - 20, y0 + rh * (k + 1), k === 0 ? 3 : 1.5, D.C.stroke);\n            return D.svg(W, H, body, alt);\n          })([\'Solution\', \'A few drops\\nof NaOH\', \'Excess\\nNaOH\', \'Flame\\ntest\'], [[\'P\', \'white\\nprecipitate\', \'dissolves\', \'not done\'], [\'Q\', \'green\\nprecipitate\', \'stays\', \'not done\'], [\'R\', \'white\\nprecipitate\', \'stays\', \'orange-red\']], [96, 140, 120, 120], \'Table. P: white precipitate that dissolves in excess. Q: green precipitate that stays. R: white precipitate that stays, and an orange-red flame.\'),'),
+]
+
 LESSON = {
     "slug": "metal-hydroxides",
     "start": {
@@ -53,7 +62,7 @@ LESSON = {
                   "hydroxides are insoluble, so they form a precipitate.",
                   "Record the colour of the precipitate, not the colour of the solution."]},
         {"kind": "reveal", "title": "Precipitates with sodium hydroxide solution",
-         "cols": ["Precipitate", "Excess sodium hydroxide"],
+         "cols": ["Precipitate", "In excess"],
          "rows": [
              ("Aluminium ions", "White", "The precipitate dissolves"),
              ("Calcium ions", "White", "The precipitate stays"),
@@ -111,7 +120,7 @@ LESSON = {
          "body": ["Use chemical tests to identify the ions in unknown single ionic compounds. This "
                   "is the sodium hydroxide part.",
                   {"points": [
-                      "1. Put about 1 cm³ of the solution in a clean test tube.",
+                      "1. Put about 1\u00a0cm³ of the solution in a clean test tube.",
                       "2. Add dilute sodium hydroxide solution a few drops at a time. Record the "
                       "colour of any precipitate.",
                       "3. Keep adding sodium hydroxide, shaking, until it is in excess. Record "

@@ -419,7 +419,10 @@ def _generic_template(lesson, rec):
     hdr = ['      <header class="ks3-lesson-head">',
            '        <p class="ks3-eyebrow">{{ leanEyebrow }}</p>',
            "        <h1>%s</h1>" % html.escape(title), ROUTE_SWITCH]
-    if rec.get("equations"):
+    # ⊕ 22 Nov 2026 (Chemical analysis pupil walk): AQA publishes an equation sheet for physics only
+    # (8463, and the physics equations of 8464/8465). A chemistry equation such as Rf must be recalled,
+    # so a chemistry page never offers the sheet, even when its record carries an equation.
+    if rec.get("equations") and lesson["subject"] == "physics":
         hdr.append(EQ_SHEET_LINK)
     hdr.append("      </header>")
     chrome = ('<dc-import name="Ks4Chrome" subject="%s" unit="%s" title="%s" rv="{{ railV }}" '

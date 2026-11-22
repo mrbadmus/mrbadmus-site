@@ -17,6 +17,7 @@ from .style import NUM_FONT
 
 PAPER = "#F6F0DE"
 LIQ = "#CFE3EE"
+MILKY = "#DCD8CC"
 K = 0.5523
 
 
@@ -75,7 +76,9 @@ def chromatogram():
     xs = 660
     b.append(arrow(xs, y0, xs, Y(front), INK, 4, 20))
     b.append(arrow(xs, Y(front), xs, y0, INK, 4, 20))
-    b.append(lines(xs - 24, Y(4.0) - 8, ["distance moved by", "solvent = 8.0 cm"], FS, "end", INK, 600, 34))
+    # ⊕ 22 Nov 2026 (pupil walk): at Y(4.0) this label sat on the substance label, level with the top of
+    # the substance arrow, and read as naming it. Up beside the solvent arrow, clear of the 3.6 cm mark.
+    b.append(lines(xs - 24, Y(6.5) - 8, ["distance moved by", "solvent = 8.0 cm"], FS, "end", INK, 600, 34))
     return svg(W, H, "A strip of chromatography paper standing in a shallow band of solvent. A pencil start line is drawn across it, with two lanes labelled A and B. Lane A has three spots: yellow, blue and red, going up the paper. Lane B has one blue spot, level with the blue spot in lane A, 3.6 cm above the start line. A dashed line marks the solvent front, 8.0 cm above the start line. A double-headed arrow shows the distance moved by the blue substance, 3.6 cm, and another shows the distance moved by the solvent, 8.0 cm.", b)
 
 
@@ -87,7 +90,9 @@ def limewater_test():
     top, bot_c = 170, 400
     # liquids first, then the glass over them
     b.append(pathel(_tube_fill(lx, hw, 300, bot_c), "none", 1, "#F0E2B8"))
-    b.append(pathel(_tube_fill(rx, hw, 290, bot_c), "none", 1, "#FFFFFF"))
+    # ⊕ 22 Nov 2026 (pupil walk): white on the #FFFDF8 card read as clear, the very result the page
+    # calls a mistake. Milky: an opaque grey-white, with the white bubbles showing against it.
+    b.append(pathel(_tube_fill(rx, hw, 290, bot_c), "none", 1, MILKY))
     b.append(pathel(_tube(lx, hw, top, bot_c), INK, 4))
     b.append(pathel(_tube(rx, hw, top, bot_c), INK, 4))
     b.append(line(lx - hw, 300, lx + hw, 300, INK, 2.6, "butt"))

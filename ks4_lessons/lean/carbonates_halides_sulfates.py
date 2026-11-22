@@ -36,6 +36,17 @@ LOGIC_EDITS = [
      "removes them as carbon dioxide.'"),
 ]
 
+# ⊕ 22 Nov 2026 (Chemical analysis pupil walk): at 390 px Rung 2's four-column results table
+# was wider than the card, so the deciding column started off-screen. Drawn again with two-line
+# cells (same D.svg / D.T / D.line helpers, same data, same 19/21 type) so it fits a phone, and
+# "ppt" is written out as "precipitate".
+LOGIC_EDITS += [
+    ("figureSvg: D.table(['Solution', 'Acid + limewater', 'HNO₃ then AgNO₃', 'HCl then BaCl₂'], [['P', 'milky', 'fizzes, no ppt', 'fizzes, no ppt'], ['Q', 'stays clear', 'cream ppt', 'no ppt'], ['R', 'stays clear', 'no ppt', 'white ppt']],\n            { widths: [130, 220, 220, 210], alt: 'Table. P: acid and limewater goes milky; with nitric acid and silver nitrate, and with hydrochloric acid and barium chloride, it fizzes but gives no precipitate. Q: limewater stays clear; cream precipitate with silver nitrate; no precipitate with barium chloride. R: limewater stays clear; no precipitate with silver nitrate; white precipitate with barium chloride. ppt means precipitate.' }),",
+     'figureSvg: (function (head, rows, cw, alt) {\n            var rh = 80, x0 = 20, y0 = 20, W = cw.reduce(function (a, b) { return a + b; }, 0) + 40, H = rh * (rows.length + 1) + 40, x = x0;\n            var body = \'<rect x="20" y="20" width="\' + (W - 40) + \'" height="\' + (H - 40) + \'" fill="#FFFDF8" stroke="\' + D.C.stroke + \'" stroke-width="2.5"/>\';\n            var cell = function (cx, cy, t, size, o) { var ls = String(t).split(\'\\n\'); return ls.map(function (s, j) { return D.T(cx, cy + (j - (ls.length - 1) / 2) * (size + 4), s, size, o); }).join(\'\'); };\n            cw.forEach(function (w, i) {\n              if (i) body += D.line(x, y0, x, H - 20, 2, D.C.stroke);\n              body += cell(x + w / 2, y0 + rh / 2 + 7, head[i], 19, { fill: D.C.label });\n              rows.forEach(function (r, k) { body += cell(x + w / 2, y0 + rh * (k + 1) + rh / 2 + 7, r[i], 21, { fill: D.C.stroke, weight: i === 0 ? \'bold\' : \'normal\' }); });\n              x += w;\n            });\n            for (var k = 0; k <= rows.length; k++) body += D.line(x0, y0 + rh * (k + 1), W - 20, y0 + rh * (k + 1), k === 0 ? 3 : 1.5, D.C.stroke);\n            return D.svg(W, H, body, alt);\n          })([\'Solution\', \'Acid +\\nlimewater\', \'HNO₃ then\\nAgNO₃\', \'HCl then\\nBaCl₂\'], [[\'P\', \'milky\', \'fizzes, no\\nprecipitate\', \'fizzes, no\\nprecipitate\'], [\'Q\', \'stays clear\', \'cream\\nprecipitate\', \'no\\nprecipitate\'], [\'R\', \'stays clear\', \'no\\nprecipitate\', \'white\\nprecipitate\']], [96, 130, 130, 130], \'Table. P: acid and limewater goes milky; with nitric acid and silver nitrate, and with hydrochloric acid and barium chloride, it fizzes but gives no precipitate. Q: limewater stays clear; cream precipitate with silver nitrate; no precipitate with barium chloride. R: limewater stays clear; no precipitate with silver nitrate; white precipitate with barium chloride.\'),'),
+    ("figureAlt: 'Results table for solutions P, Q and R; ppt means precipitate',",
+     "figureAlt: 'Results table for solutions P, Q and R',"),
+]
+
 LESSON = {
     "slug": "carbonates-halides-sulfates",
     "start": {
