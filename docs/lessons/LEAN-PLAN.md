@@ -61,6 +61,21 @@ of work.
 - Year 8 KS3: Bio 5 Genetics and evolution · Chem 5 Acids and alkalis · Phys 5 Waves
 - Year 7 KS3: Bio 2 Diet and digestion · Chem 2 Chemical reactions · Phys 2 Electricity and magnetism
 
+**Wave 2 KS3: the order and the lessons (chosen 18 Nov 2026).** Order follows the Rainford
+KS3 scheme of work. Both years run their units in the same weeks, so Year 8 goes first in each pair.
+
+| # | Unit (scheme weeks) | Site lessons |
+|---|---|---|
+| 1 | Y8 Bio 5 Genetics and evolution (13–16, plus 15c More genetic crosses) | B10 all 5; B11 all 4 |
+| 2 | Y7 Bio 2 Diet and digestion (13–16, plus 15c Burning food, 16c Visking tubing) | B3 all 8 |
+| 3 | Y8 Chem 5 Acids and alkalis (17–20, plus 18c Making an indicator, 19c Identify the pH) | C6 lessons 1–6 (catalysts is Y9 Chem 7, Wave 3) |
+| 4 | Y7 Chem 2 Chemical reactions (17–20, plus 19c Investigating exo and endothermic) | C4 1–3; C5 1–3; C7 2–4 (balancing is Y7 Chem 3; displacement and "which reaction" are Y7 Chem 3; mass in a reaction is Y9 Chem 7; energy and changes of state is Y8 Phys 6) |
+| 5 | Y8 Phys 5 Waves (21–24) | P6 all 9; P7 light travels, reflection, refraction, colour and the spectrum, why things look coloured (lenses and the eye are in no Rainford row: Wave 4) |
+| 6 | Y7 Phys 2 Electricity and magnetism (21–24, plus 25c Electromagnets) | P8 all 7; P9 all 3; P10 lessons 1–4 (the DC motor is in no Rainford row: Wave 4) |
+
+Scheme rows with no page of their own are taught inside the nearest lesson and named in its
+curriculum table: selective breeding, acid rain, incomplete combustion, testing for gases, the EM spectrum.
+
 **Wave 3: the rest of the schemes of work, in order**
 - Year 11: Biology Unit 5 Homeostasis and response · Physics Unit 5 Forces · Chemistry Unit 5 Energy changes · Biology Unit 6 Inheritance, variation and evolution
 - Year 10: Chemistry Unit 6 Rates · Physics Unit 2 Electricity · Biology Unit 4 Bioenergetics · Chemistry Unit 7 Organic chemistry

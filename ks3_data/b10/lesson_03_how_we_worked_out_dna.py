@@ -1090,24 +1090,23 @@ LESSON = {
                 # 12w. Was "That there are two strands" (5w). Two pairs of
                 # bases therefore two strands is the non sequitur; the
                 # correction hands the strand count back to the measured width.
-                "That the phosphates are on the outside, because he measured "
+                "That the backbones are on the outside, because he measured "
                 "whole molecules",
                 # 12w. Was "That the phosphates are on the outside" (7w). The
                 # consequence the belief licenses: that measuring the whole
                 # molecule chemically tells you where its parts sit.
-                "That A pairs with T and C pairs with G",
+                # Lean Wave 2 third walk, 22 Nov 2026: "phosphates" became
+                # "backbones", the page's own word; the belief is unchanged.
+                "That A pairs with T and C with G, because the amounts match",
             ],
             "answer": 3,
             # All three unchanged from Design, and each still answers exactly
             # the belief its rewritten distractor states — which is the test of
             # whether the rewrite changed what the question measures.
             "feedback": {
-                0: "That came from the X-ray diffraction pattern. Chargaff "
-                   "worked with chemical amounts, not images.",
-                1: "The number of strands came from the measured width in the "
-                   "diffraction pattern.",
-                2: "That came from Franklin’s work on how much water DNA takes "
-                   "up.",
+                0: "The helix came from Franklin's X-ray pattern. Chargaff measured amounts of bases.",
+                1: "The number of strands came from the X-ray measurements of width.",
+                2: "The backbones being outside came from Franklin's measurements.",
             }},
         # ⚖️ Design's, untouched, and the rung that carries `GENE-05`: option A
         # is the belief word for word, which is why the misconception names
@@ -1116,24 +1115,19 @@ LESSON = {
         # parity falls out of the construct.
         "apply": {
             "title": "Rung 2 · The one that catches people",
-            "q": "What did Watson and Crick actually do in 1953?",
+            "q": "What did Watson and Crick do in 1953 to help us understand DNA?",
+            # Lean Wave 2: 15 words or fewer, no dashes, key not the longest.
             "options": [
-                "They worked out its structure, by building models that fitted "
-                "other people’s measurements",
-                "They discovered DNA",
-                "They proved DNA carries genetic information",
-                "They took the X-ray photographs that revealed the double "
-                "helix",
+                "They worked out its shape by building models to fit others' data",
+                "They discovered DNA by finding it inside cells for the first time",
+                "They proved DNA carries genetic information, using experiments on bacteria",
+                "They took the X-ray photographs that showed DNA is a double helix",
             ],
             "answer": 0,
             "feedback": {
-                1: "DNA was discovered in 1869 by Miescher. It had been known "
-                   "for over eighty years.",
-                2: "Avery, MacLeod and McCarty had shown that in 1944 — which "
-                   "is why the structure was worth chasing.",
-                3: "Those were taken at King’s College London by Franklin and "
-                   "Gosling. Watson and Crick did no experiments on DNA at "
-                   "all.",
+                1: "DNA was found in 1869, by Friedrich Miescher.",
+                2: "Avery's team showed that in 1944, before the model was built.",
+                3: "Franklin and Gosling took the X-ray images at King's College London.",
             }},
         # ⚖️ Criterion 5 is the rung's whole point: it asks WHY equal amounts of
         # A and T imply pairing, which is the one step in the lesson that is an

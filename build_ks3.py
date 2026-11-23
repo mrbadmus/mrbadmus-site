@@ -201,6 +201,9 @@ VERSIONED_ASSETS = ("tokens.css", "styles.css", "nav.css", "ks3.css", "ks3.js",
                      # ⊕ lean pilot (Nov 2026) — loaded ONLY by pages that carry a
                      # lean record, so no other page's bytes change.
                      "lean.css", "lean.js",
+                     # ⊕ Lean Wave 2 KS3 (19 Nov 2026): KS3-only lean overrides,
+                     # so a KS3 fix never restamps the KS4 lean pages.
+                     "ks3-lean.css",
                      "class-entry.js", "mrbadmus.v2.js",
                      # ⊕ Front door (12 Oct 2026) — the one map of who goes where;
                      # class-entry.js asks it. A stale copy would route a person
@@ -4137,6 +4140,71 @@ def _require_slug(entry):
 
 _LEAN_CTX = {}
 
+# A number and its unit never part at a line end (Lean Wave 2 KS3 second walk,
+# 20 Nov 2026: "4" / "g of sulfur", "gives 5" / "N m."). The space between a
+# whole number token and a following unit becomes U+00A0, and so do the spaces
+# inside the number ("10 000") and inside "N m". The character, not "&nbsp;":
+# every text check (lean_check._norm, lean_wordcount, ks3_prose_swap,
+# verify_questions, ks3_parity) reads U+00A0 as whitespace through Python's
+# Unicode `\s` or `str.split()`, and some of them never unescape, so "&nbsp;"
+# would reach them as a word. KS3 lean prose only (the Ctx fmt below);
+# lean_blocks.py and KS4 are untouched.
+#
+# Third walk, 22 Nov 2026. (1) The number joins its unit only when the joined
+# token is _LEAN_JOIN_MAX characters or fewer, counting a leading minus ("4 g",
+# "20 N m", "4.5 mm", "−18 °C"). In a narrow reveal-table column "0.45 mm" as
+# one token could not fit, so the browser split the unit itself ("0.45 m" /
+# "m"); breaking at the space is better. The spaces inside a number and inside
+# "N m" stay joined at any length: a number or a unit never splits. (2) A ratio
+# "1 in 4" joins both spaces, under the same cap. (3) After ÷, × or = followed by
+# a number, the space after the operator joins, so a line never ends on an
+# operator. The space before it stays ordinary, so the line breaks before it.
+_LEAN_JOIN_MAX = 6
+_LEAN_UNITS = ("N m", "N/kg", "kJ/g", "km/h", "m/s²", "m/s", "kWh", "kcal", "°C",
+               "cm³", "cm3", "cm²", "m²", "m³", "kJ", "kW", "kN", "kg", "mg", "cm",
+               "mm", "km", "ml", "MJ", "J", "W", "N", "g", "m", "s", "h", "%")
+_LEAN_NUM = r"(\d{1,3}(?:[ ,]\d{3})+(?:\.\d+)?|\d+(?:\.\d+)?)"
+_LEAN_UNIT_RE = re.compile(
+    r"(?<![\w.,#&])([−-]?)(?<![\w.,#&])" + _LEAN_NUM + r" ("
+    + "|".join(re.escape(u) for u in _LEAN_UNITS) + r")(?![\w/²³])")
+_LEAN_RATIO_RE = re.compile(r"(?<![\w.,#&])(\d+) in (\d+)(?![\w²³]|[.,]\d)")
+_LEAN_OP_RE = re.compile(r"([÷×=]) (?=[−-]?\d)")
+_LEAN_TAG_RE = re.compile(r"<[^>]*>")
+
+
+def _keep_unit(m):
+    sign, num, unit = m.group(1), m.group(2).replace(" ", "\u00a0"), m.group(3).replace(" ", "\u00a0")
+    gap = "\u00a0" if len(sign) + len(num) + 1 + len(unit) <= _LEAN_JOIN_MAX else " "
+    return sign + num + gap + unit
+
+
+def _keep_ratio(m):
+    if len(m.group(0)) > _LEAN_JOIN_MAX:
+        return m.group(0)
+    return m.group(1) + "\u00a0in\u00a0" + m.group(2)
+
+
+def _keep_text(t):
+    t = _LEAN_UNIT_RE.sub(_keep_unit, t)
+    t = _LEAN_RATIO_RE.sub(_keep_ratio, t)
+    return _LEAN_OP_RE.sub("\\1\u00a0", t)
+
+
+def keep_units(s):
+    """Join number and unit, "1 in 4", and an operator to the number after it,
+    with U+00A0, under the length cap. Text inside a tag is never touched."""
+    out, last = [], 0
+    for m in _LEAN_TAG_RE.finditer(s):
+        out.append(_keep_text(s[last:m.start()]))
+        out.append(m.group(0))
+        last = m.end()
+    out.append(_keep_text(s[last:]))
+    return "".join(out)
+
+
+def _lean_rich(s):
+    return keep_units(rich(s))
+
 
 def _lean_ctx(lesson):
     return _LEAN_CTX[lesson["slug"]]
@@ -4163,7 +4231,7 @@ def r_lean_start(lesson, block):
             if v.get("term") and v.get("definition")}
     defs.update({k.lower(): v for k, v in (rec.get("word_defs") or {}).items()})   # the record's own wording wins
     _LEAN_CTX[lesson["slug"]] = lean_blocks.Ctx(
-        prefix="lean", fmt=rich, state_attrs=True, part=_lean_figure_part(lesson), defs=defs)
+        prefix="lean", fmt=_lean_rich, state_attrs=True, part=_lean_figure_part(lesson), defs=defs)
     setup = ('<p class="ks3-hook-prompt">%s</p>' % rich(st["setup"])) if st.get("setup") else ""
     buttons = "".join(_option_li(i, o[0], ' aria-pressed="false"' + _was_attr(lesson["slug"] + "#start", i))
                       for i, o in enumerate(st["options"]))
@@ -4857,6 +4925,7 @@ def lesson_page(unit, lesson, registry, units_by_code, neighbours=None):
     tail = tutor_mount(disc, "%s — %s" % (unit["title"], lesson["title"]))
     if lesson.get("lean"):
         head_links += '<link rel="stylesheet" href="/shared/lean.css"/>\n'
+        head_links += '<link rel="stylesheet" href="/shared/ks3-lean.css"/>\n'
         tail += '<script src="/shared/lean.js" defer></script>\n'
 
     return shell(lesson["title"], "\n".join(x for x in body if x), trail, disc,

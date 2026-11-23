@@ -201,7 +201,7 @@ GATES = [
          cmd=["python3", "lean_pilot_drive.py"],
          speed="slow",
          watches=["lean_pilot_drive.py", "ks3_browser.py", "lean_blocks.py", "lean_ks4.py",
-                  "shared/lean.css", "shared/lean.js", "ks3_data/lean/**", "ks4_lessons/lean/**",
+                  "shared/lean.css", "shared/lean.js", "shared/ks3-lean.css", "ks3_data/lean/**", "ks4_lessons/lean/**",
                    "ks4_lessons/batch_lean.py", "ks3_art/b1.py", "ks3_art/b4.py", "ks3_art/b5.py", "ks3_art/b7.py", "ks3_art/b8.py", "ks3_art/c1.py", "ks3_art/c2.py", "ks3_art/p1.py", "ks3_art/p2.py", "ks3_art/p3.py", "ks3_art/p4.py", "build_ks3.py", "build_ks4.py",
                   "shared/ks4-lib.js", "shared/ks4-runtime.js", "shared/mrbadmus.v2.js",
                   "mrbadmus_site/ks3/biology/breathing-and-gas-exchange/**",
@@ -2758,8 +2758,7 @@ GATES = [
                   "ks3/biology/health-and-drugs/alcohol-and-smoking.html",
                   "ks3/biology/health-and-drugs/"
                   "what-drugs-do-to-the-body.html",
-                  "ks3/biology/inheritance-and-dna/"
-                  "how-we-worked-out-dna.html",
+                  "ks3/_fixtures/fixture-how-we-worked-out-dna.html",   # ⊕ 19 Nov 2026: was the real B10 page (fixture)
                   "student/class-fixture.html",
                   "teacher_fixtures/class-detail-fixture.html",
                   "leaderboard.html",

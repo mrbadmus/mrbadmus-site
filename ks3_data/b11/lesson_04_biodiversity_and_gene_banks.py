@@ -913,30 +913,24 @@ LESSON = {
             #   D  EVOL-07 — the fewest SPECIES, and therefore the answer a
             #      student who reads biodiversity as a species count must give
             "options": [
-                "A thousand potato plants, all clones of one variety",
-                "A field with fifty plant species in it",
-                "A field with ten potato varieties",
-                "A field with two species of grass",
+                "A field with a thousand clones of one potato variety",
+                "A field with fifty different plant species growing in it together",
+                "A field with ten potato varieties, a hundred plants of each",
+                "A field with two species of wild grass",
             ],
             "answer": 0,
             # Design's three corrections, byte-identical. D's is the one doing
             # the real work: it CONCEDES that two species is low and then makes
             # the distinction the belief is missing.
             "feedback": {
-                1: "Fifty species is high biodiversity by any measure. The "
-                   "question is looking for the least variety, not the most "
-                   "plants.",
-                2: "Ten varieties is far more variation than one. Not as much "
-                   "as a mixed population, but nothing like the lowest.",
-                3: "Low, but each species is a population of individuals that "
-                   "differ from one another. A clone field has no variation at "
-                   "all.",
+                1: "Fifty species is a lot of variety. Look for the least variation.",
+                2: "Ten varieties have far more variation than one clone variety.",
+                3: "Each grass plant differs a little. Clones have no variation at all.",
             }},
         "apply": {
             "title": "Rung 2 · The one that catches people",
-            "q": "A conservation charity says a seed bank means a plant "
-                 "species can never truly be lost. What is the strongest "
-                 "objection?",
+            "q": "A charity says a seed bank means a plant species can never "
+                 "truly be lost. What is the strongest objection?",
             # ⊕ MRB-177 — THE CORRECT OPTION IS DESIGN'S, UNTOUCHED AT 23 WORDS.
             # The three distractors were 5 / 9 / 10 and are now 18 / 19 / 24,
             # each extended into the same claim-plus-consequence shape the
@@ -953,26 +947,16 @@ LESSON = {
             #   D  extended: nobody knows how to plant one → so a stored species
             #      could never come back at all
             "options": [
-                "Seeds do not survive freezing, so a stored sample is already "
-                "dead by the time anyone needs it",
-                "Gene banks are too expensive to be worth building, so the "
-                "money would always be better spent somewhere else",
-                "Nobody knows how to plant a seed from a gene bank, so a "
-                "species stored in one could never be brought back at all",
-                "The seed can be regrown, but the ecosystem it depended on — "
-                "pollinators, soil fungi, seed dispersers — is not in the bank",
+                "Seeds do not survive freezing, so every stored sample is dead before it is needed",
+                "Gene banks cost too much, so the money is always better spent somewhere else",
+                "Nobody knows how to grow a stored seed, so it can never come back",
+                "Its pollinators and soil fungi are not stored, so it may not survive",
             ],
             "answer": 3,
             "feedback": {
-                0: "Many do, which is what makes seed banks work. Some species "
-                   "have seeds that cannot be dried or frozen, and those are a "
-                   "real and separate problem.",
-                1: "They are cheap relative to what they protect, and the "
-                   "Svalbard example shows they get used. Cost is not the "
-                   "objection that matters.",
-                2: "It has been done, repeatedly and successfully. The "
-                   "difficulty is what the seedling comes back to, not the "
-                   "planting.",
+                0: "Many seeds survive drying and freezing. That is why seed banks work.",
+                1: "Seed banks are cheap for what they protect. Cost is not the main objection.",
+                2: "Stored seeds can be grown. The problem is the habitat they return to.",
             }},
         "explain": {
             # ⚖️ THE RUNG THE BENCH IS BUILT FOR. Criterion 4 is the one that

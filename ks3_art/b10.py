@@ -694,7 +694,7 @@ def _punnett(fig):
                          % (_n(x0), _n(by), _n(by + 12), _n(x1), _n(by)),
                          stroke=_SVG_ACCENT, w=2.4))
         out.append(_label((x0 + x1) / 2, by + 36,
-                          "%d of the four — %s" % (count, word),
+                          "%d of the four: %s" % (count, word),
                           size=15, weight="700", fill=_SVG_ACCENT_TEXT,
                           data_tally=word, data_tally_count=count,
                           data_tally_from=span[0]["n"],
@@ -708,8 +708,13 @@ def _punnett(fig):
     out.append(_mono(24, by + 118,
                      "filled flower = %s  ·  open flower = %s" % (dom, rec),
                      size=13, fill=_SVG_INK_MUTED))
+    # ⊕ Lean Wave 2 examiner fix: "beats" read as "stronger"; the dominance rule
+    # now says what it is, on two lines so it clears the ratio on its left.
+    out.append(_label(W - 30, by + 70, "P is dominant over p.",
+                      size=14, weight="600", anchor="end",
+                      fill=_SVG_INK_BODY))
     out.append(_label(W - 30, by + 88,
-                      "P beats p. A plant is %s only if it gets p from "
+                      "A plant is %s only if it gets p from "
                       "both parents." % rec,
                       size=14, weight="600", anchor="end",
                       fill=_SVG_INK_BODY))
@@ -786,7 +791,7 @@ _NESTED_SCALE_CAPTIONS = (
     (556, "03", "A chromosome", "0.002 mm long",
      ("One DNA molecule, coiled and wound",
       "around proteins. Not a different",
-      "substance from DNA — DNA, packed.")),
+      "substance from DNA. It is DNA, packed.")),
     (852, "04", "A gene", "a section of the same strand",
      ("A length of it, carrying the instruction",
       "for one characteristic. Part of the",
@@ -1142,7 +1147,7 @@ def _nested_scale(fig):
     out.append(_path("M 36,1348 H 824", stroke=_SVG_RULE, w=2))
     out.append(_path("M 44,1376 h 34", stroke=_SVG_ACCENT, w=6,
                      data_legend="dna"))
-    out.append(_label(88, 1382, "DNA — the same molecule in all five panels",
+    out.append(_label(88, 1382, "DNA: the same molecule in all five panels",
                       size=17, fill=_SVG_INK, weight="700", anchor="start",
                       data_legend="dna"))
     out.append(_path("M 470,1376 h 34", stroke=_SVG_INK, w=6,
@@ -2456,8 +2461,14 @@ def r_species_cases(a, act_id):
 
 # ── the touching-bars frequency chart (b10-01, ⊕ MRB-352) ────────────────
 
-def _frequency_bars(fig):
+def _frequency_bars(fig, edge_clear=None):
     """A frequency chart, drawn with its bars TOUCHING or SEPARATED.
+
+    `edge_clear` (lean pages only, via ART 'frequency-bars-lean'): an edge label
+    is moved in until it clears the figure's left and right edges by this many
+    px. Without it the drawing is exactly what the frozen fixture
+    (ks3_fixtures/variation_continuous_and_discontinuous.py) and the question
+    bank draw, so neither moves.
 
     ⚖️ TOUCHING IS THE SCIENCE (b10-01's own confrontation), not a style
     choice. A continuous variable's classes are ranges that join up, so the
@@ -2478,54 +2489,727 @@ def _frequency_bars(fig):
         raise ValueError(
             "frequency-bars figure %r has no bins." % fig.get("id"))
     x_label, x_unit = d.get("x_label"), d.get("x_unit")
-    if not x_unit:
+    touching = bool(d.get("touching"))
+    # ⊕ Lean Wave 2: a chart of separate GROUPS (blood group) has no unit to
+    # give, so `x_unit` may be omitted only when the bars sit apart. A
+    # histogram of measurements still refuses to draw without one.
+    if not x_unit and touching:
         raise ValueError(
             "frequency-bars figure %r has no x_unit. A chart without units "
             "is an accuracy defect, not a style omission." % fig.get("id"))
-    touching = bool(d.get("touching"))
     y_label = d.get("y_label") or "number of students"
 
-    W, H = 760, 380
-    ML, MR, MT, MB = 60, 20, 34, 96
+    # ⊕ Lean Wave 2 phone walk (Nov 2026): 340 wide, so it sits in a 390 px
+    # phone card with no sideways scroll. It was 760 wide and a phone showed two
+    # bars of seven. A histogram of ranges that join up is labelled at the bar
+    # EDGES (145, 150 ... 180), which is how a continuous axis is read and
+    # leaves every label room; separate groups keep one label under each bar.
+    W, H = 340, 300
+    ML, MR, MT, MB = 44, 12, 34, 62
     pw, ph = W - ML - MR, H - MT - MB
     n = len(bins)
-    gap = 0.0 if touching else 12.0
+    gap = 0.0 if touching else 14.0
     bw = (pw - gap * (n - 1)) / float(n)
     top_n = max(b["n"] for b in bins)
     y_max = top_n * 1.2
 
+    edges = None
+    if touching:
+        rng = [re.match(r"^\s*(\d+(?:\.\d+)?)\s*[–-]\s*(\d+(?:\.\d+)?)\s*$", str(b["label"]))
+               for b in bins]
+        if all(rng) and all(rng[i].group(2) == rng[i + 1].group(1) for i in range(n - 1)):
+            edges = [rng[0].group(1)] + [m.group(2) for m in rng]
+    # a label sits under its bar, or centred on its edge: either way it has one bar width
+    slot = bw - 4
+    widest = max(len(x) for x in (edges or [str(b["label"]) for b in bins]))
+    if widest * 13 * 0.6 > slot:
+        raise ValueError(
+            "frequency-bars figure %r: a label %d characters long does not fit a "
+            "%.0f px slot at 340 wide." % (fig.get("id"), widest, slot))
+
     out = [_svg_open(fig, W, H)]
-    out.append(_label(ML, MT - 12, y_label, size=13, fill=_SVG_INK_MUTED,
-                      weight="700", anchor="start"))
+    out.append(_label(ML - 30, MT - 14, y_label, size=13, fill=_SVG_INK_MUTED,
+                      weight="700", anchor="start", data_part="y-label"))
     out.append(_line(ML, MT, ML, MT + ph, stroke=_SVG_INK, w=2))
     out.append(_line(ML, MT + ph, ML + pw, MT + ph, stroke=_SVG_INK, w=2))
     for frac in (0.0, 0.5, 1.0):
         yv = top_n * frac
         yy = MT + ph - (yv / y_max) * ph
         out.append(_line(ML - 6, yy, ML, yy, stroke=_SVG_INK, w=2))
-        out.append(_mono(ML - 12, yy + 4, str(int(round(yv))), size=13,
+        out.append(_mono(ML - 10, yy + 4, str(int(round(yv))), size=13,
                          anchor="end"))
     for i, b in enumerate(bins):
         x = ML + i * (bw + gap)
         h = (b["n"] / y_max) * ph
         y = MT + ph - h
-        out.append(_rect(x, y, bw, h, rx=(0 if touching else 6),
+        out.append(_rect(x, y, bw, h, rx=(0 if touching else 5),
                          fill=_SVG_ACCENT_TINT, stroke=_SVG_INK, w=2,
                          data_bin=b.get("label"), data_n=b["n"]))
-        out.append(_label(x + bw / 2.0, y - 8, str(b["n"]), size=13,
-                          weight="700"))
-        out.append(_label(x + bw / 2.0, MT + ph + 20, b["label"], size=13,
-                          fill=_SVG_INK_MUTED, weight="600"))
-    out.append(_label(ML + pw / 2.0, H - 14, "%s / %s" % (x_label, x_unit),
-                      size=14, fill=_SVG_INK_BODY, weight="700"))
+        out.append(_label(x + bw / 2.0, y - 7, str(b["n"]), size=13,
+                          weight="700", data_part="count"))
+        if edges is None:
+            out.append(_label(x + bw / 2.0, MT + ph + 20, b["label"], size=13,
+                              fill=_SVG_INK_MUTED, weight="600", data_part="bin-label"))
+    if edges is not None:
+        for i, ev in enumerate(edges):
+            ex = ML + i * bw
+            out.append(_line(ex, MT + ph, ex, MT + ph + 6, stroke=_SVG_INK, w=2))
+            lx = ex
+            if edge_clear is not None:
+                half = len(ev) * 13 * 0.6 / 2.0        # DM Mono: 0.6 em a character
+                lx = min(max(ex, edge_clear + half), W - edge_clear - half)
+            out.append(_mono(lx, MT + ph + 21, ev, size=13, anchor="middle",
+                             data_part="edge"))
+    out.append(_label(ML + pw / 2.0, H - 12,
+                      ("%s / %s" % (x_label, x_unit)) if x_unit else x_label,
+                      size=14, fill=_SVG_INK_BODY, weight="700", data_part="x-label"))
     out.append('</svg>')
     return "".join(out)
 
 
+def _frequency_bars_lean(fig):
+    """`_frequency_bars` for a lean page: the last edge label ("180") sat on the
+    figure's right edge (second phone walk, 20 Nov 2026), so it is moved in to
+    clear both edges by 4 px. A new ART key, so the fixture keeps its drawing."""
+    return _frequency_bars(fig, edge_clear=4)
+
+
+# ── ⊕ Lean Wave 2 (Nov 2026): three phone-width figures ──────────────────
+#
+# Drawn at 340 wide, like the Wave 1 biology figures, so they sit on a 390 px
+# phone without a sideways scroll. Every number on them is computed from the
+# figure's data, never typed beside it.
+
+_B10_W = 340
+
+
+def _b10_open(fig, h, body):
+    return (_svg_open(fig, _B10_W, int(math.ceil(h)))
+            + '<g stroke-linecap="round" stroke-linejoin="round">'
+            + "".join(body) + "</g></svg>")
+
+
+def _b10_dom_first(a, b):
+    """A genotype written dominant first: `Pp`, never `pP` (the bench's spelling)."""
+    return (a + b) if a.isupper() or not b.isupper() else (b + a)
+
+
+# The two flower colours are DATA, so they are fixed colours that do not flip with
+# the theme (as the b11 moths and barks are). A purple flower is purple and a white
+# flower is white in the light theme and the dark one; both carry a fixed dark
+# outline, so the white one still has edges on a cream card and stands out on a dark one.
+_B10_PURPLE = "#8A57C4"
+_B10_WHITE = "#FFFFFF"
+_B10_FLOWER_LINE = "#3B342E"
+_B10_FLOWER_CENTRE = "#F2D23C"
+
+
+def _b10_flower(cx, cy, purple, scale=1.0):
+    """One pea flower: purple petals for the dominant colour, white for the recessive."""
+    out = []
+    petal = 15.0 * scale
+    fill = _B10_PURPLE if purple else _B10_WHITE
+    for k in range(5):
+        a = -math.pi / 2 + k * 2 * math.pi / 5
+        out.append(_ellipse(cx + math.cos(a) * petal, cy + math.sin(a) * petal,
+                            petal * 0.72, petal * 0.72, fill=fill,
+                            stroke=_B10_FLOWER_LINE, w=1.6))
+    out.append(_circle(cx, cy, petal * 0.42, fill=_B10_FLOWER_CENTRE,
+                       stroke=_B10_FLOWER_LINE, w=1.4))
+    return ('<g data-part="flower" data-colour="%s">' % ("purple" if purple else "white")
+            + "".join(out) + "</g>")
+
+
+def _b10_punnett_cross(fig):
+    """Any one-gene cross on a 2 x 2 grid, with the probability of one result.
+
+    data: parent1, parent2 (two letters each, P and/or p), dominant, recessive
+    (the two colour words), find ("dominant" or "recessive": the result whose
+    squares are shaded and counted). Each parent's TWO versions head a column
+    or a row, repeated letters included, so all four squares are equally likely.
+    """
+    d = fig.get("data") or {}
+    p1, p2 = d.get("parent1") or "", d.get("parent2") or ""
+    dom, rec = d.get("dominant") or "purple", d.get("recessive") or "white"
+    find = d.get("find") or "recessive"
+    for who, g in (("parent1", p1), ("parent2", p2)):
+        if len(g) != 2 or any(ch not in "Pp" for ch in g):
+            raise ValueError("figure %r: %s must be two of P and p, got %r"
+                             % (fig.get("id"), who, g))
+    if find not in ("dominant", "recessive"):
+        raise ValueError("figure %r: find must be dominant or recessive" % fig.get("id"))
+
+    def pheno(g):
+        return dom if any(ch.isupper() for ch in g) else rec
+
+    cols = sorted(p1, key=lambda c: (c.islower(), c))
+    rows = sorted(p2, key=lambda c: (c.islower(), c))
+    want = dom if find == "dominant" else rec
+    GX, GY, C = 112.0, 92.0, 108.0
+    col_cx = [GX + C * 0.5, GX + C * 1.5]
+    row_cy = [GY + C * 0.5, GY + C * 1.5]
+    o = []
+    # parent 1 across the top, its two versions heading the columns
+    o.append(_mono(GX + C, 22, "PARENT 1: %s, %s" % (p1, pheno(p1)), size=13,
+                   anchor="middle", fill=_SVG_INK_MUTED, data_part="parent", data_key="parent1"))
+    # parent 2 down the side, its two versions heading the rows
+    o.append(_mono(12, 96, "PARENT 2:", size=13, fill=_SVG_INK_MUTED,
+                   data_part="parent", data_key="parent2"))
+    o.append(_mono(12, 114, "%s, %s" % (p2, pheno(p2)), size=13, fill=_SVG_INK_MUTED,
+                   data_part="parent", data_key="parent2"))
+    for j, letter in enumerate(cols):
+        o.append(_punnett_gamete(col_cx[j], 58, letter, 17.0))
+    for i, letter in enumerate(rows):
+        o.append(_punnett_gamete(78, row_cy[i], letter, 17.0))
+    cells = []
+    for i, rl in enumerate(rows):
+        for j, cl in enumerate(cols):
+            g = _b10_dom_first(cl, rl)
+            cells.append((g, pheno(g), col_cx[j], row_cy[i], cl, rl))
+    hits = 0
+    for n, (g, ph, cx, cy, cg, rg) in enumerate(cells, 1):
+        mark = ph == want
+        hits += mark
+        o.append(_rect(cx - C / 2, cy - C / 2, C, C, rx=12,
+                       fill=_SVG_ACCENT_TINT if mark else _SVG_CARD, stroke=_SVG_INK, w=2.5,
+                       data_cell=n, data_genotype=g, data_phenotype=ph,
+                       data_col_gamete=cg, data_row_gamete=rg))
+        o.append(_label(cx, cy - 14, g, size=26, weight="800", family=_SVG_MONO,
+                        data_cell_genotype=n))
+        o.append(_b10_flower(cx, cy + 12, ph == dom, scale=0.6))
+        o.append(_label(cx, cy + 46, ph, size=13, weight="700", fill=_SVG_INK_BODY))
+    total = len(cells)
+    k = math.gcd(hits, total) or 1
+    pct = 100.0 * hits / total
+    pct_s = ("%d" % pct) if pct == int(pct) else ("%.1f" % pct)
+    y0 = GY + 2 * C + 34
+    o.append(_label(12, y0, "%s: %d of the %d squares" % (want.capitalize(), hits, total),
+                    size=15, weight="700", anchor="start", data_part="count"))
+    parts = ["%d/%d" % (hits, total)]
+    if k > 1 and total // k > 1:
+        parts.append("%d/%d" % (hits // k, total // k))
+    parts += ["%s%%" % pct_s]
+    if hits:
+        parts.append(("1 in %d" % (total // hits)) if total % hits == 0 else ("%d in %d" % (hits, total)))
+    o.append(_mono(12, y0 + 26, " = ".join(parts), size=14, fill=_SVG_ACCENT_TEXT,
+                   weight="700", data_part="probability"))
+    # no key: every flower is drawn in its own colour and named in words under it
+    return _b10_open(fig, y0 + 38, o)
+
+
+def _b10_double_helix(fig):
+    """Two strands twisted round each other, joined by base pairs, with a gene bracketed.
+
+    data: pairs (list of [left, right] letters for the widest rungs, A-T or C-G only).
+    Both strands are ink. Only the bracketed gene is orange, strands and rungs, so the
+    highlight means "this section is the gene" and nothing else (third walk, 22 Nov 2026:
+    a whole orange strand read as the gene, and the next figure's orange means "the one
+    molecule we follow").
+    """
+    d = fig.get("data") or {}
+    pairs = d.get("pairs") or [("A", "T"), ("C", "G"), ("T", "A"), ("G", "C")]
+    ok = {("A", "T"), ("T", "A"), ("C", "G"), ("G", "C")}
+    for pr in pairs:
+        if tuple(pr) not in ok:
+            raise ValueError("figure %r: %r is not a real base pair" % (fig.get("id"), pr))
+    cx, amp, y0, y1, period = 92.0, 50.0, 46.0, 346.0, 150.0
+
+    def xs(y, sign):
+        return cx + sign * amp * math.sin(2 * math.pi * (y - y0) / period)
+
+    g0, g1 = y0 + period * 1.25, y1 - 6     # the gene: the bracketed stretch
+    o = []
+    o.append(_mono(12, 22, "DOUBLE HELIX", size=13, spacing="1.2", data_part="title"))
+    # rungs first, so the strands sit over their ends
+    rung_ys = [y0 + 12 + 15 * k for k in range(int((y1 - y0 - 12) / 15))]
+    lettered, pi = [], 0
+    for y in rung_ys:
+        xa, xb = xs(y, 1), xs(y, -1)
+        if abs(xa - xb) < 16:
+            continue
+        in_gene = g0 <= y <= g1
+        o.append(_line(xa, y, xb, y, stroke=_SVG_ACCENT if in_gene else _SVG_INK_FAINT, w=3,
+                       data_part="gene-rung" if in_gene else "rung"))
+        if abs(xa - xb) > 84 and pi < len(pairs) and (not lettered or y - lettered[-1] >= 30):
+            l, r = pairs[pi]
+            pi += 1
+            lx, rx_ = min(xa, xb), max(xa, xb)
+            o.append(_rect(lx + 8, y - 9, 22, 18, rx=4, fill=_SVG_CARD, stroke=_SVG_INK, w=1.5))
+            o.append(_label(lx + 19, y + 5, l, size=13, weight="800", family=_SVG_MONO,
+                            data_part="base"))
+            o.append(_rect(rx_ - 30, y - 9, 22, 18, rx=4, fill=_SVG_CARD, stroke=_SVG_INK, w=1.5))
+            o.append(_label(rx_ - 19, y + 5, r, size=13, weight="800", family=_SVG_MONO,
+                            data_part="base"))
+            lettered.append(y)
+    for sign in (1, -1):
+        pts = ["%s,%s" % (_n(xs(y0 + t, sign)), _n(y0 + t)) for t in range(0, int(y1 - y0) + 1, 3)]
+        o.append(_path("M " + " L ".join(pts), stroke=_SVG_INK, w=5, data_part="strand"))
+    for sign in (1, -1):                  # the gene's stretch of both strands, over the ink
+        ty = [g0] + [y0 + t for t in range(0, int(y1 - y0) + 1, 3) if g0 < y0 + t < g1] + [g1]
+        pts = ["%s,%s" % (_n(xs(y, sign)), _n(y)) for y in ty]
+        o.append(_path("M " + " L ".join(pts), stroke=_SVG_ACCENT, w=5, data_part="gene-strand"))
+    # labels on the right, each with a leader to the thing it names
+    lx = 176.0
+    ys = y0 + period * 0.25          # strand A at its widest, on the right
+    o.append(_label(lx, ys - 8, "Two strands,", size=14, anchor="start", data_part="label"))
+    o.append(_label(lx, ys + 10, "twisted together", size=14, anchor="start", data_part="label"))
+    o.append(_line(lx - 4, ys, xs(ys, 1) + 6, ys, stroke=_SVG_INK_MUTED, w=1.5, data_part="leader"))
+    if not lettered:
+        raise ValueError("figure %r: no rung was wide enough to letter" % fig.get("id"))
+    yb = min(lettered, key=lambda y: abs(y - (y0 + period * 0.75)))   # clear of the strand label
+    o.append(_label(lx, yb - 8, "Bases pair across:", size=14, anchor="start", data_part="label"))
+    o.append(_label(lx, yb + 10, "A with T, C with G", size=14, anchor="start", data_part="label"))
+    o.append(_line(lx - 4, yb, max(xs(yb, 1), xs(yb, -1)) + 2, yb, stroke=_SVG_INK_MUTED, w=1.5,
+                   data_part="leader"))
+    # one gene: a bracketed section of the same molecule
+    bx = 160.0
+    o.append(_path("M %s,%s H %s V %s H %s" % (_n(bx - 8), _n(g0), _n(bx), _n(g1), _n(bx - 8)),
+                   stroke=_SVG_ACCENT_TEXT, w=2.5, data_part="gene"))
+    gm = (g0 + g1) / 2
+    o.append(_label(lx, gm - 8, "A gene is one", size=14, anchor="start", fill=_SVG_ACCENT_TEXT,
+                    data_part="label"))
+    o.append(_label(lx, gm + 10, "section of the DNA", size=14, anchor="start",
+                    fill=_SVG_ACCENT_TEXT, data_part="label"))
+    return _b10_open(fig, y1 + 14, o)
+
+
+# The beetles in each half of a panel, as (x, y) inside a 150 x 80 box.
+_B10_BEETLES = ((22, 18), (70, 14), (118, 22), (44, 44), (96, 46), (20, 66), (72, 68), (124, 62))
+
+
+def _b10_beetle(cx, cy, fill, ang=0):
+    legs = []
+    for dx in (-4, 0, 4):
+        legs.append(_line(cx + dx, cy - 4, cx + dx - 2, cy - 9, stroke=_SVG_INK, w=1.4))
+        legs.append(_line(cx + dx, cy + 4, cx + dx - 2, cy + 9, stroke=_SVG_INK, w=1.4))
+    body = ("".join(legs)
+            + _ellipse(cx, cy, 9, 6, fill=fill, stroke=_SVG_INK, w=1.6)
+            + _circle(cx + 11, cy, 3.6, fill=_SVG_INK_BODY, stroke=_SVG_INK, w=1.2))
+    return '<g data-part="beetle" transform="rotate(%s %s %s)">%s</g>' % (_n(ang), _n(cx), _n(cy), body)
+
+
+def _b10_speciation(fig):
+    """One population, split by a barrier, changing on each side, then two species.
+
+    data: stages (four headings), barrier ("mountains"), sides (two condition
+    labels). The change is drawn as beetle shade (pale on one side, dark on the
+    other), and said in words in each heading; no colour carries it alone.
+    """
+    d = fig.get("data") or {}
+    stages = d.get("stages") or []
+    sides = d.get("sides") or []
+    if len(stages) != 4 or len(sides) != 2:
+        raise ValueError("figure %r: speciation needs four stages and two sides" % fig.get("id"))
+    o = []
+    PH, BOX = 132.0, 92.0
+    mid = _B10_W / 2.0
+    for k, head in enumerate(stages):
+        top = 8 + k * PH
+        o.append(_circle(20, top + 12, 11, fill=_SVG_INSET, stroke=_SVG_INK, w=1.6))
+        o.append(_label(20, top + 17, str(k + 1), size=13, weight="800", family=_SVG_MONO))
+        o.append(_label(38, top + 17, head, size=14, weight="700", anchor="start",
+                        data_part="stage", data_key=str(k + 1)))
+        bt = top + 28
+        o.append(_rect(8, bt, _B10_W - 16, BOX, rx=10, fill=_SVG_GROUND, stroke=_SVG_RULE, w=1.5,
+                       data_part="habitat"))
+        if k in (1, 2):
+            # the barrier: a ridge of mountains down the middle
+            for j in range(3):
+                yb = bt + 6 + j * 29
+                o.append(_path("M %s,%s L %s,%s L %s,%s Z"
+                               % (_n(mid - 15), _n(yb + 26), _n(mid), _n(yb), _n(mid + 15), _n(yb + 26)),
+                               fill=_SVG_INSET, stroke=_SVG_INK, w=1.6, data_part="barrier"))
+        if k == 2:
+            o.append(_mono(84, bt + BOX - 6, sides[0], size=13, anchor="middle",
+                           fill=_SVG_ACCENT_TEXT, data_part="side"))
+            o.append(_mono(_B10_W - 84, bt + BOX - 6, sides[1], size=13, anchor="middle",
+                           fill=_SVG_ACCENT_TEXT, data_part="side"))
+        for half in (0, 1):
+            x0 = 14 + half * 172
+            if k in (0, 1):
+                shade = _SVG_BAND
+            else:
+                shade = _SVG_INK_BODY if half == 0 else _SVG_CARD
+            spots = _B10_BEETLES
+            if k == 3:                   # keep the middle clear for the pair that meets
+                spots = [s for s in spots if (s[0] < 80) == (half == 0)]
+            for n, (bx, by) in enumerate(spots):
+                if k in (2, 3) and by > 60:
+                    continue             # leave the bottom row for the label
+                o.append(_b10_beetle(x0 + bx, bt + 6 + by * 0.95, shade, ang=(n * 47) % 60 - 30))
+        if k == 3:
+            # the two kinds meet; any offspring cannot breed
+            o.append(_b10_beetle(mid - 30, bt + 30, _SVG_INK_BODY, ang=0))
+            o.append(_b10_beetle(mid + 24, bt + 30, _SVG_CARD, ang=180))
+            o.append(_line(mid - 9, bt + 46, mid + 9, bt + 64, stroke=_SVG_ACCENT_TEXT, w=3.5))
+            o.append(_line(mid + 9, bt + 46, mid - 9, bt + 64, stroke=_SVG_ACCENT_TEXT, w=3.5))
+            o.append(_mono(mid, bt + BOX - 8, "no fertile offspring", size=13, anchor="middle",
+                           fill=_SVG_ACCENT_TEXT, weight="700", data_part="result"))
+    return _b10_open(fig, 8 + 4 * PH - 4, o)
+
+
+# ── ⊕ Lean Wave 2 phone walk (Nov 2026): two more 340-wide figures ───────
+#
+# The lean pages for b10-02 and b10-03 drew `nested-scale` (860 wide) and
+# `base-pairs` (760 wide), which sat in a sideways scroller on a 390 px phone
+# with their labels cut off. These are the same two drawings laid out for a
+# phone. The wide drawers are left as they were: the frozen classic copies of
+# the two lessons (ks3_fixtures/) still draw them, and the parity rows measure
+# those. Every hook the parity rows read is kept here too.
+
+def _b10_n2b_head(top, num, head, size_text):
+    """A panel heading inside its frame: a numbered badge, the name, the real size."""
+    return [
+        _circle(26, top + 20, 11, fill=_SVG_BAND, stroke=_SVG_INK, w=1.6),
+        _label(26, top + 25, num, size=13, weight="800", family=_SVG_MONO),
+        _label(44, top + 25, head, size=15, weight="800", anchor="start",
+               data_part="panel-title"),
+        _mono(324, top + 25, size_text, size=13, anchor="end", fill=_SVG_ACCENT_TEXT,
+              data_part="panel-size"),
+    ]
+
+
+def _b10_n2b_wedge(src, ring_x, ring_y, ring_r, next_top, ribbon):
+    """The callout from a dashed ring in one panel to the top of the next.
+    Drawn before the frames, so only the part in the gap between them shows."""
+    k = ring_r * 0.7
+    ax, bx, ny = ring_x - k, ring_x + k, ring_y + k
+    data = {"data_zoom_from": src, "data_zoom_to": src + 1}
+    return [
+        _path("M %s,%s L 8,%s L 332,%s L %s,%s Z" % (_n(ax), _n(ny), _n(next_top), _n(next_top),
+                                                     _n(bx), _n(ny)),
+              fill=_SVG_ACCENT_TINT, stroke="none", **data),
+        _path("M %s,%s L 8,%s" % (_n(ax), _n(ny), _n(next_top)), stroke=_SVG_RULE_STRONG,
+              w=1.6, dash="6 5", **data),
+        _path("M %s,%s L 332,%s" % (_n(bx), _n(ny), _n(next_top)), stroke=_SVG_RULE_STRONG,
+              w=1.6, dash="6 5", **data),
+        _path(ribbon, stroke=_SVG_ACCENT, w=5, data_strand="carried", **data),
+    ]
+
+
+def _b10_nucleus_to_base(fig):
+    """One DNA molecule at five magnifications, one frame under another, at phone width.
+
+    Panel 1 a cell, 2 its nucleus with all 46 chromosomes (23 pairs), 3 one
+    chromosome coiled round proteins, 4 the uncoiled strand with one gene
+    bracketed, 5 four base pairs. Each panel is opened out of a dashed ring in
+    the one above it, and the orange strand is the same molecule in all five.
+    The 46 marks use Design's own grid and jitter (`_NESTED_SCALE_*`), moved.
+    """
+    cid = e(fig["id"])
+    T1, H1 = 4, 150
+    G = 34
+    T2, H2 = T1 + H1 + G, 214
+    T3, H3 = T2 + H2 + G, 200
+    T4, H4 = T3 + H3 + G, 156
+    T5, H5 = T4 + H4 + G, 150
+    o = []
+    o.append('<defs>'
+             '<clipPath id="%s-c3"><rect x="8" y="%d" width="324" height="%d" rx="14"/></clipPath>'
+             '<clipPath id="%s-c4"><rect x="8" y="%d" width="324" height="%d" rx="14"/></clipPath>'
+             '<clipPath id="%s-c5"><rect x="8" y="%d" width="324" height="%d" rx="14"/></clipPath>'
+             '</defs>' % (cid, T3, H3, cid, T4, H4, cid, T5, H5))
+
+    # where each panel's ring sits (the thing the next panel magnifies)
+    n_cx, n_cy = 170.0, T1 + 92.0                      # panel 1: the nucleus
+    nuc_cx, nuc_cy = 170.0, T2 + 120.0                 # panel 2: the nucleus, enlarged
+    dx, dy = nuc_cx - 226.0, nuc_cy - 405.0            # Design's grid, moved onto it
+    pick_x = _NESTED_SCALE_COLS[_NESTED_SCALE_PICKED % 5] + dx
+    pick_y = _NESTED_SCALE_ROWS[_NESTED_SCALE_PICKED // 5] + dy
+    CX = 172.0                                         # panel 3: the coil's centre line
+    end_x, end_y = 290.0, T3 + 170.0                   # panel 3: where it unwinds
+    g0, g1 = 118.0, 222.0                              # panel 4: the gene
+    gm = (g0 + g1) / 2.0
+
+    # the four callouts, drawn first so every frame sits on top of them
+    o += _b10_n2b_wedge(1, n_cx, n_cy, 30, T2,
+                        "M %s,%s C 168,%s %s,%s %s,%s" % (_n(n_cx), _n(n_cy + 30), _n(T1 + H1 + 8),
+                                                          _n(pick_x), _n(T2 - 12), _n(pick_x), _n(T2)))
+    o += _b10_n2b_wedge(2, pick_x, pick_y, 25, T3,
+                        "M %s,%s C %s,%s %s,%s %s,%s" % (_n(pick_x), _n(pick_y + 25), _n(pick_x),
+                                                         _n(T2 + H2 + 4), _n(CX), _n(T3 - 16),
+                                                         _n(CX), _n(T3)))
+    o += _b10_n2b_wedge(3, end_x, end_y, 22, T4,
+                        "M %s,%s C %s,%s %s,%s %s,%s" % (_n(end_x + 4), _n(end_y + 22), _n(end_x),
+                                                         _n(T4 - 6), _n(gm + 30), _n(T4 - 12),
+                                                         _n(gm), _n(T4)))
+    o += _b10_n2b_wedge(4, gm, T4 + 82, 26, T5,
+                        "M %s,%s L %s,%s" % (_n(gm), _n(T4 + 108), _n(gm), _n(T5)))
+
+    # ── panel 1 · a cell ──
+    o.append(_rect(8, T1, 324, H1, rx=14, fill=_SVG_CARD, stroke=_SVG_INK, w=2.5, data_frame="1"))
+    o += _b10_n2b_head(T1, "1", "A cell", "0.02 mm across")
+    o.append(_ellipse(n_cx, n_cy, 130, 46, fill=_SVG_INSET, stroke=_SVG_INK, w=2.5))
+    o.append(_circle(n_cx, n_cy, 22, fill=_SVG_BAND, stroke=_SVG_INK, w=2))
+    for (x1, y1, rest) in ((213, 141, "q 5,-5 9,0"), (228, 138, "q 5,5 10,-1"),
+                           (212, 157, "q 6,5 11,0"), (231, 160, "q 5,-5 9,1")):
+        o.append(_path("M %s,%s %s" % (_n(n_cx + (x1 - 226) * 0.75), _n(n_cy + (y1 - 149) * 0.75), rest),
+                       stroke=_SVG_INK_FAINT, w=2))
+    o.append(_path("M %s,%s q 5,6 11,1" % (_n(n_cx - 4.5), _n(n_cy - 2)), stroke=_SVG_ACCENT, w=3,
+                   data_followed="1", data_panel="1"))
+    o.append(_circle(n_cx, n_cy, 30, stroke=_SVG_INK, w=1.6, dash="6 5", data_zoom_ring="2"))
+
+    # ── panel 2 · the nucleus, and all 46 ──
+    o.append(_rect(8, T2, 324, H2, rx=14, fill=_SVG_CARD, stroke=_SVG_INK, w=2.5, data_frame="2"))
+    o += _b10_n2b_head(T2, "2", "The nucleus", "0.006 mm across")
+    o.append(_circle(nuc_cx, nuc_cy, 84, fill=_SVG_BAND, stroke=_SVG_INK, w=2.5))
+    o.append(_circle(nuc_cx, nuc_cy, 78, stroke=_SVG_INK, w=1.4))
+    index, slot = 0, -1
+    for row in _NESTED_SCALE_ROWS:
+        for col in _NESTED_SCALE_COLS:
+            slot += 1
+            if slot in _NESTED_SCALE_SKIP:
+                continue
+            seed = slot * 7 + 3
+            j = []
+            for k in (seed, seed + 1, seed + 2):
+                x = math.sin(k * 12.9898) * 43758.5453
+                j.append(x - math.floor(x))
+            cx = col + dx + (j[0] - 0.5) * 7
+            cy = row + dy + (j[1] - 0.5) * 7
+            angle = (j[2] - 0.5) * 2.2
+            for member in (1, 2):
+                index += 1
+                picked = (slot == _NESTED_SCALE_PICKED and member == 2)
+                half = 13 if picked else 9
+                bow = 6 if picked else 4.5
+                px = cx + (-4.5 if member == 1 else 4.5)
+                py = cy + (-1.5 if member == 1 else 1.5)
+                sx, sy = math.sin(angle), -math.cos(angle)
+                pts = (px - sx * half, py - sy * half, px + sy * bow, py - sx * bow,
+                       px + sx * half, py + sy * half)
+                r = [math.floor(v * 10 + 0.5) / 10.0 for v in pts]
+                hooks = {"data_chromosome": index, "data_pair": slot, "data_member": member}
+                if picked:
+                    hooks["data_followed"] = "1"
+                    hooks["data_panel"] = "2"
+                o.append(_path("M %s,%s Q %s,%s %s,%s" % tuple(_n(v) for v in r),
+                               stroke=_SVG_ACCENT if picked else _SVG_INK_FAINT,
+                               w=4.4 if picked else 2.3, **hooks))
+    o.append(_circle(pick_x, pick_y, 25, stroke=_SVG_INK, w=1.6, dash="6 5", data_zoom_ring="3"))
+
+    # ── panel 3 · one chromosome, coiled round proteins ──
+    o.append(_rect(8, T3, 324, H3, rx=14, fill=_SVG_CARD, stroke=_SVG_INK, w=2.5, data_frame="3"))
+    o += _b10_n2b_head(T3, "3", "A chromosome", "0.002 mm long")
+    o.append('<g clip-path="url(#%s-c3)">' % cid)
+    prot = [(CX + (24 if k % 2 == 0 else -24), T3 + 52 + 20 * k) for k in range(6)]
+    for px, py in prot:
+        o.append(_circle(px, py, 11, fill=_SVG_BAND, stroke=_SVG_INK, w=2, data_part="protein"))
+    zig = "M %s,%s L %s,%s" % (_n(CX), _n(T3), _n(CX), _n(T3 + 42))
+    yy = T3 + 42
+    for k in range(6):
+        side = 40 if k % 2 == 0 else -40
+        zig += " Q %s,%s %s,%s" % (_n(CX + side), _n(yy + 10), _n(CX), _n(yy + 20))
+        yy += 20
+    zig += (" C %s,%s %s,%s %s,%s C %s,%s %s,%s 340,%s"
+            % (_n(CX + 24), _n(yy + 6), _n(CX + 40), _n(end_y - 2), _n(end_x - 50), _n(end_y - 2),
+               _n(end_x), _n(end_y - 2), _n(318), _n(end_y), _n(end_y + 2)))
+    o.append(_path(zig, stroke=_SVG_CARD, w=10))      # a gap round the strand, not a colour
+    o.append(_path(zig, stroke=_SVG_ACCENT, w=6, data_followed="1", data_panel="3"))
+    o.append('</g>')
+    o.append(_mono(232, T3 + 64, "proteins", size=13, data_part="label"))
+    o.append(_line(228, T3 + 60, prot[0][0] + 12, prot[0][1] + 4, stroke=_SVG_INK_MUTED, w=1.4,
+                   data_part="leader"))
+    o.append(_label(232, T3 + 120, "coiled DNA", size=14, weight="700", anchor="start",
+                    fill=_SVG_ACCENT_TEXT, data_part="label"))
+    o.append(_line(228, T3 + 116, CX + 24, T3 + 116, stroke=_SVG_INK_MUTED, w=1.4,
+                   data_part="leader"))
+    o.append(_circle(end_x, end_y, 22, stroke=_SVG_INK, w=1.6, dash="6 5", data_zoom_ring="4"))
+
+    # ── panel 4 · a gene, as a length of the uncoiled strand ──
+    o.append(_rect(8, T4, 324, H4, rx=14, fill=_SVG_CARD, stroke=_SVG_INK, w=2.5, data_frame="4"))
+    o += _b10_n2b_head(T4, "4", "A gene", "a section of the strand")
+    ya, yb = T4 + 64, T4 + 100
+    o.append('<g clip-path="url(#%s-c4)">' % cid)
+    o.append(_rect(g0, ya - 10, g1 - g0, yb - ya + 20, rx=8, fill=_SVG_ACCENT_TINT, stroke="none",
+                   data_gene="1", data_gene_from=_n(g0), data_gene_to=_n(g1)))
+    o.append(_path("M 0,%s H 340" % _n(ya), stroke=_SVG_ACCENT, w=5, data_followed="1",
+                   data_panel="4", data_strand="backbone-upper"))
+    o.append(_path("M 0,%s H 340" % _n(yb), stroke=_SVG_ACCENT, w=5, data_strand="backbone-lower"))
+    o.append(_path("M %s,%s H %s M %s,%s H %s" % (_n(g0), _n(ya - 1), _n(g1), _n(g0), _n(yb + 1), _n(g1)),
+                   stroke=_SVG_ACCENT, w=8, data_gene="1", data_gene_from=_n(g0), data_gene_to=_n(g1)))
+    o.append(_path(" ".join("M %d,%s V %s" % (24 + 22 * i, _n(ya + 3), _n(yb - 3)) for i in range(14)),
+                   stroke=_SVG_ACCENT, w=2.2, data_rungs=14))
+    o.append('</g>')
+    o.append(_path("M %s,%s v 10 H %s v -10" % (_n(g0), _n(yb + 18), _n(g1)), stroke=_SVG_INK, w=2.5,
+                   data_gene="1", data_gene_from=_n(g0), data_gene_to=_n(g1)))
+    o.append(_mono(gm, T4 + 146, "one gene", size=14, anchor="middle", fill=_SVG_INK,
+                   data_gene="1"))
+    o.append(_circle(gm, T4 + 82, 26, stroke=_SVG_INK, w=1.6, dash="6 5", data_zoom_ring="5"))
+
+    # ── panel 5 · the bases ──
+    o.append(_rect(8, T5, 324, H5, rx=14, fill=_SVG_CARD, stroke=_SVG_INK, w=2.5, data_frame="5"))
+    o += _b10_n2b_head(T5, "5", "The bases", "0.0000003 mm apart")
+    o.append('<g clip-path="url(#%s-c5)">' % cid)
+    o.append(_path("M 0,%s H 340" % _n(T5 + 50), stroke=_SVG_ACCENT, w=7, data_followed="1",
+                   data_panel="5", data_strand="backbone-upper"))
+    o.append(_path("M 0,%s H 340" % _n(T5 + 134), stroke=_SVG_ACCENT, w=7,
+                   data_strand="backbone-lower"))
+    o.append('</g>')
+    xs = (74, 138, 202, 266)
+    for y0, y1, part in ((T5 + 54, T5 + 66, "upper"), (T5 + 90, T5 + 96, "bond"),
+                         (T5 + 120, T5 + 130, "lower")):
+        o.append(_path(" ".join("M %d,%s V %s" % (x, _n(y0), _n(y1)) for x in xs),
+                       stroke=_SVG_ACCENT, w=2.2, data_rung_part=part))
+    for pair, (x, (top, bottom)) in enumerate(zip(xs, [(b[1], b[2]) for b in _NESTED_SCALE_BASES]), 1):
+        for y, letter, side in ((T5 + 66, top, "top"), (T5 + 96, bottom, "bottom")):
+            o.append(_rect(x - 20, y, 40, 24, rx=7, fill=_SVG_ACCENT_TINT, stroke=_SVG_ACCENT, w=2,
+                           data_base_pair=pair, data_base_side=side, data_base=letter))
+        o.append(_mono(x, T5 + 84, top, size=16, fill=_SVG_ACCENT_TEXT, weight="700", anchor="middle",
+                       data_base_pair=pair, data_base_side="top", data_base=top,
+                       data_base_partner=bottom))
+        o.append(_mono(x, T5 + 114, bottom, size=16, fill=_SVG_ACCENT_TEXT, weight="700", anchor="middle",
+                       data_base_pair=pair, data_base_side="bottom", data_base=bottom,
+                       data_base_partner=top))
+
+    # ── the key ──
+    # Everything that is DNA is in one of these two colours, and neither line
+    # calls anything "not DNA" (second phone walk, 20 Nov 2026: the bases, the
+    # rungs and the other 45 chromosomes were drawn in the "not DNA" colour).
+    # The followed molecule, its rungs and its bases are orange in every panel;
+    # the other chromosomes are grey. Proteins are labelled where they are drawn.
+    L = T5 + H5 + 26
+    o.append(_path("M 12,%s h 26" % _n(L - 5), stroke=_SVG_ACCENT, w=6, data_legend="dna"))
+    o.append(_label(48, L, "The one DNA molecule we follow", size=13, weight="700",
+                    anchor="start", data_legend="dna"))
+    o.append(_path("M 12,%s h 26" % _n(L + 17), stroke=_SVG_INK_FAINT, w=4,
+                   data_legend="other-chromosomes"))
+    o.append(_label(48, L + 22, "Other chromosomes, which are DNA too", size=13, weight="600",
+                    anchor="start", fill=_SVG_INK_BODY, data_legend="other-chromosomes"))
+    return _b10_open(fig, L + 32, o)
+
+
+def _b10_base_ladder(fig):
+    """The bases paired across the two strands, why every rung is the same width,
+    and the same ladder twisted into a helix underneath. Phone width.
+
+    data: rungs (pairs of letters), guide_label (optional; None for no words). A and G are the big
+    bases and C and T the small ones, drawn to their relative widths; a rung that
+    pairs two big or two small bases stops the build, as `_base_pairs` does.
+    Box hooks (`data-base`, `data-size`, the tint per base) are `_base_pairs`'s.
+    """
+    d = fig.get("data") or {}
+    rungs = d.get("rungs") or []
+    if not rungs:
+        raise ValueError("figure %r has no rungs." % fig.get("id"))
+    BIG, SMALL = 96.0, 62.0
+    SIZE = {"A": BIG, "G": BIG, "C": SMALL, "T": SMALL}
+    WORD = {"A": "big", "G": "big", "C": "small", "T": "small"}
+    TINT = {"A": _SVG_ACCENT_TINT, "G": _SVG_ACCENT_TINT, "C": _SVG_OK_TINT, "T": _SVG_OK_TINT}
+    for left, right in rungs:
+        if left not in SIZE or right not in SIZE:
+            raise ValueError("figure %r: %r is not a pair of A, T, C, G" % (fig.get("id"), (left, right)))
+        if SIZE[left] + SIZE[right] != BIG + SMALL:
+            raise ValueError("figure %r pairs %s with %s, which are both %s"
+                             % (fig.get("id"), left, right, WORD[left]))
+    span, BAR, ROW = BIG + SMALL, 26.0, 56.0
+    x0 = (_B10_W - span) / 2.0                         # 91: the ladder is centred
+    top = 34.0
+    bot = top + len(rungs) * ROW
+    o = []
+    for bx in (x0 - BAR - 10, x0 + span + 10):
+        o.append(_rect(bx, top, BAR, bot - top, rx=12, fill=_SVG_BAND, stroke=_SVG_INK, w=2,
+                       data_part="backbone"))
+        o.append(_mono(bx + BAR / 2.0, top - 12, "backbone", size=13, weight="700",
+                       anchor="middle", data_part="label"))
+    for i, (left, right) in enumerate(rungs):
+        cy = top + i * ROW + ROW / 2.0
+        lw, rw = SIZE[left], SIZE[right]
+        o.append(_rect(x0, cy - 17, lw, 34, rx=9, fill=TINT[left], stroke=_SVG_INK, w=2,
+                       data_base=left, data_size=WORD[left]))
+        o.append(_rect(x0 + lw, cy - 17, rw, 34, rx=9, fill=TINT[right], stroke=_SVG_INK, w=2,
+                       data_base=right, data_size=WORD[right]))
+        o.append(_label(x0 + lw / 2.0, cy + 7, left, size=19, weight="800", family=_SVG_MONO))
+        o.append(_label(x0 + lw + rw / 2.0, cy + 7, right, size=19, weight="800", family=_SVG_MONO))
+        o.append(_line(x0 + lw, cy - 17, x0 + lw, cy + 17, stroke=_SVG_INK_MUTED, w=2, dash="4 3"))
+
+    def dim(y):
+        return [_line(x0, y, x0 + span, y, stroke=_SVG_ACCENT, w=2, data_part="width"),
+                _line(x0, y, x0, y - 7, stroke=_SVG_ACCENT, w=2, data_part="width"),
+                _line(x0 + span, y, x0 + span, y - 7, stroke=_SVG_ACCENT, w=2, data_part="width")]
+
+    first_cy, last_cy = top + ROW / 2.0, top + (len(rungs) - 1) * ROW + ROW / 2.0
+    o += dim(first_cy + 22)
+    o += dim(last_cy + 22)
+    # guide_label None drops the words: the lean page's body line already says
+    # "So every rung is the same width." (second phone walk, 20 Nov 2026).
+    guide = d.get("guide_label", "every rung the same width")
+    if guide:
+        o.append(_label(_B10_W / 2.0, bot + 20, guide,
+                        size=13, weight="700", fill=_SVG_ACCENT_TEXT, data_part="guide"))
+
+    # the same ladder, twisted: its diameter is the rung width, by construction
+    hy0 = bot + 70
+    hy1 = hy0 + 170
+    hx, amp = _B10_W / 2.0, span / 2.0
+    turn = (hy1 - hy0) / 1.5
+    o.append(_label(hx, bot + 52, "The same ladder, twisted", size=14, weight="700",
+                    data_part="label"))
+
+    def runs(phase):
+        n, out, cur, cf = 90, [], [], None
+        for k in range(n + 1):
+            y = hy0 + (hy1 - hy0) * k / float(n)
+            th = 2 * math.pi * (y - hy0) / turn + phase
+            x = hx + amp * math.sin(th)
+            front = math.cos(th) > 0
+            if cf is None:
+                cf = front
+            if front != cf:
+                cur.append((x, y))
+                out.append((cf, cur))
+                cur, cf = [(x, y)], front
+            cur.append((x, y))
+        out.append((cf, cur))
+        return out
+
+    def pd(pts):
+        return "M " + " L ".join("%s,%s" % (_n(round(p[0], 1)), _n(round(p[1], 1))) for p in pts)
+
+    strands = [runs(0.0), runs(math.pi)]
+    for rs in strands:
+        for front, pts in rs:
+            if not front:
+                o.append(_path(pd(pts), stroke=_SVG_INK_MUTED, w=3, data_part="strand-back"))
+    for i in range(16):
+        y = hy0 + (hy1 - hy0) * (i + 0.5) / 16.0
+        th = 2 * math.pi * (y - hy0) / turn
+        a, b = hx + amp * math.sin(th), hx + amp * math.sin(th + math.pi)
+        if abs(a - b) < 26:
+            continue
+        o.append(_line(a, y, b, y, stroke=_SVG_INK_BODY, w=2.2, data_part="rung"))
+    for rs in strands:
+        for front, pts in rs:
+            if front:
+                o.append(_path(pd(pts), stroke=_SVG_CARD, w=8))
+                o.append(_path(pd(pts), stroke=_SVG_INK, w=3.4, data_part="strand-front"))
+    for ex in (hx - amp, hx + amp):
+        o.append(_line(ex, hy0 - 6, ex, hy1 + 16, stroke=_SVG_RULE_STRONG, w=1.6, dash="5 5"))
+    o += dim(hy1 + 16)
+    o.append(_label(hx, hy1 + 38, "still the same width", size=13, weight="700",
+                    fill=_SVG_ACCENT_TEXT, data_part="guide"))
+
+    ky = hy1 + 58
+    o.append(_line(8, ky, _B10_W - 8, ky, stroke=_SVG_RULE_STRONG, w=2))
+    for j, (letters, word, tint, wd) in enumerate((("A and G", "the big bases", _SVG_ACCENT_TINT, 52),
+                                                   ("C and T", "the small bases", _SVG_OK_TINT, 34))):
+        yy = ky + 14 + j * 28
+        o.append(_rect(12, yy, wd, 20, rx=6, fill=tint, stroke=_SVG_INK, w=2, data_part="key"))
+        o.append(_label(76, yy + 15, "%s: %s" % (letters, word), size=13, weight="600",
+                        anchor="start", fill=_SVG_INK_BODY, data_part="key"))
+    return _b10_open(fig, ky + 14 + 28 + 26, o)
+
+
 # ── registrations ────────────────────────────────────────────────────────
 ART = {
+    'b10-base-ladder': _b10_base_ladder,
+    'b10-double-helix': _b10_double_helix,
+    'b10-nucleus-to-base': _b10_nucleus_to_base,
+    'b10-punnett-cross': _b10_punnett_cross,
+    'b10-speciation': _b10_speciation,
     'base-pairs': _base_pairs,
     'frequency-bars': _frequency_bars,
+    'frequency-bars-lean': _frequency_bars_lean,
     'nested-scale': _nested_scale,
     'punnett': _punnett,
 }

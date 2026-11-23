@@ -1058,12 +1058,12 @@ LESSON = {
             #      distractor is the dangerous one
             #   D  authored belief: the doubling happens before fertilisation
             #      rather than the halving happening before it
+            # Lean Wave 2: 15 words or fewer, no dashes, key not the longest.
             "options": [
-                "46 — every cell in the body has the same number",
-                "23 — because half the chromosomes are lost when the sperm is "
-                "made",
-                "92 — the chromosomes double before fertilisation",
-                "23 — one from each pair, so the fertilised egg has 46 again",
+                "46, as every cell in the body has the same number",
+                "23, as each chromosome is cut in half to make the sperm",
+                "92, as the chromosomes double before fertilisation",
+                "23, one from each pair, so the fertilised egg has 46",
             ],
             "answer": 3,
             # Design's three, byte-identical. B's is the strongest correction on
@@ -1071,13 +1071,9 @@ LESSON = {
             # lets the arithmetic refute it — 92, then 184 — rather than simply
             # naming it wrong.
             "feedback": {
-                0: "Then fertilisation would give 92, and 184 in the "
-                   "generation after that. Gametes must carry half.",
-                1: "Right number, wrong reason. Nothing is lost — the "
-                   "chromosomes are shared out between four gametes, each "
-                   "getting a complete single set.",
-                2: "The opposite. The number is halved to make a gamete, so "
-                   "that fusing two of them restores it.",
+                0: "Then a fertilised egg would have 92. Gametes carry half the chromosomes.",
+                1: "Chromosomes are passed on whole. The sperm gets one from each pair.",
+                2: "The number is halved in a gamete, not doubled.",
             }},
         "apply": {
             "title": "Rung 2 · The one that catches people",
@@ -1095,13 +1091,12 @@ LESSON = {
             #      which is the version that survives meeting the 3:1
             #   D  authored belief: an environmental cause for a proportion that
             #      is far too clean to be environmental
+            # Lean Wave 2: 15 words or fewer, no dashes, key not the longest.
             "options": [
-                "A new white version appeared by mutation in the offspring",
-                "The white parents’ characteristics blended and separated "
-                "again",
-                "Something in the soil turned those flowers white",
-                "Both parents were carrying the white version without showing "
-                "it",
+                "A new white version of the gene appeared by mutation in the offspring",
+                "The parents' colours blended together, then separated again in the offspring",
+                "Something in the soil turned a quarter of the flowers white",
+                "Both parents were carrying the white version without showing it",
             ],
             "answer": 3,
             # Design's three, byte-identical. Each answers the belief its option
@@ -1111,15 +1106,9 @@ LESSON = {
             # the giveaway — the ratio itself is the evidence that this is
             # inheritance, which is the bench's whole argument.
             "feedback": {
-                0: "A quarter of the offspring is far too many for that. "
-                   "Mutation is rare; this ratio is what "
-                   "carrying-without-showing predicts.",
-                1: "Nothing blended. The white version was passed on "
-                   "unchanged — that is exactly the point Mendel established.",
-                2: "Flower colour here is set by the versions of the gene the "
-                   "plant received. The proportion — close to a quarter — is "
-                   "the giveaway that this is inheritance and not "
-                   "environment.",
+                0: "A new change is far too rare to explain a quarter. Both parents carried white.",
+                1: "Nothing blended. The white version was passed on unchanged.",
+                2: "One in four is the pattern of two parents carrying a hidden version.",
             }},
         # ⚖️ Criterion 5 is the rung's whole point and it is the flag 13 ruling
         # made assessable: "never lost or recreated — it was carried the whole

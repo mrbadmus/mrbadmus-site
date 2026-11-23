@@ -929,24 +929,19 @@ LESSON = {
             "options": [
                 "Arm length",
                 "Body mass",
-                "Number of brothers and sisters",
+                "Number of petals on a flower",
                 "Length of the leaves on a tree",
             ],
             "answer": 2,
             "feedback": {
-                0: "Any value between the shortest and longest arm is "
-                   "possible, so it is continuous — even though it is "
-                   "measured in whole centimetres for convenience.",
-                1: "Continuous. The scale reads to a decimal place because "
-                   "every value in between genuinely exists.",
-                3: "Continuous, and a good one to survey — leaf length grades "
-                   "smoothly from the smallest to the largest on a single "
-                   "branch.",
+                0: "Arm length can take any value in a range. It is continuous.",
+                1: "Body mass can take any value, such as 45.3 kg. It is continuous.",
+                3: "Leaf length can take any value in a range. It is continuous.",
             }},
         "apply": {
             "title": "Rung 2 · The one that catches people",
-            "q": "Height is continuous. What does that tell you about its "
-                 "cause?",
+            "q": "Height varies continuously. What causes the variation in "
+                 "height?",
             # Design's four, untouched, and the construct is why the gate is
             # quiet: three of them begin "That…" and name a wrong CAUSE, and
             # the correct one refuses the question the stem asks. Same
@@ -957,12 +952,12 @@ LESSON = {
             #   C  the mirror-image error: continuous, therefore genes alone
             #   D  authored belief: genes can only ever produce categories,
             #      so a smooth range rules genes out altogether
+            # Lean Wave 2: 15 words or fewer, no dashes, key not the longest.
             "options": [
-                "That it is caused by the environment rather than by genes",
-                "That it is caused by genes alone",
-                "Nothing on its own — shape and cause are separate questions",
-                "That no genes are involved, since genes give discrete "
-                "categories",
+                "The environment alone, so tall parents never pass height to their children",
+                "Genes alone, as height is passed on from parents",
+                "Many genes and the environment together, as diet affects height too",
+                "No genes at all, since genes only ever give separate groups like blood type",
             ],
             "answer": 2,
             # All three corrections are Design's, byte-identical. Each answers
@@ -970,15 +965,9 @@ LESSON = {
             # that does the lesson's real work: it concedes the genetics and
             # then refuses the inference.
             "feedback": {
-                0: "Height is one of the most strongly inherited "
-                   "characteristics there is. Continuous does not mean "
-                   "environmental.",
-                1: "Also no. Nutrition in childhood affects adult height, "
-                   "which is why average height has risen so much in a "
-                   "century.",
-                3: "One gene tends to give categories. Hundreds of genes each "
-                   "adding a little give a smooth range — which is exactly "
-                   "what height is.",
+                0: "Height is continuous and strongly inherited. Continuous does not mean environmental.",
+                1: "Diet in childhood also affects height. So genes alone is wrong.",
+                3: "Many genes, each adding a little, give a smooth range like height.",
             }},
         "explain": {
             # ⚖️ THE RUNG THE KEY FACT IS WRITTEN FOR. It hands the student

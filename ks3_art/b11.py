@@ -15,6 +15,15 @@ from ks3_art.kit import (
     _SVG_INSET,
     _SVG_MONO,
     _SVG_RULE_STRONG,
+    _SVG_ACCENT_TEXT,
+    _SVG_ACCENT_TINT,
+    _circle,
+    _ellipse,
+    _label,
+    _line,
+    _n,
+    _path,
+    _rect,
     _attr_safe,
     _json_attr,
     _need,
@@ -1377,9 +1386,185 @@ def r_blight_bench(a, act_id):
                "".join(panels), t(a["run_label"]), t(a["reset_label"])))
 
 
+# ── lean Wave 2 (natural-selection): two phone-width figures ─────────────
+#
+#   "b11-moth-barks"       data {"panels": [{"bark": "lichen"|"soot", "label",
+#                                  "moths": [{"tone": "pale"|"dark", "label", "note"}]} ×2],
+#                                "key": str}
+#   "b11-selection-steps"  data {"steps": [{"title", "note", "row"} ×5], "legend": str}
+#       row: one character per place on the strip. P pale moth, D dark moth,
+#            p pale moth eaten, d dark moth eaten, > an arrow (parents to young).
+#
+# Both are 340 wide, so they sit in a phone card without scrolling, and every
+# label is 13px or more. The barks and moths are FIXED colours, outlined, so
+# the camouflage reads the same in the light and the dark theme; only the text
+# outside the drawing takes the theme's ink.
+_B11L_W = 340
+_B11L_LICHEN_BARK = "#E3DDCB"
+_B11L_LICHEN_MOTTLE = "#B9B79C"
+_B11L_SOOT_BARK = "#2B2622"
+_B11L_SOOT_STREAK = "#47413B"
+_B11L_PALE = "#EFE9D9"
+_B11L_DARK = "#3A342F"
+_B11L_LINE_ON_LIGHT = "#6B645A"
+_B11L_LINE_ON_DARK = "#B3AA9C"
+_B11L_EATEN = "#E0533D"
+_B11L_ARROW = "#D9D0C2"
+# the step strips are a lighter soot, so the small dark moths can still be counted
+_B11L_STRIP_BARK = "#6A625A"
+_B11L_STRIP_STREAK = "#5B544D"
+_B11L_STRIP_DARK = "#231E1B"
+# lichen mottle, panel-local (x, y, rx, ry) inside a 324 x 104 panel
+_B11L_MOTTLE = ((30, 22, 18, 10), (76, 84, 14, 8), (150, 18, 16, 9), (176, 88, 20, 9),
+                (296, 24, 17, 10), (298, 86, 15, 8), (20, 70, 9, 6), (160, 56, 8, 6),
+                (284, 58, 9, 6), (124, 92, 10, 6), (214, 14, 10, 6))
+# soot streaks, panel-local (x, width)
+_B11L_STREAKS = ((14, 6), (40, 3), (62, 9), (150, 5), (164, 3), (178, 8), (284, 6), (300, 3),
+                 (312, 5))
+
+
+def _b11l_open(fig, h, body):
+    return (_svg_open(fig, _B11L_W, int(h))
+            + '<g stroke-linecap="round" stroke-linejoin="round">' + "".join(body) + "</g></svg>")
+
+
+# ⊕ phone walk (Nov 2026): a dark moth on sooty bark is outlined in a mid grey, thinly,
+# so it reads as a DARK moth that is hard to see. A pale outline made it a ghost moth.
+_B11L_DARK_ON_SOOT_LINE = "#8A8178"
+
+
+def _b11l_moth(cx, cy, tone, line, scale, dark=_B11L_DARK, w=1.5):
+    if tone not in _B11_MOTH_TONES:
+        raise ValueError("b11 lean figure: moth tone %r (pale or dark only)" % tone)
+    m = _moth(cx, cy, tone, _B11L_PALE if tone == "pale" else dark, line, scale=scale)
+    return m if w == 1.5 else m.replace('stroke-width="1.5"', 'stroke-width="%s"' % _n(w))
+
+
+def _b11l_cross(cx, cy, r=10):
+    return (_line(cx - r, cy - r, cx + r, cy + r, stroke=_B11L_EATEN, w=3.5, data_part="eaten")
+            + _line(cx + r, cy - r, cx - r, cy + r, stroke=_B11L_EATEN, w=3.5, data_part="eaten"))
+
+
+def _b11l_moth_barks(fig):
+    """The same pale moth and dark moth on clean bark and on sooty bark, one panel above the other."""
+    d = fig.get("data") or {}
+    panels = d.get("panels") or []
+    if len(panels) != 2 or sorted(p.get("bark") for p in panels) != sorted(_B11_MOTH_BARKS):
+        raise ValueError("figure %r: b11-moth-barks needs one lichen panel and one soot panel"
+                         % fig.get("id"))
+    for p in panels:
+        if sorted(m.get("tone") for m in p.get("moths") or []) != sorted(_B11_MOTH_TONES):
+            raise ValueError("figure %r: each panel carries the same pale moth and dark moth"
+                             % fig.get("id"))
+        if not p.get("label") or not all(m.get("label") and m.get("note") for m in p["moths"]):
+            raise ValueError("figure %r: every panel and moth needs its label and note" % fig.get("id"))
+    o = []
+    PW, PH, X0 = 324, 104, 8
+    for i, p in enumerate(panels):
+        py = 4 + i * 186
+        lichen = p["bark"] == "lichen"
+        line = _B11L_LINE_ON_LIGHT if lichen else _B11L_LINE_ON_DARK
+        o.append(_label(X0, py + 16, p["label"], size=14, weight="700", anchor="start",
+                        fill=_SVG_INK_BODY, data_part="bark-label", data_key=p["bark"]))
+        o.append(_rect(X0, py + 26, PW, PH, rx=12,
+                       fill=_B11L_LICHEN_BARK if lichen else _B11L_SOOT_BARK,
+                       stroke=_SVG_INK, w=2, data_part="bark", data_key=p["bark"]))
+        if lichen:
+            for bx, by, rx, ry in _B11L_MOTTLE:
+                o.append(_ellipse(X0 + bx, py + 26 + by, rx, ry, fill=_B11L_LICHEN_MOTTLE,
+                                  data_part="lichen"))
+        else:
+            for bx, bw in _B11L_STREAKS:
+                o.append(_rect(X0 + bx, py + 34, bw, PH - 16, rx=2, fill=_B11L_SOOT_STREAK,
+                               data_part="soot"))
+        for j, m in enumerate(sorted(p["moths"], key=lambda x: _B11_MOTH_TONES.index(x["tone"]))):
+            cx = X0 + PW * (0.3 if j == 0 else 0.7)
+            cy = py + 78
+            if not lichen and m["tone"] == "dark":
+                o.append(_b11l_moth(cx, cy, "dark", _B11L_DARK_ON_SOOT_LINE, 0.6, w=1))
+            else:
+                o.append(_b11l_moth(cx, cy, m["tone"], line, 0.6))
+            o.append(_line(cx, cy + 27, cx, py + 136, stroke=_SVG_INK_MUTED, w=1.5, dash="3 3",
+                           data_part="leader"))
+            o.append(_label(cx, py + 152, m["label"], size=14, weight="700", data_part="moth-label",
+                            data_key=m["tone"]))
+            o.append(_label(cx, py + 169, m["note"], size=13, weight="600", fill=_SVG_INK_MUTED,
+                            data_part="moth-note", data_key=m["tone"]))
+    if d.get("key"):
+        o.append(_line(X0, 376, X0 + PW, 376, stroke=_SVG_RULE_STRONG, w=2, data_part="divider"))
+        o.append(_label(X0, 396, d["key"], size=14, weight="600", anchor="start",
+                        fill=_SVG_INK_BODY, data_part="key"))
+        return _b11l_open(fig, 404, o)
+    return _b11l_open(fig, 362, o)
+
+
+def _b11l_selection_steps(fig):
+    """Natural selection in five steps, each a strip of moths on sooty bark."""
+    d = fig.get("data") or {}
+    steps = d.get("steps") or []
+    if len(steps) != 5:
+        raise ValueError("figure %r: b11-selection-steps draws exactly five steps" % fig.get("id"))
+    o = []
+    # ⊕ phone walk: cells 35 wide for moths 0.22 the full size (about 29 across with their
+    # outline), so no two moths touch and the end moths clear the strip edge.
+    X0, SW, SH, CELL = 8, 324, 38, 35
+    for i, s in enumerate(steps):
+        row = s.get("row") or ""
+        if not s.get("title") or not s.get("note") or not row:
+            raise ValueError("figure %r: step %d needs title, note and row" % (fig.get("id"), i + 1))
+        if len(row) > SW // CELL or set(row) - set("PDpd>"):
+            raise ValueError("figure %r: step %d row %r (at most 9 of P D p d >)"
+                             % (fig.get("id"), i + 1, row))
+        y0 = 4 + i * 100
+        o.append(_circle(20, y0 + 14, 12, fill=_SVG_ACCENT_TINT, stroke=_SVG_ACCENT_TEXT, w=2,
+                         data_part="step-number"))
+        o.append(_label(20, y0 + 19, str(i + 1), size=14, weight="700", fill=_SVG_ACCENT_TEXT,
+                        data_part="step-number"))
+        o.append(_label(40, y0 + 19, s["title"], size=15, weight="700", anchor="start",
+                        data_part="step-title", data_key=str(i + 1)))
+        o.append(_label(40, y0 + 37, s["note"], size=14, weight="500", anchor="start",
+                        fill=_SVG_INK_MUTED, data_part="step-note", data_key=str(i + 1)))
+        sy = y0 + 46
+        o.append(_rect(X0, sy, SW, SH, rx=8, fill=_B11L_STRIP_BARK, stroke=_SVG_INK, w=1.5,
+                       data_part="bark"))
+        for bx, bw in _B11L_STREAKS:
+            o.append(_rect(X0 + bx, sy + 4, bw, SH - 8, rx=2, fill=_B11L_STRIP_STREAK, data_part="soot"))
+        x = X0 + (SW - len(row) * CELL) / 2.0
+        cy = sy + SH / 2.0
+        for ch in row:
+            cx = x + CELL / 2.0
+            if ch == ">":
+                o.append(_line(cx - 12, cy, cx + 6, cy, stroke=_B11L_ARROW, w=3, data_part="arrow"))
+                o.append(_path("M %s,%s L %s,%s L %s,%s Z" % (_n(cx + 13), _n(cy), _n(cx + 4), _n(cy - 6),
+                                                             _n(cx + 4), _n(cy + 6)),
+                               fill=_B11L_ARROW, data_part="arrow"))
+            else:
+                if ch in "Pp":
+                    o.append(_b11l_moth(cx, cy + 1, "pale", _B11L_ARROW, 0.22, w=1.2))
+                else:
+                    o.append(_b11l_moth(cx, cy + 1, "dark", _B11L_DARK_ON_SOOT_LINE, 0.22,
+                                        dark=_B11L_STRIP_DARK, w=1))
+                if ch in "pd":
+                    o.append(_b11l_cross(cx, cy, 9))
+            x += CELL
+        if i < 4:
+            o.append(_line(170, y0 + 87, 170, y0 + 93, stroke=_SVG_INK_MUTED, w=2.5, data_part="next"))
+            o.append(_path("M 164,%s L 176,%s L 170,%s Z" % (_n(y0 + 92), _n(y0 + 92), _n(y0 + 99)),
+                           fill=_SVG_INK_MUTED, data_part="next"))
+    legend = d.get("legend")
+    if legend:
+        o.append(_b11l_cross(22, 506, 7))
+        o.append(_label(38, 511, legend, size=14, weight="600", anchor="start", fill=_SVG_INK_BODY,
+                        data_part="legend"))
+        return _b11l_open(fig, 520, o)
+    return _b11l_open(fig, 492, o)
+
+
 # ── registrations ────────────────────────────────────────────────────────
 ART = {
     'moth-pair': _moth_pair,
+    'b11-moth-barks': _b11l_moth_barks,
+    'b11-selection-steps': _b11l_selection_steps,
 }
 
 KIND_SHELL = {

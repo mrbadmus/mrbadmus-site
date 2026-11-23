@@ -1054,13 +1054,9 @@ LESSON = {
             # code — "What could not be lifted" 4 — and its `*new*` asterisks
             # are Design's own and are lifted rather than converted.
             "feedback": {
-                1: "Size and strength are neither here nor there. Rats are "
-                   "small and among the most resilient animals alive.",
-                2: "That is one of the safest positions to be in. A wide "
-                   "range means a local disaster is survivable.",
-                3: "Species live alongside their predators indefinitely — "
-                   "that is the cycle in Predator and prey. A *new* predator "
-                   "is a different matter.",
+                1: "Small size does not decide it. Rats are small and very hard to wipe out.",
+                2: "A large, widespread population is one of the safest things to have.",
+                3: "Species live alongside their usual predators. A new predator is the danger.",
             }},
         "apply": {
             "title": "Rung 2 · The one that catches people",
@@ -1078,14 +1074,10 @@ LESSON = {
             #      about
             #   D  only badly adapted species go extinct
             "options": [
-                "No — species only die out when people damage the "
-                "environment, by hunting or by clearing habitat",
-                "Yes — over 99% of all species that ever lived are extinct, "
-                "mostly long before humans existed",
-                "Yes, and that means current extinctions are nothing to worry "
-                "about, since the process would happen anyway",
-                "Only for species that were badly adapted in the first place, "
-                "since a well adapted one survives",
+                "No. Species only die out when people hunt them or clear their habitat",
+                "Yes. Most species that have ever lived died out long before humans existed",
+                "Yes, so today’s extinctions are nothing to worry about, as they would happen anyway",
+                "Only for badly adapted species, because a well adapted species always survives",
             ],
             "answer": 1,
             # All three corrections are Design's, byte-identical. C's is the one
@@ -1093,15 +1085,9 @@ LESSON = {
             # then refuses the inference, which is the same move the think-again
             # makes at greater length.
             "feedback": {
-                0: "There have been five mass extinctions in the fossil "
-                   "record, and the most famous of them predates humans by "
-                   "sixty-six million years.",
-                2: "The first half is right and the conclusion does not "
-                   "follow. What matters is the rate, which is now estimated "
-                   "at tens to hundreds of times the background level.",
-                3: "Species that go extinct were usually well adapted — to "
-                   "conditions that then changed. Being well fitted to one "
-                   "environment is what makes a specialist vulnerable.",
+                0: "Species died out long before humans. Five mass extinctions happened without us.",
+                2: "Extinction is natural, but humans have made it much faster. That is a worry.",
+                3: "Well adapted species die out too, when their conditions change.",
             }},
         "explain": {
             # ⚖️ THE RUNG THE BENCH IS BUILT FOR. It names the rat and the
@@ -1144,7 +1130,7 @@ LESSON = {
                   "risk factors, and say what the other two would and would "
                   "not fix.",
             "field_label": "Your answer",
-            "placeholder": "The problem I would prioritise is…",
+            "placeholder": "The option I would choose is…",
             "success": [
                 "Identifies which risk factor each option addresses — range, "
                 "fragmentation and genetic variation, or numbers.",
