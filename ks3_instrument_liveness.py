@@ -330,6 +330,26 @@ RETIRED_BY_LEAN = {
                      "replaced by the drawn figure b3-villus-lean"),
     "job-switch": ("biology/nutrition-and-digestion/bacteria-in-the-gut.html",
                    "the job-switch bench is not on the lean page"),
+    # ⊕ 23 Nov 2026 lean wave 2 (C6 acids and alkalis, lessons 1-6): each family had exactly one
+    # lesson, and no other built page emits it. The frozen classic copies in ks3_fixtures/ keep the
+    # benches for the parity and save checks. acid-judgements and catalyst-bench are not here:
+    # catalysts (lesson 7, classic) still emits them.
+    "bottle-sorter": ("chemistry/acids-and-alkalis/acids-and-alkalis.html",
+                      "the bottle sorter is not on the lean page (figure c6-ph-scale-acids)"),
+    "ph-bench": ("chemistry/acids-and-alkalis/the-ph-scale-and-indicators.html",
+                 "replaced by the drawn figures c6-ph-scale-colours and c6-cabbage-colours"),
+    "titration-dial": ("chemistry/acids-and-alkalis/neutralisation.html",
+                       "replaced by the drawn figure c6-neutral-curve"),
+    "acid-metal-grid": ("chemistry/acids-and-alkalis/acid-plus-metal.html",
+                        "the acid-metal grid is not on the lean page (figures c6-word-metal-acid and c6-squeaky-pop)"),
+    "step-rig": ("chemistry/acids-and-alkalis/acids-and-carbonates.html",
+                 "replaced by the drawn figure c6-limewater-test"),
+    "solid-sorter": ("chemistry/acids-and-alkalis/acids-and-carbonates.html",
+                     "the solid sorter is not on the lean page (figure c6-word-carbonate-acid)"),
+    "salt-namer": ("chemistry/acids-and-alkalis/making-a-pure-dry-salt.html",
+                   "the salt namer is not on the lean page (figure c6-word-copper-sulfate)"),
+    "method-order": ("chemistry/acids-and-alkalis/making-a-pure-dry-salt.html",
+                     "replaced by the drawn figure c6-salt-steps"),
 }
 
 

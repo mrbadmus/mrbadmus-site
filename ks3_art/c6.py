@@ -2117,6 +2117,196 @@ def r_solid_sorter(a, act_id):
 # six of the seven pages, and C3's `sequence-rebuild` is the precedent for one
 # family placed more than once.
 #
+# ═══════════════════════════════════════════════════════════════════════════
+# LEAN WAVE 2 (C6 lane A: lessons 1 to 3) · three drawn figures
+# ═══════════════════════════════════════════════════════════════════════════
+#
+#   "c6-ph-bands"        data {"bands": [{"from", "to", "colour", "means"}] x5}
+#                        the 0 to 14 scale, coloured cell by cell, with its five bands
+#   "c6-cabbage-colours" data {"tubes": [{"colour", "hex"}] x6, "groups": [{"label", "first", "last"}]}
+#   "c6-neutral-curve"   data {"points": [[drops, pH], ...], "x_max": 20}
+#
+# All 340 wide, so they sit in a phone card without scrolling; every label is 13px or
+# more. Liquids and pH cells are FIXED colours with an ink outline (they are data, as the
+# note on PH_COLOURS above says), and every colour also carries its name or number in text.
+from ks3_art.kit import _SVG_INK_BODY, _SVG_RULE, _SVG_RULE_STRONG, _circle, _line, _n, _path
+
+_C6L_W = 340
+
+# One colour per pH, 0 to 14, chosen so each band looks like the colour the page names:
+# 0 to 2 red, 3 to 6 orange or yellow, 7 green, 8 to 10 blue, 11 to 14 purple.
+_C6L_UI = [
+    "#C1272D", "#D2382B", "#DA4126", "#EA6A1E", "#EE8C1B",
+    "#EFAE20", "#E2C62C", "#4FA352", "#3A8FC0", "#2D72B4",
+    "#2C55A0", "#5B3A9A", "#5E2A8C", "#56227C", "#4C1B6E",
+]
+_C6L_BANDS = [(0, 2, "red"), (3, 6, "orange or yellow"), (7, 7, "green"),
+              (8, 10, "blue"), (11, 14, "purple")]
+
+
+def _c6l_open(fig, h, body):
+    return (_svg_open(fig, _C6L_W, int(h))
+            + '<g stroke-linecap="round" stroke-linejoin="round">' + "".join(body) + "</g></svg>")
+
+
+def _c6l_arrowhead(x, y, direction, paint=_SVG_INK_MUTED):
+    """A filled arrowhead with its tip at (x, y), pointing left (-1) or right (+1)."""
+    b = x - 9 * direction
+    return _path("M %s,%s L %s,%s L %s,%s Z" % (_n(x), _n(y), _n(b), _n(y - 5), _n(b), _n(y + 5)),
+                 fill=paint, data_part="arrowhead")
+
+
+def _c6l_ph_bands(fig):
+    """The pH scale, 0 to 14: one coloured cell per whole number, the number under it,
+    a bracket under each of the five bands, and a two-line key: range and colour, then
+    what the band means."""
+    d = fig.get("data") or {}
+    bands = d.get("bands") or []
+    if len(bands) != 5:
+        raise ValueError("figure %r: c6-ph-bands draws exactly five bands" % fig.get("id"))
+    for b, (lo, hi, colour) in zip(bands, _C6L_BANDS):
+        if (b.get("from"), b.get("to"), b.get("colour")) != (lo, hi, colour):
+            raise ValueError("figure %r: band %r does not match the page's bands %r"
+                             % (fig.get("id"), b, (lo, hi, colour)))
+        if not b.get("means"):
+            raise ValueError("figure %r: band %r needs its meaning" % (fig.get("id"), b))
+    X0, PITCH, CW, TOP, CH = 8, 21.6, 19.6, 26, 40
+
+    def cx(i):
+        return X0 + i * PITCH + CW / 2.0
+
+    o = [_label(X0, 16, "acidic", size=13, weight="700", anchor="start", data_part="end-acid"),
+         _label(round(cx(7), 2), 16, "neutral", size=13, weight="700", data_part="end-neutral"),
+         _label(_C6L_W - X0, 16, "alkaline", size=13, weight="700", anchor="end",
+                data_part="end-alkali")]
+    for i, hexc in enumerate(_C6L_UI):
+        o.append(_rect(X0 + i * PITCH, TOP, CW, CH, rx=4, fill=hexc, stroke=_SVG_INK, w=1.5,
+                       data_part="ph-cell", data_ph=str(i)))
+        o.append(_label(round(cx(i), 2), TOP + CH + 16, str(i), size=13, weight="700",
+                        data_part="ph-num", data_ph=str(i)))
+    BY = TOP + CH + 26
+    for b in bands:
+        x1, x2 = X0 + b["from"] * PITCH + 1, X0 + b["to"] * PITCH + CW - 1
+        o.append(_line(x1, BY, x2, BY, stroke=_SVG_INK_MUTED, w=2, data_part="band-bracket",
+                       data_key=b["colour"]))
+        o.append(_line(x1, BY - 5, x1, BY, stroke=_SVG_INK_MUTED, w=2, data_part="band-bracket"))
+        o.append(_line(x2, BY - 5, x2, BY, stroke=_SVG_INK_MUTED, w=2, data_part="band-bracket"))
+    y = BY + 30
+    for b in bands:
+        mid = (b["from"] + b["to"]) // 2
+        o.append(_rect(X0, y - 15, 22, 22, rx=4, fill=_C6L_UI[mid], stroke=_SVG_INK, w=1.5,
+                       data_part="key-swatch", data_key=b["colour"]))
+        rng = ("pH %d" % b["from"]) if b["from"] == b["to"] else ("pH %d to %d" % (b["from"], b["to"]))
+        o.append(_label(42, y, "%s: %s" % (rng, b["colour"]), size=15, weight="700", anchor="start",
+                        data_part="key-range", data_key=b["colour"]))
+        o.append(_label(42, y + 18, b["means"], size=13, weight="500", anchor="start",
+                        fill=_SVG_INK_BODY, data_part="key-means", data_key=b["colour"]))
+        y += 44
+    return _c6l_open(fig, y - 44 + 30, o)
+
+
+def _c6l_tube(cx, top, h, colour, part, w=26, fill_from=0.35):
+    """A test tube with a rounded bottom, liquid filled from `fill_from` of its height."""
+    r = w / 2.0
+    x0, x1, yb = cx - r, cx + r, top + h - r
+    ly = top + h * fill_from
+    return (_path("M %s,%s L %s,%s A %s %s 0 0 0 %s,%s L %s,%s Z"
+                  % (_n(x0), _n(ly), _n(x0), _n(yb), _n(r), _n(r), _n(x1), _n(yb), _n(x1), _n(ly)),
+                  fill=colour, data_part=part)
+            + _path("M %s,%s L %s,%s A %s %s 0 0 0 %s,%s L %s,%s"
+                    % (_n(x0), _n(top), _n(x0), _n(yb), _n(r), _n(r), _n(x1), _n(yb), _n(x1), _n(top)),
+                    stroke=_SVG_INK, w=2, data_part="tube"))
+
+
+def _c6l_cabbage_colours(fig):
+    """Red cabbage indicator in six solutions, most acidic on the left: six tubes, the
+    colour named under each, brackets grouping acid, neutral and alkali, and an arrow
+    from more acidic to more alkaline."""
+    d = fig.get("data") or {}
+    tubes, groups = d.get("tubes") or [], d.get("groups") or []
+    if len(tubes) != 6:
+        raise ValueError("figure %r: c6-cabbage-colours draws exactly six tubes" % fig.get("id"))
+    if [g.get("label") for g in groups] != ["acid", "neutral", "alkali"]:
+        raise ValueError("figure %r: groups must be acid, neutral, alkali in that order" % fig.get("id"))
+    covered = sorted(i for g in groups for i in range(g["first"], g["last"] + 1))
+    if covered != list(range(6)):
+        raise ValueError("figure %r: the groups must cover each tube once" % fig.get("id"))
+    PITCH, TOP, TH = 54, 10, 84
+    xs = [8 + PITCH / 2.0 + i * PITCH for i in range(6)]
+    o = []
+    for x, tb in zip(xs, tubes):
+        if not tb.get("colour") or not tb.get("hex"):
+            raise ValueError("figure %r: each tube needs a colour name and a hex" % fig.get("id"))
+        o.append(_c6l_tube(x, TOP, TH, tb["hex"], "liquid"))
+        o.append(_label(x, TOP + TH + 18, tb["colour"], size=13, weight="700",
+                        data_part="colour-name", data_key=tb["colour"]))
+    BY = TOP + TH + 32
+    for g in groups:
+        x1, x2 = xs[g["first"]] - 15, xs[g["last"]] + 15
+        o.append(_line(x1, BY, x2, BY, stroke=_SVG_INK_MUTED, w=2, data_part="group-bracket"))
+        o.append(_line(x1, BY - 5, x1, BY, stroke=_SVG_INK_MUTED, w=2, data_part="group-bracket"))
+        o.append(_line(x2, BY - 5, x2, BY, stroke=_SVG_INK_MUTED, w=2, data_part="group-bracket"))
+        o.append(_label((x1 + x2) / 2.0, BY + 18, g["label"], size=14, weight="700",
+                        data_part="group", data_key=g["label"]))
+    AY = BY + 46
+    o.append(_label(8, AY + 5, "more acidic", size=13, weight="600", anchor="start",
+                    fill=_SVG_INK_BODY, data_part="arrow-label"))
+    o.append(_label(_C6L_W - 8, AY + 5, "more alkaline", size=13, weight="600", anchor="end",
+                    fill=_SVG_INK_BODY, data_part="arrow-label"))
+    o.append(_line(98, AY, 228, AY, stroke=_SVG_INK_MUTED, w=2, data_part="arrow"))
+    o.append(_c6l_arrowhead(94, AY, -1))
+    o.append(_c6l_arrowhead(232, AY, 1))
+    return _c6l_open(fig, AY + 16, o)
+
+
+def _c6l_neutral_curve(fig):
+    """pH against drops of alkali added to an acid: flat, a sudden jump past 7, flat
+    again. A dashed line marks neutral; three short labels name the three parts."""
+    d = fig.get("data") or {}
+    pts = d.get("points") or []
+    xmax = d.get("x_max")
+    if len(pts) < 4 or not xmax:
+        raise ValueError("figure %r: c6-neutral-curve needs points and x_max" % fig.get("id"))
+    if any(not (0 <= p[0] <= xmax and 0 <= p[1] <= 14) for p in pts):
+        raise ValueError("figure %r: a point is off the axes" % fig.get("id"))
+    L, R, T, B = 52, 326, 14, 196
+
+    def X(v):
+        return L + v / float(xmax) * (R - L)
+
+    def Y(v):
+        return B - v / 14.0 * (B - T)
+
+    o = []
+    for v in (0, 7, 14):
+        o.append(_line(L - 6, Y(v), L, Y(v), stroke=_SVG_INK, w=2))
+        o.append(_label(L - 12, round(Y(v) + 4, 2), str(v), size=13, weight="500",
+                        fill=_SVG_INK_MUTED, anchor="end"))
+    for v in range(0, xmax + 1, 5):
+        o.append(_line(X(v), B, X(v), B + 6, stroke=_SVG_INK, w=2))
+        o.append(_label(round(X(v), 2), B + 20, str(v), size=13, weight="500", fill=_SVG_INK_MUTED))
+    o.append(_line(L, T, L, B, stroke=_SVG_INK, w=2, data_part="axis"))
+    o.append(_line(L, B, R, B, stroke=_SVG_INK, w=2, data_part="axis"))
+    o.append(_line(L, Y(7), R, Y(7), stroke=_SVG_RULE_STRONG, w=2, dash="6,5", data_part="neutral-line"))
+    o.append(_label(L + 8, round(Y(7) - 7, 2), "neutral, pH 7", size=13, weight="700",
+                    anchor="start", fill=_SVG_INK_BODY, data_part="neutral-label"))
+    d_path = "M " + " L ".join("%s,%s" % (_n(X(a)), _n(Y(b))) for a, b in pts)
+    o.append(_path(d_path, stroke=_SVG_INK, w=3, data_part="curve"))
+    o.append(_label(L + 8, round(Y(3.6), 2), "acid left over", size=13, weight="600",
+                    anchor="start", fill=_SVG_INK_BODY, data_part="stage", data_key="acid"))
+    o.append(_label(round(X(10.6), 2), round(Y(5), 2), "the acid runs out", size=13, weight="600",
+                    anchor="start", fill=_SVG_INK_BODY, data_part="stage", data_key="jump"))
+    o.append(_label(R - 4, round(Y(9.4), 2), "alkali left over", size=13, weight="600",
+                    anchor="end", fill=_SVG_INK_BODY, data_part="stage", data_key="alkali"))
+    o.append(_label((L + R) / 2.0, B + 42, "drops of alkali added", size=14, weight="700",
+                    fill=_SVG_INK_BODY, data_part="x-title"))
+    o.append('<text x="18" y="%s" font-family="\'Instrument Sans\', system-ui, sans-serif" '
+             'font-size="14" font-weight="700" style="fill:%s" text-anchor="middle" '
+             'transform="rotate(-90 18 %s)" data-part="y-title">pH</text>'
+             % (_n((T + B) / 2.0), _SVG_INK_BODY, _n((T + B) / 2.0)))
+    return _c6l_open(fig, B + 52, o)
+
+
 # ⊕ MRB-281, 23 Aug 2026 — `step-rig` AND `solid-sorter` ARE NOW REGISTERED.
 # This comment used to say the opposite, and it is rewritten rather than
 # deleted because its reasoning was correct and its PREMISE stopped being
@@ -2135,8 +2325,447 @@ def r_solid_sorter(a, act_id):
 # lessons is a light `ks3-block` with no second class, so every one of them is
 # `check`. There is no ink-dark practical block anywhere in C6.
 
+# ── lean Wave 2 (C6 lane B) ──
+import math
+from ks3_art.kit import (
+    _SVG_ACCENT,
+    _SVG_ACCENT_TEXT,
+    _SVG_ACCENT_TINT,
+    _SVG_BLUE_TEXT,
+    _SVG_CARD,
+    _SVG_INK,
+    _SVG_INK_MUTED,
+    _SVG_INSET,
+    _SVG_RULE,
+    _SVG_RULE_STRONG,
+    _circle,
+    _ellipse,
+    _label,
+    _line,
+    _mono,
+    _n,
+    _path,
+    _rect,
+    _svg_open,
+)
+
+_C6B_W = 340
+_C6B_TEXT_X = 172      # the text column of a step figure starts here
+
+
+def _c6b_open(fig, h, body):
+    return (_svg_open(fig, _C6B_W, int(math.ceil(h)))
+            + '<g stroke-linecap="round" stroke-linejoin="round">'
+            + "".join(body) + "</g></svg>")
+
+
+def _c6b_need(fig, keys):
+    d = fig.get("data") or {}
+    for k in keys:
+        if not d.get(k):
+            raise ValueError("figure %r: data has no %r" % (fig.get("id"), k))
+    return d
+
+
+def _c6b_arrow(x1, y1, x2, y2, paint=_SVG_INK, w=2.5, head=7.0, **data):
+    """A straight arrow from (x1, y1) to (x2, y2), head at the far end."""
+    ang = math.atan2(y2 - y1, x2 - x1)
+    a1, a2 = ang + math.radians(150), ang - math.radians(150)
+    hx1, hy1 = x2 + head * math.cos(a1), y2 + head * math.sin(a1)
+    hx2, hy2 = x2 + head * math.cos(a2), y2 + head * math.sin(a2)
+    return (_line(x1, y1, x2, y2, stroke=paint, w=w, **data)
+            + _path("M %s,%s L %s,%s L %s,%s" % (_n(hx1), _n(hy1), _n(x2), _n(y2), _n(hx2), _n(hy2)),
+                    stroke=paint, w=w))
+
+
+def _c6b_leader(x1, y1, x2, y2):
+    return (_line(x1, y1, x2, y2, stroke=_SVG_INK_MUTED, w=1.5, data_part="leader")
+            + _circle(x2, y2, 2.5, fill=_SVG_INK, data_part="leader-end"))
+
+
+def _c6b_tube_d(x, top, w, bottom, up=False):
+    """The outline of a test tube, open at one end and rounded at the other.
+    Upright (up=False): open at `top`, rounded at `bottom`. Upside down (up=True):
+    rounded at `top`, open at `bottom`."""
+    r = w / 2.0
+    k = r * 4.0 / 3.0
+    if not up:
+        return ("M %s,%s L %s,%s C %s,%s %s,%s %s,%s L %s,%s"
+                % (_n(x), _n(top), _n(x), _n(bottom - r), _n(x), _n(bottom - r + k),
+                   _n(x + w), _n(bottom - r + k), _n(x + w), _n(bottom - r), _n(x + w), _n(top)))
+    return ("M %s,%s L %s,%s C %s,%s %s,%s %s,%s L %s,%s"
+            % (_n(x), _n(bottom), _n(x), _n(top + r), _n(x), _n(top + r - k),
+               _n(x + w), _n(top + r - k), _n(x + w), _n(top + r), _n(x + w), _n(bottom)))
+
+
+def _c6b_liquid_d(x, w, level, bottom, inset=2.5):
+    """The liquid in an upright tube: from `level` down to the rounded bottom."""
+    xi, wi = x + inset, w - 2 * inset
+    r = wi / 2.0
+    k = r * 4.0 / 3.0
+    b = bottom - inset
+    return ("M %s,%s L %s,%s C %s,%s %s,%s %s,%s L %s,%s Z"
+            % (_n(xi), _n(level), _n(xi), _n(b - r), _n(xi), _n(b - r + k),
+               _n(xi + wi), _n(b - r + k), _n(xi + wi), _n(b - r), _n(xi + wi), _n(level)))
+
+
+def _c6b_speckle(x0, y0, x1, y1, step=7, **data):
+    """Small dots on a grid: the cloudiness of milky limewater, drawn, not only coloured."""
+    out = []
+    j = 0
+    y = y0 + step / 2.0
+    while y < y1:
+        x = x0 + (step / 2.0 if j % 2 else step / 4.0 + 1)
+        while x < x1:
+            out.append(_circle(x, y, 1.3, fill=_SVG_INK_MUTED, data_part="speck", **data))
+            x += step
+        y += step * 0.8
+        j += 1
+    return "".join(out)
+
+
+def _c6b_badge(o, x, y, n):
+    o.append(_circle(x, y, 11, fill=_SVG_ACCENT_TINT, stroke=_SVG_INK, w=2, data_part="step-badge"))
+    o.append(_label(x, y + 5, str(n), size=13, weight="800", data_part="step-number"))
+
+
+def _c6b_step_text(o, y0, title, lines):
+    """The right-hand column of a step figure: a mono title, then short lines."""
+    o.append(_mono(_C6B_TEXT_X, y0 + 26, title.upper(), size=13, fill=_SVG_ACCENT_TEXT,
+                   weight="700", spacing="1", data_part="step-title"))
+    for k, s in enumerate(lines):
+        o.append(_label(_C6B_TEXT_X, y0 + 50 + 18 * k, s, size=14, anchor="start",
+                        weight="600", data_part="step-text"))
+
+
+def _c6b_steps(fig, n):
+    d = _c6b_need(fig, ("steps",))
+    steps = d["steps"]
+    if len(steps) != n:
+        raise ValueError("figure %r: needs exactly %d steps" % (fig.get("id"), n))
+    for s in steps:
+        if not s.get("title") or not s.get("lines"):
+            raise ValueError("figure %r: every step needs a title and lines" % fig.get("id"))
+        for ln in s["lines"]:
+            if len(ln) > 21:
+                raise ValueError("figure %r: step line %r is over 21 characters, so it would "
+                                 "run off a 390 px phone" % (fig.get("id"), ln))
+    return d, steps
+
+
+# ── c6-squeaky-pop: the test for hydrogen ────────────────────────────────
+
+def _c6b_squeaky_pop(fig):
+    """Three steps, one under another, each with its words on the right.
+
+    1  Collect: magnesium fizzing in acid in an upright tube; an empty tube held upside
+       down over its mouth, filling with hydrogen.
+    2  Stopper: the full tube, still upside down, closed with a bung, moved away.
+    3  Test: the bung out, a lit splint at the tube's mouth, and the pop.
+
+    data: steps, three {"title", "lines"}; labels {"metal", "acid", "hydrogen", "pop"}.
+    """
+    d, steps = _c6b_steps(fig, 3)
+    lab = d.get("labels") or {}
+    for k in ("metal", "acid", "hydrogen", "pop"):
+        if not lab.get(k):
+            raise ValueError("figure %r: no label %r" % (fig.get("id"), k))
+    o = []
+    RH = 160.0
+    for i, st in enumerate(steps):
+        y0 = 6 + i * RH
+        if i:
+            o.append(_line(8, y0 - 4, 332, y0 - 4, stroke=_SVG_RULE, w=1.5, data_part="rule"))
+        _c6b_badge(o, 16, y0 + 18, i + 1)
+        _c6b_step_text(o, y0, st["title"], st["lines"])
+        tx, tw = 80, 32            # the reaction tube: left edge 80, 32 wide
+        cx = tx + tw / 2.0         # every tube in this figure is centred on cx
+        gx, gw = cx - 20, 40       # the collecting tube is wider, so it reads as a second tube
+
+        def left(text, y, px, py):     # a label to the left of the tubes, with a leader
+            o.append(_label(4, y, text, size=13, anchor="start", data_part="label"))
+            o.append(_c6b_leader(4 + len(text) * 7.4 + 4, y - 4, px, py))
+
+        if i == 0:
+            # the collecting tube, upside down, its mouth just above the reaction tube's mouth
+            o.append(_path(_c6b_tube_d(gx, y0 + 8, gw, y0 + 64, up=True), fill=_SVG_CARD,
+                           stroke=_SVG_INK, w=2.5, data_part="collecting-tube"))
+            # the reaction tube, upright, with acid and a strip of magnesium
+            o.append(_path(_c6b_liquid_d(tx, tw, y0 + 106, y0 + 152), fill=_SVG_INSET,
+                           data_part="acid"))
+            o.append(_path(_c6b_tube_d(tx, y0 + 70, tw, y0 + 152), stroke=_SVG_INK, w=2.5,
+                           data_part="reaction-tube"))
+            o.append(_rect(tx + 9, y0 + 128, 14, 5, rx=1.5, fill=_SVG_INK_MUTED, stroke=_SVG_INK,
+                           w=1.5, data_part="magnesium"))
+            for (bx, by) in ((cx - 4, y0 + 120), (cx + 4, y0 + 114), (cx - 1, y0 + 108),
+                             (cx + 6, y0 + 96), (cx - 4, y0 + 86), (cx + 2, y0 + 76),
+                             (cx - 2, y0 + 54), (cx + 6, y0 + 42), (cx - 6, y0 + 30)):
+                o.append(_circle(bx, by, 2.6, fill=_SVG_CARD, stroke=_SVG_INK, w=1.3,
+                                 data_part="bubble"))
+            o.append(_line(tx, y0 + 106, tx + tw, y0 + 106, stroke=_SVG_BLUE_TEXT, w=2,
+                           data_part="surface"))
+            left(lab["hydrogen"], y0 + 50, gx + 6, y0 + 46)
+            left(lab["acid"], y0 + 116, tx + 5, y0 + 112)
+            left(lab["metal"], y0 + 140, tx + 9, y0 + 131)
+        elif i == 1:
+            o.append(_path(_c6b_tube_d(gx, y0 + 26, gw, y0 + 104, up=True), fill=_SVG_CARD,
+                           stroke=_SVG_INK, w=2.5, data_part="collecting-tube"))
+            o.append(_path("M %s,%s L %s,%s L %s,%s L %s,%s Z"
+                           % (_n(gx + 1), _n(y0 + 96), _n(gx + gw - 1), _n(y0 + 96),
+                              _n(gx + gw + 3), _n(y0 + 120), _n(gx - 3), _n(y0 + 120)),
+                           fill=_SVG_RULE_STRONG, stroke=_SVG_INK, w=2, data_part="bung"))
+            left(lab["hydrogen"], y0 + 52, gx + 6, y0 + 48)
+            o.append(_c6b_arrow(gx + gw + 8, y0 + 70, 160, y0 + 70,
+                                paint=_SVG_INK_MUTED, w=2.5, head=7, data_part="move-away"))
+        else:
+            o.append(_path(_c6b_tube_d(gx, y0 + 18, gw, y0 + 96, up=True), fill=_SVG_CARD,
+                           stroke=_SVG_INK, w=2.5, data_part="collecting-tube"))
+            left(lab["hydrogen"], y0 + 48, gx + 6, y0 + 44)
+            # the lit splint, its flame just under the tube's open mouth
+            sx0, sy0, sx1, sy1 = 164, y0 + 146, cx + 6, y0 + 112
+            o.append(_line(sx0, sy0, sx1, sy1, stroke=_SVG_INK_MUTED, w=5, data_part="splint"))
+            o.append(_path("M %s,%s C %s,%s %s,%s %s,%s C %s,%s %s,%s %s,%s Z"
+                           % (_n(sx1 - 3), _n(sy1 + 4), _n(sx1 - 14), _n(sy1 - 2),
+                              _n(sx1 - 8), _n(sy1 - 10), _n(sx1 - 6), _n(sy1 - 14),
+                              _n(sx1 + 6), _n(sy1 - 8), _n(sx1 + 8), _n(sy1 - 2),
+                              _n(sx1 - 3), _n(sy1 + 4)),
+                           fill=_SVG_ACCENT, stroke=_SVG_ACCENT_TEXT, w=1.5, data_part="flame"))
+            # the pop: short lines bursting from the mouth, down and to the left
+            px, py = cx, y0 + 100
+            for ang in (110, 135, 160, 185):
+                a = math.radians(ang)      # y grows downwards: these point down and left
+                o.append(_line(px + 22 * math.cos(a), py + 22 * math.sin(a),
+                               px + 34 * math.cos(a), py + 34 * math.sin(a),
+                               stroke=_SVG_ACCENT_TEXT, w=2.5, data_part="pop"))
+            o.append(_label(4, y0 + 150, lab["pop"], size=13, weight="700", anchor="start",
+                            fill=_SVG_ACCENT_TEXT, data_part="label"))
+    return _c6b_open(fig, 6 + 3 * RH - 4, o)
+
+
+# ── c6-limewater-test: the test for carbon dioxide ───────────────────────
+
+def _c6b_limewater_test(fig):
+    """Left: a boiling tube of marble chips in acid, closed with a bung. A delivery tube
+    runs from the bung, over and down into a second tube of limewater, its end under the
+    surface; bubbles rise from it and the limewater is milky. Below: the result, a tube of
+    clear limewater before and a tube of milky limewater after.
+
+    data: colours {"milky"}; labels {"bung", "delivery", "acid" (lines), "chips" (lines),
+    "limewater" (lines), "end" (lines), "result", "before", "after"}.
+    """
+    d = _c6b_need(fig, ("colours", "labels"))
+    milky = d["colours"].get("milky")
+    if not milky:
+        raise ValueError("figure %r: no colour for milky limewater" % fig.get("id"))
+    lab = d["labels"]
+    for k in ("bung", "delivery", "acid", "chips", "limewater", "end", "result", "before",
+              "after"):
+        if not lab.get(k):
+            raise ValueError("figure %r: no label %r" % (fig.get("id"), k))
+    o = []
+    # boiling tube: acid and marble chips
+    bx, bw, btop, bbot = 22, 46, 106, 330
+    o.append(_path(_c6b_liquid_d(bx, bw, 214, bbot), fill=_SVG_INSET, data_part="acid"))
+    for pts in (((30, 312), (40, 302), (50, 308), (46, 320), (34, 322)),
+                ((48, 300), (58, 294), (64, 304), (58, 314), (50, 310)),
+                ((36, 290), (46, 284), (52, 292), (44, 300), (36, 298)),
+                ((40, 322), (52, 316), (58, 324), (48, 328))):
+        o.append(_path("M " + " L ".join("%s,%s" % (_n(x), _n(y)) for x, y in pts) + " Z",
+                       fill=_SVG_CARD, stroke=_SVG_INK, w=1.8, data_part="marble-chip"))
+    for (x, y) in ((38, 270), (54, 256), (44, 240), (58, 228), (34, 228)):
+        o.append(_circle(x, y, 2.8, fill=_SVG_CARD, stroke=_SVG_INK, w=1.3, data_part="bubble"))
+    o.append(_line(bx, 214, bx + bw, 214, stroke=_SVG_BLUE_TEXT, w=2, data_part="surface"))
+    o.append(_path(_c6b_tube_d(bx, btop, bw, bbot), stroke=_SVG_INK, w=3, data_part="boiling-tube"))
+    # limewater tube: milky, speckled, with bubbles from the delivery tube's end
+    lx, lw, ltop, lbot = 262, 42, 170, 372
+    o.append(_path(_c6b_liquid_d(lx, lw, 246, lbot), fill=milky, data_part="limewater"))
+    o.append(_c6b_speckle(lx + 5, 250, lx + lw - 5, lbot - 14))
+    o.append(_line(lx, 246, lx + lw, 246, stroke=_SVG_BLUE_TEXT, w=2, data_part="surface"))
+    # delivery tube: up from the bung, across, and down into the limewater
+    dx0, dx1, dtop, dend = bx + bw / 2.0, lx + lw / 2.0, 46, 336
+    dt = ("M %s,%s L %s,%s C %s,%s %s,%s %s,%s L %s,%s C %s,%s %s,%s %s,%s L %s,%s"
+          % (_n(dx0), _n(btop - 6), _n(dx0), _n(dtop + 14), _n(dx0), _n(dtop + 4),
+             _n(dx0 + 6), _n(dtop), _n(dx0 + 16), _n(dtop), _n(dx1 - 16), _n(dtop),
+             _n(dx1 - 6), _n(dtop), _n(dx1), _n(dtop + 4), _n(dx1), _n(dtop + 14),
+             _n(dx1), _n(dend)))
+    o.append(_path(dt, stroke=_SVG_INK, w=8, data_part="delivery-tube"))
+    o.append(_path(dt, stroke=_SVG_CARD, w=3.5))
+    for (x, y) in ((dx1 - 3, 326), (dx1 + 4, 312), (dx1 - 4, 296), (dx1 + 5, 280),
+                   (dx1 - 2, 262)):
+        o.append(_circle(x, y, 2.8, fill=_SVG_CARD, stroke=_SVG_INK, w=1.3, data_part="bubble"))
+    o.append(_path(_c6b_tube_d(lx, ltop, lw, lbot), stroke=_SVG_INK, w=3,
+                   data_part="limewater-tube"))
+    # the bung, over the boiling tube's mouth, with the delivery tube through it
+    o.append(_path("M %s,%s L %s,%s L %s,%s L %s,%s Z"
+                   % (_n(bx - 4), _n(btop - 12), _n(bx + bw + 4), _n(btop - 12),
+                      _n(bx + bw), _n(btop + 14), _n(bx), _n(btop + 14)),
+                   fill=_SVG_RULE_STRONG, stroke=_SVG_INK, w=2, data_part="bung"))
+    o.append(_line(dx0, btop - 12, dx0, btop + 14, stroke=_SVG_INK, w=8))
+    o.append(_line(dx0, btop - 12, dx0, btop + 14, stroke=_SVG_CARD, w=3.5))
+    # labels: the delivery tube above its top run; the rest in the middle column
+    o.append(_label((dx0 + dx1) / 2.0, dtop - 14, lab["delivery"], size=13, data_part="label"))
+
+    def left(lines, y, tx, ty):       # text in the middle column, leader to the left
+        for k, s in enumerate(lines):
+            o.append(_label(98, y + 16 * k, s, size=13, anchor="start", data_part="label"))
+        o.append(_c6b_leader(94, y - 4, tx, ty))
+
+    def right(lines, y, tx, ty):      # text in the middle column, leader to the right
+        for k, s in enumerate(lines):
+            o.append(_label(244, y + 16 * k, s, size=13, anchor="end", data_part="label"))
+        o.append(_c6b_leader(248, y - 4, tx, ty))
+
+    left([lab["bung"]], 104, bx + bw + 2, btop)
+    left(lab["acid"], 186, bx + bw - 6, 226)
+    left(lab["chips"], 286, 60, 300)
+    right(lab["limewater"], 218, lx + 9, 262)
+    right(lab["end"], 330, dx1 - 6, 334)
+    # the result: clear before, milky after
+    o.append(_line(8, 392, 332, 392, stroke=_SVG_RULE, w=1.5, data_part="rule"))
+    o.append(_mono(10, 414, lab["result"].upper(), size=13, fill=_SVG_ACCENT_TEXT, weight="700",
+                   spacing="1", data_part="heading"))
+    for (x, name, is_milky) in ((86, lab["before"], False), (212, lab["after"], True)):
+        o.append(_path(_c6b_liquid_d(x, 36, 446, 504),
+                       fill=milky if is_milky else _SVG_CARD, data_part="limewater",
+                       data_state="milky" if is_milky else "clear"))
+        if is_milky:
+            o.append(_c6b_speckle(x + 5, 450, x + 31, 496))
+        o.append(_line(x, 446, x + 36, 446, stroke=_SVG_BLUE_TEXT, w=2, data_part="surface"))
+        o.append(_path(_c6b_tube_d(x, 426, 36, 504), stroke=_SVG_INK, w=2.5, data_part="tube"))
+        o.append(_label(x + 18, 528, name, size=13, data_part="label"))
+    o.append(_c6b_arrow(136, 470, 196, 470, paint=_SVG_ACCENT_TEXT, w=3, head=8,
+                        data_part="arrow"))
+    return _c6b_open(fig, 540, o)
+
+
+# ── c6-salt-steps: making copper sulfate crystals ────────────────────────
+
+def _c6b_salt_steps(fig):
+    """Four steps, one under another, each with its words on the right.
+
+    1  A beaker of blue solution, a spatula adding black powder, a glass rod stirring,
+       and black powder left over on the bottom: excess.
+    2  A filter funnel over a conical flask: the black powder stays on the paper and
+       blue filtrate collects in the flask.
+    3  An evaporating basin of blue solution on a gauze and tripod over a flame, steam rising.
+    4  The basin left to cool, with blue crystals in it.
+
+    data: steps, four {"title", "lines"}; colours {"solution", "crystal", "powder", "paper"}.
+    """
+    d, steps = _c6b_steps(fig, 4)
+    col = d.get("colours") or {}
+    for k in ("solution", "crystal", "powder", "paper"):
+        if not col.get(k):
+            raise ValueError("figure %r: no colour %r" % (fig.get("id"), k))
+    sol, cry, pow_, paper = col["solution"], col["crystal"], col["powder"], col["paper"]
+    o = []
+    RH = 150.0
+
+    def basin(cx, y, solution=True):
+        """A shallow evaporating basin whose rim is at y."""
+        rim = ("M %s,%s C %s,%s %s,%s %s,%s"
+               % (_n(cx - 46), _n(y), _n(cx - 40), _n(y + 30), _n(cx + 40), _n(y + 30),
+                  _n(cx + 46), _n(y)))
+        if solution:
+            o.append(_path("M %s,%s C %s,%s %s,%s %s,%s Z"
+                           % (_n(cx - 38), _n(y + 8), _n(cx - 30), _n(y + 25), _n(cx + 30),
+                              _n(y + 25), _n(cx + 38), _n(y + 8)),
+                           fill=sol, data_part="solution"))
+        o.append(_path(rim, stroke=_SVG_INK, w=3, data_part="basin"))
+
+    for i, st in enumerate(steps):
+        y0 = 6 + i * RH
+        if i:
+            o.append(_line(8, y0 - 4, 332, y0 - 4, stroke=_SVG_RULE, w=1.5, data_part="rule"))
+        _c6b_badge(o, 16, y0 + 18, i + 1)
+        _c6b_step_text(o, y0, st["title"], st["lines"])
+        if i == 0:
+            # beaker of blue solution, black powder left on the bottom
+            x0, x1, top, bot = 40, 124, y0 + 44, y0 + 138
+            o.append(_rect(x0 + 2, y0 + 76, x1 - x0 - 4, bot - y0 - 78, rx=4, fill=sol,
+                           data_part="solution"))
+            for k in range(9):
+                o.append(_ellipse(x0 + 10 + 8 * k, bot - 6 - (k % 2) * 2, 4.5, 2.6, fill=pow_,
+                                  data_part="powder-left-over"))
+            o.append(_path("M %s,%s L %s,%s L %s,%s Q %s,%s %s,%s L %s,%s Q %s,%s %s,%s L %s,%s L %s,%s"
+                           % (_n(x0 - 4), _n(top), _n(x0), _n(top + 4), _n(x0), _n(bot - 6),
+                              _n(x0), _n(bot), _n(x0 + 6), _n(bot), _n(x1 - 6), _n(bot),
+                              _n(x1), _n(bot), _n(x1), _n(bot - 6), _n(x1), _n(top + 4),
+                              _n(x1 + 4), _n(top)),
+                           stroke=_SVG_INK, w=3, data_part="beaker"))
+            # glass rod, stirring
+            o.append(_line(62, y0 + 30, 88, bot - 12, stroke=_SVG_INK_MUTED, w=4, data_part="rod"))
+            # spatula tipping powder in
+            o.append(_line(150, y0 + 30, 108, y0 + 46, stroke=_SVG_INK, w=3, data_part="spatula"))
+            o.append(_ellipse(106, y0 + 47, 7, 3.5, fill=_SVG_RULE_STRONG, stroke=_SVG_INK, w=2,
+                              data_part="spatula"))
+            for (px, py) in ((104, y0 + 58), (108, y0 + 66), (102, y0 + 72)):
+                o.append(_circle(px, py, 2.4, fill=pow_, data_part="powder"))
+        elif i == 1:
+            # filter funnel with paper, black powder on the paper, flask of blue filtrate
+            o.append(_path("M %s,%s L %s,%s L %s,%s Z"
+                           % (_n(44), _n(y0 + 32), _n(124), _n(y0 + 32), _n(84), _n(y0 + 76)),
+                           fill=paper, stroke=_SVG_INK_MUTED, w=1.5, data_part="filter-paper"))
+            for k in range(6):
+                o.append(_ellipse(70 + 6 * k, y0 + 58 + (k % 2) * 3, 4, 2.4, fill=pow_,
+                                  data_part="powder-on-paper"))
+            o.append(_path("M %s,%s L %s,%s L %s,%s L %s,%s M %s,%s L %s,%s L %s,%s"
+                           % (_n(36), _n(y0 + 28), _n(78), _n(y0 + 76), _n(78), _n(y0 + 100),
+                              _n(78), _n(y0 + 100), _n(132), _n(y0 + 28), _n(90), _n(y0 + 76),
+                              _n(90), _n(y0 + 100)),
+                           stroke=_SVG_INK, w=3, data_part="funnel"))
+            o.append(_circle(84, y0 + 110, 2.6, fill=sol, data_part="drip"))
+            # conical flask
+            fl = ("M %s,%s L %s,%s L %s,%s C %s,%s %s,%s %s,%s L %s,%s C %s,%s %s,%s %s,%s L %s,%s L %s,%s"
+                  % (_n(72), _n(y0 + 92), _n(72), _n(y0 + 104), _n(46), _n(y0 + 136),
+                     _n(42), _n(y0 + 141), _n(44), _n(y0 + 144), _n(50), _n(y0 + 144),
+                     _n(118), _n(y0 + 144), _n(124), _n(y0 + 144), _n(126), _n(y0 + 141),
+                     _n(122), _n(y0 + 136), _n(96), _n(y0 + 104), _n(96), _n(y0 + 92)))
+            o.append(_path("M %s,%s L %s,%s C %s,%s %s,%s %s,%s L %s,%s C %s,%s %s,%s %s,%s Z"
+                           % (_n(53), _n(y0 + 128), _n(46), _n(y0 + 137), _n(43), _n(y0 + 141),
+                              _n(47), _n(y0 + 142), _n(52), _n(y0 + 142), _n(116), _n(y0 + 142),
+                              _n(121), _n(y0 + 142), _n(125), _n(y0 + 141), _n(115),
+                              _n(y0 + 128)),
+                           fill=sol, data_part="filtrate"))
+            o.append(_path(fl, stroke=_SVG_INK, w=3, data_part="flask"))
+        elif i == 2:
+            # basin on a gauze and tripod, over a flame, steam rising
+            basin(84, y0 + 56)
+            o.append(_line(30, y0 + 88, 138, y0 + 88, stroke=_SVG_INK, w=3, data_part="gauze"))
+            o.append(_line(40, y0 + 88, 34, y0 + 140, stroke=_SVG_INK, w=3, data_part="tripod"))
+            o.append(_line(128, y0 + 88, 134, y0 + 140, stroke=_SVG_INK, w=3, data_part="tripod"))
+            o.append(_path("M %s,%s C %s,%s %s,%s %s,%s C %s,%s %s,%s %s,%s Z"
+                           % (_n(76), _n(y0 + 136), _n(70), _n(y0 + 120), _n(80), _n(y0 + 110),
+                              _n(84), _n(y0 + 98), _n(88), _n(y0 + 110), _n(98), _n(y0 + 120),
+                              _n(92), _n(y0 + 136)),
+                           fill=_SVG_ACCENT, stroke=_SVG_ACCENT_TEXT, w=1.5, data_part="flame"))
+            o.append(_rect(72, y0 + 136, 24, 8, rx=2, fill=_SVG_RULE_STRONG, stroke=_SVG_INK,
+                           w=1.5, data_part="burner"))
+            for sx in (66, 84, 102):
+                o.append(_path("M %s,%s C %s,%s %s,%s %s,%s C %s,%s %s,%s %s,%s"
+                               % (_n(sx), _n(y0 + 50), _n(sx - 6), _n(y0 + 42), _n(sx + 6),
+                                  _n(y0 + 36), _n(sx), _n(y0 + 28), _n(sx - 6), _n(y0 + 20),
+                                  _n(sx + 4), _n(y0 + 16), _n(sx), _n(y0 + 10)),
+                               stroke=_SVG_INK_MUTED, w=2, data_part="steam"))
+        else:
+            # the basin cooling on the bench, with crystals
+            basin(84, y0 + 70)
+            for (cx, cy, r) in ((62, y0 + 84, 7), (80, y0 + 88, 8), (98, y0 + 84, 6),
+                                (110, y0 + 80, 5), (72, y0 + 78, 5)):
+                o.append(_path("M %s,%s L %s,%s L %s,%s L %s,%s Z"
+                               % (_n(cx), _n(cy - r), _n(cx + r), _n(cy), _n(cx), _n(cy + r),
+                                  _n(cx - r), _n(cy)),
+                               fill=cry, stroke=_SVG_INK, w=1.5, data_part="crystal"))
+            o.append(_line(28, y0 + 104, 140, y0 + 104, stroke=_SVG_INK_MUTED, w=2,
+                           data_part="bench"))
+    return _c6b_open(fig, 6 + 4 * RH - 4, o)
+
+
 ART = {
     'ph-strip': _ph_strip,
+    'c6-ph-bands': _c6l_ph_bands,
+    'c6-cabbage-colours': _c6l_cabbage_colours,
+    'c6-neutral-curve': _c6l_neutral_curve,
 }
 
 KIND_SHELL = {
@@ -2178,3 +2807,11 @@ KIND_HEAD_TOTAL = {
     'step-rig': lambda a: len(a.get("steps") or []),
     'solid-sorter': lambda a: len(a.get("solids") or []),
 }
+
+# lean Wave 2 (C6 lane B)
+ART.update({
+
+    "c6-squeaky-pop": _c6b_squeaky_pop,
+    "c6-limewater-test": _c6b_limewater_test,
+    "c6-salt-steps": _c6b_salt_steps,
+})

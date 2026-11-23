@@ -507,21 +507,18 @@ LESSON = {
         # MRB-177: all four are four words, so there is no length tell in
         # either direction.
         "recall": {
-            "q": "Zinc is added to sulfuric acid. What are the products?",
+            "q": "Zinc is added to dilute sulfuric acid. What are the products?",
             "options": [
                 "Zinc chloride and hydrogen",
                 "Zinc sulfate and water",
-                "Zinc oxide and hydrogen",
+                "Zinc chloride and water",
                 "Zinc sulfate and hydrogen",
             ],
             "answer": 3,
             "feedback": {
-                0: "Chlorides come from hydrochloric acid. Sulfuric acid "
-                   "gives sulfates.",
-                1: "Water is what you get when an acid meets an alkali. With "
-                   "a metal, the second product is hydrogen gas.",
-                2: "No oxide forms here — the metal ends up joined to the "
-                   "part of the acid left behind, which is the sulfate.",
+                0: "Chlorides come from hydrochloric acid. Sulfuric acid makes sulfates.",
+                1: "A metal and an acid give off hydrogen. No water is made.",
+                2: "Sulfuric acid makes a sulfate. A metal and an acid give off hydrogen.",
             }},
         # ⚑ MRB-177 — THE THREE DISTRACTORS ARE RE-AUTHORED AND THE CORRECT
         # OPTION IS UNTOUCHED. Design's set ran 15 words against 9, 5 and 5:
@@ -530,28 +527,26 @@ LESSON = {
         # length: 14, 15, 15 against 15. Every one of Design's corrections is
         # unchanged and still answers its own option — the dilution argument,
         # the "not really a metal" argument, and the time argument.
+        # ⊕ Lean Wave 2 (Nov 2026): options rewritten to the lean option rule. Before and
+        # after are in docs/lessons/wave2/ks3-acid-plus-metal.md (Quiz notes).
         "apply": {
             "q": "Copper is left in dilute hydrochloric acid for a week and "
                  "nothing happens. What is the reason?",
             "options": [
-                "Copper is below hydrogen in the reactivity series, so it "
-                "cannot displace it from the acid",
-                "The acid was too dilute to attack copper, so a concentrated "
-                "one would have worked",
-                "Copper is not really a metal but a mixture, so it has no "
-                "reaction with any acid",
-                "A week is not long enough for a reaction this slow, so it "
-                "simply needs to be left longer",
+                "Copper is too unreactive, so it cannot take the place of the "
+                "hydrogen",
+                "The acid was too cold, so warming the acid up would make the "
+                "copper fizz",
+                "Copper is not a metal at all, so it cannot react with any "
+                "dilute acids",
+                "A week is not long enough, so the copper must be left much "
+                "longer",
             ],
             "answer": 0,
             "feedback": {
-                1: "Concentration changes how fast a possible reaction goes. "
-                   "This one cannot happen at any concentration of dilute "
-                   "hydrochloric acid.",
-                2: "Copper is very much a metal. It is simply an unreactive "
-                   "one.",
-                3: "Time cannot make an impossible reaction happen. A year "
-                   "would look exactly the same.",
+                1: "Warming does not help. Copper is too unreactive to give off hydrogen.",
+                2: "Copper is a metal. It is a very unreactive one.",
+                3: "Waiting longer does not help. Copper is too unreactive to give off hydrogen.",
             }},
         "explain": {
             "q": "Magnesium is dropped into hydrochloric acid. Describe what "

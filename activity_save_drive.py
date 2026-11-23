@@ -980,10 +980,13 @@ CASES = [
          check=lambda b: [x for x in b if x["kind"] == "written"][0].get("self_checked") is False and [x for x in b if x["kind"] == "written"][0].get("is_correct") is None
                          and [x for x in b if x["kind"] == "written"][0]["answer"].startswith("If a substance gains oxygen"),
          back="(function(){ var s = document.querySelector('.ks3-rwrite-block'); return /gains oxygen/.test(s.querySelector('[data-rwrite-field]').value) && s.querySelector('[data-rwrite-show]').disabled; })()"),
-    dict(name="ks3-order", page="/ks3/chemistry/acids-and-alkalis/making-a-pure-dry-salt.html",
+    # ⊕ 23 Nov 2026 (Mide, 14 Nov: checks do not depend on real lessons): C6 went lean (Wave 2) and
+    # lost the method-order bench, so this case presses the hidden frozen classic copy (ks3_fixtures/).
+    # Was /ks3/chemistry/acids-and-alkalis/making-a-pure-dry-salt.html.
+    dict(name="ks3-order", page="/ks3/_fixtures/fixture-making-a-pure-dry-salt.html",
          act="""var s = document.querySelector('.ks3-morder-block'); var st = s.querySelectorAll('[data-morder-step]');
                 for (var i = 0; i < st.length; i += 1) { H.click(st[i]); await H.sleep(60); } await H.sleep(400);""",
-         want=["making-a-pure-dry-salt#*-1"],
+         want=["fixture-making-a-pure-dry-salt#*-1"],
          check=lambda b: [x for x in b if x["kind"] == "order"][0]["answer"].count("\n") >= 3 and bool([x for x in b if x["kind"] == "order"][0]["correct_answer"]),
          back="(function(){ var s = document.querySelector('.ks3-morder-block'); return !!s.querySelector('[data-morder-answer]') && !s.querySelector('[data-morder-answer]').hidden; })()"),
     # ⊕ 8 Nov 2026: the two live puzzles (no Check; the page judges every press).

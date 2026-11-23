@@ -521,25 +521,21 @@ LESSON = {
         # in the correct answer's own shape and at its own length — 6, 5, 5
         # against 6 — and every one of Design's corrections still answers its
         # own option. The answer moves to index 2 (MRB-278).
+        # ⊕ Lean Wave 2 (Nov 2026): options rewritten to the lean option rule. Before and
+        # after are in docs/lessons/wave2/ks3-acids-and-carbonates.md (Quiz notes).
         "recall": {
-            "q": "Complete: acid + carbonate makes what?",
+            "q": "An acid reacts with a metal carbonate. What are the products?",
             "options": [
                 "salt + hydrogen + carbon dioxide",
                 "salt + water + hydrogen",
                 "salt + water + carbon dioxide",
-                "carbon dioxide + water only",
+                "water + hydrogen + carbon dioxide",
             ],
             "answer": 2,
             "feedback": {
-                0: "Hydrogen is what a metal gives with an acid. A carbonate "
-                   "gives carbon dioxide, and water as well — and no hydrogen "
-                   "at all.",
-                1: "That pair is what an acid gives with a metal. The "
-                   "carbonate brings carbon and oxygen with it, and they "
-                   "leave as carbon dioxide.",
-                3: "The metal from the carbonate has to end up somewhere — it "
-                   "becomes the salt, dissolved in the water that is also "
-                   "formed.",
+                0: "Hydrogen comes from a metal and an acid. A carbonate gives water and carbon dioxide.",
+                1: "No hydrogen is made. The gas from a carbonate is carbon dioxide.",
+                3: "A salt is always made. No hydrogen is made with a carbonate.",
             }},
         # Design's set, verbatim: 6 tokens against 5, 4 and 4, so the correct
         # answer is longest by one and at 1.2x — inside §13's bar. The answer
@@ -548,19 +544,16 @@ LESSON = {
             "q": "A gas is bubbled through limewater and the limewater stays "
                  "clear. What can you conclude?",
             "options": [
-                "The gas is hydrogen",
-                "The gas is not carbon dioxide",
-                "The limewater has gone off",
-                "No gas was produced",
+                "The gas is oxygen, as oxygen relights a glowing wooden splint",
+                "The gas is not carbon dioxide, as that turns limewater milky",
+                "The gas is carbon dioxide, as that leaves limewater clear",
+                "The gas is hydrogen, as hydrogen leaves the limewater clear",
             ],
             "answer": 1,
             "feedback": {
-                0: "It rules carbon dioxide out but does not identify what it "
-                   "is. Hydrogen would need its own test.",
-                2: "Possible in principle, but the honest conclusion from a "
-                   "clear result is that the gas is not carbon dioxide.",
-                3: "Gas was bubbled through. A negative result is a result "
-                   "about the gas, not about whether there was one.",
+                0: "That is the test for oxygen, and no splint was used. Clear limewater only rules out carbon dioxide.",
+                2: "Carbon dioxide turns limewater milky. Clear limewater means the gas is not carbon dioxide.",
+                3: "Hydrogen does leave it clear, but so do many gases. Only carbon dioxide is ruled out.",
             }},
         "explain": {
             "q": "Marble chips are dropped into dilute hydrochloric acid. "
