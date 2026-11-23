@@ -11,7 +11,7 @@ solvent). The spec gives no symbols; d₁ and d₂ are named in full wherever th
 fig:chromatogram (BRIEF-AN.md). The practice set reads the route's `quiz` list (K.bank):
 quiz-chromatography.json, five per route, both old stems kept."""
 
-_CFQ_PH = ["anything to convert?", "written out", "numbers in", "work it out", "with unit"]
+_CFQ_PH = ["anything to convert?", "written out", "numbers in", "work it out", "unit, if any"]
 
 
 def _q(lines, conv_ph=None):
@@ -87,7 +87,7 @@ LESSON = {
                   {"points": [
                       "The <strong>start line</strong> (origin) is where the spots were put.",
                       "The <strong>solvent front</strong> is how far the solvent moved.",
-                      "Each spot is a different substance.",
+                      "Each spot in one column is a different substance.",
                   ]}]},
         {"kind": "card", "title": "Rf value",
          "body": ["The ratio of the distance moved by a compound (centre of spot from origin) to "

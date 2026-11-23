@@ -33,7 +33,7 @@ LOGIC_EDITS = [
 # "ppt" is written out as "precipitate".
 LOGIC_EDITS += [
     ("figureSvg: D.table(['Solution', 'Few drops of NaOH', 'Excess NaOH', 'Flame test'], [['P', 'white precipitate', 'dissolves', 'not done'], ['Q', 'green precipitate', 'stays', 'not done'], ['R', 'white precipitate', 'stays', 'orange-red']],\n            { widths: [130, 250, 170, 170], alt: 'Table. P: white precipitate that dissolves in excess. Q: green precipitate that stays. R: white precipitate that stays, and an orange-red flame.' }),",
-     'figureSvg: (function (head, rows, cw, alt) {\n            var rh = 80, x0 = 20, y0 = 20, W = cw.reduce(function (a, b) { return a + b; }, 0) + 40, H = rh * (rows.length + 1) + 40, x = x0;\n            var body = \'<rect x="20" y="20" width="\' + (W - 40) + \'" height="\' + (H - 40) + \'" fill="#FFFDF8" stroke="\' + D.C.stroke + \'" stroke-width="2.5"/>\';\n            var cell = function (cx, cy, t, size, o) { var ls = String(t).split(\'\\n\'); return ls.map(function (s, j) { return D.T(cx, cy + (j - (ls.length - 1) / 2) * (size + 4), s, size, o); }).join(\'\'); };\n            cw.forEach(function (w, i) {\n              if (i) body += D.line(x, y0, x, H - 20, 2, D.C.stroke);\n              body += cell(x + w / 2, y0 + rh / 2 + 7, head[i], 19, { fill: D.C.label });\n              rows.forEach(function (r, k) { body += cell(x + w / 2, y0 + rh * (k + 1) + rh / 2 + 7, r[i], 21, { fill: D.C.stroke, weight: i === 0 ? \'bold\' : \'normal\' }); });\n              x += w;\n            });\n            for (var k = 0; k <= rows.length; k++) body += D.line(x0, y0 + rh * (k + 1), W - 20, y0 + rh * (k + 1), k === 0 ? 3 : 1.5, D.C.stroke);\n            return D.svg(W, H, body, alt);\n          })([\'Solution\', \'A few drops\\nof NaOH\', \'Excess\\nNaOH\', \'Flame\\ntest\'], [[\'P\', \'white\\nprecipitate\', \'dissolves\', \'not done\'], [\'Q\', \'green\\nprecipitate\', \'stays\', \'not done\'], [\'R\', \'white\\nprecipitate\', \'stays\', \'orange-red\']], [96, 140, 120, 120], \'Table. P: white precipitate that dissolves in excess. Q: green precipitate that stays. R: white precipitate that stays, and an orange-red flame.\'),'),
+     'figureSvg: (function (head, rows, cw, alt) {\n            var rh = 76, x0 = 10, y0 = 10, W = cw.reduce(function (a, b) { return a + b; }, 0) + 20, H = rh * (rows.length + 1) + 20, x = x0;\n            var body = \'<rect x="10" y="10" width="\' + (W - 20) + \'" height="\' + (H - 20) + \'" fill="#FFFDF8" stroke="\' + D.C.stroke + \'" stroke-width="2.5"/>\';\n            var cell = function (cx, cy, t, size, o, gap) { var ls = String(t).split(\'\\n\'); return ls.map(function (s, j) { return D.T(cx, cy + (j - (ls.length - 1) / 2) * (size + gap), s, size, o); }).join(\'\'); };\n            cw.forEach(function (w, i) {\n              if (i) body += D.line(x, y0, x, H - 10, 2, D.C.stroke);\n              body += cell(x + w / 2, y0 + rh / 2 + 7, head[i], 19, { fill: D.C.label }, 9);\n              rows.forEach(function (r, k) { body += cell(x + w / 2, y0 + rh * (k + 1) + rh / 2 + 7, r[i], 21, { fill: D.C.stroke, weight: i === 0 ? \'bold\' : \'normal\' }, 4); });\n              x += w;\n            });\n            for (var k = 0; k <= rows.length; k++) body += D.line(x0, y0 + rh * (k + 1), W - 10, y0 + rh * (k + 1), k === 0 ? 3 : 1.5, D.C.stroke);\n            return D.svg(W, H, body, alt);\n          })([\'Solution\', \'A few drops\\nof NaOH\', \'Excess\\nNaOH\', \'Flame\\ntest\'], [[\'P\', \'white\\nprecipitate\', \'dissolves\', \'not done\'], [\'Q\', \'green\\nprecipitate\', \'stays\', \'not done\'], [\'R\', \'white\\nprecipitate\', \'stays\', \'orange-red\']], [92, 128, 96, 112], \'Table. P: white precipitate that dissolves in excess. Q: green precipitate that stays. R: white precipitate that stays, and an orange-red flame.\'),'),
 ]
 
 LESSON = {
@@ -64,12 +64,12 @@ LESSON = {
         {"kind": "reveal", "title": "Precipitates with sodium hydroxide solution",
          "cols": ["Precipitate", "In excess"],
          "rows": [
-             ("Aluminium ions", "White", "The precipitate dissolves"),
-             ("Calcium ions", "White", "The precipitate stays"),
-             ("Magnesium ions", "White", "The precipitate stays"),
-             ("Copper(II) ions", "Blue", "The precipitate stays"),
-             ("Iron(II) ions", "Green", "The precipitate stays"),
-             ("Iron(III) ions", "Brown", "The precipitate stays"),
+             ("Aluminium ions", "White", "Dissolves"),
+             ("Calcium ions", "White", "Stays"),
+             ("Magnesium ions", "White", "Stays"),
+             ("Copper(II) ions", "Blue", "Stays"),
+             ("Iron(II) ions", "Green", "Stays"),
+             ("Iron(III) ions", "Brown", "Stays"),
          ]},
         {"kind": "card", "title": "A few drops first, then excess",
          "body": ["Solutions of aluminium, calcium and magnesium ions form white precipitates when "
