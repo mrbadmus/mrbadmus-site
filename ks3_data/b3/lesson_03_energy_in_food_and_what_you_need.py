@@ -597,44 +597,36 @@ LESSON = {
                  "(2400 kJ) and two chocolate bars (1050 kJ each). What is "
                  "their intake, and how does it compare?",
             "options": [
-                "6620 kJ — they forgot to count the second chocolate bar",
-                "7670 kJ — about 1800 kJ more than the requirement",
-                "7670 kJ — about 1800 kJ short of the requirement",
-                "9500 kJ — the intake always matches the requirement",
+                "6620 kJ, which is about 2900 kJ short of the requirement",
+                "7670 kJ, which is about 1800 kJ more than the requirement",
+                "7670 kJ, which is about 1800 kJ short of the requirement",
+                "9500 kJ, which is exactly the same as the requirement",
             ],
             "answer": 2,
             "feedback": {
-                0: "That is the total with only one bar. Read the portion "
-                   "counts before adding — this is the single most common slip "
-                   "in this kind of question.",
-                1: "The arithmetic is right and the comparison is the wrong way "
-                   "round. 7670 is less than 9500, so it is a shortfall.",
-                3: "Nothing makes intake match requirement automatically. The "
-                   "whole point of the sum is that it usually does not.",
+                0: "That total counts only one chocolate bar. The day had two.",
+                1: "The total is right. But 7670 is less than 9500, so it is a shortfall.",
+                3: "Nothing makes the intake match the need. Add up the food to find out.",
             }},
         "apply": {
             "title": "Rung 2 · The one that catches people",
-            "q": "A chocolate bar label says “1050 kJ — 11% of your daily "
-                 "needs”. A 4-year-old eats one. What share of their day is "
-                 "it?",
+            "q": "A chocolate bar holds 1050 kJ. That is 11% of a "
+                 "13-year-old’s daily need of 9500 kJ. A 4-year-old needs "
+                 "about 5800 kJ a day. What share of the 4-year-old’s day is "
+                 "one bar?",
             "options": [
-                "About 18%, because their requirement is much lower",
-                "11% — the label states it",
-                "About 6%, because a smaller person gets more from the same "
-                "food",
-                "You cannot say without knowing their mass exactly",
+                "About 18%, because their daily need is much lower",
+                "About 11%, because the bar holds the same energy for "
+                "everyone",
+                "About 6%, because a smaller body takes less energy from the "
+                "bar",
+                "You cannot say, because the 4-year-old’s mass is not given",
             ],
             "answer": 0,
             "feedback": {
-                1: "The label states a percentage of a standard adult figure. "
-                   "It cannot know who is holding the bar, and the "
-                   "4-year-old’s requirement is far lower.",
-                2: "A smaller body does not extract more energy from a bar. "
-                   "The bar’s energy is fixed; what changes is the size of the "
-                   "requirement it is being compared against.",
-                3: "You cannot be precise, but you can absolutely say the "
-                   "share is bigger. Refusing to reason from an approximate "
-                   "figure is its own mistake.",
+                1: "11% is the share for a 13-year-old. A 4-year-old needs less, so the share is bigger.",
+                2: "The bar holds the same energy, whoever eats it. The need is what differs.",
+                3: "You do not need the mass. Divide 1050 by 5800 and multiply by 100.",
             }},
         "explain": {
             "title": "Rung 3 · Explain the pair",

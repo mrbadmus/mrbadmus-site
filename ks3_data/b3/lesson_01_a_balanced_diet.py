@@ -572,15 +572,9 @@ LESSON = {
             ],
             "answer": 1,
             "feedback": {
-                0: "Vitamins have an energy content of zero. They make "
-                   "energy-releasing reactions possible without supplying any "
-                   "energy themselves.",
-                2: "Close — but protein can be respired too. The body prefers "
-                   "to use it for growth and repair, and falls back on burning "
-                   "it when the other two run short.",
-                3: "Fibre and water are never respired at all, and neither are "
-                   "vitamins or minerals. Only three of the seven carry "
-                   "energy.",
+                0: "Vitamins release no energy. Protein does, so it belongs in the list.",
+                2: "Protein can be respired for energy too, as well as for growth.",
+                3: "Vitamins, minerals and water release no energy. Fibre gives almost none.",
             }},
         "apply": {
             "title": "Rung 2 · The one that catches people",
@@ -589,21 +583,16 @@ LESSON = {
                  "A doctor finds their blood cannot carry oxygen properly. "
                  "What is missing?",
             "options": [
-                "Iron — a mineral, needed in milligrams",
-                "Carbohydrate — they need more fuel",
-                "Water — they are dehydrated",
-                "Vitamin C — they are getting no fruit",
+                "Iron, because it is needed to make haemoglobin",
+                "Carbohydrate, because they need more fuel for energy",
+                "Water, because they are dehydrated from drinking too little",
+                "Vitamin C, because they are getting no fruit at all",
             ],
             "answer": 0,
             "feedback": {
-                1: "They are eating plenty of carbohydrate. Reaching for ‘more "
-                   "fuel’ is the trap: the fuel is there and cannot be used "
-                   "properly.",
-                2: "Dehydration does cause tiredness, but it would not stop "
-                   "the blood carrying oxygen in the way described. That "
-                   "points at haemoglobin.",
-                3: "Low vitamin C causes scurvy: bleeding gums and poor "
-                   "healing. It does not stop blood carrying oxygen.",
+                1: "They eat plenty of bread, pasta and rice. Fuel is not what is missing.",
+                2: "Water does not help blood carry oxygen. Iron makes haemoglobin, which does.",
+                3: "Too little vitamin C causes scurvy. Iron is needed to carry oxygen.",
             }},
         "explain": {
             "title": "Rung 3 · Explain the two ends",

@@ -607,41 +607,30 @@ LESSON = {
             ],
             "answer": 2,
             "feedback": {
-                0: "The length is unchanged — six metres before and after. "
-                   "That is exactly the comparison the hose in the hook was "
-                   "for.",
-                1: "Villi project into the space, so if anything they slightly "
-                   "reduce the volume available to food. Volume is not what "
-                   "limits absorption.",
-                3: "Villi contain no muscle. Peristalsis is done by muscle in "
-                   "the wall and moves food along, not through.",
+                0: "Villi do not add any length. They add surface area.",
+                1: "Villi do not add volume. They give a bigger surface for absorbing food.",
+                3: "Villi do not make muscles stronger. They give a bigger surface for absorbing food.",
             }},
         "apply": {
             "title": "Rung 2 · The one that catches people",
-            "q": "A villus keeps its full surface area and its "
-                 "one-cell-thick wall, but its blood supply is blocked. What "
-                 "happens to absorption there?",
+            "q": "A villus keeps its full surface area and its thin wall. "
+                 "But its blood supply is blocked. What happens to absorption "
+                 "there?",
             # ⚖️ LENGTH PARITY: PASSES AS DRAWN. 11 / 9 / 8 / 9 words. The
             # correct option is NOT the longest — option A beats it by two —
             # so there is nothing to fix and nothing to pad.
             "options": [
-                "It continues normally — the surface and the thin wall are "
-                "intact",
-                "It reverses, pushing glucose back into the gut",
-                "It speeds up, because nothing is carrying molecules away",
-                "It stops within minutes, because the concentration difference "
-                "disappears",
+                "It carries on as normal, as the surface and thin wall are intact",
+                "It reverses, as glucose is pushed back out of the blood into the "
+                "gut",
+                "It speeds up, as nothing is carrying the molecules away",
+                "It slows and stops, as the concentration difference disappears",
             ],
             "answer": 3,
             "feedback": {
-                0: "Two of the four features are intact and it still fails. "
-                   "Diffusion needs a concentration difference, and only "
-                   "flowing blood maintains one.",
-                1: "Once the two sides equalise, movement is equal in both "
-                   "directions and there is no net transfer. It stops rather "
-                   "than reverses.",
-                2: "Carrying molecules away is what keeps absorption going. "
-                   "Removing it removes the gradient.",
+                0: "Diffusion needs a concentration difference. Without blood flow, that difference disappears.",
+                1: "Nothing pushes glucose back. Once both sides are equal, it stops moving across overall.",
+                2: "Blood carrying glucose away keeps absorption going. Without it, absorption stops.",
             }},
         "explain": {
             "title": "Rung 3 · Explain the whole design",

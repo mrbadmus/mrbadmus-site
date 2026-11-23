@@ -543,25 +543,20 @@ LESSON = {
     "ladder": {
         "recall": {
             "title": "Rung 1 · Name the imbalance",
-            "q": "A patient eats 12 000 kJ a day, is gaining mass slowly, and "
-                 "has been diagnosed with scurvy. Which imbalance or "
-                 "imbalances apply?",
+            "q": "A patient eats 12 000 kJ a day, and their mass is not "
+                 "changing. They have been diagnosed with scurvy. Which "
+                 "imbalance or imbalances apply?",
             "options": [
-                "A nutrient missing, only",
-                "An energy shortfall",
-                "A nutrient missing and an energy shortfall",
-                "None — you cannot have scurvy while eating that much",
+                "A missing nutrient only",
+                "An energy shortfall only",
+                "A missing nutrient and an energy shortfall",
+                "No imbalance at all on that much food",
             ],
             "answer": 0,
             "feedback": {
-                1: "They are gaining mass on 12 000 kJ a day. There is no "
-                   "shortfall of energy here — scurvy is about vitamin C, "
-                   "which carries no energy at all.",
-                2: "The deficiency is right; the shortfall is not. Nothing in "
-                   "the case suggests too little energy, and gaining mass "
-                   "rules it out.",
-                3: "You can, and people do. Vitamin C is needed in milligrams "
-                   "and is absent from a great many otherwise generous diets.",
+                1: "Their mass is steady on 12 000 kJ, so energy is not short.",
+                2: "The missing nutrient is right. Steady mass shows there is no energy shortfall.",
+                3: "Scurvy happens at any energy intake. It needs only a lack of vitamin C.",
             }},
         "apply": {
             "title": "Rung 2 · The one that catches people",
@@ -570,22 +565,20 @@ LESSON = {
                  "diagnosed with iron-deficiency anaemia. What does this tell "
                  "you?",
             "options": [
-                "Iron deficiency does not depend on how much energy a diet "
-                "supplies",
-                "Child B must have been misdiagnosed",
-                "Child A’s anaemia is more serious because they eat less",
-                "Both children need to eat more food",
+                "Energy intake does not decide iron intake, as iron is a "
+                "separate nutrient",
+                "Child B must have been misdiagnosed, as 11 000 kJ always "
+                "holds enough iron",
+                "Child A’s anaemia must be worse, as they eat less food each "
+                "day",
+                "Both children need more food, as anaemia comes from too "
+                "little energy",
             ],
             "answer": 0,
             "feedback": {
-                1: "There is no contradiction to resolve. A deficiency is a "
-                   "statement about one nutrient, and it is independent of the "
-                   "total energy intake.",
-                2: "Severity depends on how low the iron is, which the case "
-                   "does not tell you. The energy figures are not evidence "
-                   "about the anaemia either way.",
-                3: "This is the trap the lesson exists to set. More of a diet "
-                   "that lacks iron delivers more of everything except iron.",
+                1: "No amount of food guarantees iron. Child B's diet can still lack it.",
+                2: "The energy figures say nothing about how low each child's iron is.",
+                3: "Anaemia here is caused by too little iron, not too little energy.",
             }},
         "explain": {
             "title": "Rung 3 · Explain why more food does not fix it",

@@ -524,50 +524,40 @@ LESSON = {
             # correct option is still index 2 for the same reason, the
             # options are in the same order, and every option keeps its
             # word count, so the length-parity note above still holds.
-            "q": "A student shakes double cream with ethanol, pours the "
-                 "ethanol into water and gets a thick white cloud. What "
-                 "may they write down?",
+            # ⊕ Lean Wave 2 (18 Nov 2026): the food is now "a food sample". With double
+            # cream, option A ("high in fat") was a true fact about cream. No nut.
+            "q": "A student shakes a food sample with ethanol, then pours the "
+                 "ethanol into water. A cloudy white layer forms. What may "
+                 "they write down?",
             "options": [
-                "The cream is high in fat",
-                "The cream contains lipid and no protein",
-                "The cream contains lipid",
-                "The cream is unhealthy",
+                "The food is high in fat, as the white layer is thick",
+                "The food contains lipid and no protein, as the layer is white",
+                "The food contains lipid, as a cloudy white layer formed",
+                "The food is unhealthy, as it contains a lot of fat",
             ],
             "answer": 2,
             "feedback": {
-                0: "Almost right, and ‘high’ is the word that fails. The "
-                   "emulsion test detects lipid; it does not measure how much, "
-                   "so ‘high’ is not supported by this result.",
-                1: "This test says nothing at all about protein. One test "
-                   "answers one question — you would need Biuret to make any "
-                   "claim about protein.",
-                3: "No food test is a judgement about health. Lipid is one of "
-                   "the seven required nutrients.",
+                0: "The test shows fat is there. It does not measure how much.",
+                1: "This test says nothing about protein. That needs the Biuret test.",
+                3: "A food test shows a nutrient is there. It says nothing about health.",
             }},
         "apply": {
             "title": "Rung 2 · The one that catches people",
-            "q": "Bread gives a strong blue-black with iodine. A student chews "
-                 "a piece for two minutes, spits it out, tests it again, and "
-                 "now gets orange-brown and a positive Benedict’s. What "
-                 "happened?",
+            "q": "Bread turns iodine blue-black and leaves Benedict’s blue. A "
+                 "student chews some for a few minutes. Now iodine gives a "
+                 "weaker colour, and Benedict’s turns orange. What happened?",
             "options": [
                 "The iodine was too dilute the second time",
-                "Chewing squashed the starch into smaller pieces so the "
-                "iodine could not find it",
+                "Chewing crushed the starch into pieces too small for iodine "
+                "to detect",
                 "Saliva broke the starch down into sugar",
                 "The starch dissolved in the saliva",
             ],
             "answer": 2,
             "feedback": {
-                0: "Same iodine, same drops. Something changed in the bread, "
-                   "not in the reagent — and the Benedict’s result tells you "
-                   "what.",
-                1: "Crushing a sample makes a test more likely to work, not "
-                   "less. And crushing cannot create the reducing sugar that "
-                   "Benedict’s just found.",
-                3: "Dissolving starch does not stop iodine detecting it — the "
-                   "standard method uses starch solution. The starch is not "
-                   "dissolved, it is gone: converted to something else.",
+                0: "The same iodine was used both times. The bread changed, not the reagent.",
+                1: "Crushing food helps a test work. It cannot make sugar appear.",
+                3: "Iodine still detects starch in solution. Some starch has been turned into sugar.",
             }},
         "explain": {
             "title": "Rung 3 · Write the honest conclusion",

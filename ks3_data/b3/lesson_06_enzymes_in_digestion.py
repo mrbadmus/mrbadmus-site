@@ -605,27 +605,16 @@ LESSON = {
             # thresholds, and a class works out early that the long one is
             # usually right. AFTER: 14 / 13 / 13 / 13.
             "options": [
-                "None — it is consumed by the reaction as the starch is "
-                "broken down",
-                # was "None — it is consumed as the starch is broken down"
-                "About half — some enzyme is always lost each time it does "
-                "its job",
-                # was "About half — some is always lost"
-                "It depends how much starch there was — more starch uses up "
-                "more enzyme",
-                # was "It depends how much starch there was"
-                "All of it — an enzyme is not used up by the reaction it "
-                "catalyses",
+                "None, as it is used up when the starch is broken down",
+                "About half, as some enzyme is lost each time it does its job",
+                "It depends, as more starch uses up more of the enzyme",
+                "All of it, as an enzyme is not used up by the reaction",
             ],
             "answer": 3,
             "feedback": {
-                0: "Then a teaspoon could not digest a kilogram. Substrate "
-                   "falls and product rises; the enzyme count does not change.",
-                1: "None is lost to the reaction. A catalyst finishes each "
-                   "cycle in the same state it started.",
-                2: "It does not. That is precisely what makes a catalyst "
-                   "useful — the amount needed does not scale with the amount "
-                   "of substrate.",
+                0: "Enzymes are catalysts, so they are not used up. All of it is left.",
+                1: "None is lost. Each enzyme molecule is ready to work again after each job.",
+                2: "The amount of enzyme stays the same, however much starch it breaks down.",
             }},
         "apply": {
             "title": "Rung 2 · The one that catches people",
@@ -634,28 +623,17 @@ LESSON = {
             # BEFORE: 10 / 14 / 9 / 5 words — again +4 and ×1.40 over the
             # longest distractor. AFTER: 12 / 14 / 12 / 13.
             "options": [
-                # was "It needs to be warmed up again to become active"
-                "It needs to be warmed up again before it will become active",
-                "The enzyme was killed by the heat, and dead enzymes cannot "
-                "work",
-                # was "The enzyme was killed and dead enzymes cannot work"
-                "The starch was denatured instead, so amylase has nothing left "
-                "to work on",
-                # was "The starch was denatured instead"
-                "Its shape was permanently destroyed by the heat, so it no "
-                "longer fits starch",
+                "It is now too cold, so it must be warmed up again before it works",
+                "The heat killed it, so the dead enzyme can never work again",
+                "The starch was denatured instead, so amylase has nothing to work "
+                "on",
+                "Its shape changed for good, so it no longer fits starch",
             ],
             "answer": 3,
             "feedback": {
-                0: "It is at 37 °C, which is its optimum. Temperature is no "
-                   "longer the problem — something about the molecule has "
-                   "changed.",
-                1: "The idea is close but the word is wrong, and the wrong "
-                   "word carries a wrong picture. An enzyme is a molecule and "
-                   "was never alive; it is denatured, not dead.",
-                2: "Starch has no folded shape to lose. Heating starch in "
-                   "water does not stop amylase digesting it — it usually "
-                   "helps.",
+                0: "37 °C is body temperature, so it is warm enough. The enzyme itself has changed.",
+                1: "Enzymes were never alive, so they cannot be killed. Heat denatures them.",
+                2: "Starch is not denatured. The heat changed the shape of the enzyme.",
             }},
         "explain": {
             "title": "Rung 3 · Explain the pH switch",

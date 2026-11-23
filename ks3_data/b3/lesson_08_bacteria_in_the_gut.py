@@ -443,19 +443,16 @@ LESSON = {
             # no longer the longest. The correct option is unchanged, because
             # it is the science.
             "options": [
-                "Absorb glucose from the gut into the blood",
+                "Absorb glucose and pass it into the blood",
                 "Produce the hydrochloric acid that kills arriving bacteria",
                 "Digest protein into the amino acids you absorb",
-                "Break down cellulose and make vitamin K",
+                "Break down fibre and make vitamin K",
             ],
             "answer": 3,
             "feedback": {
-                0: "Absorption is done by your own villus cells, in the small "
-                   "intestine, and it happens perfectly well without bacteria.",
-                1: "That is your stomach lining, and the acid actually kills "
-                   "most bacteria that arrive with a meal.",
-                2: "Your own protease does this, in the stomach and small "
-                   "intestine. Bacteria are not needed for it.",
+                0: "Your own villus cells absorb glucose. Bacteria are not needed for that.",
+                1: "Your stomach lining makes the acid. The acid kills most bacteria that arrive.",
+                2: "Your own protease enzymes digest protein. Bacteria are not needed for that.",
             }},
         "apply": {
             "title": "Rung 2 · The one that catches people",
@@ -463,44 +460,25 @@ LESSON = {
             # the question and the options with `t()` and puts the feedback in
             # an attribute, so `<em>` would render as tag soup. Words
             # unchanged. See "What could not be lifted" 2.
-            "q": "A patient takes a broad-spectrum antibiotic for a chest "
-                 "infection and two weeks later develops severe diarrhoea "
-                 "from C. difficile. Why did clearing bacteria make a "
-                 "bacterial infection more likely?",
-            # ⚖️ **CORRECTED FROM DESIGN — the distractors were too short
-            # (MRB-177 length parity).**
-            #
-            # Design's set ran 6 / 13 / 9 / 7 words. The correct answer was
-            # strictly the longest, beat the longest distractor by 4 words AND
-            # by ×1.44 — both limbs of the rule, on the rung that is supposed
-            # to be the trap. A trap you can walk past by counting words is
-            # not a trap.
-            #
-            # Each distractor keeps its misconception EXACTLY: the drug made
-            # the organism stronger, the drug caused the diarrhoea directly,
-            # the infection travelled. Only the sentences are completed, to
-            # 11 / 12 / 11 words, so the correct answer at 13 leads by one
-            # word and ×1.08.
+            "q": "A patient takes an antibiotic for a chest infection. Two weeks "
+                 "later, a gut bacterium called C. difficile causes severe "
+                 "diarrhoea. Why did killing bacteria make this infection more "
+                 "likely?",
             "options": [
-                "The antibiotic made C. difficile itself stronger and harder "
-                "to kill",
-                "The antibiotic cleared the competing species, leaving space "
-                "and food for C. difficile",
-                "Antibiotics irritate the gut and cause diarrhoea directly, "
-                "with no bacterium involved",
-                "The chest infection spread down to the gut and multiplied "
-                "there",
+                "The antibiotic made C. difficile much stronger, so it was much "
+                "harder to kill",
+                "The antibiotic killed competing bacteria, so C. difficile had "
+                "space and food",
+                "The antibiotic irritated the gut, so it caused diarrhoea with no "
+                "bacterium",
+                "The chest infection spread down into the gut, so its bacteria "
+                "multiplied there",
             ],
             "answer": 1,
             "feedback": {
-                0: "The antibiotic did not improve it. What changed was its "
-                   "situation — it faced no competition for space or food.",
-                2: "They can irritate the gut, but this case names a specific "
-                   "organism that has multiplied. That needs an explanation "
-                   "about competition.",
-                3: "Nothing travelled. The organism was almost certainly "
-                   "already present in small numbers and was being held in "
-                   "check.",
+                0: "The antibiotic did not change C. difficile. It removed its competitors.",
+                2: "This diarrhoea was caused by C. difficile, a bacterium that grew in the gut.",
+                3: "Chest bacteria did not cause it. C. difficile grew because its competitors were gone.",
             }},
         "explain": {
             "title": "Rung 3 · Explain the germ-free mouse",

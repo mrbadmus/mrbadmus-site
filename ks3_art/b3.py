@@ -2534,11 +2534,676 @@ def _digestion_timing_bars(fig):
     return "".join(out)
 
 
+# ── lean Wave 2 (B3 lane A): four phone-width figures ─────────────────────
+#
+#   "b3-food-test-colours"  data {"rows": [{"nutrient", "reagent", "note",
+#                                  "start": {"name", "colour"},
+#                                  "positive": [{"colour"}, ...], "positive_name"}] x4}
+#   "b3-burning-food"       data {"water": "20 cm³ of water"}  (labels are fixed: the set-up)
+#   "b3-energy-needs"       data {"unit": "kJ", "people": [{"label", "kj"}, ...]}
+#   "b3-day-intake"         data {"unit": "kJ", "need": int, "foods": [{"label", "kj"}, ...]}
+#
+# All 340 wide, so they sit in a phone card without scrolling; every label is 13px or
+# more. Liquids, flames and swatches are FIXED colours with an ink outline, so they read
+# the same in the light and the dark theme; text takes the theme's ink.
+_B3L_W = 340
+_B3L_FLAME = "#F2A33A"
+_B3L_FLAME_CORE = "#FBE08A"
+_B3L_WATER = "#BFDDF0"
+_B3L_FOOD = "#C98A4B"
+_B3L_METAL = "#9A9389"
+_B3L_WOOD = "#B88A5A"
+_B3L_SWATCHES = ("#F4C9A6", "#E2915E", "#F7E6B0", "#B9734A", "#D9C3E8", "#A8D5BA")
+
+
+def _b3l_open(fig, h, body):
+    return (_svg_open(fig, _B3L_W, int(h))
+            + '<g stroke-linecap="round" stroke-linejoin="round">' + "".join(body) + "</g></svg>")
+
+
+def _b3l_kj(v):
+    """9500 -> '9500', 13500 -> '13 500' (a thin space only from five figures, as the page writes it)."""
+    s = "%d" % v
+    return s if len(s) < 5 else s[:-3] + " " + s[-3:]
+
+
+def _b3l_tube(cx, top, h, colour, part, w=22, fill_from=0.45, cloudy=False):
+    """A test tube with a rounded bottom, liquid filled from `fill_from` of its height."""
+    r = w / 2.0
+    x0, x1, yb = cx - r, cx + r, top + h - r
+    ly = top + h * fill_from
+    o = [_path("M %s,%s L %s,%s A %s %s 0 0 0 %s,%s L %s,%s Z"
+               % (_n(x0), _n(ly), _n(x0), _n(yb), _n(r), _n(r), _n(x1), _n(yb), _n(x1), _n(ly)),
+               fill=colour, data_part=part)]
+    if cloudy:
+        for dx, dy in ((-5, 4), (4, 8), (-3, 13), (5, 16), (0, 20), (-6, 10)):
+            o.append(_circle(cx + dx, ly + dy, 1.6, fill=_B3L_METAL, data_part="cloud"))
+    o.append(_path("M %s,%s L %s,%s A %s %s 0 0 0 %s,%s L %s,%s"
+                   % (_n(x0), _n(top), _n(x0), _n(yb), _n(r), _n(r), _n(x1), _n(yb), _n(x1), _n(top)),
+                   stroke=_SVG_INK, w=2, data_part="tube"))
+    return "".join(o)
+
+
+def _b3l_arrow(x0, x1, y, stroke=_SVG_INK_MUTED, part="arrow"):
+    return (_line(x0, y, x1 - 7, y, stroke=stroke, w=2.5, data_part=part)
+            + _path("M %s,%s L %s,%s L %s,%s Z" % (_n(x1), _n(y), _n(x1 - 9), _n(y - 6),
+                                                 _n(x1 - 9), _n(y + 6)),
+                    fill=stroke, data_part=part))
+
+
+def _b3l_food_test_colours(fig):
+    """Four food tests, one row each: the tube before, an arrow, and the positive result."""
+    d = fig.get("data") or {}
+    rows = d.get("rows") or []
+    if len(rows) != 4:
+        raise ValueError("figure %r: b3-food-test-colours draws exactly four tests" % fig.get("id"))
+    PX = 214   # centre of the positive tubes
+    o = [_label(52, 16, "Start", size=14, weight="700", fill=_SVG_INK_MUTED, data_part="col-head"),
+         _label(PX, 16, "Positive result", size=14, weight="700", fill=_SVG_INK_MUTED,
+                data_part="col-head")]
+    RH = 128
+    for i, r in enumerate(rows):
+        for k in ("nutrient", "reagent", "note", "start", "positive", "positive_name"):
+            if not r.get(k):
+                raise ValueError("figure %r: row %d needs %r" % (fig.get("id"), i + 1, k))
+        if len(r["positive"]) > 4:
+            raise ValueError("figure %r: row %d has room for four positive tubes" % (fig.get("id"), i + 1))
+        y0 = 26 + i * RH
+        o.append(_line(8, y0, 332, y0, stroke=_SVG_RULE_STRONG, w=1.5, data_part="divider"))
+        o.append(_label(8, y0 + 20, "%s: %s" % (r["nutrient"], r["reagent"]), size=15, weight="700",
+                        anchor="start", data_part="test", data_key=r["nutrient"].lower()))
+        o.append(_label(8, y0 + 38, r["note"], size=13, weight="500", anchor="start",
+                        fill=_SVG_INK_MUTED, data_part="note"))
+        top, th = y0 + 46, 54
+        cloudy = r.get("cloudy", False)
+        o.append(_b3l_tube(52, top, th, r["start"]["colour"], "start-liquid"))
+        o.append(_label(52, top + th + 16, r["start"]["name"], size=13, weight="600",
+                        fill=_SVG_INK_BODY, data_part="start-name"))
+        o.append(_b3l_arrow(92, 140, top + th * 0.6))
+        n = len(r["positive"])
+        cxs = [PX + (j - (n - 1) / 2.0) * 38 for j in range(n)]
+        for cx, p in zip(cxs, r["positive"]):
+            o.append(_b3l_tube(cx, top, th, p["colour"], "positive-liquid", cloudy=cloudy))
+        o.append(_label(PX, top + th + 16, r["positive_name"], size=13, weight="600",
+                        fill=_SVG_INK_BODY, data_part="positive-name", data_key=r["nutrient"].lower()))
+    return _b3l_open(fig, 26 + 4 * RH + 2, o)
+
+
+def _b3l_burning_food(fig):
+    """The burning-food set-up: food on a mounted needle, alight under a clamped boiling tube."""
+    d = fig.get("data") or {}
+    water = d.get("water")
+    if not water:
+        raise ValueError("figure %r: b3-burning-food needs the water volume label" % fig.get("id"))
+    o = []
+    TX, TW, TTOP, TBOT = 196, 34, 46, 214     # tube centre, width, top, bottom
+    r = TW / 2.0
+    # heatproof mat and clamp stand
+    o.append(_rect(140, 306, 192, 12, rx=3, fill=_SVG_INSET, stroke=_SVG_INK, w=2, data_part="mat"))
+    o.append(_rect(262, 292, 66, 14, rx=3, fill=_B3L_METAL, stroke=_SVG_INK, w=2, data_part="stand"))
+    o.append(_line(312, 292, 312, 28, stroke=_SVG_INK, w=5, data_part="stand"))
+    o.append(_line(312, 80, TX + r + 4, 80, stroke=_SVG_INK, w=4, data_part="clamp"))
+    o.append(_rect(TX - r - 5, 72, TW + 10, 16, rx=4, fill=_B3L_METAL, stroke=_SVG_INK, w=2,
+                   data_part="clamp"))
+    # boiling tube with water
+    wy = 130
+    yb = TBOT - r
+    o.append(_path("M %s,%s L %s,%s A %s %s 0 0 0 %s,%s L %s,%s Z"
+                   % (_n(TX - r), _n(wy), _n(TX - r), _n(yb), _n(r), _n(r), _n(TX + r), _n(yb),
+                      _n(TX + r), _n(wy)), fill=_B3L_WATER, data_part="water"))
+    o.append(_path("M %s,%s L %s,%s A %s %s 0 0 0 %s,%s L %s,%s"
+                   % (_n(TX - r), _n(TTOP), _n(TX - r), _n(yb), _n(r), _n(r), _n(TX + r), _n(yb),
+                      _n(TX + r), _n(TTOP)), stroke=_SVG_INK, w=2.5, data_part="tube"))
+    # thermometer, its bulb in the water
+    o.append(_rect(TX - 4, 14, 8, 178, rx=4, fill=_SVG_CARD, stroke=_SVG_INK, w=1.5,
+                   data_part="thermometer"))
+    o.append(_line(TX, 60, TX, 190, stroke=_SVG_ACCENT_TEXT, w=2.5, data_part="thermometer"))
+    o.append(_circle(TX, 194, 6, fill=_SVG_ACCENT_TEXT, stroke=_SVG_INK, w=1.5, data_part="thermometer"))
+    # mounted needle and the burning food under the tube
+    fy = 262
+    o.append(_rect(30, 282, 60, 14, rx=4, fill=_B3L_WOOD, stroke=_SVG_INK, w=2, data_part="handle"))
+    o.append(_line(90, 286, TX - 6, fy + 2, stroke=_SVG_INK, w=2, data_part="needle"))
+    o.append(_ellipse(TX, fy, 13, 8, fill=_B3L_FOOD, stroke=_SVG_INK, w=2, data_part="food"))
+    o.append(_path("M %s,%s C %s,%s %s,%s %s,%s C %s,%s %s,%s %s,%s Z"
+                   % (_n(TX - 12), _n(fy - 6), _n(TX - 16), _n(fy - 26), _n(TX - 4), _n(fy - 30),
+                      _n(TX), _n(TBOT + 2), _n(TX + 4), _n(fy - 30), _n(TX + 16), _n(fy - 26),
+                      _n(TX + 12), _n(fy - 6)),
+                   fill=_B3L_FLAME, stroke=_SVG_INK, w=1.5, data_part="flame"))
+    o.append(_path("M %s,%s C %s,%s %s,%s %s,%s Z"
+                   % (_n(TX - 5), _n(fy - 8), _n(TX - 6), _n(fy - 20), _n(TX + 6), _n(fy - 20),
+                      _n(TX + 5), _n(fy - 8)), fill=_B3L_FLAME_CORE, data_part="flame"))
+    # labels on the left, each with a leader to its part
+    labels = (
+        (28, "thermometer", (TX - 5, 28)),
+        (100, "boiling tube", (TX - r - 1, 112)),
+        (158, water, (TX - r + 3, 158)),
+        (236, "burning food", (TX - 14, 248)),
+        (318, "mounted needle", (52, 296)),
+    )
+    for y, text, (lx, ly) in labels:
+        o.append(_label(8, y, text, size=14, weight="600", anchor="start", fill=_SVG_INK_BODY,
+                        data_part="label", data_key=text))
+        if text != "mounted needle":
+            tx = 8 + len(text) * 14 * 0.55 + 6
+            o.append(_line(tx, y - 5, lx, ly, stroke=_SVG_INK_MUTED, w=1.5, data_part="leader"))
+    o.append(_label(332, 20, "clamp stand", size=14, weight="600", anchor="end", fill=_SVG_INK_BODY,
+                    data_part="label", data_key="clamp stand"))
+    o.append(_label(236, 336, "heatproof mat", size=14, weight="600", fill=_SVG_INK_BODY,
+                    data_part="label", data_key="heatproof mat"))
+    return _b3l_open(fig, 344, o)
+
+
+def _b3l_energy_needs(fig):
+    """Daily energy needs of five people, one bar each, drawn to one scale."""
+    d = fig.get("data") or {}
+    people, unit = d.get("people") or [], d.get("unit")
+    if not people or not unit:
+        raise ValueError("figure %r: b3-energy-needs needs people and a unit" % fig.get("id"))
+    top = max(p["kj"] for p in people)
+    X0, BW, RH = 8, 324, 50
+    o = []
+    for i, p in enumerate(people):
+        y = 4 + i * RH
+        o.append(_label(X0, y + 16, p["label"], size=14, weight="600", anchor="start",
+                        fill=_SVG_INK_BODY, data_part="person"))
+        o.append(_label(X0 + BW, y + 16, "%s %s" % (_b3l_kj(p["kj"]), unit), size=14, weight="700",
+                        anchor="end", data_part="need", data_kj=p["kj"]))
+        o.append(_rect(X0, y + 24, BW * p["kj"] / float(top), 16, rx=4, fill=_SVG_ACCENT_TINT,
+                       stroke=_SVG_INK, w=1.5, data_part="bar", data_kj=p["kj"]))
+    note = d.get("note")
+    h = 4 + len(people) * RH
+    if note:
+        o.append(_label(X0, h + 12, note, size=13, weight="500", anchor="start", fill=_SVG_INK_MUTED,
+                        data_part="note"))
+        h += 20
+    return _b3l_open(fig, h + 4, o)
+
+
+def _b3l_day_intake(fig):
+    """One day's food as a stacked bar, against the person's need, with the shortfall marked."""
+    d = fig.get("data") or {}
+    foods, need, unit = d.get("foods") or [], d.get("need"), d.get("unit")
+    if not foods or not need or not unit or len(foods) > len(_B3L_SWATCHES):
+        raise ValueError("figure %r: b3-day-intake needs foods (at most %d), need and unit"
+                         % (fig.get("id"), len(_B3L_SWATCHES)))
+    eaten = sum(f["kj"] for f in foods)
+    if eaten >= need:
+        raise ValueError("figure %r: b3-day-intake draws a shortfall; eaten %d >= need %d"
+                         % (fig.get("id"), eaten, need))
+    X0, BW = 8, 324
+    s = BW / float(need)
+    o = [_label(X0, 18, "Eaten: %s %s" % (_b3l_kj(eaten), unit), size=15, weight="700", anchor="start",
+                data_part="eaten", data_kj=eaten)]
+    x = X0
+    for f, colour in zip(foods, _B3L_SWATCHES):
+        w_ = f["kj"] * s
+        o.append(_rect(x, 26, w_, 28, fill=colour, stroke=_SVG_INK, w=1.5, data_part="food",
+                       data_kj=f["kj"]))
+        x += w_
+    o.append(_rect(x, 26, X0 + BW - x, 28, fill="none", stroke=_SVG_INK_MUTED, w=1.5, dash="5 4",
+                   data_part="gap"))
+    gap = need - eaten
+    o.append(_line(x, 62, X0 + BW, 62, stroke=_SVG_ACCENT_TEXT, w=2, data_part="short"))
+    o.append(_line(x, 57, x, 67, stroke=_SVG_ACCENT_TEXT, w=2, data_part="short"))
+    o.append(_line(X0 + BW, 57, X0 + BW, 67, stroke=_SVG_ACCENT_TEXT, w=2, data_part="short"))
+    o.append(_label(X0 + BW, 82, "%s %s short" % (_b3l_kj(gap), unit), size=14, anchor="end",
+                    weight="700", fill=_SVG_ACCENT_TEXT, data_part="short-label", data_kj=gap))
+    o.append(_label(X0, 112, "Needed: %s %s" % (_b3l_kj(need), unit), size=15, weight="700",
+                    anchor="start", data_part="need", data_kj=need))
+    o.append(_rect(X0, 120, BW, 28, fill=_SVG_ACCENT_TINT, stroke=_SVG_INK, w=1.5, data_part="need-bar"))
+    y = 176
+    for f, colour in zip(foods, _B3L_SWATCHES):
+        o.append(_rect(X0, y - 12, 16, 16, rx=3, fill=colour, stroke=_SVG_INK, w=1.5, data_part="key"))
+        o.append(_label(X0 + 24, y + 1, f["label"], size=14, weight="600", anchor="start",
+                        fill=_SVG_INK_BODY, data_part="key-label"))
+        o.append(_label(X0 + BW, y + 1, "%s %s" % (_b3l_kj(f["kj"]), unit), size=14, weight="700",
+                        anchor="end", data_part="key-kj", data_kj=f["kj"]))
+        y += 26
+    return _b3l_open(fig, y - 8, o)
+
+
 # ── registrations ────────────────────────────────────────────────────────
+# ── lean Wave 2 (B3 lane B): five phone-width figures for lessons 5 to 7 ──
+
+_B3LB_W = 340
+
+
+def _b3lb_open(fig, h, body):
+    return (_svg_open(fig, _B3LB_W, int(math.ceil(h)))
+            + '<g stroke-linecap="round" stroke-linejoin="round">'
+            + "".join(body) + "</g></svg>")
+
+
+def _b3lb_need(fig, keys):
+    d = fig.get("data") or {}
+    for k in keys:
+        if not d.get(k):
+            raise ValueError("figure %r: data has no %r" % (fig.get("id"), k))
+    return d
+
+
+def _b3lb_tube(d, outer, inner, w_out, w_in, **data):
+    """A hollow tube drawn along one path: an ink outline with a filled middle."""
+    return (_path(d, stroke=_SVG_INK, w=w_out, **data)
+            + _path(d, stroke=inner, w=w_in))
+
+
+def _b3lb_leader(x1, y1, x2, y2):
+    return (_line(x1, y1, x2, y2, stroke=_SVG_INK_MUTED, w=1.5, data_part="leader")
+            + _circle(x2, y2, 2.5, fill=_SVG_INK, data_part="leader-end"))
+
+
+def _b3lb_arrow(x1, y1, x2, y2, paint=_SVG_INK, w=2.5, head=7.0, **data):
+    """A straight arrow from (x1, y1) to (x2, y2), head at the far end."""
+    ang = math.atan2(y2 - y1, x2 - x1)
+    a1, a2 = ang + math.radians(150), ang - math.radians(150)
+    hx1, hy1 = x2 + head * math.cos(a1), y2 + head * math.sin(a1)
+    hx2, hy2 = x2 + head * math.cos(a2), y2 + head * math.sin(a2)
+    return (_line(x1, y1, x2, y2, stroke=paint, w=w, **data)
+            + _path("M %s,%s L %s,%s L %s,%s" % (_n(hx1), _n(hy1), _n(x2), _n(y2), _n(hx2), _n(hy2)),
+                    stroke=paint, w=w))
+
+
+def _b3lb_hex(cx, cy, r, fill=_SVG_ACCENT_TINT, **data):
+    pts = []
+    for k in range(6):
+        a = math.radians(60 * k)
+        pts.append("%s,%s" % (_n(cx + r * math.cos(a)), _n(cy + r * math.sin(a))))
+    return _path("M " + " L ".join(pts) + " Z", fill=fill, stroke=_SVG_INK, w=2, **data)
+
+
+# ── b3-gut-body: the organs in their places ───────────────────────────────
+
+def _b3_gut_body(fig):
+    """The digestive system in a body outline, every organ labelled with a leader.
+
+    data: labels, a dict of organ id to its label lines. Organ ids: mouth, oesophagus,
+    liver, gall_bladder, stomach, pancreas, small_intestine, large_intestine, rectum, anus.
+    The food tube is drawn as one hollow tube; the liver, gall bladder and pancreas are
+    drawn beside it, so food visibly never passes through them.
+    """
+    d = _b3lb_need(fig, ("labels",))
+    lab = d["labels"]
+    want = ("mouth", "oesophagus", "liver", "gall_bladder", "stomach", "pancreas",
+            "small_intestine", "large_intestine", "rectum", "anus")
+    for k in want:
+        if not lab.get(k):
+            raise ValueError("figure %r: no label for %r" % (fig.get("id"), k))
+    o = []
+    # head, neck and trunk: a faint outline so the organs have a place
+    o.append(_circle(170, 36, 26, fill=_SVG_CARD, stroke=_SVG_RULE_STRONG, w=2, data_part="outline"))
+    o.append(_path("M 160,61 L 160,80 C 132,84 100,92 98,122 L 96,440 C 96,452 104,458 116,458 "
+                   "L 224,458 C 236,458 244,452 244,440 L 242,122 C 240,92 208,84 180,80 L 180,61",
+                   fill=_SVG_CARD, stroke=_SVG_RULE_STRONG, w=2, data_part="outline"))
+    # the mouth
+    o.append(_path("M 160,46 C 165,51 175,51 180,46", stroke=_SVG_INK, w=2.5, data_organ="mouth"))
+    # the small intestine first, so the large intestine sits in front of it where they cross
+    si = ("M 162,206 C 150,216 150,232 154,246 L 158,270 C 158,282 210,272 210,286 "
+          "C 210,300 150,294 150,308 C 150,322 212,314 212,328 C 212,342 150,336 150,350 "
+          "C 150,364 210,358 210,370 C 210,384 146,388 132,378")
+    o.append(_b3lb_tube(si, _SVG_INK, _SVG_ACCENT_TINT, 10, 5.5, data_organ="small_intestine"))
+    # the oesophagus, mouth to stomach
+    oe = "M 170,52 L 170,112 C 170,126 175,138 184,150"
+    o.append(_b3lb_tube(oe, _SVG_INK, _SVG_ACCENT_TINT, 10, 5.5, data_organ="oesophagus"))
+    # the liver, on the picture's left (the body's right), and the gall bladder under it
+    o.append(_path("M 104,140 C 126,128 160,130 164,142 C 168,158 158,176 140,184 "
+                   "C 122,190 106,186 104,176 Z", fill=_SVG_BAND, stroke=_SVG_INK, w=2.5,
+                   data_organ="liver"))
+    o.append(_ellipse(146, 189, 8, 6, fill=_SVG_INSET, stroke=_SVG_INK, w=2, data_organ="gall_bladder"))
+    # the stomach, a bag on the picture's right
+    o.append(_path("M 184,150 C 204,136 240,142 238,176 C 238,206 214,222 190,220 "
+                   "C 176,219 166,212 162,204 C 178,206 196,204 206,192 C 214,182 210,166 196,162 "
+                   "C 190,160 186,156 184,150 Z", fill=_SVG_ACCENT_TINT, stroke=_SVG_INK, w=2.5,
+                   data_organ="stomach"))
+    # the pancreas, under the stomach
+    o.append(_path("M 176,229 C 196,223 222,223 234,229 C 226,237 196,239 176,235 Z",
+                   fill=_SVG_BAND, stroke=_SVG_INK, w=2, data_organ="pancreas"))
+    # the large intestine: up the picture's left, across, down the right, then to the rectum
+    li = ("M 122,382 L 122,264 C 122,254 128,250 138,250 L 222,250 C 232,250 238,256 238,266 "
+          "L 238,374 C 238,394 220,400 196,400 L 184,400 C 175,400 170,404 170,412")
+    o.append(_b3lb_tube(li, _SVG_INK, _SVG_BAND, 20, 14, data_organ="large_intestine"))
+    # the rectum, and the anus at its end
+    o.append(_b3lb_tube("M 170,410 L 170,438", _SVG_INK, _SVG_INSET, 16, 10, data_organ="rectum"))
+    o.append(_line(162, 446, 178, 446, stroke=_SVG_INK, w=3, data_organ="anus"))
+    # labels: left column starts at x 6, right column at x 258
+    def left(lines, y, tx, ty):
+        for i, s in enumerate(lines):
+            o.append(_label(6, y + 16 * i, s, size=13, anchor="start", data_part="label"))
+        w = max(len(s) for s in lines) * 7.4 + 10
+        o.append(_b3lb_leader(w, y - 4, tx, ty))
+
+    def right(lines, y, tx, ty):
+        for i, s in enumerate(lines):
+            o.append(_label(258, y + 16 * i, s, size=13, anchor="start", data_part="label"))
+        o.append(_b3lb_leader(252, y - 4, tx, ty))
+
+    left(lab["mouth"], 50, 158, 46)
+    left(lab["liver"], 160, 110, 156)
+    left(lab["gall_bladder"], 196, 140, 190)
+    left(lab["small_intestine"], 312, 152, 308)
+    left(lab["rectum"], 428, 164, 424)
+    left(lab["anus"], 452, 162, 446)
+    right(lab["oesophagus"], 100, 174, 96)
+    right(lab["stomach"], 180, 236, 176)
+    right(lab["pancreas"], 236, 232, 232)
+    right(lab["large_intestine"], 320, 248, 316)
+    return _b3lb_open(fig, 470, o)
+
+
+# ── b3-enzyme-breakdown: three enzymes, three large molecules ────────────
+
+def _b3_enzyme_breakdown(fig):
+    """Three rows. Each: the enzyme's name, a large molecule, an arrow, the small molecules.
+
+    data: rows, each {"enzyme", "kind" (carbohydrate|protein|lipid), "before", "after"}.
+    A lipid row's "after" is two names, [glycerol name, fatty acids name], each set under
+    its own part of the drawing.
+    A chain of n units breaks into n separate units, so the count on each side matches.
+    """
+    d = _b3lb_need(fig, ("rows",))
+    rows = d["rows"]
+    o = []
+    RH = 116.0
+    for i, r in enumerate(rows):
+        y0 = 8 + i * RH
+        if i:
+            o.append(_line(8, y0 - 6, 332, y0 - 6, stroke=_SVG_RULE, w=1.5, data_part="rule"))
+        o.append(_mono(10, y0 + 14, r["enzyme"].upper(), size=13, fill=_SVG_ACCENT_TEXT,
+                       weight="700", spacing="1", data_part="enzyme"))
+        cy = y0 + 52
+        kind = r["kind"]
+        if kind == "carbohydrate":
+            for k in range(6):
+                cx = 20 + 23 * k
+                if k:
+                    o.append(_line(cx - 14, cy, cx - 9, cy, stroke=_SVG_INK, w=2.5))
+                o.append(_b3lb_hex(cx, cy, 9, data_part="before-unit"))
+            for k in range(6):
+                o.append(_b3lb_hex(226 + 36 * (k % 3), cy - 13 + 26 * (k // 3), 9,
+                                  data_part="after-unit"))
+        elif kind == "protein":
+            fills = (_SVG_ACCENT_TINT, _SVG_BAND, _SVG_INSET)
+            for k in range(6):
+                cx = 20 + 23 * k
+                if k:
+                    o.append(_line(cx - 15, cy, cx - 8, cy, stroke=_SVG_INK, w=2.5))
+                o.append(_circle(cx, cy, 8, fill=fills[k % 3], stroke=_SVG_INK, w=2,
+                                 data_part="before-unit"))
+            for k in range(6):
+                o.append(_circle(226 + 36 * (k % 3), cy - 13 + 26 * (k // 3), 8,
+                                 fill=fills[k % 3], stroke=_SVG_INK, w=2, data_part="after-unit"))
+        elif kind == "lipid":
+            o.append(_rect(14, cy - 24, 12, 48, rx=3, fill=_SVG_BAND, stroke=_SVG_INK, w=2,
+                           data_part="before-unit"))
+            for dy in (-16, 0, 16):
+                pts = ["%s,%s" % (_n(26 + 10 * k), _n(cy + dy + (4 if k % 2 else -4)))
+                       for k in range(12)]
+                o.append(_path("M " + " L ".join(pts), stroke=_SVG_INK, w=2.5,
+                               data_part="before-unit"))
+            o.append(_rect(214, cy - 24, 12, 48, rx=3, fill=_SVG_BAND, stroke=_SVG_INK, w=2,
+                           data_part="after-unit"))
+            for dy in (-18, 0, 18):
+                pts = ["%s,%s" % (_n(240 + 8 * k), _n(cy + dy + (3 if k % 2 else -3)))
+                       for k in range(11)]
+                o.append(_path("M " + " L ".join(pts), stroke=_SVG_INK, w=2.5,
+                               data_part="after-unit"))
+        else:
+            raise ValueError("figure %r: row kind %r" % (fig.get("id"), kind))
+        o.append(_b3lb_arrow(160, cy, 198, cy, paint=_SVG_ACCENT_TEXT, w=3, data_part="arrow"))
+        o.append(_label(78, y0 + 98, r["before"], size=13, data_part="before"))
+        if kind == "lipid":     # two products: name each under its own drawing
+            a, b = r["after"]
+            o.append(_label(232, y0 + 98, a, size=13, anchor="end", data_part="after"))
+            o.append(_label(242, y0 + 98, b, size=13, anchor="start", data_part="after"))
+        else:
+            o.append(_label(262, y0 + 98, r["after"], size=13, data_part="after"))
+    return _b3lb_open(fig, 8 + len(rows) * RH - 4, o)
+
+
+# ── b3-enzyme-cycle: how one enzyme works, and works again ──────────────
+
+def _b3lb_enzyme(x, y, data_step):
+    """An enzyme with a notch in its top edge, shaped for a two-unit substrate.
+    (x, y) is the top-left corner of its 100 x 46 body; the notch is 44 wide, 20 deep."""
+    d = ("M %s,%s L %s,%s L %s,%s L %s,%s L %s,%s L %s,%s "
+         "C %s,%s %s,%s %s,%s L %s,%s C %s,%s %s,%s %s,%s Z"
+         % (_n(x + 10), _n(y), _n(x + 28), _n(y), _n(x + 28), _n(y + 20), _n(x + 72), _n(y + 20),
+            _n(x + 72), _n(y), _n(x + 90), _n(y),
+            _n(x + 98), _n(y), _n(x + 100), _n(y + 6), _n(x + 100), _n(y + 14),
+            _n(x + 100), _n(y + 38),
+            _n(x + 100), _n(y + 46), _n(x + 50), _n(y + 54), _n(x), _n(y + 38)))
+    d = d.replace(" Z", " L %s,%s C %s,%s %s,%s %s,%s Z"
+                  % (_n(x), _n(y + 14), _n(x), _n(y + 6), _n(x + 2), _n(y), _n(x + 10), _n(y)))
+    return _path(d, fill=_SVG_BAND, stroke=_SVG_INK, w=2.5, data_part="enzyme", data_step=data_step)
+
+
+def _b3lb_unit(x, y, **data):
+    return _rect(x, y, 20, 20, rx=4, fill=_SVG_ACCENT_TINT, stroke=_SVG_INK, w=2, **data)
+
+
+def _b3_enzyme_cycle(fig):
+    """Three steps, one under another: the substrate fits, it is broken, the products
+    leave and the enzyme is unchanged.
+
+    data: steps, three lists of text lines; labels {"enzyme", "substrate", "products"}.
+    """
+    d = _b3lb_need(fig, ("steps", "labels"))
+    steps, lab = d["steps"], d["labels"]
+    if len(steps) != 3:
+        raise ValueError("figure %r: needs exactly three steps" % fig.get("id"))
+    o = []
+    RH = 120.0
+    for i, lines in enumerate(steps):
+        y0 = 6 + i * RH
+        if i:
+            o.append(_line(8, y0 - 4, 332, y0 - 4, stroke=_SVG_RULE, w=1.5, data_part="rule"))
+        ex, ey = 24, y0 + 52
+        o.append(_circle(14, y0 + 16, 11, fill=_SVG_ACCENT_TINT, stroke=_SVG_INK, w=2,
+                         data_part="step-badge"))
+        o.append(_label(14, y0 + 21, str(i + 1), size=13, weight="800", data_part="step-number"))
+        o.append(_b3lb_enzyme(ex, ey, i + 1))
+        if i == 0:     # the substrate above, about to fit
+            o.append(_b3lb_unit(ex + 28, y0 + 8, data_part="substrate"))
+            o.append(_b3lb_unit(ex + 52, y0 + 8, data_part="substrate"))
+            o.append(_line(ex + 48, y0 + 18, ex + 52, y0 + 18, stroke=_SVG_INK, w=3))
+            o.append(_b3lb_arrow(ex + 50, y0 + 32, ex + 50, y0 + 46, paint=_SVG_INK_MUTED, w=2,
+                                head=5, data_part="arrow"))
+            o.append(_mono(ex + 82, y0 + 22, lab["substrate"], size=13, data_part="label"))
+            o.append(_mono(ex + 50, ey + 40, lab["enzyme"], size=13, anchor="middle",
+                           data_part="label"))
+        elif i == 1:   # in the notch, being broken
+            o.append(_b3lb_unit(ex + 28, ey, data_part="substrate"))
+            o.append(_b3lb_unit(ex + 52, ey, data_part="substrate"))
+            o.append(_path("M %s,%s L %s,%s L %s,%s L %s,%s"
+                           % (_n(ex + 50), _n(ey - 14), _n(ex + 46), _n(ey - 6),
+                              _n(ex + 54), _n(ey - 2), _n(ex + 50), _n(ey + 6)),
+                           stroke=_SVG_ACCENT_TEXT, w=3, data_part="break"))
+        else:          # two products leaving, the notch empty again
+            o.append(_b3lb_unit(ex + 6, y0 + 10, data_part="product"))
+            o.append(_b3lb_unit(ex + 74, y0 + 10, data_part="product"))
+            o.append(_b3lb_arrow(ex + 30, y0 + 40, ex + 18, y0 + 34, paint=_SVG_INK_MUTED, w=2,
+                                head=5, data_part="arrow"))
+            o.append(_b3lb_arrow(ex + 70, y0 + 40, ex + 82, y0 + 34, paint=_SVG_INK_MUTED, w=2,
+                                head=5, data_part="arrow"))
+            o.append(_mono(ex + 104, y0 + 24, lab["products"], size=13, data_part="label"))
+        for k, s in enumerate(lines):
+            o.append(_label(160, y0 + 46 + 18 * k, s, size=14, anchor="start",
+                            weight="600", data_part="step-text"))
+    return _b3lb_open(fig, 6 + 3 * RH - 6, o)
+
+
+# ── b3-villus-lean: the wall of the small intestine, and one villus ─────
+
+def _b3_villus_lean(fig):
+    """Top: a strip of the small intestine wall covered in villi, food molecules above.
+    Bottom: one villus magnified and cut through. Its wall is one cell thick, its cells
+    carry microvilli, and a capillary loops inside. Two arrows cross the wall into the
+    capillary.
+
+    data: labels {"strip", "strip_note", "close", "microvilli", "wall", "capillary",
+    "crossing" (two molecule names), "foot"}.
+    """
+    d = _b3lb_need(fig, ("labels",))
+    lab = d["labels"]
+    o = []
+    # top panel
+    o.append(_mono(10, 16, lab["strip"], size=13, spacing="1", data_part="heading"))
+    for (x, y) in ((24, 32), (58, 40), (104, 30), (150, 38), (196, 30), (240, 40), (288, 32),
+                   (318, 42)):
+        o.append(_circle(x, y, 4, fill=_SVG_CARD, stroke=_SVG_INK, w=1.5, data_part="food"))
+    for k in range(7):
+        cx = 34 + 46 * k
+        hi = k == 3
+        o.append(_path("M %s,128 L %s,64 C %s,50 %s,50 %s,64 L %s,128"
+                       % (_n(cx - 14), _n(cx - 14), _n(cx - 12), _n(cx + 12), _n(cx + 14),
+                          _n(cx + 14)),
+                       fill=_SVG_ACCENT_TINT, stroke=_SVG_ACCENT if hi else _SVG_INK,
+                       w=3 if hi else 2, data_part="villus"))
+    o.append(_rect(6, 126, 328, 22, rx=4, fill=_SVG_BAND, stroke=_SVG_INK, w=2, data_part="wall"))
+    o.append(_label(170, 170, lab["strip_note"], size=13, fill=_SVG_INK_BODY, data_part="label"))
+    # bottom panel: one villus, magnified
+    o.append(_rect(6, 186, 328, 360, rx=12, fill="none", stroke=_SVG_RULE_STRONG, w=2,
+                   dash="6 5", data_part="frame"))
+    o.append(_mono(18, 208, lab["close"], size=13, spacing="1", data_part="heading"))
+    # the villus, centred at x 160
+    cx = 160
+    outer = ("M %d,520 L %d,286 C %d,250 %d,228 %d,228 C %d,228 %d,250 %d,286 L %d,520"
+             % (cx - 58, cx - 58, cx - 58, cx - 32, cx, cx + 32, cx + 58, cx + 58, cx + 58))
+    inner = ("M %d,520 L %d,288 C %d,262 %d,246 %d,246 C %d,246 %d,262 %d,288 L %d,520"
+             % (cx - 40, cx - 40, cx - 40, cx - 22, cx, cx + 22, cx + 40, cx + 40, cx + 40))
+    o.append(_path(outer, fill=_SVG_ACCENT_TINT, stroke=_SVG_INK, w=2.5, data_part="villus-wall"))
+    o.append(_path(inner, fill=_SVG_CARD, stroke=_SVG_INK, w=2, data_part="villus-inside"))
+    # microvilli: short bristles along the outer edge
+    for y in range(296, 516, 8):
+        o.append(_line(cx - 58, y, cx - 64, y, stroke=_SVG_INK, w=1.5, data_part="microvillus"))
+        o.append(_line(cx + 58, y, cx + 64, y, stroke=_SVG_INK, w=1.5, data_part="microvillus"))
+    for k in range(0, 181, 12):
+        a = math.radians(180 + k)
+        x1, y1 = cx + 58 * math.cos(a), 286 + 58 * math.sin(a)
+        x2, y2 = cx + 64 * math.cos(a), 286 + 64 * math.sin(a)
+        if y1 < 286:
+            o.append(_line(x1, y1, x2, y2, stroke=_SVG_INK, w=1.5, data_part="microvillus"))
+    # the one row of cells: cross lines through the wall
+    for y in range(300, 520, 26):
+        o.append(_line(cx - 58, y, cx - 40, y, stroke=_SVG_INK, w=1.5, data_part="cell-edge"))
+        o.append(_line(cx + 40, y, cx + 58, y, stroke=_SVG_INK, w=1.5, data_part="cell-edge"))
+    for k in (30, 60, 90, 120, 150):
+        a = math.radians(180 + k)
+        o.append(_line(cx + 40 * math.cos(a), 286 + 40 * math.sin(a),
+                       cx + 58 * math.cos(a), 286 + 58 * math.sin(a),
+                       stroke=_SVG_INK, w=1.5, data_part="cell-edge"))
+    # the capillary loop
+    o.append(_path("M %d,520 L %d,300 C %d,276 %d,276 %d,300 L %d,520"
+                   % (cx - 16, cx - 16, cx - 16, cx + 16, cx + 16, cx + 16),
+                   stroke=_SVG_BLUE_TEXT, w=5, data_part="capillary"))
+    # molecules crossing the wall into the capillary
+    names = lab["crossing"]
+    for k, nm in enumerate(names):
+        y = 352 + 64 * k
+        o.append(_label(14, y - 12, nm, size=13, anchor="start", data_part="molecule"))
+        o.append(_circle(26, y, 4, fill=_SVG_CARD, stroke=_SVG_INK, w=1.5, data_part="food"))
+        o.append(_b3lb_arrow(34, y, cx - 20, y, paint=_SVG_ACCENT_TEXT, w=2.5, head=6,
+                            data_part="crossing"))
+    # labels on the right, with leaders
+    def right(lines, y, tx, ty):
+        for i, s in enumerate(lines):
+            o.append(_label(240, y + 16 * i, s, size=13, anchor="start", data_part="label"))
+        o.append(_b3lb_leader(236, y - 4, tx, ty))
+
+    right(lab["microvilli"], 270, cx + 56, 270)
+    right(lab["wall"], 344, cx + 52, 340)
+    right(lab["capillary"], 432, cx + 18, 428)
+    o.append(_label(170, 568, lab["foot"], size=13, fill=_SVG_ACCENT_TEXT, weight="700",
+                    data_part="foot"))
+    return _b3lb_open(fig, 580, o)
+
+
+# ── b3-visking: the Visking tubing model of the gut ──────────────────────
+
+_B3LB_STARCH = (((80, 172), 0), ((86, 214), 25), ((78, 290), -20))
+_B3LB_GLUCOSE_IN = ((130, 150), (100, 196), (128, 250), (122, 316), (82, 252))
+_B3LB_GLUCOSE_OUT = ((186, 226), (186, 306), (34, 232), (40, 330), (166, 354), (30, 150))
+
+
+def _b3_visking(fig):
+    """A beaker of water with a bag of Visking tubing hanging in it, tied to a glass rod.
+    Inside the bag: starch chains and glucose molecules. Glucose has crossed into the
+    water; every starch chain is still inside.
+
+    data: labels {"heading", "tubing" (lines), "inside" (lines), "water" (lines),
+    "out", "in", "key_starch", "key_glucose"}.
+    """
+    d = _b3lb_need(fig, ("labels",))
+    lab = d["labels"]
+    o = []
+    o.append(_mono(10, 36, lab["heading"], size=13, spacing="1", data_part="heading"))
+    # beaker and water
+    o.append(_rect(14, 112, 186, 254, rx=6, fill=_SVG_INSET, stroke="none", data_part="water"))
+    o.append(_path("M 14,74 L 14,358 C 14,366 20,372 28,372 L 186,372 C 194,372 200,366 200,358 "
+                   "L 200,74", stroke=_SVG_INK, w=3, data_part="beaker"))
+    o.append(_line(14, 112, 200, 112, stroke=_SVG_BLUE_TEXT, w=2, data_part="water-surface"))
+    # glass rod and thread
+    o.append(_line(6, 66, 208, 66, stroke=_SVG_INK, w=5, data_part="rod"))
+    o.append(_line(108, 66, 108, 112, stroke=_SVG_INK, w=1.5, data_part="thread"))
+    # the bag of tubing, tied at the top
+    bag = ("M 98,118 C 74,134 66,164 66,204 L 66,300 C 66,322 84,334 108,334 "
+           "C 132,334 150,322 150,300 L 150,204 C 150,164 142,134 118,118 Z")
+    o.append(_path(bag, fill=_SVG_ACCENT_TINT, stroke=_SVG_INK, w=2.5, dash="7 3",
+                   data_part="tubing"))
+    o.append(_path("M 98,118 L 108,110 L 118,118", stroke=_SVG_INK, w=2.5, data_part="knot"))
+    # starch: chains of five, all inside
+    for (x, y), tilt in _B3LB_STARCH:
+        a = math.radians(tilt)
+        pts = [(x + 11 * k * math.cos(a), y + 11 * k * math.sin(a)) for k in range(5)]
+        for k in range(4):
+            o.append(_line(pts[k][0], pts[k][1], pts[k + 1][0], pts[k + 1][1], stroke=_SVG_INK,
+                           w=2))
+        for (px, py) in pts:
+            o.append(_b3lb_hex(px, py, 5, data_part="starch"))
+    # glucose: single units, some inside and some already out in the water
+    for (x, y) in _B3LB_GLUCOSE_IN:
+        o.append(_b3lb_hex(x, y, 5, fill=_SVG_CARD, data_part="glucose", data_where="inside"))
+    for (x, y) in _B3LB_GLUCOSE_OUT:
+        o.append(_b3lb_hex(x, y, 5, fill=_SVG_CARD, data_part="glucose", data_where="outside"))
+    # glucose crossing out through the wall
+    o.append(_b3lb_arrow(138, 250, 176, 250, paint=_SVG_ACCENT_TEXT, w=2.5, head=6,
+                        data_part="crossing"))
+    o.append(_b3lb_arrow(132, 316, 170, 316, paint=_SVG_ACCENT_TEXT, w=2.5, head=6,
+                        data_part="crossing"))
+    # labels on the right
+    def right(lines, y, tx, ty, fill=_SVG_INK, weight="600"):
+        for i, s in enumerate(lines):
+            o.append(_label(216, y + 16 * i, s, size=13, anchor="start", fill=fill,
+                            weight=weight, data_part="label"))
+        o.append(_b3lb_leader(212, y - 4, tx, ty))
+
+    right(lab["tubing"], 142, 148, 160)
+    right(lab["inside"], 190, 112, 200)
+    right([lab["out"]], 254, 182, 250, fill=_SVG_ACCENT_TEXT, weight="700")
+    right([lab["in"]], 290, 104, 282, fill=_SVG_ACCENT_TEXT, weight="700")
+    right(lab["water"], 340, 192, 336)
+    # key
+    ky = 398
+    for k in range(3):
+        if k:
+            o.append(_line(14 + 11 * (k - 1), ky, 14 + 11 * k, ky, stroke=_SVG_INK, w=2))
+    for k in range(3):
+        o.append(_b3lb_hex(14 + 11 * k, ky, 5, data_part="key-starch"))
+    o.append(_label(48, ky + 5, lab["key_starch"], size=13, anchor="start", data_part="key"))
+    o.append(_b3lb_hex(190, ky, 5, fill=_SVG_CARD, data_part="key-glucose"))
+    o.append(_label(202, ky + 5, lab["key_glucose"], size=13, anchor="start", data_part="key"))
+    return _b3lb_open(fig, 414, o)
+
+
 ART = {
     'digestion-timing-bars': _digestion_timing_bars,
     'gut-tube': _gut_tube,
     'villus': _villus,
+    # lean Wave 2, B3 lane A
+    'b3-food-test-colours': _b3l_food_test_colours,
+    'b3-burning-food': _b3l_burning_food,
+    'b3-energy-needs': _b3l_energy_needs,
+    'b3-day-intake': _b3l_day_intake,
 }
 
 KIND_SHELL = {
@@ -2562,3 +3227,13 @@ KIND_FN = {
     'person-ledger': r_person_ledger,
     'test-bench': r_test_bench,
 }
+
+# lean Wave 2 (B3 lane B)
+ART.update({
+
+    "b3-gut-body": _b3_gut_body,
+    "b3-enzyme-breakdown": _b3_enzyme_breakdown,
+    "b3-enzyme-cycle": _b3_enzyme_cycle,
+    "b3-villus-lean": _b3_villus_lean,
+    "b3-visking": _b3_visking,
+})

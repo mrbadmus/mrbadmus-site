@@ -1,4 +1,32 @@
 {
+ "a-balanced-diet#apply": {
+  "0": [
+   "Iron — a mineral, needed in milligrams"
+  ],
+  "1": [
+   "Carbohydrate — they need more fuel"
+  ],
+  "2": [
+   "Water — they are dehydrated"
+  ],
+  "3": [
+   "Vitamin C — they are getting no fruit"
+  ]
+ },
+ "absorption-and-the-small-intestine#apply": {
+  "0": [
+   "It continues normally — the surface and the thin wall are intact"
+  ],
+  "1": [
+   "It reverses, pushing glucose back into the gut"
+  ],
+  "2": [
+   "It speeds up, because nothing is carrying molecules away"
+  ],
+  "3": [
+   "It stops within minutes, because the concentration difference disappears"
+  ]
+ },
  "aerobic-vs-anaerobic#apply": {
   "0": [
    "Aerobic supplies energy at a faster rate; anaerobic is slower but gets more from each glucose"
@@ -44,6 +72,28 @@
   ],
   "3": [
    "Chloroplasts are only built where light reaches, so a plant cell without them is still a plant cell"
+  ]
+ },
+ "bacteria-in-the-gut#apply": {
+  "0": [
+   "The antibiotic made C. difficile itself stronger and harder to kill"
+  ],
+  "1": [
+   "The antibiotic cleared the competing species, leaving space and food for C. difficile"
+  ],
+  "2": [
+   "Antibiotics irritate the gut and cause diarrhoea directly, with no bacterium involved"
+  ],
+  "3": [
+   "The chest infection spread down to the gut and multiplied there"
+  ]
+ },
+ "bacteria-in-the-gut#recall": {
+  "0": [
+   "Absorb glucose from the gut into the blood"
+  ],
+  "3": [
+   "Break down cellulose and make vitamin K"
   ]
  },
  "biodiversity-and-gene-banks#apply": {
@@ -131,6 +181,34 @@
    "They are the same energy in different units — 1 kcal is about 4.18 kJ"
   ]
  },
+ "energy-in-food-and-what-you-need#apply": {
+  "0": [
+   "About 18%, because their requirement is much lower"
+  ],
+  "1": [
+   "11% — the label states it"
+  ],
+  "2": [
+   "About 6%, because a smaller person gets more from the same food"
+  ],
+  "3": [
+   "You cannot say without knowing their mass exactly"
+  ]
+ },
+ "energy-in-food-and-what-you-need#recall": {
+  "0": [
+   "6620 kJ — they forgot to count the second chocolate bar"
+  ],
+  "1": [
+   "7670 kJ — about 1800 kJ more than the requirement"
+  ],
+  "2": [
+   "7670 kJ — about 1800 kJ short of the requirement"
+  ],
+  "3": [
+   "9500 kJ — the intake always matches the requirement"
+  ]
+ },
  "energy-stores#apply": {
   "1": [
    "Gravitational becomes kinetic on the way down, then the kinetic energy disappears"
@@ -154,9 +232,56 @@
    "The two totals are equal"
   ]
  },
+ "enzymes-in-digestion#apply": {
+  "0": [
+   "It needs to be warmed up again before it will become active"
+  ],
+  "1": [
+   "The enzyme was killed by the heat, and dead enzymes cannot work"
+  ],
+  "2": [
+   "The starch was denatured instead, so amylase has nothing left to work on"
+  ],
+  "3": [
+   "Its shape was permanently destroyed by the heat, so it no longer fits starch"
+  ]
+ },
+ "enzymes-in-digestion#recall": {
+  "0": [
+   "None — it is consumed by the reaction as the starch is broken down"
+  ],
+  "1": [
+   "About half — some enzyme is always lost each time it does its job"
+  ],
+  "2": [
+   "It depends how much starch there was — more starch uses up more enzyme"
+  ],
+  "3": [
+   "All of it — an enzyme is not used up by the reaction it catalyses"
+  ]
+ },
  "fermentation#apply": {
   "0": [
    "It evaporates in the oven — ethanol boils well below the temperature of baking"
+  ]
+ },
+ "food-tests#apply": {
+  "1": [
+   "Chewing squashed the starch into smaller pieces so the iodine could not find it"
+  ]
+ },
+ "food-tests#recall": {
+  "0": [
+   "The cream is high in fat"
+  ],
+  "1": [
+   "The cream contains lipid and no protein"
+  ],
+  "2": [
+   "The cream contains lipid"
+  ],
+  "3": [
+   "The cream is unhealthy"
   ]
  },
  "formulae#apply": {
@@ -402,6 +527,25 @@
    "A model stays in use until someone replaces it, so a wrong model survives while no better one exists"
   ]
  },
+ "the-digestive-system#apply": {
+  "0": [
+   "Bile digests fat, so without it fat is not broken down"
+  ],
+  "1": [
+   "Bile emulsifies fat into small droplets, giving lipase far more surface to work on"
+  ],
+  "2": [
+   "Bile neutralises stomach acid, and without it lipase is destroyed"
+  ],
+  "3": [
+   "Without a gall bladder the liver stops making bile"
+  ]
+ },
+ "the-digestive-system#start": {
+  "1": [
+   "No, the bits are too big"
+  ]
+ },
  "the-photosynthesis-reaction#apply": {
   "0": [
    "Carbon dioxide from the air, built into glucose and then into the plant’s structures"
@@ -510,6 +654,34 @@
   "3": [
    "It cannot be decided without seeing more pairs, so one infertile brood proves nothing either way",
    "It cannot be decided, as one infertile brood proves nothing either way"
+  ]
+ },
+ "when-diet-goes-wrong#apply": {
+  "0": [
+   "Iron deficiency does not depend on how much energy a diet supplies"
+  ],
+  "1": [
+   "Child B must have been misdiagnosed"
+  ],
+  "2": [
+   "Child A’s anaemia is more serious because they eat less"
+  ],
+  "3": [
+   "Both children need to eat more food"
+  ]
+ },
+ "when-diet-goes-wrong#recall": {
+  "0": [
+   "A nutrient missing, only"
+  ],
+  "1": [
+   "An energy shortfall"
+  ],
+  "2": [
+   "A nutrient missing and an energy shortfall"
+  ],
+  "3": [
+   "None — you cannot have scurvy while eating that much"
   ]
  },
  "when-the-environment-changes-extinction#apply": {
