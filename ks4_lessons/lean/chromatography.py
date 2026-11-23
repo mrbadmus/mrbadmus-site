@@ -87,7 +87,7 @@ LESSON = {
                   {"points": [
                       "The <strong>start line</strong> (origin) is where the spots were put.",
                       "The <strong>solvent front</strong> is how far the solvent moved.",
-                      "Each spot in one column is a different substance.",
+                      "Each spot in one lane is a different substance.",
                   ]}]},
         {"kind": "card", "title": "Rf value",
          "body": ["The ratio of the distance moved by a compound (centre of spot from origin) to "
