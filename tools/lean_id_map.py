@@ -198,6 +198,13 @@ def root_covers():
         # (no bench, simulation or canvas), so it is covered by a value no lean page carries.
         if re.search(r"\breadings\(\{", chunk):
             forms.setdefault("own", ["__bench__"])
+        # ⊕ 24 Nov 2026 (Particle model): particle-motion-pressure builds its p3/p4 activities with
+        # a factory `one(n)` whose covers is COMPUTED (`op = n + 'Opts'`, `covers: [op]`), which the
+        # literal pattern above cannot read. Read the factory's suffix, then each `one('<id>')` call.
+        fm = re.search(r"var one = function \(n\) \{.*?\bop = n \+ '(\w+)'.*?covers: \[op\]", chunk, re.S)
+        if fm:
+            for c in re.findall(r"\bone\('(\w+)'\)", chunk):
+                forms.setdefault(c, [c + fm.group(1)])
         out[k.group(1)] = forms
     return out
 
