@@ -124,6 +124,16 @@ LOGIC_EDITS += [
      "prompt: 'A 40\xa0g copper spoon warms from 20\xa0°C to 70\xa0°C in a hot drink. Calculate the energy it takes in. (c = 385\xa0J/kg\xa0°C) Work it on paper, then choose the conversion and give the answer and unit.'"),
 ]
 
+# ⊕ 24 Nov 2026 (blind key pass, Q053): the CH/TH Your turn 2 answer read "962 (3 significant
+# figures)". 15 000 ÷ 15.6 = 961.5, so the answer is c ≈ 960 J/kg °C to 2 significant figures (the
+# data's precision); the Fine-tune line shows 961.5 to match.
+LOGIC_EDITS += [
+    ("line: 'c = 15\u00a0000 ÷ (1.2 × 13) = 15\u00a0000 ÷ 15.6 = 962' }",
+     "line: 'c = 15\u00a0000 ÷ (1.2 × 13) = 15\u00a0000 ÷ 15.6 = 961.5' }"),
+    ("line: 'c = 962\u00a0J/kg\u00a0°C (3 significant figures)' }",
+     "line: 'c ≈ 960\u00a0J/kg\u00a0°C (961.5)' }"),
+]
+
 LESSON = {
     "slug": "temperature-changes-shc",
     "start": {

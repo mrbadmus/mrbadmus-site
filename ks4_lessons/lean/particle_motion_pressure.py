@@ -144,6 +144,21 @@ LOGIC_EDITS += [
      "prompt: 'A fixed mass of gas at constant temperature has a volume of 0.060\xa0m³ at a pressure of 100\xa0kPa. It is compressed to 0.024\xa0m³. Calculate the new pressure. Work it on paper, then choose the conversion and give the answer and unit.'"),
 ]
 
+# ⊕ 24 Nov 2026 (blind key pass). Q087: TF/TH Rung 3's second link did not depend on the first, so
+# either could come first; it now picks up "that same speed" from link 1, so only one order works.
+# Q081: CH Rung 2's keyed option becomes 125 kPa (95 kPa at 283 K gives 125.2 kPa at 373 K); its
+# feedback and model line follow. No distractor is 125 kPa.
+LOGIC_EDITS += [
+    ("'In the bigger volume, the molecules travel further between hits on the walls.'",
+     "'At that same speed, in the bigger volume, the molecules travel further between hits on the "
+     "walls.'"),
+    ("options: ['109 kPa', '113 kPa', '126 kPa', '218 kPa']",
+     "options: ['109 kPa', '113 kPa', '125 kPa', '218 kPa']"),
+    ("so it reaches about 125 kPa at 100 °C: 126 kPa is the closest option.'",
+     "so it reaches about 125 kPa at 100 °C.'"),
+    ("108 + 50 ÷ 3 ≈ 125 kPa, so 126 kPa.'", "108 + 50 ÷ 3 ≈ 125 kPa.'"),
+]
+
 LESSON = {
     "slug": "particle-motion-pressure",
     "start": {

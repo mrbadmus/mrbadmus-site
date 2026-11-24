@@ -286,8 +286,8 @@ LESSON = {
         {"kind": "reveal", "title": "Specific heat capacity (c) or specific latent heat (L)",
          "cols": ["c", "L"],
          "rows": [
-             ("What changes", "Temperature", "State"),
-             ("Equation", "ΔE\u00a0=\u00a0m\u00a0c\u00a0Δθ", "E\u00a0=\u00a0m\u00a0L"),
+             ("What changes", "Tem\u00adper\u00ada\u00adture", "State"),
+             ("Equa\u00adtion", "ΔE\u00a0=\u00a0m\u00a0c\u00a0Δθ", "E\u00a0=\u00a0m\u00a0L"),
              ("Unit", "J/kg\u00a0°C", "J/kg"),
              ("On a heating graph", "A sloping section", "A flat section"),
          ]},
