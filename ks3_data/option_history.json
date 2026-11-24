@@ -171,6 +171,11 @@
    "Water has been absorbed into the metal"
   ]
  },
+ "distance-time-graphs#recall": {
+  "2": [
+   "The object was stopped"
+  ]
+ },
  "drawing-and-adding-forces#apply": {
   "3": [
    "The two forces are equal in size, so the resultant force is 0 N."
@@ -406,13 +411,18 @@
  },
  "moments#apply": {
   "0": [
-   "They give the same moment, because the moment is decided by how hard you pull, and the length of the handle only changes how comfortable it is."
+   "They give the same moment, because the moment is decided by how hard you pull, and the length of the handle only changes how comfortable it is.",
+   "They give the same moment, because only how hard you pull decides the moment."
   ],
   "1": [
-   "The long spanner gives 20 N m against 5 N m — four times the turning effect for the same pull."
+   "The long spanner gives 20 N m against 5 N m — four times the turning effect for the same pull.",
+   "The long spanner gives 20 N m, while the short one gives 5 N m."
   ],
   "2": [
    "The short spanner gives more, because the force acts closer to the bolt that is being turned."
+  ],
+  "3": [
+   "The long spanner gives more, because a longer spanner weighs more."
   ]
  },
  "moments#recall": {

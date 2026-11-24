@@ -181,7 +181,8 @@ def root_covers():
     start = src.index("var ROOT_FORMS")
     end = src.index("<ks4-root-drafts>", start)
     body = src[start:end]
-    keys = list(re.finditer(r"\n {8}'([a-z0-9-]+)': \[", body))
+    # an entry is an array literal, or (metal-hydroxides) an IIFE that returns one
+    keys = list(re.finditer(r"\n {8}'([a-z0-9-]+)': (?:\[|\(function \(\) \{)", body))
     out = {}
     for i, k in enumerate(keys):
         chunk = body[k.end():keys[i + 1].start() if i + 1 < len(keys) else len(body)]
@@ -258,6 +259,9 @@ _WHY = [
     # ⊕ B1 life-processes (Wave 1, 15 Nov 2026): the seven-tests board and the living,
     # once-living, never-living sort, one id per part.
     (r"#(seven-tests|living-once-never)-\d", "the instrument was removed from the lean page"),
+    # ⊕ Chemical analysis (Wave 1, 19 Nov 2026): the metal-hydroxide tube bench (one id per tube and
+    # press), its ionic-equation builder and forge, and the spectator-ion builder, one id per item.
+    (r"#(rec|ion|forge|spec)\b", "the instrument was removed from the lean page"),
 ]
 
 

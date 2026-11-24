@@ -443,20 +443,24 @@ CASES = [
          check=lambda b: all(isinstance(x["is_correct"], bool) for x in b),
          back="(function(){ var s = H.rootState(); return Object.keys(s.rep).length === H.v().repQs.length && s.repChecked === true; })()"),
     dict(name="ks4-form-tubes", page="/triple/higher/chemistry/analysis/metal-hydroxides.html", forms=True,
+         retired="the lean rebuild (Wave 1, Chemical analysis) took the tube bench, the ionic builder and the forge off the page",
+         absent=['"e": "askOptions"', '"e": "ionParts"', '"e": "forgeItems"'],
          act="""await H.call(function (v) { return v.askOptions[0].onClick; }); await H.sleep(2100);
                 var ip = H.v().ionParts; for (var i = 0; i < ip.length; i += 1) { await H.call((function (k) { return function (v) { return v.ionParts[k].options[0].onClick; }; })(i)); }
                 await H.call('onIonCheck');
                 var fp = H.v().forgeItems[0].parts; for (var j = 0; j < fp.length; j += 1) { await H.call((function (k) { return function (v) { return v.forgeItems[0].parts[k].options[0].onClick; }; })(j)); }
                 await H.call(function (v) { return v.forgeItems[0].onCheck; }); await H.sleep(200);""",
-         want=["ks4:metal-hydroxides:th#rec-cu-p1", "ks4:metal-hydroxides:th#ion", "ks4:metal-hydroxides:th#forge-1"],
+         want=["ks4:metal-hydroxides:th#rec", "ks4:metal-hydroxides:th#ion", "ks4:metal-hydroxides:th#forge"],
          check=lambda b: all(isinstance(x["is_correct"], bool) for x in b),
          back="(function(){ var s = H.rootState(); return s.rec.cu && s.rec.cu.p1 === 'blue' && s.rec.cu.s1 === 'done' && s.ion.checked === true && Object.keys(s.ion.picks).length > 0 && Object.keys(s.forge).length === 1; })()"),
     dict(name="ks4-form-tube-id", page="/triple/higher/chemistry/analysis/metal-hydroxides.html", forms=True,
+         retired="the lean rebuild (Wave 1, Chemical analysis) took the tube bench off the page",
+         absent=['"e": "askOptions"', '"e": "actions"'],
          act="""await H.set({ cur: 'al' }); await H.call(function (v) { return v.askOptions[3].onClick; }); await H.sleep(2000);
                 await H.call(function (v) { return v.askOptions[0].onClick; }); await H.sleep(2000);
                 await H.set({ cur: 'X' }); await H.call(function (v) { return v.actions[0].onClick; }); await H.sleep(2000);
                 await H.call(function (v) { return v.askOptions[0].onClick; }); await H.sleep(300);""",
-         want=["ks4:metal-hydroxides:th#rec-al-p1", "ks4:metal-hydroxides:th#rec-al-p2", "ks4:metal-hydroxides:th#rec-x-id"],
+         want=["ks4:metal-hydroxides:th#rec"],
          check=lambda b: all(isinstance(x["is_correct"], bool) for x in b),
          back="(function(){ var s = H.rootState(); return s.rec.al && s.rec.al.p1 === 'white' && s.rec.al.s2 === 'done' && !!s.rec.al.p2 && s.rec.X && !!s.rec.X.last && s.cur === 'X'; })()"),
     dict(name="ks4-form-piston-push", page="/triple/higher/physics/particle-model/particle-motion-pressure.html", forms=True,
@@ -474,8 +478,10 @@ CASES = [
          want=["ks4:atoms-elements-compounds:th#bv-1"],
          back="(function(){ var s = H.rootState(); return !!s.bc[0] && s.bc[0][0] === 2 && !!s.bv[0]; })()"),
     dict(name="ks4-builder-chips", page="/triple/higher/chemistry/analysis/carbonates-halides-sulfates.html", forms=True,
+         retired="the lean rebuild (Wave 1, Chemical analysis) took the spectator-ion builder off the page",
+         absent=['"e": "specItems"'],
          act="await H.call(function (v) { return v.specItems[0].chips[0].onClick; }); await H.call(function (v) { return v.specItems[0].onCheck; }); await H.sleep(200);",
-         want=["ks4:carbonates-halides-sulfates:th#spec-1"],
+         want=["ks4:carbonates-halides-sulfates:th#spec"],
          back="(function(){ var s = H.rootState(); return !!s.spec[0] && s.spec[0].checked === true && s.spec[0].marks[0] === true; })()"),
     dict(name="ks4-builder-bonds", page="/triple/higher/chemistry/bonding/covalent-bonding.html", forms=True,
          act="await H.call(function (v) { return v.bBonds[0].onMore; }); await H.call('onBCheck'); await H.sleep(200);",

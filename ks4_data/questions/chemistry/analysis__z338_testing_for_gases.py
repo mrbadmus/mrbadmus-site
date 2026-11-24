@@ -728,16 +728,15 @@ QUESTIONS = [
         "band": 'harder',
         "tier": 'foundation',
         "triple_only": False,
-        "text": 'Calcium carbonate decomposes on heating to calcium oxide and carbon dioxide. Calculate the mass of carbon dioxide lost when 10.0 g decomposes completely. Mr of CaCO3 = 100, Mr of CO2 = 44.',
+        "text": 'Calcium carbonate decomposes on heating to calcium oxide and carbon dioxide. A student holds a glowing splint in the gas, and the splint goes out. She says this proves the gas is carbon dioxide. Explain why she is wrong.',
         "options": [
-            '10.0 g',
-            '4.4 g',
-            '5.6 g',
-            '44 g',
+            'Oxygen also puts out a glowing splint, so the gas could be oxygen',
+            'Other gases put out a splint too; the gas must turn limewater milky',
+            'Carbon dioxide relights a glowing splint, so it cannot be carbon dioxide',
+            'Carbon dioxide is shown only by a burning splint that gives a pop',
         ],
         "correct_index": 1,
-        "why": '10.0 ÷ 100 = 0.100 mol of calcium carbonate gives 0.100 mol of '
-               'carbon dioxide, and 0.100 × 44 = 4.4 g.',
+        "why": 'Many gases put out a glowing splint. The test for carbon dioxide is that it turns limewater milky (cloudy).',
     },
     {
         "id": 'ks4-testing-for-gases-h24',

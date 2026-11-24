@@ -549,16 +549,15 @@ QUESTIONS = [
         "band": 'harder',
         "tier": 'foundation',
         "triple_only": True,
-        "text": 'A calibration graph is a straight line through the origin. A sample gives half the intensity of a 20 mg per dm3 standard. Determine its concentration.',
+        "text": 'A calibration graph is a straight line through the origin. A sample gives half the intensity of a 20 mg per dm³ standard. Determine its concentration.',
         "options": [
-            '5 mg per dm3',
-            '20 mg per dm3',
-            '40 mg per dm3',
-            '10 mg per dm3',
+            '5 mg per dm³',
+            '20 mg per dm³',
+            '40 mg per dm³',
+            '10 mg per dm³',
         ],
         "correct_index": 3,
-        "why": 'Intensity is proportional to concentration, so half the intensity '
-               'means half the concentration: 20 ÷ 2 = 10 mg per dm3.',
+        "why": 'Intensity is proportional to concentration, so half the intensity means half the concentration: 20 ÷ 2 = 10 mg per dm³.',
     },
     {
         "id": 'ks4-instrumental-methods-h07',
@@ -583,16 +582,15 @@ QUESTIONS = [
         "band": 'harder',
         "tier": 'foundation',
         "triple_only": True,
-        "text": "A sample's sodium line is three times as intense as that of a 5.0 mg per dm3 standard. Determine the concentration of sodium in the sample.",
+        "text": "A sample's sodium line is three times as intense as that of a 5.0 mg per dm³ standard. Determine the concentration of sodium in the sample.",
         "options": [
-            '1.7 mg per dm3',
-            '15 mg per dm3',
-            '8.0 mg per dm3',
-            '5.0 mg per dm3',
+            '1.7 mg per dm³',
+            '15 mg per dm³',
+            '8.0 mg per dm³',
+            '5.0 mg per dm³',
         ],
         "correct_index": 1,
-        "why": 'Intensity is proportional to concentration, so 5.0 × 3 = 15 mg per '
-               'dm3.',
+        "why": 'Intensity is proportional to concentration, so 5.0 × 3 = 15 mg per dm³.',
     },
     {
         "id": 'ks4-instrumental-methods-h09',
@@ -770,7 +768,7 @@ QUESTIONS = [
         "band": 'harder',
         "tier": 'foundation',
         "triple_only": True,
-        "text": 'A calibration graph is plotted from standards of 0, 5, 10 and 20 mg per dm3. Explain why the zero standard is included.',
+        "text": 'A calibration graph is plotted from standards of 0, 5, 10 and 20 mg per dm³. Explain why the zero standard is included.',
         "options": [
             'It shows the reading given when none of the element is there',
             'It makes the line on the graph much easier to draw straight',
@@ -778,8 +776,7 @@ QUESTIONS = [
             'It is needed because every graph must start at the origin',
         ],
         "correct_index": 0,
-        "why": 'The blank shows any background signal, so it can be allowed for '
-               'rather than counted as part of the sample.',
+        "why": 'The blank shows any background signal, so it can be allowed for rather than counted as part of the sample.',
     },
     {
         "id": 'ks4-instrumental-methods-h20',

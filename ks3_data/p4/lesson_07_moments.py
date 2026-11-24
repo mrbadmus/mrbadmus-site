@@ -477,24 +477,24 @@ LESSON = {
                  "One uses a 0.10 m spanner, the other a 0.40 m spanner. "
                  "Which statement is right?",
             "options": [
-                "They give the same moment, because only how hard you pull decides the moment.",
-                "The long spanner gives 20 N m, while the short one gives 5 N m.",
+                "They both give 50 N m, because only how hard you pull matters.",
+                "The long spanner gives 20 N m, because moment = force × distance.",
                 # ⊕ MRB-297 · 1 Sep 2026 — the third option was widened so
                 # the correct answer stops being resolvable as the
                 # second-longest.
                 "The short spanner gives more, because the force acts closer to the bolt.",
-                "The long spanner gives more, because a longer spanner "
-                "weighs more.",
+                "The long spanner gives more, because you must pull harder "
+                "on a longer handle.",
             ],
             "answer": 1,
             "feedback": {
-                0: "The moment is force × distance. Same force, four times "
-                   "the distance, four times the moment.",
+                0: "50 N is the force, not the moment. The moment is force × "
+                   "distance: 50 × 0.10 = 5 N m and 50 × 0.40 = 20 N m.",
                 2: "Closer to the pivot is weaker, not stronger — that is "
                    "the door-hinge test at the top of this lesson.",
-                3: "The verdict is right and the reason is wrong. It would "
-                   "still be four times the moment if the long spanner were "
-                   "made of something lighter.",
+                3: "Your answer is right but the reason is wrong. Both people "
+                   "pull with the same 50 N. The long spanner wins on "
+                   "distance, not force.",
             },
             "title": "Rung 2 · The one that catches people"},
         "explain": {
