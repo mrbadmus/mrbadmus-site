@@ -483,6 +483,17 @@ _ASSIGN_HEAD = re.compile(r"(?<=return Object\.assign\()(\{\}, R, |c, )")
 
 def _legacy_logic(lesson, rec, logic, spec=None):
     what = lesson["slug"] + " logic"
+    # ⊕ 24 Nov 2026 (Particle model): `pre_edits` are exact-match edits made BEFORE the rail
+    # edits below, for a legacy page whose rail is not in a shape they read. particle-motion-
+    # pressure (batch 3) keeps two rails, RAIL_BASE and RAIL_TRIPLE, picks one per route and ticks
+    # a per-route done[] (`const done = tri ? [...] : [...]`); its record folds them into one
+    # `const RAIL = [` and one plain done[] here. Each `old` must be in the logic; a record with no
+    # pre_edits is untouched, so every other lean page keeps its bytes.
+    for old, new in (rec.get("legacy") or {}).get("pre_edits") or []:
+        if old not in logic:
+            raise SystemExit("lean_ks4: %s: pre_edits target %r is not in the legacy logic"
+                             % (what, old[:70]))
+        logic = logic.replace(old, new)
     # Some batch-4 logic names its rail `RAIL_BASE` (infrared-black-bodies): with no `RAIL` of its
     # own and exactly one `const RAIL_BASE = [`, the name is read as RAIL everywhere it is used
     # (the constant, KS4.observe, K.rail), so the RAIL edit below finds it. Anything else stops.
