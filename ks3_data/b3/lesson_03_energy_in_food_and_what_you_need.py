@@ -592,10 +592,11 @@ LESSON = {
     "ladder": {
         "recall": {
             "title": "Rung 1 · Do the sum",
-            "q": "A 13-year-old needing 9500 kJ eats: cereal (1100 kJ), two "
-                 "chapatis with dal (1750 kJ), an apple (320 kJ), pasta "
-                 "(2400 kJ) and two chocolate bars (1050 kJ each). What is "
-                 "their intake, and how does it compare?",
+            "q": "A 13-year-old needs 9500 kJ a day. Today they eat cereal "
+                 "(1100 kJ) and an apple (320 kJ). They also eat two chapatis "
+                 "with dal (1750 kJ) and pasta (2400 kJ). Then two chocolate "
+                 "bars, at 1050 kJ each. What is their intake, and how does it "
+                 "compare with their need?",
             "options": [
                 "6620 kJ, which is about 2900 kJ short of the requirement",
                 "7670 kJ, which is about 1800 kJ more than the requirement",

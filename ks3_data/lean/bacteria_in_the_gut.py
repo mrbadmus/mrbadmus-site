@@ -74,8 +74,8 @@ LESSON = {
               "Most live in the large intestine. Stomach acid kills most bacteria."),
          ]}]},
     ],
-    "key_fact": "Most bacteria in the gut are helpful. They break down fibre we cannot digest, make "
-                "vitamins and crowd out harmful bacteria.",
+    "key_fact": "Most gut bacteria are harmless or helpful. Some break down fibre we cannot digest. "
+                "Some make vitamins, and they crowd out harmful bacteria.",
     "deeper": [
         {"kind": "card", "title": "The germ-free mouse",
          "body": ["Scientists can raise mice with no bacteria at all.",

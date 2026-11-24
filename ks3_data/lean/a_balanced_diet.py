@@ -103,6 +103,10 @@ LESSON = {
                   "Both are lipids."]},
     ],
     "try": None,
+    # "Connects to" notes in a plain voice (the authored ones were abstract, with dashes)
+    "connects": {
+        "Energy stores": "Food is a chemical energy store. Physics looks at that store as energy.",
+    },
     "tutor_body": "Still not sure why a few milligrams can matter so much?",
     "ks4_becomes": "Carbohydrates, lipids and proteins as large molecules, and how enzymes digest them.",
     "ladder_stem": {

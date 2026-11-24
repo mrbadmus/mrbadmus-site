@@ -36,13 +36,15 @@ LESSON = {
         {"kind": "card", "title": "The four tests",
          "body": [{"figure": "b3-food-test-colours"}]},
         {"kind": "reveal", "title": "The four food tests",
-         "cols": ["Reagent", "Start colour", "Positive result"],
+         # two answer columns, not three: at 390 px a third column split "Orange-brown" before
+         # its hyphen and left a comma alone on a line (Wave 2 walk, 24 Nov 2026)
+         "cols": ["Reagent", "Colour change if positive"],
          "rows": [
-             ("Starch", "Iodine solution", "Orange-brown", "Blue-black"),
-             ("Sugar", "Benedict's solution, then heat", "Blue",
-              "Green, yellow, orange or brick red"),
-             ("Protein", "Biuret solution", "Blue", "Purple (lilac)"),
-             ("Fat", "Ethanol, then pour into water", "Clear", "Cloudy white"),
+             ("Starch", "Iodine solution", "Orange-brown to blue-black"),
+             ("Sugar", "Benedict's solution, then heat",
+              "Blue to green, yellow, orange or brick red"),
+             ("Protein", "Biuret solution", "Blue to purple (lilac)"),
+             ("Fat", "Ethanol, then pour into water", "Clear to cloudy white"),
          ]},
         {"kind": "card", "title": "Testing for starch",
          "body": ["Add a few drops of iodine solution to the food.",
@@ -104,6 +106,10 @@ LESSON = {
                   "Compare the colours with tubes that hold known amounts of sugar."]},
     ],
     "try": None,
+    # "Connects to" notes in a plain voice (the authored ones were abstract, with dashes)
+    "connects": {
+        "Testing the model": "That lesson asks what a result can prove, but about a model, not a tube.",
+    },
     "tutor_body": "Unsure what a negative result lets you write down?",
     "safety_note": "Wear eye protection. Biuret solution contains sodium hydroxide, which can harm "
                    "your eyes and skin. Ethanol catches fire easily, so keep it away from flames. "

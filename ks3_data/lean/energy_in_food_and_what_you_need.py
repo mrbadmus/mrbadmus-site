@@ -98,7 +98,7 @@ LESSON = {
                   "Step 1: add up what was eaten.",
                   {"points": ["Convert: every value is already in kJ.",
                               "Formula: total = the energy of every portion added together",
-                              "Insert: 4 × 780 = 3120. Then 3120 + 2400 + 450 + 1050.",
+                              "Insert: 3120 + 2400 + 450 + 1050",
                               "Fine-tune: 3120 + 2400 + 450 + 1050 = 7020",
                               "Answer: 7020 kJ was eaten."]},
                   "Step 2: compare it with the need.",
@@ -108,6 +108,7 @@ LESSON = {
                               "Answer: 2480 kJ short of the need."]}]},
         {"kind": "card", "title": "Worked example: a share of the day",
          "body": ["A chocolate bar holds 1050 kJ. Find its share of a 13-year-old's 9500 kJ day.",
+                  {"figure": "b3-share-of-day"},
                   {"points": ["Convert: both values are in kJ.",
                               "Formula: share (%) = energy in the food ÷ daily need × 100",
                               "Insert: 1050 ÷ 9500 × 100",
@@ -150,12 +151,17 @@ LESSON = {
                   "Label values allow for parts of food the body cannot digest, such as most fibre."]},
     ],
     "try": None,
+    # "Connects to" notes in a plain voice (the authored ones were abstract, with dashes)
+    "connects": {
+        "Energy in food (Physics)": "Physics compares the energy on food labels in kJ, and checks the units.",
+        "Calculating energy transferred": "Physics works out energy in joules from power and time.",
+    },
     "tutor_body": "Want to check an energy calculation of your own?",
     "safety_note": "Burning food is a teacher demonstration or a closely supervised practical. Wear eye "
                    "protection. Never use nuts or any food someone is allergic to. The boiling tube gets "
                    "very hot. Never eat anything in the lab.",
     "ks4_becomes": "Respiration and metabolism, and how exercise changes the energy a body needs.",
-    "figure_caption": {"b3-burning-food": None, "b3-day-intake": None},
+    "figure_caption": {"b3-burning-food": None, "b3-day-intake": None, "b3-share-of-day": None},
     "figures": [
         {"id": "b3-burning-food", "kind": "diagram", "status": "drawn", "art": "b3-burning-food",
          "title": "Burning food under a boiling tube of water",
@@ -178,6 +184,13 @@ LESSON = {
                              {"label": "An adult with a desk job", "kj": 9000},
                              {"label": "A bricklayer", "kj": 13500},
                              {"label": "A rower in training", "kj": 25000}]}},
+        {"id": "b3-share-of-day", "kind": "diagram", "status": "drawn", "art": "b3-share-of-day",
+         "title": "A chocolate bar's share of a 13-year-old's day",
+         "desc": "One bar, Daily need: 9500 kJ. A short dark slice at its left end is marked "
+                 "Chocolate bar: 1050 kJ, drawn to the same scale, about a ninth of the bar.",
+         "caption": "The chocolate bar is about 11% of the day's need.",
+         "data": {"unit": "kJ", "need": 9500, "need_label": "Daily need", "part": 1050,
+                  "part_label": "Chocolate bar"}},
         {"id": "b3-day-intake", "kind": "diagram", "status": "drawn", "art": "b3-day-intake",
          "title": "One day's food against a 13-year-old's need",
          "desc": "Two bars drawn to one scale. The top bar, Eaten: 7020 kJ, is made of four blocks: "

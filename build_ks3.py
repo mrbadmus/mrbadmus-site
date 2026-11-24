@@ -3340,6 +3340,8 @@ def r_ladder(lesson, block=None):
         elif q.get("success"):
             rungs.append(_rung_self(slug, key, num, name, q, plain))
             self_marked.append(num)
+        if plain and rungs:
+            rungs[-1] = keep_together(rungs[-1])
 
     # ⊕ MRB-257 · audit C7 — THE SUB-LINE IS GONE, and only one line survives.
     #
@@ -4199,6 +4201,41 @@ def keep_units(s):
         out.append(m.group(0))
         last = m.end()
     out.append(_keep_text(s[last:]))
+    return "".join(out)
+
+
+# ⊕ Lean Wave 2 KS3 (24 Nov 2026). The ladder on a lean page is not drawn by _lean_rich, and at
+# 390 px its stems and options split "11 000 kJ" as "11" / "000 kJ", "37 °C" with the unit alone,
+# and "C. difficile" across lines. keep_units() cannot be used there: it swaps spaces for U+00A0,
+# and a ladder option SENDS its label's textContent (shared/ks3.js answerParts) and is restored by
+# exact text match. So the ladder gets a span with white-space:nowrap (shared/ks3-lean.css)
+# around the same number-unit and ratio runs, and around a genus initial with its species. The
+# text content is unchanged, character for character; only where a line may break moves.
+# Capped at _LEAN_KEEP_MAX characters, as no ladder line is narrower than that at 390 px.
+_LEAN_KEEP_MAX = 14
+_LEAN_GENUS_RE = re.compile(r"(?<![\w.])([A-Z])\. ([a-z]{3,})\b")
+
+
+def _keep_span(m):
+    g = m.group(0)
+    return g if len(g) > _LEAN_KEEP_MAX else '<span class="lean-nw">%s</span>' % g
+
+
+def _keep_together_text(t):
+    t = _LEAN_UNIT_RE.sub(_keep_span, t)
+    t = _LEAN_RATIO_RE.sub(_keep_span, t)
+    return _LEAN_GENUS_RE.sub(_keep_span, t)
+
+
+def keep_together(s):
+    """keep_units() for a surface whose text is data: wrap, never change a character.
+    Text inside a tag (attribute values: data-full, data-was, data-feedback) is never touched."""
+    out, last = [], 0
+    for m in _LEAN_TAG_RE.finditer(s):
+        out.append(_keep_together_text(s[last:m.start()]))
+        out.append(m.group(0))
+        last = m.end()
+    out.append(_keep_together_text(s[last:]))
     return "".join(out)
 
 

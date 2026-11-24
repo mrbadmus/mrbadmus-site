@@ -84,8 +84,8 @@ LESSON = {
               "Each enzyme works on one substrate. Lipase digests fats, but not starch."),
          ]}]},
     ],
-    "key_fact": "Enzymes are biological catalysts. They speed up breaking large food molecules into "
-                "small ones, and are not used up.",
+    "key_fact": "Enzymes are biological catalysts. They speed up the breakdown of large food "
+                "molecules into small ones. They are not used up.",
     "deeper": [
         {"kind": "card", "title": "Enzymes in washing powder",
          "body": ["Biological washing powder contains protease and lipase.",

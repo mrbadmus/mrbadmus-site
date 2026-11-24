@@ -127,6 +127,9 @@ LESSON = {
              "rectum": ["Rectum"], "anus": ["Anus"]}}},
     ],
     "ladder_stem": {
+        "explain": "A student says: \"Blend a meal finely enough, and you would not need a digestive "
+                   "system.\" Explain what is right and what is wrong with this. Use the difference "
+                   "between mechanical and chemical digestion.",
         "produce": "A person has part of their small intestine removed after an injury. Predict how "
                    "their digestion and absorption will change. Explain why the stomach cannot take "
                    "over. Name one thing that will not change.",

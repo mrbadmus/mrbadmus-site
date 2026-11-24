@@ -2554,6 +2554,9 @@ _B3L_FOOD = "#C98A4B"
 _B3L_METAL = "#9A9389"
 _B3L_WOOD = "#B88A5A"
 _B3L_SWATCHES = ("#F4C9A6", "#E2915E", "#F7E6B0", "#B9734A", "#D9C3E8", "#A8D5BA")
+# a day's energy need: a FIXED colour, like the swatches (the accent tint read as dark brown on
+# near-black in the dark theme; 390 px walk, 24 Nov 2026)
+_B3L_NEED = "#F3D9A4"
 
 
 def _b3l_open(fig, h, body):
@@ -2708,7 +2711,7 @@ def _b3l_energy_needs(fig):
                         fill=_SVG_INK_BODY, data_part="person"))
         o.append(_label(X0 + BW, y + 16, "%s %s" % (_b3l_kj(p["kj"]), unit), size=14, weight="700",
                         anchor="end", data_part="need", data_kj=p["kj"]))
-        o.append(_rect(X0, y + 24, BW * p["kj"] / float(top), 16, rx=4, fill=_SVG_ACCENT_TINT,
+        o.append(_rect(X0, y + 24, BW * p["kj"] / float(top), 16, rx=4, fill=_B3L_NEED,
                        stroke=_SVG_INK, w=1.5, data_part="bar", data_kj=p["kj"]))
     note = d.get("note")
     h = 4 + len(people) * RH
@@ -2750,7 +2753,7 @@ def _b3l_day_intake(fig):
                     weight="700", fill=_SVG_ACCENT_TEXT, data_part="short-label", data_kj=gap))
     o.append(_label(X0, 112, "Needed: %s %s" % (_b3l_kj(need), unit), size=15, weight="700",
                     anchor="start", data_part="need", data_kj=need))
-    o.append(_rect(X0, 120, BW, 28, fill=_SVG_ACCENT_TINT, stroke=_SVG_INK, w=1.5, data_part="need-bar"))
+    o.append(_rect(X0, 120, BW, 28, fill=_B3L_NEED, stroke=_SVG_INK, w=1.5, data_part="need-bar"))
     y = 176
     for f, colour in zip(foods, _B3L_SWATCHES):
         o.append(_rect(X0, y - 12, 16, 16, rx=3, fill=colour, stroke=_SVG_INK, w=1.5, data_part="key"))
@@ -2760,6 +2763,28 @@ def _b3l_day_intake(fig):
                         anchor="end", data_part="key-kj", data_kj=f["kj"]))
         y += 26
     return _b3l_open(fig, y - 8, o)
+
+
+def _b3l_share_of_day(fig):
+    """One food's share of a day's energy need: the need as one bar, the food as its slice of it,
+    drawn to scale. data {"unit": "kJ", "need": int, "need_label", "part": int, "part_label"}."""
+    d = fig.get("data") or {}
+    need, part, unit = d.get("need"), d.get("part"), d.get("unit")
+    if not need or not part or not unit or part >= need:
+        raise ValueError("figure %r: b3-share-of-day needs need > part > 0 and a unit" % fig.get("id"))
+    X0, BW = 8, 324
+    w_ = BW * part / float(need)
+    o = [_label(X0, 18, "%s: %s %s" % (d.get("need_label") or "Daily need", _b3l_kj(need), unit),
+                size=15, weight="700", anchor="start", data_part="need", data_kj=need),
+         _rect(X0, 28, BW, 32, fill=_B3L_NEED, stroke=_SVG_INK, w=1.5, data_part="need-bar"),
+         _rect(X0, 28, w_, 32, fill=_B3L_SWATCHES[3], stroke=_SVG_INK, w=1.5, data_part="part-bar",
+               data_kj=part),
+         _line(X0, 68, X0, 78, stroke=_SVG_ACCENT_TEXT, w=2, data_part="bracket"),
+         _line(X0 + w_, 68, X0 + w_, 78, stroke=_SVG_ACCENT_TEXT, w=2, data_part="bracket"),
+         _line(X0, 73, X0 + w_, 73, stroke=_SVG_ACCENT_TEXT, w=2, data_part="bracket"),
+         _label(X0, 98, "%s: %s %s" % (d.get("part_label") or "Food", _b3l_kj(part), unit), size=15,
+                weight="700", anchor="start", fill=_SVG_ACCENT_TEXT, data_part="part", data_kj=part)]
+    return _b3l_open(fig, 106, o)
 
 
 # ── registrations ────────────────────────────────────────────────────────
@@ -3204,6 +3229,7 @@ ART = {
     'b3-burning-food': _b3l_burning_food,
     'b3-energy-needs': _b3l_energy_needs,
     'b3-day-intake': _b3l_day_intake,
+    'b3-share-of-day': _b3l_share_of_day,
 }
 
 KIND_SHELL = {

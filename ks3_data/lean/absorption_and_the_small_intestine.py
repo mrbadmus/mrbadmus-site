@@ -48,7 +48,7 @@ LESSON = {
              ("Surface area", "Very large, from folds, villi and microvilli.",
               "More molecules can be absorbed at the same time."),
              ("Wall", "Only one cell thick.", "Molecules only have a short distance to diffuse."),
-             ("Blood supply", "A network of capillaries in every villus.",
+             ("Blood supply", "Capillaries run through every villus.",
               "Blood carries food molecules away. This keeps the concentration low in the blood."),
          ]},
         {"kind": "card", "title": "Folds on folds",
@@ -66,7 +66,7 @@ LESSON = {
         {"kind": "reveal", "title": "Testing the water outside the tubing",
          "cols": ["Result", "What it shows"],
          "rows": [
-             ("Iodine test for starch", "Stays orange-brown.", "No starch got out. Its molecules are too big."),
+             ("Iodine test for starch", "No colour change.", "No starch got out. Its molecules are too big."),
              ("Benedict's test for glucose", "Turns from blue to green, yellow, orange or brick red when heated.",
               "Glucose got out. Its molecules are small enough."),
          ]},
