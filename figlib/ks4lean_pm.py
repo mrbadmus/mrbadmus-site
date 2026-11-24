@@ -146,7 +146,7 @@ def gas_pressure():
             assert (ax - bx) ** 2 + (ay - by) ** 2 > (4 * r) ** 2
     b = [rect(x0, y0, x1 - x0, y1 - y0, "none", INK, 5)]
     # a few molecules with their direction of travel
-    for (x, y), (dx, dy) in zip(others[:6], [(50, -20), (-45, 30), (40, -25), (-50, -25), (30, 45), (45, -30)]):
+    for (x, y), (dx, dy) in zip(others[:6], [(50, -20), (35, 40), (40, -25), (-50, -25), (30, 45), (45, -30)]):
         b.append(arrow(x + dx * 0.45, y + dy * 0.45, x + dx * 1.35, y + dy * 1.35, INK, 3.5, 16))
     # the molecule at the wall: in along one path, back out along another
     b.append(arrow(hit[0] - 120, hit[1] - 70, hit[0] - 22, hit[1] - 13, BLUE, 4, 18))

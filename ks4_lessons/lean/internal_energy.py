@@ -44,8 +44,9 @@ LOGIC_EDITS = [
 # ⊕ 24 Nov 2026 (pupil walk at 390 px): the heating and cooling curves were drawn 640 wide with
 # 20-unit labels, so the phone text floor (11px x viewBox / smallest font, ks4-lesson.css) made them
 # about 352 px wide: in the ~278 px rung box Rung 2's E and F were off screen while part 3 asks about
-# D to E, and the cooling curve lost its tail after E. curve() is drawn again 440 wide with 18-unit
-# labels (11 x 440 / 18 = 269 px), so the whole graph fits; the data, letters and alt text are
+# D to E, and the cooling curve lost its tail after E. curve() is drawn again 440 wide, with tick
+# numbers of 23 units (14.5 px in a 278 px box; re-walk 24 Nov 2026) and every label 22 units or
+# more (11 x 440 / 22 = 220 px), so the whole graph fits; the data, letters and alt text are
 # unchanged. Rung 2's A label moves below the line (it sat on the rising line at the new scale).
 LOGIC_EDITS += [
     (('  curve(pts, o) {\n'
@@ -70,11 +71,11 @@ LOGIC_EDITS += [
      '  }'),
      ('  curve(pts, o) {\n'
      '    const D = window.KS4D; const C = D.C;\n'
-     '    const W = 440, H = 330, L = 68, Rt = 420, Tp = 24, B = 270;\n'
+     '    const W = 440, H = 340, L = 88, Rt = 420, Tp = 26, B = 278;\n'
      '    const X = (x) => L + (Rt - L) * (x / o.tmax), Y = (T) => B - (B - Tp) * ((T - o.Tmin) / (o.Tmax - o.Tmin));\n'
      '    let b = D.line(L, Tp, L, B, 2.5) + D.line(L, B, Rt, B, 2.5);\n'
-     "    for (let T = o.Tmin; T <= o.Tmax; T += o.step) b += D.line(L - 7, Y(T), L, Y(T), 2) + D.T(L - 11, Y(T) + 6, (T < 0 ? '−' : '') + Math.abs(T), 18, { weight: 'normal', fill: C.stroke, anchor: 'end' }) + D.line(L, Y(T), Rt, Y(T), 1, '#C9C3B2');\n"
-     '    b += D.T((L + Rt) / 2, H - 18, \'Time\', 18) + \'<text x="16" y="\' + ((Tp + B) / 2) + \'" transform="rotate(-90 16 \' + ((Tp + B) / 2) + \')" font-family="\' + D.F + \'" font-size="18" font-weight="bold" fill="\' + C.label + \'" text-anchor="middle">Temperature / °C</text>\';\n'
+     "    for (let T = o.Tmin; T <= o.Tmax; T += o.step) b += D.line(L - 7, Y(T), L, Y(T), 2) + D.T(L - 11, Y(T) + 8, (T < 0 ? '−' : '') + Math.abs(T), 23, { weight: 'normal', fill: C.stroke, anchor: 'end' }) + D.line(L, Y(T), Rt, Y(T), 1, '#C9C3B2');\n"
+     '    b += D.T((L + Rt) / 2, H - 16, \'Time\', 22) + \'<text x="20" y="\' + ((Tp + B) / 2) + \'" transform="rotate(-90 20 \' + ((Tp + B) / 2) + \')" font-family="\' + D.F + \'" font-size="22" font-weight="bold" fill="\' + C.label + \'" text-anchor="middle">Temperature / °C</text>\';\n'
      "    let d = '';\n"
      '    const tEnd = o.tEnd === undefined ? o.tmax : o.tEnd;\n'
      '    for (let i = 0; i < pts.length - 1; i++) {\n'
@@ -84,12 +85,22 @@ LOGIC_EDITS += [
      "      d += (d ? ' L' : 'M') + X(a[0]).toFixed(1) + ' ' + Y(a[1]).toFixed(1) + ' L' + X(e).toFixed(1) + ' ' + Y(a[1] + (c[1] - a[1]) * f).toFixed(1);\n"
      '    }\n'
      '    if (d) b += \'<path d="\' + d + \'" fill="none" stroke="\' + C.arrow + \'" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>\';\n'
-     '    (o.letters || []).forEach((lt, i) => { if (lt && lt.t && pts[i] && pts[i][0] <= tEnd) b += D.circ(X(pts[i][0]), Y(pts[i][1]), 5, C.stroke) + D.T(X(pts[i][0]) + (lt.dx || 0), Y(pts[i][1]) + (lt.dy || -12), lt.t, 20, { fill: C.stroke }); });\n'
-     '    (o.notes || []).forEach((n) => { if (n.at <= tEnd) b += D.T(X(n.x), Y(n.T) - 12, n.t, 18, { fill: C.arrow }); });\n'
+     '    (o.letters || []).forEach((lt, i) => { if (lt && lt.t && pts[i] && pts[i][0] <= tEnd) b += D.circ(X(pts[i][0]), Y(pts[i][1]), 5, C.stroke) + D.T(X(pts[i][0]) + (lt.dx || 0), Y(pts[i][1]) + (lt.dy || -12), lt.t, 24, { fill: C.stroke }); });\n'
+     '    (o.notes || []).forEach((n) => { if (n.at <= tEnd) b += D.T(X(n.x), Y(n.T) - 12, n.t, 22, { fill: C.arrow }); });\n'
      '    return D.svg(W, H, b, o.alt);\n'
      '  }\n'
      '')),
     ("letters: [{ t: 'A', dx: 18, dy: -4 }", "letters: [{ t: 'A', dx: 16, dy: 22 }"),
+]
+
+# ⊕ 24 Nov 2026 (re-walk at 390 px): rung STEMS only get no-break spaces inside numbers and
+# number-unit pairs ("(c = 385 J/kg °C)", "a drink at 20 °C" split across lines). Rung ids are by
+# position, so the ids hold; no option text or answer key is touched.
+LOGIC_EDITS += [
+    ("prompt: 'Liquid stearic acid is left to cool. Its temperature stays at 69 °C for several minutes. Explain why. Put the links in order.'",
+     "prompt: 'Liquid stearic acid is left to cool. Its temperature stays at 69\xa0°C for several minutes. Explain why. Put the links in order.'"),
+    ("question: 'Ice at −10 °C is heated until it becomes water at 20 °C. Describe what happens to the particles and to the internal energy.'",
+     "question: 'Ice at −10\xa0°C is heated until it becomes water at 20\xa0°C. Describe what happens to the particles and to the internal energy.'"),
 ]
 
 LESSON = {

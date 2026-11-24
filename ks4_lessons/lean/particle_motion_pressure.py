@@ -134,6 +134,16 @@ LOGIC_EDITS += [
      "line: 'V₂ = 4.0\xa0m³'"),
 ]
 
+# ⊕ 24 Nov 2026 (re-walk at 390 px): rung STEMS only get no-break spaces inside numbers and
+# number-unit pairs ("(c = 385 J/kg °C)", "a drink at 20 °C" split across lines). Rung ids are by
+# position, so the ids hold; no option text or answer key is touched.
+LOGIC_EDITS += [
+    ("prompt: 'A balloon holds 0.0090 m³ of air at 100 kPa. It is squeezed slowly, at constant temperature, until its volume is 2500 cm³. Calculate the new pressure in kPa. Work it on paper, then choose the conversion and give the answer and unit.'",
+     "prompt: 'A balloon holds 0.0090\xa0m³ of air at 100\xa0kPa. It is squeezed slowly, at constant temperature, until its volume is 2500\xa0cm³. Calculate the new pressure in kPa. Work it on paper, then choose the conversion and give the answer and unit.'"),
+    ("prompt: 'A fixed mass of gas at constant temperature has a volume of 0.060 m³ at a pressure of 100 kPa. It is compressed to 0.024 m³. Calculate the new pressure. Work it on paper, then choose the conversion and give the answer and unit.'",
+     "prompt: 'A fixed mass of gas at constant temperature has a volume of 0.060\xa0m³ at a pressure of 100\xa0kPa. It is compressed to 0.024\xa0m³. Calculate the new pressure. Work it on paper, then choose the conversion and give the answer and unit.'"),
+]
+
 LESSON = {
     "slug": "particle-motion-pressure",
     "start": {

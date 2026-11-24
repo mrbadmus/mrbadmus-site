@@ -47,8 +47,10 @@ LOGIC_EDITS = [
 # ⊕ 24 Nov 2026 (pupil walk at 390 px): curve() drew 640 wide with 20 to 24-unit labels, so on a phone
 # Rung 2's graph of Z squeezed its tick numbers to about 7 px, its A label sat on the line, and the
 # card's cooling curve of Y faded at the right (D and "12"). It is drawn again 460 wide with labels of
-# 19 units or more (11 x 460 / 19 = 266 px, inside the ~278 px box), a number at every minute (so
-# 3 and 10 can be read), and each letter placed off the line. Y's curve ends at 400 so its vial fits.
+# 22 units or more (tick numbers 24: 24 x 278 / 460 = 14.5 px in a 278 px box), numbers every 2
+# minutes plus 3 (so 3 and 10 can be read), and each letter placed off the line. The card's curve of Y
+# drops Design's vial (the green "Y" tube: with no caption it read as a meaningless bar) and uses its
+# width. (Re-walk, 24 Nov 2026: tick numbers raised from 19 to 24 units, ticks thinned, vial off.)
 LOGIC_EDITS += [
     (('  curve(pts, o) {\n'
      '    const D = window.KS4D; const C = D.C;\n'
@@ -83,13 +85,14 @@ LOGIC_EDITS += [
      '  }'),
      ('  curve(pts, o) {\n'
      '    const D = window.KS4D; const C = D.C;\n'
-     '    const W = o.w || 460, H = 340, L = 66, Rt = o.right || 440, Tp = 26, B = 276;\n'
+     '    const W = o.w || 460, H = 350, L = 84, Rt = o.right || 444, Tp = 26, B = 280;\n'
      '    const X = (x) => L + (Rt - L) * (x / 12), Y = (T) => B - (B - Tp) * (T / 100);\n'
      "    let b = '';\n"
-     "    for (let T = 0; T <= 100; T += 10) b += D.line(L, Y(T), Rt, Y(T), 1, '#C9C3B2') + D.line(L - 6, Y(T), L, Y(T), 2) + (T % 20 === 0 ? D.T(L - 9, Y(T) + 7, String(T), 20, { weight: 'normal', fill: C.stroke, anchor: 'end' }) : '');\n"
-     "    for (let m = 0; m <= 12; m++) b += D.line(X(m), Tp, X(m), B, 1, '#C9C3B2') + D.T(X(m), B + 25, String(m), 19, { weight: 'normal', fill: C.stroke });\n"
+     "    for (let T = 0; T <= 100; T += 10) b += D.line(L, Y(T), Rt, Y(T), 1, '#C9C3B2') + D.line(L - 6, Y(T), L, Y(T), 2) + (T % 20 === 0 ? D.T(L - 9, Y(T) + 8, String(T), 24, { weight: 'normal', fill: C.stroke, anchor: 'end' }) : '');\n"
+     '    /* every 2 minutes, plus 3: the flat sections of Y and Z run from 3 to 10 minutes */\n'
+     "    for (let m = 0; m <= 12; m++) b += D.line(X(m), Tp, X(m), B, 1, '#C9C3B2') + (m % 2 === 0 || m === 3 ? D.T(X(m), B + 28, String(m), 24, { weight: 'normal', fill: C.stroke }) : '');\n"
      '    b += D.line(L, Tp, L, B, 2.5) + D.line(L, B, Rt, B, 2.5);\n'
-     '    b += D.T((L + Rt) / 2, H - 10, \'Time / minutes\', 20) + \'<text x="18" y="\' + ((Tp + B) / 2) + \'" transform="rotate(-90 18 \' + ((Tp + B) / 2) + \')" font-family="\' + D.F + \'" font-size="20" font-weight="bold" fill="\' + C.label + \'" text-anchor="middle">Temperature / °C</text>\';\n'
+     '    b += D.T((L + Rt) / 2, H - 8, \'Time / minutes\', 22) + \'<text x="20" y="\' + ((Tp + B) / 2) + \'" transform="rotate(-90 20 \' + ((Tp + B) / 2) + \')" font-family="\' + D.F + \'" font-size="22" font-weight="bold" fill="\' + C.label + \'" text-anchor="middle">Temperature / °C</text>\';\n'
      '    const tEnd = o.tEnd === undefined ? 12 : o.tEnd;\n'
      "    let d = '', last = null;\n"
      '    for (let i = 0; i < pts.length - 1; i++) {\n'
@@ -104,7 +107,7 @@ LOGIC_EDITS += [
      '    /* each letter sits off the line: a rising curve (Z) and a falling one (Y) take opposite sides */\n'
      '    const up = pts[1][1] > pts[0][1];\n'
      '    const OFF = up ? [[18, 30], [0, -14], [0, 32], [-18, -12]] : [[18, -12], [0, 32], [0, -14], [-18, 30]];\n'
-     "    if (o.letters && tEnd >= 12) ['A', 'B', 'C', 'D'].forEach((lt, i) => { b += D.circ(X(pts[i][0]), Y(pts[i][1]), 5, C.stroke) + D.T(X(pts[i][0]) + OFF[i][0], Y(pts[i][1]) + OFF[i][1], lt, 22, { fill: C.stroke }); });\n"
+     "    if (o.letters && tEnd >= 12) ['A', 'B', 'C', 'D'].forEach((lt, i) => { b += D.circ(X(pts[i][0]), Y(pts[i][1]), 5, C.stroke) + D.T(X(pts[i][0]) + OFF[i][0], Y(pts[i][1]) + OFF[i][1], lt, 24, { fill: C.stroke }); });\n"
      '    if (o.vial) {\n'
      '      const frozen = tEnd <= 3 ? 0 : tEnd >= 10 ? 1 : (tEnd - 3) / 7;\n'
      '      const vx = Rt + 16, top = 84, bot = 262, h = bot - top;\n'
@@ -116,7 +119,7 @@ LOGIC_EDITS += [
      '    return D.svg(W, H, b, o.alt);\n'
      '  }\n'
      '')),
-    ("vial: true, right: 570,", "vial: true, right: 400,"),
+    ("vial: true, right: 570,", ""),
 ]
 
 # ⊕ 24 Nov 2026 (pupil walk at 390 px): numbers, number-and-unit pairs and short equations in the
@@ -194,6 +197,20 @@ LOGIC_EDITS += [
      "line: 'E = 133\xa0600\xa0J'"),
 ]
 
+# ⊕ 24 Nov 2026 (re-walk at 390 px): rung STEMS only get no-break spaces inside numbers and
+# number-unit pairs ("(c = 385 J/kg °C)", "a drink at 20 °C" split across lines). Rung ids are by
+# position, so the ids hold; no option text or answer key is touched.
+LOGIC_EDITS += [
+    ("prompt: 'Name the energy needed to change 1 kg of a liquid into a gas with no change in temperature.'",
+     "prompt: 'Name the energy needed to change 1\xa0kg of a liquid into a gas with no change in temperature.'"),
+    ("prompt: 'Solid Z is heated by a 50 W heater, and all of the energy goes into Z. The graph shows its temperature. Z’s specific latent heat of fusion is 84 000 J/kg. Calculate the mass of Z. Work it on paper, then choose the conversion and give the answer and unit.'",
+     "prompt: 'Solid Z is heated by a 50\xa0W heater, and all of the energy goes into Z. The graph shows its temperature. Z’s specific latent heat of fusion is 84\xa0000\xa0J/kg. Calculate the mass of Z. Work it on paper, then choose the conversion and give the answer and unit.'"),
+    ("prompt: 'A 2.5 g piece of crushed ice at 0 °C melts in a drink. Calculate the energy it takes in. (Lf = 334 000 J/kg) Work it on paper, then choose the conversion and give the answer and unit.'",
+     "prompt: 'A 2.5\xa0g piece of crushed ice at 0\xa0°C melts in a drink. Calculate the energy it takes in. (Lf = 334\xa0000\xa0J/kg) Work it on paper, then choose the conversion and give the answer and unit.'"),
+    ("prompt: 'Ice at 0 °C is put into a drink at 20 °C. Explain why the drink cools as the ice melts. Put the links in order.'",
+     "prompt: 'Ice at 0\xa0°C is put into a drink at 20\xa0°C. Explain why the drink cools as the ice melts. Put the links in order.'"),
+]
+
 LESSON = {
     "slug": "specific-latent-heat",
     "start": {
@@ -266,10 +283,10 @@ LESSON = {
              "of water it melts: that ice was melted by the warm room, not the heater.",
              "Then L\u00a0=\u00a0E\u00a0÷\u00a0m.",
          ]}]},
-        {"kind": "reveal", "title": "Specific heat capacity or specific latent heat",
-         "cols": ["Specific heat ca\u00adpac\u00adity", "Specific la\u00adtent heat"],
+        {"kind": "reveal", "title": "Specific heat capacity (c) or specific latent heat (L)",
+         "cols": ["c", "L"],
          "rows": [
-             ("What changes", "The tem\u00adper\u00adature", "The state"),
+             ("What changes", "Temperature", "State"),
              ("Equation", "ΔE\u00a0=\u00a0m\u00a0c\u00a0Δθ", "E\u00a0=\u00a0m\u00a0L"),
              ("Unit", "J/kg\u00a0°C", "J/kg"),
              ("On a heating graph", "A sloping section", "A flat section"),

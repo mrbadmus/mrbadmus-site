@@ -130,7 +130,7 @@ LESSON = {
         ],
         "r2": [
             {"kind": "mcq", "command": "Use", "marks": 2,
-             "prompt": "A 20 g piece of dry ice (solid carbon dioxide) is sealed in a bag. It "
+             "prompt": "A 20\u00a0g piece of dry ice (solid carbon dioxide) is sealed in a bag. It "
                        "turns straight into a gas. Which statement is correct?",
              "why": "Solid straight to gas is sublimating. Nothing leaves the sealed bag, so the "
                     "mass is conserved.",

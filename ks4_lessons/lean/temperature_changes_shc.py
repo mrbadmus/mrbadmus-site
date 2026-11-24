@@ -114,6 +114,16 @@ LOGIC_EDITS += [
      "line: 'ΔE = 151\xa0200\xa0J'"),
 ]
 
+# ⊕ 24 Nov 2026 (re-walk at 390 px): rung STEMS only get no-break spaces inside numbers and
+# number-unit pairs ("(c = 385 J/kg °C)", "a drink at 20 °C" split across lines). Rung ids are by
+# position, so the ids hold; no option text or answer key is touched.
+LOGIC_EDITS += [
+    ("prompt: 'A 2.0 kg copper block is heated by a 60 W heater for 4.0 minutes. All the energy goes into the block. Calculate its temperature rise. (c = 385 J/kg °C) Work it on paper, then choose the conversion and give the answer and unit.'",
+     "prompt: 'A 2.0\xa0kg copper block is heated by a 60\xa0W heater for 4.0\xa0minutes. All the energy goes into the block. Calculate its temperature rise. (c = 385\xa0J/kg\xa0°C) Work it on paper, then choose the conversion and give the answer and unit.'"),
+    ("prompt: 'A 40 g copper spoon warms from 20 °C to 70 °C in a hot drink. Calculate the energy it takes in. (c = 385 J/kg °C) Work it on paper, then choose the conversion and give the answer and unit.'",
+     "prompt: 'A 40\xa0g copper spoon warms from 20\xa0°C to 70\xa0°C in a hot drink. Calculate the energy it takes in. (c = 385\xa0J/kg\xa0°C) Work it on paper, then choose the conversion and give the answer and unit.'"),
+]
+
 LESSON = {
     "slug": "temperature-changes-shc",
     "start": {

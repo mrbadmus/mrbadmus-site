@@ -253,8 +253,8 @@ LESSON = {
                   "reply": "Mass is conserved in a change of state. The volume is what changes."},
              ]},
             {"kind": "calc", "command": "Calculate", "marks": 3,
-             "prompt": "A stone has a mass of 0.24 kg. It is lowered into a measuring cylinder of "
-                       "water, and the reading rises from 40 cm³ to 120 cm³. Calculate the "
+             "prompt": "A stone has a mass of 0.24\u00a0kg. It is lowered into a measuring cylinder of "
+                       "water, and the reading rises from 40\u00a0cm³ to 120\u00a0cm³. Calculate the "
                        "density of the stone in kg/m³. Work it on paper, then choose the "
                        "conversion and give the answer and unit.",
              "convOptions": ["Nothing to convert",
