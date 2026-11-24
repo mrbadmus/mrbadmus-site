@@ -8238,6 +8238,14 @@ def contrast(a, b):
     return (hi + 0.05) / (lo + 0.05)
 
 
+# Chrome 158's computed-style spelling of the flex alignment keywords — see
+# measure_c. Only these two aliases: `start`, `end`, `center`, `baseline` and
+# every other keyword compare exactly as before.
+_ALIGN_PROPS = {"align-items", "align-self", "align-content",
+                "justify-content", "justify-items", "justify-self"}
+_ALIGN_ALIAS = {"flow-start": "flex-start", "flow-end": "flex-end"}
+
+
 def same_colour(got, want):
     g, w = parse_rgb(got), parse_rgb(want)
     return g is not None and w is not None and g == w
@@ -18145,6 +18153,17 @@ def run_browser_layers(ks3_root, browser_mod):
                 # property that distinguishes it from every other card.
                 elif want.endswith("px") and " " not in want.strip():
                     ok = close_length(got, want)
+                # ⊕ 24 Nov 2026: Chrome 158 (auto-updated 23 Nov) SERIALISES an
+                # authored `flex-start` / `flex-end` as `flow-start` /
+                # `flow-end` in computed style — `align-items: flex-end` in
+                # the stylesheet reads back as "flow-end", the box lays out
+                # exactly as before. Same specified value, new spelling, so the
+                # spelling is mapped back before comparing, for the alignment
+                # properties only. `start` / `end` are different keywords and
+                # stay different: an authored `end` still fails a `flex-end`.
+                elif prop in _ALIGN_PROPS:
+                    ok = (_ALIGN_ALIAS.get(got.lower(), got.lower())
+                          == want.lower())
                 else:
                     ok = (got.lower() == want.lower())
                 style_rows.append((spec["name"], prop, want, got, bool(ok)))
