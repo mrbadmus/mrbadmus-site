@@ -4229,13 +4229,23 @@ def _keep_together_text(t):
 
 def keep_together(s):
     """keep_units() for a surface whose text is data: wrap, never change a character.
-    Text inside a tag (attribute values: data-full, data-was, data-feedback) is never touched."""
-    out, last = [], 0
+    Text inside a tag (attribute values: data-full, data-was, data-feedback) is never touched.
+    Nor is the text of a <label>: a self-check tick label is a flex row (number + text), so each
+    span would become its own flex item and the line could not wrap. On Calculating energy
+    transferred that pushed the page to 517 px at 390 (lean_pilot_drive, 24 Nov 2026)."""
+    out, last, in_label = [], 0, False
     for m in _LEAN_TAG_RE.finditer(s):
-        out.append(_keep_together_text(s[last:m.start()]))
-        out.append(m.group(0))
+        chunk = s[last:m.start()]
+        out.append(chunk if in_label else _keep_together_text(chunk))
+        tag = m.group(0)
+        if re.match(r"<label\b", tag, re.I):
+            in_label = True
+        elif re.match(r"</label\s*>", tag, re.I):
+            in_label = False
+        out.append(tag)
         last = m.end()
-    out.append(_keep_together_text(s[last:]))
+    tail = s[last:]
+    out.append(tail if in_label else _keep_together_text(tail))
     return "".join(out)
 
 
