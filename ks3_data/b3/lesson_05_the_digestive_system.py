@@ -640,14 +640,9 @@ LESSON = {
             ],
             "answer": 1,
             "feedback": {
-                0: "The stomach starts protein digestion and absorbs virtually "
-                   "nothing. It passes the meal on after a few hours to the "
-                   "small intestine, where the real work happens.",
-                2: "By the time material reaches the large intestine the "
-                   "nutrients have already been absorbed. It takes back water, "
-                   "not food.",
-                3: "The mouth begins starch digestion and absorbs nothing. The "
-                   "food is there for about a minute.",
+                0: "The stomach starts protein digestion. Almost nothing is absorbed there.",
+                2: "Most food is digested and absorbed before it gets there. It absorbs water.",
+                3: "The mouth starts digesting starch. Food is only there for about a minute.",
             }},
         "apply": {
             "title": "Rung 2 · The one that catches people",
@@ -655,23 +650,17 @@ LESSON = {
                  "avoid very fatty meals. Bile contains no enzymes. Why does "
                  "losing bile storage make fat harder to digest?",
             "options": [
-                "Bile digests fat, so without it fat is not broken down",
-                "Bile emulsifies fat into small droplets, giving lipase far "
-                "more surface to work on",
-                "Bile neutralises stomach acid, and without it lipase is "
-                "destroyed",
-                "Without a gall bladder the liver stops making bile",
+                "Bile digests the fat itself, so without bile no fat is broken down",
+                "Bile breaks fat into small droplets, so lipase has more surface",
+                "Bile adds lipase to the gut, so without it no lipase arrives",
+                "Without a gall bladder the liver stops making bile, so no fat is "
+                "digested",
             ],
             "answer": 1,
             "feedback": {
-                0: "Bile contains no enzymes and digests nothing. Lipase does "
-                   "the digesting — the question is why lipase becomes less "
-                   "effective.",
-                2: "Neutralising the acid is done by alkali from the pancreas, "
-                   "not by bile, and that still happens.",
-                3: "The liver carries on making bile. What is lost is the "
-                   "ability to store it and release a large amount at once "
-                   "onto a fatty meal.",
+                0: "Bile has no enzymes, so it digests nothing. Lipase digests the fat.",
+                2: "Lipase comes from the pancreas. Bile has no enzymes in it.",
+                3: "The liver keeps making bile. Only the store of bile is lost.",
             }},
         "explain": {
             "title": "Rung 3 · Explain the blender",

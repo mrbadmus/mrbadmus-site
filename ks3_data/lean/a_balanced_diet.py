@@ -1,0 +1,151 @@
+# -*- coding: utf-8 -*-
+"""A balanced diet, in the lean shape. Spec table: docs/lessons/wave2/ks3-a-balanced-diet.md."""
+
+LESSON = {
+    "slug": "a-balanced-diet",
+    "start": {
+        "setup": "Plate A is white rice, chicken, oil, water and salt. Plate B is the same food, "
+                 "plus one orange. Someone who eats only Plate A for months becomes very ill. "
+                 "Someone who eats Plate B does not get that illness.",
+        "question": "If you had to guess, what in the orange saves the person on Plate B?",
+        "options": [
+            ("A tiny vital substance",
+             "Yes. One orange has about 50 mg of vitamin C. Plate A has almost none."),
+            ("A bit more energy",
+             "The rice and oil already give plenty of energy. Plate A lacks vitamin C."),
+        ],
+        "answer": 0,
+    },
+    "words": ["nutrient", "balanced diet", "lipid", "dietary fibre"],
+    "word_defs": {
+        "nutrient": "A substance in food that the body needs to stay alive and healthy.",
+        "balanced diet": "A diet with every nutrient, each in the right amount.",
+        "lipid": "The scientific word for fats and oils.",
+        "dietary fibre": "Plant material the body cannot digest. It keeps food moving through the gut.",
+    },
+    "knowledge": [
+        {"kind": "card", "title": "Seven nutrient groups",
+         "body": ["A healthy diet contains seven groups of nutrients:",
+                  {"points": ["carbohydrates", "lipids (fats and oils)", "proteins", "vitamins",
+                              "minerals", "dietary fibre", "water"]},
+                  "The body needs every one of them."]},
+        {"kind": "reveal", "title": "The seven nutrients",
+         "cols": ["Found in", "Why the body needs it"],
+         "rows": [
+             ("Carbohydrates", "Bread, rice, pasta, potatoes and cereals.",
+              "The main source of energy."),
+             ("Lipids", "Butter, oil, cheese, nuts and oily fish.",
+              "A store of energy. Insulation to keep warm. Building cell membranes."),
+             ("Proteins", "Meat, fish, eggs, beans and lentils.",
+              "Growth and repair of cells, such as muscle."),
+             ("Vitamins", "Fruit, vegetables, eggs and oily fish.",
+              "Small amounts keep you healthy. Vitamin C keeps skin and gums healthy."),
+             ("Minerals", "Milk, cheese, red meat and leafy green vegetables.",
+              "Calcium builds bones and teeth. Iron is needed to make red blood cells."),
+             ("Dietary fibre", "Wholegrain bread, fruit, vegetables and beans.",
+              "Keeps food moving through the gut. This prevents constipation."),
+             ("Water", "Drinks, and most foods.",
+              "The reactions in your cells happen in water. Blood is mostly water."),
+         ]},
+        {"kind": "card", "title": "Energy from food",
+         "body": ["Carbohydrates and lipids are the body's main sources of energy.",
+                  "Lipids hold about twice as much energy per gram as carbohydrates.",
+                  "Protein can be respired for energy too. The body mainly uses it for growth and repair.",
+                  "Vitamins, minerals and water release no energy.",
+                  "Your body cannot digest fibre, so you get almost no energy from it."]},
+        {"kind": "card", "title": "Balanced means the right amount",
+         "body": ["A balanced diet has each nutrient in the right amount.",
+                  "The right amounts are very different. A 13-year-old needs roughly this much a day:",
+                  {"points": ["water: about 2 litres, from food and drink",
+                              "carbohydrate: about 300 g",
+                              "lipid: about 70 g",
+                              "protein: about 45 g",
+                              "dietary fibre: about 25 g",
+                              "minerals: several grams in total",
+                              "vitamins: less than 1 g in total"]},
+                  "Too much or too little of any nutrient causes health problems."]},
+        {"kind": "card", "title": "Vitamins and minerals",
+         "body": ["Vitamins and minerals are needed in small amounts. Some are needed in milligrams.",
+                  "They release no energy. Each one has its own job.",
+                  "Iron is needed to make haemoglobin. Haemoglobin carries oxygen in red blood cells.",
+                  "Too little iron causes anaemia. Too little vitamin C causes scurvy.",
+                  "An illness caused by a missing nutrient is a deficiency disease."]},
+        {"kind": "card", "title": "Fibre and water",
+         "body": ["Your body cannot digest fibre, so it is not absorbed into the blood.",
+                  "It gives the muscles of the gut something to push against.",
+                  "This keeps food moving and prevents constipation.",
+                  "You lose water all day, in urine, sweat and breath.",
+                  "So you need to take in about 2 litres a day."]},
+        {"kind": "card", "title": "Easy mistakes",
+         "body": [{"mistakes": [
+             ("A balanced diet means equal amounts of each nutrient.",
+              "It means the right amount of each. You need far more water than vitamins.",
+              "DIET-01"),
+             ("Vitamins give you energy.",
+              "Vitamins release no energy. Carbohydrates, lipids and proteins do.", "DIET-02"),
+             ("A healthy diet has no fat in it.",
+              "Lipids are a nutrient. You need some for energy, warmth and cell membranes.",
+              "DIET-03"),
+             ("Only people who do sport need protein.",
+              "Everyone needs protein for the growth and repair of cells."),
+         ]}]},
+    ],
+    "key_fact": "A balanced diet has all seven nutrients, each in the right amount. They are "
+                "carbohydrates, lipids, proteins, vitamins, minerals, dietary fibre and water.",
+    "deeper": [
+        {"kind": "card", "title": "Vitamins that dissolve in fat",
+         "body": ["Vitamins A, D, E and K dissolve in fat.",
+                  "The gut absorbs them along with the fat in a meal.",
+                  "So a diet with no fat at all can leave you short of them."]},
+        {"kind": "card", "title": "Fats and oils",
+         "body": ["Fats are solid at room temperature, like butter.",
+                  "Oils are liquid at room temperature, like olive oil.",
+                  "Both are lipids."]},
+    ],
+    "try": None,
+    # "Connects to" notes in a plain voice (the authored ones were abstract, with dashes)
+    "connects": {
+        "Energy stores": "Food is a chemical energy store. Physics looks at that store as energy.",
+    },
+    "tutor_body": "Still not sure why a few milligrams can matter so much?",
+    "ks4_becomes": "Carbohydrates, lipids and proteins as large molecules, and how enzymes digest them.",
+    "ladder_stem": {
+        "explain": "A 13-year-old needs about 300 g of carbohydrate a day. They need less than 15 mg "
+                   "of iron. Explain why both are essential. Explain why the amounts are so different.",
+        "produce": "A sports drink says it is ‘packed with energy-giving vitamins’. The label lists "
+                   "32 g of sugars and eight vitamins. Say what is wrong with the claim. Say what "
+                   "supplies the energy. Give one reason the vitamins might still be useful.",
+    },
+    "ladder_ticks": [
+        ["Says carbohydrate is used as fuel and is respired continuously, so it is used up and must "
+         "be replaced in bulk.",
+         "Says carbohydrate is respired for energy all the time, so a lot is needed."],
+        ["Says iron is built into a structure — haemoglobin — rather than burnt, so it is not "
+         "consumed in the same way.",
+         "Says iron is built into haemoglobin. It is not respired, so far less is needed."],
+        ["States that essential means the body cannot make it and fails without it, which is true "
+         "of both regardless of amount.",
+         "Says the body cannot work properly without either one, whatever the amount."],
+        ["Names a consequence of going short of iron specifically, not just ‘being unhealthy’.",
+         "Names a result of too little iron, such as anaemia."],
+        ["Explicitly rejects the idea that a bigger requirement means a more important nutrient.",
+         "Says needing more of a nutrient does not make it more important."],
+        ["Explains that some vitamins are part of the machinery that releases energy from glucose, "
+         "which is probably what the claim is distorting.",
+         "Says some vitamins help the reactions that release energy, without giving any."],
+        ["Says the vitamins are not useless — gives one honest reason they might belong in the drink.",
+         "Gives one sound reason the vitamins might still be worth having."],
+    ],
+    "ladder_feedback": {
+        "recall": {
+            0: "Vitamins release no energy. Protein does, so it belongs in the list.",
+            2: "Protein can be respired for energy too, as well as for growth.",
+            3: "Vitamins, minerals and water release no energy. Fibre gives almost none.",
+        },
+        "apply": {
+            1: "They eat plenty of bread, pasta and rice. Fuel is not what is missing.",
+            2: "Water does not help blood carry oxygen. Iron makes haemoglobin, which does.",
+            3: "Too little vitamin C causes scurvy. Iron is needed to carry oxygen.",
+        },
+    },
+}

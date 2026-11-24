@@ -399,7 +399,7 @@ START_HERE = {
              "Smooth does feel finished. But blades only make the pieces "
              "smaller. The starch inside is still in long chains, far too big "
              "to cross into your blood."),
-            ("No, the bits are too big",
+            ("No, it is not broken down enough",
              "Smooth is not the same as small enough. The starch in the liquid"
              " is still in long chains, far too big to cross into your blood."),
         ],

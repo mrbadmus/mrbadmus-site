@@ -121,6 +121,10 @@ WAVES = {
                                 "how-we-worked-out-dna", "passing-it-on-heredity", "what-makes-a-species"]),
         ("B11", "evolution", ["variation-and-competitive-success", "natural-selection",
                               "when-the-environment-changes-extinction", "biodiversity-and-gene-banks"]),
+        # Y7 Bio 2 Diet and digestion: all of B3.
+        ("B3", "nutrition", ["a-balanced-diet", "food-tests", "energy-in-food-and-what-you-need",
+                             "when-diet-goes-wrong", "the-digestive-system", "enzymes-in-digestion",
+                             "absorption-and-the-small-intestine", "bacteria-in-the-gut"]),
     ],
 }
 

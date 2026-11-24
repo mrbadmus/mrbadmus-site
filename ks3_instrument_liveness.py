@@ -311,6 +311,25 @@ RETIRED_BY_LEAN = {
                        "the pressure bench is not on the lean page"),
     "blight-bench": ("biology/evolution-extinction-and-biodiversity/biodiversity-and-gene-banks.html",
                      "the blight bench is not on the lean page"),
+    # ⊕ 23 Nov 2026 lean wave 2 (B3 diet and digestion): each family had exactly one lesson, and no
+    # other built page emits it. The frozen classic copies in ks3_fixtures/ keep the benches for the
+    # parity and save checks. keyed-commit and confrontation are not here: other pages still emit them.
+    "band-commit": ("biology/nutrition-and-digestion/a-balanced-diet.html",
+                    "the plate band-commit bench is not on the lean page"),
+    "test-bench": ("biology/nutrition-and-digestion/food-tests.html",
+                   "the test bench is not on the lean page (figure b3-food-test-colours)"),
+    "person-ledger": ("biology/nutrition-and-digestion/energy-in-food-and-what-you-need.html",
+                      "replaced by the drawn figures b3-energy-needs and b3-day-intake"),
+    "clinic-cases": ("biology/nutrition-and-digestion/when-diet-goes-wrong.html",
+                     "the clinic cases are not on the lean page"),
+    "gut-journey": ("biology/nutrition-and-digestion/the-digestive-system.html",
+                    "replaced by the drawn figure b3-gut-body"),
+    "enzyme-run": ("biology/nutrition-and-digestion/enzymes-in-digestion.html",
+                   "the enzyme run is not on the lean page (figures b3-enzyme-breakdown and b3-enzyme-cycle)"),
+    "fold-builder": ("biology/nutrition-and-digestion/absorption-and-the-small-intestine.html",
+                     "replaced by the drawn figure b3-villus-lean"),
+    "job-switch": ("biology/nutrition-and-digestion/bacteria-in-the-gut.html",
+                   "the job-switch bench is not on the lean page"),
 }
 
 

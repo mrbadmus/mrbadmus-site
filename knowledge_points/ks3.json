@@ -2,7 +2,7 @@
  "a-balanced-diet": {
   "key_stage": "KS3",
   "keys": {
-   "a-balanced-diet#apply": "Iron — a mineral, needed in milligrams",
+   "a-balanced-diet#apply": "Iron, because it is needed to make haemoglobin",
    "a-balanced-diet#recall": "Carbohydrate, lipid and protein",
    "a-balanced-diet#start": "A tiny vital substance"
   },
@@ -294,7 +294,7 @@
  "absorption-and-the-small-intestine": {
   "key_stage": "KS3",
   "keys": {
-   "absorption-and-the-small-intestine#apply": "It stops within minutes, because the concentration difference disappears",
+   "absorption-and-the-small-intestine#apply": "It slows and stops, as the concentration difference disappears",
    "absorption-and-the-small-intestine#recall": "surface area",
    "absorption-and-the-small-intestine#start": "Its wall is folded"
   },
@@ -2282,8 +2282,8 @@
  "bacteria-in-the-gut": {
   "key_stage": "KS3",
   "keys": {
-   "bacteria-in-the-gut#apply": "The antibiotic cleared the competing species, leaving space and food for C. difficile",
-   "bacteria-in-the-gut#recall": "Break down cellulose and make vitamin K",
+   "bacteria-in-the-gut#apply": "The antibiotic killed competing bacteria, so C. difficile had space and food",
+   "bacteria-in-the-gut#recall": "Break down fibre and make vitamin K",
    "bacteria-in-the-gut#start": "More food"
   },
   "points": [
@@ -8234,8 +8234,8 @@
  "energy-in-food-and-what-you-need": {
   "key_stage": "KS3",
   "keys": {
-   "energy-in-food-and-what-you-need#apply": "About 18%, because their requirement is much lower",
-   "energy-in-food-and-what-you-need#recall": "7670 kJ — about 1800 kJ short of the requirement",
+   "energy-in-food-and-what-you-need#apply": "About 18%, because their daily need is much lower",
+   "energy-in-food-and-what-you-need#recall": "7670 kJ, which is about 1800 kJ short of the requirement",
    "energy-in-food-and-what-you-need#start": "How much energy each body needs"
   },
   "points": [
@@ -8667,8 +8667,8 @@
  "enzymes-in-digestion": {
   "key_stage": "KS3",
   "keys": {
-   "enzymes-in-digestion#apply": "Its shape was permanently destroyed by the heat, so it no longer fits starch",
-   "enzymes-in-digestion#recall": "All of it — an enzyme is not used up by the reaction it catalyses",
+   "enzymes-in-digestion#apply": "Its shape changed for good, so it no longer fits starch",
+   "enzymes-in-digestion#recall": "All of it, as an enzyme is not used up by the reaction",
    "enzymes-in-digestion#start": "Yes, all of it"
   },
   "points": [
@@ -10012,7 +10012,7 @@
   "key_stage": "KS3",
   "keys": {
    "food-tests#apply": "Saliva broke the starch down into sugar",
-   "food-tests#recall": "The cream contains lipid",
+   "food-tests#recall": "The food contains lipid, as a cloudy white layer formed",
    "food-tests#start": "Nothing either way"
   },
   "points": [
@@ -22332,9 +22332,9 @@
  "the-digestive-system": {
   "key_stage": "KS3",
   "keys": {
-   "the-digestive-system#apply": "Bile emulsifies fat into small droplets, giving lipase far more surface to work on",
+   "the-digestive-system#apply": "Bile breaks fat into small droplets, so lipase has more surface",
    "the-digestive-system#recall": "The small intestine",
-   "the-digestive-system#start": "No, the bits are too big"
+   "the-digestive-system#start": "No, it is not broken down enough"
   },
   "points": [
    {
@@ -26349,8 +26349,8 @@
  "when-diet-goes-wrong": {
   "key_stage": "KS3",
   "keys": {
-   "when-diet-goes-wrong#apply": "Iron deficiency does not depend on how much energy a diet supplies",
-   "when-diet-goes-wrong#recall": "A nutrient missing, only",
+   "when-diet-goes-wrong#apply": "Energy intake does not decide iron intake, as iron is a separate nutrient",
+   "when-diet-goes-wrong#recall": "A missing nutrient only",
    "when-diet-goes-wrong#start": "Yes, they could be"
   },
   "points": [

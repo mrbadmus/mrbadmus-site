@@ -19,11 +19,11 @@ MRB-103 also flagged an **anatomical/structural diagram gap** (cells, organs) an
 | Status | Figures |
 |---|---|
 | `drafted` | 1 |
-| `drawn` | 99 |
+| `drawn` | 109 |
 | `final` | 1 |
 | `needed` | 3 |
 | `retired` | 6 |
-| **Total** | **110** |
+| **Total** | **120** |
 
 `needed` = declared by a lesson, not yet drawn. A lesson may ship with figures at `needed` — it is not a build blocker — but the need is then counted here rather than invisible.
 
@@ -61,7 +61,17 @@ MRB-103 also flagged an **anatomical/structural diagram gap** (cells, organs) an
 | B11 | `natural-selection` | `b11-moth-pair` | diagram | `drawn` | Neither moth changed. The bark did. Being found is the whole of the disadvantage. |
 | B11 | `natural-selection` | `b11-selection-steps` | diagram | `drawn` | Natural selection in peppered moths on sooty bark. |
 | B3 | `absorption-and-the-small-intestine` | `b3-villus-labelled` | diagram | `drawn` | Each frame is drawn from a callout of the frame before it, so the folding is one thing at three sizes rather than three separate facts: the tube is ridged, every ridge is covered in villi, and every cell of every villus is covered in microvilli. The panel underneath shows why it is worth doing. Count the cells across the wall of the villus — there is one. On the far side of that single cell is a capillary, which is why a glucose molecule in the gut is in the bloodstream a moment later. |
+| B3 | `absorption-and-the-small-intestine` | `b3-villus-lean` | diagram | `drawn` | Every villus has a thin wall and a capillary close behind it. |
+| B3 | `absorption-and-the-small-intestine` | `b3-visking` | diagram | `drawn` | Glucose passes through the tubing. Starch does not. |
+| B3 | `energy-in-food-and-what-you-need` | `b3-burning-food` | diagram | `drawn` | The burning food heats the water. A bigger temperature rise means more energy. |
+| B3 | `energy-in-food-and-what-you-need` | `b3-day-intake` | diagram | `drawn` | The day's food falls 2480 kJ short of the 9500 kJ needed. |
+| B3 | `energy-in-food-and-what-you-need` | `b3-energy-needs` | diagram | `drawn` | Daily energy needs, rounded. The rower needs over four times as much as the 4-year-old. |
+| B3 | `energy-in-food-and-what-you-need` | `b3-share-of-day` | diagram | `drawn` | The chocolate bar is about 11% of the day's need. |
+| B3 | `enzymes-in-digestion` | `b3-enzyme-breakdown` | diagram | `drawn` | Each enzyme breaks one kind of large molecule into small ones. |
+| B3 | `enzymes-in-digestion` | `b3-enzyme-cycle` | diagram | `drawn` | The enzyme is the same at the end as at the start. |
+| B3 | `food-tests` | `b3-food-test-colours` | diagram | `drawn` | Each test finds one nutrient. The right-hand tubes show a positive result. |
 | B3 | `the-digestive-system` | `b3-digestion-timing` | diagram | `drawn` | Hours spent in each organ, to scale. |
+| B3 | `the-digestive-system` | `b3-gut-body` | diagram | `drawn` | Food passes through the mouth, oesophagus, stomach, small intestine, large intestine, rectum and anus. |
 | B3 | `the-digestive-system` | `b3-gut-labelled` | diagram | `drawn` | One tube, from 01 at the top to 07 at the bottom, with the orange line running down the middle of it the whole way. The small intestine is the long narrow coiled run; the large intestine below it is visibly wider and shorter. Stop 05 — pancreas, liver and gall bladder — sits inside the dashed boundary, with ducts leading out of it into the tube. That is the distinction the bench’s own stop 05 rests on: those three send juices in, and food never passes through them. Put a finger on 01 and follow the orange line down: it does not stop, branch or start again anywhere between there and 07, and it never once goes into the dashed boundary. |
 | B4 | `how-breathing-works` | `b4-bell-jar-model` | diagram | `drawn` | Pull the sheet down and the balloons inflate. |
 | B4 | `how-breathing-works` | `b4-lung-volume-bottle` | diagram | `drawn` | The air you breathe out pushes water out of the bottle. |

@@ -309,7 +309,7 @@ def main():
                 "also strip the claim half of 'Right - reason' / 'Wrong - reason' verdict options, so this run "
                 "leaves them alone and lists them.\n")
     pat = re.compile(r'<button[^>]*class="ks3-option[^"]*"([^>]*)>\s*(?:<span class="ks3-opt-mark"[^>]*>[^<]*</span>\s*)?'
-                     r'<span class="ks3-opt-label">(.*?)</span>', re.S)
+                     r'<span class="ks3-opt-label">(.*?)</span></button>', re.S)   # may hold a nowrap span
     n_act = n_pg = 0
     for f in sorted(glob.glob(os.path.join(SITE, "ks3", "**", "*.html"), recursive=True)):
         if os.sep + "_fixtures" + os.sep in f:      # ⊕ 14 Nov 2026: hidden check fixtures, not lessons

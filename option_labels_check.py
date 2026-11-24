@@ -209,7 +209,8 @@ def check_built(exc_texts, problems):
     pat4 = re.compile(r'<button class="quiz-opt"[^>]*>(.*?)</button>', re.S)
     pat3 = re.compile(r'<button[^>]*class="ks3-option"[^>]*data-correct=[^>]*>\s*'
                       r'<span class="ks3-opt-mark"[^>]*>[^<]*</span>\s*'
-                      r'<span class="ks3-opt-label">(.*?)</span>', re.S)
+                      r'<span class="ks3-opt-label">(.*?)</span></button>', re.S)   # a label may hold a
+    # nowrap span (build_ks3.keep_together, lean ladders), so it ends at </button>, not the first </span>
     bad = pages = 0
     for f in glob.glob(os.path.join(site, "**", "*.html"), recursive=True):
         rel = os.path.relpath(f, site)
@@ -219,7 +220,7 @@ def check_built(exc_texts, problems):
         hit = False
         for pat in (pat4, pat3):
             for m in pat.finditer(t):
-                lab = _norm(m.group(1))
+                lab = _norm(re.sub(r"<[^>]+>", "", m.group(1)))
                 if OL.SEP in lab and lab not in allowed:
                     bad += 1
                     hit = True

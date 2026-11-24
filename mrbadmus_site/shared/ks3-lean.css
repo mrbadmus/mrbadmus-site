@@ -32,3 +32,9 @@ html .lean-table tbody th::first-letter,
 html .lean-table .lean-cell-text::first-letter {
   color: inherit;
 }
+
+/* The ladder on a lean page (build_ks3.keep_together): a number and its unit, "1 in 4", and
+   "C. difficile" stay on one line. A span, not U+00A0, so an option's text is unchanged. */
+.lean-nw {
+  white-space: nowrap;
+}

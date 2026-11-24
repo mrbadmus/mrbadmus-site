@@ -742,14 +742,17 @@ B2_BIO = "biology/movement-skeleton-and-muscles/biomechanics-forces-in-the-body.
 # ═══ END B2 ═══
 
 # ═══ BEGIN B3 ═══
-B3_DIET = "biology/nutrition-and-digestion/a-balanced-diet.html"
-B3_WRONG = "biology/nutrition-and-digestion/when-diet-goes-wrong.html"
-B3_ENZ = "biology/nutrition-and-digestion/enzymes-in-digestion.html"
-B3_VILLUS = "biology/nutrition-and-digestion/absorption-and-the-small-intestine.html"
-B3_GUT = "biology/nutrition-and-digestion/the-digestive-system.html"
-B3_BACTERIA = "biology/nutrition-and-digestion/bacteria-in-the-gut.html"
-B3_ENERGY = "biology/nutrition-and-digestion/energy-in-food-and-what-you-need.html"
-B3_TESTS = "biology/nutrition-and-digestion/food-tests.html"
+# ⊕ 23 Nov 2026 (Mide, 14 Nov: checks do not depend on real lessons): all eight B3 lessons went
+# lean (Wave 2) and lost their benches, rule cards and classic figures, so these eight constants
+# name the hidden frozen classic copies (ks3_fixtures/), as LESSON does. Only the page moved.
+B3_DIET = "_fixtures/fixture-a-balanced-diet.html"   # was biology/nutrition-and-digestion/a-balanced-diet.html (fixture, see LESSON)
+B3_WRONG = "_fixtures/fixture-when-diet-goes-wrong.html"   # was biology/nutrition-and-digestion/when-diet-goes-wrong.html (fixture, see LESSON)
+B3_ENZ = "_fixtures/fixture-enzymes-in-digestion.html"   # was biology/nutrition-and-digestion/enzymes-in-digestion.html (fixture, see LESSON)
+B3_VILLUS = "_fixtures/fixture-absorption-and-the-small-intestine.html"   # was biology/nutrition-and-digestion/absorption-and-the-small-intestine.html (fixture, see LESSON)
+B3_GUT = "_fixtures/fixture-the-digestive-system.html"   # was biology/nutrition-and-digestion/the-digestive-system.html (fixture, see LESSON)
+B3_BACTERIA = "_fixtures/fixture-bacteria-in-the-gut.html"   # was biology/nutrition-and-digestion/bacteria-in-the-gut.html (fixture, see LESSON)
+B3_ENERGY = "_fixtures/fixture-energy-in-food-and-what-you-need.html"   # was biology/nutrition-and-digestion/energy-in-food-and-what-you-need.html (fixture, see LESSON)
+B3_TESTS = "_fixtures/fixture-food-tests.html"   # was biology/nutrition-and-digestion/food-tests.html (fixture, see LESSON)
 # ═══ END B3 ═══
 
 # ═══ BEGIN B4 ═══
@@ -16096,8 +16099,7 @@ FIGURE_TRUTH = [
              ["draws no pore in the leaf section"])),
 
     dict(fig="b3-villus-labelled",
-         page="biology/nutrition-and-digestion/"
-              "absorption-and-the-small-intestine.html",
+         page=B3_VILLUS,   # ⊕ 23 Nov 2026: the fixture copy (see LESSON); the lean page draws b3-villus-lean, not b3-villus-labelled. Was biology/nutrition-and-digestion/absorption-and-the-small-intestine.html
          name="⊕ MRB-254 · the villus wall is one cell thick ALL THE WAY along",
          claim="every cross line the same span, each frame opened from the one "
                "before it, and all three crossings drawn",
@@ -16609,7 +16611,7 @@ FIGURE_TRUTH = [
               % (got["layers"], got["stomata"], got["co2steps"])])),
 
     dict(fig="b3-gut-labelled",
-         page="biology/nutrition-and-digestion/the-digestive-system.html",
+         page=B3_GUT,   # ⊕ 23 Nov 2026: the fixture copy (see LESSON); the lean page draws b3-gut-body, not b3-gut-labelled. Was biology/nutrition-and-digestion/the-digestive-system.html
          name="⊕ MRB-254 · the gut is ONE tube, walked join by join",
          claim="stops 01-07 without gap or repeat in the plate and the key; "
                "every segment's end meeting the next one's start in the "

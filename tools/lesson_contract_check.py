@@ -218,6 +218,10 @@ class Site:
         """A fingerprint of each MCQ rung's options (the DB mirror holds them)."""
         out = {}
         for rung in soup.select(".ks3-ladder .ks3-rung[data-rung]"):
+            # a lean ladder wraps "37 °C" in a nowrap span (build_ks3.keep_together); unwrap it so
+            # get_text(" ") reads the same text as before ("37 °C." not "37 °C .")
+            for sp in rung.select("span.lean-nw"):
+                sp.unwrap()
             opts = [(b.select_one(".ks3-opt-label") or b).get_text(" ", strip=True) for b in rung.select(".ks3-option")]
             if opts:
                 out[rung.get("data-rung")] = short_hash("|".join(opts))

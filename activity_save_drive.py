@@ -713,10 +713,13 @@ CASES = [
                          and [x for x in b if x["question_id"].endswith("#grid-nine-2")][0]["is_correct"] is None
                          and [x for x in b if x["question_id"].endswith("#grid-nine-2")][0]["self_checked"] is False,
          back="""H.pressed(document.querySelectorAll('.ks3-hgrid-block [data-hgrid-cell]')[1])"""),
-    dict(name="ks3-units-combinations", page="/ks3/biology/nutrition-and-digestion/food-tests.html",
+    # ⊕ 23 Nov 2026 (Mide, 14 Nov: checks do not depend on real lessons): B3 went lean (Wave 2) and
+    # lost the test bench, so this case presses the hidden frozen classic copy (ks3_fixtures/).
+    # Was /ks3/biology/nutrition-and-digestion/food-tests.html.
+    dict(name="ks3-units-combinations", page="/ks3/_fixtures/fixture-food-tests.html",
          act="""var s = document.querySelector('.ks3-tbench-block'); H.click(s.querySelectorAll('[data-predict] .ks3-option')[0]); await H.sleep(200);
                 H.click(s.querySelectorAll('.ks3-tbench-tab[data-food]')[1]); await H.sleep(120); H.click(s.querySelectorAll('[data-predict] .ks3-option')[1]); await H.sleep(200);""",
-         want=["food-tests#twenty-combinations-1", "food-tests#twenty-combinations-5"],
+         want=["fixture-food-tests#twenty-combinations-1", "fixture-food-tests#twenty-combinations-5"],
          check=lambda b: all(isinstance(x["is_correct"], bool) for x in b if "#twenty" in x["question_id"]),
          back="""/^2 of/.test(document.querySelector('.ks3-tbench-block [data-count]').textContent)"""),
     dict(name="ks3-units-sentence", page="/ks3/chemistry/chemical-reactions/chemical-vs-physical-change.html",
