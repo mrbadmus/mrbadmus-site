@@ -41,18 +41,69 @@ LOGIC_EDITS = [
      "decreases.'"),
 ]
 
+# ⊕ 24 Nov 2026 (pupil walk at 390 px): the heating and cooling curves were drawn 640 wide with
+# 20-unit labels, so the phone text floor (11px x viewBox / smallest font, ks4-lesson.css) made them
+# about 352 px wide: in the ~278 px rung box Rung 2's E and F were off screen while part 3 asks about
+# D to E, and the cooling curve lost its tail after E. curve() is drawn again 440 wide with 18-unit
+# labels (11 x 440 / 18 = 269 px), so the whole graph fits; the data, letters and alt text are
+# unchanged. Rung 2's A label moves below the line (it sat on the rising line at the new scale).
+LOGIC_EDITS += [
+    (('  curve(pts, o) {\n'
+     '    const D = window.KS4D; const C = D.C;\n'
+     '    const W = 640, H = 360, L = 90, Rt = 612, Tp = 30, B = 300;\n'
+     '    const X = (x) => L + (Rt - L) * (x / o.tmax), Y = (T) => B - (B - Tp) * ((T - o.Tmin) / (o.Tmax - o.Tmin));\n'
+     '    let b = D.line(L, Tp, L, B, 2.5) + D.line(L, B, Rt, B, 2.5);\n'
+     "    for (let T = o.Tmin; T <= o.Tmax; T += o.step) b += D.line(L - 8, Y(T), L, Y(T), 2) + D.T(L - 14, Y(T) + 6, (T < 0 ? '−' : '') + Math.abs(T), 20, { weight: 'normal', fill: C.stroke, anchor: 'end' }) + D.line(L, Y(T), Rt, Y(T), 1, '#C9C3B2');\n"
+     '    b += D.T((L + Rt) / 2, H - 22, \'Time\', 22) + \'<text x="24" y="\' + ((Tp + B) / 2) + \'" transform="rotate(-90 24 \' + ((Tp + B) / 2) + \')" font-family="\' + D.F + \'" font-size="22" font-weight="bold" fill="\' + C.label + \'" text-anchor="middle">Temperature / °C</text>\';\n'
+     "    let d = '';\n"
+     '    const tEnd = o.tEnd === undefined ? o.tmax : o.tEnd;\n'
+     '    for (let i = 0; i < pts.length - 1; i++) {\n'
+     '      const a = pts[i], c = pts[i + 1];\n'
+     '      if (a[0] >= tEnd) break;\n'
+     '      const e = Math.min(c[0], tEnd), f = (e - a[0]) / (c[0] - a[0]);\n'
+     "      d += (d ? ' L' : 'M') + X(a[0]).toFixed(1) + ' ' + Y(a[1]).toFixed(1) + ' L' + X(e).toFixed(1) + ' ' + Y(a[1] + (c[1] - a[1]) * f).toFixed(1);\n"
+     '    }\n'
+     '    if (d) b += \'<path d="\' + d + \'" fill="none" stroke="\' + C.arrow + \'" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>\';\n'
+     '    (o.letters || []).forEach((lt, i) => { if (lt && lt.t && pts[i] && pts[i][0] <= tEnd) b += D.circ(X(pts[i][0]), Y(pts[i][1]), 6, C.stroke) + D.T(X(pts[i][0]) + (lt.dx || 0), Y(pts[i][1]) + (lt.dy || -14), lt.t, 22, { fill: C.stroke }); });\n'
+     '    (o.notes || []).forEach((n) => { if (n.at <= tEnd) b += D.T(X(n.x), Y(n.T) - 14, n.t, 21, { fill: C.arrow }); });\n'
+     '    return D.svg(W, H, b, o.alt);\n'
+     '  }'),
+     ('  curve(pts, o) {\n'
+     '    const D = window.KS4D; const C = D.C;\n'
+     '    const W = 440, H = 330, L = 68, Rt = 420, Tp = 24, B = 270;\n'
+     '    const X = (x) => L + (Rt - L) * (x / o.tmax), Y = (T) => B - (B - Tp) * ((T - o.Tmin) / (o.Tmax - o.Tmin));\n'
+     '    let b = D.line(L, Tp, L, B, 2.5) + D.line(L, B, Rt, B, 2.5);\n'
+     "    for (let T = o.Tmin; T <= o.Tmax; T += o.step) b += D.line(L - 7, Y(T), L, Y(T), 2) + D.T(L - 11, Y(T) + 6, (T < 0 ? '−' : '') + Math.abs(T), 18, { weight: 'normal', fill: C.stroke, anchor: 'end' }) + D.line(L, Y(T), Rt, Y(T), 1, '#C9C3B2');\n"
+     '    b += D.T((L + Rt) / 2, H - 18, \'Time\', 18) + \'<text x="16" y="\' + ((Tp + B) / 2) + \'" transform="rotate(-90 16 \' + ((Tp + B) / 2) + \')" font-family="\' + D.F + \'" font-size="18" font-weight="bold" fill="\' + C.label + \'" text-anchor="middle">Temperature / °C</text>\';\n'
+     "    let d = '';\n"
+     '    const tEnd = o.tEnd === undefined ? o.tmax : o.tEnd;\n'
+     '    for (let i = 0; i < pts.length - 1; i++) {\n'
+     '      const a = pts[i], c = pts[i + 1];\n'
+     '      if (a[0] >= tEnd) break;\n'
+     '      const e = Math.min(c[0], tEnd), f = (e - a[0]) / (c[0] - a[0]);\n'
+     "      d += (d ? ' L' : 'M') + X(a[0]).toFixed(1) + ' ' + Y(a[1]).toFixed(1) + ' L' + X(e).toFixed(1) + ' ' + Y(a[1] + (c[1] - a[1]) * f).toFixed(1);\n"
+     '    }\n'
+     '    if (d) b += \'<path d="\' + d + \'" fill="none" stroke="\' + C.arrow + \'" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>\';\n'
+     '    (o.letters || []).forEach((lt, i) => { if (lt && lt.t && pts[i] && pts[i][0] <= tEnd) b += D.circ(X(pts[i][0]), Y(pts[i][1]), 5, C.stroke) + D.T(X(pts[i][0]) + (lt.dx || 0), Y(pts[i][1]) + (lt.dy || -12), lt.t, 20, { fill: C.stroke }); });\n'
+     '    (o.notes || []).forEach((n) => { if (n.at <= tEnd) b += D.T(X(n.x), Y(n.T) - 12, n.t, 18, { fill: C.arrow }); });\n'
+     '    return D.svg(W, H, b, o.alt);\n'
+     '  }\n'
+     '')),
+    ("letters: [{ t: 'A', dx: 18, dy: -4 }", "letters: [{ t: 'A', dx: 16, dy: 22 }"),
+]
+
 LESSON = {
     "slug": "internal-energy",
     "start": {
-        "setup": "A pan of water is boiling. A thermometer in the water reads 100 °C. You turn the "
+        "setup": "A pan of water is boiling. A thermometer in the water reads 100\u00a0°C. You turn the "
                  "heat up to full.",
-        "question": "If you had to guess, does the thermometer reading go up, or stay at 100 °C?",
+        "question": "If you had to guess, does the thermometer reading go up, or stay at 100\u00a0°C?",
         "options": [
             ("It goes up",
-             "It stays at 100 °C. The extra energy makes the water boil away faster. It goes "
+             "It stays at 100\u00a0°C. The extra energy makes the water boil away faster. It goes "
              "into the particles' potential energy, and the temperature does not rise."),
             ("It stays at 100 °C",
-             "It stays at 100 °C. The extra energy makes the water boil away faster. It goes "
+             "It stays at 100\u00a0°C. The extra energy makes the water boil away faster. It goes "
              "into the particles' potential energy, and the temperature does not rise."),
         ],
         "answer": 1,
@@ -82,10 +133,10 @@ LESSON = {
         {"kind": "reveal", "title": "Heating ice until it boils",
          "cols": ["Temperature", "Energy that increases"],
          "rows": [
-             ("Ice warms from −10 °C to 0 °C", "Rises", "Kinetic"),
-             ("Ice melts at 0 °C", "Stays at 0 °C", "Potential"),
-             ("Water warms from 0 °C to 100 °C", "Rises", "Kinetic"),
-             ("Water boils at 100 °C", "Stays at 100 °C", "Potential"),
+             ("Ice warms from −10\u00a0°C to 0\u00a0°C", "Rises", "Kinetic"),
+             ("Ice melts at 0\u00a0°C", "Stays at 0\u00a0°C", "Potential"),
+             ("Water warms from 0\u00a0°C to 100\u00a0°C", "Rises", "Kinetic"),
+             ("Water boils at 100\u00a0°C", "Stays at 100\u00a0°C", "Potential"),
          ]},
         {"kind": "card", "title": "Reading a cooling curve",
          "body": [{"slot": "legacy-fig:coolFig"},
@@ -96,8 +147,8 @@ LESSON = {
                       "decreases.",
                       "A flat section: the substance changes state. The particles' potential "
                       "energy decreases, and the temperature stays the same.",
-                      "B to C is the gas condensing at 90 °C. D to E is the liquid freezing at "
-                      "40 °C.",
+                      "B to C is the gas condensing at 90\u00a0°C. D to E is the liquid freezing at "
+                      "40\u00a0°C.",
                   ]}]},
         {"kind": "card", "title": "Temperature and internal energy",
          "body": ["The temperature depends on the average kinetic energy of the particles. "
@@ -105,7 +156,7 @@ LESSON = {
                   {"points": [
                       "A bath of warm water has more internal energy than a cup of hot tea. It "
                       "has far more particles.",
-                      "1 kg of water at 0 °C has more internal energy than 1 kg of ice at 0 °C. "
+                      "1\u00a0kg of water at 0\u00a0°C has more internal energy than 1\u00a0kg of ice at 0\u00a0°C. "
                       "Melting raised the particles' potential energy.",
                   ]}]},
         {"kind": "card", "title": "Easy mistakes",
@@ -126,8 +177,8 @@ LESSON = {
     "deeper": [
         {"kind": "card", "title": "The two equations",
          "body": [{"points": [
-             "Raising the temperature: ΔE = m c Δθ, in the lesson on specific heat capacity.",
-             "Changing the state: E = m L, in the lesson on specific latent heat.",
+             "Raising the temperature: ΔE\u00a0=\u00a0m\u00a0c\u00a0Δθ, in the lesson on specific heat capacity.",
+             "Changing the state: E\u00a0=\u00a0m\u00a0L, in the lesson on specific latent heat.",
          ]}]},
         {"kind": "card", "title": "Command words",
          "body": [{"points": [

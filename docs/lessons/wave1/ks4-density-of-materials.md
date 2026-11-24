@@ -33,6 +33,7 @@ Legacy status: none (old generate_site_v5 page; no Design batch holds this slug)
 - Rung 2 (first) and Rung 3 (second) say a gas has a much lower density "than the solid/liquid of the same substance". True for every substance GCSE uses; not checked for every substance.
 
 **Removed or moved.**
+- Pupil walk at 390 px (24 Nov 2026): the card states ρ = m ÷ V once in symbols and the Key fact once in words (the RP card's three "Then density = mass ÷ volume" lines became one closing line); Rung 2's conversion options say "the rise in volume" (no longer giving away 120 − 40); soft hyphens in the reveal table; no-break spaces in numbers and units.
 - Removed: "Denser materials have heavier atoms or more tightly packed structures" (gold, aluminium, polystyrene); air "~800× less dense than water"; the density table of water, aluminium, iron, air, gold. None is in the spec.
 - Removed: the classic matching activity (ks4c:density-of-materials:match-1..4).
 - Removed: the old sources-of-error list as a list; meniscus at eye level is in the practical card, air bubbles and a better value are in Dive deeper.

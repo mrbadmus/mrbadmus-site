@@ -39,6 +39,7 @@ Legacy status: LEGACY, Design batch 3 (`specific-latent-heat.dc.html`, family Qu
 - Practice Q1's kept stem writes "Lv = 2,260,000 J/kg" and "100°C" (no space); the symbol Lv is not AQA's. Kept, because changing the stem changes its ks4q: id; the science is right.
 
 **Removed or moved.**
+- Pupil walk at 390 px (24 Nov 2026): curve() redrawn 460 wide, a number at every minute, letters off the line, so Rung 2's graph of Z (3 and 10 minutes) and the card's cooling curve of Y fit a phone. The card states E = m L once in symbols and the Key fact once in words. Soft hyphens in the reveal table; no-break spaces in numbers, units and short equations.
 - Removed from the page: the energy ledger bench (ledgerFig, commit and equation picks), the equation boxes, the data-logger steps and the L entry, the Key note and the video. Their teaching is in the cards. Their activity ids go: `#ans`, `#gate`, `#ltext`, `#picks`, on all four routes.
 - Removed: the classic matching cards (ks4c:specific-latent-heat:match-1..5).
 - Removed: "ponds freeze from the surface down" and "Lv > Lf because fully separating particles" (batch-3 DEPARTURES: imprecise, not in the spec; never shown).

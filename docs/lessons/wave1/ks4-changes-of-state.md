@@ -28,6 +28,7 @@ None in this spec point.
 - Dry ice (solid carbon dioxide) as the sublimation example: it sublimates at room pressure; the spec names no example.
 
 **Removed or moved.**
+- Pupil walk at 390 px (24 Nov 2026): the "boiling or evaporating" label in fig:state-changes moved up beside the gas box, clear of the right edge.
 - Removed: deposition; intermolecular forces; "H₂O molecules are still H₂O" (formula detail); the long particle descriptions of each state (the figure and one line replace them).
 - Removed: the classic matching activity (ks4c:changes-of-state:match-1..5).
 - Moved to Dive deeper: boiling against evaporating (where and at what temperature), links to internal energy, latent heat and density.

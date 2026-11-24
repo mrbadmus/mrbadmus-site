@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""figlib.ks4lean_pm: lean Particle model of matter lesson figures (3), drafted 24 Nov 2026.
+"""figlib.ks4lean_pm: lean Particle model of matter lesson figures (4), drafted 24 Nov 2026.
 Pure standard library. REGISTRY: name -> no-arg fn returning SVG.
 
 Drawn in figlib/ks4lean_eco.py's conventions and with its helpers (one 720 viewBox, Georgia 28,
@@ -15,6 +15,9 @@ own #FFFDF8 background rect, path commands M L H V C Q Z only, no text on a dark
   state-changes         the five changes of state AQA names (melt, freeze, boil or evaporate,
                         condense, sublimate) between the three states (changes_of_state.py,
                         card "The changes of state")
+  gas-pressure          molecules in a box, some with their direction of travel, one bouncing off
+                        a wall and the force it exerts on it (particle_motion_pressure.py, card
+                        "Where gas pressure comes from"); added after the 390 px pupil walk
 """
 from .ks4lean_eco import (INK, RUST, BLUE, BG, FS, f, svg, line, txt, lines, circ, rect, pathel,
                           leader, arrow)
@@ -115,7 +118,7 @@ def state_changes():
     b.append(txt(360, 538, "freezing", FS))
     # liquid <-> gas on the right
     b.append(arrow(612, 430, 452, 96, INK, 5, 22))
-    b.append(lines(546, 250, ["boiling or", "evaporating"], FS, "start", INK, 600, 34))
+    b.append(lines(516, 150, ["boiling or", "evaporating"], FS, "start", INK, 600, 34))
     b.append(arrow(420, 112, 568, 426, INK, 5, 22))
     b.append(txt(486, 300, "condensing", FS, "end"))
     # solid -> gas on the left
@@ -127,8 +130,41 @@ def state_changes():
                "straight to gas is sublimating.", b)
 
 
+# ------------------------------------------------------------------ 4  gas pressure
+def gas_pressure():
+    W, H = 720, 420
+    r = 14
+    x0, x1, y0, y1 = 30, 470, 30, 390           # the container
+    hit = (x1 - r - 2, 200)                     # the molecule touching the right wall
+    others = [(90, 90), (210, 70), (330, 70), (130, 200), (250, 190), (130, 320),
+              (240, 310), (350, 350), (420, 80), (60, 250)]
+    pts = others + [hit]
+    for (x, y) in pts:
+        assert x0 + r < x < x1 and y0 + r < y < y1 - r
+    for i, (ax, ay) in enumerate(pts):
+        for (bx, by) in pts[i + 1:]:
+            assert (ax - bx) ** 2 + (ay - by) ** 2 > (4 * r) ** 2
+    b = [rect(x0, y0, x1 - x0, y1 - y0, "none", INK, 5)]
+    # a few molecules with their direction of travel
+    for (x, y), (dx, dy) in zip(others[:6], [(50, -20), (-45, 30), (40, -25), (-50, -25), (30, 45), (45, -30)]):
+        b.append(arrow(x + dx * 0.45, y + dy * 0.45, x + dx * 1.35, y + dy * 1.35, INK, 3.5, 16))
+    # the molecule at the wall: in along one path, back out along another
+    b.append(arrow(hit[0] - 120, hit[1] - 70, hit[0] - 22, hit[1] - 13, BLUE, 4, 18))
+    b.append(arrow(hit[0] - 20, hit[1] + 14, hit[0] - 110, hit[1] + 70, BLUE, 4, 18))
+    for (x, y) in pts:
+        b.append(circ(x, y, r, PART, INK, 2.6))
+    # the push it gives the wall
+    b.append(arrow(x1 + 6, hit[1], x1 + 92, hit[1], RUST, 6, 22))
+    b.append(lines(x1 + 106, hit[1] - 6, ["force on", "the wall"], FS, "start", RUST, 600, 34))
+    return svg(W, H, "A box of gas molecules, far apart, each moving in a straight line in its own "
+               "direction. One molecule has just hit the right-hand wall: an arrow shows it arriving "
+               "and another shows it bouncing away. A red arrow outside the wall shows the force it "
+               "exerts on the wall.", b)
+
+
 REGISTRY = {
     "particle-states": particle_states,
     "displacement-volume": displacement_volume,
     "state-changes": state_changes,
+    "gas-pressure": gas_pressure,
 }

@@ -44,10 +44,160 @@ LOGIC_EDITS = [
      "releases it.' }] },"),
 ]
 
+# ⊕ 24 Nov 2026 (pupil walk at 390 px): curve() drew 640 wide with 20 to 24-unit labels, so on a phone
+# Rung 2's graph of Z squeezed its tick numbers to about 7 px, its A label sat on the line, and the
+# card's cooling curve of Y faded at the right (D and "12"). It is drawn again 460 wide with labels of
+# 19 units or more (11 x 460 / 19 = 266 px, inside the ~278 px box), a number at every minute (so
+# 3 and 10 can be read), and each letter placed off the line. Y's curve ends at 400 so its vial fits.
+LOGIC_EDITS += [
+    (('  curve(pts, o) {\n'
+     '    const D = window.KS4D; const C = D.C;\n'
+     '    const W = o.w || 640, H = 380, L = 92, Rt = o.right || 600, Tp = 28, B = 310;\n'
+     '    const X = (x) => L + (Rt - L) * (x / 12), Y = (T) => B - (B - Tp) * (T / 100);\n'
+     "    let b = '';\n"
+     "    for (let T = 0; T <= 100; T += 10) b += D.line(L, Y(T), Rt, Y(T), 1, '#C9C3B2') + D.line(L - 7, Y(T), L, Y(T), 2) + (T % 20 === 0 ? D.T(L - 11, Y(T) + 8, String(T), 24, { weight: 'normal', fill: C.stroke, anchor: 'end' }) : '');\n"
+     "    for (let m = 0; m <= 12; m++) b += D.line(X(m), Tp, X(m), B, 1, '#C9C3B2') + (m % 2 === 0 ? D.T(X(m), B + 30, String(m), 24, { weight: 'normal', fill: C.stroke }) : '');\n"
+     '    b += D.line(L, Tp, L, B, 2.5) + D.line(L, B, Rt, B, 2.5);\n'
+     '    b += D.T((L + Rt) / 2, H - 12, \'Time / minutes\', 24) + \'<text x="22" y="\' + ((Tp + B) / 2) + \'" transform="rotate(-90 22 \' + ((Tp + B) / 2) + \')" font-family="\' + D.F + \'" font-size="24" font-weight="bold" fill="\' + C.label + \'" text-anchor="middle">Temperature / °C</text>\';\n'
+     '    const tEnd = o.tEnd === undefined ? 12 : o.tEnd;\n'
+     "    let d = '', last = null;\n"
+     '    for (let i = 0; i < pts.length - 1; i++) {\n'
+     '      const a = pts[i], c = pts[i + 1];\n'
+     '      if (a[0] >= tEnd) break;\n'
+     '      const e = Math.min(c[0], tEnd), f = (e - a[0]) / (c[0] - a[0]);\n'
+     '      last = [e, a[1] + (c[1] - a[1]) * f];\n'
+     "      d += (d ? ' L' : 'M') + X(a[0]).toFixed(1) + ' ' + Y(a[1]).toFixed(1) + ' L' + X(last[0]).toFixed(1) + ' ' + Y(last[1]).toFixed(1);\n"
+     '    }\n'
+     '    if (d) b += \'<path d="\' + d + \'" fill="none" stroke="\' + C.arrow + \'" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>\';\n'
+     '    if (o.dot && last && tEnd < 12) b += D.circ(X(last[0]), Y(last[1]), 8, C.gold, C.stroke, 2.5);\n'
+     "    if (o.letters && tEnd >= 12) ['A', 'B', 'C', 'D'].forEach((lt, i) => { b += D.circ(X(pts[i][0]), Y(pts[i][1]), 5, C.stroke) + D.T(X(pts[i][0]) + (i === 0 ? 16 : i === 3 ? -14 : 0), Y(pts[i][1]) - 12, lt, 24, { fill: C.stroke }); });\n"
+     '    if (o.vial) {\n'
+     '      const frozen = tEnd <= 3 ? 0 : tEnd >= 10 ? 1 : (tEnd - 3) / 7;\n'
+     '      const vx = 610, top = 96, bot = 286, h = bot - top;\n'
+     '      b += \'<rect x="\' + vx + \'" y="\' + top + \'" width="18" height="\' + h + \'" fill="#FFFDF8" stroke="none"/>\';\n'
+     '      b += \'<rect x="\' + vx + \'" y="\' + (bot - h * frozen).toFixed(1) + \'" width="18" height="\' + (h * frozen).toFixed(1) + \'" fill="\' + C.nm + \'"/>\';\n'
+     '      if (frozen < 0.97) b += \'<rect x="\' + vx + \'" y="\' + (top + 6) + \'" width="18" height="\' + Math.max(0, h * (1 - frozen) - 6).toFixed(1) + \'" fill="\' + C.blue + \'" fill-opacity="0.45"/>\';\n'
+     '      b += \'<rect x="\' + vx + \'" y="\' + top + \'" width="18" height="\' + h + \'" rx="9" fill="none" stroke="\' + C.stroke + \'" stroke-width="2.5"/>\' + D.T(vx + 9, top - 12, \'Y\', 20, { fill: C.stroke });\n'
+     '    }\n'
+     '    return D.svg(W, H, b, o.alt);\n'
+     '  }'),
+     ('  curve(pts, o) {\n'
+     '    const D = window.KS4D; const C = D.C;\n'
+     '    const W = o.w || 460, H = 340, L = 66, Rt = o.right || 440, Tp = 26, B = 276;\n'
+     '    const X = (x) => L + (Rt - L) * (x / 12), Y = (T) => B - (B - Tp) * (T / 100);\n'
+     "    let b = '';\n"
+     "    for (let T = 0; T <= 100; T += 10) b += D.line(L, Y(T), Rt, Y(T), 1, '#C9C3B2') + D.line(L - 6, Y(T), L, Y(T), 2) + (T % 20 === 0 ? D.T(L - 9, Y(T) + 7, String(T), 20, { weight: 'normal', fill: C.stroke, anchor: 'end' }) : '');\n"
+     "    for (let m = 0; m <= 12; m++) b += D.line(X(m), Tp, X(m), B, 1, '#C9C3B2') + D.T(X(m), B + 25, String(m), 19, { weight: 'normal', fill: C.stroke });\n"
+     '    b += D.line(L, Tp, L, B, 2.5) + D.line(L, B, Rt, B, 2.5);\n'
+     '    b += D.T((L + Rt) / 2, H - 10, \'Time / minutes\', 20) + \'<text x="18" y="\' + ((Tp + B) / 2) + \'" transform="rotate(-90 18 \' + ((Tp + B) / 2) + \')" font-family="\' + D.F + \'" font-size="20" font-weight="bold" fill="\' + C.label + \'" text-anchor="middle">Temperature / °C</text>\';\n'
+     '    const tEnd = o.tEnd === undefined ? 12 : o.tEnd;\n'
+     "    let d = '', last = null;\n"
+     '    for (let i = 0; i < pts.length - 1; i++) {\n'
+     '      const a = pts[i], c = pts[i + 1];\n'
+     '      if (a[0] >= tEnd) break;\n'
+     '      const e = Math.min(c[0], tEnd), f = (e - a[0]) / (c[0] - a[0]);\n'
+     '      last = [e, a[1] + (c[1] - a[1]) * f];\n'
+     "      d += (d ? ' L' : 'M') + X(a[0]).toFixed(1) + ' ' + Y(a[1]).toFixed(1) + ' L' + X(last[0]).toFixed(1) + ' ' + Y(last[1]).toFixed(1);\n"
+     '    }\n'
+     '    if (d) b += \'<path d="\' + d + \'" fill="none" stroke="\' + C.arrow + \'" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>\';\n'
+     '    if (o.dot && last && tEnd < 12) b += D.circ(X(last[0]), Y(last[1]), 7, C.gold, C.stroke, 2.5);\n'
+     '    /* each letter sits off the line: a rising curve (Z) and a falling one (Y) take opposite sides */\n'
+     '    const up = pts[1][1] > pts[0][1];\n'
+     '    const OFF = up ? [[18, 30], [0, -14], [0, 32], [-18, -12]] : [[18, -12], [0, 32], [0, -14], [-18, 30]];\n'
+     "    if (o.letters && tEnd >= 12) ['A', 'B', 'C', 'D'].forEach((lt, i) => { b += D.circ(X(pts[i][0]), Y(pts[i][1]), 5, C.stroke) + D.T(X(pts[i][0]) + OFF[i][0], Y(pts[i][1]) + OFF[i][1], lt, 22, { fill: C.stroke }); });\n"
+     '    if (o.vial) {\n'
+     '      const frozen = tEnd <= 3 ? 0 : tEnd >= 10 ? 1 : (tEnd - 3) / 7;\n'
+     '      const vx = Rt + 16, top = 84, bot = 262, h = bot - top;\n'
+     '      b += \'<rect x="\' + vx + \'" y="\' + top + \'" width="18" height="\' + h + \'" fill="#FFFDF8" stroke="none"/>\';\n'
+     '      b += \'<rect x="\' + vx + \'" y="\' + (bot - h * frozen).toFixed(1) + \'" width="18" height="\' + (h * frozen).toFixed(1) + \'" fill="\' + C.nm + \'"/>\';\n'
+     '      if (frozen < 0.97) b += \'<rect x="\' + vx + \'" y="\' + (top + 6) + \'" width="18" height="\' + Math.max(0, h * (1 - frozen) - 6).toFixed(1) + \'" fill="\' + C.blue + \'" fill-opacity="0.45"/>\';\n'
+     '      b += \'<rect x="\' + vx + \'" y="\' + top + \'" width="18" height="\' + h + \'" rx="9" fill="none" stroke="\' + C.stroke + \'" stroke-width="2.5"/>\' + D.T(vx + 9, top - 12, \'Y\', 20, { fill: C.stroke });\n'
+     '    }\n'
+     '    return D.svg(W, H, b, o.alt);\n'
+     '  }\n'
+     '')),
+    ("vial: true, right: 570,", "vial: true, right: 400,"),
+]
+
+# ⊕ 24 Nov 2026 (pupil walk at 390 px): numbers, number-and-unit pairs and short equations in the
+# page's worked examples and Your turn questions broke across lines ("27 / 000 J", "100 / °C",
+# "E = m / L"). No-break spaces (U+00A0) inside them, in the worked-example text only: no rung,
+# option or answer key is touched. Written by the same rule as the cards (docs table, M3).
+LOGIC_EDITS += [
+    ("head: 'Steam condenses on a cold window and releases 45.2 kJ. Calculate the mass of steam that condensed. (Lv = 2.26 MJ/kg)'",
+     "head: 'Steam condenses on a cold window and releases 45.2\xa0kJ. Calculate the mass of steam that condensed. (Lv = 2.26\xa0MJ/kg)'"),
+    ("line: '45.2 kJ × 1000 = 45 200 J; 2.26 MJ/kg × 1 000 000 = 2 260 000 J/kg'",
+     "line: '45.2\xa0kJ × 1000 = 45\xa0200\xa0J; 2.26\xa0MJ/kg × 1\xa0000\xa0000 = 2\xa0260\xa0000\xa0J/kg'"),
+    ("line: 'E = m × L'",
+     "line: 'E\xa0=\xa0m\xa0×\xa0L'"),
+    ("line: '45 200 = m × 2 260 000'",
+     "line: '45\xa0200 = m × 2\xa0260\xa0000'"),
+    ("line: 'm = 45 200 ÷ 2 260 000 = 0.020'",
+     "line: 'm = 45\xa0200 ÷ 2\xa0260\xa0000 = 0.020'"),
+    ("line: 'm = 0.020 kg (20 g)'",
+     "line: 'm = 0.020\xa0kg (20\xa0g)'"),
+    ("note: 'Converting only L gives 45.2 ÷ 2 260 000 = 0.00002 kg (0.02 g): a thousand times too small.'",
+     "note: 'Converting only L gives 45.2 ÷ 2\xa0260\xa0000 = 0.00002\xa0kg (0.02\xa0g): a thousand times too small.'"),
+    ("head: 'Calculate the energy needed to melt 250 g of ice at 0 °C. (Lf = 334 000 J/kg)'",
+     "head: 'Calculate the energy needed to melt 250\xa0g of ice at 0\xa0°C. (Lf = 334\xa0000\xa0J/kg)'"),
+    ("line: '250 g ÷ 1000 = 0.25 kg'",
+     "line: '250\xa0g ÷ 1000 = 0.25\xa0kg'"),
+    ("line: 'm = 0.25 kg, L = 334 000 J/kg'",
+     "line: 'm = 0.25\xa0kg, L = 334\xa0000\xa0J/kg'"),
+    ("line: 'E = 0.25 × 334 000'",
+     "line: 'E = 0.25 × 334\xa0000'"),
+    ("line: 'E = 83 500 J (83.5 kJ)'",
+     "line: 'E = 83\xa0500\xa0J (83.5\xa0kJ)'"),
+    ("note: 'Left in grams, 250 × 334 000 = 83 500 000 J: a thousand times too big.'",
+     "note: 'Left in grams, 250 × 334\xa0000 = 83\xa0500\xa0000\xa0J: a thousand times too big.'"),
+    ("head: 'It takes 316 000 J to melt 0.80 kg of a metal at its melting point. Calculate the metal’s specific latent heat of fusion.'",
+     "head: 'It takes 316\xa0000\xa0J to melt 0.80\xa0kg of a metal at its melting point. Calculate the metal’s specific latent heat of fusion.'"),
+    ("close: 'Check: 0.80 × 395 000 = 316 000 J.'",
+     "close: 'Check: 0.80 × 395\xa0000 = 316\xa0000\xa0J.'"),
+    ("line: '316 000 = 0.80 × L'",
+     "line: '316\xa0000 = 0.80 × L'"),
+    ("line: 'L = 316 000 ÷ 0.80 = 395 000'",
+     "line: 'L = 316\xa0000 ÷ 0.80 = 395\xa0000'"),
+    ("line: 'L = 395 000 J/kg'",
+     "line: 'L = 395\xa0000\xa0J/kg'"),
+    ("head: '200 g of water at 20 °C is heated until it has all turned to steam at 100 °C. Calculate the total energy needed. (c = 4200 J/kg °C, Lv = 2 260 000 J/kg)'",
+     "head: '200\xa0g of water at 20\xa0°C is heated until it has all turned to steam at 100\xa0°C. Calculate the total energy needed. (c = 4200\xa0J/kg\xa0°C, Lv = 2\xa0260\xa0000\xa0J/kg)'"),
+    ("line: '200 g ÷ 1000 = 0.20 kg'",
+     "line: '200\xa0g ÷ 1000 = 0.20\xa0kg'"),
+    ("line: 'Heating: ΔE = m c Δθ. Boiling: E = m L.'",
+     "line: 'Heating: ΔE\xa0=\xa0m\xa0c\xa0Δθ. Boiling: E\xa0=\xa0m\xa0L.'"),
+    ("line: 'ΔE = 0.20 × 4200 × 80; E = 0.20 × 2 260 000'",
+     "line: 'ΔE = 0.20 × 4200 × 80; E = 0.20 × 2\xa0260\xa0000'"),
+    ("line: '67 200 + 452 000 = 519 200'",
+     "line: '67\xa0200 + 452\xa0000 = 519\xa0200'"),
+    ("line: 'Total energy = 519 200 J'",
+     "line: 'Total energy = 519\xa0200\xa0J'"),
+    ("head: 'Calculate the energy needed to boil away 1.5 kg of water at 100 °C. (Lv = 2 260 000 J/kg)'",
+     "head: 'Calculate the energy needed to boil away 1.5\xa0kg of water at 100\xa0°C. (Lv = 2\xa0260\xa0000\xa0J/kg)'"),
+    ("close: 'No Δθ anywhere: the temperature stays at 100 °C the whole time.'",
+     "close: 'No Δθ anywhere: the temperature stays at 100\xa0°C the whole time.'"),
+    ("line: 'm = 1.5 kg, L = 2 260 000 J/kg'",
+     "line: 'm = 1.5\xa0kg, L = 2\xa0260\xa0000\xa0J/kg'"),
+    ("line: 'E = 1.5 × 2 260 000'",
+     "line: 'E = 1.5 × 2\xa0260\xa0000'"),
+    ("line: 'E = 3 390 000 J'",
+     "line: 'E = 3\xa0390\xa0000\xa0J'"),
+    ("head: '400 g of water at 0 °C freezes. Calculate the energy it releases. (Lf = 334 000 J/kg)'",
+     "head: '400\xa0g of water at 0\xa0°C freezes. Calculate the energy it releases. (Lf = 334\xa0000\xa0J/kg)'"),
+    ("line: '400 g ÷ 1000 = 0.40 kg'",
+     "line: '400\xa0g ÷ 1000 = 0.40\xa0kg'"),
+    ("line: 'm = 0.40 kg, L = 334 000 J/kg'",
+     "line: 'm = 0.40\xa0kg, L = 334\xa0000\xa0J/kg'"),
+    ("line: 'E = 0.40 × 334 000'",
+     "line: 'E = 0.40 × 334\xa0000'"),
+    ("line: 'E = 133 600 J'",
+     "line: 'E = 133\xa0600\xa0J'"),
+]
+
 LESSON = {
     "slug": "specific-latent-heat",
     "start": {
-        "setup": "A splash of boiling water and a puff of steam are both at 100 °C. The steam "
+        "setup": "A splash of boiling water and a puff of steam are both at 100\u00a0°C. The steam "
                  "gives a much worse burn.",
         "question": "If you had to guess, is that because the steam spreads over more skin, or "
                     "because it gives the skin more energy?",
@@ -78,8 +228,7 @@ LESSON = {
                       "Freezing and condensing transfer the same amount of energy back out.",
                   ]}]},
         {"kind": "card", "title": "The equation",
-         "body": ["energy for a change of state = mass × specific latent heat",
-                  "E = m L",
+         "body": ["E\u00a0=\u00a0m\u00a0L",
                   {"points": ["energy, E, in joules (J)",
                               "mass, m, in kilograms (kg)",
                               "specific latent heat, L, in joules per kilogram (J/kg)"]},
@@ -93,18 +242,18 @@ LESSON = {
                   "Liquid Y cools in a cold room. On a graph of temperature against time:",
                   {"points": [
                       "A sloping section: the temperature changes and the state does not. Use "
-                      "ΔE = m c Δθ.",
+                      "ΔE\u00a0=\u00a0m\u00a0c\u00a0Δθ.",
                       "A flat section: the state changes and the temperature does not. Use "
-                      "E = m L.",
-                      "B to C is Y freezing at 50 °C.",
+                      "E\u00a0=\u00a0m\u00a0L.",
+                      "B to C is Y freezing at 50\u00a0°C.",
                   ]}]},
         {"kind": "card", "title": "Energy from a flat section",
-         "body": ["The 60 g of Y transfers energy to the room at a steady 30 J every second "
-                  "(30 W).",
+         "body": ["The 60\u00a0g of Y transfers energy to the room at a steady 30\u00a0J every second "
+                  "(30\u00a0W).",
                   {"points": [
-                      "The flat section lasts from 3 to 10 minutes: 7 minutes, which is 420 s.",
-                      "Energy transferred: E = P t = 30 × 420 = 12 600 J.",
-                      "Specific latent heat of fusion: L = E ÷ m = 12 600 ÷ 0.060 = 210 000 J/kg.",
+                      "The flat section lasts from 3 to 10\u00a0minutes: 7\u00a0minutes, which is 420\u00a0s.",
+                      "Energy transferred: E\u00a0=\u00a0P\u00a0t = 30 × 420 = 12\u00a0600\u00a0J.",
+                      "Specific latent heat of fusion: L\u00a0=\u00a0E\u00a0÷\u00a0m = 12\u00a0600 ÷ 0.060 = 210\u00a0000\u00a0J/kg.",
                   ]}]},
         {"kind": "card", "title": "Measuring the specific latent heat of fusion of water",
          "body": [{"points": [
@@ -115,37 +264,38 @@ LESSON = {
              "water that has melted.",
              "Set up a second funnel of ice with no heater, for the same time. Take away the mass "
              "of water it melts: that ice was melted by the warm room, not the heater.",
-             "Then L = E ÷ m.",
+             "Then L\u00a0=\u00a0E\u00a0÷\u00a0m.",
          ]}]},
         {"kind": "reveal", "title": "Specific heat capacity or specific latent heat",
-         "cols": ["Specific heat capacity", "Specific latent heat"],
+         "cols": ["Specific heat ca\u00adpac\u00adity", "Specific la\u00adtent heat"],
          "rows": [
-             ("What changes", "The temperature", "The state"),
-             ("Equation", "ΔE = m c Δθ", "E = m L"),
-             ("Unit", "J/kg °C", "J/kg"),
+             ("What changes", "The tem\u00adper\u00adature", "The state"),
+             ("Equation", "ΔE\u00a0=\u00a0m\u00a0c\u00a0Δθ", "E\u00a0=\u00a0m\u00a0L"),
+             ("Unit", "J/kg\u00a0°C", "J/kg"),
              ("On a heating graph", "A sloping section", "A flat section"),
          ]},
         {"kind": "card", "title": "Easy mistakes",
          "body": [{"mistakes": [
              ("The temperature stays the same, so no energy is transferred.",
               "Energy is transferred. It changes the internal energy, but not the temperature."),
-             ("Use ΔE = m c Δθ for a change of state.",
-              "During a change of state Δθ = 0. Use E = m L."),
+             ("Use ΔE\u00a0=\u00a0m\u00a0c\u00a0Δθ for a change of state.",
+              "During a change of state Δθ = 0. Use E\u00a0=\u00a0m\u00a0L."),
              ("The latent heat of fusion is for boiling.",
               "Fusion is melting, solid to liquid. Vaporisation is liquid to vapour."),
          ]}]},
     ],
     "key_fact": "The specific latent heat of a substance is the energy needed to change the state "
-                "of 1 kg of it with no change in temperature: E = m L. During a change of state, "
-                "the energy supplied changes the internal energy but not the temperature.",
+                "of 1\u00a0kg of it with no change in temperature. Energy for a change of state = mass "
+                "× specific latent heat. During a change of state, the energy supplied changes the "
+                "internal energy but not the temperature.",
     "deeper": [
         {"kind": "card", "title": "Water's values",
-         "body": ["For water, the specific latent heat of fusion is 334 000 J/kg and the specific "
-                  "latent heat of vaporisation is 2 260 000 J/kg. Boiling 1 kg of water takes "
-                  "almost seven times the energy of melting 1 kg of ice."]},
+         "body": ["For water, the specific latent heat of fusion is 334\u00a0000\u00a0J/kg and the specific "
+                  "latent heat of vaporisation is 2\u00a0260\u00a0000\u00a0J/kg. Boiling 1\u00a0kg of water takes "
+                  "almost seven times the energy of melting 1\u00a0kg of ice."]},
         {"kind": "card", "title": "More than one stage",
-         "body": ["Ice at −10 °C heated to water at 20 °C goes through three stages: the ice warms "
-                  "(ΔE = m c Δθ), the ice melts (E = m L), the water warms (ΔE = m c Δθ). Work out "
+         "body": ["Ice at −10\u00a0°C heated to water at 20\u00a0°C goes through three stages: the ice warms "
+                  "(ΔE\u00a0=\u00a0m\u00a0c\u00a0Δθ), the ice melts (E\u00a0=\u00a0m\u00a0L), the water warms (ΔE\u00a0=\u00a0m\u00a0c\u00a0Δθ). Work out "
                   "each one, then add them."]},
         {"kind": "card", "title": "Why sweating cools you",
          "body": ["Sweat evaporates from the skin. Evaporating needs energy, the latent heat of "

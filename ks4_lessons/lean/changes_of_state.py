@@ -49,7 +49,7 @@ LESSON = {
                   "No particles are made or destroyed, and each particle keeps its mass. They "
                   "only move closer together or further apart.",
                   {"points": [
-                      "100 g of ice melts to give 100 g of water.",
+                      "100\u00a0g of ice melts to give 100\u00a0g of water.",
                       "In an open pan, water evaporates and the vapour escapes into the air. The "
                       "water left in the pan has less mass, but the water plus the vapour still "
                       "has the same mass as before.",

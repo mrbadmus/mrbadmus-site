@@ -27,6 +27,7 @@ None in this spec point. Dive deeper points to ΔE = m c Δθ (temperature-chang
 - Practice Q2's kept stem has an em dash ("A large cool swimming pool and a small hot cup of tea — which has greater internal energy?"). Changing it would change its ks4q: id, so it is kept as it is; the science is right.
 
 **Removed or moved.**
+- Pupil walk at 390 px (24 Nov 2026): curve() redrawn 440 wide with 18-unit labels, so Rung 2's heating curve (A to F) and the card's cooling curve (to F) fit a ~278 px box; Rung 2's A label moved below the line. No-break spaces in numbers and units.
 - Removed from the page: the heating bench (four stages, partFig, curveFig), the Think again "Hotter is not more" (Ks4Choice), the Compare sort and the cooling-curve sort (Ks4Sort), the Key note and the video. Their teaching is in the cards and the reveal table. Their activity ids go: `#choice-1`, `#picks`, `#sort-1-1..5`, `#sort-2-1..5`, on all four routes.
 - Removed: the classic matching cards (ks4c:internal-energy:match-1..4).
 - The page's Ks4End `legal` line (about the bench and graphs being a model) is emptied by lean_ks4, since no bench is on the page.

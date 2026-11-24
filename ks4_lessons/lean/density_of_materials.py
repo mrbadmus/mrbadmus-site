@@ -32,26 +32,27 @@ _RP_BODY = [
     {"points": [
         "Measure its mass on a balance.",
         "Measure its length, width and height with a ruler, Vernier callipers or a micrometer.",
-        "Volume = length × width × height. Then density = mass ÷ volume.",
+        "Volume = length × width × height.",
     ]},
     "<strong>An irregular solid</strong>, such as a stone",
     {"points": [
         "Measure its mass on a balance.",
-        "Find its volume by the displacement method. Then density = mass ÷ volume.",
+        "Find its volume by the displacement method.",
     ]},
     "<strong>A liquid</strong>",
     {"points": [
         "Put an empty measuring cylinder on a balance and set the balance to zero.",
         "Pour in some of the liquid and read its volume.",
-        "Read the mass of the liquid from the balance. Then density = mass ÷ volume.",
+        "Read the mass of the liquid from the balance.",
     ]},
+    "Work out each density from its mass and volume.",
     "Read a measuring cylinder at eye level, from the bottom of the curved surface (the meniscus).",
 ]
 
 LESSON = {
     "slug": "density-of-materials",
     "start": {
-        "setup": "A 1 kg bag of feathers and a 1 kg block of steel sit side by side.",
+        "setup": "A 1\u00a0kg bag of feathers and a 1\u00a0kg block of steel sit side by side.",
         "question": "If you had to guess, which one has the greater density?",
         "options": [
             ("The feathers",
@@ -68,8 +69,7 @@ LESSON = {
         {"kind": "card", "title": "What density means",
          "body": ["Density tells you how much mass is packed into a given volume.",
                   "The density of a material is defined by the equation:",
-                  "density = mass ÷ volume",
-                  "ρ = m ÷ V",
+                  "ρ\u00a0=\u00a0m\u00a0÷\u00a0V",
                   {"points": ["density, ρ, in kilograms per metre cubed (kg/m³)",
                               "mass, m, in kilograms (kg)",
                               "volume, V, in metres cubed (m³)"]},
@@ -79,9 +79,9 @@ LESSON = {
         {"kind": "card", "title": "Units",
          "body": ["Keep the units matched: mass in kg with volume in m³ gives kg/m³. Mass in g "
                   "with volume in cm³ gives g/cm³.",
-                  {"points": ["1 kg = 1000 g",
-                              "1 m³ = 1 000 000 cm³",
-                              "1 g/cm³ = 1000 kg/m³ (water is 1 g/cm³, or 1000 kg/m³)"]}]},
+                  {"points": ["1\u00a0kg = 1000\u00a0g",
+                              "1\u00a0m³ = 1\u00a0000\u00a0000\u00a0cm³",
+                              "1\u00a0g/cm³ = 1000\u00a0kg/m³ (water is 1\u00a0g/cm³, or 1000\u00a0kg/m³)"]}]},
         {"kind": "card", "title": "Density and the particle model",
          "body": [{"slot": "fig:particle-states"},
                   "The particle model can be used to explain the different states of matter and "
@@ -93,18 +93,18 @@ LESSON = {
         {"kind": "reveal", "title": "Solid, liquid and gas",
          "cols": ["Solid", "Liquid", "Gas"],
          "rows": [
-             ("How close", "Touching", "Touching", "Far apart"),
-             ("Arrangement", "Regular pattern", "No regular pattern", "Random"),
-             ("Movement", "Vibrate about fixed positions", "Move around each other",
+             ("How close", "Touch\u00ading", "Touch\u00ading", "Far apart"),
+             ("Arrange\u00adment", "Regular pattern", "No regular pattern", "Ran\u00addom"),
+             ("Move\u00adment", "Vibrate about fixed positions", "Move around each other",
               "Move quickly in all directions"),
              ("Density", "High", "High", "Low"),
          ]},
         {"kind": "card", "title": "When the mass stays the same",
          "body": ["If the mass does not change but the volume does, the density changes.",
                   {"points": [
-                      "0.012 kg of air fills 0.010 m³. Its density is 0.012 ÷ 0.010 = 1.2 kg/m³.",
-                      "The same air is squeezed into 0.0050 m³. Its density is 0.012 ÷ 0.0050 = "
-                      "2.4 kg/m³.",
+                      "0.012\u00a0kg of air fills 0.010\u00a0m³. Its density is 0.012 ÷ 0.010 = 1.2\u00a0kg/m³.",
+                      "The same air is squeezed into 0.0050\u00a0m³. Its density is 0.012 ÷ 0.0050 = "
+                      "2.4\u00a0kg/m³.",
                   ]},
                   "In a change of state the mass stays the same, so the density changes because "
                   "the volume changes."]},
@@ -135,18 +135,18 @@ LESSON = {
               "Use kg with m³, or g with cm³."),
          ]}]},
     ],
-    "key_fact": "Density = mass ÷ volume (ρ = m ÷ V), measured in kg/m³. Solids and liquids are "
+    "key_fact": "Density = mass ÷ volume, measured in kg/m³. Solids and liquids are "
                 "dense because their particles are close together. A gas has a low density because "
                 "its particles are far apart.",
     "deeper": [
         {"kind": "card", "title": "Floating and sinking",
          "body": ["An object floats on a liquid if its density is less than the liquid's. Ice, at "
-                  "about 920 kg/m³, floats on water at 1000 kg/m³. A steel block, at about "
-                  "7800 kg/m³, sinks."]},
+                  "about 920\u00a0kg/m³, floats on water at 1000\u00a0kg/m³. A steel block, at about "
+                  "7800\u00a0kg/m³, sinks."]},
         {"kind": "card", "title": "A better value",
          "body": [{"points": [
              "Repeat each measurement and take a mean.",
-             "Use a measuring cylinder with a scale that fits the volume: a 10 cm³ cylinder for a "
+             "Use a measuring cylinder with a scale that fits the volume: a 10\u00a0cm³ cylinder for a "
              "small object.",
              "Knock off any air bubbles stuck to the object, or the volume will read too high.",
          ]}]},
@@ -171,44 +171,44 @@ LESSON = {
     "cfifa": {
         "examples": [
             {"tab": "Nothing to convert", "eq": "EQ_RHO", "find": "ρ",
-             "head": "A metal block has a mass of 5.4 kg and a volume of 0.0020 m³. Calculate its "
+             "head": "A metal block has a mass of 5.4\u00a0kg and a volume of 0.0020\u00a0m³. Calculate its "
                      "density.",
              "steps": [["C", "Convert", "Nothing to convert: kg and m³."],
-                       ["F", "Formula", "ρ = m ÷ V"],
+                       ["F", "Formula", "ρ\u00a0=\u00a0m\u00a0÷\u00a0V"],
                        ["I", "Insert", "ρ = 5.4 ÷ 0.0020"],
                        ["F", "Fine-tune", "ρ = 2700"],
-                       ["A", "Answer", "ρ = 2700 kg/m³"]]},
+                       ["A", "Answer", "ρ = 2700\u00a0kg/m³"]]},
             {"tab": "Convert first", "eq": "EQ_RHO", "find": "ρ",
-             "head": "The stone in the measuring cylinder has a mass of 30 g and a volume of "
-                     "12 cm³. Calculate its density in kg/m³.",
-             "steps": [["C", "Convert", "30 g ÷ 1000 = 0.030 kg; 12 cm³ ÷ 1 000 000 = 0.000012 m³"],
-                       ["F", "Formula", "ρ = m ÷ V"],
+             "head": "The stone in the measuring cylinder has a mass of 30\u00a0g and a volume of "
+                     "12\u00a0cm³. Calculate its density in kg/m³.",
+             "steps": [["C", "Convert", "30\u00a0g ÷ 1000 = 0.030\u00a0kg; 12\u00a0cm³ ÷ 1\u00a0000\u00a0000 = 0.000012\u00a0m³"],
+                       ["F", "Formula", "ρ\u00a0=\u00a0m\u00a0÷\u00a0V"],
                        ["I", "Insert", "ρ = 0.030 ÷ 0.000012"],
                        ["F", "Fine-tune", "ρ = 2500"],
-                       ["A", "Answer", "ρ = 2500 kg/m³",
-                        "Check in g/cm³: 30 ÷ 12 = 2.5 g/cm³, and 2.5 g/cm³ = 2500 kg/m³."]]},
+                       ["A", "Answer", "ρ = 2500\u00a0kg/m³",
+                        "Check in g/cm³: 30 ÷ 12 = 2.5\u00a0g/cm³, and 2.5\u00a0g/cm³ = 2500\u00a0kg/m³."]]},
             {"tab": "Find a mass", "eq": "EQ_RHO", "find": "m",
-             "head": "Water has a density of 1000 kg/m³. Calculate the mass of 0.25 m³ of water.",
+             "head": "Water has a density of 1000\u00a0kg/m³. Calculate the mass of 0.25\u00a0m³ of water.",
              "steps": [["C", "Convert", "Nothing to convert: kg/m³ and m³."],
-                       ["F", "Formula", "ρ = m ÷ V"],
+                       ["F", "Formula", "ρ\u00a0=\u00a0m\u00a0÷\u00a0V"],
                        ["I", "Insert", "1000 = m ÷ 0.25"],
                        ["F", "Fine-tune", "m = 1000 × 0.25 = 250",
                         "Rearrange: multiply both sides by V."],
-                       ["A", "Answer", "m = 250 kg"]]},
+                       ["A", "Answer", "m = 250\u00a0kg"]]},
         ],
         "questions": [
             {"tab": "Question 1", "id": "dm-q1",
-             "head": "A liquid has a mass of 0.84 kg and a volume of 0.0010 m³. Calculate its "
+             "head": "A liquid has a mass of 0.84\u00a0kg and a volume of 0.0010\u00a0m³. Calculate its "
                      "density.",
-             "close": "Less than 1000 kg/m³, so this liquid would float on water.",
-             "steps": _q(["Nothing to convert: kg and m³.", "ρ = m ÷ V", "ρ = 0.84 ÷ 0.0010",
-                          "ρ = 840", "ρ = 840 kg/m³"])},
+             "close": "Less than 1000\u00a0kg/m³, so this liquid would float on water.",
+             "steps": _q(["Nothing to convert: kg and m³.", "ρ\u00a0=\u00a0m\u00a0÷\u00a0V", "ρ = 0.84 ÷ 0.0010",
+                          "ρ = 840", "ρ = 840\u00a0kg/m³"])},
             {"tab": "Question 2", "id": "dm-q2",
-             "head": "A metal cube has sides of 2.0 cm. Its mass is 72 g. Calculate its density "
+             "head": "A metal cube has sides of 2.0 cm. Its mass is 72\u00a0g. Calculate its density "
                      "in g/cm³.",
-             "close": "9.0 g/cm³ is 9000 kg/m³, about the density of copper.",
-             "steps": _q(["Volume = 2.0 × 2.0 × 2.0 = 8.0 cm³", "ρ = m ÷ V", "ρ = 72 ÷ 8.0",
-                          "ρ = 9.0", "ρ = 9.0 g/cm³"], "the volume first?")},
+             "close": "9.0\u00a0g/cm³ is 9000\u00a0kg/m³, about the density of copper.",
+             "steps": _q(["Volume = 2.0 × 2.0 × 2.0 = 8.0\u00a0cm³", "ρ\u00a0=\u00a0m\u00a0÷\u00a0V", "ρ = 72 ÷ 8.0",
+                          "ρ = 9.0", "ρ = 9.0\u00a0g/cm³"], "the volume first?")},
         ],
     },
     "rungs": {
@@ -258,8 +258,8 @@ LESSON = {
                        "density of the stone in kg/m³. Work it on paper, then choose the "
                        "conversion and give the answer and unit.",
              "convOptions": ["Nothing to convert",
-                             "Convert 80 cm³ to m³: divide by 1 000 000",
-                             "Convert 80 cm³ to m³: multiply by 1 000 000"],
+                             "Convert the rise in volume to m³: divide by 1 000 000",
+                             "Convert the rise in volume to m³: multiply by 1 000 000"],
              "convAnswer": 1, "answer": 3000, "tol": 10, "unit": "kg/m³",
              "units": ["kg/m³", "kg", "m³", "g/cm³"],
              "right": "V = 120 − 40 = 80 cm³ = 0.000080 m³, and ρ = 0.24 ÷ 0.000080 = 3000 kg/m³.",

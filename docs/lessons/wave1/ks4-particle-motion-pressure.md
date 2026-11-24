@@ -43,6 +43,7 @@ Legacy status: LEGACY, Design batch 3 (`particle-motion-pressure.dc.html`, famil
 - The Start here reply says a can of air, which cannot burn, would burst too: true for an aerosol can in a fire; kept from the Design hook.
 
 **Removed or moved.**
+- Pupil walk at 390 px (24 Nov 2026): fig:gas-pressure (molecules in a box, one bouncing off a wall, the force on the wall) added to 'Where gas pressure comes from'. Rung 2 tables narrowed to fit a phone; the CH table's 50 °C reading is now 108 kPa (95 kPa at 283 K gives 108.4 kPa at 323 K); the keyed 126 kPa at 100 °C (125.2 by the rule) is still the only option near the trend, and the feedback says so. CF Rung 2 distractor reworded to "It doubles when the temperature in °C doubles" (still wrong). No-break spaces in the worked examples.
 - Removed from the page: the gas bench (benchFig, two stages, Think again ×2), "Mark it like an examiner" (Ks4Sort), the piston bench (pistonFig, p3 and the TH fast push p4), the equation box, the Key note and the video. Their teaching is in the cards. Their activity ids go: `#bpick`, `#p3`, `#p4`, `#sort-1-1..8`, on all four routes.
 - Removed: the classic matching cards (ks4c:particle-motion-pressure:match-1..4).
 - The page's Ks4End `legal` line (about the benches) is emptied by lean_ks4.

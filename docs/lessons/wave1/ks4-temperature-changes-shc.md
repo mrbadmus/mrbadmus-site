@@ -34,6 +34,7 @@ Legacy status: LEGACY, Design batch 3 (`temperature-changes-shc.dc.html`, family
 - The Start here says seawater; the explanation uses water's specific heat capacity. Seawater's is a little lower (about 3900 J/kg °C), still far above dry sand's (about 800 J/kg °C). No number is given on the page.
 
 **Removed or moved.**
+- Pupil walk at 390 px (24 Nov 2026): the card states ΔE = m c Δθ once in symbols and the Key fact once in words; worked example 1 now writes 20 °C and J/kg °C; the CH/TH answer placeholder is shortened; no-break spaces in numbers, units and short equations (including Your turn's 27 000 J).
 - Removed from the page: the temperature-rise race (raceFig, ranking), the equation boxes, the practical bench (gate, rigFig, graphFig, off-pick, c entry, the without-lagging rerun), the Think again "Just put the numbers straight in" (Ks4Choice), the Key note and the video. Their teaching is in the cards. Their activity ids go: `#choice-1`, `#ctext`, `#gate`, `#offpick`, `#order`, on all four routes.
 - Removed: the classic matching cards (ks4c:temperature-changes-shc:match-1..4).
 - Removed: "Cast iron pans heat up quickly" and "higher SHC heats up and cools down more slowly" (batch-3 DEPARTURES: imprecise; never shown).
