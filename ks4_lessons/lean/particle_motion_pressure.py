@@ -37,6 +37,26 @@ PRE_EDITS = [
      "const done = [s.hook !== null, s.ladder];"),
 ]
 
+# LOGIC_EDITS (examiner review, 24 Nov 2026): the TH worked example "Find a volume" reduced the
+# pressure to 120 kPa, so its Fine-tune line read "V₂ = 120 ÷ 120", the same number twice, which
+# hides what is being divided by what. The new pressure is 100 kPa: V₂ = 120 ÷ 100 = 1.2 m³.
+# That made it the twin of TH Your turn question 1 (2400 kPa × 0.050 m³ into 100 kPa, also
+# 120 ÷ 100 = 1.2 m³), so the worked example would have given the answer away: the Your-turn
+# cylinder now holds 0.030 m³, so 72 ÷ 100 = 0.72 m³. Its edits come first, while its lines are
+# still the only ones that read "120 ÷ 100" and "1.2 m³".
+LOGIC_EDITS = [
+    ("A gas cylinder holds 0.050 m³ of gas at 2400 kPa.", "A gas cylinder holds 0.030 m³ of gas at 2400 kPa."),
+    ("Check: 100 × 1.2 = 120 = 2400 × 0.050.", "Check: 100 × 0.72 = 72 = 2400 × 0.030."),
+    ("line: '2400 × 0.050 = 100 × V₂'", "line: '2400 × 0.030 = 100 × V₂'"),
+    ("line: 'V₂ = 120 ÷ 100 = 1.2' }", "line: 'V₂ = 72 ÷ 100 = 0.72' }"),
+    ("line: 'V₂ = 1.2 m³' }", "line: 'V₂ = 0.72 m³' }"),
+    ("The pressure is reduced to 120 kPa. Calculate the new volume.",
+     "The pressure is reduced to 100 kPa. Calculate the new volume."),
+    ("'150 × 0.80 = 120 × V₂'", "'150 × 0.80 = 100 × V₂'"),
+    ("'V₂ = 120 ÷ 120 = 1.0'", "'V₂ = 120 ÷ 100 = 1.2'"),
+    ("'V₂ = 1.0 m³'", "'V₂ = 1.2 m³'"),
+]
+
 LESSON = {
     "slug": "particle-motion-pressure",
     "start": {
@@ -148,5 +168,5 @@ LESSON = {
          ]}]},
     ],
     "try": None,
-    "legacy": {"batch": "batch-3", "pre_edits": PRE_EDITS},
+    "legacy": {"batch": "batch-3", "pre_edits": PRE_EDITS, "logic_edits": LOGIC_EDITS},
 }

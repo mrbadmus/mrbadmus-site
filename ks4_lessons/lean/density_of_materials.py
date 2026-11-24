@@ -76,8 +76,6 @@ LESSON = {
                   "ρ is the Greek letter rho. You need to remember this equation: it is not on "
                   "the equation sheet.",
                   {"slot": "triangle:EQ_RHO"}]},
-        {"kind": "card", "title": "Worked examples",
-         "body": [{"slot": "cfifa"}]},
         {"kind": "card", "title": "Units",
          "body": ["Keep the units matched: mass in kg with volume in m³ gives kg/m³. Mass in g "
                   "with volume in cm³ gives g/cm³.",
@@ -88,13 +86,8 @@ LESSON = {
          "body": [{"slot": "fig:particle-states"},
                   "The particle model can be used to explain the different states of matter and "
                   "the differences in density.",
-                  {"points": [
-                      "In a solid, the particles are close together in a regular pattern.",
-                      "In a liquid, the particles are still close together, but not in a regular "
-                      "pattern.",
-                      "In a gas, the particles are far apart. The same mass takes up a much bigger "
-                      "volume, so a gas has a much lower density.",
-                  ]},
+                  "In a gas the particles are far apart, so the same mass takes up a much bigger "
+                  "volume: a much lower density.",
                   "For most substances the solid is a little denser than the liquid. Water is "
                   "different: ice is less dense than water, so it floats."]},
         {"kind": "reveal", "title": "Solid, liquid and gas",
@@ -124,6 +117,8 @@ LESSON = {
                       "Lower the object into the water on a thread and read the new volume.",
                       "The rise in the volume is the volume of the object.",
                   ]}]},
+        {"kind": "card", "title": "Worked examples",
+         "body": [{"slot": "cfifa"}]},
         {"kind": "card", "title": "Required practical 17: density", "routes": ["CF", "CH"],
          "body": _RP_BODY},
         {"kind": "card", "title": "Required practical 5: density", "routes": ["TF", "TH"],
@@ -211,7 +206,7 @@ LESSON = {
             {"tab": "Question 2", "id": "dm-q2",
              "head": "A metal cube has sides of 2.0 cm. Its mass is 72 g. Calculate its density "
                      "in g/cm³.",
-             "close": "Find the volume first: 2.0 × 2.0 × 2.0 = 8.0 cm³.",
+             "close": "9.0 g/cm³ is 9000 kg/m³, about the density of copper.",
              "steps": _q(["Volume = 2.0 × 2.0 × 2.0 = 8.0 cm³", "ρ = m ÷ V", "ρ = 72 ÷ 8.0",
                           "ρ = 9.0", "ρ = 9.0 g/cm³"], "the volume first?")},
         ],

@@ -13,7 +13,7 @@ Legacy status: LEGACY, Design batch 3 (`specific-latent-heat.dc.html`, family Qu
 | Specific latent heat of fusion: change of state from solid to liquid. Specific latent heat of vaporisation: change of state from liquid to vapour. | Key words; Card 'Specific latent heat' (AQA words); Easy mistakes 3; Rung 1 (name: vaporisation); Practice Q3 | CF CH TF TH | all | ✓ |
 | Students should be able to interpret heating and cooling graphs that include changes of state (MS 4a, WS 3.5). | Card 'Heating and cooling graphs' (loggerFig: Y freezing B to C at 50 °C); Card 'Energy from a flat section' (7 minutes at 30 W, L = 210 000 J/kg); Reveal (sloping or flat section); Rung 2 Higher (heating curve of Z) | CF CH TF TH | all | ✓ |
 | Students should be able to distinguish between specific heat capacity and specific latent heat. | Reveal 'Specific heat capacity or specific latent heat' (what changes, equation, unit, graph section); Easy mistakes 2; Rung 1 (distractor); Rung 4 (compare); Practice Q4 | CF CH TF TH | all | ✓ |
-| AT 5: perform an experiment to measure the latent heat of fusion of water (skills column; not a required practical). | Card 'Measuring the specific latent heat of fusion of water' (heater in a funnel of crushed ice; control funnel; joulemeter; L = E ÷ m) | CF CH TF TH | all | ✓ |
+| AT 5: perform an experiment to measure the latent heat of fusion of water (skills column; not a required practical). | Card 'Measuring the specific latent heat of fusion of water' (heater in a funnel of crushed ice; start timing once water drips steadily; control funnel, whose melting comes from the warm room; joulemeter; L = E ÷ m) | CF CH TF TH | all | ✓ |
 
 **Equations and units.**
 
@@ -28,6 +28,7 @@ Legacy status: LEGACY, Design batch 3 (`specific-latent-heat.dc.html`, family Qu
 - Rung 3 asked "Explain why sweating cools the body", the same question as practice Q2 ("Why does sweating cool the body?"), so a pupil met it twice. Logic edit 3 replaces Rung 3 with a chain on ice cooling a drink (latent heat of fusion taken from the drink). Same position, so `ks4:specific-latent-heat:<route>#r3` is kept; its content is new.
 - The old key note said the energy goes into "breaking bonds" during a change of state; AQA's words are the energy stored (internal energy). The lean cards use AQA's words.
 - Old quiz options carried their working ("1,130,000 J — E = 0.5 × 2,260,000"), which gave the answer away; the sweating correct option was the longest. Options rewritten; stems kept.
+- Worked example 1 (`fifas`, all four data files) wrote 334,000 and 668,000 with commas; now spaces (334 000 J/kg, 668 000 J). The kept quiz stem "Lv = 2,260,000" is unchanged.
 
 **Gaps and mismatches.**
 - The Design page did not teach the AT 5 experiment (latent heat of fusion of water), which is both an AQA skills item and a Rainford LO. Added as a Key knowledge card.
@@ -58,6 +59,6 @@ Legacy status: LEGACY, Design batch 3 (`specific-latent-heat.dc.html`, family Qu
 
 | Item | Prompt | Links in order |
 |---|---|---|
-| Rung 3 chain (new) | Ice at 0 °C is put into a drink at 20 °C. Explain why the drink cools as the ice melts. | The ice melts: solid to liquid at 0 °C. → Melting needs energy, the latent heat of fusion, transferred from the drink to the ice. → So the drink's internal energy decreases, and its temperature falls. Herrings: "The ice gives its cold to the drink"; "Melting ice releases energy into the drink". |
+| Rung 3 chain (new) | Ice at 0 °C is put into a drink at 20 °C. Explain why the drink cools as the ice melts. | The ice melts: solid to liquid at 0 °C. → As it melts, the ice needs energy, the latent heat of fusion, and this energy is transferred from the drink to the ice. → So the drink's internal energy decreases, and its temperature falls. Herrings: "The ice gives its cold to the drink"; "Melting ice releases energy into the drink". |
 
 **Assignment pool.** 64 rows for this slug in ks4_data/questions/physics/particle_model*.py (12 at positions 0–11, the auto window). None is changed here.

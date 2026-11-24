@@ -20,6 +20,7 @@ Legacy status: LEGACY, Design batch 3 (`temperature-changes-shc.dc.html`, family
 | energy transferred = power × time | E = P t | E in J; P in W; t in s | recall and apply (8463 4.2.4.2 / 8464 6.2.4.2; used in the practical and Higher Rung 2) | Not on the sheet: recall list, equation 21 |
 
 **Faults in the current pages and data.**
+- Worked example 1 (`fifas`, all four data files) wrote 336,000 and 168,000 with commas; now spaces (336 000, 168 000 J).
 - The Design page's equation box labelled E = P t "On the sheet". It is a recall equation. That box is not on the lean page; the card 'Energy from a heater' says it must be remembered.
 - The old `rp` field and key note say "RP14" on every route. That is the 8464 number; 8463 numbers it 1. Not rendered on the lean page (the header chip and the two route cards carry the right numbers).
 - Old quiz options carried their working ("135,000 J — ΔE = 2 × 450 × 150 = 135,000 J (Δθ = 200 − 50 = 150°C)"), which gave the answer away; the water-coolant correct option was the longest. Options rewritten; stems kept.

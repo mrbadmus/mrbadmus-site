@@ -14,7 +14,9 @@ LOGIC_EDITS:
   2. Rung 1 was practice question 1 (K.find on "Its temperature stays constant for several
      minutes"), so a pupil met it twice. It is now its own question, the definition of internal
      energy, through K.item, as metal-hydroxides did on 22 Nov 2026. Its position, and so its id
-     (ks4:internal-energy:<route>#r1), is kept; its options and answer key are new."""
+     (ks4:internal-energy:<route>#r1), is kept; its options and answer key are new.
+  3. Rung 3 (stearic acid freezing): its first two links could be put in either order. Link 2
+     now reads "While it freezes, ...", so it follows from link 1 (examiner review, 24 Nov 2026)."""
 
 LOGIC_EDITS = [
     ("'AQA Physics (8464) 6.3.2.1 · Model'", "'AQA Combined Science (8464) 6.3.2.1 · Model'"),
@@ -32,6 +34,11 @@ LOGIC_EDITS = [
      "capacity.', '3': 'Internal energy includes the potential energy of the particles too.' } }), "
      "{ command: 'Define', marks: 1, why: 'Internal energy is the total kinetic energy and "
      "potential energy of all the particles (atoms and molecules) that make up a system.' }),"),
+    # 3. Rung 3 (stearic acid): links 1 and 2 could be swapped. Link 2 now starts from the
+    # freezing that link 1 names, so the chain has one right order.
+    ("'Energy is still being transferred to the surroundings, so its internal energy decreases.'",
+     "'While it freezes, energy is still transferred to the surroundings, so its internal energy "
+     "decreases.'"),
 ]
 
 LESSON = {

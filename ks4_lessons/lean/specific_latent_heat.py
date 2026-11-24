@@ -18,7 +18,8 @@ LOGIC_EDITS:
   3. Rung 3 asked "Explain why sweating cools the body", the same question as practice question 2
      ("Why does sweating cool the body?"), so a pupil met it twice. It is now a chain on ice
      cooling a drink: the same spec line (latent heat; energy changes the internal energy, not the
-     temperature), one right order. Same rung position, so its id (#r3) is kept."""
+     temperature), one right order. Same rung position, so its id (#r3) is kept. Link 2 starts
+     "As it melts, ..." so it can only follow link 1 (examiner review, 24 Nov 2026)."""
 
 LOGIC_EDITS = [
     ("const tEnd = s.logDone ? 12 : s.logP * 12;", "const tEnd = 12;"),
@@ -33,8 +34,9 @@ LOGIC_EDITS = [
      "Condensing is the change that releases it.' }] },",
      "r3: { command: 'Explain', marks: 3, prompt: 'Ice at 0 °C is put into a drink at 20 °C. "
      "Explain why the drink cools as the ice melts. Put the links in order.',\n          links: "
-     "['The ice melts: it changes state from solid to liquid at 0 °C.', 'Melting needs energy, "
-     "the latent heat of fusion, and this energy is transferred from the drink to the ice.', 'So "
+     "['The ice melts: it changes state from solid to liquid at 0 °C.', 'As it melts, the ice "
+     "needs energy, the latent heat of fusion, and this energy is transferred from the drink to "
+     "the ice.', 'So "
      "the internal energy of the drink decreases, and its temperature falls.'],\n          "
      "herrings: [{ text: 'The ice gives its cold to the drink.', why: 'Energy moves from the "
      "warmer drink to the ice. There is no cold to pass on.' }, { text: 'Melting ice releases "
@@ -107,10 +109,12 @@ LESSON = {
         {"kind": "card", "title": "Measuring the specific latent heat of fusion of water",
          "body": [{"points": [
              "Put an immersion heater in a funnel of crushed ice, with a beaker underneath.",
-             "Switch on for a set time. Measure the energy supplied with a joulemeter, and the "
-             "mass of water that melts.",
+             "Switch the heater on. Start timing once water drips steadily from the heated "
+             "funnel.",
+             "After a set time, measure the energy supplied with a joulemeter, and the mass of "
+             "water that has melted.",
              "Set up a second funnel of ice with no heater, for the same time. Take away the mass "
-             "it melts, which came from the warm room.",
+             "of water it melts: that ice was melted by the warm room, not the heater.",
              "Then L = E ÷ m.",
          ]}]},
         {"kind": "reveal", "title": "Specific heat capacity or specific latent heat",

@@ -62,6 +62,6 @@ Legacy status: none (old generate_site_v5 page; no Design batch holds this slug)
 
 Every chain has one right order: each link uses what the link before it established.
 
-**Worked examples (CFIFA, new).** 5.4 kg in 0.0020 m³ → 2700 kg/m³; the stone in the figure, 30 g in 12 cm³ → 2500 kg/m³ (check 2.5 g/cm³); mass of 0.25 m³ of water → 250 kg. Your turn: 0.84 kg in 0.0010 m³ → 840 kg/m³; a 2.0 cm cube of mass 72 g → 9.0 g/cm³.
+**Worked examples (CFIFA, new).** 5.4 kg in 0.0020 m³ → 2700 kg/m³; the stone in the figure, 30 g in 12 cm³ → 2500 kg/m³ (check 2.5 g/cm³); mass of 0.25 m³ of water → 250 kg. Your turn: 0.84 kg in 0.0010 m³ → 840 kg/m³; a 2.0 cm cube of mass 72 g → 9.0 g/cm³ (closing line: 9000 kg/m³, about the density of copper). The worked examples sit straight after 'The displacement method', so the conversions and the stone come before the examples that use them.
 
 **Assignment pool.** 64 rows for this slug in ks4_data/questions/physics/particle_model*.py (12 at positions 0–11, the auto window). None is changed here.

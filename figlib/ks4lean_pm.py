@@ -11,7 +11,7 @@ own #FFFDF8 background rect, path commands M L H V C Q Z only, no text on a dark
                         "Density and the particle model"; changes_of_state.py, card "States of matter"
   displacement-volume   a measuring cylinder before and after a stone is lowered in: 50 cm³ to
                         62 cm³, so the stone's volume is 12 cm³ (density_of_materials.py, card
-                        "Required practical: an irregular solid")
+                        "The displacement method")
   state-changes         the five changes of state AQA names (melt, freeze, boil or evaporate,
                         condense, sublimate) between the three states (changes_of_state.py,
                         card "The changes of state")

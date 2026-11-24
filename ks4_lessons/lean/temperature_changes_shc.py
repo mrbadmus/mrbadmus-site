@@ -77,8 +77,8 @@ LESSON = {
                   {"slot": "triangle:EQ_SHC"}]},
         {"kind": "card", "title": "The temperature change",
          "body": ["Δθ is a change: the final temperature minus the starting temperature.",
-                  "When something cools, Δθ is the size of the drop. Water cooling from 70 °C to "
-                  "25 °C has Δθ = 45 °C."]},
+                  "When something cools, Δθ is the size of the drop. Water cooling from 80 °C to "
+                  "30 °C has Δθ = 50 °C."]},
         {"kind": "card", "title": "Energy from a heater",
          "body": ["The energy from an electric heater is measured with a joulemeter, or worked out "
                   "from energy transferred = power × time, E = P t, with P in watts and t in "

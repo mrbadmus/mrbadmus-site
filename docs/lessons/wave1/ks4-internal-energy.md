@@ -42,6 +42,6 @@ None in this spec point. Dive deeper points to ΔE = m c Δθ (temperature-chang
 | 4 | new | `718e050b9b` | Water is heated from 20 °C to 50 °C. Which energy of its particles increases? | Their kinetic energy |
 | 5 | new | `3864801a2e` | Which has more internal energy: 1 kg of steam at 100 °C or 1 kg of water at 100 °C? | The steam |
 
-**Ladder.** Ks4Ladder r1..r4 from the Design page, positions kept. Rung 1 rewritten through a logic edit (Define internal energy; K.item; ids kept). Rung 2 (data: heating curve of X, melting point 20 °C, liquid at 50 °C, average kinetic energy unchanged from D to E), Rung 3 (chain: stearic acid freezing at 69 °C) and Rung 4 (6 marks: ice at −10 °C to water at 20 °C) are unchanged.
+**Ladder.** Ks4Ladder r1..r4 from the Design page, positions kept. Rung 1 rewritten through a logic edit (Define internal energy; K.item; ids kept). Rung 2 (data: heating curve of X, melting point 20 °C, liquid at 50 °C, average kinetic energy unchanged from D to E), Rung 4 (6 marks: ice at −10 °C to water at 20 °C) are unchanged. Rung 3 (chain: stearic acid freezing at 69 °C): its first two links could be swapped, so a logic edit makes link 2 read "While it freezes, energy is still transferred to the surroundings, so its internal energy decreases." One right order; id kept.
 
 **Assignment pool.** 64 rows for this slug in ks4_data/questions/physics/particle_model*.py (12 at positions 0–11, the auto window). None is changed here.

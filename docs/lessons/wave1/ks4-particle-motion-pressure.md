@@ -10,8 +10,8 @@ Legacy status: LEGACY, Design batch 3 (`particle-motion-pressure.dc.html`, famil
 |---|---|---|---|---|
 | The molecules of a gas are in constant random motion. | Card 'How gas molecules move' (AQA words); Key words; Easy mistakes 3; Rung 1 | CF CH TF TH | all | ✓ |
 | The temperature of the gas is related to the average kinetic energy of the molecules. | Card 'Temperature and the molecules' (AQA words); Card 'Heating a gas at constant volume'; Key fact; Practice Q3 | CF CH TF TH | all | ✓ |
-| Changing the temperature of a gas, held at constant volume, changes the pressure exerted by the gas. | Start here; Card 'Heating a gas at constant volume' (AQA words, both directions); Key fact; Rung 2 CF CH (data: pressure against temperature); Rung 3 CF CH (tyre on a frosty morning); Practice Q1, Q2, Q4, Q5 (CF CH) | CF CH TF TH | all | ✓ |
-| Explain how the motion of the molecules in a gas is related to both its temperature and its pressure (WS 1.2). | Cards 'Where gas pressure comes from', 'Temperature and the molecules', 'Heating a gas at constant volume'; Easy mistakes 1, 2; Rung 4 CF CH TF (explain how molecules produce a pressure) | CF CH TF TH | all | ✓ |
+| Changing the temperature of a gas, held at constant volume, changes the pressure exerted by the gas. | Start here; Card 'Heating a gas at constant volume' (AQA words, both directions); Key fact; Rung 2 CF CH (data: pressure against temperature); Rung 3 CF CH (tyre on a frosty morning); Practice Q1, Q2, Q4 | CF CH TF TH | all | ✓ |
+| Explain how the motion of the molecules in a gas is related to both its temperature and its pressure (WS 1.2). | Cards 'Where gas pressure comes from', 'Temperature and the molecules', 'Heating a gas at constant volume'; Easy mistakes 1, 2; Rung 4 CF CH TF (explain how molecules produce a pressure); Practice Q5 (CF CH) | CF CH TF TH | all | ✓ |
 | Explain qualitatively the relation between the temperature of a gas and its pressure at constant volume (WS 1.2). | Card 'Heating a gas at constant volume'; Key fact; Rung 3 CF CH; Practice Q2, Q4 | CF CH TF TH | all | ✓ |
 | (Physics only) A gas can be compressed or expanded by pressure changes. The pressure produces a net force at right angles to the wall of the gas container (or any surface). | Card 'Pressure in gases' (AQA words) | TF TH | Triple only | ✓ |
 | (Physics only) Use the particle model to explain how increasing the volume in which a gas is contained, at constant temperature, can lead to a decrease in pressure (WS 1.2). | Card 'Pressure in gases' (same speed, further between hits, hit less often); Rung 3 TF TH (chain: gas expands at constant temperature) | TF TH | Triple only | ✓ |
@@ -30,6 +30,8 @@ Legacy status: LEGACY, Design batch 3 (`particle-motion-pressure.dc.html`, famil
 - The old subtopic data (never shown on the Design page, batch-3 DEPARTURES) has kelvin, absolute zero and p ÷ T = constant, none of which is in 8463 or 8464, and tags pV = constant as Higher on the Combined data. Not shown on the lean page; the data is left as it is.
 - Two rails and a per-route done[]: the legacy logic picks RAIL_BASE or RAIL_TRIPLE per route, a shape lean_ks4 could not read. The record's `pre_edits` (new in lean_ks4) fold them into one rail before the rail edits. Not a pupil-facing fault.
 - Old quiz options: the tyre correct option was far the longest. Options rewritten; stems kept.
+- Design's TH worked example 'Find a volume' cut the pressure to 120 kPa, so its working read "V₂ = 120 ÷ 120". Logic edit (examiner review): 100 kPa, so 150 × 0.80 = 100 × V₂ and V₂ = 120 ÷ 100 = 1.2 m³. That made it the twin of TH Your turn 1 (2400 kPa × 0.050 m³ into 100 kPa, also 120 ÷ 100 = 1.2 m³), so Your turn 1's cylinder now holds 0.030 m³: V₂ = 72 ÷ 100 = 0.72 m³ (same position, so `#cfifa-1-1` is kept).
+- Old `fifas` formula line "p₁V₁ = p₂V₂ (Boyle's Law — constant temperature)" (worked example 1 on TF TH) now reads "(for a fixed mass of gas at constant temperature)" in the two Triple data files; the CF CH copies are not rendered and are left as they are.
 
 **Gaps and mismatches.**
 - None in the AQA lines on any route (see the finding above).
@@ -54,7 +56,7 @@ Legacy status: LEGACY, Design batch 3 (`particle-motion-pressure.dc.html`, famil
 | 2 | kept (stem unchanged, options rewritten) | `23f5ebc20e` | A gas is heated in a sealed, rigid container, so its volume stays the same. What happens to the pressure of the gas, and why? | It increases: the molecules move faster and hit the walls more often and harder | all |
 | 3 | new | `fd688feb0a` | The temperature of a gas is related to which property of its molecules? | Their average kinetic energy | all |
 | 4 | new | `520b48b721` | A sealed can of gas is cooled. Its volume does not change. What happens to the pressure? | It decreases | all |
-| 5 | new | `a7de9759ba` | Which of these increases the pressure of a gas in a sealed, rigid container? | Heating the gas | CF CH |
+| 5 | new | `c13ac0cdee` | What causes the pressure of a gas on the walls of its container? | The molecules colliding with the walls | CF CH |
 | 5 | new | `0cd51798cd` | A fixed mass of gas at constant temperature has a pressure of 100 kPa and a volume of 0.50 m³. It is compressed to 0.25 m³. What is its new pressure? | 200 kPa | TF TH |
 
 **Ladder.** Ks4Ladder r1..r4 from the Design page, positions kept, unchanged: Rung 1 (all: gas molecules' motion); Rung 2 (CF data 0–60 °C, CH data 10–50 °C, TF calc 250 kPa, TH calc 360 kPa with cm³ conversion); Rung 3 (CF CH tyre on a frosty morning; TF TH gas expands at constant temperature); Rung 4 (CF CH TF explain how molecules produce a pressure, 4 marks; TH bicycle pump, 6 marks).
