@@ -36,7 +36,8 @@ SLUGS = ["efficiency", "changes-in-energy", "power", "thermal-conductivity",
 # Quantitative, then Physics Waves (six old-format lessons, three new ones, six legacy lessons
 # from batches 2, 3 and 4), then Biology Organisation (eleven legacy lessons from batches 2, 4, 5
 # and 6; see BIO_EYEBROW below), then Chemistry Chemical analysis (six old-format lessons and
-# two legacy batch-2 lessons).
+# two legacy batch-2 lessons), then Physics Particle model of matter (two old-format lessons and
+# four legacy lessons from batches 2 and 3).
 
 # Lessons that have no legacy page: identity comes from here (the subtopic data's own
 # title and spec, 6.1.1.1 / 6.1.1.3 / 6.1.2.1). The three Energy ones are written out so
@@ -58,6 +59,7 @@ _UNITS = {
     ("physics", "waves"): "Waves",
     ("biology", "organisation"): "Organisation",
     ("chemistry", "analysis"): "Chemical analysis",
+    ("physics", "particle-model"): "Particle model of matter",
 }
 # The family label (the eyebrow's last word) is a ruled choice per lesson, drawn from the
 # labels the existing batches use: Model, Quantitative, Process, Classify, Contrast,
@@ -104,6 +106,10 @@ _FAMILY = {
     "testing-for-gases": "Classify",
     "flame-tests": "Classify",
     "instrumental-methods": "Process",
+    # Particle model of matter: two old-format lessons rebuilt (the four legacy ones, internal
+    # energy from batch 2 and the three from batch 3, keep their batch's own family)
+    "density-of-materials": "Quantitative",
+    "changes-of-state": "Model",
 }
 # Ecology lessons whose record has no `legacy` but which were live Design lessons in an earlier
 # batch: the lean page is built from the record alone and replaces that page. slug -> the one

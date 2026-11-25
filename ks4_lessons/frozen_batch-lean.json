@@ -39,6 +39,10 @@
   "hash": "f8fd88be0c54419f6fb57f24b4d0ddf7cd66058dbffccf0ccd18cc2a42648beb",
   "review_state": "examiner-reviewed"
  },
+ "changes-of-state": {
+  "hash": "c3050f896c1ecea36f53c0c6ffe67ccc8de9a26abbd545cb9e5ad9584ebef58f",
+  "review_state": "examiner-reviewed"
+ },
  "chemical-measurements": {
   "hash": "e90d5dea7587b5e1042a8caf3d0f6a1d393795d5fbc61ddc265b92c1934b8197",
   "review_state": "examiner-reviewed"
@@ -65,6 +69,10 @@
  },
  "deforestation": {
   "hash": "93305f6e3bd527a273a21e3a9469739cddf7deec45106ffd5591b1072b6883b1",
+  "review_state": "examiner-reviewed"
+ },
+ "density-of-materials": {
+  "hash": "7e63f877ef8709fd3e61b9397731fe7ebe59ab85de3a4279e6bb974e9f58145e",
   "review_state": "examiner-reviewed"
  },
  "digestive-system": {
@@ -163,6 +171,10 @@
   "hash": "88637c0996f14105ebedd33052b7975a810f4f4b89893bdfcfccb5a342f6b2a4",
   "review_state": "examiner-reviewed"
  },
+ "internal-energy": {
+  "hash": "e4f2cbc782a4c1c4c7d964b9b11833f13a41c3f501cc67d48c216ae1d3f23fac",
+  "review_state": "examiner-reviewed"
+ },
  "land-use": {
   "hash": "581e6c8541f941b231416a42fb24ae1d7d6fe75a2e3b3e0ca0d605b998c92bae",
   "review_state": "examiner-reviewed"
@@ -197,6 +209,10 @@
  },
  "moles": {
   "hash": "bbe83474ebe87494ed86bbf4e3c9586e24ad6c3de72c7fc3a482bb77db667abf",
+  "review_state": "examiner-reviewed"
+ },
+ "particle-motion-pressure": {
+  "hash": "19483b191ffdcdfc1d794293071f7f3bfdf0d1e6218c1581bc3d58406766ade8",
   "review_state": "examiner-reviewed"
  },
  "percentage-yield": {
@@ -271,8 +287,16 @@
   "hash": "c38409d8fcbf313aeb62c7623926568f0c64bdba221ed4010189e84e25551f51",
   "review_state": "examiner-reviewed"
  },
+ "specific-latent-heat": {
+  "hash": "4cba2050c352d96e8fb8c3cedd8912f025da5d909d43c891b7aa7ddd9b53d482",
+  "review_state": "examiner-reviewed"
+ },
  "sustainable-fisheries": {
   "hash": "fb700f1ff700eb957d6ed75c4b1bc32bef9db3d4464f3921669131103f04f1f6",
+  "review_state": "examiner-reviewed"
+ },
+ "temperature-changes-shc": {
+  "hash": "278ed0462aa112e2376747825f4c357a2c2e8ab17521f3db0374a7fd0599c40f",
   "review_state": "examiner-reviewed"
  },
  "testing-for-gases": {

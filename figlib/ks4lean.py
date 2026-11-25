@@ -8,7 +8,8 @@ The drawings live in figlib/ks4lean_mag.py (the lean Magnetism lesson), figlib/k
 (the lean Ecology lesson), figlib/ks4lean_ecofig.py (the Ecology figures that replaced the kept
 Design ones), figlib/ks4lean_chemfig.py (the same for Quantitative chemistry),
 figlib/ks4lean_waves.py (the lean Waves lessons) and figlib/ks4lean_org.py (the lean Biology
-Organisation lessons) and figlib/ks4lean_an.py (the lean Chemical analysis lessons); each REGISTRY maps name -> drawer, and the names are unique across them.
+Organisation lessons), figlib/ks4lean_an.py (the lean Chemical analysis lessons) and
+figlib/ks4lean_pm.py (the lean Particle model of matter lessons); each REGISTRY maps name -> drawer, and the names are unique across them.
 Each carries its own #FFFDF8 background and an aria-label. Here each one goes through:
     figlib.web.to_manifest_svg   viewBox only, role="img", <title>/<desc>, flat paint, ids prefixed
                                  (it insists on the library's cream paper rect, so the drawing's own
@@ -33,9 +34,10 @@ BG = "#FFFDF8"
 
 def _registry():
     from . import (ks4lean_an, ks4lean_chemfig, ks4lean_eco, ks4lean_ecofig, ks4lean_mag,
-                   ks4lean_org, ks4lean_waves)
+                   ks4lean_org, ks4lean_pm, ks4lean_waves)
     reg = dict(ks4lean_mag.REGISTRY)
-    for mod in (ks4lean_eco, ks4lean_ecofig, ks4lean_chemfig, ks4lean_waves, ks4lean_org, ks4lean_an):
+    for mod in (ks4lean_eco, ks4lean_ecofig, ks4lean_chemfig, ks4lean_waves, ks4lean_org, ks4lean_an,
+                ks4lean_pm):
         for name, fn in mod.REGISTRY.items():
             if name in reg:
                 raise ValueError("figlib.ks4lean: figure name %r is in two lean registries" % name)
