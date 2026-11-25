@@ -2866,8 +2866,11 @@ def _c5l_heating_carbonate(fig):
                    spacing="1", data_part="heading"))
     for (x, names, paint, state) in ((76, lab["before"], col["powder"], "before"),
                                      (226, lab["after"], col["oxide"], "after")):
-        o.append(_path(_c5l_fill_d(x, 36, 480, 508), fill=paint, stroke=_SVG_INK, w=1,
+        # a light rim and grains on each powder: the black oxide stays visible on a dark page
+        o.append(_path(_c5l_fill_d(x, 36, 480, 508), fill=paint, stroke=_SVG_INK, w=2,
                        data_part="powder", data_state=state))
+        for (gx, gy) in ((8, 486), (17, 489), (26, 485), (12, 495), (22, 497), (18, 503)):
+            o.append(_circle(x + gx + 1, gy, 1.4, fill=_SVG_INK_FAINT, data_part="grain"))
         o.append(_path(_c5l_tube_d(x, 430, 36, 508), stroke=_SVG_INK, w=2.5, data_part="tube"))
         for k, s in enumerate(names):
             o.append(_label(x + 18, 532 + 16 * k, s, size=13, data_part="label"))

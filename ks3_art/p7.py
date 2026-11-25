@@ -2334,8 +2334,8 @@ def _p7c_prism(fig):
     """White light into a triangular prism. Inside, the colours separate (violet bends
     most, red least) and fan out onto a screen, each named in text. With `second`, an
     upside-down prism bends each colour back: inside it every ray turns towards the normal
-    (violet most, worked out with the law of refraction), and the colours leave parallel
-    to the white light that went in, together again as one white beam."""
+    (violet most), the colours meet at one point on its far face, and one white beam
+    leaves there, parallel to the white light that went in."""
     d = fig.get("data") or {}
     cols = d.get("colours") or _P7C_SPECTRUM
     if cols != _P7C_SPECTRUM:
@@ -2386,31 +2386,29 @@ def _p7c_prism(fig):
     fx, fy = _p7c_unit(qa[0] - tl[0], qa[1] - tl[1])
     n_in = (fy, -fx)                                   # into prism 2, through its left face
     white = _p7c_unit(P[0] - W0[0], P[1] - W0[1])      # the direction the white light came in
-    turned, outs = [], []
+    # every colour is bent back inside prism 2 and they all meet at ONE point on its
+    # right face, where a single white beam leaves (the textbook drawing: the colours
+    # join up and white light comes out)
+    X = (qa[0] + (tr[0] - qa[0]) * 0.6, qa[1] + (tr[1] - qa[1]) * 0.6)
+    turned = []
     for k, name in enumerate(cols):
         t = 0.46 + 0.03 * k
         e2 = (tl[0] + (qa[0] - tl[0]) * t, tl[1] + (qa[1] - tl[1]) * t)
         din = _p7c_unit(e2[0] - exits[k][0], e2[1] - exits[k][1])
-        dg = _p7c_snell(din, n_in, 1.0 / (1.45 + 0.08 * k))   # violet slowed (and bent) most
+        dg = _p7c_unit(X[0] - e2[0], X[1] - e2[1])
         before = _p7c_math.acos(din[0] * n_in[0] + din[1] * n_in[1])
         after = _p7c_math.acos(dg[0] * n_in[0] + dg[1] * n_in[1])
         if not (after < before and (din[0] * n_in[1] - din[1] * n_in[0]) *
                 (dg[0] * n_in[1] - dg[1] * n_in[0]) >= 0):
             raise ValueError("figure %r: %s does not bend towards the normal" % (fig.get("id"), name))
         turned.append(before - after)
-        x2 = _p7c_hit(e2, dg, qa, tr)
         o.append(_line(exits[k][0], exits[k][1], e2[0], e2[1], stroke=_P7C_HUE[name], w=2.4,
                        data_part="colour", data_key=name))
-        o.append(_line(e2[0], e2[1], x2[0], x2[1], stroke=_P7C_HUE[name], w=1.8, data_part="inside-2",
+        o.append(_line(e2[0], e2[1], X[0], X[1], stroke=_P7C_HUE[name], w=1.8, data_part="inside-2",
                        data_key=name))
-        stub = (x2[0] + white[0] * 14, x2[1] + white[1] * 14)
-        o.append(_line(x2[0], x2[1], stub[0], stub[1], stroke=_P7C_HUE[name], w=1.8, data_part="out-2",
-                       data_key=name))
-        outs.append(stub)
     if turned != sorted(turned):
         raise ValueError("figure %r: violet must turn the most" % fig.get("id"))
-    cx = sum(p[0] for p in outs) / len(outs)
-    cy = sum(p[1] for p in outs) / len(outs)
+    cx, cy = X
     ex = 332.0
     o.append(_p7c_ray(cx, cy, ex, cy + white[1] / white[0] * (ex - cx), w=4, at=0.5, part="white-out"))
     o.append(_label(332, cy + 30, "white", size=14, weight="700", anchor="end", data_part="white-out-label"))

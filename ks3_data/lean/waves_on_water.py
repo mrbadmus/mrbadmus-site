@@ -98,6 +98,7 @@ LESSON = {
     ],
     "try": {"label": "Wave Motion Lab", "href": "/simulations/physics/wave-motion-lab/"},
     "tutor_body": "Got a wave of your own to describe, such as a rope, a pond or the sea?",
+    "connects_heading": None,
     "ks4_becomes": "Period, the wave equation, and measuring the speed of waves in a ripple tank.",
     "before_this": "Nothing. This is where the unit starts.",
     "figures": [

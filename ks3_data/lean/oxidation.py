@@ -61,7 +61,8 @@ LESSON = {
                               "Tube 3 has water but no air. Boiling took the air out of the water, and oil keeps air out.",
                               "Tube 4 has air and salt water. The nail rusts fastest."]},
                   "One tube on its own cannot show what rusting needs.",
-                  "Tubes 2 and 3 together show that oxygen and water are both needed.",
+                  "Only tube 1 rusts. Tubes 2 and 3 do not.",
+                  "So rusting needs both oxygen and water.",
                   "Tube 4 shows that salt makes rusting faster."]},
         {"kind": "card", "title": "Aluminium and its oxide layer",
          "body": ["Aluminium reacts with oxygen in the air straight away.",
@@ -107,6 +108,7 @@ LESSON = {
     "tutor_body": "Still not sure why tubes 2 and 3 are the important ones?",
     "safety_note": "Wear eye protection. Never look straight at burning magnesium. "
                    "Its bright light can damage your eyes.",
+    "connects_heading": None,
     "ks4_becomes": "Oxidation and reduction, corrosion and how to prevent it, and the reactivity "
                    "series explained.",
     "figures": [

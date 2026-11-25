@@ -10,7 +10,7 @@ LESSON = {
         "question": "If you had to guess, what mainly caused the different answers?",
         "options": [
             ("Heat escaping to the room",
-             "Right. The slower the reading and the worse the insulation, the more heat escapes."),
+             "Right. Each group lost a different amount of heat. Their cups and timing differed."),
             ("The thermometers being unreliable",
              "Thermometers can be a little off, but not by five degrees. The groups lost different amounts of heat."),
         ],
@@ -123,6 +123,7 @@ LESSON = {
     "try": None,
     "tutor_body": "Still not sure why repeating does not fix heat loss?",
     "safety_note": "Wear eye protection. Acids and alkalis can harm your eyes and skin.",
+    "connects_heading": None,
     "ks4_becomes": "The temperature change required practical, and calculating the energy released by "
                    "a fuel.",
     "figures": [

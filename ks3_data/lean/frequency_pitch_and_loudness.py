@@ -57,7 +57,8 @@ LESSON = {
                   "The number of vibrations is a count, so it has no unit.",
                   "Time must be in seconds, because 1 Hz is one vibration each second."]},
         {"kind": "card", "title": "Worked example: counting vibrations",
-         "body": ["A tuning fork of frequency 200 Hz rings for 3.0 s. "
+         "body": [{"figure": "p6-05-count"},
+                  "A tuning fork of frequency 200 Hz rings for 3.0 s. "
                   "Find how many complete vibrations it makes.",
                   {"points": ["Convert: nothing. The time is already in seconds.",
                               "Formula: number of vibrations = frequency × time",
@@ -65,7 +66,8 @@ LESSON = {
                               "Fine-tune: 200 × 3.0 = 600",
                               "Answer: 600 vibrations"]}]},
         {"kind": "card", "title": "Worked example: finding a frequency",
-         "body": ["A tuning fork makes 15 000 vibrations in 0.50 minutes. Find its frequency.",
+         "body": [{"figure": "p6-05-rate"},
+                  "A tuning fork makes 15 000 vibrations in 0.50 minutes. Find its frequency.",
                   {"points": ["Convert: 0.50 min × 60 = 30 s",
                               "Formula: frequency = number of vibrations ÷ time",
                               "Insert: frequency = 15 000 ÷ 30 s",
@@ -100,6 +102,7 @@ LESSON = {
     ],
     "try": {"label": "Wave Motion Lab", "href": "/simulations/physics/wave-motion-lab/"},
     "tutor_body": "Not sure which change sets the pitch and which sets the loudness?",
+    "connects_heading": None,
     "ks4_becomes": "The wave equation, period, and reading frequency and amplitude from an oscilloscope trace.",
     "figures": [
         {"id": "p6-05-traces", "kind": "diagram", "status": "drawn", "art": "p6-sound-traces",
@@ -127,8 +130,28 @@ LESSON = {
                           "caption": "number of vibrations"},
                   "bottom": [{"s": "f", "name": "frequency", "unit": "Hz", "caption": "frequency in hertz"},
                              {"s": "t", "name": "time", "unit": "s", "caption": "time in seconds"}]}},
+        {"id": "p6-05-count", "kind": "diagram", "status": "drawn", "art": "p6-vibration-count",
+         "title": "Counting the vibrations of a 200 Hz tuning fork in 3.0 s",
+         "desc": "At the top: 200 Hz means 200 vibrations every second. A wave trace on a screen is "
+                 "cut into three equal slices, one for each second. Under each slice is the number 200. "
+                 "A double arrow under the whole screen is labelled 3.0 s. Under it: 200 × 3.0 = 600, "
+                 "then 600 vibrations.",
+         "caption": "Each second holds 200 vibrations. Three seconds hold 600.",
+         "data": {"heading": "200 Hz means 200 vibrations every second", "slices": 3,
+                  "slice_label": "200", "span": "3.0 s",
+                  "lines": ["200 × 3.0 = 600", "600 vibrations"]}},
+        {"id": "p6-05-rate", "kind": "diagram", "status": "drawn", "art": "p6-vibration-count",
+         "title": "Finding the frequency from 15 000 vibrations in 0.50 minutes",
+         "desc": "At the top: 15 000 vibrations in 0.50 min. A wave trace on a screen is cut into 30 "
+                 "thin slices, one for each second. The first slice is picked out and labelled 1 s: "
+                 "500 vibrations. A double arrow under the whole screen is labelled 0.50 min = 30 s. "
+                 "Under it: 15 000 ÷ 30 = 500, then frequency = 500 Hz.",
+         "caption": "Share the vibrations out over 30 seconds. Each second gets 500.",
+         "data": {"heading": "15 000 vibrations in 0.50 min", "slices": 30,
+                  "mark": "1 s: 500 vibrations", "span": "0.50 min = 30 s",
+                  "lines": ["15 000 ÷ 30 = 500", "frequency = 500 Hz"]}},
     ],
-    "figure_caption": {"p6-05-traces": None},     # the card text already says it
+    "figure_caption": {"p6-05-traces": None, "p6-05-count": None, "p6-05-rate": None},   # the card text already says it
     "ladder_ticks": [
         ["Says the two are independent — changing one leaves the other as it was.",
          "Says the two are separate: changing one leaves the other as it was."],

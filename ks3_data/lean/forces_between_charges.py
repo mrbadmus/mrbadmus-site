@@ -90,6 +90,7 @@ LESSON = {
     ],
     "try": None,
     "tutor_body": "Got two objects and want to know whether they attract, repel or do nothing?",
+    "connects_heading": None,
     "ks4_becomes": "Electric fields, and how the force between charges depends on distance.",
     "figures": [
         {"id": "p9-pairs-three", "kind": "diagram", "status": "drawn", "art": "p9-pairs",

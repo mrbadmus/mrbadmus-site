@@ -105,6 +105,7 @@ LESSON = {
                   "Soft, rough surfaces scatter and absorb sound, so rooms with curtains have fewer echoes."]},
     ],
     "try": None,
+    "connects_heading": None,
     "ks4_becomes": "Ray diagrams for mirrors, and specular and diffuse reflection at a surface.",
     "connects": {
         "Echoes, reflection and absorption": "Sound reflects from surfaces too, as an echo.",

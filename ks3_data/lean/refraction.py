@@ -87,6 +87,7 @@ LESSON = {
                   "A prism uses this to split white light into a spectrum."]},
     ],
     "try": {"label": "Refraction Lab", "href": "/simulations/physics/refraction-lab/"},
+    "connects_heading": None,
     "ks4_becomes": "Ray diagrams for refraction at a boundary, and why a change of speed makes light bend.",
     "connects": {
         "Light travels": "Light is fastest in a vacuum and slows down in materials.",

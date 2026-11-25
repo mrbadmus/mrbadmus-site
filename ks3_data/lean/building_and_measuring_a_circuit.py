@@ -56,9 +56,9 @@ LESSON = {
          "body": [{"figure": "p8-build-ammeter-across"},
                   "An ammeter has almost no resistance.",
                   "Across the lamp, it acts like a wire bridging the lamp.",
-                  "The current goes through the ammeter instead, so the lamp goes out.",
+                  "The current goes through the ammeter instead of the lamp.",
                   "A huge current flows and the reading goes off the scale.",
-                  "Open the switch at once. This can damage the meter."]},
+                  "Switch off at once. This can damage the meter."]},
         {"kind": "card", "title": "Wrong: a voltmeter in the loop",
          "body": [{"figure": "p8-build-voltmeter-loop"},
                   "A voltmeter has a very high resistance.",
@@ -121,6 +121,7 @@ LESSON = {
     ],
     "try": {"label": "Circuit Lab", "href": "/simulations/physics/circuit-lab/"},
     "tutor_body": "Got a circuit that will not work, and a symptom to describe?",
+    "connects_heading": None,
     "ks4_becomes": "The required practicals on resistance and on graphs of current against p.d.",
     "safety_note": "Wear eye protection. Use only the low-voltage supply your teacher gives you, never mains. "
                    "Never connect an ammeter straight across a cell. "

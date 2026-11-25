@@ -92,6 +92,16 @@ LESSON = {
     ],
     "try": None,
     "tutor_body": "Not sure whether a test proves something is a magnet?",
+    "connects_heading": None,
+    "safeguarding_note": {
+        "eyebrow": "If a magnet has been swallowed, or you are worried about someone",
+        "body": "Swallowing a strong magnet is treated urgently, even when the person seems fine. "
+                "Tell an adult straight away rather than waiting to see. "
+                "A pharmacist, your GP or 111 will tell you what to do next. "
+                "At school, the school nurse or any member of staff can start that. "
+                "If you would rather talk to somebody outside all of that, "
+                "<strong>Childline is free on 0800 1111</strong>, at any hour, and you do not have to give your name.",
+    },
     "ks4_becomes": "Permanent and induced magnetism, and magnetic field patterns.",
     "figures": [
         {"id": "p10-pole-pairs-three", "kind": "diagram", "status": "drawn", "art": "p10-pole-pairs",

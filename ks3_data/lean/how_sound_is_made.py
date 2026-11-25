@@ -75,6 +75,7 @@ LESSON = {
     ],
     "try": None,
     "tutor_body": "Want to trace how a sound gets from its source to your ear?",
+    "connects_heading": None,
     "ks4_becomes": "Sound waves in solids, liquids and gases, and the range of human hearing.",
     "figures": [
         {"id": "p6-03-chain", "kind": "diagram", "status": "drawn", "art": "p6-sound-chain",

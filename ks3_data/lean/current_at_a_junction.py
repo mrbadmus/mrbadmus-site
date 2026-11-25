@@ -96,6 +96,7 @@ LESSON = {
     ],
     "try": {"label": "Circuit Lab", "href": "/simulations/physics/circuit-lab/"},
     "tutor_body": "Got two of the three readings and want to find the missing one?",
+    "connects_heading": None,
     "ks4_becomes": "Using the current rule with the potential difference rules to work out whole circuits.",
     "connects": {
         "Current and circuits": "Current is a flow of charge, and the same all round one loop.",

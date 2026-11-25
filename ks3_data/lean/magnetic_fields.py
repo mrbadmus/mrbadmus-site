@@ -75,7 +75,7 @@ LESSON = {
                   "The lines from each N pole turn away from the gap.",
                   "Half way between the magnets, the two fields are equal and opposite.",
                   "They cancel, so the field there is zero. This is a neutral point.",
-                  "A compass there feels no pull from either magnet.",
+                  "The pulls of the two magnets on a compass there cancel.",
                   "Iron filings leave a bare patch there."]},
         {"kind": "card", "title": "A field in three dimensions",
          "body": ["The field goes all the way round the magnet.",
@@ -84,6 +84,7 @@ LESSON = {
     ],
     "try": None,
     "tutor_body": "Stuck on which way the arrows go on a field line?",
+    "connects_heading": None,
     "ks4_becomes": "The field round a wire and a coil, and field strength.",
     "figures": [
         {"id": "p10-bar-field-lines", "kind": "diagram", "status": "drawn", "art": "p10-bar-field",

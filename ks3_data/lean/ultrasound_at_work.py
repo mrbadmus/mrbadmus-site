@@ -114,6 +114,7 @@ LESSON = {
     ],
     "try": None,
     "tutor_body": "Want to check an ultrasound depth calculation?",
+    "connects_heading": None,
     "ks4_becomes": None,      # ultrasound imaging and echo sounding are GCSE Physics only, not every route
     "figures": [
         {"id": "p6-ultra-probe", "kind": "diagram", "status": "drawn", "art": "p6-ultra-probe",

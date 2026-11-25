@@ -108,6 +108,7 @@ LESSON = {
     ],
     "try": {"label": "Circuit Lab", "href": "/simulations/physics/circuit-lab/"},
     "tutor_body": "Not sure where an ammeter goes, or what a symbol means?",
+    "connects_heading": None,
     "ks4_becomes": "Charge flow = current × time, and the coulomb as the unit of charge.",
     "connects": {
         "Current at a junction": "What the current does where a wire splits in two.",
@@ -161,6 +162,11 @@ LESSON = {
                   "height": 110}},
     ],
     "figure_caption": {"p8-l1-open": None, "p8-l1-two-ammeters": None},
+    "ladder_stem": {
+        "explain": "A torch bulb goes out when the metal strip behind it breaks. The strip "
+                   "comes after the bulb in the loop. Explain why the bulb still goes out. "
+                   "Use the words current, charge and loop.",
+    },
     "ladder_ticks": [
         ["Says the position of the gap makes no difference — in front of the bulb or behind it, the bulb goes out.",
          "Says a gap before or after the bulb puts it out just the same."],

@@ -111,6 +111,7 @@ LESSON = {
     ],
     "try": None,
     "tutor_body": "Want to check which animals could hear a particular frequency?",
+    "connects_heading": None,
     "ks4_becomes": None,      # AQA teaches the hearing range and ultrasound in GCSE Physics only, not every route
     "figures": [
         {"id": "p6-ear-parts", "kind": "diagram", "status": "drawn", "art": "p6-ear-parts",

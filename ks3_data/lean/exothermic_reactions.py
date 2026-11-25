@@ -12,7 +12,7 @@ LESSON = {
             ("Your body heat",
              "Your body is about 37 °C. The pouch gets hotter than that, so the heat comes from inside it."),
             ("Inside the pouch",
-             "Right. The liquid inside turns to crystals. That gives energy out to the surroundings."),
+             "Right. The liquid inside turns to crystals and gives out energy. That is a change of state, not a reaction."),
         ],
         "answer": 1,
     },
@@ -104,6 +104,7 @@ LESSON = {
     "try": None,
     "tutor_body": "Still not sure why a reaction that needs a match can be exothermic?",
     "safety_note": "Wear eye protection when you mix acids and alkalis.",
+    "connects_heading": None,
     "ks4_becomes": "Energy level diagrams, and bond breaking and making as the reason a reaction "
                    "gives energy out.",
     "figures": [

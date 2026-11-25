@@ -2369,10 +2369,11 @@ def _p6b_boundary(fig):
     o.append(_label(16, 56, lab["in"], size=14, weight="700", anchor="start", data_part="label",
                     data_key="in"))
     o.append(_p6b_arrow(16, 70, 144, 70, paint=_SVG_INK, w=3, data_part="ray", data_key="in"))
-    # reflected: back the way it came, below
-    o.append(_p6b_arrow(144, 82, 22, 120, paint=_SVG_ACCENT_TEXT, w=3, data_part="ray",
+    # reflected: straight on in, so straight back out along the same line. Drawn just
+    # below the incoming arrow and parallel to it, so both can be seen.
+    o.append(_p6b_arrow(144, 88, 16, 88, paint=_SVG_ACCENT_TEXT, w=3, data_part="ray",
                         data_key="reflected"))
-    o.append(_label(16, 144, lab["reflected"], size=14, weight="700", anchor="start",
+    o.append(_label(16, 114, lab["reflected"], size=14, weight="700", anchor="start",
                     fill=_SVG_ACCENT_TEXT, data_part="label", data_key="reflected"))
     # transmitted: on through, thinner
     o.append(_p6b_arrow(196, 70, 322, 70, paint=_SVG_INK, w=2, dash="6,4", data_part="ray",
@@ -2658,4 +2659,144 @@ ART.update({
     "p6-ear-parts": _p6b_ear,
     "p6-ear-range": _p6b_range,
     "p6-ultra-probe": _p6b_probe,
+})
+
+
+# ─── LEAN WAVE 2 (P6 figure fixes, 25 Nov 2026) ───────────────────────────────
+#
+#   "p6-compression-graph"  data {"labels": {"compression", "rarefaction", "peak", "dip"}}
+#                           a row of air particles with compressions and rarefactions, and
+#                           under it the wavy line drawn as a graph: peaks under compressions,
+#                           dips under rarefactions, joined by dashed guide lines
+#   "p6-vibration-count"    data {"heading", "slices", "span", "lines": [..] x1-2,
+#                                 "slice_label" (under every slice) or "mark" (first slice)}
+#                           a trace cut into one-second slices, for the frequency worked examples
+#
+# Both 340 wide, labels 13px or more, every colour a --ks3-* token.
+
+def _p6c_need(fig, keys):
+    d = fig.get("data") or {}
+    for k in keys:
+        if not d.get(k):
+            raise ValueError("figure %r: data has no %r" % (fig.get("id"), k))
+    return d
+
+
+# ── p6-compression-graph: why sound is drawn as a wavy line ──────────────────
+
+def _p6c_compression_graph(fig):
+    """Air particles in four rows, bunched at each compression and spread at each
+    rarefaction (the same displacement model as p6-longitudinal). Under them, the
+    wavy line: how squashed the air is at each place. Its peaks sit straight under the
+    compressions and its dips under the rarefactions; dashed guides join them."""
+    d = _p6c_need(fig, ("labels",))
+    lab = d["labels"]
+    for k in ("compression", "rarefaction", "peak", "dip"):
+        if not lab.get(k):
+            raise ValueError("figure %r: no label %r" % (fig.get("id"), k))
+    X0, X1 = 14.0, 326.0
+    LAM, SP = 128.0, 10.0
+    C1 = 70.0                                     # a compression centre; others every LAM
+    k = 2 * math.pi / LAM
+    A = 0.55 / k                                  # spacing runs from 0.45 to 1.55 of the rest spacing
+    comps = [C1, C1 + LAM]
+    rares = [C1 + LAM / 2.0, C1 + 1.5 * LAM]
+    BAND0, BAND1 = 34.0, 84.0
+    MID, AMP = 140.0, 26.0
+    o = []
+    # dashed guides first, so the particles and the line sit on top of them
+    for x in comps:
+        o.append(_line(x, BAND1 + 4, x, MID - AMP - 3, stroke=_SVG_RULE_STRONG, w=1.5, dash="4,4",
+                       data_part="guide", data_key="compression"))
+    for x in rares:
+        o.append(_line(x, BAND1 + 4, x, MID + AMP - 3, stroke=_SVG_RULE_STRONG, w=1.5, dash="4,4",
+                       data_part="guide", data_key="rarefaction"))
+    # the air particles
+    for row in range(4):
+        y = BAND0 + 6 + row * 12.7
+        off = SP / 2.0 if row % 2 else 0.0
+        n = 0
+        while True:
+            rest = X0 + off + n * SP
+            if rest > X1:
+                break
+            x = rest - A * math.sin(k * (rest - C1))  # layers move in towards each compression
+            if X0 - 0.01 <= x <= X1 + 0.01:
+                o.append(_circle(round(x, 2), round(y, 2), 2.2, fill=_SVG_INK_BODY,
+                                 data_part="particle"))
+            n += 1
+    o.append(_label(C1, 22, lab["compression"], size=13, weight="700", data_part="label",
+                    data_key="compression"))
+    o.append(_label(rares[1], 22, lab["rarefaction"], size=13, weight="700", data_part="label",
+                    data_key="rarefaction"))
+    # the graph: a rest line, and the wave with its peaks at the compressions
+    o.append(_line(X0, MID, X1, MID, stroke=_SVG_RULE_STRONG, w=1.5, dash="5,4", data_part="rest-line"))
+    o.append(_path(_p6a_wave_d(X0, X1, MID, AMP, LAM, C1), stroke=_SVG_ACCENT_TEXT, w=3,
+                   data_part="trace"))
+    o.append(_label(C1 + 8, MID - AMP - 6, lab["peak"], size=13, weight="700", anchor="start",
+                    fill=_SVG_ACCENT_TEXT, data_part="label", data_key="peak"))
+    o.append(_label(rares[1], MID + AMP + 22, lab["dip"], size=13, weight="700",
+                    fill=_SVG_ACCENT_TEXT, data_part="label", data_key="dip"))
+    return _p6a_open(fig, MID + AMP + 32, o)
+
+
+# ── p6-vibration-count: counting vibrations, second by second ────────────────
+
+def _p6c_vibration_count(fig):
+    """A trace on a screen, cut into one-second slices by dividers. Either every slice is
+    labelled with its count (multiply), or the first slice is picked out (divide). A
+    double arrow under the screen marks the whole time, and one or two lines under that
+    carry the sum, with the same numbers as the worked example."""
+    d = _p6c_need(fig, ("heading", "slices", "span", "lines"))
+    n = d["slices"]
+    if not (isinstance(n, int) and 1 <= n <= 40):
+        raise ValueError("figure %r: slices must be a whole number 1 to 40" % fig.get("id"))
+    if not 1 <= len(d["lines"]) <= 2:
+        raise ValueError("figure %r: one or two lines under the figure" % fig.get("id"))
+    if bool(d.get("slice_label")) == bool(d.get("mark")):
+        raise ValueError("figure %r: give slice_label or mark, not both" % fig.get("id"))
+    X0, X1 = 14.0, 326.0
+    TOP, BOT = 30.0, 86.0
+    MID, AMP = (TOP + BOT) / 2.0, 18.0
+    sw = (X1 - X0) / n
+    cyc = max(1, int(sw // 22))
+    lam = sw / cyc
+    o = [_label(X0, 18, d["heading"], size=14, weight="700", anchor="start", data_part="heading")]
+    o.append(_rect(X0, TOP, X1 - X0, BOT - TOP, rx=6, fill=_SVG_INSET, stroke=_SVG_INK_MUTED, w=1.5,
+                   data_part="screen"))
+    if d.get("mark"):
+        o.append(_rect(X0, TOP, sw, BOT - TOP, fill=_SVG_ACCENT_TINT, data_part="slice-marked"))
+    for i in range(1, n):
+        x = X0 + i * sw
+        o.append(_line(round(x, 2), TOP, round(x, 2), BOT, stroke=_SVG_RULE_STRONG,
+                       w=1.5 if n <= 10 else 1, dash="4,3" if n <= 10 else None, data_part="second"))
+    o.append(_path(_p6a_wave_d(X0, X1, MID, AMP, lam, X0 + lam / 4.0, step=1.0), stroke=_SVG_INK,
+                   w=2.2 if n <= 10 else 1.6, data_part="trace"))
+    if d.get("slice_label"):
+        for i in range(n):
+            o.append(_label(round(X0 + (i + 0.5) * sw, 2), BOT + 20, d["slice_label"], size=14,
+                            weight="700", data_part="slice-label"))
+    else:
+        o.append(_rect(X0, TOP, sw, BOT - TOP, fill="none", stroke=_SVG_ACCENT_TEXT, w=2.5,
+                       data_part="slice-marked-edge"))
+        o.append(_line(X0 + sw / 2.0, BOT + 2, X0 + sw / 2.0, BOT + 8, stroke=_SVG_ACCENT_TEXT, w=2,
+                       data_part="mark-leader"))
+        o.append(_label(X0, BOT + 24, d["mark"], size=14, weight="700", anchor="start",
+                        fill=_SVG_ACCENT_TEXT, data_part="mark-label"))
+    DY = BOT + 44
+    for x in (X0, X1):
+        o.append(_line(x, DY - 8, x, DY + 8, stroke=_SVG_INK_MUTED, w=1.5, data_part="span-tick"))
+    o.append(_p6a_arrow(X0, DY, X1, DY, paint=_SVG_INK, w=2, both=True, part="span-arrow"))
+    o.append(_label((X0 + X1) / 2.0, DY + 22, d["span"], size=14, weight="700", data_part="span-label"))
+    y = DY + 52
+    for s in d["lines"]:
+        o.append(_label(X0, y, s, size=14, weight="700", anchor="start", fill=_SVG_ACCENT_TEXT,
+                        data_part="sum"))
+        y += 20
+    return _p6a_open(fig, y - 10, o)
+
+
+ART.update({
+    "p6-compression-graph": _p6c_compression_graph,
+    "p6-vibration-count": _p6c_vibration_count,
 })

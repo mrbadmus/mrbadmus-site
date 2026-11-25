@@ -122,13 +122,14 @@ LESSON = {
     "tutor_body": "Still not sure why the blue flame is the hot one?",
     "safety_note": "Tie back long hair. Use the yellow safety flame when the burner is not heating "
                    "anything, so everyone can see it is lit. Move hot glass with tongs.",
+    "connects_heading": None,
     "ks4_becomes": "Fuels and the pollutants they make, and combustion as an exothermic reaction.",
     "figures": [
         {"id": "c5-fire-triangle", "kind": "diagram", "status": "drawn", "art": "c5-fire-triangle",
          "title": "The fire triangle",
          "desc": "A triangle with a flame drawn in the middle, labelled fire. The word heat is "
                  "beside the left side, oxygen beside the right side and fuel under the base.",
-         "caption": "A fire needs all three. Take one away and the fire goes out.",
+         "caption": "The fire triangle: fuel, oxygen and heat.",
          "data": {"labels": {"fuel": "fuel", "oxygen": "oxygen", "heat": "heat", "fire": "fire"}}},
         {"id": "c5-word-complete", "kind": "diagram", "status": "drawn", "art": "c4-word-row",
          "title": "Complete combustion of methane",

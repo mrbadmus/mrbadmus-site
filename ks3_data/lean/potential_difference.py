@@ -112,6 +112,7 @@ LESSON = {
     ],
     "try": {"label": "Circuit Lab", "href": "/simulations/physics/circuit-lab/"},
     "tutor_body": "Got a series loop and one voltmeter reading, and want the rest?",
+    "connects_heading": None,
     "ks4_becomes": "Energy transferred = charge × potential difference, and V = I × R.",
     "connects": {
         "Series and parallel": "How current and potential difference behave in each kind of circuit.",

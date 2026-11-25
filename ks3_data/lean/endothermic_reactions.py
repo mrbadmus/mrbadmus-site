@@ -101,6 +101,7 @@ LESSON = {
     "try": None,
     "tutor_body": "Still not sure why an endothermic reaction does not make cold?",
     "safety_note": "A cold pack can damage skin. Wrap it in a cloth and use it for short spells only.",
+    "connects_heading": None,
     "ks4_becomes": "Energy level diagrams for endothermic reactions, and bond breaking as the part "
                    "of a reaction that takes energy in.",
     "figures": [

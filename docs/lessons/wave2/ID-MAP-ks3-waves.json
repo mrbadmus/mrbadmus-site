@@ -1,0 +1,5356 @@
+{
+ "base": "origin/main",
+ "ids": {
+  "echoes-reflection-and-absorption#apply": {
+   "kp": "ks3.echoes-reflection-and-absorption.4",
+   "new": "echoes-reflection-and-absorption#apply",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "echoes-reflection-and-absorption#cliff-1": {
+   "kp": "ks3.echoes-reflection-and-absorption.5",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "echoes-reflection-and-absorption#explain": {
+   "kp": "ks3.echoes-reflection-and-absorption.7",
+   "new": "echoes-reflection-and-absorption#explain",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "echoes-reflection-and-absorption#produce": {
+   "kp": "ks3.echoes-reflection-and-absorption.5",
+   "new": "echoes-reflection-and-absorption#produce",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "echoes-reflection-and-absorption#recall": {
+   "kp": "ks3.echoes-reflection-and-absorption.5",
+   "new": "echoes-reflection-and-absorption#recall",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "echoes-reflection-and-absorption#start": {
+   "kp": "ks3.echoes-reflection-and-absorption.4",
+   "new": "echoes-reflection-and-absorption#start",
+   "note": "Start here, the same question as before",
+   "status": "kept"
+  },
+  "echoes-reflection-and-absorption#your-turn-echo-1": {
+   "kp": "ks3.echoes-reflection-and-absorption.5",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "echoes-reflection-and-absorption#your-turn-echo-2": {
+   "kp": "ks3.echoes-reflection-and-absorption.5",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "frequency-pitch-and-loudness#apply": {
+   "kp": "ks3.frequency-pitch-and-loudness.7",
+   "new": "frequency-pitch-and-loudness#apply",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "frequency-pitch-and-loudness#explain": {
+   "kp": "ks3.frequency-pitch-and-loudness.4",
+   "new": "frequency-pitch-and-loudness#explain",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "frequency-pitch-and-loudness#produce": {
+   "kp": "ks3.frequency-pitch-and-loudness.2",
+   "new": "frequency-pitch-and-loudness#produce",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "frequency-pitch-and-loudness#recall": {
+   "kp": "ks3.frequency-pitch-and-loudness.6",
+   "new": "frequency-pitch-and-loudness#recall",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "frequency-pitch-and-loudness#signal-1": {
+   "kp": "ks3.frequency-pitch-and-loudness.4",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "frequency-pitch-and-loudness#start": {
+   "kp": "ks3.frequency-pitch-and-loudness.4",
+   "new": "frequency-pitch-and-loudness#start",
+   "note": "Start here, the same question as before",
+   "status": "kept"
+  },
+  "frequency-pitch-and-loudness#your-turn-freq-1": {
+   "kp": "ks3.frequency-pitch-and-loudness.6",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "frequency-pitch-and-loudness#your-turn-freq-2": {
+   "kp": "ks3.frequency-pitch-and-loudness.5",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "hearing-and-auditory-range#apply": {
+   "kp": "ks3.hearing-and-auditory-range.2",
+   "new": "hearing-and-auditory-range#apply",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "hearing-and-auditory-range#explain": {
+   "kp": "ks3.hearing-and-auditory-range.4",
+   "new": "hearing-and-auditory-range#explain",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "hearing-and-auditory-range#produce": {
+   "kp": "ks3.hearing-and-auditory-range.5",
+   "new": "hearing-and-auditory-range#produce",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "hearing-and-auditory-range#range-1": {
+   "kp": "ks3.hearing-and-auditory-range.2",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "hearing-and-auditory-range#recall": {
+   "kp": "ks3.hearing-and-auditory-range.4",
+   "new": "hearing-and-auditory-range#recall",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "hearing-and-auditory-range#start": {
+   "kp": "ks3.hearing-and-auditory-range.2",
+   "new": "hearing-and-auditory-range#start",
+   "note": "Start here, the same question as before",
+   "status": "kept"
+  },
+  "how-sound-is-made#apply": {
+   "kp": "ks3.how-sound-is-made.5",
+   "new": "how-sound-is-made#apply",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "how-sound-is-made#chain-1": {
+   "kp": "ks3.how-sound-is-made.3",
+   "new": null,
+   "note": "this practice item is not on the lean page",
+   "status": "removed"
+  },
+  "how-sound-is-made#explain": {
+   "kp": "ks3.how-sound-is-made.2",
+   "new": "how-sound-is-made#explain",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "how-sound-is-made#produce": {
+   "kp": "ks3.how-sound-is-made.5",
+   "new": "how-sound-is-made#produce",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "how-sound-is-made#recall": {
+   "kp": "ks3.how-sound-is-made.3",
+   "new": "how-sound-is-made#recall",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "how-sound-is-made#start": {
+   "kp": "ks3.how-sound-is-made.1",
+   "new": "how-sound-is-made#start",
+   "note": "Start here, the same question as before",
+   "status": "kept"
+  },
+  "ks3-p6-echoes-reflection-and-absorption-explain": {
+   "kp": "ks3.echoes-reflection-and-absorption.7",
+   "new": "ks3-p6-echoes-reflection-and-absorption-explain",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks3-p6-echoes-reflection-and-absorption-produce": {
+   "kp": "ks3.echoes-reflection-and-absorption.5",
+   "new": "ks3-p6-echoes-reflection-and-absorption-produce",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks3-p6-frequency-pitch-and-loudness-explain": {
+   "kp": "ks3.frequency-pitch-and-loudness.4",
+   "new": "ks3-p6-frequency-pitch-and-loudness-explain",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks3-p6-frequency-pitch-and-loudness-produce": {
+   "kp": "ks3.frequency-pitch-and-loudness.2",
+   "new": "ks3-p6-frequency-pitch-and-loudness-produce",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks3-p6-hearing-and-auditory-range-explain": {
+   "kp": "ks3.hearing-and-auditory-range.4",
+   "new": "ks3-p6-hearing-and-auditory-range-explain",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks3-p6-hearing-and-auditory-range-produce": {
+   "kp": "ks3.hearing-and-auditory-range.5",
+   "new": "ks3-p6-hearing-and-auditory-range-produce",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks3-p6-how-sound-is-made-explain": {
+   "kp": "ks3.how-sound-is-made.2",
+   "new": "ks3-p6-how-sound-is-made-explain",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks3-p6-how-sound-is-made-produce": {
+   "kp": "ks3.how-sound-is-made.5",
+   "new": "ks3-p6-how-sound-is-made-produce",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks3-p6-sound-is-longitudinal-explain": {
+   "kp": "ks3.sound-is-longitudinal.2",
+   "new": "ks3-p6-sound-is-longitudinal-explain",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks3-p6-sound-is-longitudinal-produce": {
+   "kp": "ks3.sound-is-longitudinal.3",
+   "new": "ks3-p6-sound-is-longitudinal-produce",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks3-p6-sound-needs-a-medium-explain": {
+   "kp": "ks3.sound-needs-a-medium.6",
+   "new": "ks3-p6-sound-needs-a-medium-explain",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks3-p6-sound-needs-a-medium-produce": {
+   "kp": "ks3.sound-needs-a-medium.5",
+   "new": "ks3-p6-sound-needs-a-medium-produce",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks3-p6-transverse-waves-and-superposition-explain": {
+   "kp": "ks3.transverse-waves-and-superposition.1",
+   "new": "ks3-p6-transverse-waves-and-superposition-explain",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks3-p6-transverse-waves-and-superposition-produce": {
+   "kp": "ks3.transverse-waves-and-superposition.1",
+   "new": "ks3-p6-transverse-waves-and-superposition-produce",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks3-p6-ultrasound-at-work-explain": {
+   "kp": "ks3.ultrasound-at-work.3",
+   "new": "ks3-p6-ultrasound-at-work-explain",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks3-p6-ultrasound-at-work-produce": {
+   "kp": "ks3.ultrasound-at-work.7",
+   "new": "ks3-p6-ultrasound-at-work-produce",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks3-p6-waves-on-water-explain": {
+   "kp": "ks3.waves-on-water.2",
+   "new": "ks3-p6-waves-on-water-explain",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks3-p6-waves-on-water-produce": {
+   "kp": "ks3.waves-on-water.2",
+   "new": "ks3-p6-waves-on-water-produce",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-e01": {
+   "kp": "ks3.waves-on-water.3",
+   "new": "p6-01-e01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-e02": {
+   "kp": "ks3.waves-on-water.4",
+   "new": "p6-01-e02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-e03": {
+   "kp": "ks3.waves-on-water.1",
+   "new": "p6-01-e03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-e04": {
+   "kp": "ks3.waves-on-water.2",
+   "new": "p6-01-e04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-e05": {
+   "kp": "ks3.waves-on-water.1",
+   "new": "p6-01-e05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-e06": {
+   "kp": "ks3.waves-on-water.3",
+   "new": "p6-01-e06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-e07": {
+   "kp": "ks3.waves-on-water.3",
+   "new": "p6-01-e07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-e08": {
+   "kp": "ks3.waves-on-water.3",
+   "new": "p6-01-e08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-e09": {
+   "kp": "ks3.waves-on-water.3",
+   "new": "p6-01-e09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-e10": {
+   "kp": "ks3.waves-on-water.1",
+   "new": "p6-01-e10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-e11": {
+   "kp": "ks3.waves-on-water.5",
+   "new": "p6-01-e11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-e12": {
+   "kp": "ks3.waves-on-water.4",
+   "new": "p6-01-e12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-e13": {
+   "kp": "ks3.waves-on-water.1",
+   "new": "p6-01-e13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-e14": {
+   "kp": "ks3.waves-on-water.1",
+   "new": "p6-01-e14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-e15": {
+   "kp": "ks3.waves-on-water.2",
+   "new": "p6-01-e15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-e16": {
+   "kp": "ks3.waves-on-water.3",
+   "new": "p6-01-e16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-e17": {
+   "kp": "ks3.waves-on-water.4",
+   "new": "p6-01-e17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-e18": {
+   "kp": "ks3.waves-on-water.1",
+   "new": "p6-01-e18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-e19": {
+   "kp": "ks3.waves-on-water.3",
+   "new": "p6-01-e19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-e20": {
+   "kp": "ks3.waves-on-water.2",
+   "new": "p6-01-e20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-e21": {
+   "kp": "ks3.waves-on-water.1",
+   "new": "p6-01-e21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-e22": {
+   "kp": "ks3.waves-on-water.4",
+   "new": "p6-01-e22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-e23": {
+   "kp": "ks3.waves-on-water.3",
+   "new": "p6-01-e23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-e24": {
+   "kp": "ks3.waves-on-water.5",
+   "new": "p6-01-e24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-e25": {
+   "kp": "ks3.waves-on-water.7",
+   "new": "p6-01-e25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-e26": {
+   "kp": "ks3.waves-on-water.2",
+   "new": "p6-01-e26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-e27": {
+   "kp": "ks3.waves-on-water.4",
+   "new": "p6-01-e27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-e28": {
+   "kp": "ks3.waves-on-water.3",
+   "new": "p6-01-e28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-e29": {
+   "kp": "ks3.waves-on-water.4",
+   "new": "p6-01-e29",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-e30": {
+   "kp": "ks3.waves-on-water.5",
+   "new": "p6-01-e30",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-h01": {
+   "kp": "ks3.waves-on-water.1",
+   "new": "p6-01-h01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-h02": {
+   "kp": "ks3.waves-on-water.5",
+   "new": "p6-01-h02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-h03": {
+   "kp": "ks3.waves-on-water.1",
+   "new": "p6-01-h03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-h04": {
+   "kp": "ks3.waves-on-water.3",
+   "new": "p6-01-h04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-h05": {
+   "kp": "ks3.waves-on-water.6",
+   "new": "p6-01-h05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-h06": {
+   "kp": "ks3.waves-on-water.1",
+   "new": "p6-01-h06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-h07": {
+   "kp": "ks3.waves-on-water.2",
+   "new": "p6-01-h07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-h08": {
+   "kp": "ks3.waves-on-water.6",
+   "new": "p6-01-h08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-h09": {
+   "kp": "ks3.waves-on-water.2",
+   "new": "p6-01-h09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-h10": {
+   "kp": "ks3.waves-on-water.6",
+   "new": "p6-01-h10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-h11": {
+   "kp": "ks3.waves-on-water.1",
+   "new": "p6-01-h11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-h12": {
+   "kp": "ks3.waves-on-water.6",
+   "new": "p6-01-h12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-h13": {
+   "kp": "ks3.waves-on-water.7",
+   "new": "p6-01-h13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-h14": {
+   "kp": "ks3.waves-on-water.4",
+   "new": "p6-01-h14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-h15": {
+   "kp": "ks3.waves-on-water.5",
+   "new": "p6-01-h15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-h16": {
+   "kp": "ks3.waves-on-water.7",
+   "new": "p6-01-h16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-h17": {
+   "kp": "ks3.waves-on-water.7",
+   "new": "p6-01-h17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-h18": {
+   "kp": "ks3.waves-on-water.7",
+   "new": "p6-01-h18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-h19": {
+   "kp": "ks3.waves-on-water.5",
+   "new": "p6-01-h19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-h20": {
+   "kp": "ks3.waves-on-water.5",
+   "new": "p6-01-h20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-h21": {
+   "kp": "ks3.waves-on-water.7",
+   "new": "p6-01-h21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-h22": {
+   "kp": "ks3.waves-on-water.3",
+   "new": "p6-01-h22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-h23": {
+   "kp": "ks3.waves-on-water.4",
+   "new": "p6-01-h23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-h24": {
+   "kp": "ks3.waves-on-water.7",
+   "new": "p6-01-h24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-h25": {
+   "kp": "ks3.waves-on-water.4",
+   "new": "p6-01-h25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-h26": {
+   "kp": "ks3.waves-on-water.6",
+   "new": "p6-01-h26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-h27": {
+   "kp": "ks3.waves-on-water.6",
+   "new": "p6-01-h27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-h28": {
+   "kp": "ks3.waves-on-water.5",
+   "new": "p6-01-h28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-h29": {
+   "kp": "ks3.waves-on-water.6",
+   "new": "p6-01-h29",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-h30": {
+   "kp": "ks3.waves-on-water.4",
+   "new": "p6-01-h30",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-s01": {
+   "kp": "ks3.waves-on-water.3",
+   "new": "p6-01-s01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-s02": {
+   "kp": "ks3.waves-on-water.5",
+   "new": "p6-01-s02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-s03": {
+   "kp": "ks3.waves-on-water.1",
+   "new": "p6-01-s03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-s04": {
+   "kp": "ks3.waves-on-water.4",
+   "new": "p6-01-s04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-s05": {
+   "kp": "ks3.waves-on-water.4",
+   "new": "p6-01-s05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-s06": {
+   "kp": "ks3.waves-on-water.5",
+   "new": "p6-01-s06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-s07": {
+   "kp": "ks3.waves-on-water.5",
+   "new": "p6-01-s07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-s08": {
+   "kp": "ks3.waves-on-water.5",
+   "new": "p6-01-s08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-s09": {
+   "kp": "ks3.waves-on-water.6",
+   "new": "p6-01-s09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-s10": {
+   "kp": "ks3.waves-on-water.1",
+   "new": "p6-01-s10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-s11": {
+   "kp": "ks3.waves-on-water.1",
+   "new": "p6-01-s11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-s12": {
+   "kp": "ks3.waves-on-water.1",
+   "new": "p6-01-s12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-s13": {
+   "kp": "ks3.waves-on-water.2",
+   "new": "p6-01-s13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-s14": {
+   "kp": "ks3.waves-on-water.4",
+   "new": "p6-01-s14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-s15": {
+   "kp": "ks3.waves-on-water.3",
+   "new": "p6-01-s15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-s16": {
+   "kp": "ks3.waves-on-water.7",
+   "new": "p6-01-s16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-s17": {
+   "kp": "ks3.waves-on-water.6",
+   "new": "p6-01-s17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-s18": {
+   "kp": "ks3.waves-on-water.1",
+   "new": "p6-01-s18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-s19": {
+   "kp": "ks3.waves-on-water.4",
+   "new": "p6-01-s19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-s20": {
+   "kp": "ks3.waves-on-water.5",
+   "new": "p6-01-s20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-s21": {
+   "kp": "ks3.waves-on-water.5",
+   "new": "p6-01-s21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-s22": {
+   "kp": "ks3.waves-on-water.5",
+   "new": "p6-01-s22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-s23": {
+   "kp": "ks3.waves-on-water.6",
+   "new": "p6-01-s23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-s24": {
+   "kp": "ks3.waves-on-water.4",
+   "new": "p6-01-s24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-s25": {
+   "kp": "ks3.waves-on-water.7",
+   "new": "p6-01-s25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-s26": {
+   "kp": "ks3.waves-on-water.6",
+   "new": "p6-01-s26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-s27": {
+   "kp": "ks3.waves-on-water.4",
+   "new": "p6-01-s27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-s28": {
+   "kp": "ks3.waves-on-water.7",
+   "new": "p6-01-s28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-s29": {
+   "kp": "ks3.waves-on-water.1",
+   "new": "p6-01-s29",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-01-s30": {
+   "kp": "ks3.waves-on-water.4",
+   "new": "p6-01-s30",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-e01": {
+   "kp": "ks3.transverse-waves-and-superposition.1",
+   "new": "p6-02-e01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-e02": {
+   "kp": "ks3.transverse-waves-and-superposition.2",
+   "new": "p6-02-e02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-e03": {
+   "kp": "ks3.transverse-waves-and-superposition.2",
+   "new": "p6-02-e03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-e04": {
+   "kp": "ks3.transverse-waves-and-superposition.5",
+   "new": "p6-02-e04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-e05": {
+   "kp": "ks3.transverse-waves-and-superposition.3",
+   "new": "p6-02-e05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-e06": {
+   "kp": "ks3.transverse-waves-and-superposition.1",
+   "new": "p6-02-e06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-e07": {
+   "kp": "ks3.transverse-waves-and-superposition.7",
+   "new": "p6-02-e07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-e08": {
+   "kp": "ks3.transverse-waves-and-superposition.5",
+   "new": "p6-02-e08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-e09": {
+   "kp": "ks3.transverse-waves-and-superposition.1",
+   "new": "p6-02-e09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-e10": {
+   "kp": "ks3.transverse-waves-and-superposition.4",
+   "new": "p6-02-e10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-e11": {
+   "kp": "ks3.transverse-waves-and-superposition.6",
+   "new": "p6-02-e11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-e12": {
+   "kp": "ks3.transverse-waves-and-superposition.2",
+   "new": "p6-02-e12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-e13": {
+   "kp": "ks3.transverse-waves-and-superposition.3",
+   "new": "p6-02-e13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-e14": {
+   "kp": "ks3.transverse-waves-and-superposition.5",
+   "new": "p6-02-e14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-e15": {
+   "kp": "ks3.transverse-waves-and-superposition.6",
+   "new": "p6-02-e15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-e16": {
+   "kp": "ks3.transverse-waves-and-superposition.2",
+   "new": "p6-02-e16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-e17": {
+   "kp": "ks3.transverse-waves-and-superposition.5",
+   "new": "p6-02-e17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-e18": {
+   "kp": "ks3.transverse-waves-and-superposition.5",
+   "new": "p6-02-e18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-e19": {
+   "kp": "ks3.transverse-waves-and-superposition.5",
+   "new": "p6-02-e19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-e20": {
+   "kp": "ks3.transverse-waves-and-superposition.2",
+   "new": "p6-02-e20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-e21": {
+   "kp": "ks3.transverse-waves-and-superposition.2",
+   "new": "p6-02-e21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-e22": {
+   "kp": "ks3.transverse-waves-and-superposition.2",
+   "new": "p6-02-e22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-e23": {
+   "kp": "ks3.transverse-waves-and-superposition.5",
+   "new": "p6-02-e23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-e24": {
+   "kp": "ks3.transverse-waves-and-superposition.2",
+   "new": "p6-02-e24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-e25": {
+   "kp": "ks3.transverse-waves-and-superposition.1",
+   "new": "p6-02-e25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-e26": {
+   "kp": "ks3.transverse-waves-and-superposition.2",
+   "new": "p6-02-e26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-e27": {
+   "kp": "ks3.transverse-waves-and-superposition.2",
+   "new": "p6-02-e27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-e28": {
+   "kp": "ks3.transverse-waves-and-superposition.5",
+   "new": "p6-02-e28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-e29": {
+   "kp": "ks3.transverse-waves-and-superposition.3",
+   "new": "p6-02-e29",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-e30": {
+   "kp": "ks3.transverse-waves-and-superposition.5",
+   "new": "p6-02-e30",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-h01": {
+   "kp": "ks3.transverse-waves-and-superposition.4",
+   "new": "p6-02-h01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-h02": {
+   "kp": "ks3.transverse-waves-and-superposition.4",
+   "new": "p6-02-h02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-h03": {
+   "kp": "ks3.transverse-waves-and-superposition.3",
+   "new": "p6-02-h03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-h04": {
+   "kp": "ks3.transverse-waves-and-superposition.1",
+   "new": "p6-02-h04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-h05": {
+   "kp": "ks3.transverse-waves-and-superposition.2",
+   "new": "p6-02-h05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-h06": {
+   "kp": "ks3.transverse-waves-and-superposition.1",
+   "new": "p6-02-h06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-h07": {
+   "kp": "ks3.transverse-waves-and-superposition.1",
+   "new": "p6-02-h07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-h08": {
+   "kp": "ks3.transverse-waves-and-superposition.1",
+   "new": "p6-02-h08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-h09": {
+   "kp": "ks3.transverse-waves-and-superposition.1",
+   "new": "p6-02-h09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-h10": {
+   "kp": "ks3.transverse-waves-and-superposition.1",
+   "new": "p6-02-h10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-h11": {
+   "kp": "ks3.transverse-waves-and-superposition.2",
+   "new": "p6-02-h11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-h12": {
+   "kp": "ks3.transverse-waves-and-superposition.5",
+   "new": "p6-02-h12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-h13": {
+   "kp": "ks3.transverse-waves-and-superposition.2",
+   "new": "p6-02-h13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-h14": {
+   "kp": "ks3.transverse-waves-and-superposition.2",
+   "new": "p6-02-h14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-h15": {
+   "kp": "ks3.transverse-waves-and-superposition.5",
+   "new": "p6-02-h15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-h16": {
+   "kp": "ks3.transverse-waves-and-superposition.2",
+   "new": "p6-02-h16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-h17": {
+   "kp": "ks3.transverse-waves-and-superposition.2",
+   "new": "p6-02-h17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-h18": {
+   "kp": "ks3.transverse-waves-and-superposition.2",
+   "new": "p6-02-h18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-h19": {
+   "kp": "ks3.transverse-waves-and-superposition.1",
+   "new": "p6-02-h19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-h20": {
+   "kp": "ks3.transverse-waves-and-superposition.2",
+   "new": "p6-02-h20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-h21": {
+   "kp": "ks3.transverse-waves-and-superposition.5",
+   "new": "p6-02-h21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-h22": {
+   "kp": "ks3.transverse-waves-and-superposition.5",
+   "new": "p6-02-h22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-h23": {
+   "kp": "ks3.transverse-waves-and-superposition.2",
+   "new": "p6-02-h23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-h24": {
+   "kp": "ks3.transverse-waves-and-superposition.5",
+   "new": "p6-02-h24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-h25": {
+   "kp": "ks3.transverse-waves-and-superposition.2",
+   "new": "p6-02-h25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-h26": {
+   "kp": "ks3.transverse-waves-and-superposition.4",
+   "new": "p6-02-h26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-h27": {
+   "kp": "ks3.transverse-waves-and-superposition.2",
+   "new": "p6-02-h27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-h28": {
+   "kp": "ks3.transverse-waves-and-superposition.2",
+   "new": "p6-02-h28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-h29": {
+   "kp": "ks3.transverse-waves-and-superposition.2",
+   "new": "p6-02-h29",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-h30": {
+   "kp": "ks3.transverse-waves-and-superposition.1",
+   "new": "p6-02-h30",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-s01": {
+   "kp": "ks3.transverse-waves-and-superposition.3",
+   "new": "p6-02-s01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-s02": {
+   "kp": "ks3.transverse-waves-and-superposition.4",
+   "new": "p6-02-s02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-s03": {
+   "kp": "ks3.transverse-waves-and-superposition.4",
+   "new": "p6-02-s03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-s04": {
+   "kp": "ks3.transverse-waves-and-superposition.1",
+   "new": "p6-02-s04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-s05": {
+   "kp": "ks3.transverse-waves-and-superposition.2",
+   "new": "p6-02-s05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-s06": {
+   "kp": "ks3.transverse-waves-and-superposition.5",
+   "new": "p6-02-s06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-s07": {
+   "kp": "ks3.transverse-waves-and-superposition.2",
+   "new": "p6-02-s07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-s08": {
+   "kp": "ks3.transverse-waves-and-superposition.3",
+   "new": "p6-02-s08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-s09": {
+   "kp": "ks3.transverse-waves-and-superposition.6",
+   "new": "p6-02-s09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-s10": {
+   "kp": "ks3.transverse-waves-and-superposition.5",
+   "new": "p6-02-s10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-s11": {
+   "kp": "ks3.transverse-waves-and-superposition.4",
+   "new": "p6-02-s11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-s12": {
+   "kp": "ks3.transverse-waves-and-superposition.1",
+   "new": "p6-02-s12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-s13": {
+   "kp": "ks3.transverse-waves-and-superposition.2",
+   "new": "p6-02-s13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-s14": {
+   "kp": "ks3.transverse-waves-and-superposition.2",
+   "new": "p6-02-s14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-s15": {
+   "kp": "ks3.transverse-waves-and-superposition.2",
+   "new": "p6-02-s15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-s16": {
+   "kp": "ks3.transverse-waves-and-superposition.2",
+   "new": "p6-02-s16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-s17": {
+   "kp": "ks3.transverse-waves-and-superposition.2",
+   "new": "p6-02-s17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-s18": {
+   "kp": "ks3.transverse-waves-and-superposition.4",
+   "new": "p6-02-s18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-s19": {
+   "kp": "ks3.transverse-waves-and-superposition.5",
+   "new": "p6-02-s19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-s20": {
+   "kp": "ks3.transverse-waves-and-superposition.3",
+   "new": "p6-02-s20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-s21": {
+   "kp": "ks3.transverse-waves-and-superposition.2",
+   "new": "p6-02-s21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-s22": {
+   "kp": "ks3.transverse-waves-and-superposition.2",
+   "new": "p6-02-s22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-s23": {
+   "kp": "ks3.transverse-waves-and-superposition.2",
+   "new": "p6-02-s23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-s24": {
+   "kp": "ks3.transverse-waves-and-superposition.2",
+   "new": "p6-02-s24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-s25": {
+   "kp": "ks3.transverse-waves-and-superposition.5",
+   "new": "p6-02-s25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-s26": {
+   "kp": "ks3.transverse-waves-and-superposition.2",
+   "new": "p6-02-s26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-s27": {
+   "kp": "ks3.transverse-waves-and-superposition.2",
+   "new": "p6-02-s27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-s28": {
+   "kp": "ks3.transverse-waves-and-superposition.3",
+   "new": "p6-02-s28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-s29": {
+   "kp": "ks3.transverse-waves-and-superposition.5",
+   "new": "p6-02-s29",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-02-s30": {
+   "kp": "ks3.transverse-waves-and-superposition.2",
+   "new": "p6-02-s30",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-e01": {
+   "kp": "ks3.how-sound-is-made.1",
+   "new": "p6-03-e01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-e02": {
+   "kp": "ks3.how-sound-is-made.1",
+   "new": "p6-03-e02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-e03": {
+   "kp": "ks3.how-sound-is-made.1",
+   "new": "p6-03-e03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-e04": {
+   "kp": "ks3.how-sound-is-made.4",
+   "new": "p6-03-e04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-e05": {
+   "kp": "ks3.how-sound-is-made.1",
+   "new": "p6-03-e05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-e06": {
+   "kp": "ks3.how-sound-is-made.5",
+   "new": "p6-03-e06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-e07": {
+   "kp": "ks3.how-sound-is-made.1",
+   "new": "p6-03-e07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-e08": {
+   "kp": "ks3.how-sound-is-made.4",
+   "new": "p6-03-e08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-e09": {
+   "kp": "ks3.how-sound-is-made.4",
+   "new": "p6-03-e09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-e10": {
+   "kp": "ks3.how-sound-is-made.3",
+   "new": "p6-03-e10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-e11": {
+   "kp": "ks3.how-sound-is-made.1",
+   "new": "p6-03-e11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-e12": {
+   "kp": "ks3.how-sound-is-made.7",
+   "new": "p6-03-e12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-e13": {
+   "kp": "ks3.how-sound-is-made.2",
+   "new": "p6-03-e13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-e14": {
+   "kp": "ks3.how-sound-is-made.6",
+   "new": "p6-03-e14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-e15": {
+   "kp": "ks3.how-sound-is-made.1",
+   "new": "p6-03-e15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-e16": {
+   "kp": "ks3.how-sound-is-made.3",
+   "new": "p6-03-e16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-e17": {
+   "kp": "ks3.how-sound-is-made.3",
+   "new": "p6-03-e17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-e18": {
+   "kp": "ks3.how-sound-is-made.3",
+   "new": "p6-03-e18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-e19": {
+   "kp": "ks3.how-sound-is-made.3",
+   "new": "p6-03-e19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-e20": {
+   "kp": "ks3.how-sound-is-made.7",
+   "new": "p6-03-e20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-e21": {
+   "kp": "ks3.how-sound-is-made.1",
+   "new": "p6-03-e21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-e22": {
+   "kp": "ks3.how-sound-is-made.3",
+   "new": "p6-03-e22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-e23": {
+   "kp": "ks3.how-sound-is-made.6",
+   "new": "p6-03-e23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-e24": {
+   "kp": "ks3.how-sound-is-made.4",
+   "new": "p6-03-e24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-e25": {
+   "kp": "ks3.how-sound-is-made.2",
+   "new": "p6-03-e25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-e26": {
+   "kp": "ks3.how-sound-is-made.1",
+   "new": "p6-03-e26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-e27": {
+   "kp": "ks3.how-sound-is-made.4",
+   "new": "p6-03-e27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-e28": {
+   "kp": "ks3.how-sound-is-made.3",
+   "new": "p6-03-e28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-e29": {
+   "kp": "ks3.how-sound-is-made.3",
+   "new": "p6-03-e29",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-e30": {
+   "kp": "ks3.how-sound-is-made.3",
+   "new": "p6-03-e30",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-h01": {
+   "kp": "ks3.how-sound-is-made.3",
+   "new": "p6-03-h01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-h02": {
+   "kp": "ks3.how-sound-is-made.5",
+   "new": "p6-03-h02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-h03": {
+   "kp": "ks3.how-sound-is-made.1",
+   "new": "p6-03-h03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-h04": {
+   "kp": "ks3.how-sound-is-made.2",
+   "new": "p6-03-h04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-h05": {
+   "kp": "ks3.how-sound-is-made.3",
+   "new": "p6-03-h05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-h06": {
+   "kp": "ks3.how-sound-is-made.3",
+   "new": "p6-03-h06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-h07": {
+   "kp": "ks3.how-sound-is-made.7",
+   "new": "p6-03-h07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-h08": {
+   "kp": "ks3.how-sound-is-made.5",
+   "new": "p6-03-h08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-h09": {
+   "kp": "ks3.how-sound-is-made.3",
+   "new": "p6-03-h09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-h10": {
+   "kp": "ks3.how-sound-is-made.1",
+   "new": "p6-03-h10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-h11": {
+   "kp": "ks3.how-sound-is-made.6",
+   "new": "p6-03-h11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-h12": {
+   "kp": "ks3.how-sound-is-made.7",
+   "new": "p6-03-h12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-h13": {
+   "kp": "ks3.how-sound-is-made.5",
+   "new": "p6-03-h13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-h14": {
+   "kp": "ks3.how-sound-is-made.3",
+   "new": "p6-03-h14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-h15": {
+   "kp": "ks3.how-sound-is-made.7",
+   "new": "p6-03-h15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-h16": {
+   "kp": "ks3.how-sound-is-made.6",
+   "new": "p6-03-h16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-h17": {
+   "kp": "ks3.how-sound-is-made.1",
+   "new": "p6-03-h17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-h18": {
+   "kp": "ks3.how-sound-is-made.5",
+   "new": "p6-03-h18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-h19": {
+   "kp": "ks3.how-sound-is-made.1",
+   "new": "p6-03-h19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-h20": {
+   "kp": "ks3.how-sound-is-made.6",
+   "new": "p6-03-h20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-h21": {
+   "kp": "ks3.how-sound-is-made.1",
+   "new": "p6-03-h21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-h22": {
+   "kp": "ks3.how-sound-is-made.1",
+   "new": "p6-03-h22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-h23": {
+   "kp": "ks3.how-sound-is-made.6",
+   "new": "p6-03-h23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-h24": {
+   "kp": "ks3.how-sound-is-made.6",
+   "new": "p6-03-h24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-h25": {
+   "kp": "ks3.how-sound-is-made.7",
+   "new": "p6-03-h25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-h26": {
+   "kp": "ks3.how-sound-is-made.2",
+   "new": "p6-03-h26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-h27": {
+   "kp": "ks3.how-sound-is-made.7",
+   "new": "p6-03-h27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-h28": {
+   "kp": "ks3.how-sound-is-made.7",
+   "new": "p6-03-h28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-h29": {
+   "kp": "ks3.how-sound-is-made.3",
+   "new": "p6-03-h29",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-h30": {
+   "kp": "ks3.how-sound-is-made.1",
+   "new": "p6-03-h30",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-s01": {
+   "kp": "ks3.how-sound-is-made.5",
+   "new": "p6-03-s01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-s02": {
+   "kp": "ks3.how-sound-is-made.3",
+   "new": "p6-03-s02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-s03": {
+   "kp": "ks3.how-sound-is-made.2",
+   "new": "p6-03-s03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-s04": {
+   "kp": "ks3.how-sound-is-made.2",
+   "new": "p6-03-s04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-s05": {
+   "kp": "ks3.how-sound-is-made.1",
+   "new": "p6-03-s05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-s06": {
+   "kp": "ks3.how-sound-is-made.3",
+   "new": "p6-03-s06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-s07": {
+   "kp": "ks3.how-sound-is-made.7",
+   "new": "p6-03-s07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-s08": {
+   "kp": "ks3.how-sound-is-made.7",
+   "new": "p6-03-s08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-s09": {
+   "kp": "ks3.how-sound-is-made.1",
+   "new": "p6-03-s09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-s10": {
+   "kp": "ks3.how-sound-is-made.5",
+   "new": "p6-03-s10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-s11": {
+   "kp": "ks3.how-sound-is-made.7",
+   "new": "p6-03-s11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-s12": {
+   "kp": "ks3.how-sound-is-made.1",
+   "new": "p6-03-s12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-s13": {
+   "kp": "ks3.how-sound-is-made.6",
+   "new": "p6-03-s13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-s14": {
+   "kp": "ks3.how-sound-is-made.1",
+   "new": "p6-03-s14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-s15": {
+   "kp": "ks3.how-sound-is-made.6",
+   "new": "p6-03-s15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-s16": {
+   "kp": "ks3.how-sound-is-made.7",
+   "new": "p6-03-s16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-s17": {
+   "kp": "ks3.how-sound-is-made.7",
+   "new": "p6-03-s17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-s18": {
+   "kp": "ks3.how-sound-is-made.5",
+   "new": "p6-03-s18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-s19": {
+   "kp": "ks3.how-sound-is-made.6",
+   "new": "p6-03-s19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-s20": {
+   "kp": "ks3.how-sound-is-made.3",
+   "new": "p6-03-s20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-s21": {
+   "kp": "ks3.how-sound-is-made.7",
+   "new": "p6-03-s21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-s22": {
+   "kp": "ks3.how-sound-is-made.7",
+   "new": "p6-03-s22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-s23": {
+   "kp": "ks3.how-sound-is-made.3",
+   "new": "p6-03-s23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-s24": {
+   "kp": "ks3.how-sound-is-made.6",
+   "new": "p6-03-s24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-s25": {
+   "kp": "ks3.how-sound-is-made.7",
+   "new": "p6-03-s25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-s26": {
+   "kp": "ks3.how-sound-is-made.5",
+   "new": "p6-03-s26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-s27": {
+   "kp": "ks3.how-sound-is-made.6",
+   "new": "p6-03-s27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-s28": {
+   "kp": "ks3.how-sound-is-made.4",
+   "new": "p6-03-s28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-s29": {
+   "kp": "ks3.how-sound-is-made.6",
+   "new": "p6-03-s29",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-03-s30": {
+   "kp": "ks3.how-sound-is-made.6",
+   "new": "p6-03-s30",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-e01": {
+   "kp": "ks3.sound-is-longitudinal.1",
+   "new": "p6-04-e01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-e02": {
+   "kp": "ks3.sound-is-longitudinal.2",
+   "new": "p6-04-e02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-e03": {
+   "kp": "ks3.sound-is-longitudinal.1",
+   "new": "p6-04-e03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-e04": {
+   "kp": "ks3.sound-is-longitudinal.4",
+   "new": "p6-04-e04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-e05": {
+   "kp": "ks3.sound-is-longitudinal.2",
+   "new": "p6-04-e05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-e06": {
+   "kp": "ks3.sound-is-longitudinal.3",
+   "new": "p6-04-e06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-e07": {
+   "kp": "ks3.sound-is-longitudinal.2",
+   "new": "p6-04-e07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-e08": {
+   "kp": "ks3.sound-is-longitudinal.2",
+   "new": "p6-04-e08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-e09": {
+   "kp": "ks3.sound-is-longitudinal.3",
+   "new": "p6-04-e09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-e10": {
+   "kp": "ks3.sound-is-longitudinal.4",
+   "new": "p6-04-e10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-e11": {
+   "kp": "ks3.sound-is-longitudinal.5",
+   "new": "p6-04-e11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-e12": {
+   "kp": "ks3.sound-is-longitudinal.8",
+   "new": "p6-04-e12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-e13": {
+   "kp": "ks3.sound-is-longitudinal.2",
+   "new": "p6-04-e13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-e14": {
+   "kp": "ks3.sound-is-longitudinal.2",
+   "new": "p6-04-e14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-e15": {
+   "kp": "ks3.sound-is-longitudinal.2",
+   "new": "p6-04-e15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-e16": {
+   "kp": "ks3.sound-is-longitudinal.3",
+   "new": "p6-04-e16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-e17": {
+   "kp": "ks3.sound-is-longitudinal.1",
+   "new": "p6-04-e17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-e18": {
+   "kp": "ks3.sound-is-longitudinal.6",
+   "new": "p6-04-e18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-e19": {
+   "kp": "ks3.sound-is-longitudinal.6",
+   "new": "p6-04-e19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-e20": {
+   "kp": "ks3.sound-is-longitudinal.2",
+   "new": "p6-04-e20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-e21": {
+   "kp": "ks3.sound-is-longitudinal.4",
+   "new": "p6-04-e21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-e22": {
+   "kp": "ks3.sound-is-longitudinal.5",
+   "new": "p6-04-e22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-e23": {
+   "kp": "ks3.sound-is-longitudinal.2",
+   "new": "p6-04-e23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-e24": {
+   "kp": "ks3.sound-is-longitudinal.2",
+   "new": "p6-04-e24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-e25": {
+   "kp": "ks3.sound-is-longitudinal.3",
+   "new": "p6-04-e25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-e26": {
+   "kp": "ks3.sound-is-longitudinal.1",
+   "new": "p6-04-e26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-e27": {
+   "kp": "ks3.sound-is-longitudinal.8",
+   "new": "p6-04-e27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-e28": {
+   "kp": "ks3.sound-is-longitudinal.2",
+   "new": "p6-04-e28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-e29": {
+   "kp": "ks3.sound-is-longitudinal.7",
+   "new": "p6-04-e29",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-e30": {
+   "kp": "ks3.sound-is-longitudinal.4",
+   "new": "p6-04-e30",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-h01": {
+   "kp": "ks3.sound-is-longitudinal.2",
+   "new": "p6-04-h01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-h02": {
+   "kp": "ks3.sound-is-longitudinal.3",
+   "new": "p6-04-h02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-h03": {
+   "kp": "ks3.sound-is-longitudinal.2",
+   "new": "p6-04-h03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-h04": {
+   "kp": "ks3.sound-is-longitudinal.7",
+   "new": "p6-04-h04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-h05": {
+   "kp": "ks3.sound-is-longitudinal.5",
+   "new": "p6-04-h05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-h06": {
+   "kp": "ks3.sound-is-longitudinal.6",
+   "new": "p6-04-h06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-h07": {
+   "kp": "ks3.sound-is-longitudinal.3",
+   "new": "p6-04-h07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-h08": {
+   "kp": "ks3.sound-is-longitudinal.8",
+   "new": "p6-04-h08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-h09": {
+   "kp": "ks3.sound-is-longitudinal.4",
+   "new": "p6-04-h09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-h10": {
+   "kp": "ks3.sound-is-longitudinal.4",
+   "new": "p6-04-h10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-h11": {
+   "kp": "ks3.sound-is-longitudinal.6",
+   "new": "p6-04-h11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-h12": {
+   "kp": "ks3.sound-is-longitudinal.5",
+   "new": "p6-04-h12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-h13": {
+   "kp": "ks3.sound-is-longitudinal.4",
+   "new": "p6-04-h13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-h14": {
+   "kp": "ks3.sound-is-longitudinal.8",
+   "new": "p6-04-h14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-h15": {
+   "kp": "ks3.sound-is-longitudinal.8",
+   "new": "p6-04-h15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-h16": {
+   "kp": "ks3.sound-is-longitudinal.5",
+   "new": "p6-04-h16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-h17": {
+   "kp": "ks3.sound-is-longitudinal.1",
+   "new": "p6-04-h17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-h18": {
+   "kp": "ks3.sound-is-longitudinal.5",
+   "new": "p6-04-h18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-h19": {
+   "kp": "ks3.sound-is-longitudinal.3",
+   "new": "p6-04-h19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-h20": {
+   "kp": "ks3.sound-is-longitudinal.4",
+   "new": "p6-04-h20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-h21": {
+   "kp": "ks3.sound-is-longitudinal.2",
+   "new": "p6-04-h21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-h22": {
+   "kp": "ks3.sound-is-longitudinal.5",
+   "new": "p6-04-h22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-h23": {
+   "kp": "ks3.sound-is-longitudinal.5",
+   "new": "p6-04-h23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-h24": {
+   "kp": "ks3.sound-is-longitudinal.8",
+   "new": "p6-04-h24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-h25": {
+   "kp": "ks3.sound-is-longitudinal.6",
+   "new": "p6-04-h25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-h26": {
+   "kp": "ks3.sound-is-longitudinal.5",
+   "new": "p6-04-h26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-h27": {
+   "kp": "ks3.sound-is-longitudinal.4",
+   "new": "p6-04-h27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-h28": {
+   "kp": "ks3.sound-is-longitudinal.1",
+   "new": "p6-04-h28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-h29": {
+   "kp": "ks3.sound-is-longitudinal.4",
+   "new": "p6-04-h29",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-h30": {
+   "kp": "ks3.sound-is-longitudinal.4",
+   "new": "p6-04-h30",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-s01": {
+   "kp": "ks3.sound-is-longitudinal.7",
+   "new": "p6-04-s01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-s02": {
+   "kp": "ks3.sound-is-longitudinal.6",
+   "new": "p6-04-s02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-s03": {
+   "kp": "ks3.sound-is-longitudinal.5",
+   "new": "p6-04-s03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-s04": {
+   "kp": "ks3.sound-is-longitudinal.8",
+   "new": "p6-04-s04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-s05": {
+   "kp": "ks3.sound-is-longitudinal.1",
+   "new": "p6-04-s05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-s06": {
+   "kp": "ks3.sound-is-longitudinal.6",
+   "new": "p6-04-s06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-s07": {
+   "kp": "ks3.sound-is-longitudinal.4",
+   "new": "p6-04-s07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-s08": {
+   "kp": "ks3.sound-is-longitudinal.2",
+   "new": "p6-04-s08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-s09": {
+   "kp": "ks3.sound-is-longitudinal.6",
+   "new": "p6-04-s09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-s10": {
+   "kp": "ks3.sound-is-longitudinal.7",
+   "new": "p6-04-s10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-s11": {
+   "kp": "ks3.sound-is-longitudinal.6",
+   "new": "p6-04-s11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-s12": {
+   "kp": "ks3.sound-is-longitudinal.5",
+   "new": "p6-04-s12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-s13": {
+   "kp": "ks3.sound-is-longitudinal.6",
+   "new": "p6-04-s13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-s14": {
+   "kp": "ks3.sound-is-longitudinal.5",
+   "new": "p6-04-s14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-s15": {
+   "kp": "ks3.sound-is-longitudinal.4",
+   "new": "p6-04-s15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-s16": {
+   "kp": "ks3.sound-is-longitudinal.5",
+   "new": "p6-04-s16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-s17": {
+   "kp": "ks3.sound-is-longitudinal.2",
+   "new": "p6-04-s17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-s18": {
+   "kp": "ks3.sound-is-longitudinal.2",
+   "new": "p6-04-s18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-s19": {
+   "kp": "ks3.sound-is-longitudinal.2",
+   "new": "p6-04-s19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-s20": {
+   "kp": "ks3.sound-is-longitudinal.6",
+   "new": "p6-04-s20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-s21": {
+   "kp": "ks3.sound-is-longitudinal.4",
+   "new": "p6-04-s21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-s22": {
+   "kp": "ks3.sound-is-longitudinal.4",
+   "new": "p6-04-s22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-s23": {
+   "kp": "ks3.sound-is-longitudinal.5",
+   "new": "p6-04-s23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-s24": {
+   "kp": "ks3.sound-is-longitudinal.1",
+   "new": "p6-04-s24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-s25": {
+   "kp": "ks3.sound-is-longitudinal.1",
+   "new": "p6-04-s25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-s26": {
+   "kp": "ks3.sound-is-longitudinal.3",
+   "new": "p6-04-s26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-s27": {
+   "kp": "ks3.sound-is-longitudinal.4",
+   "new": "p6-04-s27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-s28": {
+   "kp": "ks3.sound-is-longitudinal.6",
+   "new": "p6-04-s28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-s29": {
+   "kp": "ks3.sound-is-longitudinal.2",
+   "new": "p6-04-s29",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-04-s30": {
+   "kp": "ks3.sound-is-longitudinal.4",
+   "new": "p6-04-s30",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-e01": {
+   "kp": "ks3.frequency-pitch-and-loudness.1",
+   "new": "p6-05-e01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-e02": {
+   "kp": "ks3.frequency-pitch-and-loudness.2",
+   "new": "p6-05-e02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-e03": {
+   "kp": "ks3.frequency-pitch-and-loudness.4",
+   "new": "p6-05-e03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-e04": {
+   "kp": "ks3.frequency-pitch-and-loudness.6",
+   "new": "p6-05-e04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-e05": {
+   "kp": "ks3.frequency-pitch-and-loudness.1",
+   "new": "p6-05-e05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-e06": {
+   "kp": "ks3.frequency-pitch-and-loudness.3",
+   "new": "p6-05-e06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-e07": {
+   "kp": "ks3.frequency-pitch-and-loudness.1",
+   "new": "p6-05-e07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-e08": {
+   "kp": "ks3.frequency-pitch-and-loudness.2",
+   "new": "p6-05-e08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-e09": {
+   "kp": "ks3.frequency-pitch-and-loudness.3",
+   "new": "p6-05-e09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-e10": {
+   "kp": "ks3.frequency-pitch-and-loudness.6",
+   "new": "p6-05-e10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-e11": {
+   "kp": "ks3.frequency-pitch-and-loudness.1",
+   "new": "p6-05-e11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-e12": {
+   "kp": "ks3.frequency-pitch-and-loudness.4",
+   "new": "p6-05-e12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-e13": {
+   "kp": "ks3.frequency-pitch-and-loudness.4",
+   "new": "p6-05-e13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-e14": {
+   "kp": "ks3.frequency-pitch-and-loudness.2",
+   "new": "p6-05-e14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-e15": {
+   "kp": "ks3.frequency-pitch-and-loudness.2",
+   "new": "p6-05-e15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-e16": {
+   "kp": "ks3.frequency-pitch-and-loudness.1",
+   "new": "p6-05-e16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-e17": {
+   "kp": "ks3.frequency-pitch-and-loudness.6",
+   "new": "p6-05-e17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-e18": {
+   "kp": "ks3.frequency-pitch-and-loudness.4",
+   "new": "p6-05-e18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-e19": {
+   "kp": "ks3.frequency-pitch-and-loudness.6",
+   "new": "p6-05-e19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-e20": {
+   "kp": "ks3.frequency-pitch-and-loudness.3",
+   "new": "p6-05-e20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-e21": {
+   "kp": "ks3.frequency-pitch-and-loudness.5",
+   "new": "p6-05-e21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-e22": {
+   "kp": "ks3.frequency-pitch-and-loudness.4",
+   "new": "p6-05-e22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-e23": {
+   "kp": "ks3.frequency-pitch-and-loudness.3",
+   "new": "p6-05-e23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-e24": {
+   "kp": "ks3.frequency-pitch-and-loudness.5",
+   "new": "p6-05-e24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-e25": {
+   "kp": "ks3.frequency-pitch-and-loudness.2",
+   "new": "p6-05-e25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-e26": {
+   "kp": "ks3.frequency-pitch-and-loudness.3",
+   "new": "p6-05-e26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-e27": {
+   "kp": "ks3.frequency-pitch-and-loudness.1",
+   "new": "p6-05-e27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-e28": {
+   "kp": "ks3.frequency-pitch-and-loudness.1",
+   "new": "p6-05-e28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-e29": {
+   "kp": "ks3.frequency-pitch-and-loudness.5",
+   "new": "p6-05-e29",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-e30": {
+   "kp": "ks3.frequency-pitch-and-loudness.2",
+   "new": "p6-05-e30",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-h01": {
+   "kp": "ks3.frequency-pitch-and-loudness.2",
+   "new": "p6-05-h01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-h02": {
+   "kp": "ks3.frequency-pitch-and-loudness.7",
+   "new": "p6-05-h02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-h03": {
+   "kp": "ks3.frequency-pitch-and-loudness.4",
+   "new": "p6-05-h03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-h04": {
+   "kp": "ks3.frequency-pitch-and-loudness.2",
+   "new": "p6-05-h04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-h05": {
+   "kp": "ks3.frequency-pitch-and-loudness.6",
+   "new": "p6-05-h05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-h06": {
+   "kp": "ks3.frequency-pitch-and-loudness.3",
+   "new": "p6-05-h06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-h07": {
+   "kp": "ks3.frequency-pitch-and-loudness.7",
+   "new": "p6-05-h07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-h08": {
+   "kp": "ks3.frequency-pitch-and-loudness.6",
+   "new": "p6-05-h08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-h09": {
+   "kp": "ks3.frequency-pitch-and-loudness.3",
+   "new": "p6-05-h09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-h10": {
+   "kp": "ks3.frequency-pitch-and-loudness.5",
+   "new": "p6-05-h10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-h11": {
+   "kp": "ks3.frequency-pitch-and-loudness.4",
+   "new": "p6-05-h11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-h12": {
+   "kp": "ks3.frequency-pitch-and-loudness.4",
+   "new": "p6-05-h12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-h13": {
+   "kp": "ks3.frequency-pitch-and-loudness.6",
+   "new": "p6-05-h13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-h14": {
+   "kp": "ks3.frequency-pitch-and-loudness.5",
+   "new": "p6-05-h14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-h15": {
+   "kp": "ks3.frequency-pitch-and-loudness.4",
+   "new": "p6-05-h15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-h16": {
+   "kp": "ks3.frequency-pitch-and-loudness.4",
+   "new": "p6-05-h16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-h17": {
+   "kp": "ks3.frequency-pitch-and-loudness.5",
+   "new": "p6-05-h17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-h18": {
+   "kp": "ks3.frequency-pitch-and-loudness.5",
+   "new": "p6-05-h18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-h19": {
+   "kp": "ks3.frequency-pitch-and-loudness.3",
+   "new": "p6-05-h19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-h20": {
+   "kp": "ks3.frequency-pitch-and-loudness.2",
+   "new": "p6-05-h20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-h21": {
+   "kp": "ks3.frequency-pitch-and-loudness.4",
+   "new": "p6-05-h21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-h22": {
+   "kp": "ks3.frequency-pitch-and-loudness.6",
+   "new": "p6-05-h22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-h23": {
+   "kp": "ks3.frequency-pitch-and-loudness.2",
+   "new": "p6-05-h23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-h24": {
+   "kp": "ks3.frequency-pitch-and-loudness.5",
+   "new": "p6-05-h24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-h25": {
+   "kp": "ks3.frequency-pitch-and-loudness.4",
+   "new": "p6-05-h25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-h26": {
+   "kp": "ks3.frequency-pitch-and-loudness.6",
+   "new": "p6-05-h26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-h27": {
+   "kp": "ks3.frequency-pitch-and-loudness.3",
+   "new": "p6-05-h27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-h28": {
+   "kp": "ks3.frequency-pitch-and-loudness.4",
+   "new": "p6-05-h28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-h29": {
+   "kp": "ks3.frequency-pitch-and-loudness.5",
+   "new": "p6-05-h29",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-h30": {
+   "kp": "ks3.frequency-pitch-and-loudness.4",
+   "new": "p6-05-h30",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-s01": {
+   "kp": "ks3.frequency-pitch-and-loudness.4",
+   "new": "p6-05-s01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-s02": {
+   "kp": "ks3.frequency-pitch-and-loudness.6",
+   "new": "p6-05-s02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-s03": {
+   "kp": "ks3.frequency-pitch-and-loudness.5",
+   "new": "p6-05-s03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-s04": {
+   "kp": "ks3.frequency-pitch-and-loudness.4",
+   "new": "p6-05-s04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-s05": {
+   "kp": "ks3.frequency-pitch-and-loudness.5",
+   "new": "p6-05-s05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-s06": {
+   "kp": "ks3.frequency-pitch-and-loudness.7",
+   "new": "p6-05-s06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-s07": {
+   "kp": "ks3.frequency-pitch-and-loudness.5",
+   "new": "p6-05-s07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-s08": {
+   "kp": "ks3.frequency-pitch-and-loudness.6",
+   "new": "p6-05-s08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-s09": {
+   "kp": "ks3.frequency-pitch-and-loudness.4",
+   "new": "p6-05-s09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-s10": {
+   "kp": "ks3.frequency-pitch-and-loudness.4",
+   "new": "p6-05-s10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-s11": {
+   "kp": "ks3.frequency-pitch-and-loudness.6",
+   "new": "p6-05-s11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-s12": {
+   "kp": "ks3.frequency-pitch-and-loudness.4",
+   "new": "p6-05-s12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-s13": {
+   "kp": "ks3.frequency-pitch-and-loudness.5",
+   "new": "p6-05-s13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-s14": {
+   "kp": "ks3.frequency-pitch-and-loudness.4",
+   "new": "p6-05-s14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-s15": {
+   "kp": "ks3.frequency-pitch-and-loudness.4",
+   "new": "p6-05-s15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-s16": {
+   "kp": "ks3.frequency-pitch-and-loudness.5",
+   "new": "p6-05-s16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-s17": {
+   "kp": "ks3.frequency-pitch-and-loudness.4",
+   "new": "p6-05-s17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-s18": {
+   "kp": "ks3.frequency-pitch-and-loudness.5",
+   "new": "p6-05-s18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-s19": {
+   "kp": "ks3.frequency-pitch-and-loudness.4",
+   "new": "p6-05-s19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-s20": {
+   "kp": "ks3.frequency-pitch-and-loudness.5",
+   "new": "p6-05-s20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-s21": {
+   "kp": "ks3.frequency-pitch-and-loudness.3",
+   "new": "p6-05-s21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-s22": {
+   "kp": "ks3.frequency-pitch-and-loudness.5",
+   "new": "p6-05-s22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-s23": {
+   "kp": "ks3.frequency-pitch-and-loudness.4",
+   "new": "p6-05-s23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-s24": {
+   "kp": "ks3.frequency-pitch-and-loudness.5",
+   "new": "p6-05-s24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-s25": {
+   "kp": "ks3.frequency-pitch-and-loudness.4",
+   "new": "p6-05-s25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-s26": {
+   "kp": "ks3.frequency-pitch-and-loudness.4",
+   "new": "p6-05-s26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-s27": {
+   "kp": "ks3.frequency-pitch-and-loudness.5",
+   "new": "p6-05-s27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-s28": {
+   "kp": "ks3.frequency-pitch-and-loudness.2",
+   "new": "p6-05-s28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-s29": {
+   "kp": "ks3.frequency-pitch-and-loudness.4",
+   "new": "p6-05-s29",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-05-s30": {
+   "kp": "ks3.frequency-pitch-and-loudness.2",
+   "new": "p6-05-s30",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-e01": {
+   "kp": "ks3.sound-needs-a-medium.1",
+   "new": "p6-06-e01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-e02": {
+   "kp": "ks3.sound-needs-a-medium.3",
+   "new": "p6-06-e02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-e03": {
+   "kp": "ks3.sound-needs-a-medium.4",
+   "new": "p6-06-e03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-e04": {
+   "kp": "ks3.sound-needs-a-medium.5",
+   "new": "p6-06-e04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-e05": {
+   "kp": "ks3.sound-needs-a-medium.4",
+   "new": "p6-06-e05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-e06": {
+   "kp": "ks3.sound-needs-a-medium.2",
+   "new": "p6-06-e06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-e07": {
+   "kp": "ks3.sound-needs-a-medium.1",
+   "new": "p6-06-e07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-e08": {
+   "kp": "ks3.sound-needs-a-medium.4",
+   "new": "p6-06-e08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-e09": {
+   "kp": "ks3.sound-needs-a-medium.2",
+   "new": "p6-06-e09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-e10": {
+   "kp": "ks3.sound-needs-a-medium.5",
+   "new": "p6-06-e10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-e11": {
+   "kp": "ks3.sound-needs-a-medium.4",
+   "new": "p6-06-e11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-e12": {
+   "kp": "ks3.sound-needs-a-medium.1",
+   "new": "p6-06-e12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-e13": {
+   "kp": "ks3.sound-needs-a-medium.4",
+   "new": "p6-06-e13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-e14": {
+   "kp": "ks3.sound-needs-a-medium.3",
+   "new": "p6-06-e14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-e15": {
+   "kp": "ks3.sound-needs-a-medium.3",
+   "new": "p6-06-e15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-e16": {
+   "kp": "ks3.sound-needs-a-medium.2",
+   "new": "p6-06-e16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-e17": {
+   "kp": "ks3.sound-needs-a-medium.5",
+   "new": "p6-06-e17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-e18": {
+   "kp": "ks3.sound-needs-a-medium.3",
+   "new": "p6-06-e18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-e19": {
+   "kp": "ks3.sound-needs-a-medium.3",
+   "new": "p6-06-e19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-e20": {
+   "kp": "ks3.sound-needs-a-medium.2",
+   "new": "p6-06-e20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-e21": {
+   "kp": "ks3.sound-needs-a-medium.3",
+   "new": "p6-06-e21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-e22": {
+   "kp": "ks3.sound-needs-a-medium.4",
+   "new": "p6-06-e22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-e23": {
+   "kp": "ks3.sound-needs-a-medium.1",
+   "new": "p6-06-e23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-e24": {
+   "kp": "ks3.sound-needs-a-medium.5",
+   "new": "p6-06-e24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-e25": {
+   "kp": "ks3.sound-needs-a-medium.2",
+   "new": "p6-06-e25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-e26": {
+   "kp": "ks3.sound-needs-a-medium.6",
+   "new": "p6-06-e26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-e27": {
+   "kp": "ks3.sound-needs-a-medium.2",
+   "new": "p6-06-e27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-e28": {
+   "kp": "ks3.sound-needs-a-medium.1",
+   "new": "p6-06-e28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-e29": {
+   "kp": "ks3.sound-needs-a-medium.5",
+   "new": "p6-06-e29",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-e30": {
+   "kp": "ks3.sound-needs-a-medium.3",
+   "new": "p6-06-e30",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-h01": {
+   "kp": "ks3.sound-needs-a-medium.1",
+   "new": "p6-06-h01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-h02": {
+   "kp": "ks3.sound-needs-a-medium.5",
+   "new": "p6-06-h02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-h03": {
+   "kp": "ks3.sound-needs-a-medium.4",
+   "new": "p6-06-h03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-h04": {
+   "kp": "ks3.sound-needs-a-medium.1",
+   "new": "p6-06-h04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-h05": {
+   "kp": "ks3.sound-needs-a-medium.5",
+   "new": "p6-06-h05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-h06": {
+   "kp": "ks3.sound-needs-a-medium.3",
+   "new": "p6-06-h06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-h07": {
+   "kp": "ks3.sound-needs-a-medium.3",
+   "new": "p6-06-h07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-h08": {
+   "kp": "ks3.sound-needs-a-medium.5",
+   "new": "p6-06-h08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-h09": {
+   "kp": "ks3.sound-needs-a-medium.1",
+   "new": "p6-06-h09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-h10": {
+   "kp": "ks3.sound-needs-a-medium.5",
+   "new": "p6-06-h10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-h11": {
+   "kp": "ks3.sound-needs-a-medium.4",
+   "new": "p6-06-h11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-h12": {
+   "kp": "ks3.sound-needs-a-medium.5",
+   "new": "p6-06-h12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-h13": {
+   "kp": "ks3.sound-needs-a-medium.3",
+   "new": "p6-06-h13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-h14": {
+   "kp": "ks3.sound-needs-a-medium.4",
+   "new": "p6-06-h14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-h15": {
+   "kp": "ks3.sound-needs-a-medium.4",
+   "new": "p6-06-h15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-h16": {
+   "kp": "ks3.sound-needs-a-medium.1",
+   "new": "p6-06-h16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-h17": {
+   "kp": "ks3.sound-needs-a-medium.5",
+   "new": "p6-06-h17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-h18": {
+   "kp": "ks3.sound-needs-a-medium.2",
+   "new": "p6-06-h18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-h19": {
+   "kp": "ks3.sound-needs-a-medium.4",
+   "new": "p6-06-h19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-h20": {
+   "kp": "ks3.sound-needs-a-medium.5",
+   "new": "p6-06-h20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-h21": {
+   "kp": "ks3.sound-needs-a-medium.4",
+   "new": "p6-06-h21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-h22": {
+   "kp": "ks3.sound-needs-a-medium.5",
+   "new": "p6-06-h22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-h23": {
+   "kp": "ks3.sound-needs-a-medium.3",
+   "new": "p6-06-h23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-h24": {
+   "kp": "ks3.sound-needs-a-medium.5",
+   "new": "p6-06-h24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-h25": {
+   "kp": "ks3.sound-needs-a-medium.5",
+   "new": "p6-06-h25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-h26": {
+   "kp": "ks3.sound-needs-a-medium.4",
+   "new": "p6-06-h26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-h27": {
+   "kp": "ks3.sound-needs-a-medium.5",
+   "new": "p6-06-h27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-h28": {
+   "kp": "ks3.sound-needs-a-medium.1",
+   "new": "p6-06-h28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-h29": {
+   "kp": "ks3.sound-needs-a-medium.5",
+   "new": "p6-06-h29",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-h30": {
+   "kp": "ks3.sound-needs-a-medium.4",
+   "new": "p6-06-h30",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-s01": {
+   "kp": "ks3.sound-needs-a-medium.6",
+   "new": "p6-06-s01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-s02": {
+   "kp": "ks3.sound-needs-a-medium.3",
+   "new": "p6-06-s02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-s03": {
+   "kp": "ks3.sound-needs-a-medium.5",
+   "new": "p6-06-s03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-s04": {
+   "kp": "ks3.sound-needs-a-medium.4",
+   "new": "p6-06-s04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-s05": {
+   "kp": "ks3.sound-needs-a-medium.5",
+   "new": "p6-06-s05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-s06": {
+   "kp": "ks3.sound-needs-a-medium.3",
+   "new": "p6-06-s06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-s07": {
+   "kp": "ks3.sound-needs-a-medium.5",
+   "new": "p6-06-s07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-s08": {
+   "kp": "ks3.sound-needs-a-medium.5",
+   "new": "p6-06-s08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-s09": {
+   "kp": "ks3.sound-needs-a-medium.5",
+   "new": "p6-06-s09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-s10": {
+   "kp": "ks3.sound-needs-a-medium.3",
+   "new": "p6-06-s10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-s11": {
+   "kp": "ks3.sound-needs-a-medium.5",
+   "new": "p6-06-s11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-s12": {
+   "kp": "ks3.sound-needs-a-medium.1",
+   "new": "p6-06-s12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-s13": {
+   "kp": "ks3.sound-needs-a-medium.5",
+   "new": "p6-06-s13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-s14": {
+   "kp": "ks3.sound-needs-a-medium.5",
+   "new": "p6-06-s14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-s15": {
+   "kp": "ks3.sound-needs-a-medium.4",
+   "new": "p6-06-s15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-s16": {
+   "kp": "ks3.sound-needs-a-medium.5",
+   "new": "p6-06-s16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-s17": {
+   "kp": "ks3.sound-needs-a-medium.4",
+   "new": "p6-06-s17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-s18": {
+   "kp": "ks3.sound-needs-a-medium.1",
+   "new": "p6-06-s18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-s19": {
+   "kp": "ks3.sound-needs-a-medium.5",
+   "new": "p6-06-s19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-s20": {
+   "kp": "ks3.sound-needs-a-medium.4",
+   "new": "p6-06-s20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-s21": {
+   "kp": "ks3.sound-needs-a-medium.5",
+   "new": "p6-06-s21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-s22": {
+   "kp": "ks3.sound-needs-a-medium.3",
+   "new": "p6-06-s22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-s23": {
+   "kp": "ks3.sound-needs-a-medium.4",
+   "new": "p6-06-s23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-s24": {
+   "kp": "ks3.sound-needs-a-medium.5",
+   "new": "p6-06-s24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-s25": {
+   "kp": "ks3.sound-needs-a-medium.5",
+   "new": "p6-06-s25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-s26": {
+   "kp": "ks3.sound-needs-a-medium.5",
+   "new": "p6-06-s26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-s27": {
+   "kp": "ks3.sound-needs-a-medium.4",
+   "new": "p6-06-s27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-s28": {
+   "kp": "ks3.sound-needs-a-medium.4",
+   "new": "p6-06-s28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-s29": {
+   "kp": "ks3.sound-needs-a-medium.5",
+   "new": "p6-06-s29",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-06-s30": {
+   "kp": "ks3.sound-needs-a-medium.5",
+   "new": "p6-06-s30",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-e01": {
+   "kp": "ks3.echoes-reflection-and-absorption.1",
+   "new": "p6-07-e01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-e02": {
+   "kp": "ks3.echoes-reflection-and-absorption.2",
+   "new": "p6-07-e02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-e03": {
+   "kp": "ks3.echoes-reflection-and-absorption.3",
+   "new": "p6-07-e03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-e04": {
+   "kp": "ks3.echoes-reflection-and-absorption.5",
+   "new": "p6-07-e04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-e05": {
+   "kp": "ks3.echoes-reflection-and-absorption.2",
+   "new": "p6-07-e05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-e06": {
+   "kp": "ks3.echoes-reflection-and-absorption.5",
+   "new": "p6-07-e06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-e07": {
+   "kp": "ks3.echoes-reflection-and-absorption.2",
+   "new": "p6-07-e07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-e08": {
+   "kp": "ks3.echoes-reflection-and-absorption.6",
+   "new": "p6-07-e08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-e09": {
+   "kp": "ks3.echoes-reflection-and-absorption.3",
+   "new": "p6-07-e09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-e10": {
+   "kp": "ks3.echoes-reflection-and-absorption.6",
+   "new": "p6-07-e10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-e11": {
+   "kp": "ks3.echoes-reflection-and-absorption.1",
+   "new": "p6-07-e11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-e12": {
+   "kp": "ks3.echoes-reflection-and-absorption.4",
+   "new": "p6-07-e12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-e13": {
+   "kp": "ks3.echoes-reflection-and-absorption.5",
+   "new": "p6-07-e13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-e14": {
+   "kp": "ks3.echoes-reflection-and-absorption.5",
+   "new": "p6-07-e14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-e15": {
+   "kp": "ks3.echoes-reflection-and-absorption.5",
+   "new": "p6-07-e15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-e16": {
+   "kp": "ks3.echoes-reflection-and-absorption.2",
+   "new": "p6-07-e16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-e17": {
+   "kp": "ks3.echoes-reflection-and-absorption.6",
+   "new": "p6-07-e17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-e18": {
+   "kp": "ks3.echoes-reflection-and-absorption.1",
+   "new": "p6-07-e18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-e19": {
+   "kp": "ks3.echoes-reflection-and-absorption.7",
+   "new": "p6-07-e19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-e20": {
+   "kp": "ks3.echoes-reflection-and-absorption.7",
+   "new": "p6-07-e20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-e21": {
+   "kp": "ks3.echoes-reflection-and-absorption.7",
+   "new": "p6-07-e21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-e22": {
+   "kp": "ks3.echoes-reflection-and-absorption.6",
+   "new": "p6-07-e22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-e23": {
+   "kp": "ks3.echoes-reflection-and-absorption.3",
+   "new": "p6-07-e23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-e24": {
+   "kp": "ks3.echoes-reflection-and-absorption.2",
+   "new": "p6-07-e24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-e25": {
+   "kp": "ks3.echoes-reflection-and-absorption.2",
+   "new": "p6-07-e25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-e26": {
+   "kp": "ks3.echoes-reflection-and-absorption.5",
+   "new": "p6-07-e26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-e27": {
+   "kp": "ks3.echoes-reflection-and-absorption.5",
+   "new": "p6-07-e27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-e28": {
+   "kp": "ks3.echoes-reflection-and-absorption.7",
+   "new": "p6-07-e28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-e29": {
+   "kp": "ks3.echoes-reflection-and-absorption.2",
+   "new": "p6-07-e29",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-e30": {
+   "kp": "ks3.echoes-reflection-and-absorption.6",
+   "new": "p6-07-e30",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-h01": {
+   "kp": "ks3.echoes-reflection-and-absorption.2",
+   "new": "p6-07-h01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-h02": {
+   "kp": "ks3.echoes-reflection-and-absorption.1",
+   "new": "p6-07-h02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-h03": {
+   "kp": "ks3.echoes-reflection-and-absorption.7",
+   "new": "p6-07-h03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-h04": {
+   "kp": "ks3.echoes-reflection-and-absorption.5",
+   "new": "p6-07-h04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-h05": {
+   "kp": "ks3.echoes-reflection-and-absorption.5",
+   "new": "p6-07-h05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-h06": {
+   "kp": "ks3.echoes-reflection-and-absorption.5",
+   "new": "p6-07-h06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-h07": {
+   "kp": "ks3.echoes-reflection-and-absorption.5",
+   "new": "p6-07-h07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-h08": {
+   "kp": "ks3.echoes-reflection-and-absorption.5",
+   "new": "p6-07-h08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-h09": {
+   "kp": "ks3.echoes-reflection-and-absorption.1",
+   "new": "p6-07-h09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-h10": {
+   "kp": "ks3.echoes-reflection-and-absorption.6",
+   "new": "p6-07-h10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-h11": {
+   "kp": "ks3.echoes-reflection-and-absorption.2",
+   "new": "p6-07-h11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-h12": {
+   "kp": "ks3.echoes-reflection-and-absorption.7",
+   "new": "p6-07-h12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-h13": {
+   "kp": "ks3.echoes-reflection-and-absorption.5",
+   "new": "p6-07-h13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-h14": {
+   "kp": "ks3.echoes-reflection-and-absorption.4",
+   "new": "p6-07-h14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-h15": {
+   "kp": "ks3.echoes-reflection-and-absorption.5",
+   "new": "p6-07-h15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-h16": {
+   "kp": "ks3.echoes-reflection-and-absorption.5",
+   "new": "p6-07-h16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-h17": {
+   "kp": "ks3.echoes-reflection-and-absorption.6",
+   "new": "p6-07-h17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-h18": {
+   "kp": "ks3.echoes-reflection-and-absorption.4",
+   "new": "p6-07-h18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-h19": {
+   "kp": "ks3.echoes-reflection-and-absorption.4",
+   "new": "p6-07-h19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-h20": {
+   "kp": "ks3.echoes-reflection-and-absorption.5",
+   "new": "p6-07-h20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-h21": {
+   "kp": "ks3.echoes-reflection-and-absorption.7",
+   "new": "p6-07-h21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-h22": {
+   "kp": "ks3.echoes-reflection-and-absorption.5",
+   "new": "p6-07-h22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-h23": {
+   "kp": "ks3.echoes-reflection-and-absorption.5",
+   "new": "p6-07-h23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-h24": {
+   "kp": "ks3.echoes-reflection-and-absorption.2",
+   "new": "p6-07-h24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-h25": {
+   "kp": "ks3.echoes-reflection-and-absorption.1",
+   "new": "p6-07-h25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-h26": {
+   "kp": "ks3.echoes-reflection-and-absorption.5",
+   "new": "p6-07-h26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-h27": {
+   "kp": "ks3.echoes-reflection-and-absorption.5",
+   "new": "p6-07-h27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-h28": {
+   "kp": "ks3.echoes-reflection-and-absorption.5",
+   "new": "p6-07-h28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-h29": {
+   "kp": "ks3.echoes-reflection-and-absorption.6",
+   "new": "p6-07-h29",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-h30": {
+   "kp": "ks3.echoes-reflection-and-absorption.3",
+   "new": "p6-07-h30",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-s01": {
+   "kp": "ks3.echoes-reflection-and-absorption.4",
+   "new": "p6-07-s01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-s02": {
+   "kp": "ks3.echoes-reflection-and-absorption.4",
+   "new": "p6-07-s02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-s03": {
+   "kp": "ks3.echoes-reflection-and-absorption.5",
+   "new": "p6-07-s03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-s04": {
+   "kp": "ks3.echoes-reflection-and-absorption.6",
+   "new": "p6-07-s04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-s05": {
+   "kp": "ks3.echoes-reflection-and-absorption.5",
+   "new": "p6-07-s05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-s06": {
+   "kp": "ks3.echoes-reflection-and-absorption.6",
+   "new": "p6-07-s06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-s07": {
+   "kp": "ks3.echoes-reflection-and-absorption.4",
+   "new": "p6-07-s07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-s08": {
+   "kp": "ks3.echoes-reflection-and-absorption.6",
+   "new": "p6-07-s08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-s09": {
+   "kp": "ks3.echoes-reflection-and-absorption.5",
+   "new": "p6-07-s09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-s10": {
+   "kp": "ks3.echoes-reflection-and-absorption.5",
+   "new": "p6-07-s10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-s11": {
+   "kp": "ks3.echoes-reflection-and-absorption.5",
+   "new": "p6-07-s11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-s12": {
+   "kp": "ks3.echoes-reflection-and-absorption.5",
+   "new": "p6-07-s12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-s13": {
+   "kp": "ks3.echoes-reflection-and-absorption.4",
+   "new": "p6-07-s13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-s14": {
+   "kp": "ks3.echoes-reflection-and-absorption.4",
+   "new": "p6-07-s14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-s15": {
+   "kp": "ks3.echoes-reflection-and-absorption.2",
+   "new": "p6-07-s15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-s16": {
+   "kp": "ks3.echoes-reflection-and-absorption.4",
+   "new": "p6-07-s16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-s17": {
+   "kp": "ks3.echoes-reflection-and-absorption.5",
+   "new": "p6-07-s17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-s18": {
+   "kp": "ks3.echoes-reflection-and-absorption.2",
+   "new": "p6-07-s18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-s19": {
+   "kp": "ks3.echoes-reflection-and-absorption.5",
+   "new": "p6-07-s19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-s20": {
+   "kp": "ks3.echoes-reflection-and-absorption.2",
+   "new": "p6-07-s20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-s21": {
+   "kp": "ks3.echoes-reflection-and-absorption.6",
+   "new": "p6-07-s21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-s22": {
+   "kp": "ks3.echoes-reflection-and-absorption.2",
+   "new": "p6-07-s22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-s23": {
+   "kp": "ks3.echoes-reflection-and-absorption.5",
+   "new": "p6-07-s23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-s24": {
+   "kp": "ks3.echoes-reflection-and-absorption.4",
+   "new": "p6-07-s24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-s25": {
+   "kp": "ks3.echoes-reflection-and-absorption.3",
+   "new": "p6-07-s25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-s26": {
+   "kp": "ks3.echoes-reflection-and-absorption.4",
+   "new": "p6-07-s26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-s27": {
+   "kp": "ks3.echoes-reflection-and-absorption.5",
+   "new": "p6-07-s27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-s28": {
+   "kp": "ks3.echoes-reflection-and-absorption.5",
+   "new": "p6-07-s28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-s29": {
+   "kp": "ks3.echoes-reflection-and-absorption.1",
+   "new": "p6-07-s29",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-07-s30": {
+   "kp": "ks3.echoes-reflection-and-absorption.2",
+   "new": "p6-07-s30",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-e01": {
+   "kp": "ks3.hearing-and-auditory-range.1",
+   "new": "p6-08-e01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-e02": {
+   "kp": "ks3.hearing-and-auditory-range.2",
+   "new": "p6-08-e02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-e03": {
+   "kp": "ks3.hearing-and-auditory-range.2",
+   "new": "p6-08-e03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-e04": {
+   "kp": "ks3.hearing-and-auditory-range.5",
+   "new": "p6-08-e04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-e05": {
+   "kp": "ks3.hearing-and-auditory-range.2",
+   "new": "p6-08-e05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-e06": {
+   "kp": "ks3.hearing-and-auditory-range.1",
+   "new": "p6-08-e06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-e07": {
+   "kp": "ks3.hearing-and-auditory-range.3",
+   "new": "p6-08-e07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-e08": {
+   "kp": "ks3.hearing-and-auditory-range.2",
+   "new": "p6-08-e08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-e09": {
+   "kp": "ks3.hearing-and-auditory-range.2",
+   "new": "p6-08-e09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-e10": {
+   "kp": "ks3.hearing-and-auditory-range.4",
+   "new": "p6-08-e10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-e11": {
+   "kp": "ks3.hearing-and-auditory-range.4",
+   "new": "p6-08-e11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-e12": {
+   "kp": "ks3.hearing-and-auditory-range.4",
+   "new": "p6-08-e12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-e13": {
+   "kp": "ks3.hearing-and-auditory-range.4",
+   "new": "p6-08-e13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-e14": {
+   "kp": "ks3.hearing-and-auditory-range.4",
+   "new": "p6-08-e14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-e15": {
+   "kp": "ks3.hearing-and-auditory-range.4",
+   "new": "p6-08-e15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-e16": {
+   "kp": "ks3.hearing-and-auditory-range.4",
+   "new": "p6-08-e16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-e17": {
+   "kp": "ks3.hearing-and-auditory-range.5",
+   "new": "p6-08-e17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-e18": {
+   "kp": "ks3.hearing-and-auditory-range.6",
+   "new": "p6-08-e18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-e19": {
+   "kp": "ks3.hearing-and-auditory-range.6",
+   "new": "p6-08-e19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-e20": {
+   "kp": "ks3.hearing-and-auditory-range.7",
+   "new": "p6-08-e20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-e21": {
+   "kp": "ks3.hearing-and-auditory-range.7",
+   "new": "p6-08-e21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-e22": {
+   "kp": "ks3.hearing-and-auditory-range.7",
+   "new": "p6-08-e22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-e23": {
+   "kp": "ks3.hearing-and-auditory-range.1",
+   "new": "p6-08-e23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-e24": {
+   "kp": "ks3.hearing-and-auditory-range.3",
+   "new": "p6-08-e24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-e25": {
+   "kp": "ks3.hearing-and-auditory-range.8",
+   "new": "p6-08-e25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-e26": {
+   "kp": "ks3.hearing-and-auditory-range.1",
+   "new": "p6-08-e26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-e27": {
+   "kp": "ks3.hearing-and-auditory-range.4",
+   "new": "p6-08-e27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-e28": {
+   "kp": "ks3.hearing-and-auditory-range.3",
+   "new": "p6-08-e28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-e29": {
+   "kp": "ks3.hearing-and-auditory-range.5",
+   "new": "p6-08-e29",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-e30": {
+   "kp": "ks3.hearing-and-auditory-range.4",
+   "new": "p6-08-e30",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-h01": {
+   "kp": "ks3.hearing-and-auditory-range.4",
+   "new": "p6-08-h01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-h02": {
+   "kp": "ks3.hearing-and-auditory-range.5",
+   "new": "p6-08-h02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-h03": {
+   "kp": "ks3.hearing-and-auditory-range.8",
+   "new": "p6-08-h03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-h04": {
+   "kp": "ks3.hearing-and-auditory-range.4",
+   "new": "p6-08-h04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-h05": {
+   "kp": "ks3.hearing-and-auditory-range.3",
+   "new": "p6-08-h05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-h06": {
+   "kp": "ks3.hearing-and-auditory-range.8",
+   "new": "p6-08-h06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-h07": {
+   "kp": "ks3.hearing-and-auditory-range.5",
+   "new": "p6-08-h07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-h08": {
+   "kp": "ks3.hearing-and-auditory-range.8",
+   "new": "p6-08-h08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-h09": {
+   "kp": "ks3.hearing-and-auditory-range.4",
+   "new": "p6-08-h09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-h10": {
+   "kp": "ks3.hearing-and-auditory-range.7",
+   "new": "p6-08-h10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-h11": {
+   "kp": "ks3.hearing-and-auditory-range.4",
+   "new": "p6-08-h11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-h12": {
+   "kp": "ks3.hearing-and-auditory-range.6",
+   "new": "p6-08-h12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-h13": {
+   "kp": "ks3.hearing-and-auditory-range.3",
+   "new": "p6-08-h13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-h14": {
+   "kp": "ks3.hearing-and-auditory-range.4",
+   "new": "p6-08-h14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-h15": {
+   "kp": "ks3.hearing-and-auditory-range.2",
+   "new": "p6-08-h15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-h16": {
+   "kp": "ks3.hearing-and-auditory-range.3",
+   "new": "p6-08-h16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-h17": {
+   "kp": "ks3.hearing-and-auditory-range.4",
+   "new": "p6-08-h17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-h18": {
+   "kp": "ks3.hearing-and-auditory-range.5",
+   "new": "p6-08-h18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-h19": {
+   "kp": "ks3.hearing-and-auditory-range.1",
+   "new": "p6-08-h19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-h20": {
+   "kp": "ks3.hearing-and-auditory-range.6",
+   "new": "p6-08-h20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-h21": {
+   "kp": "ks3.hearing-and-auditory-range.4",
+   "new": "p6-08-h21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-h22": {
+   "kp": "ks3.hearing-and-auditory-range.1",
+   "new": "p6-08-h22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-h23": {
+   "kp": "ks3.hearing-and-auditory-range.7",
+   "new": "p6-08-h23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-h24": {
+   "kp": "ks3.hearing-and-auditory-range.1",
+   "new": "p6-08-h24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-h25": {
+   "kp": "ks3.hearing-and-auditory-range.4",
+   "new": "p6-08-h25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-h26": {
+   "kp": "ks3.hearing-and-auditory-range.6",
+   "new": "p6-08-h26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-h27": {
+   "kp": "ks3.hearing-and-auditory-range.6",
+   "new": "p6-08-h27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-h28": {
+   "kp": "ks3.hearing-and-auditory-range.8",
+   "new": "p6-08-h28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-h29": {
+   "kp": "ks3.hearing-and-auditory-range.6",
+   "new": "p6-08-h29",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-h30": {
+   "kp": "ks3.hearing-and-auditory-range.5",
+   "new": "p6-08-h30",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-s01": {
+   "kp": "ks3.hearing-and-auditory-range.8",
+   "new": "p6-08-s01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-s02": {
+   "kp": "ks3.hearing-and-auditory-range.4",
+   "new": "p6-08-s02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-s03": {
+   "kp": "ks3.hearing-and-auditory-range.4",
+   "new": "p6-08-s03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-s04": {
+   "kp": "ks3.hearing-and-auditory-range.3",
+   "new": "p6-08-s04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-s05": {
+   "kp": "ks3.hearing-and-auditory-range.4",
+   "new": "p6-08-s05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-s06": {
+   "kp": "ks3.hearing-and-auditory-range.8",
+   "new": "p6-08-s06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-s07": {
+   "kp": "ks3.hearing-and-auditory-range.4",
+   "new": "p6-08-s07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-s08": {
+   "kp": "ks3.hearing-and-auditory-range.4",
+   "new": "p6-08-s08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-s09": {
+   "kp": "ks3.hearing-and-auditory-range.4",
+   "new": "p6-08-s09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-s10": {
+   "kp": "ks3.hearing-and-auditory-range.4",
+   "new": "p6-08-s10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-s11": {
+   "kp": "ks3.hearing-and-auditory-range.8",
+   "new": "p6-08-s11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-s12": {
+   "kp": "ks3.hearing-and-auditory-range.8",
+   "new": "p6-08-s12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-s13": {
+   "kp": "ks3.hearing-and-auditory-range.5",
+   "new": "p6-08-s13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-s14": {
+   "kp": "ks3.hearing-and-auditory-range.6",
+   "new": "p6-08-s14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-s15": {
+   "kp": "ks3.hearing-and-auditory-range.6",
+   "new": "p6-08-s15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-s16": {
+   "kp": "ks3.hearing-and-auditory-range.7",
+   "new": "p6-08-s16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-s17": {
+   "kp": "ks3.hearing-and-auditory-range.3",
+   "new": "p6-08-s17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-s18": {
+   "kp": "ks3.hearing-and-auditory-range.3",
+   "new": "p6-08-s18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-s19": {
+   "kp": "ks3.hearing-and-auditory-range.4",
+   "new": "p6-08-s19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-s20": {
+   "kp": "ks3.hearing-and-auditory-range.4",
+   "new": "p6-08-s20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-s21": {
+   "kp": "ks3.hearing-and-auditory-range.8",
+   "new": "p6-08-s21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-s22": {
+   "kp": "ks3.hearing-and-auditory-range.5",
+   "new": "p6-08-s22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-s23": {
+   "kp": "ks3.hearing-and-auditory-range.4",
+   "new": "p6-08-s23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-s24": {
+   "kp": "ks3.hearing-and-auditory-range.1",
+   "new": "p6-08-s24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-s25": {
+   "kp": "ks3.hearing-and-auditory-range.4",
+   "new": "p6-08-s25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-s26": {
+   "kp": "ks3.hearing-and-auditory-range.4",
+   "new": "p6-08-s26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-s27": {
+   "kp": "ks3.hearing-and-auditory-range.3",
+   "new": "p6-08-s27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-s28": {
+   "kp": "ks3.hearing-and-auditory-range.8",
+   "new": "p6-08-s28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-s29": {
+   "kp": "ks3.hearing-and-auditory-range.2",
+   "new": "p6-08-s29",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-08-s30": {
+   "kp": "ks3.hearing-and-auditory-range.7",
+   "new": "p6-08-s30",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-e01": {
+   "kp": "ks3.ultrasound-at-work.1",
+   "new": "p6-09-e01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-e02": {
+   "kp": "ks3.ultrasound-at-work.5",
+   "new": "p6-09-e02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-e03": {
+   "kp": "ks3.ultrasound-at-work.3",
+   "new": "p6-09-e03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-e04": {
+   "kp": "ks3.ultrasound-at-work.4",
+   "new": "p6-09-e04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-e05": {
+   "kp": "ks3.ultrasound-at-work.2",
+   "new": "p6-09-e05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-e06": {
+   "kp": "ks3.ultrasound-at-work.1",
+   "new": "p6-09-e06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-e07": {
+   "kp": "ks3.ultrasound-at-work.1",
+   "new": "p6-09-e07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-e08": {
+   "kp": "ks3.ultrasound-at-work.4",
+   "new": "p6-09-e08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-e09": {
+   "kp": "ks3.ultrasound-at-work.2",
+   "new": "p6-09-e09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-e10": {
+   "kp": "ks3.ultrasound-at-work.5",
+   "new": "p6-09-e10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-e11": {
+   "kp": "ks3.ultrasound-at-work.5",
+   "new": "p6-09-e11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-e12": {
+   "kp": "ks3.ultrasound-at-work.3",
+   "new": "p6-09-e12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-e13": {
+   "kp": "ks3.ultrasound-at-work.3",
+   "new": "p6-09-e13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-e14": {
+   "kp": "ks3.ultrasound-at-work.4",
+   "new": "p6-09-e14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-e15": {
+   "kp": "ks3.ultrasound-at-work.4",
+   "new": "p6-09-e15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-e16": {
+   "kp": "ks3.ultrasound-at-work.8",
+   "new": "p6-09-e16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-e17": {
+   "kp": "ks3.ultrasound-at-work.8",
+   "new": "p6-09-e17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-e18": {
+   "kp": "ks3.ultrasound-at-work.3",
+   "new": "p6-09-e18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-e19": {
+   "kp": "ks3.ultrasound-at-work.7",
+   "new": "p6-09-e19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-e20": {
+   "kp": "ks3.ultrasound-at-work.5",
+   "new": "p6-09-e20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-e21": {
+   "kp": "ks3.ultrasound-at-work.5",
+   "new": "p6-09-e21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-e22": {
+   "kp": "ks3.ultrasound-at-work.5",
+   "new": "p6-09-e22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-e23": {
+   "kp": "ks3.ultrasound-at-work.8",
+   "new": "p6-09-e23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-e24": {
+   "kp": "ks3.ultrasound-at-work.1",
+   "new": "p6-09-e24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-e25": {
+   "kp": "ks3.ultrasound-at-work.1",
+   "new": "p6-09-e25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-e26": {
+   "kp": "ks3.ultrasound-at-work.3",
+   "new": "p6-09-e26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-e27": {
+   "kp": "ks3.ultrasound-at-work.4",
+   "new": "p6-09-e27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-e28": {
+   "kp": "ks3.ultrasound-at-work.3",
+   "new": "p6-09-e28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-e29": {
+   "kp": "ks3.ultrasound-at-work.4",
+   "new": "p6-09-e29",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-e30": {
+   "kp": "ks3.ultrasound-at-work.1",
+   "new": "p6-09-e30",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-h01": {
+   "kp": "ks3.ultrasound-at-work.7",
+   "new": "p6-09-h01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-h02": {
+   "kp": "ks3.ultrasound-at-work.6",
+   "new": "p6-09-h02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-h03": {
+   "kp": "ks3.ultrasound-at-work.6",
+   "new": "p6-09-h03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-h04": {
+   "kp": "ks3.ultrasound-at-work.3",
+   "new": "p6-09-h04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-h05": {
+   "kp": "ks3.ultrasound-at-work.3",
+   "new": "p6-09-h05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-h06": {
+   "kp": "ks3.ultrasound-at-work.3",
+   "new": "p6-09-h06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-h07": {
+   "kp": "ks3.ultrasound-at-work.6",
+   "new": "p6-09-h07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-h08": {
+   "kp": "ks3.ultrasound-at-work.6",
+   "new": "p6-09-h08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-h09": {
+   "kp": "ks3.ultrasound-at-work.6",
+   "new": "p6-09-h09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-h10": {
+   "kp": "ks3.ultrasound-at-work.5",
+   "new": "p6-09-h10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-h11": {
+   "kp": "ks3.ultrasound-at-work.3",
+   "new": "p6-09-h11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-h12": {
+   "kp": "ks3.ultrasound-at-work.6",
+   "new": "p6-09-h12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-h13": {
+   "kp": "ks3.ultrasound-at-work.4",
+   "new": "p6-09-h13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-h14": {
+   "kp": "ks3.ultrasound-at-work.3",
+   "new": "p6-09-h14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-h15": {
+   "kp": "ks3.ultrasound-at-work.2",
+   "new": "p6-09-h15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-h16": {
+   "kp": "ks3.ultrasound-at-work.7",
+   "new": "p6-09-h16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-h17": {
+   "kp": "ks3.ultrasound-at-work.3",
+   "new": "p6-09-h17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-h18": {
+   "kp": "ks3.ultrasound-at-work.3",
+   "new": "p6-09-h18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-h19": {
+   "kp": "ks3.ultrasound-at-work.1",
+   "new": "p6-09-h19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-h20": {
+   "kp": "ks3.ultrasound-at-work.8",
+   "new": "p6-09-h20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-h21": {
+   "kp": "ks3.ultrasound-at-work.6",
+   "new": "p6-09-h21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-h22": {
+   "kp": "ks3.ultrasound-at-work.4",
+   "new": "p6-09-h22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-h23": {
+   "kp": "ks3.ultrasound-at-work.8",
+   "new": "p6-09-h23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-h24": {
+   "kp": "ks3.ultrasound-at-work.8",
+   "new": "p6-09-h24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-h25": {
+   "kp": "ks3.ultrasound-at-work.3",
+   "new": "p6-09-h25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-h26": {
+   "kp": "ks3.ultrasound-at-work.2",
+   "new": "p6-09-h26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-h27": {
+   "kp": "ks3.ultrasound-at-work.7",
+   "new": "p6-09-h27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-h28": {
+   "kp": "ks3.ultrasound-at-work.8",
+   "new": "p6-09-h28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-h29": {
+   "kp": "ks3.ultrasound-at-work.7",
+   "new": "p6-09-h29",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-h30": {
+   "kp": "ks3.ultrasound-at-work.6",
+   "new": "p6-09-h30",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-s01": {
+   "kp": "ks3.ultrasound-at-work.4",
+   "new": "p6-09-s01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-s02": {
+   "kp": "ks3.ultrasound-at-work.6",
+   "new": "p6-09-s02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-s03": {
+   "kp": "ks3.ultrasound-at-work.3",
+   "new": "p6-09-s03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-s04": {
+   "kp": "ks3.ultrasound-at-work.8",
+   "new": "p6-09-s04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-s05": {
+   "kp": "ks3.ultrasound-at-work.3",
+   "new": "p6-09-s05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-s06": {
+   "kp": "ks3.ultrasound-at-work.4",
+   "new": "p6-09-s06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-s07": {
+   "kp": "ks3.ultrasound-at-work.4",
+   "new": "p6-09-s07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-s08": {
+   "kp": "ks3.ultrasound-at-work.4",
+   "new": "p6-09-s08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-s09": {
+   "kp": "ks3.ultrasound-at-work.3",
+   "new": "p6-09-s09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-s10": {
+   "kp": "ks3.ultrasound-at-work.2",
+   "new": "p6-09-s10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-s11": {
+   "kp": "ks3.ultrasound-at-work.5",
+   "new": "p6-09-s11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-s12": {
+   "kp": "ks3.ultrasound-at-work.3",
+   "new": "p6-09-s12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-s13": {
+   "kp": "ks3.ultrasound-at-work.5",
+   "new": "p6-09-s13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-s14": {
+   "kp": "ks3.ultrasound-at-work.5",
+   "new": "p6-09-s14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-s15": {
+   "kp": "ks3.ultrasound-at-work.5",
+   "new": "p6-09-s15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-s16": {
+   "kp": "ks3.ultrasound-at-work.7",
+   "new": "p6-09-s16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-s17": {
+   "kp": "ks3.ultrasound-at-work.8",
+   "new": "p6-09-s17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-s18": {
+   "kp": "ks3.ultrasound-at-work.4",
+   "new": "p6-09-s18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-s19": {
+   "kp": "ks3.ultrasound-at-work.8",
+   "new": "p6-09-s19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-s20": {
+   "kp": "ks3.ultrasound-at-work.6",
+   "new": "p6-09-s20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-s21": {
+   "kp": "ks3.ultrasound-at-work.6",
+   "new": "p6-09-s21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-s22": {
+   "kp": "ks3.ultrasound-at-work.4",
+   "new": "p6-09-s22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-s23": {
+   "kp": "ks3.ultrasound-at-work.3",
+   "new": "p6-09-s23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-s24": {
+   "kp": "ks3.ultrasound-at-work.8",
+   "new": "p6-09-s24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-s25": {
+   "kp": "ks3.ultrasound-at-work.2",
+   "new": "p6-09-s25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-s26": {
+   "kp": "ks3.ultrasound-at-work.3",
+   "new": "p6-09-s26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-s27": {
+   "kp": "ks3.ultrasound-at-work.3",
+   "new": "p6-09-s27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-s28": {
+   "kp": "ks3.ultrasound-at-work.8",
+   "new": "p6-09-s28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-s29": {
+   "kp": "ks3.ultrasound-at-work.5",
+   "new": "p6-09-s29",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "p6-09-s30": {
+   "kp": "ks3.ultrasound-at-work.7",
+   "new": "p6-09-s30",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "sound-is-longitudinal#apply": {
+   "kp": "ks3.sound-is-longitudinal.7",
+   "new": "sound-is-longitudinal#apply",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "sound-is-longitudinal#explain": {
+   "kp": "ks3.sound-is-longitudinal.2",
+   "new": "sound-is-longitudinal#explain",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "sound-is-longitudinal#produce": {
+   "kp": "ks3.sound-is-longitudinal.3",
+   "new": "sound-is-longitudinal#produce",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "sound-is-longitudinal#recall": {
+   "kp": "ks3.sound-is-longitudinal.1",
+   "new": "sound-is-longitudinal#recall",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "sound-is-longitudinal#slinky-1": {
+   "kp": "ks3.sound-is-longitudinal.1",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "sound-is-longitudinal#start": {
+   "kp": "ks3.sound-is-longitudinal.1",
+   "new": "sound-is-longitudinal#start",
+   "note": "Start here, the same question as before",
+   "status": "kept"
+  },
+  "sound-needs-a-medium#apply": {
+   "kp": "ks3.sound-needs-a-medium.1",
+   "new": "sound-needs-a-medium#apply",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "sound-needs-a-medium#explain": {
+   "kp": "ks3.sound-needs-a-medium.6",
+   "new": "sound-needs-a-medium#explain",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "sound-needs-a-medium#produce": {
+   "kp": "ks3.sound-needs-a-medium.5",
+   "new": "sound-needs-a-medium#produce",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "sound-needs-a-medium#range-1": {
+   "kp": "ks3.sound-needs-a-medium.3",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "sound-needs-a-medium#recall": {
+   "kp": "ks3.sound-needs-a-medium.5",
+   "new": "sound-needs-a-medium#recall",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "sound-needs-a-medium#start": {
+   "kp": "ks3.sound-needs-a-medium.6",
+   "new": "sound-needs-a-medium#start",
+   "note": "Start here, the same question as before",
+   "status": "kept"
+  },
+  "sound-needs-a-medium#your-turn-speed-1": {
+   "kp": "ks3.sound-needs-a-medium.5",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "sound-needs-a-medium#your-turn-speed-2": {
+   "kp": "ks3.sound-needs-a-medium.5",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "transverse-waves-and-superposition#apply": {
+   "kp": "ks3.transverse-waves-and-superposition.4",
+   "new": "transverse-waves-and-superposition#apply",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "transverse-waves-and-superposition#explain": {
+   "kp": "ks3.transverse-waves-and-superposition.1",
+   "new": "transverse-waves-and-superposition#explain",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "transverse-waves-and-superposition#meet-1": {
+   "kp": "ks3.transverse-waves-and-superposition.3",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "transverse-waves-and-superposition#produce": {
+   "kp": "ks3.transverse-waves-and-superposition.1",
+   "new": "transverse-waves-and-superposition#produce",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "transverse-waves-and-superposition#recall": {
+   "kp": "ks3.transverse-waves-and-superposition.2",
+   "new": "transverse-waves-and-superposition#recall",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "transverse-waves-and-superposition#start": {
+   "kp": "ks3.transverse-waves-and-superposition.1",
+   "new": "transverse-waves-and-superposition#start",
+   "note": "Start here, the same question as before",
+   "status": "kept"
+  },
+  "transverse-waves-and-superposition#your-turn-super-1": {
+   "kp": "ks3.transverse-waves-and-superposition.2",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "transverse-waves-and-superposition#your-turn-super-2": {
+   "kp": "ks3.transverse-waves-and-superposition.2",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "ultrasound-at-work#apply": {
+   "kp": "ks3.ultrasound-at-work.1",
+   "new": "ultrasound-at-work#apply",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ultrasound-at-work#explain": {
+   "kp": "ks3.ultrasound-at-work.3",
+   "new": "ultrasound-at-work#explain",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ultrasound-at-work#gauge-1": {
+   "kp": "ks3.ultrasound-at-work.4",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "ultrasound-at-work#produce": {
+   "kp": "ks3.ultrasound-at-work.7",
+   "new": "ultrasound-at-work#produce",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ultrasound-at-work#recall": {
+   "kp": "ks3.ultrasound-at-work.3",
+   "new": "ultrasound-at-work#recall",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ultrasound-at-work#start": {
+   "kp": "ks3.ultrasound-at-work.2",
+   "new": "ultrasound-at-work#start",
+   "note": "Start here, the same question as before",
+   "status": "kept"
+  },
+  "waves-on-water#apply": {
+   "kp": "ks3.waves-on-water.1",
+   "new": "waves-on-water#apply",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "waves-on-water#explain": {
+   "kp": "ks3.waves-on-water.2",
+   "new": "waves-on-water#explain",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "waves-on-water#produce": {
+   "kp": "ks3.waves-on-water.2",
+   "new": "waves-on-water#produce",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "waves-on-water#recall": {
+   "kp": "ks3.waves-on-water.5",
+   "new": "waves-on-water#recall",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "waves-on-water#start": {
+   "kp": "ks3.waves-on-water.1",
+   "new": "waves-on-water#start",
+   "note": "Start here, the same question as before",
+   "status": "kept"
+  },
+  "waves-on-water#tank-1": {
+   "kp": "ks3.waves-on-water.5",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  }
+ },
+ "scope": [
+  "echoes-reflection-and-absorption",
+  "frequency-pitch-and-loudness",
+  "hearing-and-auditory-range",
+  "how-sound-is-made",
+  "sound-is-longitudinal",
+  "sound-needs-a-medium",
+  "transverse-waves-and-superposition",
+  "ultrasound-at-work",
+  "waves-on-water"
+ ]
+}

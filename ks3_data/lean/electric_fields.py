@@ -82,6 +82,7 @@ LESSON = {
     ],
     "try": None,
     "tutor_body": "Got two charges and want to know which way the field points?",
+    "connects_heading": None,
     "ks4_becomes": "Field lines round charged objects, and field strength.",
     "safety_note": "Only a car with a metal roof and metal sides protects you. "
                    "Never shelter under a tree in a storm. Get indoors or into a car.",

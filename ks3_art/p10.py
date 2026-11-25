@@ -2072,13 +2072,15 @@ def _p10c_two_magnets(fig):
 
 # ── p10-earth-field ─────────────────────────────────────────────────────────
 def _p10c_earth_field(fig):
-    """The Earth with its spin axis, and the field of a dipole tilted 11° from it.
-    The buried magnet's S end is under the Arctic, so a compass needle's N end points
-    north. Field lines are r = L cos²(magnetic latitude), drawn only above the surface."""
-    W, H = 340.0, 300.0
-    CX, CY, R = 170.0, 150.0, 58.0
+    """The Earth with its spin axis, and the field of a bar magnet buried inside it,
+    tilted 11° from the axis. The magnet is two point poles at its ends, as in
+    p10-bar-field, so the lines leave the ground near the South Pole, loop round the
+    sides and go back in near the North Pole. The buried magnet's S end is under the
+    Arctic, so a compass needle's N end points north."""
+    W, H = 340.0, 240.0
+    CX, CY, R = 170.0, 126.0, 46.0
+    HL = 41.0                          # half the buried magnet's length: its poles sit here
     tilt = _p10c_math.radians(11)
-    TOP, BOT = 62.0, H - 62.0          # lines stop short of the two pole labels
     o = []
 
     def rot(x, y):
@@ -2086,40 +2088,44 @@ def _p10c_earth_field(fig):
         c, s = _p10c_math.cos(tilt), _p10c_math.sin(tilt)
         return CX + x * c + y * s, CY - (y * c - x * s)
 
-    def inside_box(p):
-        return 6 <= p[0] <= W - 6 and TOP <= p[1] <= BOT
+    nx, ny = rot(0, -HL)
+    sx, sy = rot(0, HL)
+    poles = [(nx, ny, 1.0), (sx, sy, -1.0)]   # field lines run from N (+) to S (−)
+
+    def outside(p):
+        return (_p10c_math.hypot(p[0] - CX, p[1] - CY) > R + 0.5
+                and 6 <= p[0] <= W - 6 and 6 <= p[1] <= H - 6)
 
     compass_at = None
-    for lat0 in (26.0, 40.0, 51.0):
-        L = R / _p10c_math.cos(_p10c_math.radians(lat0)) ** 2
+    for ang in (60.0, 72.0, 88.0):     # launch angle at the N pole, from the magnet's axis
         for side in (1, -1):
-            pts = []
-            k = int(lat0 * 4)
-            for i in range(-k, k + 1):
-                lam = _p10c_math.radians(i / 4.0)
-                r = L * _p10c_math.cos(lam) ** 2
-                pts.append(rot(side * r * _p10c_math.cos(lam), r * _p10c_math.sin(lam)))
-            for run in _p10c_runs(pts, inside_box):
+            a = _p10c_math.radians(ang) * side
+            start = rot(3 * _p10c_math.sin(a), -HL - 3 * _p10c_math.cos(a))
+            pts = _p10c_trace(start, poles, (0, 0, W, H), None, step=1.0, limit=4000)
+            for run in _p10c_runs(pts, outside):
                 o.append(_p10c_poly(run, w=2.0))
-            # the field runs from the south (bottom) round to the north (top): an arrow at
-            # the magnetic equator, except where the compass sits on the line instead
-            if lat0 == 40.0 and side == 1:
-                compass_at = rot(L, 0)
-                continue
-            mid = len(pts) // 2
-            (x0, y0), (x1, y1) = pts[mid - 1], pts[mid + 1]
-            o.append(_p10c_head(x1, y1, _p10c_math.atan2(y1 - y0, x1 - x0), size=10))
+                if ang == 60.0 and side == 1:
+                    # the compass sits on the outer line, up and to the right
+                    seg = [_p10c_math.hypot(run[i + 1][0] - run[i][0], run[i + 1][1] - run[i][1])
+                           for i in range(len(run) - 1)]
+                    goal, acc = sum(seg) * 0.64, 0.0
+                    for i, sl in enumerate(seg):
+                        acc += sl
+                        if acc >= goal:
+                            compass_at = run[i]
+                            break
+                o.append(_p10c_run_head(run, at=0.5))
     # the Earth
     o.append(_circle(CX, CY, R, fill=_SVG_CARD, stroke=_SVG_INK, w=2.2, data_part="earth"))
     # the spin axis, dashed, through the geographic poles
-    o.append(_line(CX, CY - R - 34, CX, CY + R + 22, stroke=_SVG_INK_MUTED, w=1.6, dash="5,4",
+    o.append(_line(CX, CY - R - 30, CX, CY + R + 30, stroke=_SVG_INK_MUTED, w=1.6, dash="5,4",
                    data_part="spin-axis"))
-    o.append(_p10c_label(CX, CY - R - 42, "North Pole", size=14, weight="700",
+    o.append(_p10c_label(CX, CY - R - 44, "North Pole", size=14, weight="700",
                          data_part="north-pole"))
-    o.append(_p10c_label(CX, CY + R + 40, "South Pole", size=14, weight="700",
+    o.append(_p10c_label(CX, CY + R + 52, "South Pole", size=14, weight="700",
                          data_part="south-pole"))
     # the buried magnet, along the tilted axis: S end up, N end down
-    hw, hl = 9.0, 34.0
+    hw, hl = 9.0, HL
     for (y0, y1, pole) in ((0.0, hl, "S"), (-hl, 0.0, "N")):
         corners = [rot(-hw, y0), rot(hw, y0), rot(hw, y1), rot(-hw, y1)]
         o.append(_path("M " + " L ".join("%s,%s" % (_n(round(a, 1)), _n(round(b, 1)))
@@ -2131,12 +2137,11 @@ def _p10c_earth_field(fig):
                              fill=_SVG_ACCENT_TEXT if pole == "N" else _SVG_INK,
                              data_part="buried-letter"))
     # a compass sitting on a field line: its needle lies along the line, N end north
-    north = _p10c_math.atan2(-_p10c_math.cos(tilt), _p10c_math.sin(tilt))
     cx, cy = round(compass_at[0], 1), round(compass_at[1], 1)
-    o.append(_p10c_compass(cx, cy, north, r=13))
-    o.append(_line(cx + 8, cy - 12, cx + 22, cy - 56, stroke=_SVG_INK_MUTED, w=1.4,
+    o.append(_p10c_compass(cx, cy, _p10c_field_at(cx, cy, poles), r=13))
+    o.append(_line(cx, cy - 15, cx, cy - 36, stroke=_SVG_INK_MUTED, w=1.4,
                    data_part="compass-leader"))
-    o.append(_p10c_label(cx + 24, cy - 64, "compass", size=13, fill=_SVG_INK_MUTED,
+    o.append(_p10c_label(min(cx, W - 36), cy - 42, "compass", size=13, fill=_SVG_INK_MUTED,
                          data_part="compass-label"))
     return _p10c_open(fig, H, o, w=int(W))
 

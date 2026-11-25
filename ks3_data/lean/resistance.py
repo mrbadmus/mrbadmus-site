@@ -127,6 +127,7 @@ LESSON = {
     ],
     "try": {"label": "Circuit Lab", "href": "/simulations/physics/circuit-lab/"},
     "tutor_body": "Got a voltmeter reading and an ammeter reading, and want the resistance?",
+    "connects_heading": None,
     "ks4_becomes": "V = I × R, and graphs of current against p.d. for a resistor, a lamp and a diode.",
     "figures": [
         {"id": "p8-res-collisions", "kind": "diagram", "status": "drawn", "art": "p8-res-collisions",

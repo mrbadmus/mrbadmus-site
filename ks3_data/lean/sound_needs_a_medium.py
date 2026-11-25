@@ -112,6 +112,7 @@ LESSON = {
     ],
     "try": None,
     "tutor_body": "Want to check a speed of sound calculation?",
+    "connects_heading": None,
     "ks4_becomes": "Measuring the speed of sound, and the wave equation: wave speed = frequency × wavelength.",
     "figures": [
         {"id": "p6-medium-bell-jar", "kind": "diagram", "status": "drawn", "art": "p6-medium-bell-jar",

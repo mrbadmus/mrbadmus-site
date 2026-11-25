@@ -93,6 +93,7 @@ LESSON = {
     ],
     "try": None,
     "tutor_body": "Got two materials and want to know which one ends up negative?",
+    "connects_heading": None,
     "ks4_becomes": "Sparks, earthing, and the uses and dangers of static charge.",
     "figures": [
         {"id": "p9-rub-rod-duster", "kind": "diagram", "status": "drawn", "art": "p9-rub",

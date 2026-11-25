@@ -93,6 +93,7 @@ LESSON = {
     ],
     "try": None,
     "tutor_body": "Want to check what makes an electromagnet stronger?",
+    "connects_heading": None,
     "ks4_becomes": "The field pattern round a coil, and how motors and transformers use it.",
     "safety_note": "The coil can get hot. Switch off between tries and let it cool. "
                    "Use only the low-voltage supply your teacher gives you.",
@@ -116,7 +117,7 @@ LESSON = {
         "recall": {
             1: "That does help. With the same current, more turns give a stronger field.",
             2: "That does help. More current through the coil makes a stronger field.",
-            3: "That helps a lot. An iron core is the biggest change you can make.",
+            3: "That does help. A bigger iron core makes the field stronger.",
         },
         "apply": {
             0: "Soft iron is chosen because it does not stay magnetised.",

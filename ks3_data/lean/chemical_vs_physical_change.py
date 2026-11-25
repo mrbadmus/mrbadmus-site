@@ -119,6 +119,7 @@ LESSON = {
     ],
     "try": None,
     "tutor_body": "Still not sure why a change you cannot undo can still be physical?",
+    "connects_heading": None,
     "ks4_becomes": "Energy changes in reactions, and bond breaking and bond making.",
     "figures": [
         {"id": "c4-change-particles", "kind": "diagram", "status": "drawn",

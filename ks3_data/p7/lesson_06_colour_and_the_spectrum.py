@@ -406,24 +406,18 @@ LESSON = {
             ],
             "title": "Rung 3 · Explain"},
         "produce": {
-            "q": "A rainbow appears when the Sun is behind you and rain is "
-                 "falling in front of you, and red is always on the outside "
-                 "of the arc. Explain what each raindrop is doing, and why "
-                 "the order of the colours is the same in every rainbow.",
+            "q": "A beam of white light passes through a prism onto a screen. "
+                 "The colours land in order from red to violet. Explain why "
+                 "they spread out in that order. Then say why a beam of only "
+                 "green light would not spread out.",
             "field_label": "Your answer",
-            "placeholder": "Sunlight enters each raindrop and…",
+            "placeholder": "Each colour is refracted…",
             "success": [
-                "Says sunlight enters each raindrop and is refracted on the "
-                "way in.",
-                "Says it is reflected off the inside of the back of the drop "
-                "and refracted again on the way out.",
-                "Says the refraction separates the colours, because higher "
-                "frequencies bend more.",
-                "Says the light comes back towards the Sun’s side, which is "
-                "why the Sun has to be behind you.",
-                "Says the order is fixed because it follows frequency, which "
-                "is a property of the light and does not vary from drop to "
-                "drop.",
+                "Says each colour is refracted as it enters and leaves the prism.",
+                "Says colours with a higher frequency are refracted more.",
+                "Says violet has the highest frequency, so it bends the most.",
+                "Says red has the lowest frequency, so it bends the least.",
+                "Says green light is only one colour, so there is nothing to separate.",
             ],
             "title": "Rung 4 · Take it somewhere new"},
     },

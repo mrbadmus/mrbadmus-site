@@ -103,6 +103,7 @@ LESSON = {
     ],
     "try": None,
     "tutor_body": "Want to check an echo calculation?",
+    "connects_heading": None,
     "ks4_becomes": None,      # reflection at a boundary and echo sounding are GCSE Physics only, not every route
     "figures": [
         {"id": "p6-echo-boundary", "kind": "diagram", "status": "drawn", "art": "p6-echo-boundary",

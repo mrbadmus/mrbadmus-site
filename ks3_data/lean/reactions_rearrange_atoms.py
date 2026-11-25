@@ -100,6 +100,7 @@ LESSON = {
     ],
     "try": None,
     "tutor_body": "Still not sure why no chemical reaction can make gold?",
+    "connects_heading": None,
     "ks4_becomes": "Bond breaking and bond making as the energy story of a reaction, and balanced "
                    "symbol equations.",
     "figures": [

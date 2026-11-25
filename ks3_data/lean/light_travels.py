@@ -50,7 +50,7 @@ LESSON = {
          "rows": [
              ("Type of wave", "Transverse", "Longitudinal"),
              ("Needs a material", "No. It can cross a vacuum.", "Yes. A solid, liquid or gas."),
-             ("Speed", "300 000 000 m/s in a vacuum", "About 340 m/s in air"),
+             ("Speed", "300 million m/s in a vacuum", "About 340 m/s in air"),
              ("Carries energy", "Yes", "Yes"),
              ("Can be reflected", "Yes", "Yes. A reflected sound is an echo."),
          ]},
@@ -107,6 +107,7 @@ LESSON = {
                   "We round it to 300 000 000 m/s."]},
     ],
     "try": None,
+    "connects_heading": None,
     "ks4_becomes": "The electromagnetic spectrum in more detail, the wave equation applied to light, "
                    "and light-years in space.",
     "connects": {

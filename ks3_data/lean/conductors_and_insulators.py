@@ -129,6 +129,12 @@ LESSON = {
     ],
     "try": None,
     "tutor_body": "Got a current and a p.d., and want to know if it is a conductor?",
+    "connects_heading": None,
+    "safeguarding_note": "Mains electricity is far more dangerous than the supply you use at school. "
+                         "A scorched socket, bare copper in a cable or a hot plug is a danger. "
+                         "Tell an adult the same day. Never test it yourself. "
+                         "If there is no one at home you can tell, Childline is free on 0800 1111. "
+                         "It is open at any hour, and you do not have to give your name.",
     "ks4_becomes": "Metallic bonding and delocalised electrons, and components whose resistance changes, such as thermistors.",
     "figures": [
         {"id": "p8-cond-cable", "kind": "diagram", "status": "drawn", "art": "p8-cond-cable",

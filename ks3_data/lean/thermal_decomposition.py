@@ -106,6 +106,7 @@ LESSON = {
     "safety_note": "Wear eye protection. Take the delivery tube out of the limewater before you "
                    "stop heating. If you do not, cold limewater is sucked back and the hot tube "
                    "can crack.",
+    "connects_heading": None,
     "ks4_becomes": "Endothermic reactions and reaction profiles, and the tests for gases.",
     "figures": [
         {"id": "c5-heating-carbonate", "kind": "diagram", "status": "drawn",

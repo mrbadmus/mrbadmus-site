@@ -91,6 +91,11 @@ LESSON = {
                   "This is why X-ray staff stand behind a screen."]},
     ],
     "try": None,
+    "connects_heading": None,
+    "safety_note": "Never look directly at the Sun, with your eyes, through a lens or through a pinhole camera. "
+                   "A lens gathers sunlight to a point hot enough to scorch paper. "
+                   "It will do the same to the back of your eye. "
+                   "The damage does not hurt while it happens, and it does not heal.",
     "ks4_becomes": "The electromagnetic spectrum in full: the properties, uses and dangers of each part.",
     "connects": {
         "Refraction": "Dispersion is refraction by a slightly different amount for each colour.",
@@ -118,11 +123,6 @@ LESSON = {
          "data": {"colours": ["red", "orange", "yellow", "green", "blue", "violet"],
                   "second": True}},
     ],
-    "ladder_stem": {
-        "produce": "A rainbow appears when the Sun is behind you and rain is ahead. In the main bow, "
-                   "red is always on the outside. Explain what each raindrop does to the sunlight. "
-                   "Explain why the main bow always has the same order of colours.",
-    },
     "ladder_feedback": {
         "recall": {
             1: "Violet has the highest frequency, so it is refracted the most.",

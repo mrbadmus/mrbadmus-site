@@ -105,6 +105,7 @@ LESSON = {
     ],
     "try": {"label": "Circuit Lab", "href": "/simulations/physics/circuit-lab/"},
     "tutor_body": "Got a circuit diagram and not sure whether it is series or parallel?",
+    "connects_heading": None,
     "ks4_becomes": "The rules for current, potential difference and resistance in series and parallel circuits.",
     "connects": {
         "Potential difference": "What potential difference is, and how a voltmeter measures it.",

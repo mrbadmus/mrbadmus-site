@@ -496,6 +496,9 @@
   ]
  },
  "electromagnets#recall": {
+  "0": [
+   "Swapping the soft iron core for a plastic one of the same size"
+  ],
   "3": [
    "Putting a soft iron core in where there was only air"
   ]

@@ -90,6 +90,7 @@ LESSON = {
                   "A gel absorbs the colours it does not let through, so it gets warm."]},
     ],
     "try": None,
+    "connects_heading": None,
     "ks4_becomes": "Colour filters, and how objects reflect, absorb and transmit different colours.",
     "connects": {
         "Reflection: mirrors and scattering": "Rough surfaces scatter the light they reflect in all directions.",

@@ -481,17 +481,16 @@ LESSON = {
                  "hold more, and you may change one thing. Which of these "
                  "will not help at all?",
             "options": [
-                "Swapping the soft iron core for a plastic one of the same "
-                "size",
+                "Swapping the iron core for a plastic one",
                 "Winding twice as many turns onto the coil",
                 "Turning the supply up so twice as much current flows",
-                "Putting a soft iron core inside the coil where there was only air",
+                "Using a bigger soft iron core in the coil",
             ],
             "answer": 0,
             "feedback": {
                 1: "That does help. With the same current, more turns give a stronger field.",
                 2: "That does help. More current through the coil makes a stronger field.",
-                3: "That helps a lot. An iron core is the biggest change you can make.",
+                3: "That does help. A bigger iron core makes the field stronger.",
             },
             "title": "Rung 1 · Choose the change"},
         "apply": {

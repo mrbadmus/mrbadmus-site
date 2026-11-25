@@ -546,26 +546,18 @@ LESSON = {
             ],
             "title": "Rung 3 · Explain"},
         "produce": {
-            "q": "A harbour wall has two gaps in it. Inside the harbour, "
-                 "boats moored at some spots rock hard on a swell while "
-                 "boats a few metres away barely move, and the pattern is "
-                 "the same every time that swell runs. Explain what is "
-                 "going on, then say what would change if one gap were "
-                 "blocked up.",
+            "q": "Two people send pulses along a rope from opposite ends. One "
+                 "sends a crest 3 cm high. The other sends a trough 3 cm deep. "
+                 "Explain what the rope looks like as they meet, and just after. "
+                 "Then say what changes if both send crests.",
             "field_label": "Your answer",
-            "placeholder": "Each gap lets a set of waves into the harbour, "
-                           "so…",
+            "placeholder": "Where the crest and the trough overlap…",
             "success": [
-                "Says each gap lets its own set of waves spread into the "
-                "harbour.",
-                "Says the two sets overlap inside and superpose.",
-                "Says the hard-rocking spots are where crests arrive "
-                "together and add.",
-                "Says the calm spots are where a crest from one gap arrives "
-                "with a trough from the other and they cancel.",
-                "Says blocking one gap leaves a single set of waves, so the "
-                "pattern of calm and rough spots disappears and every boat "
-                "rocks about the same amount.",
+                "Says the crest and the trough add where they overlap.",
+                "Says 3 cm up and 3 cm down add to 0, so the rope is flat there.",
+                "Says the rope is flat only for a moment, while they overlap.",
+                "Says each pulse carries on past the other, unchanged.",
+                "Says two crests would add to make a crest 6 cm high.",
             ],
             "title": "Rung 4 · Take it somewhere new"},
     },

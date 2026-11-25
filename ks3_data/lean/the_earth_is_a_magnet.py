@@ -89,15 +89,16 @@ LESSON = {
     ],
     "try": None,
     "tutor_body": "Confused about why magnetic north is a south pole?",
+    "connects_heading": None,
     "ks4_becomes": "The Earth's field as evidence about the core, and magnetic stripes on the sea floor.",
     "figures": [
         {"id": "p10-earth-field-model", "kind": "diagram", "status": "drawn", "art": "p10-earth-field",
          "title": "The Earth's magnetic field, drawn as if a bar magnet were inside",
          "desc": "A circle for the Earth with a dashed spin axis from the North Pole at the top to the "
                  "South Pole at the bottom. A bar magnet is drawn inside, tilted a little from the axis, "
-                 "with its S end at the top and its N end at the bottom. Field lines loop out of the "
-                 "southern half and back into the northern half, with arrows pointing north. A compass "
-                 "sits on one line, its N end pointing north.",
+                 "with its S end at the top and its N end at the bottom. Field lines leave the ground near "
+                 "the South Pole, loop round both sides and go back in near the North Pole. Arrows on "
+                 "the lines point north. A compass sits on one line, its N end pointing along it to the north.",
          "caption": "The magnet's S end is under the Arctic, so the compass N end points north.",
          "data": {}},
     ],

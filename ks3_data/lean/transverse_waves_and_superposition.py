@@ -97,6 +97,7 @@ LESSON = {
     ],
     "try": {"label": "Wave Motion Lab", "href": "/simulations/physics/wave-motion-lab/"},
     "tutor_body": "Got a pattern of crossing ripples you cannot explain?",
+    "connects_heading": None,
     "ks4_becomes": "The wave equation and wave speed. GCSE Physics adds reflection at a boundary.",
     "figures": [
         {"id": "p6-02-transverse", "kind": "diagram", "status": "drawn", "art": "p6-transverse-wave",

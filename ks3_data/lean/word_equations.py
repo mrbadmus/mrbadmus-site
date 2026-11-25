@@ -106,6 +106,7 @@ LESSON = {
     ],
     "try": None,
     "tutor_body": "Still not sure why heat does not go in a word equation?",
+    "connects_heading": None,
     "ks4_becomes": "Balanced symbol equations with state symbols, and ionic equations.",
     "figures": [
         {"id": "c4-word-magnesium", "kind": "diagram", "status": "drawn", "art": "c4-word-row",

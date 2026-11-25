@@ -53,7 +53,8 @@ LESSON = {
                   "A sound wave also has an amplitude.",
                   "It is how far each layer of air moves from its rest position."]},
         {"kind": "card", "title": "Why sound is drawn as a wavy line",
-         "body": ["Sound is often drawn as a wavy line.",
+         "body": [{"figure": "p6-04-graph"},
+                  "Sound is often drawn as a wavy line.",
                   "The line is a graph. It shows how squashed the air is at each place.",
                   "The peaks are compressions. The dips are rarefactions.",
                   "The air itself moves back and forth, along the direction of travel."]},
@@ -86,6 +87,7 @@ LESSON = {
                   "So it moves a little along, as well as up and down."]},
     ],
     "try": {"label": "Wave Motion Lab", "href": "/simulations/physics/wave-motion-lab/"},
+    "connects_heading": None,
     "ks4_becomes": "Comparing transverse and longitudinal waves, wave speed in different materials, "
                    "and earthquake waves.",
     "figures": [
@@ -108,8 +110,18 @@ LESSON = {
                  "and right: it moves back and forth.",
          "caption": "Longitudinal: each layer of air moves back and forth along the direction of travel.",
          "data": {}},
+        {"id": "p6-04-graph", "kind": "diagram", "status": "drawn", "art": "p6-compression-graph",
+         "title": "A row of air particles and the wavy line drawn under it",
+         "desc": "At the top, four rows of air particles. In some places they are bunched close "
+                 "together: one is labelled compression. In between, they are spread apart: one is "
+                 "labelled rarefaction. Underneath is a wavy line on a dashed rest line. Dashed guide "
+                 "lines run straight down from each compression to a peak of the line, labelled peak, "
+                 "and from each rarefaction to a dip, labelled dip.",
+         "caption": "Each peak sits under a compression. Each dip sits under a rarefaction.",
+         "data": {"labels": {"compression": "compression", "rarefaction": "rarefaction",
+                             "peak": "peak", "dip": "dip"}}},
     ],
-    "figure_caption": {"p6-04-transverse": None, "p6-04-sound": None},   # the card text already says it
+    "figure_caption": {"p6-04-transverse": None, "p6-04-sound": None, "p6-04-graph": None},   # the card text already says it
     "ladder_ticks": [
         ["Gives one real limitation — for example: the queue is one line rather than air spreading in every direction, people move a long way compared with air, or a person choosing to step forward is not the same as being pushed.",
          "Gives one real limitation, such as: the queue is one line, or people choose when to step."],
