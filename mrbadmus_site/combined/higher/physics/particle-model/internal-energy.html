@@ -1018,11 +1018,11 @@ class Component extends DCLogic {
   /* a temperature-time sketch; pts = [[time, T], ...] drawn up to tEnd */
   curve(pts, o) {
     const D = window.KS4D; const C = D.C;
-    const W = 440, H = 330, L = 68, Rt = 420, Tp = 24, B = 270;
+    const W = 440, H = 340, L = 88, Rt = 420, Tp = 26, B = 278;
     const X = (x) => L + (Rt - L) * (x / o.tmax), Y = (T) => B - (B - Tp) * ((T - o.Tmin) / (o.Tmax - o.Tmin));
     let b = D.line(L, Tp, L, B, 2.5) + D.line(L, B, Rt, B, 2.5);
-    for (let T = o.Tmin; T <= o.Tmax; T += o.step) b += D.line(L - 7, Y(T), L, Y(T), 2) + D.T(L - 11, Y(T) + 6, (T < 0 ? '−' : '') + Math.abs(T), 18, { weight: 'normal', fill: C.stroke, anchor: 'end' }) + D.line(L, Y(T), Rt, Y(T), 1, '#C9C3B2');
-    b += D.T((L + Rt) / 2, H - 18, 'Time', 18) + '<text x="16" y="' + ((Tp + B) / 2) + '" transform="rotate(-90 16 ' + ((Tp + B) / 2) + ')" font-family="' + D.F + '" font-size="18" font-weight="bold" fill="' + C.label + '" text-anchor="middle">Temperature / °C</text>';
+    for (let T = o.Tmin; T <= o.Tmax; T += o.step) b += D.line(L - 7, Y(T), L, Y(T), 2) + D.T(L - 11, Y(T) + 8, (T < 0 ? '−' : '') + Math.abs(T), 23, { weight: 'normal', fill: C.stroke, anchor: 'end' }) + D.line(L, Y(T), Rt, Y(T), 1, '#C9C3B2');
+    b += D.T((L + Rt) / 2, H - 16, 'Time', 22) + '<text x="20" y="' + ((Tp + B) / 2) + '" transform="rotate(-90 20 ' + ((Tp + B) / 2) + ')" font-family="' + D.F + '" font-size="22" font-weight="bold" fill="' + C.label + '" text-anchor="middle">Temperature / °C</text>';
     let d = '';
     const tEnd = o.tEnd === undefined ? o.tmax : o.tEnd;
     for (let i = 0; i < pts.length - 1; i++) {
@@ -1032,8 +1032,8 @@ class Component extends DCLogic {
       d += (d ? ' L' : 'M') + X(a[0]).toFixed(1) + ' ' + Y(a[1]).toFixed(1) + ' L' + X(e).toFixed(1) + ' ' + Y(a[1] + (c[1] - a[1]) * f).toFixed(1);
     }
     if (d) b += '<path d="' + d + '" fill="none" stroke="' + C.arrow + '" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>';
-    (o.letters || []).forEach((lt, i) => { if (lt && lt.t && pts[i] && pts[i][0] <= tEnd) b += D.circ(X(pts[i][0]), Y(pts[i][1]), 5, C.stroke) + D.T(X(pts[i][0]) + (lt.dx || 0), Y(pts[i][1]) + (lt.dy || -12), lt.t, 20, { fill: C.stroke }); });
-    (o.notes || []).forEach((n) => { if (n.at <= tEnd) b += D.T(X(n.x), Y(n.T) - 12, n.t, 18, { fill: C.arrow }); });
+    (o.letters || []).forEach((lt, i) => { if (lt && lt.t && pts[i] && pts[i][0] <= tEnd) b += D.circ(X(pts[i][0]), Y(pts[i][1]), 5, C.stroke) + D.T(X(pts[i][0]) + (lt.dx || 0), Y(pts[i][1]) + (lt.dy || -12), lt.t, 24, { fill: C.stroke }); });
+    (o.notes || []).forEach((n) => { if (n.at <= tEnd) b += D.T(X(n.x), Y(n.T) - 12, n.t, 22, { fill: C.arrow }); });
     return D.svg(W, H, b, o.alt);
   }
 
@@ -1133,10 +1133,10 @@ class Component extends DCLogic {
           ],
           right: 'All three.', wrong: 'The lower flat section is melting and the higher one boiling. Between them X is a liquid. On a flat section the temperature, and so the particles’ average kinetic energy, does not change.',
           model: ['Melting point: 20 °C, the lower flat section, B to C.', 'At 50 °C, X is above its melting point and below its boiling point: liquid.', 'D to E is boiling. The temperature is constant, so the average kinetic energy stays the same; the potential energy increases.'] },
-        r3: { command: 'Explain', marks: 3, prompt: 'Liquid stearic acid is left to cool. Its temperature stays at 69 °C for several minutes. Explain why. Put the links in order.',
+        r3: { command: 'Explain', marks: 3, prompt: 'Liquid stearic acid is left to cool. Its temperature stays at 69 °C for several minutes. Explain why. Put the links in order.',
           links: ['The stearic acid is freezing: changing state from liquid to solid.', 'While it freezes, energy is still transferred to the surroundings, so its internal energy decreases.', 'The energy lost comes from the particles’ potential energy, not their kinetic energy, so the temperature does not change.'],
           herrings: [{ text: 'No energy is transferred while it freezes.', why: 'It is still warmer than the room, so energy keeps leaving.' }, { text: 'The bonds inside each molecule break as it freezes.', why: 'Nothing inside the molecules changes. Freezing changes the forces between them and how they are arranged.' }] },
-        r4: { command: 'Describe', marks: 6, question: 'Ice at −10 °C is heated until it becomes water at 20 °C. Describe what happens to the particles and to the internal energy.',
+        r4: { command: 'Describe', marks: 6, question: 'Ice at −10 °C is heated until it becomes water at 20 °C. Describe what happens to the particles and to the internal energy.',
           levels: [
             { label: 'Level 3 · 5–6', text: 'All three stages described in order, each linked to the particles: kinetic energy rising while the ice warms, potential energy rising at constant temperature while it melts, kinetic energy rising while the water warms. Internal energy increases throughout.', max: 6 },
             { label: 'Level 2 · 3–4', text: 'The correct sequence, with some particle explanation.', max: 4 },

@@ -211,6 +211,12 @@ LOGIC_EDITS += [
      "prompt: 'Ice at 0\xa0°C is put into a drink at 20\xa0°C. Explain why the drink cools as the ice melts. Put the links in order.'"),
 ]
 
+# ⊕ 25 Nov 2026 (examiner re-check): the tube beside Y's cooling curve was taken off the figure
+# (vial off), so the alt text no longer describes it.
+LOGIC_EDITS += [
+    (" A tube of Y beside it is fully solid.'", "'"),
+]
+
 LESSON = {
     "slug": "specific-latent-heat",
     "start": {

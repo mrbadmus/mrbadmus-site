@@ -40,7 +40,7 @@ _RP_BODY = [
 # "final temperature = … wit" (shortened).
 LOGIC_EDITS = [
     ("27 000", "27\u00a0000"),
-    ("placeholder: 'final temperature = … with unit'", "placeholder: 'final = … with unit'"),
+    ("placeholder: 'final temperature = … with unit'", "placeholder: 'final θ = … with unit'"),
 ]
 
 # ⊕ 24 Nov 2026 (pupil walk at 390 px): numbers, number-and-unit pairs and short equations in the
