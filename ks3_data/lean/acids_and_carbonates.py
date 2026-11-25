@@ -135,7 +135,7 @@ LESSON = {
     "ladder_stem": {
         "explain": "Marble chips are dropped into dilute hydrochloric acid. Describe what you would "
                    "see. Name all three products. Explain how you would show the gas is carbon dioxide.",
-        "produce": "Two white powders are on the bench. One is a carbonate and one is not. You must "
+        "produce": "You have two white powders. One is a carbonate and one is not. You must "
                    "not taste or touch them. Plan a test to tell them apart. Say what result would "
                    "show which one is the carbonate.",
     },
