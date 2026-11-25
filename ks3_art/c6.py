@@ -2478,7 +2478,7 @@ def _c6b_squeaky_pop(fig):
             o.append(_line(8, y0 - 4, 332, y0 - 4, stroke=_SVG_RULE, w=1.5, data_part="rule"))
         _c6b_badge(o, 16, y0 + 18, i + 1)
         _c6b_step_text(o, y0, st["title"], st["lines"])
-        tx, tw = 80, 32            # the reaction tube: left edge 80, 32 wide
+        tx, tw = 92, 32            # the reaction tube: left edge 92, 32 wide (room for "magnesium")
         cx = tx + tw / 2.0         # every tube in this figure is centred on cx
         gx, gw = cx - 20, 40       # the collecting tube is wider, so it reads as a second tube
 
@@ -2537,7 +2537,7 @@ def _c6b_squeaky_pop(fig):
                 o.append(_line(px + 22 * math.cos(a), py + 22 * math.sin(a),
                                px + 34 * math.cos(a), py + 34 * math.sin(a),
                                stroke=_SVG_ACCENT_TEXT, w=2.5, data_part="pop"))
-            o.append(_label(4, y0 + 150, lab["pop"], size=13, weight="700", anchor="start",
+            o.append(_label(4, y0 + 138, lab["pop"], size=13, weight="700", anchor="start",
                             fill=_SVG_ACCENT_TEXT, data_part="label"))
     return _c6b_open(fig, 6 + 3 * RH - 4, o)
 
@@ -2625,8 +2625,11 @@ def _c6b_limewater_test(fig):
     o.append(_mono(10, 414, lab["result"].upper(), size=13, fill=_SVG_ACCENT_TEXT, weight="700",
                    spacing="1", data_part="heading"))
     for (x, name, is_milky) in ((86, lab["before"], False), (212, lab["after"], True)):
+        # clear limewater is drawn as a faint see-through blue, never as the card colour:
+        # on a light page a card-white "clear" tube read as the milkier one (Unit 3 walk)
         o.append(_path(_c6b_liquid_d(x, 36, 446, 504),
-                       fill=milky if is_milky else _SVG_CARD, data_part="limewater",
+                       fill=milky if is_milky else _SVG_BLUE_TEXT,
+                       opacity=None if is_milky else 0.12, data_part="limewater",
                        data_state="milky" if is_milky else "clear"))
         if is_milky:
             o.append(_c6b_speckle(x + 5, 450, x + 31, 496))
@@ -2686,7 +2689,7 @@ def _c6b_salt_steps(fig):
                            data_part="solution"))
             for k in range(9):
                 o.append(_ellipse(x0 + 10 + 8 * k, bot - 6 - (k % 2) * 2, 4.5, 2.6, fill=pow_,
-                                  data_part="powder-left-over"))
+                                  stroke=_SVG_INK_MUTED, w=0.8, data_part="powder-left-over"))
             o.append(_path("M %s,%s L %s,%s L %s,%s Q %s,%s %s,%s L %s,%s Q %s,%s %s,%s L %s,%s L %s,%s"
                            % (_n(x0 - 4), _n(top), _n(x0), _n(top + 4), _n(x0), _n(bot - 6),
                               _n(x0), _n(bot), _n(x0 + 6), _n(bot), _n(x1 - 6), _n(bot),
@@ -2700,7 +2703,7 @@ def _c6b_salt_steps(fig):
             o.append(_ellipse(106, y0 + 47, 7, 3.5, fill=_SVG_RULE_STRONG, stroke=_SVG_INK, w=2,
                               data_part="spatula"))
             for (px, py) in ((104, y0 + 58), (108, y0 + 66), (102, y0 + 72)):
-                o.append(_circle(px, py, 2.4, fill=pow_, data_part="powder"))
+                o.append(_circle(px, py, 2.4, fill=pow_, stroke=_SVG_INK_MUTED, w=0.8, data_part="powder"))
         elif i == 1:
             # filter funnel with paper, black powder on the paper, flask of blue filtrate
             o.append(_path("M %s,%s L %s,%s L %s,%s Z"
@@ -2708,7 +2711,7 @@ def _c6b_salt_steps(fig):
                            fill=paper, stroke=_SVG_INK_MUTED, w=1.5, data_part="filter-paper"))
             for k in range(6):
                 o.append(_ellipse(70 + 6 * k, y0 + 58 + (k % 2) * 3, 4, 2.4, fill=pow_,
-                                  data_part="powder-on-paper"))
+                                  stroke=_SVG_INK_MUTED, w=0.8, data_part="powder-on-paper"))
             o.append(_path("M %s,%s L %s,%s L %s,%s L %s,%s M %s,%s L %s,%s L %s,%s"
                            % (_n(36), _n(y0 + 28), _n(78), _n(y0 + 76), _n(78), _n(y0 + 100),
                               _n(78), _n(y0 + 100), _n(132), _n(y0 + 28), _n(90), _n(y0 + 76),
@@ -2730,7 +2733,7 @@ def _c6b_salt_steps(fig):
             o.append(_path(fl, stroke=_SVG_INK, w=3, data_part="flask"))
         elif i == 2:
             # basin on a gauze and tripod, over a flame, steam rising
-            basin(84, y0 + 56)
+            basin(84, y0 + 64)      # its bottom (rim + 22.5) rests on the gauze
             o.append(_line(30, y0 + 88, 138, y0 + 88, stroke=_SVG_INK, w=3, data_part="gauze"))
             o.append(_line(40, y0 + 88, 34, y0 + 140, stroke=_SVG_INK, w=3, data_part="tripod"))
             o.append(_line(128, y0 + 88, 134, y0 + 140, stroke=_SVG_INK, w=3, data_part="tripod"))
@@ -2750,14 +2753,14 @@ def _c6b_salt_steps(fig):
         else:
             # the basin cooling on the bench, with crystals
             basin(84, y0 + 70)
-            for (cx, cy, r) in ((62, y0 + 84, 7), (80, y0 + 88, 8), (98, y0 + 84, 6),
+            for (cx, cy, r) in ((62, y0 + 84, 7), (80, y0 + 85, 7), (98, y0 + 84, 6),
                                 (110, y0 + 80, 5), (72, y0 + 78, 5)):
                 o.append(_path("M %s,%s L %s,%s L %s,%s L %s,%s Z"
                                % (_n(cx), _n(cy - r), _n(cx + r), _n(cy), _n(cx), _n(cy + r),
                                   _n(cx - r), _n(cy)),
                                fill=cry, stroke=_SVG_INK, w=1.5, data_part="crystal"))
-            o.append(_line(28, y0 + 104, 140, y0 + 104, stroke=_SVG_INK_MUTED, w=2,
-                           data_part="bench"))
+            o.append(_line(28, y0 + 94, 140, y0 + 94, stroke=_SVG_INK_MUTED, w=2,
+                           data_part="bench"))     # the basin's bottom (rim + 22.5) sits on it
     return _c6b_open(fig, 6 + 4 * RH - 4, o)
 
 

@@ -103,6 +103,8 @@ LESSON = {
     "tutor_body": "Want to practise writing word equations for metals and acids?",
     "safety_note": "Wear eye protection. Dilute acids can harm your eyes and skin. Only test small "
                    "amounts of hydrogen, away from the reaction. Hydrogen mixed with air can explode.",
+    # the classic heading "Next in this unit" named lessons that are not next (Unit 3 walk)
+    "connects_heading": None,
     "ks4_becomes": "Metals with acids explained using ions and electrons, and the reactivity series "
                    "in more detail.",
     "figures": [

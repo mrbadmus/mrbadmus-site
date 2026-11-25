@@ -54,15 +54,8 @@ LESSON = {
                   {"figure": "c6-ph-scale-colours"},
                   "So universal indicator shows how strongly acidic or alkaline a solution is.",
                   "Litmus cannot show that."]},
-        {"kind": "reveal", "title": "Universal indicator colours",
-         "cols": ["Colour", "What it tells you"],
-         "rows": [
-             ("pH 0 to 2", "Red", "Strongly acidic"),
-             ("pH 3 to 6", "Orange or yellow", "Weakly acidic"),
-             ("pH 7", "Green", "Neutral"),
-             ("pH 8 to 10", "Blue", "Weakly alkaline"),
-             ("pH 11 to 14", "Purple", "Strongly alkaline"),
-         ]},
+        # (the "Universal indicator colours" reveal table repeated the chart's key row for row:
+        #  dropped under the no-redundant-text rule, Unit 3 walk)
         {"kind": "card", "title": "The pH scale",
          "body": ["The pH scale runs from 0 to 14.",
                   "Below 7 is acidic. 7 is neutral. Above 7 is alkaline.",
@@ -134,6 +127,8 @@ LESSON = {
     "safety_note": "Wear eye protection. Some solutions you test may be corrosive. Test a few "
                    "drops in a tube or on a tile, never in the bottle. Take care with hot water "
                    "when you make the cabbage indicator.",
+    # the classic heading "Next in this unit" named lessons that are not next (Unit 3 walk)
+    "connects_heading": None,
     "ks4_becomes": "pH as a measure of hydrogen ion concentration, why each step is a factor of "
                    "ten, and choosing an indicator for a titration.",
     "figures": [

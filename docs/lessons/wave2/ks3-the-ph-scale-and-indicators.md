@@ -5,9 +5,9 @@ Sources: National Curriculum C16 (the pH scale for measuring acidity/alkalinity;
 | Source | Statement | Where it is covered | Ticked |
 |---|---|---|---|
 | Rainford 17a | Identify the advantages of universal indicator over other indicators | Reveal: Litmus or universal indicator; Card: Universal indicator (shows how strongly acidic or alkaline, litmus cannot); Key fact; Rung 1 | ✓ |
-| Rainford 17a | Describe what the different colours of universal indicator tell us | Reveal: Universal indicator colours; drawn figure c6-ph-scale-colours | ✓ |
-| Rainford 17a | Link the colours of universal indicator to the pH scale | Card: Universal indicator (figure c6-ph-scale-colours); Reveal: Universal indicator colours | ✓ |
-| Rainford 17a | Describe a substance in terms of acid and alkali when given its pH | Card: The pH scale; Reveal: Universal indicator colours (strongly or weakly acidic or alkaline); Key fact | ✓ |
+| Rainford 17a | Describe what the different colours of universal indicator tell us | Drawn figure c6-ph-scale-colours (its key names each band's colour and meaning) | ✓ |
+| Rainford 17a | Link the colours of universal indicator to the pH scale | Card: Universal indicator (figure c6-ph-scale-colours, with its key) | ✓ |
+| Rainford 17a | Describe a substance in terms of acid and alkali when given its pH | Card: The pH scale; figure c6-ph-scale-colours key (strongly or weakly acidic or alkaline); Key fact | ✓ |
 | Rainford 18c | Making an indicator (red cabbage) | Start here; Card: Making a red cabbage indicator; drawn figure c6-cabbage-colours | ✓ |
 | Rainford 19c | Identify the pH | Card: Finding the pH of a solution (drops or paper, match to the chart, pH meter) | ✓ |
 | NC C16 | the pH scale for measuring acidity/alkalinity; and indicators | Cards: What an indicator does, Litmus, Universal indicator, The pH scale | ✓ |
@@ -34,3 +34,5 @@ Sources: National Curriculum C16 (the pH scale for measuring acidity/alkalinity;
 **Removed or moved.** Removed: the testing bench (`bench-six`), the three jobs (`jobs-three`), the confrontation (`think-commit-scale`), the old fifteen-cell strip figure (`ph-scale`, left in the lesson's data, not on the page), the summary note. Moved to Dive deeper: indicators from plants (litmus, hydrangeas); pH meters.
 
 **Easy mistakes rule.** ACID-03 and ACID-04 are tagged. Two untagged pairs: litmus gives a pH number; a higher pH means more acidic.
+
+**Walk fix (24 Nov 2026).** The "Universal indicator colours" reveal table repeated the drawn chart's key row for row, so it was dropped under the no-redundant-text rule. The chart's key carries the same five bands.

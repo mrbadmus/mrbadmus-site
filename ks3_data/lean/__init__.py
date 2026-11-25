@@ -20,6 +20,9 @@ authored LESSON, which export_ks3_questions.py reads for the database mirror):
                 questions, options and answers are never touched.
     ks4_becomes, safety_note, before_this   replaced by the record's own wording when it gives one
                 (None drops the line), so a lean page's endmatter meets the standard too.
+    connects_heading   the "Connects to" card's heading, the same way. 51 classic lessons head it
+                "Next in this unit" even where it links back or sideways; a lean record sets it
+                (None restores the default "Connects to"). Unit 3 walk, 24 Nov 2026.
 
 Every other field stays (vocabulary, covers, misconceptions, figures, activities,
 key_note...) so the data-reading gates and the flashcards are unaffected.
@@ -154,7 +157,7 @@ def apply(lesson):
     if rec.get("tutor_body") and lesson.get("tutor"):
         lesson["tutor"] = dict(lesson["tutor"], body=rec["tutor_body"])
     # render-only rewording of three endmatter lines; a None value drops the line
-    for key in ("ks4_becomes", "safety_note", "before_this"):
+    for key in ("ks4_becomes", "safety_note", "before_this", "connects_heading"):
         if key in rec:
             if rec[key]:
                 lesson[key] = rec[key]

@@ -136,8 +136,11 @@ LESSON = {
     "tutor_body": "Still not sure why the pH jumps instead of climbing steadily?",
     "safety_note": "Wear eye protection. Use dilute acids and alkalis, as both can harm your eyes "
                    "and skin. Take care when heating a solution to evaporate it: it can spit.",
-    "ks4_becomes": "Titration with a burette, the ionic equation H<sup>+</sup> + OH<sup>−</sup> "
-                   "makes H<sub>2</sub>O, and calculating concentrations from titration results.",
+    # titration is GCSE Chemistry only (AQA 4.4.2.5): the line must be true for every route
+    # the classic heading "Next in this unit" named lessons that are not next (Unit 3 walk)
+    "connects_heading": None,
+    "ks4_becomes": "The ionic equation H⁺ + OH⁻ makes H₂O. GCSE Chemistry adds titration "
+                   "with a burette.",
     "figures": [
         {"id": "c6-word-neutral", "kind": "diagram", "status": "drawn", "art": "word-equation",
          "title": "The general equation for neutralisation",

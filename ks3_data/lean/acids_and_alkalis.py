@@ -118,8 +118,10 @@ LESSON = {
                    "A strong alkali may not hurt at first, so wash any splash off at once with "
                    "plenty of water. Test a few drops, never the whole bottle. Never taste or "
                    "touch anything in the lab.",
-    "ks4_becomes": "Acids as sources of hydrogen ions (H<sup>+</sup>) and alkalis as sources of "
-                   "hydroxide ions (OH<sup>−</sup>), and the difference between strong and "
+    # the classic heading "Next in this unit" named lessons that are not next (Unit 3 walk)
+    "connects_heading": None,
+    "ks4_becomes": "Acids as sources of hydrogen ions (H⁺) and alkalis as sources of "
+                   "hydroxide ions (OH⁻), and the difference between strong and "
                    "concentrated acids.",
     "figures": [
         {"id": "c6-ph-scale-acids", "kind": "diagram", "status": "drawn", "art": "c6-ph-bands",

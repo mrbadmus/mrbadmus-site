@@ -134,6 +134,8 @@ LESSON = {
     "safety_note": "Wear eye protection. Copper compounds are harmful if swallowed, so never taste "
                    "the crystals. Do not boil the solution dry, as it can spit. Let the evaporating "
                    "basin cool before you touch it.",
+    # the classic heading "Next in this unit" named lessons that are not next (Unit 3 walk)
+    "connects_heading": None,
     "ks4_becomes": "Making a pure, dry soluble salt as a required practical. Writing the formulae "
                    "of salts.",
     "figures": [

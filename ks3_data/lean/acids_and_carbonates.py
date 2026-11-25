@@ -103,6 +103,8 @@ LESSON = {
     "tutor_body": "Want to practise the word equations for carbonates and acids?",
     "safety_note": "Wear eye protection. A carbonate fizzes hard in acid and can spit liquid out of "
                    "the tube. Limewater is an alkali, so wash it off your skin.",
+    # the classic heading "Next in this unit" named lessons that are not next (Unit 3 walk)
+    "connects_heading": None,
     "ks4_becomes": "Tests for gases and for carbonates, and the reactions of acids in more detail.",
     "figures": [
         {"id": "c6-word-carbonate-acid", "kind": "diagram", "status": "drawn", "art": "word-equation",
@@ -121,7 +123,7 @@ LESSON = {
                  "and a tube of milky limewater marked after.",
          "caption": "The end of the delivery tube must be under the limewater.",
          "data": {
-             "colours": {"milky": "#ECE8DF"},
+             "colours": {"milky": "#D8D2C6"},
              "labels": {"bung": "bung", "delivery": "delivery tube",
                         "acid": ["dilute", "hydrochloric acid"],
                         "chips": ["marble chips", "(calcium carbonate)"],
