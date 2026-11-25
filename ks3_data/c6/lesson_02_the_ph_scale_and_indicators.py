@@ -483,21 +483,16 @@ LESSON = {
         "recall": {
             "q": "What does universal indicator do that litmus does not?",
             "options": [
-                "It works on solids as well as solutions",
-                "It is more accurate, so it tells you whether something is "
-                "dangerous rather than just acidic",
-                "It changes gradually, so it gives a pH number rather than "
-                "just acid or alkali",
-                "It changes colour permanently, so the result can be kept",
+                "It works on dry solids, so it gives the pH of a powder",
+                "It measures danger, so it shows how harmful a substance is to skin",
+                "It changes colour across the whole scale, so it shows the pH",
+                "It changes colour for good, so the result can be kept",
             ],
             "answer": 2,
             "feedback": {
-                0: "Both need the substance in solution — a dry powder "
-                   "changes nothing.",
-                1: "Neither indicator measures danger. They measure position "
-                   "on the pH scale.",
-                3: "The colour of both depends on the solution they are "
-                   "sitting in; neither is a permanent record.",
+                0: "Both indicators need a solution. Dissolve a solid in water before you test it.",
+                1: "Neither indicator measures danger. Universal indicator shows the pH.",
+                3: "Both indicators change back if the solution changes. Neither colour is permanent.",
             }},
         # ⭐ THIS RUNG IS `ACID-04`, AND IT IS WHERE THE REGISTER POINTS. The
         # belief is that a deeper colour is a different reading; the rung
@@ -514,27 +509,21 @@ LESSON = {
         # too concentrated to read.
         "apply": {
             "q": "A solution turns universal indicator green. A student adds "
-                 "more indicator and the green gets deeper. What has changed "
+                 "more indicator and the green gets deeper. What does this show "
                  "about the solution?",
             "options": [
-                "It has become more neutral — the deeper green is a stronger "
-                "7",
-                "It has become slightly alkaline, because the extra dye "
-                "pushed it up",
-                "It is now too concentrated to test, so the reading cannot be "
-                "trusted",
-                "Nothing — more dye gives a stronger colour, not a different "
-                "pH",
+                "It is more neutral, because a deeper green means nearer to "
+                "pH 7",
+                "It is now alkaline, because the extra indicator has raised "
+                "its pH",
+                "It has become more concentrated, because its colour is darker",
+                "It is still pH 7, because the indicator does not change its pH",
             ],
             "answer": 3,
             "feedback": {
-                0: "There is no more neutral. pH 7 is a single point, and the "
-                   "amount of dye has nothing to do with where the solution "
-                   "sits.",
-                1: "The indicator reports the solution; it does not push it "
-                   "up or down the scale in any way you could read.",
-                2: "The dye is not the thing being measured. Adding more of "
-                   "it only makes the same reading easier to see.",
+                0: "Neutral is one point, pH 7. A solution cannot be more neutral than that.",
+                1: "The colour stayed green, so the pH is still 7. It has not become alkaline.",
+                2: "Adding indicator does not concentrate the solution. Only the colour changes.",
             }},
         "explain": {
             "q": "Explain how you would find the pH of a soil sample from a "

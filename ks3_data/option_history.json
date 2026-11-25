@@ -27,6 +27,69 @@
    "It stops within minutes, because the concentration difference disappears"
   ]
  },
+ "acid-plus-metal#apply": {
+  "0": [
+   "Copper is below hydrogen in the reactivity series, so it cannot displace it from the acid"
+  ],
+  "1": [
+   "The acid was too dilute to attack copper, so a concentrated one would have worked"
+  ],
+  "2": [
+   "Copper is not really a metal but a mixture, so it has no reaction with any acid"
+  ],
+  "3": [
+   "A week is not long enough for a reaction this slow, so it simply needs to be left longer"
+  ]
+ },
+ "acid-plus-metal#recall": {
+  "2": [
+   "Zinc oxide and hydrogen"
+  ]
+ },
+ "acids-and-alkalis#apply": {
+  "0": [
+   "Being sharp to taste is not the same as being an acid, and orange juice is only sharp"
+  ],
+  "1": [
+   "Being an acid says which side of 7 it sits on, not how strongly it acts"
+  ],
+  "2": [
+   "Being an acid does say how dangerous it is; the flaw is that one glass is a small amount"
+  ],
+  "3": [
+   "Being an acid says how dangerous it is, unless it is an alkali as well, which cancels that out"
+  ]
+ },
+ "acids-and-alkalis#recall": {
+  "1": [
+   "Any substance that is dangerous to touch"
+  ],
+  "2": [
+   "A substance with a pH below 7"
+  ],
+  "3": [
+   "A substance that has no effect on an indicator"
+  ]
+ },
+ "acids-and-carbonates#apply": {
+  "0": [
+   "The gas is hydrogen"
+  ],
+  "1": [
+   "The gas is not carbon dioxide"
+  ],
+  "2": [
+   "The limewater has gone off"
+  ],
+  "3": [
+   "No gas was produced"
+  ]
+ },
+ "acids-and-carbonates#recall": {
+  "3": [
+   "carbon dioxide + water only"
+  ]
+ },
  "aerobic-vs-anaerobic#apply": {
   "0": [
    "Aerobic supplies energy at a faster rate; anaerobic is slower but gets more from each glucose"
@@ -384,6 +447,28 @@
    "It is not alive — it is not made of cells"
   ]
  },
+ "making-a-pure-dry-salt#apply": {
+  "0": [
+   "Because more copper oxide makes more salt, so the yield goes up with it"
+  ],
+  "1": [
+   "Because copper oxide is cheap, so wasting some of it costs almost nothing"
+  ],
+  "2": [
+   "Because the reaction needs a catalyst and the extra oxide acts as one"
+  ],
+  "3": [
+   "Because leftover solid can be filtered out, while leftover acid could not be"
+  ]
+ },
+ "making-a-pure-dry-salt#recall": {
+  "1": [
+   "Nitrogen magnesate"
+  ],
+  "3": [
+   "Magnesium oxide nitrate"
+  ]
+ },
  "mass-vs-weight#apply": {
   "0": [
    "It is easier to lift, because that works against its weight, and just as hard to swing, because that works against its mass."
@@ -453,6 +538,31 @@
   ],
   "3": [
    "The pale moths learned to hide better, and passed what they had learned on to their offspring"
+  ]
+ },
+ "neutralisation#apply": {
+  "0": [
+   "The tenth drop was more concentrated than the ones before it, so it moved the reading much further"
+  ],
+  "1": [
+   "The indicator stopped working at that point, so the colour it showed after ten drops means nothing"
+  ],
+  "2": [
+   "The last of the acid was used up, so the next drop of alkali had nothing to react with"
+  ],
+  "3": [
+   "The solution boiled from the heat of the reaction, so it turned alkaline as the water left"
+  ]
+ },
+ "neutralisation#recall": {
+  "0": [
+   "water only"
+  ],
+  "2": [
+   "salt + hydrogen"
+  ],
+  "3": [
+   "a weaker acid"
   ]
  },
  "particle-model#apply": {
@@ -554,6 +664,34 @@
  "the-digestive-system#start": {
   "1": [
    "No, the bits are too big"
+  ]
+ },
+ "the-ph-scale-and-indicators#apply": {
+  "0": [
+   "It has become more neutral — the deeper green is a stronger 7"
+  ],
+  "1": [
+   "It has become slightly alkaline, because the extra dye pushed it up"
+  ],
+  "2": [
+   "It is now too concentrated to test, so the reading cannot be trusted"
+  ],
+  "3": [
+   "Nothing — more dye gives a stronger colour, not a different pH"
+  ]
+ },
+ "the-ph-scale-and-indicators#recall": {
+  "0": [
+   "It works on solids as well as solutions"
+  ],
+  "1": [
+   "It is more accurate, so it tells you whether something is dangerous rather than just acidic"
+  ],
+  "2": [
+   "It changes gradually, so it gives a pH number rather than just acid or alkali"
+  ],
+  "3": [
+   "It changes colour permanently, so the result can be kept"
   ]
  },
  "the-photosynthesis-reaction#apply": {

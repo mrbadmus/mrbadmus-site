@@ -456,18 +456,15 @@ LESSON = {
             "q": "What is an alkali?",
             "options": [
                 "A base that dissolves in water, with a pH above 7",
-                "Any substance that is dangerous to touch",
-                "A substance with a pH below 7",
-                "A substance that has no effect on an indicator",
+                "An acid that dissolves in water, with a pH below 7",
+                "A base that does not dissolve in water, with a pH of 7",
+                "Any substance that dissolves in water, with a pH of exactly 7",
             ],
             "answer": 0,
             "feedback": {
-                1: "Danger is not the test. Battery acid is dangerous and is "
-                   "not an alkali; an indigestion tablet is an alkali you can "
-                   "swallow.",
-                2: "That is an acid. Alkalis are above 7.",
-                3: "Alkalis change indicators strongly — that is how they are "
-                   "detected. Nothing here has no effect.",
+                1: "That describes an acid. An alkali has a pH above 7.",
+                2: "A base that does not dissolve is not an alkali. Alkalis are above 7.",
+                3: "A pH of exactly 7 is neutral. An alkali has a pH above 7.",
             }},
         # ⚑ MRB-177 — THE THREE DISTRACTORS ARE RE-AUTHORED AND THE CORRECT
         # OPTION IS UNTOUCHED. Design's set ran 17 words against 11, 11 and 10:
@@ -483,23 +480,18 @@ LESSON = {
             "q": "A student says: “Orange juice is an acid, so it must "
                  "be dangerous.” What is wrong with the reasoning?",
             "options": [
-                "Being sharp to taste is not the same as being an acid, and "
-                "orange juice is only sharp",
-                "Being an acid says which side of 7 it sits on, not how "
-                "strongly it acts",
-                "Being an acid does say how dangerous it is; the flaw is that "
-                "one glass is a small amount",
-                "Being an acid says how dangerous it is, unless it is an "
-                "alkali as well, which cancels that out",
+                "Orange juice is not an acid, as it is a natural fruit juice",
+                "Not all acids are dangerous, as orange juice is only weakly "
+                "acidic",
+                "All acids are dangerous, but one glass is too small to harm "
+                "you",
+                "Orange juice is neutral, as fruit juices all have a pH of exactly 7",
             ],
             "answer": 1,
             "feedback": {
-                0: "It genuinely is one: citric acid, pH about 3. The taste "
-                   "is the acid.",
-                2: "Quantity is a different argument. The flaw is treating "
-                   "acidic and dangerous as the same word.",
-                3: "Nothing is both. A substance sits on one side of 7 or the "
-                   "other.",
+                0: "Orange juice is an acid. It contains citric acid and has a pH below 7.",
+                2: "Not every acid is dangerous. Weakly acidic orange juice is safe to drink.",
+                3: "Orange juice has a pH below 7, so it is acidic, not neutral.",
             }},
         "explain": {
             "q": "Two unlabelled colourless liquids are on the bench: one is "

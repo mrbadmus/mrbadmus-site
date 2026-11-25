@@ -476,20 +476,16 @@ LESSON = {
         "recall": {
             "q": "Complete the word equation: acid + alkali makes what?",
             "options": [
-                "water only",
+                "water + hydrogen",
                 "salt + water",
-                "salt + hydrogen",
-                "a weaker acid",
+                "hydrogen + carbon dioxide",
+                "salt + carbon dioxide",
             ],
             "answer": 1,
             "feedback": {
-                0: "Water is one product. The atoms from the metal part of "
-                   "the alkali and the rest of the acid have to go somewhere "
-                   "— they become the salt.",
-                2: "That is what an acid does with a metal, not with an "
-                   "alkali. No gas is produced here.",
-                3: "Neutralisation makes new substances, not a diluted "
-                   "version of the old one.",
+                0: "Water is made, but no hydrogen. A salt is the other product.",
+                2: "No gas is made. An acid and an alkali make a salt and water.",
+                3: "A carbonate gives carbon dioxide. An acid and an alkali make a salt and water.",
             }},
         # ⚑ MRB-177 — THE THREE DISTRACTORS ARE RE-AUTHORED AND THE CORRECT
         # OPTION IS UNTOUCHED. Design's set ran 20 words against 9, 7 and 6:
@@ -504,23 +500,19 @@ LESSON = {
                  "drops the pH is 3; after ten it is 11. What happened at the "
                  "tenth drop?",
             "options": [
-                "The tenth drop was more concentrated than the ones before "
-                "it, so it moved the reading much further",
-                "The indicator stopped working at that point, so the colour "
-                "it showed after ten drops means nothing",
-                "The last of the acid was used up, so the next drop of alkali "
-                "had nothing to react with",
-                "The solution boiled from the heat of the reaction, so it "
-                "turned alkaline as the water left",
+                "The tenth drop was stronger, so it pushed the pH much "
+                "further up",
+                "The indicator stopped working, so the last reading cannot be "
+                "trusted",
+                "The last acid was used up, so extra alkali was left over",
+                "The mixture boiled, so the water left and it turned "
+                "alkaline",
             ],
             "answer": 2,
             "feedback": {
-                0: "Every drop came from the same bottle. What changed was "
-                   "what was waiting for it in the beaker.",
-                1: "The indicator reported the change faithfully — the change "
-                   "was real and sudden.",
-                3: "The mixture warms slightly but nothing boils, and warming "
-                   "does not move a solution across the scale.",
+                0: "Every drop came from the same bottle. The acid in the beaker had run out.",
+                1: "The indicator still works. The pH really did jump from 3 to 11.",
+                3: "Nothing boils here. The jump happened because the acid ran out.",
             }},
         "explain": {
             "q": "A student neutralises hydrochloric acid with sodium "
@@ -528,7 +520,7 @@ LESSON = {
                  "Explain what has actually happened to the atoms, and how "
                  "you could prove it.",
             "field_label": "Your explanation",
-            "placeholder": "The atoms have not disappeared — they have…",
+            "placeholder": "The atoms have not disappeared. They have…",
             "success": [
                 "Says the acid and alkali reacted to form new substances.",
                 "Names the products as a salt (sodium chloride) and water.",

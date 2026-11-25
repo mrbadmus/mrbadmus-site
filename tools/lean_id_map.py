@@ -125,6 +125,9 @@ WAVES = {
         ("B3", "nutrition", ["a-balanced-diet", "food-tests", "energy-in-food-and-what-you-need",
                              "when-diet-goes-wrong", "the-digestive-system", "enzymes-in-digestion",
                              "absorption-and-the-small-intestine", "bacteria-in-the-gut"]),
+        # Y8 Chem 5 Acids and alkalis: C6 lessons 1-6 (catalysts stays classic).
+        ("C6", "acids", ["acids-and-alkalis", "the-ph-scale-and-indicators", "neutralisation",
+                         "acid-plus-metal", "acids-and-carbonates", "making-a-pure-dry-salt"]),
     ],
 }
 

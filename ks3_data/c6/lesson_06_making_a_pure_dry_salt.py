@@ -515,23 +515,22 @@ LESSON = {
     "ladder": {
         # Design's options, untouched; the answer moves to index 2 (MRB-278).
         # MRB-177: 2, 2, 3, 2 words — nothing here is a length tell.
+        # ⊕ Lean Wave 2 (Nov 2026): options rewritten to the lean option rule. Before and
+        # after are in docs/lessons/wave2/ks3-making-a-pure-dry-salt.md (Quiz notes).
         "recall": {
             "q": "Nitric acid is neutralised with magnesium oxide. What salt "
                  "is made?",
             "options": [
                 "Magnesium sulfate",
-                "Nitrogen magnesate",
+                "Magnesium chloride",
                 "Magnesium nitrate",
-                "Magnesium oxide nitrate",
+                "Magnesium hydroxide",
             ],
             "answer": 2,
             "feedback": {
-                0: "Sulfates come from sulfuric acid. Nitric acid gives "
-                   "nitrates.",
-                1: "The metal always comes first and the acid supplies the "
-                   "ending. There is no such compound.",
-                3: "The oxide is used up in the reaction — its oxygen leaves "
-                   "as part of the water.",
+                0: "Sulfates come from sulfuric acid. Nitric acid makes nitrates.",
+                1: "Chlorides come from hydrochloric acid. Nitric acid makes nitrates.",
+                3: "Magnesium hydroxide is a base. The salt's ending comes from nitric acid.",
             }},
         # ⚑ MRB-177 — THE THREE DISTRACTORS ARE RE-AUTHORED AND THE CORRECT
         # OPTION IS UNTOUCHED. Design's set ran 12 words against 7, 5 and 6:
@@ -544,23 +543,19 @@ LESSON = {
             "q": "Why is excess copper oxide added rather than an exactly "
                  "measured amount?",
             "options": [
-                "Because more copper oxide makes more salt, so the yield goes "
-                "up with it",
-                "Because copper oxide is cheap, so wasting some of it costs "
-                "almost nothing",
-                "Because the reaction needs a catalyst and the extra oxide "
-                "acts as one",
-                "Because leftover solid can be filtered out, while leftover "
-                "acid could not be",
+                "Extra copper oxide makes more salt, so the yield keeps going "
+                "up",
+                "Extra copper oxide dissolves in the water, so the crystals "
+                "grow bigger",
+                "Extra copper oxide is a catalyst, so it is not used up in the "
+                "reaction",
+                "Extra copper oxide uses up the acid, so no acid stays in the solution",
             ],
             "answer": 3,
             "feedback": {
-                0: "Once the acid is used up, extra base makes nothing. The "
-                   "yield is set by the acid.",
-                1: "Cost is not the reason. The reason is that the excess can "
-                   "be removed and acid could not.",
-                2: "No catalyst is involved — the excess is simply insurance "
-                   "that no acid survives.",
+                0: "Once the acid is used up, extra copper oxide makes no more salt.",
+                1: "Copper oxide does not dissolve. That is why the extra can be filtered off.",
+                2: "Copper oxide is a reactant, so it gets used up. The extra is left over.",
             }},
         "explain": {
             "q": "Describe how you would make pure, dry crystals of magnesium "

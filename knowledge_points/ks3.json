@@ -430,7 +430,7 @@
  "acid-plus-metal": {
   "key_stage": "KS3",
   "keys": {
-   "acid-plus-metal#apply": "Copper is below hydrogen in the reactivity series, so it cannot displace it from the acid",
+   "acid-plus-metal#apply": "Copper is too unreactive, so it cannot take the place of the hydrogen",
    "acid-plus-metal#recall": "Zinc sulfate and hydrogen",
    "acid-plus-metal#start": "From the acid",
    "acid-plus-metal#test-three-1": "Yes",
@@ -600,7 +600,7 @@
  "acids-and-alkalis": {
   "key_stage": "KS3",
   "keys": {
-   "acids-and-alkalis#apply": "Being an acid says which side of 7 it sits on, not how strongly it acts",
+   "acids-and-alkalis#apply": "Not all acids are dangerous, as orange juice is only weakly acidic",
    "acids-and-alkalis#bench-eight-1": "Acid",
    "acids-and-alkalis#bench-eight-2": "Alkali",
    "acids-and-alkalis#bench-eight-3": "Neutral",
@@ -774,7 +774,7 @@
  "acids-and-carbonates": {
   "key_stage": "KS3",
   "keys": {
-   "acids-and-carbonates#apply": "The gas is not carbon dioxide",
+   "acids-and-carbonates#apply": "The gas is not carbon dioxide, as that turns limewater milky",
    "acids-and-carbonates#bench-four-solids-1": "It will fizz",
    "acids-and-carbonates#bench-four-solids-2": "It will fizz",
    "acids-and-carbonates#bench-four-solids-3": "No reaction",
@@ -15199,7 +15199,7 @@
  "making-a-pure-dry-salt": {
   "key_stage": "KS3",
   "keys": {
-   "making-a-pure-dry-salt#apply": "Because leftover solid can be filtered out, while leftover acid could not be",
+   "making-a-pure-dry-salt#apply": "Extra copper oxide uses up the acid, so no acid stays in the solution",
    "making-a-pure-dry-salt#recall": "Magnesium nitrate",
    "making-a-pure-dry-salt#start": "Slightly too much"
   },
@@ -16563,7 +16563,7 @@
  "neutralisation": {
   "key_stage": "KS3",
   "keys": {
-   "neutralisation#apply": "The last of the acid was used up, so the next drop of alkali had nothing to react with",
+   "neutralisation#apply": "The last acid was used up, so extra alkali was left over",
    "neutralisation#recall": "salt + water",
    "neutralisation#start": "Something solid",
    "neutralisation#uses-four-1": "Lime",
@@ -23052,11 +23052,11 @@
  "the-ph-scale-and-indicators": {
   "key_stage": "KS3",
   "keys": {
-   "the-ph-scale-and-indicators#apply": "Nothing — more dye gives a stronger colour, not a different pH",
+   "the-ph-scale-and-indicators#apply": "It is still pH 7, because the indicator does not change its pH",
    "the-ph-scale-and-indicators#jobs-three-1": "Litmus",
    "the-ph-scale-and-indicators#jobs-three-2": "Universal indicator",
    "the-ph-scale-and-indicators#jobs-three-3": "Neither",
-   "the-ph-scale-and-indicators#recall": "It changes gradually, so it gives a pH number rather than just acid or alkali",
+   "the-ph-scale-and-indicators#recall": "It changes colour across the whole scale, so it shows the pH",
    "the-ph-scale-and-indicators#start": "Blackberry juice would too"
   },
   "points": [

@@ -1,0 +1,4033 @@
+{
+ "base": "origin/main",
+ "ids": {
+  "acid-plus-metal#apply": {
+   "kp": "ks3.acid-plus-metal.4",
+   "new": "acid-plus-metal#apply",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "acid-plus-metal#explain": {
+   "kp": "ks3.acid-plus-metal.1",
+   "new": "acid-plus-metal#explain",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "acid-plus-metal#grid-eight-1": {
+   "kp": "ks3.acid-plus-metal.6",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "acid-plus-metal#grid-eight-2": {
+   "kp": "ks3.acid-plus-metal.6",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "acid-plus-metal#grid-eight-3": {
+   "kp": "ks3.acid-plus-metal.6",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "acid-plus-metal#grid-eight-4": {
+   "kp": "ks3.acid-plus-metal.6",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "acid-plus-metal#grid-eight-5": {
+   "kp": "ks3.acid-plus-metal.6",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "acid-plus-metal#grid-eight-6": {
+   "kp": "ks3.acid-plus-metal.6",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "acid-plus-metal#grid-eight-7": {
+   "kp": "ks3.acid-plus-metal.4",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "acid-plus-metal#grid-eight-8": {
+   "kp": "ks3.acid-plus-metal.4",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "acid-plus-metal#produce": {
+   "kp": "ks3.acid-plus-metal.7",
+   "new": "acid-plus-metal#produce",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "acid-plus-metal#recall": {
+   "kp": "ks3.acid-plus-metal.1",
+   "new": "acid-plus-metal#recall",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "acid-plus-metal#start": {
+   "kp": "ks3.acid-plus-metal.2",
+   "new": "acid-plus-metal#start",
+   "note": "Start here, the same question as before",
+   "status": "kept"
+  },
+  "acid-plus-metal#test-three-1": {
+   "kp": "ks3.acid-plus-metal.5",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "acid-plus-metal#test-three-2": {
+   "kp": "ks3.acid-plus-metal.9",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "acid-plus-metal#test-three-3": {
+   "kp": "ks3.acid-plus-metal.9",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "acid-plus-metal#think-commit-fizz": {
+   "kp": "ks3.acid-plus-metal.2",
+   "new": null,
+   "note": "the Think first question is not on the lean page",
+   "status": "removed"
+  },
+  "acids-and-alkalis#apply": {
+   "kp": "ks3.acids-and-alkalis.2",
+   "new": "acids-and-alkalis#apply",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "acids-and-alkalis#bench-eight-1": {
+   "kp": "ks3.acids-and-alkalis.6",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "acids-and-alkalis#bench-eight-2": {
+   "kp": "ks3.acids-and-alkalis.6",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "acids-and-alkalis#bench-eight-3": {
+   "kp": "ks3.acids-and-alkalis.6",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "acids-and-alkalis#bench-eight-4": {
+   "kp": "ks3.acids-and-alkalis.6",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "acids-and-alkalis#bench-eight-5": {
+   "kp": "ks3.acids-and-alkalis.6",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "acids-and-alkalis#bench-eight-6": {
+   "kp": "ks3.acids-and-alkalis.6",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "acids-and-alkalis#bench-eight-7": {
+   "kp": "ks3.acids-and-alkalis.6",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "acids-and-alkalis#bench-eight-8": {
+   "kp": "ks3.acids-and-alkalis.6",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "acids-and-alkalis#explain": {
+   "kp": "ks3.acids-and-alkalis.3",
+   "new": "acids-and-alkalis#explain",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "acids-and-alkalis#hazard-three-1": {
+   "kp": "ks3.acids-and-alkalis.5",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "acids-and-alkalis#hazard-three-2": {
+   "kp": "ks3.acids-and-alkalis.2",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "acids-and-alkalis#hazard-three-3": {
+   "kp": "ks3.acids-and-alkalis.8",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "acids-and-alkalis#produce": {
+   "kp": "ks3.acids-and-alkalis.4",
+   "new": "acids-and-alkalis#produce",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "acids-and-alkalis#recall": {
+   "kp": "ks3.acids-and-alkalis.4",
+   "new": "acids-and-alkalis#recall",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "acids-and-alkalis#start": {
+   "kp": "ks3.acids-and-alkalis.3",
+   "new": "acids-and-alkalis#start",
+   "note": "Start here, the same question as before",
+   "status": "kept"
+  },
+  "acids-and-alkalis#think-commit-danger": {
+   "kp": "ks3.acids-and-alkalis.2",
+   "new": null,
+   "note": "the Think first question is not on the lean page",
+   "status": "removed"
+  },
+  "acids-and-carbonates#apply": {
+   "kp": "ks3.acids-and-carbonates.2",
+   "new": "acids-and-carbonates#apply",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "acids-and-carbonates#bench-four-solids-1": {
+   "kp": "ks3.acids-and-carbonates.1",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "acids-and-carbonates#bench-four-solids-2": {
+   "kp": "ks3.acids-and-carbonates.1",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "acids-and-carbonates#bench-four-solids-3": {
+   "kp": "ks3.acids-and-carbonates.1",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "acids-and-carbonates#bench-four-solids-4": {
+   "kp": "ks3.acids-and-carbonates.1",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "acids-and-carbonates#explain": {
+   "kp": "ks3.acids-and-carbonates.1",
+   "new": "acids-and-carbonates#explain",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "acids-and-carbonates#produce": {
+   "kp": "ks3.acids-and-carbonates.2",
+   "new": "acids-and-carbonates#produce",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "acids-and-carbonates#recall": {
+   "kp": "ks3.acids-and-carbonates.1",
+   "new": "acids-and-carbonates#recall",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "acids-and-carbonates#start": {
+   "kp": "ks3.acids-and-carbonates.8",
+   "new": "acids-and-carbonates#start",
+   "note": "Start here, the same question as before",
+   "status": "kept"
+  },
+  "acids-and-carbonates#think-commit-splint": {
+   "kp": "ks3.acids-and-carbonates.6",
+   "new": null,
+   "note": "the Think first question is not on the lean page",
+   "status": "removed"
+  },
+  "acids-and-carbonates#uses-three-1": {
+   "kp": "ks3.acids-and-carbonates.7",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "acids-and-carbonates#uses-three-2": {
+   "kp": "ks3.acids-and-carbonates.9",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "acids-and-carbonates#uses-three-3": {
+   "kp": "ks3.acids-and-carbonates.1",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "c6-01-e01": {
+   "kp": "ks3.acids-and-alkalis.1",
+   "new": "c6-01-e01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-e02": {
+   "kp": "ks3.acids-and-alkalis.2",
+   "new": "c6-01-e02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-e03": {
+   "kp": "ks3.acids-and-alkalis.3",
+   "new": "c6-01-e03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-e04": {
+   "kp": "ks3.acids-and-alkalis.4",
+   "new": "c6-01-e04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-e05": {
+   "kp": "ks3.acids-and-alkalis.4",
+   "new": "c6-01-e05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-e06": {
+   "kp": "ks3.acids-and-alkalis.2",
+   "new": "c6-01-e06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-e07": {
+   "kp": "ks3.acids-and-alkalis.3",
+   "new": "c6-01-e07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-e08": {
+   "kp": "ks3.acids-and-alkalis.6",
+   "new": "c6-01-e08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-e09": {
+   "kp": "ks3.acids-and-alkalis.6",
+   "new": "c6-01-e09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-e10": {
+   "kp": "ks3.acids-and-alkalis.6",
+   "new": "c6-01-e10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-e11": {
+   "kp": "ks3.acids-and-alkalis.6",
+   "new": "c6-01-e11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-e12": {
+   "kp": "ks3.acids-and-alkalis.6",
+   "new": "c6-01-e12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-e13": {
+   "kp": "ks3.acids-and-alkalis.6",
+   "new": "c6-01-e13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-e14": {
+   "kp": "ks3.acids-and-alkalis.1",
+   "new": "c6-01-e14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-e15": {
+   "kp": "ks3.acids-and-alkalis.1",
+   "new": "c6-01-e15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-e16": {
+   "kp": "ks3.acids-and-alkalis.4",
+   "new": "c6-01-e16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-e17": {
+   "kp": "ks3.acids-and-alkalis.4",
+   "new": "c6-01-e17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-e18": {
+   "kp": "ks3.acids-and-alkalis.1",
+   "new": "c6-01-e18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-e19": {
+   "kp": "ks3.acids-and-alkalis.1",
+   "new": "c6-01-e19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-e20": {
+   "kp": "ks3.acids-and-alkalis.6",
+   "new": "c6-01-e20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-e21": {
+   "kp": "ks3.acids-and-alkalis.1",
+   "new": "c6-01-e21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-e22": {
+   "kp": "ks3.acids-and-alkalis.6",
+   "new": "c6-01-e22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-e23": {
+   "kp": "ks3.acids-and-alkalis.7",
+   "new": "c6-01-e23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-e24": {
+   "kp": "ks3.acids-and-alkalis.7",
+   "new": "c6-01-e24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-e25": {
+   "kp": "ks3.acids-and-alkalis.2",
+   "new": "c6-01-e25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-e26": {
+   "kp": "ks3.acids-and-alkalis.6",
+   "new": "c6-01-e26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-e27": {
+   "kp": "ks3.acids-and-alkalis.1",
+   "new": "c6-01-e27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-e28": {
+   "kp": "ks3.acids-and-alkalis.1",
+   "new": "c6-01-e28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-e29": {
+   "kp": "ks3.acids-and-alkalis.5",
+   "new": "c6-01-e29",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-e30": {
+   "kp": "ks3.acids-and-alkalis.5",
+   "new": "c6-01-e30",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-e31": {
+   "kp": "ks3.acids-and-alkalis.1",
+   "new": "c6-01-e31",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-e32": {
+   "kp": "ks3.acids-and-alkalis.6",
+   "new": "c6-01-e32",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-h01": {
+   "kp": "ks3.acids-and-alkalis.2",
+   "new": "c6-01-h01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-h02": {
+   "kp": "ks3.acids-and-alkalis.6",
+   "new": "c6-01-h02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-h03": {
+   "kp": "ks3.acids-and-alkalis.2",
+   "new": "c6-01-h03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-h04": {
+   "kp": "ks3.acids-and-alkalis.4",
+   "new": "c6-01-h04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-h05": {
+   "kp": "ks3.acids-and-alkalis.5",
+   "new": "c6-01-h05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-h06": {
+   "kp": "ks3.acids-and-alkalis.6",
+   "new": "c6-01-h06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-h07": {
+   "kp": "ks3.acids-and-alkalis.7",
+   "new": "c6-01-h07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-h08": {
+   "kp": "ks3.acids-and-alkalis.2",
+   "new": "c6-01-h08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-h09": {
+   "kp": "ks3.acids-and-alkalis.5",
+   "new": "c6-01-h09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-h10": {
+   "kp": "ks3.acids-and-alkalis.5",
+   "new": "c6-01-h10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-h11": {
+   "kp": "ks3.acids-and-alkalis.2",
+   "new": "c6-01-h11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-h12": {
+   "kp": "ks3.acids-and-alkalis.7",
+   "new": "c6-01-h12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-h13": {
+   "kp": "ks3.acids-and-alkalis.1",
+   "new": "c6-01-h13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-h14": {
+   "kp": "ks3.acids-and-alkalis.1",
+   "new": "c6-01-h14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-h15": {
+   "kp": "ks3.acids-and-alkalis.2",
+   "new": "c6-01-h15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-h16": {
+   "kp": "ks3.acids-and-alkalis.5",
+   "new": "c6-01-h16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-h17": {
+   "kp": "ks3.acids-and-alkalis.3",
+   "new": "c6-01-h17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-h18": {
+   "kp": "ks3.acids-and-alkalis.3",
+   "new": "c6-01-h18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-h19": {
+   "kp": "ks3.acids-and-alkalis.4",
+   "new": "c6-01-h19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-h20": {
+   "kp": "ks3.acids-and-alkalis.1",
+   "new": "c6-01-h20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-h21": {
+   "kp": "ks3.acids-and-alkalis.4",
+   "new": "c6-01-h21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-h22": {
+   "kp": "ks3.acids-and-alkalis.7",
+   "new": "c6-01-h22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-h23": {
+   "kp": "ks3.acids-and-alkalis.4",
+   "new": "c6-01-h23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-h24": {
+   "kp": "ks3.acids-and-alkalis.1",
+   "new": "c6-01-h24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-h25": {
+   "kp": "ks3.acids-and-alkalis.2",
+   "new": "c6-01-h25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-h26": {
+   "kp": "ks3.acids-and-alkalis.2",
+   "new": "c6-01-h26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-h27": {
+   "kp": "ks3.acids-and-alkalis.2",
+   "new": "c6-01-h27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-h28": {
+   "kp": "ks3.acids-and-alkalis.5",
+   "new": "c6-01-h28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-h29": {
+   "kp": "ks3.acids-and-alkalis.2",
+   "new": "c6-01-h29",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-h30": {
+   "kp": "ks3.acids-and-alkalis.4",
+   "new": "c6-01-h30",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-h31": {
+   "kp": "ks3.acids-and-alkalis.1",
+   "new": "c6-01-h31",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-h32": {
+   "kp": "ks3.acids-and-alkalis.2",
+   "new": "c6-01-h32",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-s01": {
+   "kp": "ks3.acids-and-alkalis.5",
+   "new": "c6-01-s01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-s02": {
+   "kp": "ks3.acids-and-alkalis.3",
+   "new": "c6-01-s02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-s03": {
+   "kp": "ks3.acids-and-alkalis.4",
+   "new": "c6-01-s03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-s04": {
+   "kp": "ks3.acids-and-alkalis.4",
+   "new": "c6-01-s04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-s05": {
+   "kp": "ks3.acids-and-alkalis.6",
+   "new": "c6-01-s05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-s06": {
+   "kp": "ks3.acids-and-alkalis.4",
+   "new": "c6-01-s06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-s07": {
+   "kp": "ks3.acids-and-alkalis.2",
+   "new": "c6-01-s07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-s08": {
+   "kp": "ks3.acids-and-alkalis.4",
+   "new": "c6-01-s08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-s09": {
+   "kp": "ks3.acids-and-alkalis.2",
+   "new": "c6-01-s09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-s10": {
+   "kp": "ks3.acids-and-alkalis.1",
+   "new": "c6-01-s10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-s11": {
+   "kp": "ks3.acids-and-alkalis.4",
+   "new": "c6-01-s11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-s12": {
+   "kp": "ks3.acids-and-alkalis.4",
+   "new": "c6-01-s12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-s13": {
+   "kp": "ks3.acids-and-alkalis.6",
+   "new": "c6-01-s13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-s14": {
+   "kp": "ks3.acids-and-alkalis.3",
+   "new": "c6-01-s14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-s15": {
+   "kp": "ks3.acids-and-alkalis.2",
+   "new": "c6-01-s15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-s16": {
+   "kp": "ks3.acids-and-alkalis.4",
+   "new": "c6-01-s16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-s17": {
+   "kp": "ks3.acids-and-alkalis.7",
+   "new": "c6-01-s17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-s18": {
+   "kp": "ks3.acids-and-alkalis.7",
+   "new": "c6-01-s18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-s19": {
+   "kp": "ks3.acids-and-alkalis.5",
+   "new": "c6-01-s19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-s20": {
+   "kp": "ks3.acids-and-alkalis.1",
+   "new": "c6-01-s20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-s21": {
+   "kp": "ks3.acids-and-alkalis.2",
+   "new": "c6-01-s21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-s22": {
+   "kp": "ks3.acids-and-alkalis.4",
+   "new": "c6-01-s22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-s23": {
+   "kp": "ks3.acids-and-alkalis.5",
+   "new": "c6-01-s23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-s24": {
+   "kp": "ks3.acids-and-alkalis.3",
+   "new": "c6-01-s24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-s25": {
+   "kp": "ks3.acids-and-alkalis.1",
+   "new": "c6-01-s25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-s26": {
+   "kp": "ks3.acids-and-alkalis.6",
+   "new": "c6-01-s26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-s27": {
+   "kp": "ks3.acids-and-alkalis.7",
+   "new": "c6-01-s27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-s28": {
+   "kp": "ks3.acids-and-alkalis.4",
+   "new": "c6-01-s28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-s29": {
+   "kp": "ks3.acids-and-alkalis.7",
+   "new": "c6-01-s29",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-s30": {
+   "kp": "ks3.acids-and-alkalis.3",
+   "new": "c6-01-s30",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-s31": {
+   "kp": "ks3.acids-and-alkalis.2",
+   "new": "c6-01-s31",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-01-s32": {
+   "kp": "ks3.acids-and-alkalis.7",
+   "new": "c6-01-s32",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-e01": {
+   "kp": "ks3.the-ph-scale-and-indicators.1",
+   "new": "c6-02-e01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-e02": {
+   "kp": "ks3.the-ph-scale-and-indicators.4",
+   "new": "c6-02-e02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-e03": {
+   "kp": "ks3.the-ph-scale-and-indicators.6",
+   "new": "c6-02-e03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-e04": {
+   "kp": "ks3.the-ph-scale-and-indicators.3",
+   "new": "c6-02-e04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-e05": {
+   "kp": "ks3.the-ph-scale-and-indicators.1",
+   "new": "c6-02-e05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-e06": {
+   "kp": "ks3.the-ph-scale-and-indicators.5",
+   "new": "c6-02-e06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-e07": {
+   "kp": "ks3.the-ph-scale-and-indicators.2",
+   "new": "c6-02-e07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-e08": {
+   "kp": "ks3.the-ph-scale-and-indicators.3",
+   "new": "c6-02-e08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-e09": {
+   "kp": "ks3.the-ph-scale-and-indicators.2",
+   "new": "c6-02-e09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-e10": {
+   "kp": "ks3.the-ph-scale-and-indicators.1",
+   "new": "c6-02-e10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-e11": {
+   "kp": "ks3.the-ph-scale-and-indicators.4",
+   "new": "c6-02-e11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-e12": {
+   "kp": "ks3.the-ph-scale-and-indicators.4",
+   "new": "c6-02-e12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-e13": {
+   "kp": "ks3.the-ph-scale-and-indicators.5",
+   "new": "c6-02-e13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-e14": {
+   "kp": "ks3.the-ph-scale-and-indicators.2",
+   "new": "c6-02-e14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-e15": {
+   "kp": "ks3.the-ph-scale-and-indicators.6",
+   "new": "c6-02-e15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-e16": {
+   "kp": "ks3.the-ph-scale-and-indicators.2",
+   "new": "c6-02-e16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-e17": {
+   "kp": "ks3.the-ph-scale-and-indicators.4",
+   "new": "c6-02-e17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-e18": {
+   "kp": "ks3.the-ph-scale-and-indicators.2",
+   "new": "c6-02-e18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-e19": {
+   "kp": "ks3.the-ph-scale-and-indicators.6",
+   "new": "c6-02-e19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-e20": {
+   "kp": "ks3.the-ph-scale-and-indicators.2",
+   "new": "c6-02-e20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-e21": {
+   "kp": "ks3.the-ph-scale-and-indicators.2",
+   "new": "c6-02-e21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-e22": {
+   "kp": "ks3.the-ph-scale-and-indicators.1",
+   "new": "c6-02-e22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-e23": {
+   "kp": "ks3.the-ph-scale-and-indicators.4",
+   "new": "c6-02-e23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-e24": {
+   "kp": "ks3.the-ph-scale-and-indicators.5",
+   "new": "c6-02-e24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-e25": {
+   "kp": "ks3.the-ph-scale-and-indicators.4",
+   "new": "c6-02-e25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-e26": {
+   "kp": "ks3.the-ph-scale-and-indicators.1",
+   "new": "c6-02-e26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-e27": {
+   "kp": "ks3.the-ph-scale-and-indicators.4",
+   "new": "c6-02-e27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-e28": {
+   "kp": "ks3.the-ph-scale-and-indicators.4",
+   "new": "c6-02-e28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-e29": {
+   "kp": "ks3.the-ph-scale-and-indicators.4",
+   "new": "c6-02-e29",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-e30": {
+   "kp": "ks3.the-ph-scale-and-indicators.5",
+   "new": "c6-02-e30",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-e31": {
+   "kp": "ks3.the-ph-scale-and-indicators.1",
+   "new": "c6-02-e31",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-e32": {
+   "kp": "ks3.the-ph-scale-and-indicators.4",
+   "new": "c6-02-e32",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-h01": {
+   "kp": "ks3.the-ph-scale-and-indicators.3",
+   "new": "c6-02-h01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-h02": {
+   "kp": "ks3.the-ph-scale-and-indicators.5",
+   "new": "c6-02-h02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-h03": {
+   "kp": "ks3.the-ph-scale-and-indicators.6",
+   "new": "c6-02-h03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-h04": {
+   "kp": "ks3.the-ph-scale-and-indicators.3",
+   "new": "c6-02-h04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-h05": {
+   "kp": "ks3.the-ph-scale-and-indicators.3",
+   "new": "c6-02-h05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-h06": {
+   "kp": "ks3.the-ph-scale-and-indicators.4",
+   "new": "c6-02-h06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-h07": {
+   "kp": "ks3.the-ph-scale-and-indicators.3",
+   "new": "c6-02-h07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-h08": {
+   "kp": "ks3.the-ph-scale-and-indicators.2",
+   "new": "c6-02-h08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-h09": {
+   "kp": "ks3.the-ph-scale-and-indicators.3",
+   "new": "c6-02-h09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-h10": {
+   "kp": "ks3.the-ph-scale-and-indicators.5",
+   "new": "c6-02-h10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-h11": {
+   "kp": "ks3.the-ph-scale-and-indicators.5",
+   "new": "c6-02-h11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-h12": {
+   "kp": "ks3.the-ph-scale-and-indicators.1",
+   "new": "c6-02-h12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-h13": {
+   "kp": "ks3.the-ph-scale-and-indicators.3",
+   "new": "c6-02-h13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-h14": {
+   "kp": "ks3.the-ph-scale-and-indicators.7",
+   "new": "c6-02-h14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-h15": {
+   "kp": "ks3.the-ph-scale-and-indicators.2",
+   "new": "c6-02-h15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-h16": {
+   "kp": "ks3.the-ph-scale-and-indicators.6",
+   "new": "c6-02-h16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-h17": {
+   "kp": "ks3.the-ph-scale-and-indicators.5",
+   "new": "c6-02-h17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-h18": {
+   "kp": "ks3.the-ph-scale-and-indicators.7",
+   "new": "c6-02-h18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-h19": {
+   "kp": "ks3.the-ph-scale-and-indicators.4",
+   "new": "c6-02-h19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-h20": {
+   "kp": "ks3.the-ph-scale-and-indicators.7",
+   "new": "c6-02-h20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-h21": {
+   "kp": "ks3.the-ph-scale-and-indicators.5",
+   "new": "c6-02-h21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-h22": {
+   "kp": "ks3.the-ph-scale-and-indicators.4",
+   "new": "c6-02-h22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-h23": {
+   "kp": "ks3.the-ph-scale-and-indicators.7",
+   "new": "c6-02-h23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-h24": {
+   "kp": "ks3.the-ph-scale-and-indicators.1",
+   "new": "c6-02-h24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-h25": {
+   "kp": "ks3.the-ph-scale-and-indicators.7",
+   "new": "c6-02-h25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-h26": {
+   "kp": "ks3.the-ph-scale-and-indicators.6",
+   "new": "c6-02-h26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-h27": {
+   "kp": "ks3.the-ph-scale-and-indicators.3",
+   "new": "c6-02-h27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-h28": {
+   "kp": "ks3.the-ph-scale-and-indicators.7",
+   "new": "c6-02-h28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-h29": {
+   "kp": "ks3.the-ph-scale-and-indicators.3",
+   "new": "c6-02-h29",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-h30": {
+   "kp": "ks3.the-ph-scale-and-indicators.4",
+   "new": "c6-02-h30",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-h31": {
+   "kp": "ks3.the-ph-scale-and-indicators.6",
+   "new": "c6-02-h31",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-h32": {
+   "kp": "ks3.the-ph-scale-and-indicators.3",
+   "new": "c6-02-h32",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-s01": {
+   "kp": "ks3.the-ph-scale-and-indicators.7",
+   "new": "c6-02-s01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-s02": {
+   "kp": "ks3.the-ph-scale-and-indicators.3",
+   "new": "c6-02-s02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-s03": {
+   "kp": "ks3.the-ph-scale-and-indicators.6",
+   "new": "c6-02-s03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-s04": {
+   "kp": "ks3.the-ph-scale-and-indicators.3",
+   "new": "c6-02-s04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-s05": {
+   "kp": "ks3.the-ph-scale-and-indicators.7",
+   "new": "c6-02-s05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-s06": {
+   "kp": "ks3.the-ph-scale-and-indicators.2",
+   "new": "c6-02-s06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-s07": {
+   "kp": "ks3.the-ph-scale-and-indicators.4",
+   "new": "c6-02-s07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-s08": {
+   "kp": "ks3.the-ph-scale-and-indicators.7",
+   "new": "c6-02-s08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-s09": {
+   "kp": "ks3.the-ph-scale-and-indicators.6",
+   "new": "c6-02-s09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-s10": {
+   "kp": "ks3.the-ph-scale-and-indicators.2",
+   "new": "c6-02-s10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-s11": {
+   "kp": "ks3.the-ph-scale-and-indicators.3",
+   "new": "c6-02-s11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-s12": {
+   "kp": "ks3.the-ph-scale-and-indicators.6",
+   "new": "c6-02-s12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-s13": {
+   "kp": "ks3.the-ph-scale-and-indicators.6",
+   "new": "c6-02-s13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-s14": {
+   "kp": "ks3.the-ph-scale-and-indicators.5",
+   "new": "c6-02-s14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-s15": {
+   "kp": "ks3.the-ph-scale-and-indicators.6",
+   "new": "c6-02-s15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-s16": {
+   "kp": "ks3.the-ph-scale-and-indicators.5",
+   "new": "c6-02-s16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-s17": {
+   "kp": "ks3.the-ph-scale-and-indicators.4",
+   "new": "c6-02-s17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-s18": {
+   "kp": "ks3.the-ph-scale-and-indicators.2",
+   "new": "c6-02-s18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-s19": {
+   "kp": "ks3.the-ph-scale-and-indicators.5",
+   "new": "c6-02-s19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-s20": {
+   "kp": "ks3.the-ph-scale-and-indicators.6",
+   "new": "c6-02-s20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-s21": {
+   "kp": "ks3.the-ph-scale-and-indicators.6",
+   "new": "c6-02-s21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-s22": {
+   "kp": "ks3.the-ph-scale-and-indicators.7",
+   "new": "c6-02-s22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-s23": {
+   "kp": "ks3.the-ph-scale-and-indicators.2",
+   "new": "c6-02-s23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-s24": {
+   "kp": "ks3.the-ph-scale-and-indicators.1",
+   "new": "c6-02-s24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-s25": {
+   "kp": "ks3.the-ph-scale-and-indicators.4",
+   "new": "c6-02-s25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-s26": {
+   "kp": "ks3.the-ph-scale-and-indicators.2",
+   "new": "c6-02-s26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-s27": {
+   "kp": "ks3.the-ph-scale-and-indicators.4",
+   "new": "c6-02-s27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-s28": {
+   "kp": "ks3.the-ph-scale-and-indicators.7",
+   "new": "c6-02-s28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-s29": {
+   "kp": "ks3.the-ph-scale-and-indicators.7",
+   "new": "c6-02-s29",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-s30": {
+   "kp": "ks3.the-ph-scale-and-indicators.7",
+   "new": "c6-02-s30",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-s31": {
+   "kp": "ks3.the-ph-scale-and-indicators.6",
+   "new": "c6-02-s31",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-02-s32": {
+   "kp": "ks3.the-ph-scale-and-indicators.2",
+   "new": "c6-02-s32",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-e01": {
+   "kp": "ks3.neutralisation.2",
+   "new": "c6-03-e01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-e02": {
+   "kp": "ks3.neutralisation.1",
+   "new": "c6-03-e02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-e03": {
+   "kp": "ks3.neutralisation.3",
+   "new": "c6-03-e03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-e04": {
+   "kp": "ks3.neutralisation.4",
+   "new": "c6-03-e04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-e05": {
+   "kp": "ks3.neutralisation.1",
+   "new": "c6-03-e05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-e06": {
+   "kp": "ks3.neutralisation.5",
+   "new": "c6-03-e06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-e07": {
+   "kp": "ks3.neutralisation.6",
+   "new": "c6-03-e07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-e08": {
+   "kp": "ks3.neutralisation.5",
+   "new": "c6-03-e08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-e09": {
+   "kp": "ks3.neutralisation.7",
+   "new": "c6-03-e09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-e10": {
+   "kp": "ks3.neutralisation.3",
+   "new": "c6-03-e10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-e11": {
+   "kp": "ks3.neutralisation.5",
+   "new": "c6-03-e11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-e12": {
+   "kp": "ks3.neutralisation.1",
+   "new": "c6-03-e12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-e13": {
+   "kp": "ks3.neutralisation.2",
+   "new": "c6-03-e13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-e14": {
+   "kp": "ks3.neutralisation.5",
+   "new": "c6-03-e14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-e15": {
+   "kp": "ks3.neutralisation.1",
+   "new": "c6-03-e15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-e16": {
+   "kp": "ks3.neutralisation.2",
+   "new": "c6-03-e16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-e17": {
+   "kp": "ks3.neutralisation.7",
+   "new": "c6-03-e17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-e18": {
+   "kp": "ks3.neutralisation.7",
+   "new": "c6-03-e18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-e19": {
+   "kp": "ks3.neutralisation.1",
+   "new": "c6-03-e19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-e20": {
+   "kp": "ks3.neutralisation.6",
+   "new": "c6-03-e20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-e21": {
+   "kp": "ks3.neutralisation.4",
+   "new": "c6-03-e21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-e22": {
+   "kp": "ks3.neutralisation.1",
+   "new": "c6-03-e22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-e23": {
+   "kp": "ks3.neutralisation.4",
+   "new": "c6-03-e23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-e24": {
+   "kp": "ks3.neutralisation.1",
+   "new": "c6-03-e24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-e25": {
+   "kp": "ks3.neutralisation.4",
+   "new": "c6-03-e25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-e26": {
+   "kp": "ks3.neutralisation.2",
+   "new": "c6-03-e26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-e27": {
+   "kp": "ks3.neutralisation.2",
+   "new": "c6-03-e27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-e28": {
+   "kp": "ks3.neutralisation.2",
+   "new": "c6-03-e28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-e29": {
+   "kp": "ks3.neutralisation.5",
+   "new": "c6-03-e29",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-e30": {
+   "kp": "ks3.neutralisation.1",
+   "new": "c6-03-e30",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-e31": {
+   "kp": "ks3.neutralisation.1",
+   "new": "c6-03-e31",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-e32": {
+   "kp": "ks3.neutralisation.4",
+   "new": "c6-03-e32",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-h01": {
+   "kp": "ks3.neutralisation.1",
+   "new": "c6-03-h01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-h02": {
+   "kp": "ks3.neutralisation.5",
+   "new": "c6-03-h02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-h03": {
+   "kp": "ks3.neutralisation.6",
+   "new": "c6-03-h03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-h04": {
+   "kp": "ks3.neutralisation.6",
+   "new": "c6-03-h04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-h05": {
+   "kp": "ks3.neutralisation.2",
+   "new": "c6-03-h05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-h06": {
+   "kp": "ks3.neutralisation.1",
+   "new": "c6-03-h06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-h07": {
+   "kp": "ks3.neutralisation.1",
+   "new": "c6-03-h07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-h08": {
+   "kp": "ks3.neutralisation.3",
+   "new": "c6-03-h08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-h09": {
+   "kp": "ks3.neutralisation.3",
+   "new": "c6-03-h09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-h10": {
+   "kp": "ks3.neutralisation.4",
+   "new": "c6-03-h10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-h11": {
+   "kp": "ks3.neutralisation.1",
+   "new": "c6-03-h11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-h12": {
+   "kp": "ks3.neutralisation.3",
+   "new": "c6-03-h12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-h13": {
+   "kp": "ks3.neutralisation.5",
+   "new": "c6-03-h13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-h14": {
+   "kp": "ks3.neutralisation.3",
+   "new": "c6-03-h14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-h15": {
+   "kp": "ks3.neutralisation.7",
+   "new": "c6-03-h15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-h16": {
+   "kp": "ks3.neutralisation.1",
+   "new": "c6-03-h16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-h17": {
+   "kp": "ks3.neutralisation.5",
+   "new": "c6-03-h17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-h18": {
+   "kp": "ks3.neutralisation.3",
+   "new": "c6-03-h18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-h19": {
+   "kp": "ks3.neutralisation.6",
+   "new": "c6-03-h19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-h20": {
+   "kp": "ks3.neutralisation.5",
+   "new": "c6-03-h20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-h21": {
+   "kp": "ks3.neutralisation.2",
+   "new": "c6-03-h21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-h22": {
+   "kp": "ks3.neutralisation.7",
+   "new": "c6-03-h22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-h23": {
+   "kp": "ks3.neutralisation.6",
+   "new": "c6-03-h23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-h24": {
+   "kp": "ks3.neutralisation.6",
+   "new": "c6-03-h24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-h25": {
+   "kp": "ks3.neutralisation.3",
+   "new": "c6-03-h25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-h26": {
+   "kp": "ks3.neutralisation.7",
+   "new": "c6-03-h26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-h27": {
+   "kp": "ks3.neutralisation.3",
+   "new": "c6-03-h27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-h28": {
+   "kp": "ks3.neutralisation.3",
+   "new": "c6-03-h28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-h29": {
+   "kp": "ks3.neutralisation.6",
+   "new": "c6-03-h29",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-h30": {
+   "kp": "ks3.neutralisation.5",
+   "new": "c6-03-h30",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-h31": {
+   "kp": "ks3.neutralisation.3",
+   "new": "c6-03-h31",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-h32": {
+   "kp": "ks3.neutralisation.4",
+   "new": "c6-03-h32",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-s01": {
+   "kp": "ks3.neutralisation.1",
+   "new": "c6-03-s01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-s02": {
+   "kp": "ks3.neutralisation.4",
+   "new": "c6-03-s02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-s03": {
+   "kp": "ks3.neutralisation.6",
+   "new": "c6-03-s03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-s04": {
+   "kp": "ks3.neutralisation.1",
+   "new": "c6-03-s04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-s05": {
+   "kp": "ks3.neutralisation.2",
+   "new": "c6-03-s05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-s06": {
+   "kp": "ks3.neutralisation.6",
+   "new": "c6-03-s06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-s07": {
+   "kp": "ks3.neutralisation.3",
+   "new": "c6-03-s07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-s08": {
+   "kp": "ks3.neutralisation.5",
+   "new": "c6-03-s08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-s09": {
+   "kp": "ks3.neutralisation.5",
+   "new": "c6-03-s09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-s10": {
+   "kp": "ks3.neutralisation.7",
+   "new": "c6-03-s10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-s11": {
+   "kp": "ks3.neutralisation.5",
+   "new": "c6-03-s11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-s12": {
+   "kp": "ks3.neutralisation.6",
+   "new": "c6-03-s12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-s13": {
+   "kp": "ks3.neutralisation.2",
+   "new": "c6-03-s13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-s14": {
+   "kp": "ks3.neutralisation.1",
+   "new": "c6-03-s14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-s15": {
+   "kp": "ks3.neutralisation.5",
+   "new": "c6-03-s15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-s16": {
+   "kp": "ks3.neutralisation.3",
+   "new": "c6-03-s16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-s17": {
+   "kp": "ks3.neutralisation.5",
+   "new": "c6-03-s17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-s18": {
+   "kp": "ks3.neutralisation.1",
+   "new": "c6-03-s18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-s19": {
+   "kp": "ks3.neutralisation.1",
+   "new": "c6-03-s19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-s20": {
+   "kp": "ks3.neutralisation.1",
+   "new": "c6-03-s20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-s21": {
+   "kp": "ks3.neutralisation.3",
+   "new": "c6-03-s21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-s22": {
+   "kp": "ks3.neutralisation.5",
+   "new": "c6-03-s22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-s23": {
+   "kp": "ks3.neutralisation.2",
+   "new": "c6-03-s23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-s24": {
+   "kp": "ks3.neutralisation.4",
+   "new": "c6-03-s24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-s25": {
+   "kp": "ks3.neutralisation.3",
+   "new": "c6-03-s25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-s26": {
+   "kp": "ks3.neutralisation.5",
+   "new": "c6-03-s26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-s27": {
+   "kp": "ks3.neutralisation.7",
+   "new": "c6-03-s27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-s28": {
+   "kp": "ks3.neutralisation.6",
+   "new": "c6-03-s28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-s29": {
+   "kp": "ks3.neutralisation.6",
+   "new": "c6-03-s29",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-s30": {
+   "kp": "ks3.neutralisation.6",
+   "new": "c6-03-s30",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-s31": {
+   "kp": "ks3.neutralisation.5",
+   "new": "c6-03-s31",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-03-s32": {
+   "kp": "ks3.neutralisation.3",
+   "new": "c6-03-s32",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-e01": {
+   "kp": "ks3.acid-plus-metal.1",
+   "new": "c6-04-e01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-e02": {
+   "kp": "ks3.acid-plus-metal.2",
+   "new": "c6-04-e02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-e03": {
+   "kp": "ks3.acid-plus-metal.3",
+   "new": "c6-04-e03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-e04": {
+   "kp": "ks3.acid-plus-metal.4",
+   "new": "c6-04-e04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-e05": {
+   "kp": "ks3.acid-plus-metal.4",
+   "new": "c6-04-e05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-e06": {
+   "kp": "ks3.acid-plus-metal.5",
+   "new": "c6-04-e06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-e07": {
+   "kp": "ks3.acid-plus-metal.3",
+   "new": "c6-04-e07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-e08": {
+   "kp": "ks3.acid-plus-metal.6",
+   "new": "c6-04-e08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-e09": {
+   "kp": "ks3.acid-plus-metal.6",
+   "new": "c6-04-e09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-e10": {
+   "kp": "ks3.acid-plus-metal.3",
+   "new": "c6-04-e10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-e11": {
+   "kp": "ks3.acid-plus-metal.1",
+   "new": "c6-04-e11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-e12": {
+   "kp": "ks3.acid-plus-metal.6",
+   "new": "c6-04-e12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-e13": {
+   "kp": "ks3.acid-plus-metal.3",
+   "new": "c6-04-e13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-e14": {
+   "kp": "ks3.acid-plus-metal.4",
+   "new": "c6-04-e14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-e15": {
+   "kp": "ks3.acid-plus-metal.4",
+   "new": "c6-04-e15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-e16": {
+   "kp": "ks3.acid-plus-metal.5",
+   "new": "c6-04-e16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-e17": {
+   "kp": "ks3.acid-plus-metal.3",
+   "new": "c6-04-e17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-e18": {
+   "kp": "ks3.acid-plus-metal.4",
+   "new": "c6-04-e18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-e19": {
+   "kp": "ks3.acid-plus-metal.4",
+   "new": "c6-04-e19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-e20": {
+   "kp": "ks3.acid-plus-metal.6",
+   "new": "c6-04-e20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-e21": {
+   "kp": "ks3.acid-plus-metal.8",
+   "new": "c6-04-e21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-e22": {
+   "kp": "ks3.acid-plus-metal.3",
+   "new": "c6-04-e22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-e23": {
+   "kp": "ks3.acid-plus-metal.3",
+   "new": "c6-04-e23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-e24": {
+   "kp": "ks3.acid-plus-metal.2",
+   "new": "c6-04-e24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-e25": {
+   "kp": "ks3.acid-plus-metal.5",
+   "new": "c6-04-e25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-e26": {
+   "kp": "ks3.acid-plus-metal.4",
+   "new": "c6-04-e26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-e27": {
+   "kp": "ks3.acid-plus-metal.1",
+   "new": "c6-04-e27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-e28": {
+   "kp": "ks3.acid-plus-metal.3",
+   "new": "c6-04-e28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-e29": {
+   "kp": "ks3.acid-plus-metal.7",
+   "new": "c6-04-e29",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-e30": {
+   "kp": "ks3.acid-plus-metal.1",
+   "new": "c6-04-e30",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-e31": {
+   "kp": "ks3.acid-plus-metal.4",
+   "new": "c6-04-e31",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-e32": {
+   "kp": "ks3.acid-plus-metal.7",
+   "new": "c6-04-e32",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-h01": {
+   "kp": "ks3.acid-plus-metal.2",
+   "new": "c6-04-h01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-h02": {
+   "kp": "ks3.acid-plus-metal.7",
+   "new": "c6-04-h02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-h03": {
+   "kp": "ks3.acid-plus-metal.1",
+   "new": "c6-04-h03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-h04": {
+   "kp": "ks3.acid-plus-metal.4",
+   "new": "c6-04-h04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-h05": {
+   "kp": "ks3.acid-plus-metal.3",
+   "new": "c6-04-h05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-h06": {
+   "kp": "ks3.acid-plus-metal.2",
+   "new": "c6-04-h06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-h07": {
+   "kp": "ks3.acid-plus-metal.4",
+   "new": "c6-04-h07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-h08": {
+   "kp": "ks3.acid-plus-metal.5",
+   "new": "c6-04-h08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-h09": {
+   "kp": "ks3.acid-plus-metal.4",
+   "new": "c6-04-h09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-h10": {
+   "kp": "ks3.acid-plus-metal.8",
+   "new": "c6-04-h10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-h11": {
+   "kp": "ks3.acid-plus-metal.4",
+   "new": "c6-04-h11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-h12": {
+   "kp": "ks3.acid-plus-metal.4",
+   "new": "c6-04-h12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-h13": {
+   "kp": "ks3.acid-plus-metal.2",
+   "new": "c6-04-h13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-h14": {
+   "kp": "ks3.acid-plus-metal.5",
+   "new": "c6-04-h14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-h15": {
+   "kp": "ks3.acid-plus-metal.8",
+   "new": "c6-04-h15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-h16": {
+   "kp": "ks3.acid-plus-metal.3",
+   "new": "c6-04-h16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-h17": {
+   "kp": "ks3.acid-plus-metal.1",
+   "new": "c6-04-h17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-h18": {
+   "kp": "ks3.acid-plus-metal.7",
+   "new": "c6-04-h18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-h19": {
+   "kp": "ks3.acid-plus-metal.4",
+   "new": "c6-04-h19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-h20": {
+   "kp": "ks3.acid-plus-metal.8",
+   "new": "c6-04-h20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-h21": {
+   "kp": "ks3.acid-plus-metal.8",
+   "new": "c6-04-h21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-h22": {
+   "kp": "ks3.acid-plus-metal.6",
+   "new": "c6-04-h22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-h23": {
+   "kp": "ks3.acid-plus-metal.8",
+   "new": "c6-04-h23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-h24": {
+   "kp": "ks3.acid-plus-metal.4",
+   "new": "c6-04-h24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-h25": {
+   "kp": "ks3.acid-plus-metal.8",
+   "new": "c6-04-h25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-h26": {
+   "kp": "ks3.acid-plus-metal.6",
+   "new": "c6-04-h26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-h27": {
+   "kp": "ks3.acid-plus-metal.8",
+   "new": "c6-04-h27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-h28": {
+   "kp": "ks3.acid-plus-metal.7",
+   "new": "c6-04-h28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-h29": {
+   "kp": "ks3.acid-plus-metal.8",
+   "new": "c6-04-h29",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-h30": {
+   "kp": "ks3.acid-plus-metal.3",
+   "new": "c6-04-h30",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-h31": {
+   "kp": "ks3.acid-plus-metal.4",
+   "new": "c6-04-h31",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-h32": {
+   "kp": "ks3.acid-plus-metal.4",
+   "new": "c6-04-h32",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-s01": {
+   "kp": "ks3.acid-plus-metal.3",
+   "new": "c6-04-s01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-s02": {
+   "kp": "ks3.acid-plus-metal.4",
+   "new": "c6-04-s02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-s03": {
+   "kp": "ks3.acid-plus-metal.3",
+   "new": "c6-04-s03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-s04": {
+   "kp": "ks3.acid-plus-metal.5",
+   "new": "c6-04-s04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-s05": {
+   "kp": "ks3.acid-plus-metal.1",
+   "new": "c6-04-s05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-s06": {
+   "kp": "ks3.acid-plus-metal.5",
+   "new": "c6-04-s06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-s07": {
+   "kp": "ks3.acid-plus-metal.2",
+   "new": "c6-04-s07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-s08": {
+   "kp": "ks3.acid-plus-metal.1",
+   "new": "c6-04-s08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-s09": {
+   "kp": "ks3.acid-plus-metal.6",
+   "new": "c6-04-s09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-s10": {
+   "kp": "ks3.acid-plus-metal.6",
+   "new": "c6-04-s10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-s11": {
+   "kp": "ks3.acid-plus-metal.7",
+   "new": "c6-04-s11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-s12": {
+   "kp": "ks3.acid-plus-metal.3",
+   "new": "c6-04-s12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-s13": {
+   "kp": "ks3.acid-plus-metal.8",
+   "new": "c6-04-s13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-s14": {
+   "kp": "ks3.acid-plus-metal.1",
+   "new": "c6-04-s14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-s15": {
+   "kp": "ks3.acid-plus-metal.5",
+   "new": "c6-04-s15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-s16": {
+   "kp": "ks3.acid-plus-metal.1",
+   "new": "c6-04-s16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-s17": {
+   "kp": "ks3.acid-plus-metal.7",
+   "new": "c6-04-s17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-s18": {
+   "kp": "ks3.acid-plus-metal.7",
+   "new": "c6-04-s18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-s19": {
+   "kp": "ks3.acid-plus-metal.1",
+   "new": "c6-04-s19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-s20": {
+   "kp": "ks3.acid-plus-metal.2",
+   "new": "c6-04-s20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-s21": {
+   "kp": "ks3.acid-plus-metal.6",
+   "new": "c6-04-s21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-s22": {
+   "kp": "ks3.acid-plus-metal.6",
+   "new": "c6-04-s22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-s23": {
+   "kp": "ks3.acid-plus-metal.7",
+   "new": "c6-04-s23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-s24": {
+   "kp": "ks3.acid-plus-metal.4",
+   "new": "c6-04-s24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-s25": {
+   "kp": "ks3.acid-plus-metal.4",
+   "new": "c6-04-s25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-s26": {
+   "kp": "ks3.acid-plus-metal.4",
+   "new": "c6-04-s26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-s27": {
+   "kp": "ks3.acid-plus-metal.8",
+   "new": "c6-04-s27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-s28": {
+   "kp": "ks3.acid-plus-metal.6",
+   "new": "c6-04-s28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-s29": {
+   "kp": "ks3.acid-plus-metal.1",
+   "new": "c6-04-s29",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-s30": {
+   "kp": "ks3.acid-plus-metal.8",
+   "new": "c6-04-s30",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-s31": {
+   "kp": "ks3.acid-plus-metal.6",
+   "new": "c6-04-s31",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-04-s32": {
+   "kp": "ks3.acid-plus-metal.8",
+   "new": "c6-04-s32",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-e01": {
+   "kp": "ks3.acids-and-carbonates.1",
+   "new": "c6-05-e01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-e02": {
+   "kp": "ks3.acids-and-carbonates.2",
+   "new": "c6-05-e02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-e03": {
+   "kp": "ks3.acids-and-carbonates.4",
+   "new": "c6-05-e03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-e04": {
+   "kp": "ks3.acids-and-carbonates.2",
+   "new": "c6-05-e04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-e05": {
+   "kp": "ks3.acids-and-carbonates.2",
+   "new": "c6-05-e05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-e06": {
+   "kp": "ks3.acids-and-carbonates.2",
+   "new": "c6-05-e06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-e07": {
+   "kp": "ks3.acids-and-carbonates.5",
+   "new": "c6-05-e07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-e08": {
+   "kp": "ks3.acids-and-carbonates.1",
+   "new": "c6-05-e08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-e09": {
+   "kp": "ks3.acids-and-carbonates.1",
+   "new": "c6-05-e09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-e10": {
+   "kp": "ks3.acids-and-carbonates.3",
+   "new": "c6-05-e10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-e11": {
+   "kp": "ks3.acids-and-carbonates.1",
+   "new": "c6-05-e11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-e12": {
+   "kp": "ks3.acids-and-carbonates.3",
+   "new": "c6-05-e12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-e13": {
+   "kp": "ks3.acids-and-carbonates.3",
+   "new": "c6-05-e13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-e14": {
+   "kp": "ks3.acids-and-carbonates.3",
+   "new": "c6-05-e14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-e15": {
+   "kp": "ks3.acids-and-carbonates.3",
+   "new": "c6-05-e15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-e16": {
+   "kp": "ks3.acids-and-carbonates.5",
+   "new": "c6-05-e16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-e17": {
+   "kp": "ks3.acids-and-carbonates.4",
+   "new": "c6-05-e17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-e18": {
+   "kp": "ks3.acids-and-carbonates.1",
+   "new": "c6-05-e18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-e19": {
+   "kp": "ks3.acids-and-carbonates.5",
+   "new": "c6-05-e19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-e20": {
+   "kp": "ks3.acids-and-carbonates.4",
+   "new": "c6-05-e20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-e21": {
+   "kp": "ks3.acids-and-carbonates.2",
+   "new": "c6-05-e21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-e22": {
+   "kp": "ks3.acids-and-carbonates.2",
+   "new": "c6-05-e22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-e23": {
+   "kp": "ks3.acids-and-carbonates.2",
+   "new": "c6-05-e23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-e24": {
+   "kp": "ks3.acids-and-carbonates.1",
+   "new": "c6-05-e24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-e25": {
+   "kp": "ks3.acids-and-carbonates.1",
+   "new": "c6-05-e25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-e26": {
+   "kp": "ks3.acids-and-carbonates.1",
+   "new": "c6-05-e26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-e27": {
+   "kp": "ks3.acids-and-carbonates.1",
+   "new": "c6-05-e27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-e28": {
+   "kp": "ks3.acids-and-carbonates.1",
+   "new": "c6-05-e28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-e29": {
+   "kp": "ks3.acids-and-carbonates.3",
+   "new": "c6-05-e29",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-e30": {
+   "kp": "ks3.acids-and-carbonates.1",
+   "new": "c6-05-e30",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-e31": {
+   "kp": "ks3.acids-and-carbonates.1",
+   "new": "c6-05-e31",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-e32": {
+   "kp": "ks3.acids-and-carbonates.5",
+   "new": "c6-05-e32",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-h01": {
+   "kp": "ks3.acids-and-carbonates.6",
+   "new": "c6-05-h01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-h02": {
+   "kp": "ks3.acids-and-carbonates.1",
+   "new": "c6-05-h02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-h03": {
+   "kp": "ks3.acids-and-carbonates.4",
+   "new": "c6-05-h03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-h04": {
+   "kp": "ks3.acids-and-carbonates.3",
+   "new": "c6-05-h04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-h05": {
+   "kp": "ks3.acids-and-carbonates.7",
+   "new": "c6-05-h05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-h06": {
+   "kp": "ks3.acids-and-carbonates.7",
+   "new": "c6-05-h06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-h07": {
+   "kp": "ks3.acids-and-carbonates.7",
+   "new": "c6-05-h07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-h08": {
+   "kp": "ks3.acids-and-carbonates.6",
+   "new": "c6-05-h08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-h09": {
+   "kp": "ks3.acids-and-carbonates.1",
+   "new": "c6-05-h09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-h10": {
+   "kp": "ks3.acids-and-carbonates.7",
+   "new": "c6-05-h10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-h11": {
+   "kp": "ks3.acids-and-carbonates.1",
+   "new": "c6-05-h11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-h12": {
+   "kp": "ks3.acids-and-carbonates.1",
+   "new": "c6-05-h12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-h13": {
+   "kp": "ks3.acids-and-carbonates.1",
+   "new": "c6-05-h13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-h14": {
+   "kp": "ks3.acids-and-carbonates.3",
+   "new": "c6-05-h14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-h15": {
+   "kp": "ks3.acids-and-carbonates.4",
+   "new": "c6-05-h15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-h16": {
+   "kp": "ks3.acids-and-carbonates.7",
+   "new": "c6-05-h16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-h17": {
+   "kp": "ks3.acids-and-carbonates.1",
+   "new": "c6-05-h17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-h18": {
+   "kp": "ks3.acids-and-carbonates.1",
+   "new": "c6-05-h18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-h19": {
+   "kp": "ks3.acids-and-carbonates.2",
+   "new": "c6-05-h19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-h20": {
+   "kp": "ks3.acids-and-carbonates.6",
+   "new": "c6-05-h20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-h21": {
+   "kp": "ks3.acids-and-carbonates.3",
+   "new": "c6-05-h21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-h22": {
+   "kp": "ks3.acids-and-carbonates.5",
+   "new": "c6-05-h22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-h23": {
+   "kp": "ks3.acids-and-carbonates.2",
+   "new": "c6-05-h23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-h24": {
+   "kp": "ks3.acids-and-carbonates.3",
+   "new": "c6-05-h24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-h25": {
+   "kp": "ks3.acids-and-carbonates.3",
+   "new": "c6-05-h25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-h26": {
+   "kp": "ks3.acids-and-carbonates.1",
+   "new": "c6-05-h26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-h27": {
+   "kp": "ks3.acids-and-carbonates.4",
+   "new": "c6-05-h27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-h28": {
+   "kp": "ks3.acids-and-carbonates.3",
+   "new": "c6-05-h28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-h29": {
+   "kp": "ks3.acids-and-carbonates.4",
+   "new": "c6-05-h29",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-h30": {
+   "kp": "ks3.acids-and-carbonates.2",
+   "new": "c6-05-h30",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-h31": {
+   "kp": "ks3.acids-and-carbonates.7",
+   "new": "c6-05-h31",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-h32": {
+   "kp": "ks3.acids-and-carbonates.7",
+   "new": "c6-05-h32",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-s01": {
+   "kp": "ks3.acids-and-carbonates.6",
+   "new": "c6-05-s01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-s02": {
+   "kp": "ks3.acids-and-carbonates.5",
+   "new": "c6-05-s02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-s03": {
+   "kp": "ks3.acids-and-carbonates.2",
+   "new": "c6-05-s03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-s04": {
+   "kp": "ks3.acids-and-carbonates.3",
+   "new": "c6-05-s04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-s05": {
+   "kp": "ks3.acids-and-carbonates.2",
+   "new": "c6-05-s05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-s06": {
+   "kp": "ks3.acids-and-carbonates.5",
+   "new": "c6-05-s06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-s07": {
+   "kp": "ks3.acids-and-carbonates.4",
+   "new": "c6-05-s07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-s08": {
+   "kp": "ks3.acids-and-carbonates.5",
+   "new": "c6-05-s08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-s09": {
+   "kp": "ks3.acids-and-carbonates.1",
+   "new": "c6-05-s09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-s10": {
+   "kp": "ks3.acids-and-carbonates.3",
+   "new": "c6-05-s10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-s11": {
+   "kp": "ks3.acids-and-carbonates.1",
+   "new": "c6-05-s11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-s12": {
+   "kp": "ks3.acids-and-carbonates.2",
+   "new": "c6-05-s12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-s13": {
+   "kp": "ks3.acids-and-carbonates.4",
+   "new": "c6-05-s13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-s14": {
+   "kp": "ks3.acids-and-carbonates.7",
+   "new": "c6-05-s14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-s15": {
+   "kp": "ks3.acids-and-carbonates.1",
+   "new": "c6-05-s15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-s16": {
+   "kp": "ks3.acids-and-carbonates.6",
+   "new": "c6-05-s16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-s17": {
+   "kp": "ks3.acids-and-carbonates.6",
+   "new": "c6-05-s17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-s18": {
+   "kp": "ks3.acids-and-carbonates.3",
+   "new": "c6-05-s18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-s19": {
+   "kp": "ks3.acids-and-carbonates.2",
+   "new": "c6-05-s19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-s20": {
+   "kp": "ks3.acids-and-carbonates.3",
+   "new": "c6-05-s20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-s21": {
+   "kp": "ks3.acids-and-carbonates.1",
+   "new": "c6-05-s21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-s22": {
+   "kp": "ks3.acids-and-carbonates.3",
+   "new": "c6-05-s22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-s23": {
+   "kp": "ks3.acids-and-carbonates.3",
+   "new": "c6-05-s23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-s24": {
+   "kp": "ks3.acids-and-carbonates.1",
+   "new": "c6-05-s24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-s25": {
+   "kp": "ks3.acids-and-carbonates.6",
+   "new": "c6-05-s25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-s26": {
+   "kp": "ks3.acids-and-carbonates.2",
+   "new": "c6-05-s26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-s27": {
+   "kp": "ks3.acids-and-carbonates.5",
+   "new": "c6-05-s27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-s28": {
+   "kp": "ks3.acids-and-carbonates.3",
+   "new": "c6-05-s28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-s29": {
+   "kp": "ks3.acids-and-carbonates.3",
+   "new": "c6-05-s29",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-s30": {
+   "kp": "ks3.acids-and-carbonates.5",
+   "new": "c6-05-s30",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-s31": {
+   "kp": "ks3.acids-and-carbonates.7",
+   "new": "c6-05-s31",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-05-s32": {
+   "kp": "ks3.acids-and-carbonates.2",
+   "new": "c6-05-s32",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-e01": {
+   "kp": "ks3.making-a-pure-dry-salt.1",
+   "new": "c6-06-e01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-e02": {
+   "kp": "ks3.making-a-pure-dry-salt.1",
+   "new": "c6-06-e02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-e03": {
+   "kp": "ks3.making-a-pure-dry-salt.2",
+   "new": "c6-06-e03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-e04": {
+   "kp": "ks3.making-a-pure-dry-salt.4",
+   "new": "c6-06-e04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-e05": {
+   "kp": "ks3.making-a-pure-dry-salt.2",
+   "new": "c6-06-e05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-e06": {
+   "kp": "ks3.making-a-pure-dry-salt.1",
+   "new": "c6-06-e06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-e07": {
+   "kp": "ks3.making-a-pure-dry-salt.5",
+   "new": "c6-06-e07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-e08": {
+   "kp": "ks3.making-a-pure-dry-salt.1",
+   "new": "c6-06-e08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-e09": {
+   "kp": "ks3.making-a-pure-dry-salt.1",
+   "new": "c6-06-e09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-e10": {
+   "kp": "ks3.making-a-pure-dry-salt.6",
+   "new": "c6-06-e10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-e11": {
+   "kp": "ks3.making-a-pure-dry-salt.2",
+   "new": "c6-06-e11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-e12": {
+   "kp": "ks3.making-a-pure-dry-salt.2",
+   "new": "c6-06-e12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-e13": {
+   "kp": "ks3.making-a-pure-dry-salt.3",
+   "new": "c6-06-e13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-e14": {
+   "kp": "ks3.making-a-pure-dry-salt.4",
+   "new": "c6-06-e14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-e15": {
+   "kp": "ks3.making-a-pure-dry-salt.4",
+   "new": "c6-06-e15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-e16": {
+   "kp": "ks3.making-a-pure-dry-salt.3",
+   "new": "c6-06-e16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-e17": {
+   "kp": "ks3.making-a-pure-dry-salt.1",
+   "new": "c6-06-e17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-e18": {
+   "kp": "ks3.making-a-pure-dry-salt.7",
+   "new": "c6-06-e18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-e19": {
+   "kp": "ks3.making-a-pure-dry-salt.7",
+   "new": "c6-06-e19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-e20": {
+   "kp": "ks3.making-a-pure-dry-salt.2",
+   "new": "c6-06-e20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-e21": {
+   "kp": "ks3.making-a-pure-dry-salt.2",
+   "new": "c6-06-e21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-e22": {
+   "kp": "ks3.making-a-pure-dry-salt.4",
+   "new": "c6-06-e22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-e23": {
+   "kp": "ks3.making-a-pure-dry-salt.3",
+   "new": "c6-06-e23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-e24": {
+   "kp": "ks3.making-a-pure-dry-salt.1",
+   "new": "c6-06-e24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-e25": {
+   "kp": "ks3.making-a-pure-dry-salt.1",
+   "new": "c6-06-e25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-e26": {
+   "kp": "ks3.making-a-pure-dry-salt.4",
+   "new": "c6-06-e26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-e27": {
+   "kp": "ks3.making-a-pure-dry-salt.4",
+   "new": "c6-06-e27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-e28": {
+   "kp": "ks3.making-a-pure-dry-salt.1",
+   "new": "c6-06-e28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-e29": {
+   "kp": "ks3.making-a-pure-dry-salt.4",
+   "new": "c6-06-e29",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-e30": {
+   "kp": "ks3.making-a-pure-dry-salt.3",
+   "new": "c6-06-e30",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-e31": {
+   "kp": "ks3.making-a-pure-dry-salt.2",
+   "new": "c6-06-e31",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-e32": {
+   "kp": "ks3.making-a-pure-dry-salt.3",
+   "new": "c6-06-e32",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-h01": {
+   "kp": "ks3.making-a-pure-dry-salt.5",
+   "new": "c6-06-h01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-h02": {
+   "kp": "ks3.making-a-pure-dry-salt.2",
+   "new": "c6-06-h02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-h03": {
+   "kp": "ks3.making-a-pure-dry-salt.6",
+   "new": "c6-06-h03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-h04": {
+   "kp": "ks3.making-a-pure-dry-salt.4",
+   "new": "c6-06-h04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-h05": {
+   "kp": "ks3.making-a-pure-dry-salt.1",
+   "new": "c6-06-h05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-h06": {
+   "kp": "ks3.making-a-pure-dry-salt.2",
+   "new": "c6-06-h06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-h07": {
+   "kp": "ks3.making-a-pure-dry-salt.6",
+   "new": "c6-06-h07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-h08": {
+   "kp": "ks3.making-a-pure-dry-salt.1",
+   "new": "c6-06-h08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-h09": {
+   "kp": "ks3.making-a-pure-dry-salt.2",
+   "new": "c6-06-h09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-h10": {
+   "kp": "ks3.making-a-pure-dry-salt.1",
+   "new": "c6-06-h10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-h11": {
+   "kp": "ks3.making-a-pure-dry-salt.2",
+   "new": "c6-06-h11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-h12": {
+   "kp": "ks3.making-a-pure-dry-salt.2",
+   "new": "c6-06-h12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-h13": {
+   "kp": "ks3.making-a-pure-dry-salt.3",
+   "new": "c6-06-h13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-h14": {
+   "kp": "ks3.making-a-pure-dry-salt.7",
+   "new": "c6-06-h14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-h15": {
+   "kp": "ks3.making-a-pure-dry-salt.6",
+   "new": "c6-06-h15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-h16": {
+   "kp": "ks3.making-a-pure-dry-salt.4",
+   "new": "c6-06-h16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-h17": {
+   "kp": "ks3.making-a-pure-dry-salt.2",
+   "new": "c6-06-h17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-h18": {
+   "kp": "ks3.making-a-pure-dry-salt.1",
+   "new": "c6-06-h18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-h19": {
+   "kp": "ks3.making-a-pure-dry-salt.2",
+   "new": "c6-06-h19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-h20": {
+   "kp": "ks3.making-a-pure-dry-salt.6",
+   "new": "c6-06-h20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-h21": {
+   "kp": "ks3.making-a-pure-dry-salt.6",
+   "new": "c6-06-h21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-h22": {
+   "kp": "ks3.making-a-pure-dry-salt.2",
+   "new": "c6-06-h22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-h23": {
+   "kp": "ks3.making-a-pure-dry-salt.4",
+   "new": "c6-06-h23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-h24": {
+   "kp": "ks3.making-a-pure-dry-salt.4",
+   "new": "c6-06-h24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-h25": {
+   "kp": "ks3.making-a-pure-dry-salt.5",
+   "new": "c6-06-h25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-h26": {
+   "kp": "ks3.making-a-pure-dry-salt.3",
+   "new": "c6-06-h26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-h27": {
+   "kp": "ks3.making-a-pure-dry-salt.3",
+   "new": "c6-06-h27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-h28": {
+   "kp": "ks3.making-a-pure-dry-salt.1",
+   "new": "c6-06-h28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-h29": {
+   "kp": "ks3.making-a-pure-dry-salt.4",
+   "new": "c6-06-h29",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-h30": {
+   "kp": "ks3.making-a-pure-dry-salt.6",
+   "new": "c6-06-h30",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-h31": {
+   "kp": "ks3.making-a-pure-dry-salt.1",
+   "new": "c6-06-h31",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-h32": {
+   "kp": "ks3.making-a-pure-dry-salt.2",
+   "new": "c6-06-h32",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-s01": {
+   "kp": "ks3.making-a-pure-dry-salt.2",
+   "new": "c6-06-s01",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-s02": {
+   "kp": "ks3.making-a-pure-dry-salt.1",
+   "new": "c6-06-s02",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-s03": {
+   "kp": "ks3.making-a-pure-dry-salt.4",
+   "new": "c6-06-s03",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-s04": {
+   "kp": "ks3.making-a-pure-dry-salt.6",
+   "new": "c6-06-s04",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-s05": {
+   "kp": "ks3.making-a-pure-dry-salt.2",
+   "new": "c6-06-s05",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-s06": {
+   "kp": "ks3.making-a-pure-dry-salt.4",
+   "new": "c6-06-s06",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-s07": {
+   "kp": "ks3.making-a-pure-dry-salt.3",
+   "new": "c6-06-s07",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-s08": {
+   "kp": "ks3.making-a-pure-dry-salt.2",
+   "new": "c6-06-s08",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-s09": {
+   "kp": "ks3.making-a-pure-dry-salt.2",
+   "new": "c6-06-s09",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-s10": {
+   "kp": "ks3.making-a-pure-dry-salt.2",
+   "new": "c6-06-s10",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-s11": {
+   "kp": "ks3.making-a-pure-dry-salt.3",
+   "new": "c6-06-s11",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-s12": {
+   "kp": "ks3.making-a-pure-dry-salt.4",
+   "new": "c6-06-s12",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-s13": {
+   "kp": "ks3.making-a-pure-dry-salt.1",
+   "new": "c6-06-s13",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-s14": {
+   "kp": "ks3.making-a-pure-dry-salt.2",
+   "new": "c6-06-s14",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-s15": {
+   "kp": "ks3.making-a-pure-dry-salt.4",
+   "new": "c6-06-s15",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-s16": {
+   "kp": "ks3.making-a-pure-dry-salt.4",
+   "new": "c6-06-s16",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-s17": {
+   "kp": "ks3.making-a-pure-dry-salt.2",
+   "new": "c6-06-s17",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-s18": {
+   "kp": "ks3.making-a-pure-dry-salt.3",
+   "new": "c6-06-s18",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-s19": {
+   "kp": "ks3.making-a-pure-dry-salt.3",
+   "new": "c6-06-s19",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-s20": {
+   "kp": "ks3.making-a-pure-dry-salt.1",
+   "new": "c6-06-s20",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-s21": {
+   "kp": "ks3.making-a-pure-dry-salt.2",
+   "new": "c6-06-s21",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-s22": {
+   "kp": "ks3.making-a-pure-dry-salt.5",
+   "new": "c6-06-s22",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-s23": {
+   "kp": "ks3.making-a-pure-dry-salt.2",
+   "new": "c6-06-s23",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-s24": {
+   "kp": "ks3.making-a-pure-dry-salt.4",
+   "new": "c6-06-s24",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-s25": {
+   "kp": "ks3.making-a-pure-dry-salt.4",
+   "new": "c6-06-s25",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-s26": {
+   "kp": "ks3.making-a-pure-dry-salt.3",
+   "new": "c6-06-s26",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-s27": {
+   "kp": "ks3.making-a-pure-dry-salt.1",
+   "new": "c6-06-s27",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-s28": {
+   "kp": "ks3.making-a-pure-dry-salt.1",
+   "new": "c6-06-s28",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-s29": {
+   "kp": "ks3.making-a-pure-dry-salt.2",
+   "new": "c6-06-s29",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-s30": {
+   "kp": "ks3.making-a-pure-dry-salt.3",
+   "new": "c6-06-s30",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-s31": {
+   "kp": "ks3.making-a-pure-dry-salt.4",
+   "new": "c6-06-s31",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "c6-06-s32": {
+   "kp": "ks3.making-a-pure-dry-salt.2",
+   "new": "c6-06-s32",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks3-c6-acid-plus-metal-explain": {
+   "kp": "ks3.acid-plus-metal.1",
+   "new": "ks3-c6-acid-plus-metal-explain",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks3-c6-acid-plus-metal-produce": {
+   "kp": "ks3.acid-plus-metal.7",
+   "new": "ks3-c6-acid-plus-metal-produce",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks3-c6-acids-and-alkalis-explain": {
+   "kp": "ks3.acids-and-alkalis.3",
+   "new": "ks3-c6-acids-and-alkalis-explain",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks3-c6-acids-and-alkalis-produce": {
+   "kp": "ks3.acids-and-alkalis.4",
+   "new": "ks3-c6-acids-and-alkalis-produce",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks3-c6-acids-and-carbonates-explain": {
+   "kp": "ks3.acids-and-carbonates.1",
+   "new": "ks3-c6-acids-and-carbonates-explain",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks3-c6-acids-and-carbonates-produce": {
+   "kp": "ks3.acids-and-carbonates.2",
+   "new": "ks3-c6-acids-and-carbonates-produce",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks3-c6-making-a-pure-dry-salt-explain": {
+   "kp": "ks3.making-a-pure-dry-salt.2",
+   "new": "ks3-c6-making-a-pure-dry-salt-explain",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks3-c6-making-a-pure-dry-salt-produce": {
+   "kp": "ks3.making-a-pure-dry-salt.6",
+   "new": "ks3-c6-making-a-pure-dry-salt-produce",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks3-c6-neutralisation-explain": {
+   "kp": "ks3.neutralisation.1",
+   "new": "ks3-c6-neutralisation-explain",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks3-c6-neutralisation-produce": {
+   "kp": "ks3.neutralisation.6",
+   "new": "ks3-c6-neutralisation-produce",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks3-c6-the-ph-scale-and-indicators-explain": {
+   "kp": "ks3.the-ph-scale-and-indicators.7",
+   "new": "ks3-c6-the-ph-scale-and-indicators-explain",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "ks3-c6-the-ph-scale-and-indicators-produce": {
+   "kp": "ks3.the-ph-scale-and-indicators.7",
+   "new": "ks3-c6-the-ph-scale-and-indicators-produce",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "making-a-pure-dry-salt#apply": {
+   "kp": "ks3.making-a-pure-dry-salt.2",
+   "new": "making-a-pure-dry-salt#apply",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "making-a-pure-dry-salt#explain": {
+   "kp": "ks3.making-a-pure-dry-salt.2",
+   "new": "making-a-pure-dry-salt#explain",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "making-a-pure-dry-salt#method-six-1": {
+   "kp": "ks3.making-a-pure-dry-salt.2",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "making-a-pure-dry-salt#namer-twelve-1": {
+   "kp": "ks3.making-a-pure-dry-salt.1",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "making-a-pure-dry-salt#namer-twelve-2": {
+   "kp": "ks3.making-a-pure-dry-salt.1",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "making-a-pure-dry-salt#namer-twelve-3": {
+   "kp": "ks3.making-a-pure-dry-salt.1",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "making-a-pure-dry-salt#produce": {
+   "kp": "ks3.making-a-pure-dry-salt.6",
+   "new": "making-a-pure-dry-salt#produce",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "making-a-pure-dry-salt#recall": {
+   "kp": "ks3.making-a-pure-dry-salt.1",
+   "new": "making-a-pure-dry-salt#recall",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "making-a-pure-dry-salt#start": {
+   "kp": "ks3.making-a-pure-dry-salt.2",
+   "new": "making-a-pure-dry-salt#start",
+   "note": "Start here, the same question as before",
+   "status": "kept"
+  },
+  "making-a-pure-dry-salt#think-commit-boil": {
+   "kp": "ks3.making-a-pure-dry-salt.5",
+   "new": null,
+   "note": "the Think first question is not on the lean page",
+   "status": "removed"
+  },
+  "neutralisation#apply": {
+   "kp": "ks3.neutralisation.4",
+   "new": "neutralisation#apply",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "neutralisation#explain": {
+   "kp": "ks3.neutralisation.1",
+   "new": "neutralisation#explain",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "neutralisation#produce": {
+   "kp": "ks3.neutralisation.6",
+   "new": "neutralisation#produce",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "neutralisation#recall": {
+   "kp": "ks3.neutralisation.1",
+   "new": "neutralisation#recall",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "neutralisation#start": {
+   "kp": "ks3.neutralisation.1",
+   "new": "neutralisation#start",
+   "note": "Start here, the same question as before",
+   "status": "kept"
+  },
+  "neutralisation#think-commit-gone": {
+   "kp": "ks3.neutralisation.1",
+   "new": null,
+   "note": "the Think first question is not on the lean page",
+   "status": "removed"
+  },
+  "neutralisation#uses-four-1": {
+   "kp": "ks3.neutralisation.6",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "neutralisation#uses-four-2": {
+   "kp": "ks3.neutralisation.6",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "neutralisation#uses-four-3": {
+   "kp": "ks3.neutralisation.6",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "neutralisation#uses-four-4": {
+   "kp": "ks3.neutralisation.6",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "the-ph-scale-and-indicators#apply": {
+   "kp": "ks3.the-ph-scale-and-indicators.6",
+   "new": "the-ph-scale-and-indicators#apply",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "the-ph-scale-and-indicators#bench-six-1": {
+   "kp": "ks3.the-ph-scale-and-indicators.4",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "the-ph-scale-and-indicators#bench-six-2": {
+   "kp": "ks3.the-ph-scale-and-indicators.4",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "the-ph-scale-and-indicators#bench-six-3": {
+   "kp": "ks3.the-ph-scale-and-indicators.4",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "the-ph-scale-and-indicators#bench-six-4": {
+   "kp": "ks3.the-ph-scale-and-indicators.4",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "the-ph-scale-and-indicators#bench-six-5": {
+   "kp": "ks3.the-ph-scale-and-indicators.4",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "the-ph-scale-and-indicators#bench-six-6": {
+   "kp": "ks3.the-ph-scale-and-indicators.4",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "the-ph-scale-and-indicators#explain": {
+   "kp": "ks3.the-ph-scale-and-indicators.7",
+   "new": "the-ph-scale-and-indicators#explain",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "the-ph-scale-and-indicators#jobs-three-1": {
+   "kp": "ks3.the-ph-scale-and-indicators.7",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "the-ph-scale-and-indicators#jobs-three-2": {
+   "kp": "ks3.the-ph-scale-and-indicators.7",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "the-ph-scale-and-indicators#jobs-three-3": {
+   "kp": "ks3.the-ph-scale-and-indicators.7",
+   "new": null,
+   "note": "the question is not on the lean page",
+   "status": "removed"
+  },
+  "the-ph-scale-and-indicators#produce": {
+   "kp": "ks3.the-ph-scale-and-indicators.7",
+   "new": "the-ph-scale-and-indicators#produce",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "the-ph-scale-and-indicators#recall": {
+   "kp": "ks3.the-ph-scale-and-indicators.2",
+   "new": "the-ph-scale-and-indicators#recall",
+   "note": "the id is unchanged",
+   "status": "kept"
+  },
+  "the-ph-scale-and-indicators#start": {
+   "kp": "ks3.the-ph-scale-and-indicators.8",
+   "new": "the-ph-scale-and-indicators#start",
+   "note": "Start here, the same question as before",
+   "status": "kept"
+  },
+  "the-ph-scale-and-indicators#think-commit-scale": {
+   "kp": "ks3.the-ph-scale-and-indicators.3",
+   "new": null,
+   "note": "the Think first question is not on the lean page",
+   "status": "removed"
+  }
+ },
+ "scope": [
+  "acid-plus-metal",
+  "acids-and-alkalis",
+  "acids-and-carbonates",
+  "making-a-pure-dry-salt",
+  "neutralisation",
+  "the-ph-scale-and-indicators"
+ ]
+}

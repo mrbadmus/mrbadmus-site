@@ -936,11 +936,14 @@ C5_DECOMP = "chemistry/types-of-reaction/thermal-decomposition.html"
 C5_OXID = "chemistry/types-of-reaction/oxidation.html"
 C5_DISP = "chemistry/types-of-reaction/displacement.html"
 C5_WHICH = "chemistry/types-of-reaction/which-reaction-is-this.html"
-C6_ACIDS = "chemistry/acids-and-alkalis/acids-and-alkalis.html"
-C6_PH = "chemistry/acids-and-alkalis/the-ph-scale-and-indicators.html"
-C6_NEUT = "chemistry/acids-and-alkalis/neutralisation.html"
-C6_METAL = "chemistry/acids-and-alkalis/acid-plus-metal.html"
-C6_SALT = "chemistry/acids-and-alkalis/making-a-pure-dry-salt.html"
+# ⊕ 23 Nov 2026 (Mide, 14 Nov: checks do not depend on real lessons): C6 lessons 1-6 went
+# lean (Wave 2) and lost their benches, so these five constants name the hidden frozen classic
+# copies (ks3_fixtures/), as LESSON does. Only the page moved. C6_CAT stays: catalysts is classic.
+C6_ACIDS = "_fixtures/fixture-acids-and-alkalis.html"   # was chemistry/acids-and-alkalis/acids-and-alkalis.html (fixture, see LESSON)
+C6_PH = "_fixtures/fixture-the-ph-scale-and-indicators.html"   # was chemistry/acids-and-alkalis/the-ph-scale-and-indicators.html (fixture, see LESSON)
+C6_NEUT = "_fixtures/fixture-neutralisation.html"   # was chemistry/acids-and-alkalis/neutralisation.html (fixture, see LESSON)
+C6_METAL = "_fixtures/fixture-acid-plus-metal.html"   # was chemistry/acids-and-alkalis/acid-plus-metal.html (fixture, see LESSON)
+C6_SALT = "_fixtures/fixture-making-a-pure-dry-salt.html"   # was chemistry/acids-and-alkalis/making-a-pure-dry-salt.html (fixture, see LESSON)
 C6_CAT = "chemistry/acids-and-alkalis/catalysts.html"
 C7_STATE = "chemistry/energy-changes-in-reactions/energy-and-changes-of-state.html"
 C7_EXO = "chemistry/energy-changes-in-reactions/exothermic-reactions.html"
