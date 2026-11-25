@@ -440,18 +440,16 @@ LESSON = {
             "q": "What happens to the temperature of the surroundings during "
                  "an endothermic change?",
             "options": [
-                "It rises, because energy is released",
-                "It falls, because energy is taken in by the reaction",
-                "It stays the same",
-                "It falls, because cold is produced by the reaction",
+                "It rises, because the reaction gives out energy to the surroundings",
+                "It falls, because the reaction takes in energy from the surroundings",
+                "It rises, because the reaction creates new energy as it goes along",
+                "It falls, because the reaction makes cold and passes it to the mixture",
             ],
             "answer": 1,
             "feedback": {
-                0: "That is exothermic — the previous lesson.",
-                2: "If nothing changed there would be nothing to measure. The "
-                   "thermometer falls.",
-                3: "The direction is right but the reason is wrong. Cold is "
-                   "not produced; energy is removed.",
+                0: "A temperature rise shows an exothermic reaction. Endothermic reactions take energy in.",
+                2: "No energy is created. The reaction takes energy in, so the surroundings cool.",
+                3: "No cold is made. The reaction takes energy from the mixture, so the mixture cools.",
             }},
         # The one that catches people, and it is `ENER-06` at the ladder: two
         # opposite changes that both involve ice. 10, 8, 7 and 8 words —
@@ -460,19 +458,16 @@ LESSON = {
             "q": "Melting is endothermic. What does that tell you about "
                  "freezing?",
             "options": [
-                "It is exothermic — the same energy comes back out",
-                "It is also endothermic, because both involve ice",
-                "It involves no energy change at all",
-                "It depends on how cold the freezer is",
+                "It is exothermic, because freezing gives out the energy melting took in",
+                "It is endothermic, because freezing and melting both involve ice",
+                "It is neither, because a change of state involves no energy change",
+                "It is exothermic, because the freezer adds energy to the water as it freezes",
             ],
             "answer": 0,
             "feedback": {
-                1: "They are opposite changes, so the energy travels in "
-                   "opposite directions.",
-                2: "A freezer has to remove energy continuously. That energy "
-                   "is coming out of the water.",
-                3: "The direction of the transfer is fixed. The freezer "
-                   "temperature affects the rate, not the direction.",
+                1: "They are opposite changes. So the energy goes in opposite directions.",
+                2: "Changes of state do involve energy. Freezing gives energy out.",
+                3: "A freezer takes energy out of the water. It does not add energy.",
             }},
         "explain": {
             "q": "Two powders at room temperature are stirred into water and "

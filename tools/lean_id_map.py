@@ -128,6 +128,12 @@ WAVES = {
         # Y8 Chem 5 Acids and alkalis: C6 lessons 1-6 (catalysts stays classic).
         ("C6", "acids", ["acids-and-alkalis", "the-ph-scale-and-indicators", "neutralisation",
                          "acid-plus-metal", "acids-and-carbonates", "making-a-pure-dry-salt"]),
+        # Y7 Chem 2 Chemical reactions: C4 lessons 1-3, C5 lessons 1-3, C7 lessons 2-4 (C4 4-5,
+        # C5 4-5 and C7 1 stay classic).
+        ("C4", "reactions", ["chemical-vs-physical-change", "reactions-rearrange-atoms", "word-equations"]),
+        ("C5", "reaction-types", ["combustion", "thermal-decomposition", "oxidation"]),
+        ("C7", "energy-changes", ["exothermic-reactions", "endothermic-reactions",
+                                  "measuring-a-temperature-change"]),
     ],
 }
 

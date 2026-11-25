@@ -926,14 +926,18 @@ C3_CRYST = "chemistry/mixtures-and-separation/evaporation-and-crystallisation.ht
 C3_STILL = "chemistry/mixtures-and-separation/distillation.html"
 C3_CHROM = "chemistry/mixtures-and-separation/chromatography.html"
 C3_PURITY = "chemistry/mixtures-and-separation/proving-something-is-pure.html"
-C4_CHANGE = "chemistry/chemical-reactions/chemical-vs-physical-change.html"
-C4_REARR = "chemistry/chemical-reactions/reactions-rearrange-atoms.html"
-C4_WORDS = "chemistry/chemical-reactions/word-equations.html"
+# ⊕ 25 Nov 2026 (Mide, 14 Nov: checks do not depend on real lessons): C4 lessons 1-3, C5
+# lessons 1-3 and C7 lessons 2-4 went lean (Wave 2, Y7 Chem 2) and lost their benches, so
+# these nine constants name the hidden frozen classic copies (ks3_fixtures/), as LESSON does.
+# Only the page moved. C4_MASS, C4_SYMBOL, C5_DISP, C5_WHICH and C7_STATE stay: classic.
+C4_CHANGE = "_fixtures/fixture-chemical-vs-physical-change.html"   # was chemistry/chemical-reactions/chemical-vs-physical-change.html (fixture, see LESSON)
+C4_REARR = "_fixtures/fixture-reactions-rearrange-atoms.html"   # was chemistry/chemical-reactions/reactions-rearrange-atoms.html (fixture, see LESSON)
+C4_WORDS = "_fixtures/fixture-word-equations.html"   # was chemistry/chemical-reactions/word-equations.html (fixture, see LESSON)
 C4_MASS = "chemistry/chemical-reactions/mass-in-a-reaction.html"
 C4_SYMBOL = "chemistry/chemical-reactions/symbol-equations-and-balancing.html"
-C5_BURN = "chemistry/types-of-reaction/combustion.html"
-C5_DECOMP = "chemistry/types-of-reaction/thermal-decomposition.html"
-C5_OXID = "chemistry/types-of-reaction/oxidation.html"
+C5_BURN = "_fixtures/fixture-combustion.html"   # was chemistry/types-of-reaction/combustion.html (fixture, see LESSON)
+C5_DECOMP = "_fixtures/fixture-thermal-decomposition.html"   # was chemistry/types-of-reaction/thermal-decomposition.html (fixture, see LESSON)
+C5_OXID = "_fixtures/fixture-oxidation.html"   # was chemistry/types-of-reaction/oxidation.html (fixture, see LESSON)
 C5_DISP = "chemistry/types-of-reaction/displacement.html"
 C5_WHICH = "chemistry/types-of-reaction/which-reaction-is-this.html"
 # ⊕ 23 Nov 2026 (Mide, 14 Nov: checks do not depend on real lessons): C6 lessons 1-6 went
@@ -946,10 +950,9 @@ C6_METAL = "_fixtures/fixture-acid-plus-metal.html"   # was chemistry/acids-and-
 C6_SALT = "_fixtures/fixture-making-a-pure-dry-salt.html"   # was chemistry/acids-and-alkalis/making-a-pure-dry-salt.html (fixture, see LESSON)
 C6_CAT = "chemistry/acids-and-alkalis/catalysts.html"
 C7_STATE = "chemistry/energy-changes-in-reactions/energy-and-changes-of-state.html"
-C7_EXO = "chemistry/energy-changes-in-reactions/exothermic-reactions.html"
-C7_ENDO = "chemistry/energy-changes-in-reactions/endothermic-reactions.html"
-C7_MEASURE = ("chemistry/energy-changes-in-reactions/"
-              "measuring-a-temperature-change.html")
+C7_EXO = "_fixtures/fixture-exothermic-reactions.html"   # was chemistry/energy-changes-in-reactions/exothermic-reactions.html (fixture, see LESSON)
+C7_ENDO = "_fixtures/fixture-endothermic-reactions.html"   # was chemistry/energy-changes-in-reactions/endothermic-reactions.html (fixture, see LESSON)
+C7_MEASURE = "_fixtures/fixture-measuring-a-temperature-change.html"   # was chemistry/energy-changes-in-reactions/measuring-a-temperature-change.html (fixture, see LESSON)
 C8_MNM = "chemistry/the-periodic-table/metals-and-non-metals.html"
 C8_MEND = "chemistry/the-periodic-table/mendeleev.html"
 C8_GP = "chemistry/the-periodic-table/groups-and-periods.html"

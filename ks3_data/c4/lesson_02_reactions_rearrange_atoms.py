@@ -606,13 +606,9 @@ LESSON = {
             ],
             "answer": 3,
             "feedback": {
-                0: "Atoms are not created or destroyed in a chemical "
-                   "reaction. Count them on each side and the numbers match.",
-                # ⚑ Science flag 7, second of two. Same hedge, same reason.
-                1: "That takes a nuclear reaction, not chemistry. A magnesium "
-                   "atom is still a magnesium atom after it burns.",
-                2: "Then nothing would have happened. New partners are "
-                   "precisely what makes it a reaction.",
+                0: "No atoms are made or destroyed in a reaction. Count them: the numbers match.",
+                1: "Changing one kind of atom into another needs a nuclear reaction. Burning cannot do it.",
+                2: "Then nothing would have happened. New joins are what make a reaction.",
             }},
 
         # ⊕ ONE STRING IS NOT DESIGN'S, AND THIS IS THE FLAG (§13). Option 3
@@ -624,23 +620,20 @@ LESSON = {
         # anyway. The correct option is untouched, the answer index has not
         # moved, and no correction was edited to make a number work.
         "apply": {
-            "q": "Methane burns in oxygen. There are four hydrogen atoms in "
-                 "the methane. How many hydrogen atoms are in the products?",
+            "q": "One methane particle burns in oxygen. It has four hydrogen "
+                 "atoms. How many hydrogen atoms are in the products?",
             "options": [
-                "Two, because water only has two hydrogens",
-                "Four — the same four, now in two water particles",
-                "None — they are burnt up",
-                "It depends on how much oxygen there is",
+                "Two, as each water particle has only two hydrogen atoms",
+                "Four, as the same atoms are now in two water particles",
+                "None, as the hydrogen atoms are burnt up in the flame",
+                "Eight, as each of the two water particles holds four hydrogen "
+                "atoms",
             ],
             "answer": 1,
             "feedback": {
-                0: "Water has two hydrogens each, and two waters are made. "
-                   "Four atoms in, four atoms out.",
-                2: "Burning is not disappearing. The hydrogen atoms end up in "
-                   "the water that condenses on a cold window above a hob.",
-                3: "The oxygen decides whether the reaction can finish, not "
-                   "how many hydrogen atoms exist. Those were fixed by the "
-                   "methane.",
+                0: "Each water particle has two, but two water particles are made. That makes four.",
+                2: "Burning does not destroy atoms. The hydrogen atoms end up in the water.",
+                3: "Each water particle has only two hydrogen atoms. Two water particles hold four.",
             }},
 
         "explain": {

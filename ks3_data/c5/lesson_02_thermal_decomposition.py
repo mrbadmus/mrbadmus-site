@@ -521,13 +521,9 @@ LESSON = {
             ],
             "answer": 3,
             "feedback": {
-                0: "That is the shape of combustion and oxidation. "
-                   "Decomposition goes the other way: one reactant, several "
-                   "products.",
-                1: "Melting is a physical change — same substance, different "
-                   "state, and it reverses on cooling.",
-                2: "That is oxidation. Decomposition needs no other reactant "
-                   "at all, and works in a tube with no air in it.",
+                0: "Joining substances is the opposite. Thermal decomposition breaks one compound down.",
+                1: "That is melting, a physical change. No new substance is made.",
+                2: "That is oxidation. Thermal decomposition needs no oxygen at all.",
             }},
         # The one that catches people, and it is the mass claim at the ladder:
         # a balance can only weigh what stayed. The correct option is 10 words
@@ -538,20 +534,16 @@ LESSON = {
                  "colour change is complete, and weighed again. What has "
                  "happened to the mass, and why?",
             "options": [
-                "It has risen, because oxygen joined the copper",
+                "It has risen, because oxygen from the air joined the copper",
                 "It has fallen, because the carbon dioxide left the tube",
                 "It is unchanged, because mass is always conserved",
                 "It has fallen, because some of the solid was destroyed",
             ],
             "answer": 1,
             "feedback": {
-                0: "Nothing joined. No oxygen was needed — the reaction works "
-                   "in a tube with no air, and the oxygen in the copper oxide "
-                   "came from the carbonate itself.",
-                2: "Mass is conserved, and one of the products left the tube. "
-                   "The balance can only weigh what stayed.",
-                3: "Nothing is destroyed. Collect the gas and weigh it and "
-                   "the total comes out exactly the same.",
+                0: "No oxygen from the air joins in. The solid gets lighter as carbon dioxide escapes.",
+                2: "Mass is conserved, but the carbon dioxide has left the tube. The balance cannot weigh it.",
+                3: "No mass is destroyed. It left the tube as carbon dioxide gas.",
             }},
         "explain": {
             "q": "A student heats copper carbonate and says \"it burnt, that "

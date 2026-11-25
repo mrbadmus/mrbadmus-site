@@ -350,6 +350,43 @@ RETIRED_BY_LEAN = {
                    "the salt namer is not on the lean page (figure c6-word-copper-sulfate)"),
     "method-order": ("chemistry/acids-and-alkalis/making-a-pure-dry-salt.html",
                      "replaced by the drawn figure c6-salt-steps"),
+    # ⊕ 25 Nov 2026 lean wave 2 (Y7 Chem 2 Chemical reactions: C4 lessons 1-3, C5 lessons 1-3,
+    # C7 lessons 2-4): each family had exactly one lesson in this set, and no other built page
+    # emits it. The frozen classic copies in ks3_fixtures/ keep the benches for the parity and
+    # save checks. energy-uses is not here: energy-and-changes-of-state (C7 lesson 1, classic)
+    # still emits it.
+    "change-pairs": ("chemistry/chemical-reactions/chemical-vs-physical-change.html",
+                     "the three change pairs are not on the lean page (figure c4-change-particles)"),
+    "chain-build": ("chemistry/chemical-reactions/chemical-vs-physical-change.html",
+                    "the wax sentence builder is not on the lean page"),
+    "atom-rearranger": ("chemistry/chemical-reactions/reactions-rearrange-atoms.html",
+                        "replaced by the drawn figures c4-water-steps and c4-methane-steps"),
+    "impossible-ask": ("chemistry/chemical-reactions/reactions-rearrange-atoms.html",
+                       "the impossible-product question is not on the lean page"),
+    "equation-builder": ("chemistry/chemical-reactions/word-equations.html",
+                         "the equation builder is not on the lean page (figures c4-word-magnesium and c4-word-marble)"),
+    "equation-read": ("chemistry/chemical-reactions/word-equations.html",
+                      "the read-it-back bench is not on the lean page"),
+    "burner-bench": ("chemistry/types-of-reaction/combustion.html",
+                     "the burner bench is not on the lean page (figures c5-word-complete and c5-word-incomplete)"),
+    "fuel-cards": ("chemistry/types-of-reaction/combustion.html",
+                   "the fuel cards are not on the lean page (figure c5-fire-triangle)"),
+    "tube-run": ("chemistry/types-of-reaction/thermal-decomposition.html",
+                 "replaced by the drawn figures c5-heating-carbonate and c5-gas-tests"),
+    "decomp-sort": ("chemistry/types-of-reaction/thermal-decomposition.html",
+                    "the decomposition sort is not on the lean page (figure c5-word-carbonate-heat)"),
+    "control-tubes": ("chemistry/types-of-reaction/oxidation.html",
+                      "replaced by the drawn figure c5-rust-tubes"),
+    "rust-stop": ("chemistry/types-of-reaction/oxidation.html",
+                  "the rust-prevention cards are not on the lean page (figure c5-word-rust)"),
+    "temp-bench": ("chemistry/energy-changes-in-reactions/exothermic-reactions.html",
+                   "replaced by the drawn figures c7-exo-thermometers and c7-exo-arrows"),
+    "energy-sorter": ("chemistry/energy-changes-in-reactions/endothermic-reactions.html",
+                      "the exo-or-endo sorter is not on the lean page (figure c7-exo-endo-arrows)"),
+    "rig-plan-critique": ("chemistry/energy-changes-in-reactions/measuring-a-temperature-change.html",
+                          "the plan critique is not on the lean page (figure c7-cup-rig)"),
+    "rig-builder": ("chemistry/energy-changes-in-reactions/measuring-a-temperature-change.html",
+                    "replaced by the drawn figures c7-cup-rig and c7-tc-table"),
 }
 
 

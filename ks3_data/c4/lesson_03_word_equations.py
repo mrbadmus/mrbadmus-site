@@ -467,21 +467,16 @@ LESSON = {
         "recall": {
             "q": "In a word equation, what does the arrow mean?",
             "options": [
-                "Equals",
-                "And",
-                "Makes, or turns into",
-                "Is heated to give",
+                "Equals, so the two sides can be swapped",
+                "And, so it joins two substances on the same side",
+                "Makes, so the reactants turn into the products",
+                "Is heated to give, so every reaction needs heating",
             ],
             "answer": 2,
             "feedback": {
-                0: "An equals sign works both ways. The arrow says which way "
-                   "the reaction went, and reversing it usually describes "
-                   "something that does not happen.",
-                1: "That is the plus sign. The arrow separates the reactants "
-                   "from the products.",
-                3: "Heating may or may not be involved. Many reactions need "
-                   "no heat, and the arrow means the same thing in all of "
-                   "them.",
+                0: "An equals sign works both ways. The arrow shows which way the reaction goes.",
+                1: "That is what the plus sign means. The arrow sits between reactants and products.",
+                3: "Many reactions need no heating. The arrow means makes in every reaction.",
             }},
         # ⚑ REACT-06 again, marked this time. The rung is Design's and it is
         # the same wrong rule the builder's `Heat` chip offers.
@@ -489,21 +484,17 @@ LESSON = {
             "q": "A student writes: magnesium + oxygen + heat makes "
                  "magnesium oxide. What is wrong with it?",
             "options": [
-                "Heat is not a substance, so it does not belong in the "
-                "equation",
-                "Nothing — heat is needed, so it should be included",
-                "Heat should be on the right, because burning gives out heat",
-                "The reactants and products are the wrong way round",
+                "Heat should not be a reactant, as heat is not a substance",
+                "Nothing is wrong, as heat is needed to start the magnesium "
+                "burning",
+                "Heat should be on the right, as burning gives out heat",
+                "Oxygen should not be a reactant, as it comes from the air",
             ],
             "answer": 0,
             "feedback": {
-                1: "Heat is needed, and it is a condition rather than a "
-                   "reactant. Conditions go above the arrow, not in the line "
-                   "of substances.",
-                2: "Energy does give out — and it still is not a substance. "
-                   "Neither side of a word equation is the place for it.",
-                3: "Those are in the right places. The problem is the extra "
-                   "term between them.",
+                1: "Heat only starts it, and heat is not a substance. Leave it out.",
+                2: "Heat is given out, but it is still not a substance. It goes on neither side.",
+                3: "Oxygen from the air reacts with the magnesium. So it is a reactant.",
             }},
         "explain": {
             "q": "Write the word equation for marble chips reacting with "

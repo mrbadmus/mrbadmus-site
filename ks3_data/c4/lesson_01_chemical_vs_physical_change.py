@@ -648,19 +648,16 @@ LESSON = {
             "q": "What single thing tells you that a change is a chemical "
                  "change?",
             "options": [
-                "The change cannot be reversed by any means",
-                "The colour of the substance has changed",
-                "At least one new substance has been made",
-                "Heat was needed to make it happen",
+                "The change cannot be undone, whatever you try",
+                "The substance has turned a different colour from before",
+                "A new substance has been made from the starting ones",
+                "Heat had to be supplied to make the change happen",
             ],
             "answer": 2,
             "feedback": {
-                0: "Smashing a glass cannot be reversed and is physical; "
-                   "rusting can be reversed in a furnace and is chemical.",
-                1: "Ice going cloudy and a nail going orange both change "
-                   "colour, and only one of them is a reaction.",
-                3: "Melting needs heat and makes nothing new. Rusting needs "
-                   "no heat at all.",
+                0: "A smashed glass cannot be put back together, but it is physical. Undoing is only a clue.",
+                1: "Colour is only a clue. Food colouring in water changes colour, but nothing new is made.",
+                3: "Melting needs heat and makes nothing new. Rusting needs no heating at all.",
             }},
         # The one that catches people, and it is `REACT-02` at the ladder:
         # two events described with one phrase. The correct option is the
@@ -668,26 +665,21 @@ LESSON = {
         # the direction MRB-177 measures — the two four-word options are the
         # two verdict pairs, and a student choosing by length has a 50/50.
         "apply": {
-            "q": "Salt dissolving in water and marble fizzing in acid are "
-                 "both described as \"it dissolved\". Which pair of verdicts "
-                 "is right?",
+            "q": "Salt stirred into water vanishes. Marble chips fizz in acid "
+                 "and vanish. Which is right?",
             "options": [
-                "Both physical — in both cases the solid disappears into the "
-                "liquid",
-                "Both chemical — the solid is destroyed in both",
-                "Salt: physical. Marble: chemical.",
-                "Salt: chemical. Marble: physical.",
+                "Both physical, as both solids disappear into the liquid",
+                "Both chemical, as both solids are destroyed by the liquid",
+                "Salt physical, marble chemical, as only the marble makes a "
+                "new substance",
+                "Salt chemical, marble physical, as the salt can no longer be "
+                "seen in the water",
             ],
             "answer": 2,
             "feedback": {
-                0: "The marble has become a gas, a salt and water, and the "
-                   "gas can be tested. Something disappearing is not "
-                   "evidence of anything.",
-                1: "The salt is not destroyed. Evaporate the water and every "
-                   "gram of it comes back unchanged.",
-                3: "Exactly the wrong way round. Test the gas from the "
-                   "marble: it turns limewater cloudy, so it is a new "
-                   "substance.",
+                0: "The marble fizzes and makes carbon dioxide. That is a new substance, so it is chemical.",
+                1: "The salt is not destroyed. Evaporate the water and the salt comes back.",
+                3: "That is the wrong way round. Salt comes back from the water. Marble makes a new gas.",
             }},
         "explain": {
             "q": "A student heats sugar in a pan. First it melts to a clear "
@@ -714,7 +706,7 @@ LESSON = {
                  "chemical — and use them to explain why that sentence is "
                  "wrong, and why it is easy to believe.",
             "field_label": "Your answer",
-            "placeholder": "Boiling a potato is mostly…",
+            "placeholder": "Melting butter is…",
             "success": [
                 "Names a kitchen change that is physical, and says why no "
                 "new substance is made.",

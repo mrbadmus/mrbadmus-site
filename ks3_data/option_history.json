@@ -205,6 +205,34 @@
    "Nothing — Co is not an element"
   ]
  },
+ "chemical-vs-physical-change#apply": {
+  "0": [
+   "Both physical — in both cases the solid disappears into the liquid"
+  ],
+  "1": [
+   "Both chemical — the solid is destroyed in both"
+  ],
+  "2": [
+   "Salt: physical. Marble: chemical."
+  ],
+  "3": [
+   "Salt: chemical. Marble: physical."
+  ]
+ },
+ "chemical-vs-physical-change#recall": {
+  "0": [
+   "The change cannot be reversed by any means"
+  ],
+  "1": [
+   "The colour of the substance has changed"
+  ],
+  "2": [
+   "At least one new substance has been made"
+  ],
+  "3": [
+   "Heat was needed to make it happen"
+  ]
+ },
  "chromosomes-genes-and-dna#apply": {
   "0": [
    "Yes — every cell with a nucleus has the complete set, but only some genes are switched on in each cell"
@@ -217,6 +245,28 @@
   ],
   "3": [
    "No — genes move to the organs that need them, so a gene ends up in whichever cells are using it"
+  ]
+ },
+ "combustion#apply": {
+  "0": [
+   "Turning the gas up makes the flame taller, so the colour follows the amount of fuel"
+  ],
+  "1": [
+   "A bigger, brighter flame is a hotter flame, so the yellow one is burning more fiercely"
+  ],
+  "2": [
+   "Not enough air is getting in, so combustion is incomplete"
+  ],
+  "3": [
+   "Yellow means the gas supply is contaminated, so the colour comes from the impurity"
+  ]
+ },
+ "combustion#recall": {
+  "1": [
+   "Carbon dioxide only"
+  ],
+  "2": [
+   "Soot and water vapour"
   ]
  },
  "compounds#apply": {
@@ -242,6 +292,34 @@
  "drawing-and-adding-forces#apply": {
   "3": [
    "The two forces are equal in size, so the resultant force is 0 N."
+  ]
+ },
+ "endothermic-reactions#apply": {
+  "0": [
+   "It is exothermic — the same energy comes back out"
+  ],
+  "1": [
+   "It is also endothermic, because both involve ice"
+  ],
+  "2": [
+   "It involves no energy change at all"
+  ],
+  "3": [
+   "It depends on how cold the freezer is"
+  ]
+ },
+ "endothermic-reactions#recall": {
+  "0": [
+   "It rises, because energy is released"
+  ],
+  "1": [
+   "It falls, because energy is taken in by the reaction"
+  ],
+  "2": [
+   "It stays the same"
+  ],
+  "3": [
+   "It falls, because cold is produced by the reaction"
   ]
  },
  "energy-in-food#apply": {
@@ -326,6 +404,34 @@
   ],
   "3": [
    "All of it — an enzyme is not used up by the reaction it catalyses"
+  ]
+ },
+ "exothermic-reactions#apply": {
+  "0": [
+   "Yes, because energy has to be supplied before it will start"
+  ],
+  "1": [
+   "It is endothermic at first and exothermic once the flame catches"
+  ],
+  "2": [
+   "It depends how big the spark is compared with the fuel"
+  ],
+  "3": [
+   "No — far more energy comes out than the spark put in"
+  ]
+ },
+ "exothermic-reactions#recall": {
+  "0": [
+   "It falls, because the reaction takes energy in"
+  ],
+  "1": [
+   "It stays the same, because energy is conserved"
+  ],
+  "2": [
+   "It rises, because energy is transferred out of the reaction"
+  ],
+  "3": [
+   "It rises only if the reaction is lit with a flame"
   ]
  },
  "fermentation#apply": {
@@ -494,6 +600,34 @@
    "4.5 N — the answer is still a force"
   ]
  },
+ "measuring-a-temperature-change#apply": {
+  "0": [
+   "A random error, which more repeats and a better average would fix"
+  ],
+  "1": [
+   "No error — close agreement between five readings means the results are correct"
+  ],
+  "2": [
+   "A systematic error — heat loss makes every reading low in the same direction"
+  ],
+  "3": [
+   "A mistake in the calculation, repeated the same way in all five runs"
+  ]
+ },
+ "measuring-a-temperature-change#recall": {
+  "0": [
+   "The room temperature and the final temperature"
+  ],
+  "1": [
+   "The temperature at the start and the temperature ten minutes later"
+  ],
+  "2": [
+   "Only the highest temperature reached"
+  ],
+  "3": [
+   "The starting temperature and the highest (or lowest) temperature reached"
+  ]
+ },
  "moments#apply": {
   "0": [
    "They give the same moment, because the moment is decided by how hard you pull, and the length of the handle only changes how comfortable it is.",
@@ -565,6 +699,34 @@
    "a weaker acid"
   ]
  },
+ "oxidation#apply": {
+  "0": [
+   "Only that water alone is not enough — you need the other tubes to conclude anything more"
+  ],
+  "1": [
+   "That water is not involved in rusting, so the other tubes are not needed"
+  ],
+  "2": [
+   "That oil is what prevents rusting — you can conclude that from this tube alone"
+  ],
+  "3": [
+   "That rusting needs salt as well, because this tube had none in it"
+  ]
+ },
+ "oxidation#recall": {
+  "0": [
+   "It gains oxygen"
+  ],
+  "1": [
+   "It loses oxygen"
+  ],
+  "2": [
+   "It is broken down by heat"
+  ],
+  "3": [
+   "It reacts with water"
+  ]
+ },
  "particle-model#apply": {
   "0": [
    "No knife is thin enough to fit"
@@ -599,6 +761,20 @@
   ],
   "3": [
    "23 — one from each pair, so the fertilised egg has 46 again"
+  ]
+ },
+ "reactions-rearrange-atoms#apply": {
+  "0": [
+   "Two, because water only has two hydrogens"
+  ],
+  "1": [
+   "Four — the same four, now in two water particles"
+  ],
+  "2": [
+   "None — they are burnt up"
+  ],
+  "3": [
+   "It depends on how much oxygen there is"
   ]
  },
  "solids-liquids-and-gases#apply": {
@@ -700,6 +876,11 @@
   ],
   "2": [
    "The water it was given, taken up by the roots and turned into new plant tissue"
+  ]
+ },
+ "thermal-decomposition#apply": {
+  "0": [
+   "It has risen, because oxygen joined the copper"
   ]
  },
  "unicellular-organisms#apply": {
@@ -880,6 +1061,34 @@
   ],
   "2": [
    "Respiration continues in every cell, using oxygen and releasing carbon dioxide"
+  ]
+ },
+ "word-equations#apply": {
+  "0": [
+   "Heat is not a substance, so it does not belong in the equation"
+  ],
+  "1": [
+   "Nothing — heat is needed, so it should be included"
+  ],
+  "2": [
+   "Heat should be on the right, because burning gives out heat"
+  ],
+  "3": [
+   "The reactants and products are the wrong way round"
+  ]
+ },
+ "word-equations#recall": {
+  "0": [
+   "Equals"
+  ],
+  "1": [
+   "And"
+  ],
+  "2": [
+   "Makes, or turns into"
+  ],
+  "3": [
+   "Is heated to give"
   ]
  }
 }

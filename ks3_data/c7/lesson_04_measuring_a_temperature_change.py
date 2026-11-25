@@ -476,21 +476,16 @@ LESSON = {
             "q": "What two readings do you need to find the temperature "
                  "change of a reaction?",
             "options": [
-                "The room temperature and the final temperature",
-                "The temperature at the start and the temperature ten minutes "
-                "later",
-                "Only the highest temperature reached",
-                "The starting temperature and the highest (or lowest) "
-                "temperature reached",
+                "The empty cup's temperature, and the highest or lowest temperature reached",
+                "The start temperature, and the temperature ten minutes after mixing",
+                "The empty cup's temperature, and the temperature ten minutes after mixing",
+                "The start temperature, and the highest or lowest temperature reached",
             ],
             "answer": 3,
             "feedback": {
-                0: "The room may not be at the same temperature as your "
-                   "solution. Measure the solution before you start.",
-                1: "Ten minutes later the mixture has cooled back towards "
-                   "room temperature. You need the peak.",
-                2: "Without a starting value there is nothing to subtract "
-                   "from, and the number on its own says nothing.",
+                0: "The empty cup is not the reaction. Measure the reactants at the start.",
+                1: "After ten minutes the mixture has cooled or warmed back. Use the highest or lowest.",
+                2: "Neither is right. Use the reactants' start temperature and the highest or lowest reached.",
             }},
         # ⚑ MRB-177 — THE THREE DISTRACTORS ARE RE-AUTHORED AND THE CORRECT
         # OPTION IS UNTOUCHED. Design's set ran 14 words against 8, 9 and 5:
@@ -504,23 +499,16 @@ LESSON = {
                  "but all lower than the true value. What kind of error is "
                  "this?",
             "options": [
-                "A random error, which more repeats and a better average "
-                "would fix",
-                "No error — close agreement between five readings means the "
-                "results are correct",
-                "A systematic error — heat loss makes every reading low in "
-                "the same direction",
-                "A mistake in the calculation, repeated the same way in all "
-                "five runs",
+                "A random error, because more repeats would bring the mean up to the true value",
+                "No error, because readings that agree closely must be correct",
+                "A systematic error, because heat loss makes every reading too low",
+                "A systematic error, because the readings scatter above and below the true value",
             ],
             "answer": 2,
             "feedback": {
-                0: "Random errors scatter both sides of the truth. These are "
-                   "all low, which is the signature of a systematic error.",
-                1: "Precise and accurate are different. Five readings can "
-                   "agree closely and all be wrong in the same way.",
-                3: "A calculation error would not produce consistently low "
-                   "readings from a rig that is known to leak heat.",
+                0: "More repeats cannot fix heat loss. Every reading is too low, so the mean is too low.",
+                1: "Readings can agree closely and still all be too low.",
+                3: "These readings do not scatter. They are all below the true value.",
             }},
         "explain": {
             "q": "Write a method for measuring the temperature change when an "

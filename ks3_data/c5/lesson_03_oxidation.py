@@ -528,19 +528,16 @@ LESSON = {
         "recall": {
             "q": "What happens to a substance during oxidation?",
             "options": [
-                "It gains oxygen",
-                "It loses oxygen",
-                "It is broken down by heat",
-                "It reacts with water",
+                "It gains oxygen, so the product weighs more",
+                "It gains water, so the product weighs more",
+                "It splits apart, so the products weigh less",
+                "It mixes with air, so the product weighs the same",
             ],
             "answer": 0,
             "feedback": {
-                1: "That is reduction, which you will meet at GCSE. "
-                   "Oxidation is the gain.",
-                2: "That is thermal decomposition, and it needs no oxygen at "
-                   "all.",
-                3: "Rusting does need water as well — but the reaction is "
-                   "named for the oxygen the iron gains.",
+                1: "Oxidation is named after oxygen. Gaining water is not oxidation.",
+                2: "Splitting apart using heat is thermal decomposition. Oxidation adds oxygen.",
+                3: "Mixing makes no new substance. In oxidation, oxygen joins the substance.",
             }},
         # ⚠️ THE THREE DISTRACTORS BELOW ARE THE ONLY STRINGS IN THIS FILE
         # THAT ARE NOT DESIGN'S, and they are a §13 fix made AT THE
@@ -554,28 +551,24 @@ LESSON = {
         # untouched, the answer is in the same place, and each correction was
         # extended only where the new clause needed answering.
         "apply": {
-            "q": "A nail in boiled water under a layer of oil does not rust. "
-                 "What does that tube on its own prove?",
+            "q": "A nail is in boiled water under a layer of oil. It has water "
+                 "but no air. It does not rust. What does that tube on its own "
+                 "prove?",
             "options": [
-                "Only that water alone is not enough — you need the other "
-                "tubes to conclude anything more",
-                "That water is not involved in rusting, so the other tubes "
-                "are not needed",
-                "That oil is what prevents rusting — you can conclude that "
-                "from this tube alone",
-                "That rusting needs salt as well, because this tube had none "
-                "in it",
+                "That water alone is not enough, because this nail had water "
+                "and no air",
+                "That water stops rusting, because this nail was in water and "
+                "stayed shiny",
+                "That air is not needed, because this nail had no air and did "
+                "not rust",
+                "That rusting needs salt, because this nail had no salt and no "
+                "rust",
             ],
             "answer": 0,
             "feedback": {
-                1: "Tube 1 rusted and had water in it. This tube shows water "
-                   "is not sufficient, not that it is unnecessary — and that "
-                   "is exactly why the other tubes are needed.",
-                2: "The oil is there to keep air out. Concluding that oil is "
-                   "the active ingredient confuses the method with the "
-                   "variable.",
-                3: "Tube 1 had no salt and rusted anyway. Salt changes the "
-                   "speed, not the requirements.",
+                1: "A nail in air and water does rust. So water does not stop rusting.",
+                2: "This nail had no air and did not rust. That fits air being needed.",
+                3: "A nail in air and plain water still rusts. Salt only makes rusting faster.",
             }},
         "explain": {
             "q": "Explain why the four-tube experiment needs tubes 2 and 3, "

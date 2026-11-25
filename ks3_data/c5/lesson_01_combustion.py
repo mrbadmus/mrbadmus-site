@@ -850,39 +850,30 @@ LESSON = {
                  "containing carbon and hydrogen?",
             "options": [
                 "Carbon monoxide and water",
-                "Carbon dioxide only",
-                "Soot and water vapour",
+                "Carbon dioxide and soot",
+                "Soot and carbon monoxide",
                 "Carbon dioxide and water",
             ],
             "answer": 3,
             "feedback": {
-                0: "Carbon monoxide is a product of incomplete combustion, "
-                   "when the oxygen supply is short.",
-                1: "The hydrogen in the fuel has to go somewhere, and it goes "
-                   "into water.",
-                2: "Soot means carbon that never finished reacting. With "
-                   "enough oxygen there is none.",
+                0: "Carbon monoxide is made when oxygen is short. With plenty, the carbon becomes carbon dioxide.",
+                1: "Soot is unburnt carbon from incomplete combustion. The hydrogen in the fuel becomes water.",
+                2: "Both come from incomplete combustion. With plenty of oxygen you get carbon dioxide and water.",
             }},
         "apply": {
             "q": "A Bunsen burner is giving a tall yellow flame. What does "
                  "that tell you?",
             "options": [
-                "Turning the gas up makes the flame taller, so the colour "
-                "follows the amount of fuel",
-                "A bigger, brighter flame is a hotter flame, so the yellow one "
-                "is burning more fiercely",
-                "Not enough air is getting in, so combustion is incomplete",
-                "Yellow means the gas supply is contaminated, so the colour "
-                "comes from the impurity",
+                "The gas is running out, so the flame is dying down and yellow",
+                "The flame is very hot, so it glows a bright yellow colour",
+                "Too little air is getting in, so the combustion is incomplete",
+                "The gas is impure, so another substance is colouring the flame",
             ],
             "answer": 2,
             "feedback": {
-                0: "The gas tap changes the size of the flame. The colour is "
-                   "about air, and yellow means too little of it.",
-                1: "The blue flame is hotter, at around 1500 °C. The "
-                   "yellow glow is soot, and soot is wasted fuel.",
-                3: "Same gas, both flames. Open the air hole and the yellow "
-                   "flame becomes blue immediately.",
+                0: "A flame that is dying down gets smaller. This flame is tall, and the colour shows the air supply.",
+                1: "The blue flame is hotter. The yellow light comes from glowing soot.",
+                3: "Nothing extra is in the gas. Open the air hole and the same gas burns blue.",
             }},
         "explain": {
             "q": "A gas fire is burning with a yellow flame and there is black "

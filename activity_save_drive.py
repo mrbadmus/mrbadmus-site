@@ -653,9 +653,12 @@ CASES = [
          check=lambda b: b[-1]["answer"].count("\n") == 1,
          back="(function(){ var s = H.rootState(); var k = Object.keys(s.compared)[0]; return !!k && s.picks[k].length === 2; })()"),
     # ── ⊕ 9 Nov 2026: a blind run's findings ──
-    dict(name="ks3-five-rulings", page="/ks3/chemistry/energy-changes-in-reactions/measuring-a-temperature-change.html",
+    # ⊕ 25 Nov 2026 (Mide, 14 Nov: checks do not depend on real lessons): measuring-a-temperature-change went lean
+    # (Wave 2, C7) and lost the plan-judge bench, so this case presses the hidden frozen classic copy
+    # (ks3_fixtures/). Was /ks3/chemistry/energy-changes-in-reactions/measuring-a-temperature-change.html.
+    dict(name="ks3-five-rulings", page="/ks3/_fixtures/fixture-measuring-a-temperature-change.html",
          act="""var c = document.querySelectorAll('.ks3-rplan-step'); for (var i = 0; i < c.length; i += 1) { H.click(c[i].querySelectorAll('.ks3-rplan-opt')[0]); await H.sleep(120); }""",
-         want=["measuring-a-temperature-change#plan-judge-%d" % n for n in range(1, 6)],
+         want=["fixture-measuring-a-temperature-change#plan-judge-%d" % n for n in range(1, 6)],
          check=lambda b: all(isinstance(x["is_correct"], bool) and x.get("correct_answer") for x in b if "#plan-judge-" in x["question_id"])
                          and [x for x in b if x["question_id"].endswith("-1")][0]["is_correct"] is False,
          back="""(function(){ var c = document.querySelectorAll('.ks3-rplan-step'); return Array.prototype.every.call(c, function (s) { return H.pressed(s.querySelectorAll('.ks3-rplan-opt')[0]) && s.getAttribute('data-open') === '1'; }) && /^5 of 5|all/.test(document.querySelector('.ks3-rplan-block [data-count]').textContent); })()"""),
@@ -665,10 +668,13 @@ CASES = [
          want=["fixture-solids-liquids-and-gases#state-bench-1"],
          ticks=True, settle=1.5,
          back="""/all three seen|^3 of 3/.test(document.querySelector('.ks3-sbench-block [data-count]').textContent)"""),
-    dict(name="ks3-rig-runs", page="/ks3/chemistry/energy-changes-in-reactions/measuring-a-temperature-change.html",
+    # ⊕ 25 Nov 2026 (Mide, 14 Nov: checks do not depend on real lessons): measuring-a-temperature-change went lean
+    # (Wave 2, C7) and lost the rig-build bench, so this case presses the hidden frozen classic copy
+    # (ks3_fixtures/). Was /ks3/chemistry/energy-changes-in-reactions/measuring-a-temperature-change.html.
+    dict(name="ks3-rig-runs", page="/ks3/_fixtures/fixture-measuring-a-temperature-change.html",
          act="""var s = document.querySelector('.ks3-rigb-block'); var run = s.querySelector('[data-rigb-run]'); H.click(run); await H.sleep(150);
                 var d = s.querySelectorAll('.ks3-rigb-dial'); for (var i = 0; i < 2; i += 1) { var o = d[i].querySelectorAll('[data-rigb-for]'); H.click(o[o.length - 1]); await H.sleep(100); H.click(s.querySelector('[data-rigb-run]')); await H.sleep(150); }""",
-         want=["measuring-a-temperature-change#rig-build-1"],
+         want=["fixture-measuring-a-temperature-change#rig-build-1"],
          check=lambda b: sum(1 for x in b if x["question_id"].endswith("#rig-build-1")) == 3,
          back="""(function(){ var s = document.querySelector('.ks3-rigb-block'); return s.getAttribute('data-stage-done') === '1'; })()"""),
     dict(name="ks4-indicative-ticks", page="/triple/higher/biology/inheritance/advantages-sexual-asexual.html", ticks429=1, settle=2,
@@ -722,9 +728,12 @@ CASES = [
          want=["fixture-food-tests#twenty-combinations-1", "fixture-food-tests#twenty-combinations-5"],
          check=lambda b: all(isinstance(x["is_correct"], bool) for x in b if "#twenty" in x["question_id"]),
          back="""/^2 of/.test(document.querySelector('.ks3-tbench-block [data-count]').textContent)"""),
-    dict(name="ks3-units-sentence", page="/ks3/chemistry/chemical-reactions/chemical-vs-physical-change.html",
+    # ⊕ 25 Nov 2026 (Mide, 14 Nov: checks do not depend on real lessons): chemical-vs-physical-change went lean
+    # (Wave 2, C4) and lost the wax-chain sentence bench, so this case presses the hidden frozen classic copy
+    # (ks3_fixtures/). Was /ks3/chemistry/chemical-reactions/chemical-vs-physical-change.html.
+    dict(name="ks3-units-sentence", page="/ks3/_fixtures/fixture-chemical-vs-physical-change.html",
          act="""var s = document.querySelector('.ks3-chain-block'); var u = s.querySelectorAll('[data-chain-slot]'); H.click(u[0].querySelector('.ks3-option')); await H.sleep(120); H.click(u[1].querySelector('.ks3-option')); await H.sleep(150);""",
-         want=["chemical-vs-physical-change#chain-wax-1", "chemical-vs-physical-change#chain-wax-2"],
+         want=["fixture-chemical-vs-physical-change#chain-wax-1", "fixture-chemical-vs-physical-change#chain-wax-2"],
          check=lambda b: all(isinstance(x["is_correct"], bool) for x in b),
          back="""(function(){ var u = document.querySelectorAll('.ks3-chain-block [data-chain-slot]'); return H.pressed(u[0].querySelector('.ks3-option')) && H.pressed(u[1].querySelector('.ks3-option')); })()"""),
     dict(name="ks3-units-order", page="/ks3/chemistry/the-earth-and-its-atmosphere/the-rock-cycle.html",
@@ -889,9 +898,12 @@ CASES = [
          want=["ks4:resistors:ch#data-resistor-1", "ks4:resistors:ch#data-resistor-5", "ks4:resistors:ch#data-resistor-cleared"],
          check=lambda b: all(x["kind"] == "numeric" and x["is_correct"] is None and re.match(r"^[-\u2212]?\d+\.\d\d V, \d+\.\d\d A$", x["answer"]) for x in b if "#data-" in x["question_id"] and "cleared" not in x["question_id"]) and [x for x in b if x["question_id"].endswith("gate-resistor")][0]["correct_answer"] == "A",
          back="H.rootState().data.resistor.length === 2 && H.rootState().gate.resistor === 0"),
-    dict(name="ks3-rig-build", page="/ks3/chemistry/energy-changes-in-reactions/measuring-a-temperature-change.html",
+    # ⊕ 25 Nov 2026 (Mide, 14 Nov: checks do not depend on real lessons): measuring-a-temperature-change went lean
+    # (Wave 2, C7) and lost the rig-build bench, so this case presses the hidden frozen classic copy
+    # (ks3_fixtures/). Was /ks3/chemistry/energy-changes-in-reactions/measuring-a-temperature-change.html.
+    dict(name="ks3-rig-build", page="/ks3/_fixtures/fixture-measuring-a-temperature-change.html",
          act="""var s = document.querySelector('.ks3-rigb-block'); H.click(s.querySelector('[data-rigb-run]')); await H.sleep(400);""",
-         want=["measuring-a-temperature-change#rig-build-1"],
+         want=["fixture-measuring-a-temperature-change#rig-build-1"],
          back="true"),
     dict(name="ks3-curve-run", page="/ks3/chemistry/energy-changes-in-reactions/energy-and-changes-of-state.html",
          act="""var s = document.querySelector('.ks3-hcurve-block'); var b = s.querySelector('[data-hcurve-step]'); for (var i = 0; i < 8 && !b.disabled; i += 1) { H.click(b); await H.sleep(120); }""",
