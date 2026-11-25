@@ -135,6 +135,9 @@ LESSON = {
          "data": {"bands": _BANDS}},
     ],
     "ladder_stem": {
+        "explain": "You have two unlabelled colourless liquids. One is an acid and one is an "
+                   "alkali. Explain how you would find out which is which. Say why looking at "
+                   "them cannot tell you.",
         "produce": "A gardener's soil is too acidic for the crop they want to grow. Explain what "
                    "they should add and why it works. Say what could go wrong if they add far "
                    "too much.",
