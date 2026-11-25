@@ -523,8 +523,11 @@ _page("ks3 unit page", "ks3/physics/electric-circuits/index.html")
 # lean. Was ks3/chemistry/particles-and-their-behaviour/solids-liquids-and-gases.html.
 _page("ks3 lesson [chemistry, instrument]",
       "ks3/_fixtures/fixture-solids-liquids-and-gases.html")
+# ⊕ 25 Nov 2026 (Mide, 14 Nov: checks do not depend on real lessons): the hidden frozen classic
+# copy of current-and-circuits (ks3_fixtures/), so this sample keeps its circuit-loop bench after
+# P8 goes lean (Wave 2). Was ks3/physics/electric-circuits/current-and-circuits.html.
 _page("ks3 lesson [physics, instrument]",
-      "ks3/physics/electric-circuits/current-and-circuits.html")
+      "ks3/_fixtures/fixture-current-and-circuits.html")
 
 # ── runtimes lane (theme run, 27 Sep 2026) ──
 # The three hand-written student/ pages this lane wired that were not
@@ -901,8 +904,11 @@ _CHAT_OPEN_JS = r"""
   }
 })()
 """
+# ⊕ 25 Nov 2026 (Mide, 14 Nov: checks do not depend on real lessons): the hidden frozen classic
+# copy (ks3_fixtures/); current-and-circuits went lean (Wave 2, P8). Page swap only.
+# Was ks3/physics/electric-circuits/current-and-circuits.html.
 _ipage("D1 ks3 tutor chat [open+message]",
-       "ks3/physics/electric-circuits/current-and-circuits.html",
+       "ks3/_fixtures/fixture-current-and-circuits.html",
        setup=_CHAT_OPEN_JS)
 
 # ── E1–E3 (front door, 12 Oct 2026): THE ONE DRAWER, OPEN, WITH THE HOME BUTTON
@@ -1051,8 +1057,11 @@ _PAIRS_INJECT_JS = r"""
   });
 })(%s)
 """ % json.dumps(INSTRUMENT_PAIRS)
+# ⊕ 25 Nov 2026 (Mide, 14 Nov: checks do not depend on real lessons): the hidden frozen classic
+# copy (ks3_fixtures/); current-and-circuits went lean (Wave 2, P8). Page swap only.
+# Was ks3/physics/electric-circuits/current-and-circuits.html.
 _ipage("D3 ks3 instrument panels [42 pairs, post-answer]",
-       "ks3/physics/electric-circuits/current-and-circuits.html",
+       "ks3/_fixtures/fixture-current-and-circuits.html",
        setup=_PAIRS_INJECT_JS, wait=0.3)
 
 # ── D5: student flashcards, flipped so the "Next" button is on screen ──

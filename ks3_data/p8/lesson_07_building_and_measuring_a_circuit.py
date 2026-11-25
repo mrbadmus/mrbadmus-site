@@ -432,26 +432,19 @@ LESSON = {
             # the fault.
             "q": "A group reports: the lamp is dark, the ammeter reads "
                  "0.00 A, and the voltmeter reads 3.00 V. Every clip is "
-                 "tight. What have they most likely done?",
+                 "tight and the switch is closed. The lamp lights in another "
+                 "circuit. What have they most likely done?",
             "options": [
                 "Wired the voltmeter into the loop instead of across the lamp",
                 "Wired the ammeter across the lamp instead of in the loop",
-                "Left the switch open",
-                "Put the cells in the holder the wrong way round",
+                "Left the switch open, so there is a gap in the loop",
+                "Put the cells in the holder the wrong way round, so no current flows",
             ],
             "answer": 0,
             "feedback": {
-                1: "That fault gives a huge ammeter reading, not zero, and "
-                   "the ammeter would have gone off the scale. A full "
-                   "voltmeter reading with no current is the signature of a "
-                   "voltmeter in the loop.",
-                2: "An open switch gives zero on both meters. Here the "
-                   "voltmeter is reading the whole battery p.d., so "
-                   "something is completing the loop — through the "
-                   "voltmeter.",
-                3: "Reversed cells still drive the lamp; a digital meter "
-                   "would just show a minus sign. Nothing here points at "
-                   "polarity.",
+                1: "An ammeter across the lamp sends its reading off the scale. Here it reads zero.",
+                2: "The switch is closed here. An open switch would also put both meters on zero.",
+                3: "Cells the wrong way round still light the lamp. A digital meter shows a minus sign.",
             },
             "title": "Rung 1 · Read the symptom"},
         "apply": {
@@ -463,32 +456,16 @@ LESSON = {
             # her correction are untouched; the clause after the dash states
             # the rule the wrong idea depends on. See DEPARTURES-P8.md row 1.
             "options": [
-                "The student is right — 3.00 V out of 3.0 V is the whole "
-                "supply, so the circuit is fine, because a voltmeter that "
-                "reads the whole supply is showing that the whole supply "
-                "is reaching the component it is measuring.",
-                "The reading is wrong — a voltmeter in the loop cannot "
-                "measure anything.",
-                "The reading is correct and the circuit is not. The "
-                "voltmeter’s huge resistance is now the only thing in the "
-                "loop that matters, so it takes almost all the p.d. and "
-                "almost no current flows.",
-                "The reading is correct and the circuit is not, because a "
-                "voltmeter has no resistance and short-circuits the lamp.",
+                "The student is right, because 3.00 V shows the whole supply is reaching the lamp.",
+                "The reading is wrong, because a voltmeter wired into the loop cannot measure anything.",
+                "The reading is true, but the voltmeter's huge resistance stops almost all current.",
+                "The reading is true, but the voltmeter has zero resistance, so it shorts the lamp.",
             ],
             "answer": 2,
             "feedback": {
-                0: "The number looks reassuring and the lamp is dark. A "
-                   "reading at the battery’s own value tells you the "
-                   "voltmeter is holding the p.d., not that the lamp is "
-                   "getting it.",
-                1: "It measures perfectly well; it is measuring the p.d. "
-                   "across itself. The fault is in what the circuit has "
-                   "become, not in the instrument.",
-                3: "The verdict is right and the reason is inside out — that "
-                   "describes an ammeter. A voltmeter has an enormous "
-                   "resistance, which is why it strangles the loop instead of "
-                   "shorting it.",
+                0: "With the voltmeter in the loop, almost no current flows. The lamp stays dark.",
+                1: "It measures well. It reads the p.d. across itself, which is almost the whole supply.",
+                3: "That describes an ammeter. A voltmeter has a very high resistance.",
             },
             "title": "Rung 2 · The one that catches people"},
         "explain": {

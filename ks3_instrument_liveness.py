@@ -429,6 +429,52 @@ RETIRED_BY_LEAN = {
                     "replaced by the drawn figures p7-prism and p7-prism-two"),
     "colour-bench": ("physics/light/why-things-look-coloured.html",
                      "replaced by the drawn figures p7-colour-white, p7-colour-green and the filter figures"),
+    # ⊕ 25 Nov 2026 lean wave 2 (Y7 Phys 2 Electricity and magnetism: P8 lessons 1-7, P9 lessons
+    # 1-3, P10 lessons 1-4): no classic page emits any of these families (circ-band, p8-attempt
+    # and charge-band spanned several lessons, all in this set). The frozen classic copies in
+    # ks3_fixtures/ keep the benches for the parity, contrast and save checks. mag-band is not
+    # here: how-a-motor-works (P10 lesson 5, classic) still emits it.
+    "circuit-loop": ("physics/electric-circuits/current-and-circuits.html",
+                     "the circuit-loop bench is not on the lean page (figures p8-l1-drawn and p8-l1-two-ammeters)"),
+    "circ-think": ("physics/electric-circuits/current-and-circuits.html",
+                   "the predict block is not on the lean page"),
+    "circ-band": ("physics/electric-circuits/series-and-parallel.html",
+                  "the band blocks are not on the lean pages (current-and-circuits, series-and-parallel, "
+                  "potential-difference, resistance, conductors and building carry drawn figures)"),
+    "two-arrangement-loop": ("physics/electric-circuits/series-and-parallel.html",
+                             "replaced by the drawn figures p8-l2-series and p8-l2-parallel"),
+    "junction-bench": ("physics/electric-circuits/current-at-a-junction.html",
+                       "replaced by the drawn figures p8-l3-junction, p8-l3-find and p8-l3-find-ma"),
+    "p8-attempt": ("physics/electric-circuits/potential-difference.html",
+                   "the Your turn blocks are not on the lean pages (junction, potential-difference, "
+                   "resistance and conductors)"),
+    "voltmeter-tap": ("physics/electric-circuits/potential-difference.html",
+                      "replaced by the drawn figures p8-l4-meters and p8-l4-series"),
+    "component-under-test": ("physics/electric-circuits/resistance.html",
+                             "the component bench is not on the lean page (figures p8-res-circuit-resistor and p8-res-circuit-lamp)"),
+    "test-gap": ("physics/electric-circuits/conductors-and-insulators.html",
+                 "replaced by the drawn figure p8-cond-tester"),
+    "meter-placement": ("physics/electric-circuits/building-and-measuring-a-circuit.html",
+                        "replaced by the drawn figures p8-build-correct, p8-build-ammeter-across and p8-build-voltmeter-loop"),
+    "transfer-pair": ("physics/static-electricity/charging-by-rubbing.html",
+                      "replaced by the drawn figure p9-rub-rod-duster"),
+    "charge-think": ("physics/static-electricity/charging-by-rubbing.html",
+                     "the predict block is not on the lean page"),
+    "charge-band": ("physics/static-electricity/forces-between-charges.html",
+                    "the band blocks are not on the lean pages (charging-by-rubbing, forces-between-charges "
+                    "and electric-fields carry drawn figures)"),
+    "charge-pair": ("physics/static-electricity/forces-between-charges.html",
+                    "replaced by the drawn figures p9-pairs-three and p9-induction-wall"),
+    "field-grid": ("physics/static-electricity/electric-fields.html",
+                   "replaced by the drawn figures p9-field-arrows-two and p9-field-cancel-mid"),
+    "track-pair": ("physics/magnetism-and-electromagnetism/magnets-and-poles.html",
+                   "replaced by the drawn figures p10-pole-pairs-three and p10-steel-test-three"),
+    "compass-plot": ("physics/magnetism-and-electromagnetism/magnetic-fields.html",
+                     "replaced by the drawn figures p10-bar-field-lines and p10-two-magnets-nn"),
+    "dip-circle": ("physics/magnetism-and-electromagnetism/the-earth-is-a-magnet.html",
+                   "the dip circle is not on the lean page (figure p10-earth-field-model)"),
+    "solenoid-bench": ("physics/magnetism-and-electromagnetism/electromagnets.html",
+                       "replaced by the drawn figure p10-electromagnet-nail"),
 }
 
 

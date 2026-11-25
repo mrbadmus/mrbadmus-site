@@ -563,24 +563,18 @@ LESSON = {
                  "are packed close together and the lines out at the sides "
                  "are far apart. What does that tell you?",
             "options": [
-                "There are more field lines near the ends than out at the "
-                "sides",
+                "The field is weaker near the ends, because the lines are squashed together",
                 "The field only exists near the ends, because that is where "
                 "lines were drawn",
                 "The field is stronger out at the sides, because it has "
                 "spread further",
-                "The field is stronger near the ends than out at the sides",
+                "The field is stronger near the ends, because the lines are closest there",
             ],
             "answer": 3,
             "feedback": {
-                0: "Every line that leaves the north pole arrives at the "
-                   "south pole, so the count is the same everywhere. What "
-                   "differs is how much space they are spread over.",
-                1: "The field fills the whole region, including the gaps "
-                   "between drawn lines. Spacing compares strengths; it does "
-                   "not mark where the field stops.",
-                2: "Spreading out is what a field does as it weakens. Crowded "
-                   "lines mean strong, not weak.",
+                0: "Crowded lines mean a strong field. The field is strongest near the ends.",
+                1: "The field fills all the space, between the lines too. Spacing shows strength.",
+                2: "Spread out lines mean a weaker field. The sides are weaker than the ends.",
             },
             "title": "Rung 1 · Read the map"},
         "apply": {
@@ -589,8 +583,7 @@ LESSON = {
             "options": [
                 "A compass at that point would have to settle in two "
                 "directions at once",
-                "Lines are not allowed to cross because the field is too "
-                "strong at a crossing point",
+                "Lines may not cross, because the field is too strong at a crossing point",
                 "Lines can cross, but only outside the magnet, and this "
                 "crossing is inside it",
                 "The lines would cancel each other out where they cross, "
@@ -598,14 +591,9 @@ LESSON = {
             ],
             "answer": 0,
             "feedback": {
-                1: "Field strength has nothing to do with it. The problem is "
-                   "direction: a compass settles to one direction and can "
-                   "only do that if one line passes through the point.",
-                2: "Lines never cross anywhere, inside or outside. There is "
-                   "no place where the field points two ways.",
-                3: "Fields do add and can cancel — a neutral point is exactly "
-                   "that — but the result is still one direction, or none. It "
-                   "is never two.",
+                1: "Strength is not the problem. A compass at a point can only point one way.",
+                2: "Lines never cross anywhere, inside or outside the magnet.",
+                3: "Two lines through one point would mean two directions there. That cannot happen.",
             },
             "title": "Rung 2 · Apply the rule"},
         "explain": {

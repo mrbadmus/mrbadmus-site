@@ -408,22 +408,16 @@ LESSON = {
                  "ammeters, one either side of the bulb. The first reads "
                  "0.24 A. What does the second read?",
             "options": [
-                "0.12 A — the bulb uses up about half of it",
-                "0 A — the current has already been spent on the bulb",
-                "0.24 A — the current is the same everywhere in a single loop",
-                "0.48 A — the bulb pushes the current on and it speeds up",
+                "0.12 A, because the bulb uses up about half of the current",
+                "0 A, because all of the current has been spent on the bulb",
+                "0.24 A, because the current is the same everywhere in one loop",
+                "0.48 A, because the bulb pushes the current on and speeds it up",
             ],
             "answer": 2,
             "feedback": {
-                0: "Nothing is used up. The bulb takes energy from the charge "
-                   "going through it, and energy is not the same thing as "
-                   "the charge. Both meters read 0.24 A.",
-                1: "If no charge came back the loop would not be a loop, and "
-                   "the bulb could not stay lit for a second. The flow is a "
-                   "full ring.",
-                3: "A bulb adds nothing. It resists the flow, and what it "
-                   "resists it resists equally on both sides: one loop, one "
-                   "current.",
+                0: "Nothing is used up. The bulb takes energy, and the current is the same on both sides.",
+                1: "If no charge came back, the loop would stop and the bulb would go out.",
+                3: "A bulb does not speed the current up. One loop has one current.",
             },
             "title": "Rung 1 · Read the meters"},
         "apply": {
@@ -431,28 +425,16 @@ LESSON = {
                  "light will come on a moment late because the electricity "
                  "has to travel down the wire first. What is wrong with that?",
             "options": [
-                "The wire is already full of free electrons, so closing the "
-                "switch pushes on all of them at once and the far end starts "
-                "moving almost immediately.",
-                "Nothing is wrong — there is a delay, but it is too small to "
-                "notice because electricity travels at the speed of light.",
-                "The student is right, and on a cable a few kilometres long "
-                "you would see the lamp light up noticeably late.",
-                "There is no delay because a cell does not send electrons out "
-                "— it makes new ones in the wire as they are needed.",
+                "The wire is already full of electrons, so they all start moving at once.",
+                "Nothing is wrong, because each electron races to the lamp at the speed of light.",
+                "The student is right, because a long cable gives a delay you can see.",
+                "There is no delay, because the cell makes new electrons in the wire as needed.",
             ],
             "answer": 0,
             "feedback": {
-                1: "The push does travel at close to the speed of light, but "
-                   "the electrons do not: they drift under a millimetre a "
-                   "second. The reason there is no delay is that they were "
-                   "already there.",
-                2: "You would not. The wire is full before you start, so "
-                   "nothing has to make the journey before the lamp can "
-                   "light.",
-                3: "The verdict is right and the reason is not. No electrons "
-                   "are made or destroyed; a cell pushes the ones the metal "
-                   "already has.",
+                1: "Each electron drifts very slowly. The push reaches them all at once because they are already there.",
+                2: "There is no delay to see. The wire is full of electrons before the switch closes.",
+                3: "A cell makes no electrons. It pushes the ones already in the wire.",
             },
             "title": "Rung 2 · The one that catches people"},
         "explain": {

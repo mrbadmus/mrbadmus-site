@@ -488,23 +488,16 @@ LESSON = {
                  "carries 0.85 A, the first branch 0.30 A and the second "
                  "0.40 A. What does the third branch carry?",
             "options": [
-                "0.15 A",
-                "1.55 A — add all three readings together",
-                "0.28 A — share the main current equally between the three "
-                "branches",
-                "0.10 A — take the smaller branch away from the larger one",
+                "0.15 A, because the three branches add up to the main current",
+                "1.55 A, because you add all three readings together to get the total",
+                "0.28 A, because the main current is shared equally between the branches",
+                "0.10 A, because you take the smaller branch away from the larger one",
             ],
             "answer": 0,
             "feedback": {
-                1: "You have added the parts to the whole. The whole is "
-                   "already given as 0.85 A; the third part is what is left "
-                   "of it after the other two.",
-                2: "Branches are not given equal shares. Two of them are "
-                   "already measured at 0.30 A and 0.40 A, which are not "
-                   "equal, so the third is 0.85 − 0.30 − 0.40.",
-                3: "That compares two branches with each other. The missing "
-                   "branch is fixed by the total: 0.85 A must be shared out "
-                   "among all three.",
+                1: "The main wire is already the total. Take the two branches away from 0.85 A.",
+                2: "Branches do not get equal shares. Two of them are already 0.30 A and 0.40 A.",
+                3: "The third branch is what is left: 0.85 − 0.30 − 0.40 = 0.15 A.",
             },
             "title": "Rung 1 · Calculate"},
         "apply": {
@@ -513,28 +506,16 @@ LESSON = {
                  "now draw 0.60 A, because it gets all the current to itself. "
                  "What is right?",
             "options": [
-                "The student is right — the total from the battery is fixed "
-                "at 0.60 A, so the remaining lamp must take all of it.",
-                "It draws 0.15 A, because removing a branch makes the circuit "
-                "harder to get round.",
-                "It still draws 0.30 A. Its branch has the same battery "
-                "across it as before, and the main wire now carries 0.30 A "
-                "instead of 0.60 A.",
-                "It still draws 0.30 A, because a battery always gives out "
-                "the same current whatever is connected to it.",
+                "The student is right, because the battery's 0.60 A must all go through it now.",
+                "It draws 0.15 A, because removing a branch makes the circuit harder to get round.",
+                "It still draws 0.30 A, because its branch has the same battery across it.",
+                "It still draws 0.30 A, because a battery always gives out the same current.",
             ],
             "answer": 2,
             "feedback": {
-                0: "The total is not fixed. The battery supplies whatever the "
-                   "branches ask for, and one lamp asks for 0.30 A.",
-                1: "Removing a parallel branch does make the circuit harder "
-                   "to get round overall, but the surviving branch is "
-                   "unchanged — it has the same battery across it and the "
-                   "same resistance, so the same current.",
-                3: "The verdict is right and the reason is not. A battery "
-                   "does not give a fixed current — the total here drops from "
-                   "0.60 A to 0.30 A. What is fixed is the push across each "
-                   "branch.",
+                0: "The total is not fixed. With one lamp, the battery only gives 0.30 A.",
+                1: "The lamp's branch has not changed, so its current has not changed.",
+                3: "A battery does not give a fixed current. Here the total falls from 0.60 A to 0.30 A.",
             },
             "title": "Rung 2 · The one that catches people"},
         "explain": {

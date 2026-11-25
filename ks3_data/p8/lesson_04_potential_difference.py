@@ -564,23 +564,16 @@ LESSON = {
                  "Voltmeters across the first two read 1.5 V and 3.0 V. What "
                  "is the p.d. across the third?",
             "options": [
-                "10.5 V — add all three readings together",
-                "2.0 V — share the 6.0 V equally between the three",
-                "6.0 V — every component in a loop gets the battery’s full "
-                "p.d.",
-                "1.5 V",
+                "10.5 V, because you add all three readings together",
+                "2.0 V, because the 6.0 V is shared equally between the three",
+                "6.0 V, because every part in a loop gets the battery's full p.d.",
+                "1.5 V, because the three shares add up to the battery's 6.0 V",
             ],
             "answer": 3,
             "feedback": {
-                0: "You have added the parts to the whole. The whole is "
-                   "already given as 6.0 V; the third share is what is left "
-                   "of it.",
-                1: "The shares are not equal here — two of them are measured "
-                   "at 1.5 V and 3.0 V. The bigger share goes to whatever "
-                   "resists more.",
-                2: "That is the rule for parallel branches. In series the "
-                   "p.d. is shared out, which is why the first two readings "
-                   "are smaller than 6.0 V.",
+                0: "The battery's 6.0 V is already the total. The third share is what is left.",
+                1: "The shares are not equal. Two are already 1.5 V and 3.0 V.",
+                2: "That is true for parallel branches. In series, the p.d. is shared out.",
             },
             "title": "Rung 1 · Calculate"},
         "apply": {
@@ -593,29 +586,16 @@ LESSON = {
             # her correction are untouched; the clause after the dash states
             # the rule the wrong idea depends on. See DEPARTURES-P8.md row 1.
             "options": [
-                "The student is right — the reading across the lamp should be "
-                "smaller, because the lamp uses some of the voltage up on its "
-                "way round, so what is left over is what the voltmeter across "
-                "the battery is showing.",
-                "Both readings are correct. With one component in the loop it "
-                "takes the whole share, so the p.d. across it equals the p.d. "
-                "across the battery.",
-                "The reading across the lamp should be 1.5 V, because half "
-                "the p.d. is lost in the connecting wires.",
-                "Both readings are correct, because a voltmeter always reads "
-                "the battery’s value wherever you put it.",
+                "The student is right, because the lamp uses up some voltage as it flows round.",
+                "Both readings are right, because a lone lamp gets all of the battery's p.d.",
+                "The lamp should read 1.5 V, because half the p.d. is lost in the wires.",
+                "Both readings are right, because a voltmeter always reads the battery's p.d.",
             ],
             "answer": 1,
             "feedback": {
-                0: "The shares have to add to the battery’s value, and with "
-                   "only one component there is nothing else to share with. "
-                   "It gets all of it.",
-                2: "Connecting wires do take a share, but a tiny one — "
-                   "nothing like half. In a school circuit it is too small to "
-                   "read.",
-                3: "The verdict is right and the reason is not. Put a second "
-                   "component in the loop and the voltmeter across the lamp "
-                   "reads less than the battery does.",
+                0: "Nothing is used up. With one part in the loop, it gets the whole p.d.",
+                2: "The connecting wires take almost none of the p.d., far less than half.",
+                3: "A voltmeter does not always read the battery's p.d. With two parts, each gets a share.",
             },
             "title": "Rung 2 · The one that catches people"},
         "explain": {

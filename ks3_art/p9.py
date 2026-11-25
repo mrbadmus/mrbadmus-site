@@ -1294,3 +1294,251 @@ KIND_FN = {
     'charge-band':    r_charge_band,
     'charge-think':   r_charge_think,
 }
+
+
+# ═══ ⊕ Lean Wave 2 (Unit 6, lane C) · drawn figures for the lean pages ═════
+#
+#   "p9-rub"          data {rod, cloth, protons, panels: [{title, rod, cloth, arrow?}]}
+#                     before and after rubbing: + and − counted on a rod and a cloth
+#   "p9-pairs"        data {rows: [[sign, sign], ...]}   like charges repel, unlike attract
+#   "p9-induction"    data {}   a charged balloon shifting a neutral wall's electrons
+#   "p9-field-arrows" data {}   field arrows round a positive and a negative charge
+#   "p9-field-cancel" data {}   two equal pushes on a test charge half way between
+#
+# All 340 wide, labels 13px or more. Every sign is DRAWN (two strokes for +, one
+# for −), never typed, so it cannot fall back to another font. Positive is drawn in
+# the accent text colour and negative in ink, and the shape alone carries the sign,
+# so neither theme loses it.
+import math as _p9c_math
+
+from ks3_art.kit import (_SVG_ACCENT_TEXT, _SVG_ACCENT_TINT, _SVG_CARD, _SVG_INK,
+                         _SVG_INK_MUTED, _SVG_INSET, _circle, _ellipse, _line, _n,
+                         _path, _svg_open)
+from ks3_art.kit import _label as _p9c_label
+from ks3_art.kit import _rect as _p9c_rect
+
+_P9C_W = 340
+
+
+def _p9c_open(fig, h, body, w=_P9C_W):
+    return (_svg_open(fig, w, int(_p9c_math.ceil(h)))
+            + '<g stroke-linecap="round" stroke-linejoin="round">' + "".join(body) + "</g></svg>")
+
+
+def _p9c_sign(x, y, sign, size=5.0, w=2.4, part=None):
+    """A drawn + or − centred on (x, y)."""
+    if sign == "+":
+        return (_line(x - size, y, x + size, y, stroke=_SVG_ACCENT_TEXT, w=w, data_part=part or "plus")
+                + _line(x, y - size, x, y + size, stroke=_SVG_ACCENT_TEXT, w=w, data_part=part or "plus"))
+    if sign == "-":
+        return _line(x - size, y, x + size, y, stroke=_SVG_INK, w=w, data_part=part or "minus")
+    raise ValueError("p9 figure: unknown sign %r" % (sign,))
+
+
+def _p9c_head(x, y, ang, size=10.0, fill=_SVG_INK):
+    """A drawn arrowhead with its tip at (x, y), pointing along `ang` (radians)."""
+    dx, dy = _p9c_math.cos(ang), _p9c_math.sin(ang)
+    px, py = -dy, dx
+    return _path("M %s,%s L %s,%s L %s,%s Z"
+                 % (_n(x), _n(y),
+                    _n(x - dx * size + px * size * 0.5), _n(y - dy * size + py * size * 0.5),
+                    _n(x - dx * size - px * size * 0.5), _n(y - dy * size - py * size * 0.5)),
+                 fill=fill, data_part="arrowhead")
+
+
+def _p9c_arrow(x1, y1, x2, y2, w=3.0, paint=_SVG_INK, part="force"):
+    """A straight arrow from (x1, y1) with its tip at (x2, y2)."""
+    ang = _p9c_math.atan2(y2 - y1, x2 - x1)
+    bx, by = x2 - _p9c_math.cos(ang) * 8, y2 - _p9c_math.sin(ang) * 8
+    return (_line(x1, y1, bx, by, stroke=paint, w=w, data_part=part)
+            + _p9c_head(x2, y2, ang, size=11, fill=paint))
+
+
+def _p9c_row(x0, x1, y, n, sign):
+    """n signs spread evenly between x0 and x1 on one line."""
+    if n <= 0:
+        return ""
+    step = (x1 - x0) / float(n)
+    return "".join(_p9c_sign(x0 + step * (i + 0.5), y, sign) for i in range(n))
+
+
+# ── p9-rub ──────────────────────────────────────────────────────────────────
+def _p9c_rub(fig):
+    """Before and after: the protons stay put, and the electrons the rod gains are the
+    ones the cloth loses. The drawer refuses counts that create or destroy charge."""
+    d = fig.get("data") or {}
+    p = int(d.get("protons", 4))
+    panels = d.get("panels") or []
+    if len(panels) != 2:
+        raise ValueError("p9-rub %r: needs a before panel and an after panel" % fig.get("id"))
+    total = panels[0]["rod"] + panels[0]["cloth"]
+    for pn in panels:
+        if pn["rod"] + pn["cloth"] != total:
+            raise ValueError("p9-rub %r: panel %r has %d electrons, the other has %d. Rubbing moves "
+                             "electrons; it never makes or destroys them."
+                             % (fig.get("id"), pn["title"], pn["rod"] + pn["cloth"], total))
+
+    def state(n):
+        return "neutral" if n == p else ("negative" if n > p else "positive")
+
+    RX0, RX1 = 16.0, 146.0          # the rod
+    CX0, CX1 = 206.0, 324.0         # the cloth
+    o = []
+    y0 = 0.0
+    for k, pn in enumerate(panels):
+        o.append(_p9c_label(16, y0 + 18, pn["title"], size=15, weight="700", anchor="start",
+                            data_part="panel-title"))
+        if k == 0:
+            o.append(_p9c_label((RX0 + RX1) / 2, y0 + 42, d.get("rod", "rod"), size=14,
+                                data_part="rod-name"))
+            o.append(_p9c_label((CX0 + CX1) / 2, y0 + 42, d.get("cloth", "cloth"), size=14,
+                                data_part="cloth-name"))
+        elif pn.get("arrow"):
+            o.append(_p9c_label(176, y0 + 33, pn["arrow"], size=13, weight="700",
+                                fill=_SVG_ACCENT_TEXT, data_part="arrow-label"))
+            o.append(_p9c_arrow(CX0 + 40, y0 + 42, RX1 - 30, y0 + 42, w=2.6,
+                                paint=_SVG_ACCENT_TEXT, part="electron-arrow"))
+        top = y0 + 52
+        o.append(_p9c_rect(RX0, top, RX1 - RX0, 36, rx=16, fill=_SVG_CARD, stroke=_SVG_INK, w=2,
+                           data_part="rod"))
+        o.append(_p9c_rect(CX0, top, CX1 - CX0, 36, rx=8, fill=_SVG_INSET, stroke=_SVG_INK, w=2,
+                           data_part="cloth"))
+        o.append(_p9c_row(RX0 + 8, RX1 - 8, top + 11, p, "+"))
+        o.append(_p9c_row(RX0 + 8, RX1 - 8, top + 26, pn["rod"], "-"))
+        o.append(_p9c_row(CX0 + 6, CX1 - 6, top + 11, p, "+"))
+        o.append(_p9c_row(CX0 + 6, CX1 - 6, top + 26, pn["cloth"], "-"))
+        o.append(_p9c_label((RX0 + RX1) / 2, top + 58, state(pn["rod"]), size=14, weight="700",
+                            data_part="rod-state"))
+        o.append(_p9c_label((CX0 + CX1) / 2, top + 58, state(pn["cloth"]), size=14, weight="700",
+                            data_part="cloth-state"))
+        y0 += 124
+    # the key
+    o.append(_p9c_sign(24, y0 + 6, "+"))
+    o.append(_p9c_label(36, y0 + 11, "proton", size=13, anchor="start", fill=_SVG_INK_MUTED,
+                        data_part="key-plus"))
+    o.append(_p9c_sign(118, y0 + 6, "-"))
+    o.append(_p9c_label(130, y0 + 11, "electron", size=13, anchor="start", fill=_SVG_INK_MUTED,
+                        data_part="key-minus"))
+    return _p9c_open(fig, y0 + 22, o)
+
+
+# ── p9-pairs ────────────────────────────────────────────────────────────────
+def _p9c_ball(x, y, sign, r=17.0, part="charge"):
+    fill = _SVG_ACCENT_TINT if sign == "+" else (_SVG_INSET if sign == "-" else _SVG_CARD)
+    out = [_circle(x, y, r, fill=fill, stroke=_SVG_INK, w=2, data_part=part)]
+    if sign in ("+", "-"):
+        out.append(_p9c_sign(x, y, sign, size=7, w=3))
+    return "".join(out)
+
+
+def _p9c_pairs(fig):
+    """One row per pair. Like signs: each arrow points away from the other ball.
+    Unlike signs: each arrow points towards the other ball. The arrows are equal."""
+    rows = (fig.get("data") or {}).get("rows") or [["+", "+"], ["-", "-"], ["+", "-"]]
+    LX, RX = 100.0, 240.0
+    o = []
+    y = 34.0
+    for a, b in rows:
+        like = a == b
+        o.append(_p9c_ball(LX, y, a))
+        o.append(_p9c_ball(RX, y, b))
+        if like:
+            o.append(_p9c_arrow(LX - 22, y, LX - 70, y))
+            o.append(_p9c_arrow(RX + 22, y, RX + 70, y))
+        else:
+            o.append(_p9c_arrow(LX + 22, y, LX + 64, y))
+            o.append(_p9c_arrow(RX - 22, y, RX - 64, y))
+        words = ("Like charges repel" if like else "Unlike charges attract")
+        o.append(_p9c_label(170, y + 40, words, size=14, weight="700", data_part="verdict"))
+        y += 80
+    return _p9c_open(fig, y - 22, o)
+
+
+# ── p9-induction ──────────────────────────────────────────────────────────
+def _p9c_induction(fig):
+    """A negative balloon near a neutral wall. The balloon pushes the electrons in the
+    wall's surface a little way back, so the surface is left slightly positive and the
+    balloon is pulled in. The wall holds as many + as − throughout. The wall runs on
+    off the right edge, so its right side is drawn open."""
+    o = []
+    BX, BY = 78.0, 100.0
+    o.append(_p9c_label(BX, 22, "charged balloon", size=14, weight="700", data_part="balloon-name"))
+    o.append(_path("M %s,%s Q %s,%s %s,%s" % (_n(BX), _n(BY + 56), _n(BX - 12), _n(BY + 76),
+                                              _n(BX + 2), _n(BY + 98)),
+                   stroke=_SVG_INK_MUTED, w=1.6, data_part="string"))
+    o.append(_ellipse(BX, BY, 44, 56, fill=_SVG_INSET, stroke=_SVG_INK, w=2, data_part="balloon"))
+    for dx, dy in ((-18, -26), (12, -26), (-24, 0), (2, 0), (24, 0), (-14, 26), (14, 26)):
+        o.append(_p9c_sign(BX + dx, BY + dy, "-", size=6, w=2.6))
+    WX0, WX1, WY0, WY1 = 198.0, 340.0, 34.0, 170.0
+    o.append(_p9c_label(WX0 + 50, 22, "wall", size=14, weight="700", data_part="wall-name"))
+    o.append(_p9c_rect(WX0, WY0, WX1 - WX0, WY1 - WY0, fill=_SVG_CARD, data_part="wall"))
+    o.append(_path("M %s,%s L %s,%s L %s,%s L %s,%s" % (_n(WX1), _n(WY0), _n(WX0), _n(WY0),
+                                                        _n(WX0), _n(WY1), _n(WX1), _n(WY1)),
+                   stroke=_SVG_INK, w=2, data_part="wall-edge"))
+    for yy in (56, 84, 112, 140):
+        o.append(_p9c_sign(WX0 + 16, yy, "+", size=6, w=2.6))
+        o.append(_p9c_sign(WX0 + 50, yy, "-", size=6, w=2.6))
+    o.append(_p9c_arrow(BX + 50, BY + 40, BX + 106, BY + 40, w=3, part="pull"))
+    o.append(_p9c_label(BX + 80, BY + 64, "pulled in", size=13, weight="700",
+                        data_part="pull-label"))
+    o.append(_p9c_label(266, 192, "electrons pushed", size=13, fill=_SVG_INK_MUTED,
+                        data_part="electrons-label"))
+    o.append(_p9c_label(266, 210, "a little way back", size=13, fill=_SVG_INK_MUTED,
+                        data_part="electrons-label"))
+    return _p9c_open(fig, 218, o)
+
+
+# ── p9-field-arrows ─────────────────────────────────────────────────────────
+def _p9c_field_arrows(fig):
+    """Eight field arrows round each charge: away from the positive one, towards the
+    negative one. Each arrow is the push a small positive charge would feel there."""
+    o = []
+    for cx, sign, name, rule in ((85.0, "+", "positive charge", "arrows point away"),
+                                 (255.0, "-", "negative charge", "arrows point in")):
+        cy = 92.0
+        o.append(_p9c_ball(cx, cy, sign, r=16))
+        for k in range(8):
+            a = _p9c_math.radians(k * 45 + 22.5)
+            ca, sa = _p9c_math.cos(a), _p9c_math.sin(a)
+            near, far = 26.0, 66.0
+            if sign == "+":
+                o.append(_p9c_arrow(cx + ca * near, cy + sa * near, cx + ca * far, cy + sa * far,
+                                    w=2.4, part="field-arrow"))
+            else:
+                o.append(_p9c_arrow(cx + ca * far, cy + sa * far, cx + ca * near, cy + sa * near,
+                                    w=2.4, part="field-arrow"))
+        o.append(_p9c_label(cx, 182, name, size=14, weight="700", data_part="charge-name"))
+        o.append(_p9c_label(cx, 201, rule, size=13, fill=_SVG_INK_MUTED, data_part="rule"))
+    return _p9c_open(fig, 210, o)
+
+
+# ── p9-field-cancel ─────────────────────────────────────────────────────────
+def _p9c_field_cancel(fig):
+    """Two equal positive charges, and a small positive test charge half way between.
+    Each pushes it away with the same size of push, so the two pushes cancel."""
+    o = []
+    Y = 70.0
+    o.append(_p9c_label(170, 20, "two equal positive charges", size=14, weight="700",
+                        data_part="setup"))
+    o.append(_p9c_ball(40, Y, "+", r=18))
+    o.append(_p9c_ball(300, Y, "+", r=18))
+    o.append(_p9c_arrow(181, Y, 248, Y, w=2.6, part="push-from-left"))
+    o.append(_p9c_arrow(159, Y, 92, Y, w=2.6, part="push-from-right"))
+    o.append(_circle(170, Y, 8, fill=_SVG_ACCENT_TINT, stroke=_SVG_INK, w=2, data_part="test-charge"))
+    o.append(_p9c_sign(170, Y, "+", size=4, w=1.8))
+    o.append(_p9c_label(170, Y + 32, "small test charge", size=13, fill=_SVG_INK_MUTED,
+                        data_part="test-label"))
+    o.append(_p9c_label(170, Y + 60, "two equal pushes cancel", size=14, weight="700",
+                        data_part="verdict"))
+    o.append(_p9c_label(170, Y + 80, "so the field here is zero", size=14, weight="700",
+                        data_part="verdict"))
+    return _p9c_open(fig, Y + 90, o)
+
+
+ART.update({
+    "p9-rub": _p9c_rub,
+    "p9-pairs": _p9c_pairs,
+    "p9-induction": _p9c_induction,
+    "p9-field-arrows": _p9c_field_arrows,
+    "p9-field-cancel": _p9c_field_cancel,
+})

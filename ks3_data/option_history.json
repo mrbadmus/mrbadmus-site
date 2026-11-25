@@ -187,6 +187,28 @@
    "A field with two species of grass"
   ]
  },
+ "building-and-measuring-a-circuit#apply": {
+  "0": [
+   "The student is right — 3.00 V out of 3.0 V is the whole supply, so the circuit is fine, because a voltmeter that reads the whole supply is showing that the whole supply is reaching the component it is measuring."
+  ],
+  "1": [
+   "The reading is wrong — a voltmeter in the loop cannot measure anything."
+  ],
+  "2": [
+   "The reading is correct and the circuit is not. The voltmeter’s huge resistance is now the only thing in the loop that matters, so it takes almost all the p.d. and almost no current flows."
+  ],
+  "3": [
+   "The reading is correct and the circuit is not, because a voltmeter has no resistance and short-circuits the lamp."
+  ]
+ },
+ "building-and-measuring-a-circuit#recall": {
+  "2": [
+   "Left the switch open"
+  ],
+  "3": [
+   "Put the cells in the holder the wrong way round"
+  ]
+ },
  "calculating-energy-transferred#apply": {
   "0": [
    "Nothing is wrong — that working is correct"
@@ -195,6 +217,20 @@
  "changes-of-state#apply": {
   "1": [
    "Nothing — it is being lost to the room"
+  ]
+ },
+ "charging-by-rubbing#apply": {
+  "0": [
+   "The student is right — friction turns movement into electric charge, which is why you have to rub hard."
+  ],
+  "1": [
+   "No charge was created, because the balloon and the jumper end up with the same charge as each other."
+  ],
+  "2": [
+   "No charge was created. Electrons moved from the jumper to the balloon, so the jumper is now positive by exactly as much as the balloon is negative."
+  ],
+  "3": [
+   "Charge was created, but an equal amount of positive charge was created on the jumper at the same time, so the two new charges balance and the total stays zero."
   ]
  },
  "chemical-symbols#apply": {
@@ -302,6 +338,34 @@
    "A mixture, because the amounts were wrong"
   ]
  },
+ "conductors-and-insulators#apply": {
+  "0": [
+   "The student is right: an insulator has infinite resistance, which is why the reading is exactly zero — a material either has free charges in it and conducts, or has none at all and stops the current dead."
+  ],
+  "1": [
+   "The resistance cannot be worked out at all, because dividing by a zero reading is impossible."
+  ],
+  "2": [
+   "The resistance is enormous, because plastic has no atoms that can carry charge."
+  ],
+  "3": [
+   "The resistance is enormous but finite — around 2 TΩ for that ruler, which passes a current of a few millionths of a millionth of an amp, far below what the meter can show."
+  ]
+ },
+ "conductors-and-insulators#recall": {
+  "0": [
+   "0.9 Ω — a conductor"
+  ],
+  "1": [
+   "40 Ω — a conductor"
+  ],
+  "2": [
+   "40 Ω — an insulator"
+  ],
+  "3": [
+   "0.025 Ω — a very good conductor"
+  ]
+ },
  "conservation-of-energy#apply": {
   "2": [
    "It is exactly the same — it is just all in the thermal store now"
@@ -310,6 +374,59 @@
  "conservation-of-mass#apply": {
   "2": [
    "Water has been absorbed into the metal"
+  ]
+ },
+ "current-and-circuits#apply": {
+  "0": [
+   "The wire is already full of free electrons, so closing the switch pushes on all of them at once and the far end starts moving almost immediately."
+  ],
+  "1": [
+   "Nothing is wrong — there is a delay, but it is too small to notice because electricity travels at the speed of light."
+  ],
+  "2": [
+   "The student is right, and on a cable a few kilometres long you would see the lamp light up noticeably late."
+  ],
+  "3": [
+   "There is no delay because a cell does not send electrons out — it makes new ones in the wire as they are needed."
+  ]
+ },
+ "current-and-circuits#recall": {
+  "0": [
+   "0.12 A — the bulb uses up about half of it"
+  ],
+  "1": [
+   "0 A — the current has already been spent on the bulb"
+  ],
+  "2": [
+   "0.24 A — the current is the same everywhere in a single loop"
+  ],
+  "3": [
+   "0.48 A — the bulb pushes the current on and it speeds up"
+  ]
+ },
+ "current-at-a-junction#apply": {
+  "0": [
+   "The student is right — the total from the battery is fixed at 0.60 A, so the remaining lamp must take all of it."
+  ],
+  "2": [
+   "It still draws 0.30 A. Its branch has the same battery across it as before, and the main wire now carries 0.30 A instead of 0.60 A."
+  ],
+  "3": [
+   "It still draws 0.30 A, because a battery always gives out the same current whatever is connected to it."
+  ]
+ },
+ "current-at-a-junction#recall": {
+  "0": [
+   "0.15 A"
+  ],
+  "1": [
+   "1.55 A — add all three readings together"
+  ],
+  "2": [
+   "0.28 A — share the main current equally between the three branches"
+  ],
+  "3": [
+   "0.10 A — take the smaller branch away from the larger one"
   ]
  },
  "distance-time-graphs#recall": {
@@ -348,6 +465,39 @@
   ],
   "3": [
    "About 510 m — 340 m/s for 3.0 s is the there-and-back path, so halve it"
+  ]
+ },
+ "electric-fields#apply": {
+  "0": [
+   "The student is right — being close to two charges instead of one makes it the strongest point on the map."
+  ],
+  "1": [
+   "It is zero there. The two charges push a positive test charge in exactly opposite directions with equal strength, so the pushes cancel."
+  ],
+  "2": [
+   "It is zero there, because the two charges cancel each other out everywhere between them."
+  ],
+  "3": [
+   "It is half the strength of a single charge at the same distance, because the two contributions are averaged."
+  ]
+ },
+ "electric-fields#recall": {
+  "0": [
+   "The object is negatively charged, and a negative charge would be pushed outwards along the field."
+  ],
+  "1": [
+   "The object is positively charged, and a negative charge would be pushed outwards along the field."
+  ],
+  "2": [
+   "The object is positively charged, and a negative charge would be pulled inwards, against the field."
+  ],
+  "3": [
+   "You cannot tell the sign from the field's direction, only its strength."
+  ]
+ },
+ "electromagnets#recall": {
+  "3": [
+   "Putting a soft iron core in where there was only air"
   ]
  },
  "endothermic-reactions#apply": {
@@ -512,6 +662,28 @@
   ],
   "3": [
    "The cream is unhealthy"
+  ]
+ },
+ "forces-between-charges#apply": {
+  "0": [
+   "It falls to about half, because the distance doubled"
+  ],
+  "2": [
+   "It falls to about a quarter on the nearer sphere and stays the same on the further one"
+  ],
+  "3": [
+   "It falls to about a quarter of what it was"
+  ]
+ },
+ "forces-between-charges#recall": {
+  "0": [
+   "It must be positively charged, because unlike charges attract"
+  ],
+  "1": [
+   "Nothing certain — it could be positively charged, or it could be neutral"
+  ],
+  "2": [
+   "It must be neutral, because a charged ball would have been pushed away"
   ]
  },
  "formulae#apply": {
@@ -719,6 +891,32 @@
   ],
   "3": [
    "About 1.3 m/s"
+  ]
+ },
+ "magnetic-fields#apply": {
+  "1": [
+   "Lines are not allowed to cross because the field is too strong at a crossing point"
+  ]
+ },
+ "magnetic-fields#recall": {
+  "0": [
+   "There are more field lines near the ends than out at the sides"
+  ],
+  "3": [
+   "The field is stronger near the ends than out at the sides"
+  ]
+ },
+ "magnets-and-poles#apply": {
+  "2": [
+   "It grows a great deal — far more than doubling"
+  ]
+ },
+ "magnets-and-poles#recall": {
+  "2": [
+   "It is not a magnet, because a magnet would have been attracted only once"
+  ],
+  "1": [
+   "It is a magnetic material, but whether it is a magnet is still open"
   ]
  },
  "making-a-pure-dry-salt#apply": {
@@ -931,6 +1129,34 @@
    "23 — one from each pair, so the fertilised egg has 46 again"
   ]
  },
+ "potential-difference#apply": {
+  "0": [
+   "The student is right — the reading across the lamp should be smaller, because the lamp uses some of the voltage up on its way round, so what is left over is what the voltmeter across the battery is showing."
+  ],
+  "1": [
+   "Both readings are correct. With one component in the loop it takes the whole share, so the p.d. across it equals the p.d. across the battery."
+  ],
+  "2": [
+   "The reading across the lamp should be 1.5 V, because half the p.d. is lost in the connecting wires."
+  ],
+  "3": [
+   "Both readings are correct, because a voltmeter always reads the battery’s value wherever you put it."
+  ]
+ },
+ "potential-difference#recall": {
+  "0": [
+   "10.5 V — add all three readings together"
+  ],
+  "1": [
+   "2.0 V — share the 6.0 V equally between the three"
+  ],
+  "2": [
+   "6.0 V — every component in a loop gets the battery’s full p.d."
+  ],
+  "3": [
+   "1.5 V"
+  ]
+ },
  "reactions-rearrange-atoms#apply": {
   "0": [
    "Two, because water only has two hydrogens"
@@ -979,6 +1205,62 @@
   ],
   "3": [
    "It slows down and bends towards the normal, so the angle inside the glass is less than 40°."
+  ]
+ },
+ "resistance#apply": {
+  "0": [
+   "Both are right. The filament is hotter at 10 V, and hot metal resists more — so the lamp genuinely has a different resistance in each state."
+  ],
+  "1": [
+   "The 6.4 Ω reading is the real resistance, and the 16.0 Ω reading is wrong because the meters are affected by the heat coming off the filament, so a reading taken while a lamp is glowing is never the component's own value."
+  ],
+  "2": [
+   "The student is right — R = V ÷ I is a law, so a component can only have one resistance."
+  ],
+  "3": [
+   "Both are right, because the resistance of any component always goes up when you turn the supply up."
+  ]
+ },
+ "resistance#recall": {
+  "0": [
+   "4.05 Ω — multiply the two readings"
+  ],
+  "1": [
+   "0.2 Ω — divide the current by the p.d."
+  ],
+  "2": [
+   "5.0 Ω"
+  ],
+  "3": [
+   "5.0 V — the number is the p.d. needed for one amp"
+  ]
+ },
+ "series-and-parallel#apply": {
+  "0": [
+   "Nothing is wrong — in series the current is the same everywhere, so both bulbs must be as bright as the single bulb was, because a bulb's brightness is set by the current passing through it and that current has not changed anywhere in the loop."
+  ],
+  "1": [
+   "The first bulb will be as bright as before and the second will be dim, because the current reaches the first bulb first."
+  ],
+  "2": [
+   "The bulbs will be dimmer because the battery has to divide its charge between two bulbs and each gets half as much."
+  ],
+  "3": [
+   "A second bulb in series makes it harder for the charge to get round the one loop, so the current everywhere falls — here from 0.30 A to 0.15 A — and both bulbs are dim."
+  ]
+ },
+ "series-and-parallel#recall": {
+  "0": [
+   "0.20 A shared between the three, so about 0.07 A each, and the other two get brighter"
+  ],
+  "1": [
+   "0.60 A, and the other two stay at full brightness"
+  ],
+  "2": [
+   "0.60 A, and all three go out"
+  ],
+  "3": [
+   "0.20 A altogether, and the other two stay lit"
   ]
  },
  "solids-liquids-and-gases#apply": {
@@ -1097,6 +1379,22 @@
  "the-digestive-system#start": {
   "1": [
    "No, the bits are too big"
+  ]
+ },
+ "the-earth-is-a-magnet#apply": {
+  "1": [
+   "The magnetic pole has moved since the map was printed, so the declination on it is out of date"
+  ],
+  "2": [
+   "Compasses made today are calibrated to a different north from the ones that were made forty years ago"
+  ],
+  "3": [
+   "The map’s grid north has moved, because the grid squares are redrawn for each new edition"
+  ]
+ },
+ "the-earth-is-a-magnet#recall": {
+  "3": [
+   "Neither — the Earth attracts the needle the way it attracts a falling ball"
   ]
  },
  "the-ph-scale-and-indicators#apply": {

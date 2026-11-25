@@ -142,6 +142,14 @@ WAVES = {
                          "ultrasound-at-work"]),
         ("P7", "light", ["light-travels", "reflection-mirrors-and-scattering", "refraction",
                          "colour-and-the-spectrum", "why-things-look-coloured"]),
+        # Y7 Phys 2 Electricity and magnetism: P8 lessons 1-7, P9 lessons 1-3, P10 lessons 1-4
+        # (how-a-motor-works stays classic).
+        ("P8", "circuits", ["current-and-circuits", "series-and-parallel", "current-at-a-junction",
+                            "potential-difference", "resistance", "conductors-and-insulators",
+                            "building-and-measuring-a-circuit"]),
+        ("P9", "static", ["charging-by-rubbing", "forces-between-charges", "electric-fields"]),
+        ("P10", "magnetism", ["magnets-and-poles", "magnetic-fields", "the-earth-is-a-magnet",
+                              "electromagnets"]),
     ],
 }
 
