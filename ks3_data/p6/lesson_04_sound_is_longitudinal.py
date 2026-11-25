@@ -386,28 +386,16 @@ LESSON = {
         "recall": {
             "q": "Which of these describes a longitudinal wave?",
             "options": [
-                "The wave is longer than it is tall, so the wavelength is "
-                "bigger than the amplitude.",
-                "The material moves at right angles to the direction of "
-                "travel, giving compressions and rarefactions.",
-                "The material travels along with the wave, from one end to "
-                "the other.",
-                "The material moves backwards and forwards along the same "
-                "line the wave is travelling, giving compressions and "
-                "rarefactions.",
+                "It is longer than it is tall, so the wavelength is bigger than the amplitude.",
+                "The material vibrates at right angles to the direction of travel, giving compressions and rarefactions.",
+                "The material travels along with the wave, from one end to the other.",
+                "The material vibrates along the direction of travel, giving compressions and rarefactions.",
             ],
             "answer": 3,
             "feedback": {
-                0: "That is a description of the shape, and both kinds of "
-                   "wave can have any shape. Longitudinal names the "
-                   "direction the material moves, not the proportions of "
-                   "the drawing.",
-                1: "The two halves belong to different waves. Movement at "
-                   "right angles is transverse, and transverse waves give "
-                   "crests and troughs, not compressions.",
-                2: "No wave carries its material along. Each patch shuffles "
-                   "to and fro and finishes where it started — that is true "
-                   "of both kinds.",
+                0: "Longitudinal is about how the material moves. It is not about the wave's shape.",
+                1: "Moving at right angles is transverse. Transverse waves have crests and troughs.",
+                2: "No wave carries its material along. Each layer moves back and forth.",
             },
             "title": "Rung 1 · Classify"},
         "apply": {
@@ -415,29 +403,16 @@ LESSON = {
                  "says this proves the air moves up and down as sound goes "
                  "past. Which statement is right?",
             "options": [
-                "The wavy line is a graph of how squeezed the air is "
-                "against distance, so its ups and downs are amounts, not "
-                "directions — the air moves along the line of travel.",
-                "The drawing is simply wrong, and a sound wave should never "
-                "be drawn as a wavy line.",
-                "The student is right: air really does move up and down as "
-                "a sound goes past, which is why a sound wave looks like a "
-                "wave on water and is drawn with crests and troughs in "
-                "exactly the same way",
-                "The air moves up and down near a loudspeaker and along the "
-                "line of travel further away.",
+                "It graphs how squashed the air is, and the air vibrates along the wave.",
+                "The drawing is wrong, because sound waves should never be drawn as wavy lines.",
+                "The student is right, because air moves up and down as a sound goes past.",
+                "The air moves up and down near the loudspeaker, but along the wave further away.",
             ],
             "answer": 0,
             "feedback": {
-                1: "The drawing is a legitimate graph and physicists use it "
-                   "constantly. What is wrong is reading it as a "
-                   "photograph.",
-                2: "It is drawn the same way because a graph of anything "
-                   "that repeats looks like that. In air, the movement is "
-                   "along the direction of travel, never across it.",
-                3: "Nothing changes with distance. The air moves along the "
-                   "line of travel from the cone onwards, at every point of "
-                   "the journey.",
+                1: "Drawing sound as a wavy line is fine. The line is a graph.",
+                2: "The air moves back and forth along the direction of travel, never up and down.",
+                3: "The air moves along the direction of travel everywhere, even near the loudspeaker.",
             },
             "title": "Rung 2 · The one that catches people"},
         "explain": {

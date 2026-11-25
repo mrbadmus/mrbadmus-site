@@ -544,49 +544,32 @@ LESSON = {
             "q": "A shout crosses 680 m of still air. Sound travels at "
                  "about 340 m/s in air. How long does it take?",
             "options": [
-                "About 0.50 s — divide the speed by the distance",
-                "About 2.0 m",
-                "About 2.0 s",
-                "About 231 000 s — multiply the distance by the speed",
+                "About 0.50 s, because you divide the speed by the distance",
+                "About 2.0 m, because you divide the distance by the speed",
+                "About 2.0 s, because you divide the distance by the speed",
+                "About 231 000 s, because you multiply the distance by the speed",
             ],
             "answer": 2,
             "feedback": {
-                0: "That is the calculation upside down. Cover t on the triangle and s sits over v, so the distance is the one being divided.",
-                1: "The arithmetic is right and the unit is wrong. Metres "
-                   "divided by metres per second leaves seconds, and the "
-                   "question asked how long.",
-                3: "Multiplying gives you a distance back when you already "
-                   "know one. To find a time you share the distance out at "
-                   "so many metres each second, so you divide.",
+                0: "That divides the wrong way round. Time = distance ÷ speed, so 680 ÷ 340.",
+                1: "The number is right but the unit is wrong. A time is in seconds.",
+                3: "Multiplying gives a distance. To find a time, divide the distance by the speed.",
             },
             "title": "Rung 1 · Calculate"},
         "apply": {
             "q": "A spacecraft explodes a hundred metres from an astronaut "
                  "on a spacewalk. Which statement is right?",
             "options": [
-                "The astronaut hears a faint, delayed bang, because space "
-                "is very thin rather than completely empty, and a thin "
-                "material carries a weakened sound rather than none at all",
-                "The astronaut sees it and hears nothing at all, because "
-                "there are no particles between them to pass the "
-                "disturbance on.",
-                "The astronaut hears it immediately, because with nothing "
-                "in the way sound is not slowed down.",
-                "The astronaut hears nothing, because the explosion is too "
-                "far away for sound to carry.",
+                "The astronaut hears a faint bang, because sound crosses space very slowly.",
+                "The astronaut hears nothing, because there are no particles to pass sound on.",
+                "The astronaut hears it at once, because there is nothing in space to slow it.",
+                "The astronaut hears nothing, because a hundred metres is too far for sound to go.",
             ],
             "answer": 1,
             "feedback": {
-                0: "Faint is not what happens. With no particles there is "
-                   "no way for a disturbance to be handed along at all, so "
-                   "the sound does not arrive weakened — it does not "
-                   "arrive.",
-                2: "Nothing in the way is exactly the problem. Sound is not "
-                   "something that flies through a gap — it is a "
-                   "disturbance in a material, and it needs the material.",
-                3: "The verdict is right and the rule is wrong. A hundred "
-                   "metres is nothing for sound in air; what stops it is "
-                   "the absence of a material, not the distance.",
+                0: "Sound cannot cross a vacuum at all, faintly or slowly. There are no particles.",
+                2: "With nothing in the way, there is also nothing to carry the sound.",
+                3: "Sound easily travels 100 m through air. Here it is the vacuum that stops it.",
             },
             "title": "Rung 2 · The one that catches people"},
         "explain": {

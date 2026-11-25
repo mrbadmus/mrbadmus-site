@@ -342,27 +342,17 @@ LESSON = {
             "q": "A ray of light passes from air into a glass block, arriving "
                  "at 40° to the normal. Which describes what happens?",
             "options": [
-                "It slows down and bends away from the normal, so the angle "
-                "inside the glass is more than 40°.",
-                "It speeds up and bends towards the normal, because glass is "
-                "clearer than air.",
-                "It carries straight on and only slows down, because the "
-                "block has flat parallel sides.",
-                "It slows down and bends towards the normal, so the angle "
-                "inside the glass is less than 40°.",
+                "It slows down and bends away from the normal, to more than 40°.",
+                "It speeds up and bends towards the normal, because glass is clearer than "
+                "air.",
+                "It slows down and goes straight on, because the block has parallel sides.",
+                "It slows down and bends towards the normal, to less than 40°.",
             ],
             "answer": 3,
             "feedback": {
-                0: "Bending away from the normal is what happens on the way "
-                   "out, when the light speeds up. Going into a slower "
-                   "material, it bends towards the normal.",
-                1: "Light is fastest in a vacuum and slower in any material. "
-                   "Glass slows it to about two thirds of its speed in air, "
-                   "and clarity is a separate matter from speed.",
-                2: "Flat parallel sides mean the ray leaves travelling in "
-                   "its original direction, shifted sideways. It still bends "
-                   "at each face; the two bends cancel in direction, not in "
-                   "position.",
+                0: "Bending away happens on the way out, when light speeds up. Going in, it bends towards the normal.",
+                1: "Light slows down in glass. Being clear does not make light faster.",
+                2: "It bends at each face. Parallel sides only mean it leaves in its starting direction.",
             },
             "title": "Rung 1 · Apply the rule"},
         "apply": {
@@ -380,16 +370,9 @@ LESSON = {
             ],
             "answer": 2,
             "feedback": {
-                0: "Refraction is a change of direction, and here there is "
-                   "none. The light does slow down; it is the angle that "
-                   "gives it a direction to swing towards, and at 0° there "
-                   "is no angle.",
-                1: "The speed always drops on entering glass, whatever the "
-                   "angle. Bending is a consequence of the slowing plus an "
-                   "angle, not the other way round.",
-                3: "A little is always reflected at a surface, but most of "
-                   "it goes in. Arriving square on is the one case with no "
-                   "bending at all.",
+                0: "Along the normal there is no angle, so the ray does not bend. It does slow down.",
+                1: "Light always slows down in glass. Here it slows down without bending.",
+                3: "A little light is reflected, but most goes into the glass and carries straight on.",
             },
             "title": "Rung 2 · The one that catches people"},
         "explain": {

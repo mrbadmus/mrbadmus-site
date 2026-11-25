@@ -352,30 +352,19 @@ LESSON = {
     # ⚠️ MRB-278 · POSITION IS AUTHORED. This lesson takes indices 0 and 1.
     "ladder": {
         "recall": {
-            "q": "White light passes through a prism and fans out onto a "
-                 "screen. Which colour lands closest to where the undeviated "
-                 "beam would have gone, and why?",
+            "q": "White light passes through a prism and fans out onto a screen. Which "
+                 "colour is bent the least, and why?",
             "options": [
-                "Red, because it has the lowest frequency of the visible "
-                "colours and is refracted the least.",
-                "Violet, because it has the highest frequency and "
-                "high-frequency light is bent least.",
-                "Green, because it is in the middle of the spectrum and so "
-                "is deflected least.",
-                "They all land in the same place, because refraction is the "
-                "same for every colour.",
+                "Red, because it has the lowest frequency and is refracted least.",
+                "Violet, because it has the highest frequency and is refracted least.",
+                "Green, because it is in the middle and so is refracted least.",
+                "None of them, because every colour is refracted by the same amount.",
             ],
             "answer": 0,
             "feedback": {
-                1: "Violet is bent the most, not the least. Higher frequency "
-                   "means a slightly greater slowing in the glass, and a "
-                   "slightly bigger bend.",
-                2: "Green sits in the middle of the fan, not at the "
-                   "undeviated position. The least-bent colour is the one at "
-                   "the low-frequency end, which is red.",
-                3: "If it were the same for every colour there would be no "
-                   "fan at all and no spectrum. The whole effect exists "
-                   "because the bend depends slightly on frequency.",
+                1: "Violet has the highest frequency, so it is refracted the most.",
+                2: "Green lands in the middle of the spectrum. Red is refracted the least.",
+                3: "If every colour bent the same amount, there would be no spectrum at all.",
             },
             "title": "Rung 1 · Apply the rule"},
         "apply": {
@@ -383,27 +372,19 @@ LESSON = {
                  "because white light goes in and coloured light comes out. "
                  "Which statement is right?",
             "options": [
-                "The student is right — the glass is what makes the colours, "
-                "which is why plain glass is used and not coloured glass.",
-                "A second prism the other way up in the fanned beam "
-                "recombines the colours into white, which shows they were in "
-                "the white light all along.",
-                "The prism does not add colour, but it does turn some of the "
-                "white light into red and violet as it passes through.",
-                "The colours come from the surface of the glass, which is "
-                "why only the edges of the beam are coloured.",
+                "The student is right, because the glass makes the colours as light passes "
+                "through.",
+                "A second prism the other way up mixes the colours back into white.",
+                "The prism turns some white light into red and violet, so it adds two "
+                "colours.",
+                "The colours come from the surface of the glass, so only the edges are "
+                "coloured.",
             ],
             "answer": 1,
             "feedback": {
-                0: "Then a second piece of glass would make yet more colour, "
-                   "and it does the opposite: it puts them back together "
-                   "into white.",
-                2: "Turning white into red is still making colour, and it "
-                   "does not happen. Send red light in on its own and red "
-                   "comes out; nothing new is ever produced.",
-                3: "The whole beam fans out, not just its edges, and the "
-                   "effect happens in the body of the glass where the light "
-                   "slows. Nothing about the surface is coloured.",
+                0: "Clear glass has no colour to add. A second prism joins the colours back into white.",
+                2: "Nothing is turned into a new colour. Red light in gives only red light out.",
+                3: "The whole beam spreads into colours. The colours were already in the white light.",
             },
             "title": "Rung 2 · The one that catches people"},
         "explain": {

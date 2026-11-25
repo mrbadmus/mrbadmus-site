@@ -247,6 +247,34 @@
    "No — genes move to the organs that need them, so a gene ends up in whichever cells are using it"
   ]
  },
+ "colour-and-the-spectrum#apply": {
+  "0": [
+   "The student is right — the glass is what makes the colours, which is why plain glass is used and not coloured glass."
+  ],
+  "1": [
+   "A second prism the other way up in the fanned beam recombines the colours into white, which shows they were in the white light all along."
+  ],
+  "2": [
+   "The prism does not add colour, but it does turn some of the white light into red and violet as it passes through."
+  ],
+  "3": [
+   "The colours come from the surface of the glass, which is why only the edges of the beam are coloured."
+  ]
+ },
+ "colour-and-the-spectrum#recall": {
+  "0": [
+   "Red, because it has the lowest frequency of the visible colours and is refracted the least."
+  ],
+  "1": [
+   "Violet, because it has the highest frequency and high-frequency light is bent least."
+  ],
+  "2": [
+   "Green, because it is in the middle of the spectrum and so is deflected least."
+  ],
+  "3": [
+   "They all land in the same place, because refraction is the same for every colour."
+  ]
+ },
  "combustion#apply": {
   "0": [
    "Turning the gas up makes the flame taller, so the colour follows the amount of fuel"
@@ -292,6 +320,34 @@
  "drawing-and-adding-forces#apply": {
   "3": [
    "The two forces are equal in size, so the resultant force is 0 N."
+  ]
+ },
+ "echoes-reflection-and-absorption#apply": {
+  "0": [
+   "The soft surfaces absorb most of the sound instead of reflecting it, and the room is also too small for a reflection to arrive late enough to be heard separately."
+  ],
+  "1": [
+   "Sound cannot travel through a room full of soft things."
+  ],
+  "2": [
+   "There is no echo because the room is warm, and warm air absorbs sound."
+  ],
+  "3": [
+   "The sound is reflected just as strongly as in a sports hall, but the walls are too close for you to notice it, because how much comes back off a surface is the same whatever the surface is made of"
+  ]
+ },
+ "echoes-reflection-and-absorption#recall": {
+  "0": [
+   "About 113 m — divide the speed by the time"
+  ],
+  "1": [
+   "About 255 m — halve the time first, then halve the distance as well"
+  ],
+  "2": [
+   "About 1020 m — multiply the speed by the time and that is the distance to the cliff"
+  ],
+  "3": [
+   "About 510 m — 340 m/s for 3.0 s is the there-and-back path, so halve it"
   ]
  },
  "endothermic-reactions#apply": {
@@ -472,6 +528,34 @@
    "A number written in front makes a mixture, and a number written below makes a compound"
   ]
  },
+ "frequency-pitch-and-loudness#apply": {
+  "0": [
+   "The tuba arrives first, because a louder, lower note carries more energy and pushes through the air more quickly, so the more energy a note is given the sooner it reaches you"
+  ],
+  "1": [
+   "They arrive together, because the band members are all the same distance away."
+  ],
+  "2": [
+   "Both notes travel at about 340 m/s in the same air, so they arrive together — which is why the band sounds like a band and not a mess."
+  ],
+  "3": [
+   "The student is right: higher frequency means the wave gets along faster, so the piccolo arrives first."
+  ]
+ },
+ "frequency-pitch-and-loudness#recall": {
+  "0": [
+   "64 vibrations — divide the frequency by the time"
+  ],
+  "1": [
+   "1024 vibrations"
+  ],
+  "2": [
+   "1024 Hz"
+  ],
+  "3": [
+   "260 vibrations — add the four seconds on to the 256"
+  ]
+ },
  "friction#apply": {
   "1": [
    "Friction acts up the slope, matching the pull down the slope, so the resultant is 0 N."
@@ -488,6 +572,62 @@
  "fuels-and-energy-resources#recall": {
   "0": [
    "The store refills on a human timescale, so it will not run out"
+  ]
+ },
+ "hearing-and-auditory-range#apply": {
+  "0": [
+   "The whistle produces a very quiet sound that only a dog’s more sensitive ears can pick up."
+  ],
+  "1": [
+   "The sound is there, but it travels too fast for human ears to catch it."
+  ],
+  "2": [
+   "The whistle produces no sound at all, and dogs are responding to the air being blown rather than to a sound, which is why a dog reacts and a microphone in the same room registers nothing"
+  ],
+  "3": [
+   "The whistle is producing a loud tone at about 30 000 Hz, and human ears cannot respond to a vibration that fast — a microphone in the same room records it easily."
+  ]
+ },
+ "hearing-and-auditory-range#recall": {
+  "0": [
+   "The dog only — 30 000 Hz is above the top of the human range and above the top of the elephant’s."
+  ],
+  "1": [
+   "Nobody — 30 000 Hz is ultrasound, and ultrasound is not really sound, so nothing in the room can respond to it however good its ears are"
+  ],
+  "2": [
+   "The dog and the elephant — animals hear better than people do."
+  ],
+  "3": [
+   "All three — the tone is very high, and high sounds carry best."
+  ]
+ },
+ "how-sound-is-made#apply": {
+  "0": [
+   "A microphone stores the sound and a loudspeaker plays it back, so the parts inside must be different: one is built to hold a sound until it is wanted and the other to let one out again"
+  ],
+  "1": [
+   "A microphone makes the sound and a loudspeaker detects it."
+  ],
+  "2": [
+   "Both turn electricity into sound, and a microphone simply does it much more quietly."
+  ],
+  "3": [
+   "A loudspeaker turns an electrical signal into a vibrating cone, and a microphone lets a vibrating diaphragm make an electrical signal — the same chain, run in opposite directions."
+  ]
+ },
+ "how-sound-is-made#recall": {
+  "0": [
+   "The grip stops the glass vibrating, and with nothing vibrating there is nothing left to disturb the air."
+  ],
+  "1": [
+   "The hand absorbs the sound as it comes off the rim."
+  ],
+  "2": [
+   "The hand blocks the sound and stops it getting out of the glass."
+  ],
+  "3": [
+   "The hand takes the energy out of the air around the glass, so the air can no longer carry the sound."
   ]
  },
  "how-we-worked-out-dna#apply": {
@@ -551,6 +691,34 @@
   ],
   "3": [
    "It is not alive — it is not made of cells"
+  ]
+ },
+ "light-travels#apply": {
+  "0": [
+   "The student is right: a wave needs something to travel in, so light struggles in a vacuum and speeds up in air — the more material there is, the better it carries."
+  ],
+  "1": [
+   "The speed of light is the same everywhere, because it is a constant of nature."
+  ],
+  "2": [
+   "Light is faster in space, because there is no gravity there to hold it back."
+  ],
+  "3": [
+   "Light is fastest in a vacuum and slower in air, water or glass — it needs no material, and a material only gets in its way."
+  ]
+ },
+ "light-travels#recall": {
+  "0": [
+   "About 0.8 s — divide the speed by the distance"
+  ],
+  "1": [
+   "About 115 000 000 000 000 000 s — multiply the distance by the speed"
+  ],
+  "2": [
+   "About 1.3 s"
+  ],
+  "3": [
+   "About 1.3 m/s"
   ]
  },
  "making-a-pure-dry-salt#apply": {
@@ -777,9 +945,98 @@
    "It depends on how much oxygen there is"
   ]
  },
+ "reflection-mirrors-and-scattering#apply": {
+  "0": [
+   "Paper does not obey the law of reflection, which is why the rays come off in random directions rather than at the angle they arrived at."
+  ],
+  "1": [
+   "Its rough surface gives every facet a different normal, so rays that arrive parallel leave in all directions — each one still obeying the law of reflection."
+  ],
+  "2": [
+   "Paper absorbs almost all the light, so there is too little left to form an image."
+  ]
+ },
+ "reflection-mirrors-and-scattering#recall": {
+  "0": [
+   "65°"
+  ],
+  "1": [
+   "25° — the angle of reflection equals the angle given"
+  ],
+  "2": [
+   "50° — double the angle, because the ray turns through both angles"
+  ],
+  "3": [
+   "115° — add the 25° on to the 90° of the normal"
+  ]
+ },
+ "refraction#recall": {
+  "0": [
+   "It slows down and bends away from the normal, so the angle inside the glass is more than 40°."
+  ],
+  "2": [
+   "It carries straight on and only slows down, because the block has flat parallel sides."
+  ],
+  "3": [
+   "It slows down and bends towards the normal, so the angle inside the glass is less than 40°."
+  ]
+ },
  "solids-liquids-and-gases#apply": {
   "3": [
    "A liquid’s particles are already touching, so there is no space to squash out"
+  ]
+ },
+ "sound-is-longitudinal#apply": {
+  "0": [
+   "The wavy line is a graph of how squeezed the air is against distance, so its ups and downs are amounts, not directions — the air moves along the line of travel."
+  ],
+  "1": [
+   "The drawing is simply wrong, and a sound wave should never be drawn as a wavy line."
+  ],
+  "2": [
+   "The student is right: air really does move up and down as a sound goes past, which is why a sound wave looks like a wave on water and is drawn with crests and troughs in exactly the same way"
+  ],
+  "3": [
+   "The air moves up and down near a loudspeaker and along the line of travel further away."
+  ]
+ },
+ "sound-is-longitudinal#recall": {
+  "0": [
+   "The wave is longer than it is tall, so the wavelength is bigger than the amplitude."
+  ],
+  "1": [
+   "The material moves at right angles to the direction of travel, giving compressions and rarefactions."
+  ],
+  "3": [
+   "The material moves backwards and forwards along the same line the wave is travelling, giving compressions and rarefactions."
+  ]
+ },
+ "sound-needs-a-medium#apply": {
+  "0": [
+   "The astronaut hears a faint, delayed bang, because space is very thin rather than completely empty, and a thin material carries a weakened sound rather than none at all"
+  ],
+  "1": [
+   "The astronaut sees it and hears nothing at all, because there are no particles between them to pass the disturbance on."
+  ],
+  "2": [
+   "The astronaut hears it immediately, because with nothing in the way sound is not slowed down."
+  ],
+  "3": [
+   "The astronaut hears nothing, because the explosion is too far away for sound to carry."
+  ]
+ },
+ "sound-needs-a-medium#recall": {
+  "0": [
+   "About 0.50 s — divide the speed by the distance"
+  ],
+  "1": [
+   "About 2.0 m"
+  ],
+  "2": [
+   "About 2.0 s"
+  ],
+  "3": [
+   "About 231 000 s — multiply the distance by the speed"
   ]
  },
  "specialised-cells#apply": {
@@ -883,6 +1140,62 @@
    "It has risen, because oxygen joined the copper"
   ]
  },
+ "transverse-waves-and-superposition#apply": {
+  "0": [
+   "The two waves have destroyed each other, so nothing carries on past the overlap."
+  ],
+  "1": [
+   "The whole tank goes flat, because the two waves cancel everywhere they are present."
+  ],
+  "2": [
+   "The surface is flat where they overlap, and both waves carry on past unchanged — the cancelling lasts only while they are on top of each other."
+  ],
+  "3": [
+   "The bigger wave absorbs the smaller one, so a single 7 mm wave carries on — a wave that meets a larger one is always swallowed by it, and only the larger one comes out the far side"
+  ]
+ },
+ "transverse-waves-and-superposition#recall": {
+  "0": [
+   "5 mm — take the average, because the surface can only be in one place at a time"
+  ],
+  "1": [
+   "10 mm — add the two, because both waves lift the surface at the same moment"
+  ],
+  "2": [
+   "24 mm — multiply the two amplitudes, because both waves are acting at once"
+  ],
+  "3": [
+   "2 mm — take the smaller from the bigger, because one wave always cancels part of the other"
+  ]
+ },
+ "ultrasound-at-work#apply": {
+  "0": [
+   "Ultrasound is used because it travels faster than audible sound and so returns sooner."
+  ],
+  "1": [
+   "Ordinary sound travels through solids very well; ultrasound is used because its short wavelength reflects off small features, giving detail a low frequency could not."
+  ],
+  "2": [
+   "Ultrasound is used because it is much louder, so more of it survives the journey."
+  ],
+  "3": [
+   "The student is right — audible sound is stopped by solid material, which is why walls keep noise out, so only a frequency above our hearing can get into something solid at all"
+  ]
+ },
+ "ultrasound-at-work#recall": {
+  "0": [
+   "About 300 mm — speed times time gives the depth"
+  ],
+  "1": [
+   "About 75 mm — halve the time and then halve the distance"
+  ],
+  "2": [
+   "About 150 mm"
+  ],
+  "3": [
+   "About 150 mm/s"
+  ]
+ },
  "unicellular-organisms#apply": {
   "0": [
    "The bacterium still has its DNA, loose in the cytoplasm; the red blood cell lost its DNA with its nucleus"
@@ -949,6 +1262,34 @@
  "variation-continuous-and-discontinuous#recall": {
   "2": [
    "Number of brothers and sisters"
+  ]
+ },
+ "waves-on-water#apply": {
+  "0": [
+   "The water travelled along with the wave, but a gull is too light to be dragged with it."
+  ],
+  "1": [
+   "Each patch of water lifted and dropped on the spot and passed the disturbance on, so energy crossed the water and the water did not."
+  ],
+  "2": [
+   "Each wave carried the gull forward and the next one carried it back the same distance, so the two cancelled out, and the gull finished where a floating thing always finishes: at the place the water left it"
+  ],
+  "3": [
+   "The waves cannot have been moving, because a moving wave would have moved the gull."
+  ]
+ },
+ "waves-on-water#recall": {
+  "0": [
+   "Wavelength 0.60 m, amplitude 0.10 m — amplitude runs the whole way from the trough up to the crest"
+  ],
+  "1": [
+   "Wavelength 0.05 m, amplitude 0.60 m — the bigger of the two numbers is the size of the wave"
+  ],
+  "2": [
+   "Wavelength 0.60 m, amplitude 0.05 m — crest to crest, and the still level up to the crest"
+  ],
+  "3": [
+   "Wavelength 0.30 m, amplitude 0.05 m — wavelength runs from a crest to the next trough"
   ]
  },
  "what-a-force-is#recall": {
@@ -1061,6 +1402,28 @@
   ],
   "2": [
    "Respiration continues in every cell, using oxygen and releasing carbon dioxide"
+  ]
+ },
+ "why-things-look-coloured#apply": {
+  "0": [
+   "The green light has dyed the shirt green for as long as the lamp is on."
+  ],
+  "1": [
+   "White light contains green, so the shirt was already partly green."
+  ],
+  "2": [
+   "A white surface reflects all frequencies about equally, so it sends back whatever arrives — and only green is arriving."
+  ],
+  "3": [
+   "The shirt looks green because green is the only colour the human eye can see in dim light."
+  ]
+ },
+ "why-things-look-coloured#recall": {
+  "2": [
+   "Red, because objects take on the colour of the light that shines on them."
+  ],
+  "3": [
+   "Almost black, because the only light arriving is red and the book absorbs red."
   ]
  },
  "word-equations#apply": {

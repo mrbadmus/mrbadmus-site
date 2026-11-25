@@ -376,52 +376,33 @@ LESSON = {
             "q": "A blue book is put under a lamp giving out only red light, "
                  "in a room with no other light. What does it look like?",
             "options": [
-                "Purple, because red light mixed with a blue book gives "
-                "purple.",
+                "Purple, because red light mixed with a blue book gives purple.",
                 "Blue, because the book is blue whatever light is on it.",
-                "Red, because objects take on the colour of the light that "
-                "shines on them.",
-                "Almost black, because the only light arriving is red and "
-                "the book absorbs red.",
+                "Red, because objects always take on the colour of the light shining on "
+                "them.",
+                "Almost black, because it absorbs red and no blue light arrives.",
             ],
             "answer": 3,
             "feedback": {
-                0: "Nothing is being mixed. The book can only send back "
-                   "light that arrives, and the only light arriving is red, "
-                   "which this cover absorbs.",
-                1: "Blue is what the cover does in white light, where blue "
-                   "is available to reflect. Under a red lamp there is no "
-                   "blue arriving for it to send back.",
-                2: "That is true of a white object, which reflects "
-                   "everything. A blue book absorbs red rather than "
-                   "reflecting it, so almost nothing leaves the surface.",
+                0: "Nothing mixes. The book absorbs the red light, so almost no light leaves it.",
+                1: "The book can only reflect blue light that arrives. Under a red lamp, none arrives.",
+                2: "A white object looks the colour of the lamp. A blue book absorbs red.",
             },
             "title": "Rung 1 · Apply the rule"},
         "apply": {
             "q": "A white shirt looks green under a green lamp. Which "
                  "statement is right?",
             "options": [
-                "The green light has dyed the shirt green for as long as the "
-                "lamp is on.",
-                "White light contains green, so the shirt was already partly "
-                "green.",
-                "A white surface reflects all frequencies about equally, so "
-                "it sends back whatever arrives — and only green is "
-                "arriving.",
-                "The shirt looks green because green is the only colour the "
-                "human eye can see in dim light.",
+                "The green light dyes the shirt, and it stays green while the lamp is on.",
+                "The shirt was already partly green, because white light contains green.",
+                "The shirt reflects every colour, and only green light is arriving.",
+                "The eye sees only green in dim light, so the shirt looks green.",
             ],
             "answer": 2,
             "feedback": {
-                0: "Nothing has changed about the shirt. Switch the lamp to "
-                   "white and it looks white again immediately, because what "
-                   "changed was the light and not the fabric.",
-                1: "That confuses the light with the surface. The shirt "
-                   "reflects all frequencies; which ones it can reflect "
-                   "depends entirely on which ones are sent to it.",
-                3: "The verdict is right and the reason is invented. The "
-                   "shirt would look red under a red lamp and blue under a "
-                   "blue one, at the same brightness.",
+                0: "Nothing changes in the shirt. Under white light it looks white again at once.",
+                1: "The shirt reflects every colour. It looks green because only green light arrives.",
+                3: "Under a red lamp, the same shirt looks red. The colour comes from the lamp.",
             },
             "title": "Rung 2 · The one that catches people"},
         "explain": {

@@ -134,6 +134,14 @@ WAVES = {
         ("C5", "reaction-types", ["combustion", "thermal-decomposition", "oxidation"]),
         ("C7", "energy-changes", ["exothermic-reactions", "endothermic-reactions",
                                   "measuring-a-temperature-change"]),
+        # Y8 Phys 5 Waves: all of P6, P7 lessons 1-3 and 6-7 (lenses-and-images and
+        # the-eye-and-the-camera stay classic).
+        ("P6", "waves", ["waves-on-water", "transverse-waves-and-superposition", "how-sound-is-made",
+                         "sound-is-longitudinal", "frequency-pitch-and-loudness", "sound-needs-a-medium",
+                         "echoes-reflection-and-absorption", "hearing-and-auditory-range",
+                         "ultrasound-at-work"]),
+        ("P7", "light", ["light-travels", "reflection-mirrors-and-scattering", "refraction",
+                         "colour-and-the-spectrum", "why-things-look-coloured"]),
     ],
 }
 

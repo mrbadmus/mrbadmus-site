@@ -387,6 +387,48 @@ RETIRED_BY_LEAN = {
                           "the plan critique is not on the lean page (figure c7-cup-rig)"),
     "rig-builder": ("chemistry/energy-changes-in-reactions/measuring-a-temperature-change.html",
                     "replaced by the drawn figures c7-cup-rig and c7-tc-table"),
+    # ⊕ 25 Nov 2026 lean wave 2 (Y8 Phys 5 Waves: P6 lessons 1-9, P7 lessons 1-3 and 6-7): no
+    # classic page emits any of these families (wave-band, p6-attempt and p7-attempt spanned
+    # several lessons, all in this set). The frozen classic copies in ks3_fixtures/ keep the
+    # benches for the parity and save checks. light-band is not here: lenses-and-images and
+    # the-eye-and-the-camera (P7 lessons 4 and 5, classic) still emit it.
+    "ripple-tank": ("physics/waves-and-sound/waves-on-water.html",
+                    "replaced by the drawn figure p6-01-motion"),
+    "wave-anatomy": ("physics/waves-and-sound/waves-on-water.html",
+                     "replaced by the drawn figure p6-01-parts"),
+    "superposition-lanes": ("physics/waves-and-sound/transverse-waves-and-superposition.html",
+                            "replaced by the drawn figure p6-02-superpose"),
+    "vibration-chain": ("physics/waves-and-sound/how-sound-is-made.html",
+                        "replaced by the drawn figure p6-03-chain"),
+    "slinky-dual": ("physics/waves-and-sound/sound-is-longitudinal.html",
+                    "replaced by the drawn figures p6-04-transverse and p6-04-sound"),
+    "scope-trace": ("physics/waves-and-sound/frequency-pitch-and-loudness.html",
+                    "replaced by the drawn figure p6-05-traces"),
+    "medium-range": ("physics/waves-and-sound/sound-needs-a-medium.html",
+                     "the striker-and-microphone bench is not on the lean page (figures p6-medium-bell-jar and p6-medium-rail)"),
+    "echo-range": ("physics/waves-and-sound/echoes-reflection-and-absorption.html",
+                   "the echo bench is not on the lean page (figures p6-echo-boundary and p6-echo-cliff)"),
+    "log-range": ("physics/waves-and-sound/hearing-and-auditory-range.html",
+                  "replaced by the drawn figures p6-ear-range-human and p6-ear-range-animals"),
+    "flaw-gauge": ("physics/waves-and-sound/ultrasound-at-work.html",
+                   "the flaw gauge is not on the lean page (figure p6-ultra-probe)"),
+    "wave-band": ("physics/waves-and-sound/sound-needs-a-medium.html",
+                  "the band blocks are not on the lean pages (how-sound-is-made, sound-is-longitudinal, "
+                  "sound-needs-a-medium, echoes, hearing and ultrasound carry drawn figures)"),
+    "p6-attempt": ("physics/waves-and-sound/sound-needs-a-medium.html",
+                   "the Your turn blocks are not on the lean pages (transverse, frequency, medium and echoes)"),
+    "two-speed-race": ("physics/light/light-travels.html",
+                       "the two-speed race is not on the lean page (figures p7-trip-sun and p7-trip-sat)"),
+    "p7-attempt": ("physics/light/light-travels.html",
+                   "the Your turn blocks are not on the lean pages (light-travels and reflection)"),
+    "ray-surface": ("physics/light/reflection-mirrors-and-scattering.html",
+                    "replaced by the drawn figures p7-reflect-law and p7-surfaces"),
+    "refraction-block": ("physics/light/refraction.html",
+                         "replaced by the drawn figures p7-block-angle and p7-block-straight"),
+    "prism-bench": ("physics/light/colour-and-the-spectrum.html",
+                    "replaced by the drawn figures p7-prism and p7-prism-two"),
+    "colour-bench": ("physics/light/why-things-look-coloured.html",
+                     "replaced by the drawn figures p7-colour-white, p7-colour-green and the filter figures"),
 }
 
 

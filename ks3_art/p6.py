@@ -1807,3 +1807,855 @@ KIND_FN = {
     'wave-band':            r_wave_band,
     'p6-attempt':           r_p6_attempt,
 }
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# LEAN WAVE 2 (P6 lane A: lessons 1 to 5) · five drawn figures
+# ═══════════════════════════════════════════════════════════════════════════
+#
+#   "p6-transverse-wave"  data {"show": "parts"}                      crest, trough, rest line,
+#                                                                      amplitude, wavelength, travel
+#                         data {"show": "motion", "motion_label": s,  one piece of the material
+#                               "travel_note": s (optional)}
+#                                                                      moving up and down, the wave
+#                                                                      travelling across
+#   "p6-superposition"    data {"cases": [{"title", "a", "b", "sign"}] x2}  two waves and where they
+#                                                                      meet, drawn to one scale (mm)
+#   "p6-sound-chain"      data {"steps": [{"title", "lines": [..]}] x4} source, air, sheet, signal
+#   "p6-longitudinal"     data {}                                      a loudspeaker and the air in
+#                                                                      front of it: compressions,
+#                                                                      rarefactions, wavelength
+#   "p6-sound-traces"     data {"rows": [{"title", "panels": [{"label", "amp", "waves"}] x2}] x2}
+#
+# All 340 wide, so they sit in a phone card without scrolling; every label is 13px or more.
+# Every colour is a --ks3-* token; the wave traces are ink, the one piece of material that is
+# followed is accent AND a filled dot AND named in words, so nothing rests on colour alone.
+from ks3_art.kit import (
+    _SVG_ACCENT,
+    _SVG_ACCENT_TEXT,
+    _SVG_INK,
+    _SVG_INK_BODY,
+    _SVG_INK_MUTED,
+    _SVG_INSET,
+    _SVG_RULE_STRONG,
+    _circle,
+    _label,
+    _line,
+    _n,
+    _path,
+    _rect,
+    _svg_open,
+)
+
+_P6A_W = 340
+
+
+def _p6a_open(fig, h, body):
+    return (_svg_open(fig, _P6A_W, int(math.ceil(h)))
+            + '<g stroke-linecap="round" stroke-linejoin="round">' + "".join(body) + "</g></svg>")
+
+
+def _p6a_head(x, y, ang, paint=_SVG_INK, size=8.0, **data):
+    """A filled arrowhead with its tip at (x, y), pointing along `ang` (radians)."""
+    bx, by = x - size * math.cos(ang), y - size * math.sin(ang)
+    px, py = -math.sin(ang) * size * 0.55, math.cos(ang) * size * 0.55
+    return _path("M %s,%s L %s,%s L %s,%s Z"
+                 % (_n(round(x, 2)), _n(round(y, 2)), _n(round(bx + px, 2)), _n(round(by + py, 2)),
+                    _n(round(bx - px, 2)), _n(round(by - py, 2))),
+                 fill=paint, data_part=data.pop("data_part", "arrowhead"), **data)
+
+
+def _p6a_arrow(x1, y1, x2, y2, paint=_SVG_INK, w=2, both=False, part="arrow"):
+    """A straight arrow from (x1, y1) to (x2, y2); `both` puts a head on each end."""
+    ang = math.atan2(y2 - y1, x2 - x1)
+    inset = 6.0
+    sx = x1 + (inset * math.cos(ang) if both else 0)
+    sy = y1 + (inset * math.sin(ang) if both else 0)
+    ex, ey = x2 - inset * math.cos(ang), y2 - inset * math.sin(ang)
+    o = [_line(round(sx, 2), round(sy, 2), round(ex, 2), round(ey, 2), stroke=paint, w=w,
+               data_part=part),
+         _p6a_head(x2, y2, ang, paint)]
+    if both:
+        o.append(_p6a_head(x1, y1, ang + math.pi, paint))
+    return "".join(o)
+
+
+def _p6a_wave_y(x, mid, amp, lam, crest_x):
+    """Height of a sine wave at x: a crest (highest point) at `crest_x`."""
+    return mid - amp * math.cos(2 * math.pi * (x - crest_x) / lam)
+
+
+def _p6a_wave_d(x0, x1, mid, amp, lam, crest_x, step=2.0):
+    pts, x = [], float(x0)
+    while x < x1:
+        pts.append("%s,%s" % (_n(round(x, 2)), _n(round(_p6a_wave_y(x, mid, amp, lam, crest_x), 2))))
+        x += step
+    pts.append("%s,%s" % (_n(round(float(x1), 2)), _n(round(_p6a_wave_y(x1, mid, amp, lam, crest_x), 2))))
+    return "M " + " L ".join(pts)
+
+
+def _p6a_transverse_wave(fig):
+    """A transverse wave on a rest line, two wavelengths long.
+
+    show "parts":  crest, trough, rest line, the amplitude (rest line up to a crest) and the
+                   wavelength (one crest to the next), with the direction of travel.
+    show "motion": one piece of the material marked on the wave, its up-and-down movement as a
+                   double arrow, and the direction of travel. `motion_label` names the material.
+    """
+    d = fig.get("data") or {}
+    show = d.get("show")
+    if show not in ("parts", "motion"):
+        raise ValueError("figure %r: p6-transverse-wave needs data.show 'parts' or 'motion'"
+                         % fig.get("id"))
+    MID, AMP, LAM = 118.0, 38.0, 120.0
+    X0, X1 = 90.0, 330.0
+    C1, C2 = 120.0, 240.0               # the two crests
+    T1 = 180.0                          # the first trough
+    o = [_line(8, MID, 332, MID, stroke=_SVG_RULE_STRONG, w=2, dash="6,5", data_part="rest-line")]
+    # direction of travel, along the top
+    o.append(_label(8, 24, "direction of travel", size=13, weight="600", anchor="start",
+                    fill=_SVG_INK_BODY, data_part="travel-label"))
+    o.append(_p6a_arrow(160, 20, 330, 20, paint=_SVG_INK, w=2.5, part="travel-arrow"))
+    o.append(_path(_p6a_wave_d(X0 if show == "parts" else 30.0, X1, MID, AMP, LAM, C1),
+                   stroke=_SVG_INK, w=3, data_part="wave"))
+    if show == "parts":
+        o.append(_label(8, MID + 20, "rest line", size=13, weight="600", anchor="start",
+                        fill=_SVG_INK_BODY, data_part="rest-label"))
+        # wavelength: crest to crest, above the crests
+        WY = MID - AMP - 24
+        o.append(_line(C1, MID - AMP - 4, C1, WY - 6, stroke=_SVG_INK_MUTED, w=1.5,
+                       data_part="wavelength-tick"))
+        o.append(_line(C2, MID - AMP - 4, C2, WY - 6, stroke=_SVG_INK_MUTED, w=1.5,
+                       data_part="wavelength-tick"))
+        o.append(_p6a_arrow(C1, WY, C2, WY, paint=_SVG_ACCENT_TEXT, w=2.5, both=True,
+                            part="wavelength-arrow"))
+        o.append(_label((C1 + C2) / 2.0, WY - 8, "wavelength", size=14, weight="700",
+                        fill=_SVG_ACCENT_TEXT, data_part="wavelength-label"))
+        o.append(_label(C2 + 6, MID - AMP - 8, "crest", size=13, weight="700", anchor="start",
+                        data_part="crest-label"))
+        o.append(_label(T1, MID + AMP + 22, "trough", size=13, weight="700",
+                        data_part="trough-label"))
+        # amplitude: rest line up to the height of a crest, drawn clear of the wave on the left
+        AX = 45.0
+        o.append(_line(AX - 10, MID - AMP, C1, MID - AMP, stroke=_SVG_INK_MUTED, w=1.5,
+                       dash="3,4", data_part="crest-guide"))
+        o.append(_p6a_arrow(AX, MID, AX, MID - AMP, paint=_SVG_ACCENT_TEXT, w=2.5, both=True,
+                            part="amplitude-arrow"))
+        o.append(_label(AX, MID - AMP - 10, "amplitude", size=14, weight="700",
+                        fill=_SVG_ACCENT_TEXT, data_part="amplitude-label"))
+        return _p6a_open(fig, MID + AMP + 34, o)
+    # motion: one piece of the material, halfway between a crest and a trough
+    label = d.get("motion_label")
+    if not label:
+        raise ValueError("figure %r: show 'motion' needs data.motion_label" % fig.get("id"))
+    PX = 150.0
+    PY = _p6a_wave_y(PX, MID, AMP, LAM, C1)
+    o.append(_p6a_arrow(PX, MID - AMP - 6, PX, MID + AMP + 6, paint=_SVG_ACCENT_TEXT,
+                        w=2.5, both=True, part="motion-arrow"))
+    o.append(_circle(PX, round(PY, 2), 7, fill=_SVG_ACCENT, stroke=_SVG_INK, w=2,
+                     data_part="particle"))
+    o.append(_label(8, MID + AMP + 30, label, size=14, weight="700", anchor="start",
+                    fill=_SVG_ACCENT_TEXT, data_part="motion-label"))
+    o.append(_label(8, MID + AMP + 50, d.get("travel_note") or "The wave travels across, at right angles.",
+                    size=13, weight="600", anchor="start", fill=_SVG_INK_BODY,
+                    data_part="right-angles"))
+    return _p6a_open(fig, MID + AMP + 60, o)
+
+
+def _p6a_superposition(fig):
+    """Two cases side by side, each three traces to one scale (2 px per mm): the first wave,
+    the second wave, and the water where they meet, with the sum written under it.
+    sign +1 is crest on crest (the heights add), -1 is crest on trough (they subtract)."""
+    d = fig.get("data") or {}
+    cases = d.get("cases") or []
+    if len(cases) != 2:
+        raise ValueError("figure %r: p6-superposition draws exactly two cases" % fig.get("id"))
+    PX = 2.0
+    rows = [60.0, 112.0, 182.0]          # centre of each trace
+    o = []
+    for ci, c in enumerate(cases):
+        a, b, sign = c.get("a"), c.get("b"), c.get("sign")
+        if not (isinstance(a, int) and isinstance(b, int) and sign in (1, -1) and c.get("title")):
+            raise ValueError("figure %r: each case needs title, whole-mm a and b, sign 1 or -1"
+                             % fig.get("id"))
+        r = a + sign * b
+        if r < 0 or a * PX > 24 or b * PX > 16 or r * PX > 30:
+            raise ValueError("figure %r: case %r does not fit its rows" % (fig.get("id"), c))
+        x0 = 4.0 + ci * 170.0
+        tx0, tx1 = x0 + 54.0, x0 + 160.0
+        lam = (tx1 - tx0) / 2.0
+        crest = tx0 + lam / 2.0
+        o.append(_label(x0 + 81, 18, c["title"], size=14, weight="700", data_part="case-title",
+                        data_case=str(ci)))
+        o.append(_label(x0 + 81, 150, "where they meet", size=13, weight="600",
+                        fill=_SVG_INK_BODY, data_part="meet-label", data_case=str(ci)))
+        o.append(_line(x0 + 4, 134, x0 + 160, 134, stroke=_SVG_INK_MUTED, w=1.5,
+                       data_part="meet-rule", data_case=str(ci)))
+        for ri, (h, part) in enumerate(((a, "wave-a"), (sign * b, "wave-b"), (r, "together"))):
+            cy = rows[ri]
+            o.append(_line(tx0, cy, tx1, cy, stroke=_SVG_RULE_STRONG, w=1.5, dash="5,4",
+                           data_part="rest-line"))
+            if h == 0:
+                o.append(_line(tx0, cy, tx1, cy, stroke=_SVG_INK, w=3, data_part=part,
+                               data_mm="0"))
+            else:
+                o.append(_path(_p6a_wave_d(tx0, tx1, cy, h * PX, lam, crest), stroke=_SVG_INK,
+                               w=3 if ri == 2 else 2.5, data_part=part, data_mm=str(h)))
+            o.append(_label(x0 + 2, cy + 5, "%d mm" % abs(h), size=14 if ri == 2 else 13,
+                            weight="700", anchor="start", data_part="height", data_row=part))
+        sym = "+" if sign == 1 else "−"
+        o.append(_label(x0 + 81, 232, "%d %s %d = %d mm" % (a, sym, b, r), size=14,
+                        weight="700", fill=_SVG_ACCENT_TEXT, data_part="sum", data_case=str(ci)))
+    o.append(_line(170, 8, 170, 238, stroke=_SVG_RULE_STRONG, w=1.5, data_part="divider"))
+    return _p6a_open(fig, 244, o)
+
+
+def _p6a_chain_icon(i, x, y):
+    """The small drawing beside each step: a plucked string, layers of air, a thin sheet,
+    and a signal. (x, y) is the top left of a 64 by 56 box."""
+    cx, cy = x + 32, y + 28
+    o = [_rect(x, y, 64, 56, rx=8, fill=_SVG_INSET, stroke=_SVG_INK_MUTED, w=1.5,
+               data_part="icon-box", data_step=str(i + 1))]
+    if i == 0:      # a string, drawn at both ends of its swing
+        o.append(_circle(x + 8, cy, 3, fill=_SVG_INK))
+        o.append(_circle(x + 56, cy, 3, fill=_SVG_INK))
+        o.append(_path("M %s,%s Q %s,%s %s,%s" % (_n(x + 8), _n(cy), _n(cx), _n(cy - 32), _n(x + 56), _n(cy)),
+                       stroke=_SVG_INK, w=2.5, data_part="string"))
+        o.append(_path("M %s,%s Q %s,%s %s,%s" % (_n(x + 8), _n(cy), _n(cx), _n(cy + 32), _n(x + 56), _n(cy)),
+                       stroke=_SVG_INK_MUTED, w=2, dash="4,4", data_part="string-swing"))
+    elif i == 1:    # layers of air, bunched then spread
+        for xx in (10, 14, 18, 22, 32, 44, 54):
+            o.append(_line(x + xx, y + 12, x + xx, y + 44, stroke=_SVG_INK, w=2, data_part="air-layer"))
+    elif i == 2:    # a thin sheet, drawn at both ends of its swing
+        o.append(_path("M %s,%s Q %s,%s %s,%s" % (_n(x + 30), _n(y + 8), _n(x + 16), _n(cy), _n(x + 30), _n(y + 48)),
+                       stroke=_SVG_INK, w=3, data_part="sheet"))
+        o.append(_path("M %s,%s Q %s,%s %s,%s" % (_n(x + 44), _n(y + 8), _n(x + 30), _n(cy), _n(x + 44), _n(y + 48)),
+                       stroke=_SVG_INK_MUTED, w=2, dash="4,4", data_part="sheet-swing"))
+    else:           # a signal leaving along a wire
+        pts = [(x + 6, cy), (x + 14, cy), (x + 19, cy - 14), (x + 27, cy + 14), (x + 35, cy - 14),
+               (x + 43, cy + 14), (x + 48, cy)]
+        o.append(_path("M " + " L ".join("%s,%s" % (_n(a), _n(b)) for a, b in pts), stroke=_SVG_INK,
+                       w=2.5, data_part="signal"))
+        o.append(_p6a_arrow(x + 48, cy, x + 60, cy, paint=_SVG_INK, w=2.5, part="signal-arrow"))
+    return "".join(o)
+
+
+def _p6a_sound_chain(fig):
+    """How a sound gets from a source to a listener, in four numbered steps down the page:
+    a drawing in a box on the left, a title and up to two short lines on the right, and an
+    arrow down between the boxes."""
+    d = fig.get("data") or {}
+    steps = d.get("steps") or []
+    if len(steps) != 4:
+        raise ValueError("figure %r: p6-sound-chain draws exactly four steps" % fig.get("id"))
+    PITCH, TX = 80.0, 88.0
+    o = []
+    for i, s in enumerate(steps):
+        lines = s.get("lines") or []
+        if not s.get("title") or not 1 <= len(lines) <= 2:
+            raise ValueError("figure %r: step %d needs a title and one or two lines" % (fig.get("id"), i + 1))
+        y = 6 + i * PITCH
+        o.append(_p6a_chain_icon(i, 8, y))
+        o.append(_label(TX, y + 18, "%d  %s" % (i + 1, s["title"]), size=15, weight="700",
+                        anchor="start", data_part="step-title", data_step=str(i + 1)))
+        for j, ln in enumerate(lines):
+            o.append(_label(TX, y + 37 + j * 17, ln, size=13, weight="500", anchor="start",
+                            fill=_SVG_INK_BODY, data_part="step-line", data_step=str(i + 1)))
+        if i < 3:
+            o.append(_p6a_arrow(40, y + 58, 40, y + PITCH, paint=_SVG_INK_MUTED, w=2,
+                                part="step-arrow"))
+    return _p6a_open(fig, 6 + 3 * PITCH + 62, o)
+
+
+def _p6a_longitudinal(fig):
+    """A loudspeaker and the air in front of it, drawn as layers. The layers crowd together at
+    each compression and spread out at each rarefaction. Labels: compression, rarefaction,
+    wavelength (one compression to the next), the direction of travel, and one layer of air
+    marked to show it moves back and forth along that direction."""
+    X0, X1 = 56.0, 334.0
+    TOP, BOT = 52.0, 108.0
+    LAM, SP = 112.0, 8.0
+    C1, C2 = 106.0, 218.0                         # centres of two compressions
+    k = 2 * math.pi / LAM
+    A = 0.6 / k                                   # spacing runs from 0.4 to 1.6 of the rest spacing
+    xs, n = [], 0
+    while True:
+        rest = X0 + n * SP
+        if rest > X1:
+            break
+        # displacement s(x) = A sin(k (x - C1)): layers move in towards each compression centre
+        x = rest - A * math.sin(k * (rest - C1))
+        if X0 - 0.01 <= x <= X1:
+            xs.append(round(x, 2))
+        n += 1
+    o = []
+    # the loudspeaker: a magnet block and a cone opening to the right
+    o.append(_rect(8, 70, 14, 20, rx=2, fill=_SVG_INK, data_part="speaker-magnet"))
+    o.append(_path("M 22,72 L 44,%s L 44,%s L 22,88 Z" % (_n(TOP), _n(BOT)), fill=_SVG_INSET,
+                   stroke=_SVG_INK, w=2, data_part="speaker-cone"))
+    o.append(_p6a_arrow(14, 120, 50, 120, paint=_SVG_INK_MUTED, w=2, both=True, part="cone-arrow"))
+    marked = min(xs, key=lambda v: abs(v - 292.0))      # one layer of air, after the second compression
+    for x in xs:
+        is_m = (x == marked)
+        o.append(_line(x, TOP, x, BOT, stroke=_SVG_ACCENT if is_m else _SVG_INK,
+                       w=4 if is_m else 2, data_part="air-layer-marked" if is_m else "air-layer"))
+    # the direction of travel
+    o.append(_label(56, 24, "the sound travels this way", size=13, weight="600", anchor="start",
+                    fill=_SVG_INK_BODY, data_part="travel-label"))
+    o.append(_p6a_arrow(250, 20, 330, 20, paint=_SVG_INK, w=2.5, part="travel-arrow"))
+    # one compression and one rarefaction named, above the layers
+    o.append(_label(C1, 44, "compression", size=13, weight="700", data_part="compression-label"))
+    o.append(_label(C2 + LAM / 2.0, 44, "rarefaction", size=13, weight="700",
+                    data_part="rarefaction-label"))
+    # wavelength: one compression centre to the next
+    WY = 120.0
+    o.append(_line(C1, BOT + 2, C1, WY + 4, stroke=_SVG_INK_MUTED, w=1.5, data_part="wavelength-tick"))
+    o.append(_line(C2, BOT + 2, C2, WY + 4, stroke=_SVG_INK_MUTED, w=1.5, data_part="wavelength-tick"))
+    o.append(_p6a_arrow(C1, WY, C2, WY, paint=_SVG_ACCENT_TEXT, w=2.5, both=True,
+                        part="wavelength-arrow"))
+    o.append(_label((C1 + C2) / 2.0, WY + 20, "wavelength", size=14, weight="700",
+                    fill=_SVG_ACCENT_TEXT, data_part="wavelength-label"))
+    # the marked layer moves back and forth along the direction of travel
+    o.append(_p6a_arrow(marked - 18, WY, marked + 18, WY, paint=_SVG_ACCENT_TEXT, w=2.5,
+                        both=True, part="layer-arrow"))
+    MY = 166.0
+    o.append(_label(8, MY, "The marked layer of air moves back and forth.", size=13,
+                    weight="700", anchor="start", fill=_SVG_ACCENT_TEXT, data_part="layer-label"))
+    return _p6a_open(fig, MY + 10, o)
+
+
+def _p6a_sound_traces(fig):
+    """Four sound traces as a microphone and oscilloscope show them, time across. Each row
+    changes one thing: the first keeps the frequency and changes the amplitude, the second
+    keeps the amplitude and changes the frequency."""
+    d = fig.get("data") or {}
+    rows = d.get("rows") or []
+    if len(rows) != 2 or any(len(r.get("panels") or []) != 2 for r in rows):
+        raise ValueError("figure %r: p6-sound-traces draws two rows of two panels" % fig.get("id"))
+    PW, PH = 158.0, 76.0
+    o = []
+    y = 4.0
+    for ri, r in enumerate(rows):
+        if not r.get("title"):
+            raise ValueError("figure %r: row %d needs a title" % (fig.get("id"), ri))
+        o.append(_label(8, y + 14, r["title"], size=13, weight="700", anchor="start",
+                        fill=_SVG_INK_BODY, data_part="row-title", data_row=str(ri)))
+        py = y + 22
+        for pi, p in enumerate(r["panels"]):
+            amp, waves = p.get("amp"), p.get("waves")
+            if not (p.get("label") and isinstance(amp, (int, float)) and 4 <= amp <= 32
+                    and isinstance(waves, int) and 1 <= waves <= 6):
+                raise ValueError("figure %r: panel %r needs a label, amp 4 to 32 and whole waves 1 to 6"
+                                 % (fig.get("id"), p))
+            px = 8.0 + pi * (PW + 8)
+            mid = py + PH / 2.0
+            o.append(_rect(px, py, PW, PH, rx=6, fill=_SVG_INSET, stroke=_SVG_INK_MUTED, w=1.5,
+                           data_part="screen", data_label=p["label"]))
+            o.append(_line(px + 6, mid, px + PW - 6, mid, stroke=_SVG_RULE_STRONG, w=1.5,
+                           dash="5,4", data_part="rest-line"))
+            lam = (PW - 12) / float(waves)
+            o.append(_path(_p6a_wave_d(px + 6, px + PW - 6, mid, amp, lam, px + 6 + lam / 4.0),
+                           stroke=_SVG_INK, w=2.5, data_part="trace", data_amp=_n(amp),
+                           data_waves=str(waves)))
+            o.append(_label(px + PW / 2.0, py + PH + 18, p["label"], size=14, weight="700",
+                            data_part="panel-label"))
+        y = py + PH + 30
+    o.append(_label(8, y + 10, "Time goes across each screen.", size=13, weight="500",
+                    anchor="start", fill=_SVG_INK_BODY, data_part="time-note"))
+    return _p6a_open(fig, y + 18, o)
+
+
+ART.update({
+    "p6-transverse-wave": _p6a_transverse_wave,
+    "p6-superposition": _p6a_superposition,
+    "p6-sound-chain": _p6a_sound_chain,
+    "p6-longitudinal": _p6a_longitudinal,
+    "p6-sound-traces": _p6a_sound_traces,
+})
+
+
+# ─── LEAN WAVE 2 (P6 lane B: lessons 6-9), pasted from ~/tmp/lean-ks3-w2/waves/drawers-laneB.py ───
+import math
+from ks3_art.kit import (
+    _SVG_ACCENT,
+    _SVG_ACCENT_TEXT,
+    _SVG_ACCENT_TINT,
+    _SVG_CARD,
+    _SVG_INK,
+    _SVG_INK_MUTED,
+    _SVG_INSET,
+    _SVG_RULE,
+    _SVG_RULE_STRONG,
+    _circle,
+    _label,
+    _line,
+    _n,
+    _path,
+    _rect,
+    _svg_open,
+)
+
+_P6B_W = 340
+
+
+def _p6b_open(fig, h, body):
+    return (_svg_open(fig, _P6B_W, int(math.ceil(h)))
+            + '<g stroke-linecap="round" stroke-linejoin="round">'
+            + "".join(body) + "</g></svg>")
+
+
+def _p6b_need(fig, keys):
+    d = fig.get("data") or {}
+    for k in keys:
+        if d.get(k) in (None, "", [], {}):
+            raise ValueError("figure %r: data has no %r" % (fig.get("id"), k))
+    return d
+
+
+def _p6b_arrow(x1, y1, x2, y2, paint=_SVG_INK, w=2.5, head=8.0, dash=None, **data):
+    """A straight arrow from (x1, y1) to (x2, y2), its head at the far end."""
+    ang = math.atan2(y2 - y1, x2 - x1)
+    a1, a2 = ang + math.radians(150), ang - math.radians(150)
+    hx1, hy1 = x2 + head * math.cos(a1), y2 + head * math.sin(a1)
+    hx2, hy2 = x2 + head * math.cos(a2), y2 + head * math.sin(a2)
+    return (_line(x1, y1, x2, y2, stroke=paint, w=w, dash=dash, **data)
+            + _path("M %s,%s L %s,%s L %s,%s" % (_n(hx1), _n(hy1), _n(x2), _n(y2), _n(hx2), _n(hy2)),
+                    stroke=paint, w=w))
+
+
+def _p6b_leader(x1, y1, x2, y2):
+    return (_line(x1, y1, x2, y2, stroke=_SVG_INK_MUTED, w=1.5, data_part="leader")
+            + _circle(x2, y2, 2.5, fill=_SVG_INK, data_part="leader-end"))
+
+
+def _p6b_dim(o, x1, x2, y, text, tick=6):
+    """A horizontal measuring line with end ticks and a label under its middle."""
+    o.append(_line(x1, y, x2, y, stroke=_SVG_INK_MUTED, w=1.5, data_part="dimension"))
+    for x in (x1, x2):
+        o.append(_line(x, y - tick, x, y + tick, stroke=_SVG_INK_MUTED, w=1.5, data_part="dimension-end"))
+    o.append(_label((x1 + x2) / 2.0, y + 20, text, size=14, weight="700", data_part="dimension-label"))
+
+
+# ── p6-medium-bell-jar: the bell jar, with air and without ───────────────
+
+def _p6b_bell_jar(fig):
+    """Two panels side by side. Each: a glass jar on a base plate, a pipe to the
+    vacuum pump, and an electric buzzer hanging inside with its hammer beating
+    on its bell (drawn with short motion marks in BOTH panels: it never stops).
+    The left jar is full of air (dots); sound arcs leave it. The right jar has
+    no dots and no arcs.
+
+    data: panels, two {"title", "result", "air": bool}; pump (label under the pipe).
+    """
+    d = _p6b_need(fig, ("panels", "pump"))
+    panels = d["panels"]
+    if len(panels) != 2:
+        raise ValueError("figure %r: needs exactly two panels" % fig.get("id"))
+    o = []
+    o.append(_line(170, 8, 170, 244, stroke=_SVG_RULE, w=1.5, data_part="divider"))
+    for i, p in enumerate(panels):
+        for k in ("title", "result"):
+            if not p.get(k):
+                raise ValueError("figure %r: panel %d has no %r" % (fig.get("id"), i, k))
+        ox = 170 * i
+        cx = ox + 80
+        o.append(_label(ox + 85, 20, p["title"], size=14, weight="700", data_part="panel-title",
+                        data_key=str(i)))
+        # the glass jar: straight sides and a domed top, open at the bottom onto the plate
+        jar = ("M %s,%s L %s,%s C %s,%s %s,%s %s,%s L %s,%s"
+               % (_n(cx - 52), 172, _n(cx - 52), 84, _n(cx - 52), 40, _n(cx + 52), 40,
+                  _n(cx + 52), 84, _n(cx + 52), 172))
+        o.append(_path(jar + " Z", fill=_SVG_CARD, data_part="jar-inside"))
+        if p.get("air"):
+            for row, y in enumerate(range(66, 170, 16)):
+                for x in range(int(cx - 44) + (row % 2) * 8, int(cx + 46), 16):
+                    if abs(x - cx) < 26 and 52 <= y <= 146:
+                        continue           # leave the buzzer clear
+                    if y < 78 and abs(x - cx) > 34:
+                        continue           # stay inside the dome
+                    o.append(_circle(x, y, 2.4, fill=_SVG_INK_MUTED, data_part="air-particle"))
+        o.append(_path(jar, stroke=_SVG_INK, w=3, data_part="jar"))
+        o.append(_rect(cx - 7, 32, 14, 9, rx=2, fill=_SVG_RULE_STRONG, stroke=_SVG_INK, w=2,
+                       data_part="jar-knob"))
+        # the base plate and the pipe to the pump
+        o.append(_rect(cx - 66, 172, 132, 10, rx=2, fill=_SVG_RULE_STRONG, stroke=_SVG_INK, w=2,
+                       data_part="plate"))
+        o.append(_rect(cx - 5, 182, 10, 16, fill=_SVG_INSET, stroke=_SVG_INK, w=2, data_part="pipe"))
+        o.append(_label(cx, 214, d["pump"], size=13, weight="600", fill=_SVG_INK_MUTED,
+                        data_part="pump-label"))
+        # the buzzer: a wire, a box, a bell, a hammer
+        o.append(_line(cx, 44, cx, 82, stroke=_SVG_INK, w=2, data_part="wire"))
+        o.append(_rect(cx - 18, 82, 36, 20, rx=3, fill=_SVG_INSET, stroke=_SVG_INK, w=2.5,
+                       data_part="buzzer"))
+        o.append(_path("M %s,%s C %s,%s %s,%s %s,%s Z"
+                       % (_n(cx - 16), 138, _n(cx - 16), 112, _n(cx + 16), 112, _n(cx + 16), 138),
+                       fill=_SVG_RULE_STRONG, stroke=_SVG_INK, w=2.5, data_part="bell"))
+        o.append(_line(cx + 10, 102, cx + 21, 120, stroke=_SVG_INK, w=2.5, data_part="hammer-arm"))
+        o.append(_circle(cx + 21, 121, 4, fill=_SVG_INK, data_part="hammer"))
+        for k in (0, 1):               # the hammer is still beating, in both jars
+            o.append(_line(cx + 29 + 5 * k, 112 - 4 * k, cx + 33 + 5 * k, 106 - 4 * k,
+                           stroke=_SVG_ACCENT_TEXT, w=2, data_part="hammer-moving"))
+        if p.get("air"):
+            for k, r in enumerate((10, 17, 24)):    # sound leaving the jar
+                a0, a1 = math.radians(-35), math.radians(35)
+                sx, sy = ox + 136, 124
+                o.append(_path("M %s,%s A %s,%s 0 0 1 %s,%s"
+                               % (_n(sx + r * math.cos(a0)), _n(sy + r * math.sin(a0)), r, r,
+                                  _n(sx + r * math.cos(a1)), _n(sy + r * math.sin(a1))),
+                               stroke=_SVG_ACCENT_TEXT, w=2.5, data_part="sound"))
+        o.append(_label(ox + 85, 238, p["result"], size=14, weight="700", data_part="result",
+                        data_key=str(i)))
+    return _p6b_open(fig, 248, o)
+
+
+# ── p6-medium-rail: one blow, two paths to the listener ──────────────────
+
+def _p6b_rail(fig):
+    """A hammer strikes the left end of a long steel rail. A listener stands at the
+    right end. One arrow runs along the rail (through the steel), one runs through
+    the air above it. A measuring line under the rail gives its length.
+
+    data: length (label); steel, air (the two path labels).
+    """
+    d = _p6b_need(fig, ("length", "steel", "air"))
+    o = []
+    x0, x1, ry = 40, 296, 112
+    # the air path, above
+    o.append(_label(168, 40, d["air"], size=14, weight="700", data_part="path-label", data_key="air"))
+    o.append(_p6b_arrow(60, 54, 280, 54, paint=_SVG_INK_MUTED, w=2.5, dash="7,5",
+                        data_part="path", data_key="air"))
+    # the rail
+    o.append(_rect(x0, ry, x1 - x0, 12, rx=2, fill=_SVG_RULE_STRONG, stroke=_SVG_INK, w=2.5,
+                   data_part="rail"))
+    # the steel path, along the rail
+    o.append(_p6b_arrow(60, 100, 280, 100, paint=_SVG_ACCENT_TEXT, w=3, data_part="path",
+                        data_key="steel"))
+    o.append(_label(168, 90, d["steel"], size=14, weight="700", fill=_SVG_ACCENT_TEXT,
+                    data_part="path-label", data_key="steel"))
+    # the hammer, its head just touching the left end of the rail
+    o.append(_line(14, 66, 30, 104, stroke=_SVG_INK, w=4, data_part="hammer-handle"))
+    o.append(_path("M 22,108 L 42,100 L 48,114 L 28,122 Z", fill=_SVG_INK_MUTED, stroke=_SVG_INK,
+                   w=2, data_part="hammer-head"))
+    # the listener: a head, ear towards the rail
+    o.append(_circle(318, 92, 13, fill=_SVG_CARD, stroke=_SVG_INK, w=2.5, data_part="listener"))
+    o.append(_path("M 312,98 C 306,98 306,88 312,88", stroke=_SVG_INK, w=2.5, data_part="ear"))
+    o.append(_line(318, 105, 318, 136, stroke=_SVG_INK, w=2.5, data_part="listener-body"))
+    _p6b_dim(o, x0, x1, 146, d["length"])
+    return _p6b_open(fig, 176, o)
+
+
+# ── p6-echo-boundary: what sound does at a surface ───────────────────────
+
+def _p6b_boundary(fig):
+    """Sound arrives from the left at a wall. One arrow goes back (reflected), one
+    carries on through to the right (transmitted), and a wavy line dies away inside
+    the wall (absorbed). Each is labelled in words.
+
+    data: labels {"in", "reflected", "absorbed", "transmitted", "wall"}.
+    """
+    d = _p6b_need(fig, ("labels",))
+    lab = d["labels"]
+    for k in ("in", "reflected", "absorbed", "transmitted", "wall"):
+        if not lab.get(k):
+            raise ValueError("figure %r: no label %r" % (fig.get("id"), k))
+    o = []
+    wx0, wx1 = 148, 192
+    o.append(_rect(wx0, 30, wx1 - wx0, 130, fill=_SVG_INSET, stroke=_SVG_INK, w=2.5, data_part="wall"))
+    for y in range(44, 146, 18):        # hatching, so the wall reads as solid
+        o.append(_line(wx0 + 4, y + 10, wx1 - 4, y - 4, stroke=_SVG_RULE_STRONG, w=1.5,
+                       data_part="hatch"))
+    o.append(_label(170, 22, lab["wall"], size=14, weight="700", data_part="wall-label"))
+    # in
+    o.append(_label(16, 56, lab["in"], size=14, weight="700", anchor="start", data_part="label",
+                    data_key="in"))
+    o.append(_p6b_arrow(16, 70, 144, 70, paint=_SVG_INK, w=3, data_part="ray", data_key="in"))
+    # reflected: back the way it came, below
+    o.append(_p6b_arrow(144, 82, 22, 120, paint=_SVG_ACCENT_TEXT, w=3, data_part="ray",
+                        data_key="reflected"))
+    o.append(_label(16, 144, lab["reflected"], size=14, weight="700", anchor="start",
+                    fill=_SVG_ACCENT_TEXT, data_part="label", data_key="reflected"))
+    # transmitted: on through, thinner
+    o.append(_p6b_arrow(196, 70, 322, 70, paint=_SVG_INK, w=2, dash="6,4", data_part="ray",
+                        data_key="transmitted"))
+    o.append(_label(324, 56, lab["transmitted"], size=14, weight="700", anchor="end",
+                    data_part="label", data_key="transmitted"))
+    # absorbed: a wave inside the wall that gets smaller and stops
+    pts = []
+    for k in range(0, 31):
+        x = wx0 + 6 + k
+        amp = 7.0 * (1 - k / 30.0)
+        pts.append("%s,%s" % (_n(x), _n(110 + amp * math.sin(k * 0.9))))
+    o.append(_path("M " + " L ".join(pts), stroke=_SVG_INK, w=2.5, data_part="absorbed-wave"))
+    o.append(_label(212, 132, lab["absorbed"], size=14, weight="700", anchor="start",
+                    data_part="label", data_key="absorbed"))
+    o.append(_p6b_leader(210, 127, 182, 112))
+    return _p6b_open(fig, 168, o)
+
+
+# ── p6-echo-cliff: there and back ────────────────────────────────────────
+
+def _p6b_cliff(fig):
+    """A person on the left shouts at a cliff on the right. One arrow goes out to the
+    cliff, one comes back. A measuring line on the ground marks the distance to the
+    cliff. Two lines of given data sit at the top.
+
+    data: given (one or two lines); there, back (arrow labels); distance (measuring label).
+    """
+    d = _p6b_need(fig, ("given", "there", "back", "distance"))
+    given = d["given"]
+    if not 1 <= len(given) <= 2:
+        raise ValueError("figure %r: one or two lines of given data" % fig.get("id"))
+    o = []
+    for i, s in enumerate(given):
+        o.append(_label(170, 20 + 18 * i, s, size=14, weight="700", data_part="given", data_key=str(i)))
+    gy = 150                           # the ground
+    o.append(_line(4, gy, 286, gy, stroke=_SVG_INK, w=2.5, data_part="ground"))
+    # the cliff: a rock face rising on the right
+    o.append(_path("M 286,%s L 290,%s L 284,86 L 292,64 L 288,52 L 336,52 L 336,%s Z" % (gy, gy - 40, gy),
+                   fill=_SVG_INSET, stroke=_SVG_INK, w=2.5, data_part="cliff"))
+    for (x1, y1, x2, y2) in ((298, 70, 312, 82), (300, 104, 322, 96), (304, 128, 318, 140)):
+        o.append(_line(x1, y1, x2, y2, stroke=_SVG_RULE_STRONG, w=2, data_part="rock"))
+    # the person: head, body, legs, an open mouth facing the cliff
+    o.append(_circle(26, 92, 10, fill=_SVG_CARD, stroke=_SVG_INK, w=2.5, data_part="person"))
+    o.append(_line(26, 102, 26, 128, stroke=_SVG_INK, w=2.5, data_part="person"))
+    o.append(_line(26, 128, 18, gy, stroke=_SVG_INK, w=2.5, data_part="person"))
+    o.append(_line(26, 128, 34, gy, stroke=_SVG_INK, w=2.5, data_part="person"))
+    o.append(_line(26, 110, 36, 116, stroke=_SVG_INK, w=2.5, data_part="person"))
+    # out and back
+    o.append(_label(160, 66, d["there"], size=14, weight="700", fill=_SVG_ACCENT_TEXT,
+                    data_part="path-label", data_key="there"))
+    o.append(_p6b_arrow(44, 78, 278, 78, paint=_SVG_ACCENT_TEXT, w=3, data_part="path", data_key="there"))
+    o.append(_p6b_arrow(278, 100, 44, 100, paint=_SVG_INK, w=3, data_part="path", data_key="back"))
+    o.append(_label(160, 122, d["back"], size=14, weight="700", data_part="path-label", data_key="back"))
+    _p6b_dim(o, 26, 286, 162, d["distance"])
+    return _p6b_open(fig, 192, o)
+
+
+# ── p6-ear-parts: the ear and the path to the brain ──────────────────────
+
+def _p6b_spiral(cx, cy, r0, r1, turns, start):
+    """An inward spiral as one path of short straight pieces."""
+    n = int(48 * turns)
+    pts = []
+    for k in range(n + 1):
+        f = k / float(n)
+        a = start + f * turns * 2 * math.pi
+        r = r0 + (r1 - r0) * f
+        pts.append("%s,%s" % (_n(cx + r * math.cos(a)), _n(cy + r * math.sin(a))))
+    return "M " + " L ".join(pts)
+
+
+def _p6b_ear(fig):
+    """A side-on sketch of the ear, left to right: the outer ear flap, the ear canal,
+    the eardrum, the three small bones, the coiled cochlea, and the auditory nerve
+    running up to the brain. An arrow in the canal shows the way the sound comes in.
+    Every part is named, with a leader to it.
+
+    data: labels {"outer", "canal", "eardrum", "bones", "cochlea", "nerve", "brain"}.
+    """
+    d = _p6b_need(fig, ("labels",))
+    lab = d["labels"]
+    for k in ("outer", "canal", "eardrum", "bones", "cochlea", "nerve", "brain"):
+        if not lab.get(k):
+            raise ValueError("figure %r: no label %r" % (fig.get("id"), k))
+    o = []
+    cy = 112
+    # the ear canal: a tube from the outer ear to the eardrum
+    o.append(_rect(46, cy - 12, 88, 24, fill=_SVG_INSET, data_part="canal"))
+    o.append(_line(46, cy - 12, 134, cy - 12, stroke=_SVG_INK, w=2.5, data_part="canal-wall"))
+    o.append(_line(46, cy + 12, 134, cy + 12, stroke=_SVG_INK, w=2.5, data_part="canal-wall"))
+    o.append(_p6b_arrow(58, cy, 118, cy, paint=_SVG_INK_MUTED, w=2.5, head=7, data_part="sound-in"))
+    # the outer ear flap
+    o.append(_path("M 58,54 C 50,38 26,36 18,58 C 8,84 10,140 20,160 C 28,178 48,180 54,166",
+                   stroke=_SVG_INK, w=5, data_part="outer-ear"))
+    o.append(_path("M 46,%s C 34,%s 30,84 38,72" % (cy - 12, cy - 16), stroke=_SVG_INK, w=3,
+                   data_part="outer-ear-fold"))
+    o.append(_path("M 46,%s C 34,%s 30,140 38,152" % (cy + 12, cy + 16), stroke=_SVG_INK, w=3,
+                   data_part="outer-ear-fold"))
+    # the eardrum
+    o.append(_path("M 136,%s Q 143,%s 136,%s" % (cy - 20, cy, cy + 20), stroke=_SVG_ACCENT_TEXT, w=4,
+                   data_part="eardrum"))
+    # the three small bones
+    o.append(_line(142, cy - 2, 158, cy - 8, stroke=_SVG_INK, w=2.5, data_part="bone-link"))
+    o.append(_line(158, cy - 8, 174, cy, stroke=_SVG_INK, w=2.5, data_part="bone-link"))
+    o.append(_path("M 142,%s C 142,%s 150,%s 150,%s C 150,%s 142,%s 142,%s Z"
+                   % (cy - 14, cy - 18, cy - 18, cy - 8, cy + 4, cy + 4, cy - 14),
+                   fill=_SVG_CARD, stroke=_SVG_INK, w=2, data_part="bone", data_key="hammer"))
+    o.append(_circle(159, cy - 9, 6, fill=_SVG_CARD, stroke=_SVG_INK, w=2, data_part="bone",
+                     data_key="anvil"))
+    o.append(_path("M 170,%s L 178,%s L 182,%s L 174,%s Z" % (cy - 6, cy - 6, cy + 8, cy + 8),
+                   fill=_SVG_CARD, stroke=_SVG_INK, w=2, data_part="bone", data_key="stirrup"))
+    # the cochlea: a coil, starting where the last bone touches it
+    o.append(_path(_p6b_spiral(208, cy, 24, 5, 2.4, math.pi), stroke=_SVG_INK, w=4,
+                   data_part="cochlea"))
+    # the auditory nerve, up to the brain
+    o.append(_path("M 226,%s C 250,%s 262,70 288,56" % (cy - 16, cy - 30), stroke=_SVG_ACCENT_TEXT,
+                   w=4, data_part="nerve"))
+    o.append(_path("M 288,26 C 300,10 330,12 334,30 C 340,44 328,58 308,56 C 290,58 278,46 288,26 Z",
+                   fill=_SVG_INSET, stroke=_SVG_INK, w=2.5, data_part="brain"))
+    o.append(_label(309, 41, lab["brain"], size=14, weight="700", data_part="label", data_key="brain"))
+    # labels and leaders: a top row and a bottom row, so none can touch
+    o.append(_label(6, 26, lab["outer"], size=14, weight="700", anchor="start", data_part="label",
+                    data_key="outer"))
+    o.append(_p6b_leader(34, 31, 30, 46))
+    o.append(_label(150, 50, lab["eardrum"], size=14, weight="700", data_part="label", data_key="eardrum"))
+    o.append(_p6b_leader(146, 56, 139, cy - 18))
+    o.append(_label(70, 196, lab["canal"], size=14, weight="700", data_part="label", data_key="canal"))
+    o.append(_p6b_leader(80, 181, 92, cy + 13))
+    o.append(_label(156, 196, lab["bones"], size=14, weight="700", data_part="label", data_key="bones"))
+    o.append(_p6b_leader(158, 181, 159, cy + 2))
+    o.append(_label(232, 196, lab["cochlea"], size=14, weight="700", data_part="label", data_key="cochlea"))
+    o.append(_p6b_leader(226, 181, 212, cy + 22))
+    nerve = lab["nerve"].split(" ", 1)
+    for i, s in enumerate(nerve):
+        o.append(_label(300, 104 + 18 * i, s, size=14, weight="700", data_part="label", data_key="nerve"))
+    o.append(_p6b_leader(282, 96, 262, 79))
+    return _p6b_open(fig, 206, o)
+
+
+# ── p6-ear-range: hearing ranges on a times-ten scale ────────────────────
+
+_P6B_FMIN, _P6B_FMAX = 1.0, 300000.0
+_P6B_X0, _P6B_X1 = 14.0, 326.0
+
+
+def _p6b_fx(f):
+    span = math.log10(_P6B_FMAX) - math.log10(_P6B_FMIN)
+    return _P6B_X0 + (_P6B_X1 - _P6B_X0) * (math.log10(f) - math.log10(_P6B_FMIN)) / span
+
+
+def _p6b_hz(v):
+    """10000 -> '10 000', the way the lesson writes it."""
+    s = "%d" % v
+    if len(s) > 4:
+        s = s[:-3] + " " + s[-3:]
+    return s
+
+
+def _p6b_range(fig):
+    """A frequency axis from 1 Hz to 300 000 Hz, each mark ten times the one before.
+    The zone below 20 Hz is named infrasound and the zone above 20 000 Hz is named
+    ultrasound, each with a dashed boundary and its number. Each listener is a bar
+    from the lowest to the highest frequency it hears, with its name and numbers above.
+
+    data: rows, each {"label", "lo", "hi"}; zones {"infra", "human", "ultra"}; axis, note.
+    """
+    d = _p6b_need(fig, ("rows", "zones", "axis", "note"))
+    z = d["zones"]
+    for k in ("infra", "human", "ultra"):
+        if not z.get(k):
+            raise ValueError("figure %r: no zone label %r" % (fig.get("id"), k))
+    rows = d["rows"]
+    o = []
+    top, pitch = 50.0, 42.0
+    yax = top + 12 + pitch * len(rows)
+    xa, xb = _p6b_fx(20), _p6b_fx(20000)
+    o.append(_rect(_P6B_X0, top, xa - _P6B_X0, yax - top, fill=_SVG_INSET, data_part="zone", data_key="infra"))
+    o.append(_rect(xb, top, _P6B_X1 - xb, yax - top, fill=_SVG_INSET, data_part="zone", data_key="ultra"))
+    o.append(_label(xa - 4, 18, z["infra"], size=13, weight="700", anchor="end", data_part="zone-label",
+                    data_key="infra"))
+    o.append(_label((xa + xb) / 2.0, 18, z["human"], size=13, weight="700", data_part="zone-label",
+                    data_key="human"))
+    o.append(_label(xb + 4, 18, z["ultra"], size=13, weight="700", anchor="start", data_part="zone-label",
+                    data_key="ultra"))
+    # each row's name sits above its bar; a boundary line stops short of any name it would cross
+    gaps = []
+    for i, r in enumerate(rows):
+        y = top + 12 + pitch * i
+        text = "%s: %s to %s Hz" % (r.get("label"), _p6b_hz(r.get("lo") or 0), _p6b_hz(r.get("hi") or 0))
+        gaps.append((18 - 3, 18 + len(text) * 14 * 0.6 + 3, y, y + 18))
+    for x, s in ((xa, "20 Hz"), (xb, "20 000 Hz")):
+        y = 46.0                       # starts under its own number, so it never strikes through it
+        for (gx0, gx1, gy0, gy1) in gaps:
+            if gx0 <= x <= gx1:
+                o.append(_line(x, y, x, gy0, stroke=_SVG_INK, w=1.5, dash="5,4", data_part="boundary"))
+                y = gy1
+        o.append(_line(x, y, x, yax, stroke=_SVG_INK, w=1.5, dash="5,4", data_part="boundary"))
+        o.append(_label(x, 40, s, size=13, weight="700", fill=_SVG_ACCENT_TEXT, data_part="boundary-label"))
+    for i, r in enumerate(rows):
+        for k in ("label", "lo", "hi"):
+            if not r.get(k):
+                raise ValueError("figure %r: row %d has no %r" % (fig.get("id"), i, k))
+        if not _P6B_FMIN <= r["lo"] < r["hi"] <= _P6B_FMAX:
+            raise ValueError("figure %r: row %r is off the scale" % (fig.get("id"), r["label"]))
+        y = top + 12 + pitch * i
+        o.append(_label(18, y + 14, "%s: %s to %s Hz" % (r["label"], _p6b_hz(r["lo"]), _p6b_hz(r["hi"])),
+                        size=14, weight="700", anchor="start", data_part="row-label", data_key=r["label"]))
+        x1, x2 = _p6b_fx(r["lo"]), _p6b_fx(r["hi"])
+        o.append(_rect(x1, y + 20, x2 - x1, 14, rx=3, fill=_SVG_ACCENT, stroke=_SVG_INK, w=2,
+                       data_part="range-bar", data_key=r["label"], data_lo=r["lo"], data_hi=r["hi"]))
+    o.append(_line(_P6B_X0, yax, _P6B_X1, yax, stroke=_SVG_INK, w=2.5, data_part="axis"))
+    for p in range(0, 6):
+        f = 10 ** p
+        x = _p6b_fx(f)
+        o.append(_line(x, yax, x, yax + 6, stroke=_SVG_INK, w=2, data_part="tick"))
+        o.append(_label(x, yax + 22, _p6b_hz(f), size=13, weight="600", data_part="tick-label"))
+    o.append(_label(170, yax + 42, d["axis"], size=14, weight="700", data_part="axis-label"))
+    o.append(_label(170, yax + 60, d["note"], size=13, weight="600", fill=_SVG_INK_MUTED, data_part="axis-note"))
+    return _p6b_open(fig, yax + 68, o)
+
+
+# ── p6-ultra-probe: a pulse, a crack, an echo ────────────────────────────
+
+def _p6b_probe(fig):
+    """A steel block seen from the side, with a probe pressed on its top face. A short
+    crack lies inside it. One arrow goes down from the probe to the crack, one comes
+    back up. A measuring line beside the block marks the depth. The given data sits
+    in the right-hand column.
+
+    data: block, probe, crack, depth (labels); given (two to four short lines).
+    """
+    d = _p6b_need(fig, ("block", "probe", "crack", "depth", "given"))
+    given = d["given"]
+    if not 2 <= len(given) <= 4:
+        raise ValueError("figure %r: two to four lines of given data" % fig.get("id"))
+    for s in given:
+        if len(s) > 18:
+            raise ValueError("figure %r: given line %r is over 18 characters" % (fig.get("id"), s))
+    o = []
+    bx0, bx1, by0, by1 = 16, 176, 64, 204
+    cyk = 146                          # the crack's depth
+    o.append(_rect(bx0, by0, bx1 - bx0, by1 - by0, fill=_SVG_INSET, stroke=_SVG_INK, w=2.5,
+                   data_part="block"))
+    o.append(_label(bx0 + 8, by1 - 10, d["block"], size=14, weight="700", anchor="start",
+                    data_part="label", data_key="block"))
+    # the probe on the top face
+    o.append(_rect(76, 32, 40, 32, rx=4, fill=_SVG_CARD, stroke=_SVG_INK, w=2.5, data_part="probe"))
+    o.append(_line(96, 32, 96, 14, stroke=_SVG_INK, w=2.5, data_part="probe-lead"))
+    o.append(_label(66, 52, d["probe"], size=14, weight="700", anchor="end", data_part="label",
+                    data_key="probe"))
+    # the crack: a short jagged line
+    o.append(_path("M 74,%s L 84,%s L 94,%s L 104,%s L 114,%s L 122,%s"
+                   % (cyk, cyk - 3, cyk + 2, cyk - 2, cyk + 3, cyk), stroke=_SVG_INK, w=4,
+                   data_part="crack"))
+    o.append(_label(160, 176, d["crack"], size=14, weight="700", anchor="end", data_part="label",
+                    data_key="crack"))
+    o.append(_p6b_leader(134, 164, 118, cyk + 3))
+    # the pulse down and the echo back
+    o.append(_p6b_arrow(88, 68, 88, cyk - 8, paint=_SVG_ACCENT_TEXT, w=3, head=7, data_part="pulse",
+                        data_key="down"))
+    o.append(_p6b_arrow(106, cyk - 8, 106, 68, paint=_SVG_INK, w=3, head=7, data_part="pulse",
+                        data_key="back"))
+    # the depth, beside the block
+    dx = 190
+    o.append(_line(dx, by0, dx, cyk, stroke=_SVG_INK_MUTED, w=1.5, data_part="dimension"))
+    for y in (by0, cyk):
+        o.append(_line(dx - 6, y, dx + 6, y, stroke=_SVG_INK_MUTED, w=1.5, data_part="dimension-end"))
+    o.append(_line(bx1, cyk, dx - 6, cyk, stroke=_SVG_INK_MUTED, w=1, dash="3,3", data_part="dimension-guide"))
+    o.append(_label(202, (by0 + cyk) / 2.0 + 5, d["depth"], size=14, weight="700", anchor="start",
+                    data_part="dimension-label"))
+    for i, s in enumerate(given):
+        o.append(_label(212, 166 + 18 * i, s, size=14, weight="700", anchor="start", data_part="given",
+                        data_key=str(i)))
+    return _p6b_open(fig, 166 + 18 * (len(given) - 1) + 14, o)
+
+
+ART.update({
+    "p6-medium-bell-jar": _p6b_bell_jar,
+    "p6-medium-rail": _p6b_rail,
+    "p6-echo-boundary": _p6b_boundary,
+    "p6-echo-cliff": _p6b_cliff,
+    "p6-ear-parts": _p6b_ear,
+    "p6-ear-range": _p6b_range,
+    "p6-ultra-probe": _p6b_probe,
+})

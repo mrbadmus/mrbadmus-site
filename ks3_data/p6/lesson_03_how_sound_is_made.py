@@ -403,57 +403,32 @@ LESSON = {
             "q": "A wine glass is tapped and rings. Someone grips the rim "
                  "and the note stops instantly. What has happened?",
             "options": [
-                "The grip stops the glass vibrating, and with nothing "
-                "vibrating there is nothing left to disturb the air.",
-                "The hand absorbs the sound as it comes off the rim.",
-                "The hand blocks the sound and stops it getting out of the "
-                "glass.",
-                "The hand takes the energy out of the air around the glass, "
-                "so the air can no longer carry the sound.",
+                "The grip stops the glass vibrating, so nothing pushes on the air.",
+                "The hand soaks up the sound as it leaves the rim, so none escapes.",
+                "The hand blocks the sound, so it stays trapped inside the glass.",
+                "The hand takes energy out of the air, so the air cannot carry sound.",
             ],
             "answer": 0,
             "feedback": {
-                1: "Absorption is a real thing, but it would muffle the "
-                   "note rather than end it instantly, and it would not "
-                   "need contact with the rim. The vibration itself has "
-                   "stopped.",
-                2: "Sound is not stored in the glass waiting to get out. It "
-                   "only exists while something is vibrating, and the grip "
-                   "ends the vibration.",
-                3: "The right idea in the wrong place. The energy is taken "
-                   "out of the glass, not out of the air — the air in the "
-                   "room is untouched and would carry any other sound "
-                   "perfectly well.",
+                1: "The sound leaves the glass through the air. The grip stops the glass vibrating.",
+                2: "Sound is not stored in the glass. It only exists while the glass vibrates.",
+                3: "The air in the room is unchanged. The grip takes energy from the glass itself.",
             },
             "title": "Rung 1 · Apply the rule"},
         "apply": {
             "q": "A microphone and a loudspeaker contain almost the same "
                  "parts. Which statement is right?",
             "options": [
-                "A microphone stores the sound and a loudspeaker plays it "
-                "back, so the parts inside must be different: one is built "
-                "to hold a sound until it is wanted and the other to let "
-                "one out again",
-                "A microphone makes the sound and a loudspeaker detects it.",
-                "Both turn electricity into sound, and a microphone simply "
-                "does it much more quietly.",
-                "A loudspeaker turns an electrical signal into a vibrating "
-                "cone, and a microphone lets a vibrating diaphragm make an "
-                "electrical signal — the same chain, run in opposite "
-                "directions.",
+                "A microphone stores a sound, and a loudspeaker plays the stored sound back later.",
+                "A microphone makes the sound, and a loudspeaker detects it and plays it.",
+                "Both turn electricity into sound, but a microphone does it much more quietly.",
+                "A loudspeaker turns a signal into vibrations, and a microphone does the reverse.",
             ],
             "answer": 3,
             "feedback": {
-                0: "Neither one stores anything. Both convert while the "
-                   "sound is happening, which is why the same "
-                   "sheet-and-coil works for either job.",
-                1: "The two jobs are the right pair and the wrong way "
-                   "round. The microphone is the detector at the end of the "
-                   "chain; the loudspeaker is the source at the start of "
-                   "it.",
-                2: "A microphone is not a quiet loudspeaker. Sound goes in "
-                   "and electricity comes out, which is the chain running "
-                   "backwards, not the same chain turned down.",
+                0: "Neither one stores sound. Both convert between sound and an electrical signal.",
+                1: "That is the wrong way round. A loudspeaker makes sound and a microphone detects it.",
+                2: "A microphone takes sound in and gives out an electrical signal.",
             },
             "title": "Rung 2 · The one that catches people"},
         "explain": {

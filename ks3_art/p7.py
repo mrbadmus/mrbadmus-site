@@ -1917,3 +1917,598 @@ KIND_FN = {
     'light-band':       r_light_band,
     'p7-attempt':       r_p7_attempt,
 }
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# LEAN WAVE 2 (P7 lane C: lessons 1, 2, 3, 6, 7) · drawn figures for the lean pages
+# ═══════════════════════════════════════════════════════════════════════════
+#
+#   "p7-shadow"          data {}                      a lamp, a card, a screen and a shadow
+#   "p7-light-trip"      data {from, from_shape, to, to_shape, time, distance, speed}
+#   "p7-reflection"      data {i, mirror_angle (or None), key: [lines]}   the law of reflection
+#   "p7-surfaces"        data {}                      specular reflection and diffuse scattering
+#   "p7-glass-block"     data {i, n}                  a ray into and out of a glass block
+#   "p7-straw"           data {n}                     why a straw looks bent in water
+#   "p7-prism"           data {colours: [...], second: bool}   dispersion, and recombining
+#   "p7-coloured-object" data {lamp, rays, object, object_hue, reflects, absorbed, seen}
+#   "p7-filters"         data {lamp, rays, filters: [...], result: [lines]}
+#
+# All 340 wide or less, so each sits in a phone card without scrolling; every label is
+# 13px or more. A ray is a ruled line with a DRAWN arrowhead half way along it. A coloured
+# ray is a hue core on an ink underlay, so it holds contrast on the light and the dark
+# ground; every colour is ALSO named in text beside it, never shown by hue alone.
+import math as _p7c_math
+
+from ks3_art.kit import (_SVG_ACCENT, _SVG_ACCENT_TEXT, _SVG_ACCENT_TINT, _SVG_CARD,
+                         _SVG_INK, _SVG_INK_BODY, _SVG_INK_MUTED, _SVG_INSET, _SVG_RULE,
+                         _circle, _label, _line, _mono, _n, _path, _rect, _svg_open)
+
+_P7C_W = 340
+
+# The hues are the colour bench's own (r_colour_bench, lesson 06/07 data), plus indigo.
+_P7C_HUE = {
+    "red": "#D9563A", "orange": "#DE8A3C", "yellow": "#D8C24A", "green": "#5BA45C",
+    "blue": "#4F7DC4", "indigo": "#5E5AA8", "violet": "#8567B5",
+}
+
+
+def _p7c_open(fig, h, body, w=_P7C_W):
+    return (_svg_open(fig, w, int(_p7c_math.ceil(h)))
+            + '<g stroke-linecap="round" stroke-linejoin="round">' + "".join(body) + "</g></svg>")
+
+
+def _p7c_hue(name, fig):
+    if name not in _P7C_HUE:
+        raise ValueError("figure %r: unknown colour %r" % (fig.get("id"), name))
+    return _P7C_HUE[name]
+
+
+def _p7c_head(x, y, ang, size=10.0, fill=_SVG_INK, stroke=None):
+    """A drawn arrowhead with its tip at (x, y), pointing along `ang` (radians)."""
+    dx, dy = _p7c_math.cos(ang), _p7c_math.sin(ang)
+    px, py = -dy, dx
+    return _path("M %s,%s L %s,%s L %s,%s Z"
+                 % (_n(x), _n(y),
+                    _n(x - dx * size + px * size * 0.5), _n(y - dy * size + py * size * 0.5),
+                    _n(x - dx * size - px * size * 0.5), _n(y - dy * size - py * size * 0.5)),
+                 fill=fill, stroke=stroke, w=1 if stroke else None, data_part="arrowhead")
+
+
+def _p7c_ray(x1, y1, x2, y2, hue=None, w=2.5, at=0.55, dash=None, head=True, part="ray", key=None):
+    """A ruled ray from (x1, y1) to (x2, y2), its arrowhead `at` of the way along.
+    `hue` (a fixed colour) draws a coloured core on an ink underlay."""
+    ang = _p7c_math.atan2(y2 - y1, x2 - x1)
+    hx, hy = x1 + (x2 - x1) * at, y1 + (y2 - y1) * at
+    out = []
+    if hue:
+        out.append(_line(x1, y1, x2, y2, stroke=_SVG_INK, w=w + 2.5, dash=dash,
+                         data_part=part + "-edge", data_key=key))
+        out.append(_line(x1, y1, x2, y2, stroke=hue, w=w, dash=dash, data_part=part, data_key=key))
+        if head:
+            out.append(_p7c_head(hx + _p7c_math.cos(ang) * 5, hy + _p7c_math.sin(ang) * 5, ang,
+                                 size=11, fill=hue, stroke=_SVG_INK))
+    else:
+        out.append(_line(x1, y1, x2, y2, stroke=_SVG_INK, w=w, dash=dash, data_part=part,
+                         data_key=key))
+        if head:
+            out.append(_p7c_head(hx + _p7c_math.cos(ang) * 5, hy + _p7c_math.sin(ang) * 5, ang))
+    return "".join(out)
+
+
+def _p7c_arc(cx, cy, r, a0, a1, part="angle", w=2.0, paint=_SVG_ACCENT_TEXT):
+    """An arc of radius r about (cx, cy) from screen angle a0 to a1 (degrees, y down)."""
+    p0 = (cx + r * _p7c_math.cos(_p7c_math.radians(a0)), cy + r * _p7c_math.sin(_p7c_math.radians(a0)))
+    p1 = (cx + r * _p7c_math.cos(_p7c_math.radians(a1)), cy + r * _p7c_math.sin(_p7c_math.radians(a1)))
+    sweep = 1 if a1 > a0 else 0
+    large = 1 if abs(a1 - a0) > 180 else 0
+    return _path("M %s,%s A %s %s 0 %d %d %s,%s"
+                 % (_n(p0[0]), _n(p0[1]), _n(r), _n(r), large, sweep, _n(p1[0]), _n(p1[1])),
+                 stroke=paint, w=w, data_part=part)
+
+
+def _p7c_polar(cx, cy, r, a):
+    return (cx + r * _p7c_math.cos(_p7c_math.radians(a)), cy + r * _p7c_math.sin(_p7c_math.radians(a)))
+
+
+def _p7c_eye(x, y, facing=-1):
+    """A small eye looking along x (facing -1 looks left)."""
+    w, h = 13.0, 8.0
+    return (_path("M %s,%s Q %s,%s %s,%s Q %s,%s %s,%s Z"
+                  % (_n(x - w), _n(y), _n(x), _n(y - h * 1.6), _n(x + w), _n(y),
+                     _n(x), _n(y + h * 1.6), _n(x - w), _n(y)),
+                  fill=_SVG_CARD, stroke=_SVG_INK, w=2, data_part="eye")
+            + _circle(x + facing * 4, y, 4.5, fill=_SVG_INK, data_part="pupil"))
+
+
+# ── p7-shadow ───────────────────────────────────────────────────────────────
+def _p7c_shadow(fig):
+    """A lamp, a card and a screen. Straight rays pass the card's edges, so the shadow
+    on the screen has sharp edges where those two rays land."""
+    LX, LY = 34.0, 100.0
+    CX0, CX1, CY0, CY1 = 150.0, 160.0, 84.0, 116.0
+    SX = 300.0
+    o = []
+    o.append(_rect(SX, 8, 9, 184, fill=_SVG_INSET, stroke=_SVG_INK, w=2, data_part="screen"))
+    y_top = LY + (CY0 - LY) * (SX - LX) / (CX0 - LX)
+    y_bot = LY + (CY1 - LY) * (SX - LX) / (CX0 - LX)
+    o.append(_rect(SX, y_top, 9, y_bot - y_top, fill=_SVG_INK_BODY, data_part="shadow"))
+    # rays that miss the card, rays that graze its edges, and rays the card stops
+    for ys in (12.0, 188.0):
+        o.append(_p7c_ray(LX + 14, LY + (ys - LY) * 14 / (SX - LX), SX, ys, at=0.6))
+    o.append(_p7c_ray(LX + 14, LY + (CY0 - LY) * 14 / (CX0 - LX), SX, y_top, at=0.6, part="edge-ray"))
+    o.append(_p7c_ray(LX + 14, LY + (CY1 - LY) * 14 / (CX0 - LX), SX, y_bot, at=0.6, part="edge-ray"))
+    for yc in (94.0, 106.0):
+        o.append(_p7c_ray(LX + 14, LY + (yc - LY) * 14 / (CX0 - LX), CX0, yc, at=0.5, part="stopped-ray"))
+    o.append(_rect(CX0, CY0, CX1 - CX0, CY1 - CY0, fill=_SVG_INK_BODY, stroke=_SVG_INK, w=2,
+                   data_part="card"))
+    o.append(_circle(LX, LY, 13, fill=_SVG_ACCENT_TINT, stroke=_SVG_INK, w=2, data_part="lamp"))
+    o.append(_label(LX, LY + 34, "lamp", size=14, weight="700", data_part="lamp-label"))
+    o.append(_label((CX0 + CX1) / 2.0, CY0 - 10, "card", size=14, weight="700", data_part="card-label"))
+    o.append(_label(SX - 8, LY + 5, "shadow", size=14, weight="700", anchor="end",
+                    data_part="shadow-label"))
+    o.append(_label(SX + 4.5, 212, "screen", size=14, weight="700", anchor="middle",
+                    data_part="screen-label"))
+    return _p7c_open(fig, 220, o)
+
+
+# ── p7-light-trip ───────────────────────────────────────────────────────────
+def _p7c_body(x, y, shape, part):
+    if shape == "sun":
+        o = []
+        for k in range(12):
+            a = k * 30.0
+            p0, p1 = _p7c_polar(x, y, 25, a), _p7c_polar(x, y, 32, a)
+            o.append(_line(p0[0], p0[1], p1[0], p1[1], stroke=_SVG_ACCENT_TEXT, w=2.5, data_part="sun-ray"))
+        o.append(_circle(x, y, 21, fill=_SVG_ACCENT_TINT, stroke=_SVG_INK, w=2, data_part=part))
+        return "".join(o), 32
+    if shape == "planet":
+        return (_circle(x, y, 15, fill=_SVG_INSET, stroke=_SVG_INK, w=2, data_part=part)
+                + _path("M %s,%s Q %s,%s %s,%s" % (_n(x - 12), _n(y - 4), _n(x), _n(y + 5),
+                                                    _n(x + 12), _n(y - 4)),
+                        stroke=_SVG_INK_MUTED, w=1.5, data_part=part + "-detail")), 15
+    if shape == "satellite":
+        return (_rect(x - 22, y - 6, 14, 12, fill=_SVG_INSET, stroke=_SVG_INK, w=1.5, data_part="panel")
+                + _rect(x + 8, y - 6, 14, 12, fill=_SVG_INSET, stroke=_SVG_INK, w=1.5, data_part="panel")
+                + _line(x - 8, y, x + 8, y, stroke=_SVG_INK, w=1.5)
+                + _rect(x - 6, y - 8, 12, 16, rx=2, fill=_SVG_CARD, stroke=_SVG_INK, w=2,
+                        data_part=part)), 22
+    raise ValueError("p7-light-trip: unknown shape %r" % shape)
+
+
+def _p7c_light_trip(fig):
+    """Light leaving one body and reaching another, with the time, the distance and the
+    speed written on the drawing (one of them a question mark: the thing to find)."""
+    d = fig.get("data") or {}
+    for k in ("from", "from_shape", "to", "to_shape", "time", "distance", "speed"):
+        if not d.get(k):
+            raise ValueError("figure %r: p7-light-trip needs %r" % (fig.get("id"), k))
+    Y = 62.0
+    o = []
+    a, ra = _p7c_body(42, Y, d["from_shape"], "from")
+    b, rb = _p7c_body(298, Y, d["to_shape"], "to")
+    o += [a, b]
+    o.append(_p7c_ray(42 + ra + 6, Y, 298 - rb - 6, Y, w=3, at=0.5, part="light"))
+    o.append(_line(42 + ra + 6, Y, 298 - rb - 6, Y, stroke=_SVG_INK, w=3, data_part="light-end"))
+    o.append(_p7c_head(298 - rb - 4, Y, 0.0, size=11))
+    o.append(_label(42, Y + 52, d["from"], size=14, weight="700", data_part="from-label"))
+    o.append(_label(298, Y + 52, d["to"], size=14, weight="700", data_part="to-label"))
+    o.append(_label(170, Y - 14, d["time"], size=15, weight="700", data_part="time"))
+    o.append(_label(170, Y + 28, d["distance"], size=15, weight="700", data_part="distance"))
+    o.append(_label(170, Y + 82, d["speed"], size=14, weight="600", fill=_SVG_INK_BODY,
+                    data_part="speed"))
+    return _p7c_open(fig, Y + 94, o)
+
+
+# ── p7-reflection ──────────────────────────────────────────────────────────
+def _p7c_reflection(fig):
+    """A ray reflecting off a plane mirror: the normal dashed, both rays arrowed, the angle
+    of incidence and the angle of reflection marked from the normal (and, if asked, the
+    angle between the incoming ray and the mirror). The key under it says the values."""
+    d = fig.get("data") or {}
+    i = float(d.get("i") or 0)
+    if not 5 <= i <= 80:
+        raise ValueError("figure %r: p7-reflection needs i between 5 and 80" % fig.get("id"))
+    key = d.get("key") or []
+    if not key:
+        raise ValueError("figure %r: p7-reflection needs its key lines" % fig.get("id"))
+    PX, PY, L = 170.0, 176.0, 150.0
+    o = []
+    # mirror, silvered side down
+    o.append(_line(24, PY, 316, PY, stroke=_SVG_INK, w=4, data_part="mirror"))
+    for x in range(30, 316, 14):
+        o.append(_line(x, PY + 2, x - 9, PY + 12, stroke=_SVG_INK_MUTED, w=1.5, data_part="mirror-back"))
+    o.append(_label(316, PY + 30, "mirror", size=14, weight="700", anchor="end", data_part="mirror-label"))
+    # the normal
+    o.append(_line(PX, 32, PX, PY, stroke=_SVG_INK_MUTED, w=2, dash="6 5", data_part="normal"))
+    o.append(_label(PX, 24, "normal", size=14, weight="700", data_part="normal-label"))
+    s, c = _p7c_math.sin(_p7c_math.radians(i)), _p7c_math.cos(_p7c_math.radians(i))
+    ax, ay = PX - L * s, PY - L * c
+    bx, by = PX + L * s, PY - L * c
+    o.append(_p7c_ray(ax, ay, PX, PY, w=3, at=0.5, part="incident-ray"))
+    o.append(_p7c_ray(PX, PY, bx, by, w=3, at=0.55, part="reflected-ray"))
+    # angle arcs, measured from the normal (screen angle 270 points straight up)
+    o.append(_p7c_arc(PX, PY, 46, 270, 270 - i, part="angle-i"))
+    o.append(_p7c_arc(PX, PY, 46, 270, 270 + i, part="angle-r"))
+    li = _p7c_polar(PX, PY, 62, 270 - i / 2.0)
+    lr = _p7c_polar(PX, PY, 62, 270 + i / 2.0)
+    o.append(_label(li[0], li[1] + 6, "i", size=17, weight="700", fill=_SVG_ACCENT_TEXT,
+                    data_part="i-label"))
+    o.append(_label(lr[0], lr[1] + 6, "r", size=17, weight="700", fill=_SVG_ACCENT_TEXT,
+                    data_part="r-label"))
+    if d.get("mirror_angle"):
+        o.append(_p7c_arc(PX, PY, 74, 180, 180 + (90 - i), part="angle-mirror", paint=_SVG_INK))
+        lm = _p7c_polar(PX, PY, 92, 180 + (90 - i) / 2.0)
+        o.append(_label(lm[0] - 4, lm[1] + 5, d["mirror_angle"], size=15, weight="700",
+                        data_part="mirror-angle-label"))
+    # ray names at the far ends
+    o.append(_label(max(8.0, ax - 20), ay - 12, "incoming ray", size=14, weight="600",
+                    anchor="start", fill=_SVG_INK_BODY, data_part="incident-label"))
+    o.append(_label(min(332.0, bx + 20), by - 12, "reflected ray", size=14, weight="600",
+                    anchor="end", fill=_SVG_INK_BODY, data_part="reflected-label"))
+    y = PY + 56
+    for line in key:
+        o.append(_label(8, y, line, size=14, weight="600", anchor="start", data_part="key"))
+        y += 20
+    return _p7c_open(fig, y - 6, o)
+
+
+# ── p7-surfaces ────────────────────────────────────────────────────────────
+def _p7c_reflect(dx, dy, nx, ny):
+    k = 2 * (dx * nx + dy * ny)
+    return dx - k * nx, dy - k * ny
+
+
+def _p7c_surfaces(fig):
+    """Two panels. A smooth surface: three parallel rays leave still parallel. A rough
+    surface: each facet has its own normal (dashed), each ray obeys the law of reflection
+    at its facet, and the rays leave in different directions."""
+    o = []
+    DX, DY = _p7c_math.cos(_p7c_math.radians(40)), _p7c_math.sin(_p7c_math.radians(40))
+    hits = (118.0, 170.0, 222.0)
+    for panel, (head, note, tilts) in enumerate((
+            ("Smooth surface: specular reflection", "parallel rays leave still parallel", (0, 0, 0)),
+            ("Rough surface: diffuse scattering", "rays leave in all directions", (-26, -8, 12)))):
+        top = panel * 178.0
+        base = top + 122.0
+        o.append(_label(8, top + 18, head, size=14, weight="700", anchor="start", data_part="panel-head"))
+        if panel == 0:
+            o.append(_rect(20, base, 300, 10, fill=_SVG_INSET, stroke=_SVG_INK, w=2, data_part="surface"))
+        else:
+            pts = [(20.0, base)]
+            for hx, t in zip(hits, tilts):
+                tx, ty = _p7c_math.cos(_p7c_math.radians(t)), _p7c_math.sin(_p7c_math.radians(t))
+                pts += [(hx - 16 * tx, base - 16 * ty), (hx + 16 * tx, base + 16 * ty)]
+            pts.append((320.0, base))
+            d = "M " + " L ".join("%s,%s" % (_n(x), _n(y)) for x, y in pts)
+            d += " L 320,%s L 20,%s Z" % (_n(base + 18), _n(base + 18))
+            o.append(_path(d, fill=_SVG_INSET, stroke=_SVG_INK, w=2, data_part="surface"))
+        for hx, t in zip(hits, tilts):
+            nx, ny = _p7c_math.sin(_p7c_math.radians(t)), -_p7c_math.cos(_p7c_math.radians(t))
+            if panel == 1:
+                o.append(_line(hx, base, hx + nx * 30, base + ny * 30, stroke=_SVG_INK_MUTED, w=1.5,
+                               dash="4 4", data_part="facet-normal"))
+            rx, ry = _p7c_reflect(DX, DY, nx, ny)
+            o.append(_p7c_ray(hx - 82 * DX, base - 82 * DY, hx, base, w=2.5, at=0.5, part="ray-in"))
+            o.append(_p7c_ray(hx, base, hx + 82 * rx, base + 82 * ry, w=2.5, at=0.6, part="ray-out"))
+        o.append(_label(170, base + 40, note, size=14, weight="600", fill=_SVG_INK_BODY,
+                        data_part="panel-note"))
+    return _p7c_open(fig, 178 + 122 + 48, o)
+
+
+# ── p7-glass-block ─────────────────────────────────────────────────────────
+def _p7c_glass_block(fig):
+    """A ray through a rectangular glass block, with a dashed normal at each face. At an
+    angle it bends towards the normal going in and away from it coming out, leaving
+    parallel to the way it came in. Along the normal it goes straight through."""
+    d = fig.get("data") or {}
+    i = float(d.get("i") or 0)
+    n = float(d.get("n") or 1.5)
+    if not (0 <= i <= 60 and 1.2 <= n <= 1.7):
+        raise ValueError("figure %r: p7-glass-block needs 0 <= i <= 60 and n about 1.5" % fig.get("id"))
+    BX0, BX1, BT, BB = 30.0, 310.0, 86.0, 186.0
+    o = [_rect(BX0, BT, BX1 - BX0, BB - BT, fill=_SVG_INSET, stroke=_SVG_INK, w=2.5, data_part="block")]
+    o.append(_label(BX1 - 8, BB - 10, "glass", size=14, weight="700", anchor="end", data_part="glass-label"))
+    o.append(_label(BX1 - 8, 30, "air", size=14, weight="700", anchor="end", data_part="air-label"))
+    o.append(_label(BX1 - 8, BB + 70, "air", size=14, weight="700", anchor="end", data_part="air-label"))
+    r = _p7c_math.degrees(_p7c_math.asin(_p7c_math.sin(_p7c_math.radians(i)) / n))
+    s, c = _p7c_math.sin(_p7c_math.radians(i)), _p7c_math.cos(_p7c_math.radians(i))
+    if i == 0:
+        X = 150.0
+        o.append(_line(X, 18, X, BB + 62, stroke=_SVG_INK_MUTED, w=2, dash="6 5", data_part="normal"))
+        o.append(_p7c_ray(X, 18, X, BT, w=3, at=0.6, part="ray-in"))
+        o.append(_p7c_ray(X, BT, X, BB, w=3, at=0.6, part="ray-glass"))
+        o.append(_p7c_ray(X, BB, X, BB + 62, w=3, at=0.6, part="ray-out"))
+        o.append(_label(X - 12, 34, "ray along", size=14, weight="700", anchor="end", data_part="normal-label"))
+        o.append(_label(X - 12, 52, "the normal", size=14, weight="700", anchor="end", data_part="normal-label"))
+        o.append(_label(X + 14, BT + 34, "slows down", size=14, weight="700", anchor="start",
+                        fill=_SVG_ACCENT_TEXT, data_part="note-in"))
+        o.append(_label(X + 14, BT + 54, "but does not bend", size=14, weight="700", anchor="start",
+                        fill=_SVG_ACCENT_TEXT, data_part="note-in"))
+        o.append(_label(X + 14, BB + 30, "speeds up again", size=14, weight="700", anchor="start",
+                        fill=_SVG_ACCENT_TEXT, data_part="note-out"))
+        return _p7c_open(fig, BB + 80, o)
+    P1 = (110.0, BT)
+    P2 = (P1[0] + (BB - BT) * _p7c_math.tan(_p7c_math.radians(r)), BB)
+    A = (P1[0] - 72 * s, BT - 72 * c)
+    B = (P2[0] + 72 * s, BB + 72 * c)
+    for (px, py) in (P1, P2):
+        o.append(_line(px, py - 44, px, py + 44, stroke=_SVG_INK_MUTED, w=2, dash="6 5",
+                       data_part="normal"))
+    o.append(_label(P1[0], P1[1] - 50, "normal", size=14, weight="700", data_part="normal-label"))
+    o.append(_p7c_ray(A[0], A[1], P1[0], P1[1], w=3, at=0.5, part="ray-in"))
+    o.append(_p7c_ray(P1[0], P1[1], P2[0], P2[1], w=3, at=0.6, part="ray-glass"))
+    o.append(_p7c_ray(P2[0], P2[1], B[0], B[1], w=3, at=0.55, part="ray-out"))
+    o.append(_label(P1[0] + 32, BT + 30, "bends towards", size=14, weight="700", anchor="start",
+                    fill=_SVG_ACCENT_TEXT, data_part="note-in"))
+    o.append(_label(P1[0] + 32, BT + 48, "the normal", size=14, weight="700", anchor="start",
+                    fill=_SVG_ACCENT_TEXT, data_part="note-in"))
+    o.append(_label(P2[0] - 14, BB + 30, "bends away", size=14, weight="700", anchor="end",
+                    fill=_SVG_ACCENT_TEXT, data_part="note-out"))
+    o.append(_label(P2[0] - 14, BB + 48, "from the normal", size=14, weight="700", anchor="end",
+                    fill=_SVG_ACCENT_TEXT, data_part="note-out"))
+    return _p7c_open(fig, BB + 80, o)
+
+
+# ── p7-straw ───────────────────────────────────────────────────────────────
+def _p7c_straw(fig):
+    """A straw in a glass of water, seen from the side. Light from the bottom of the straw
+    bends away from the normal as it leaves the water and reaches the eye. The eye traces
+    it straight back (dashed), to a point higher than the real end."""
+    d = fig.get("data") or {}
+    n = float(d.get("n") or 1.33)
+    GX0, GX1, GT, GB, WY = 20.0, 236.0, 34.0, 262.0, 118.0
+    T = (130.0, 236.0)            # the real bottom of the straw
+    E = (300.0, 30.0)             # the eye
+    # find where the ray from T leaves the surface, so that sin(air) = n sin(water)
+    lo, hi = T[0] + 0.5, E[0] - 0.5
+    for _ in range(60):
+        sx = (lo + hi) / 2.0
+        tw = _p7c_math.atan((sx - T[0]) / (T[1] - WY))
+        ta = _p7c_math.atan((E[0] - sx) / (WY - E[1]))
+        if _p7c_math.sin(ta) > n * _p7c_math.sin(tw):
+            lo = sx
+        else:
+            hi = sx
+    S = (sx, WY)
+    if not GX0 + 10 < sx < GX1 - 6:
+        raise ValueError("figure %r: the ray leaves the water outside the glass" % fig.get("id"))
+    # trace the air ray straight back to the vertical through the real end
+    k = (T[0] - S[0]) / (S[0] - E[0])
+    A = (T[0], S[1] + (S[1] - E[1]) * k)
+    o = []
+    o.append(_rect(GX0, WY, GX1 - GX0, GB - WY, fill=_SVG_INSET, data_part="water"))
+    o.append(_line(GX0, WY, GX1, WY, stroke=_SVG_INK, w=2, data_part="water-surface"))
+    o.append(_path("M %s,%s L %s,%s L %s,%s L %s,%s" % (_n(GX0), _n(GT), _n(GX0), _n(GB),
+                                                          _n(GX1), _n(GB), _n(GX1), _n(GT)),
+                   stroke=_SVG_INK, w=2.5, data_part="glass"))
+    # the straw: straight, from above the glass to its real end
+    top = (186.0, 14.0)
+    o.append(_line(top[0], top[1], T[0], T[1], stroke=_SVG_ACCENT, w=7, data_part="straw"))
+    ex = top[0] + (T[0] - top[0]) * (WY - top[1]) / (T[1] - top[1])
+    o.append(_line(ex, WY, A[0], A[1], stroke=_SVG_INK_MUTED, w=3, dash="5 5", data_part="straw-seen"))
+    o.append(_line(S[0], WY - 40, S[0], WY + 40, stroke=_SVG_INK_MUTED, w=2, dash="6 5", data_part="normal"))
+    o.append(_label(S[0], WY - 46, "normal", size=14, weight="700", anchor="middle",
+                    data_part="normal-label"))   # above the normal: clear of the wall and the rays
+    o.append(_line(S[0], S[1], A[0], A[1], stroke=_SVG_INK_MUTED, w=2, dash="3 4", data_part="traced-back"))
+    o.append(_p7c_ray(T[0], T[1], S[0], S[1], w=2.5, at=0.5, part="ray-water"))
+    o.append(_p7c_ray(S[0], S[1], E[0] - 12, E[1] + 8, w=2.5, at=0.5, part="ray-air"))
+    o.append(_p7c_eye(E[0], E[1], facing=-1))
+    o.append(_circle(A[0], A[1], 4.5, fill=_SVG_CARD, stroke=_SVG_INK, w=2, data_part="seen-point"))
+    o.append(_circle(T[0], T[1], 4.5, fill=_SVG_INK, data_part="real-point"))
+    o.append(_label(A[0] - 12, A[1] + 5, "looks here", size=14, weight="700", anchor="end",
+                    data_part="seen-label"))
+    o.append(_label(T[0] - 12, T[1] + 5, "really here", size=14, weight="700", anchor="end",
+                    data_part="real-label"))
+    o.append(_label(GX0 + 8, WY - 10, "air", size=14, weight="700", anchor="start", data_part="air-label"))
+    o.append(_label(GX1 - 8, GB - 10, "water", size=14, weight="700", anchor="end", data_part="water-label"))
+    o.append(_label(E[0], E[1] + 32, "eye", size=14, weight="700", data_part="eye-label"))
+    return _p7c_open(fig, GB + 8, o)
+
+
+# ── p7-prism ───────────────────────────────────────────────────────────────
+_P7C_SPECTRUM = ["red", "orange", "yellow", "green", "blue", "violet"]   # six names (commander, 24 Nov)
+
+
+def _p7c_unit(vx, vy):
+    m = _p7c_math.hypot(vx, vy)
+    return vx / m, vy / m
+
+
+def _p7c_snell(d, nh, ratio):
+    """Refract unit direction d at a face whose unit normal nh points INTO the new
+    material; ratio = n1 / n2."""
+    c = d[0] * nh[0] + d[1] * nh[1]
+    ct = _p7c_math.sqrt(1 - ratio * ratio * (1 - c * c))
+    return (ratio * d[0] + (ct - ratio * c) * nh[0], ratio * d[1] + (ct - ratio * c) * nh[1])
+
+
+def _p7c_hit(p, d, a, b):
+    """Where the ray p + t d meets the line through a and b."""
+    ex, ey = b[0] - a[0], b[1] - a[1]
+    det = d[0] * (-ey) - d[1] * (-ex)
+    t = ((a[0] - p[0]) * (-ey) - (a[1] - p[1]) * (-ex)) / det
+    return p[0] + t * d[0], p[1] + t * d[1]
+
+
+def _p7c_prism(fig):
+    """White light into a triangular prism. Inside, the colours separate (violet bends
+    most, red least) and fan out onto a screen, each named in text. With `second`, an
+    upside-down prism bends each colour back: inside it every ray turns towards the normal
+    (violet most, worked out with the law of refraction), and the colours leave parallel
+    to the white light that went in, together again as one white beam."""
+    d = fig.get("data") or {}
+    cols = d.get("colours") or _P7C_SPECTRUM
+    if cols != _P7C_SPECTRUM:
+        raise ValueError("figure %r: the spectrum must be the six names, red to violet" % fig.get("id"))
+    second = bool(d.get("second"))
+    o = []
+    if not second:
+        ap, bl, br = (112.0, 30.0), (52.0, 150.0), (172.0, 150.0)
+        t0, dt = 0.40, 0.042
+    else:
+        ap, bl, br = (78.0, 50.0), (28.0, 140.0), (128.0, 140.0)
+        t0, dt = 0.44, 0.024
+    o.append(_path("M %s,%s L %s,%s L %s,%s Z" % (_n(ap[0]), _n(ap[1]), _n(bl[0]), _n(bl[1]),
+                                                   _n(br[0]), _n(br[1])),
+                   fill=_SVG_INSET, stroke=_SVG_INK, w=2.5, data_part="prism"))
+    # entry point on the left face, exit points on the right face (red highest)
+    P = (bl[0] + (ap[0] - bl[0]) * 0.5, bl[1] + (ap[1] - bl[1]) * 0.5)
+    exits = [(ap[0] + (br[0] - ap[0]) * (t0 + dt * k), ap[1] + (br[1] - ap[1]) * (t0 + dt * k))
+             for k in range(len(cols))]
+    W0 = (8.0, P[1] + 22)
+    o.append(_p7c_ray(W0[0], W0[1], P[0], P[1], w=3, at=0.5, part="white-in"))
+    for k, name in enumerate(cols):
+        o.append(_line(P[0], P[1], exits[k][0], exits[k][1], stroke=_P7C_HUE[name], w=1.8,
+                       data_part="inside", data_key=name))
+    last = len(cols) - 1
+    if not second:
+        o.append(_label(8, P[1] - 4, "white light", size=14, weight="700", anchor="start",
+                        data_part="white-label"))
+        SX = 246.0
+        o.append(_rect(SX, 62, 9, 150, fill=_SVG_INSET, stroke=_SVG_INK, w=2, data_part="screen"))
+        o.append(_label(SX + 4.5, 52, "screen", size=14, weight="700", data_part="screen-label"))
+        for k, name in enumerate(cols):
+            y = 86.0 + k * 20.0
+            o.append(_p7c_ray(exits[k][0], exits[k][1], SX, y, hue=_P7C_HUE[name], w=2.2, at=0.6,
+                              head=(k in (0, last)), part="colour", key=name))
+            o.append(_rect(SX + 1, y - 4, 7, 8, fill=_P7C_HUE[name], data_part="patch", data_key=name))
+            o.append(_label(SX + 18, y + 5, name, size=13, weight="700", anchor="start",
+                            data_part="colour-name", data_key=name))
+        o.append(_label(112, 176, "prism", size=14, weight="700", data_part="prism-label"))
+        return _p7c_open(fig, 222, o)
+    o.append(_label(8, P[1] - 21, "white", size=14, weight="700", anchor="start", data_part="white-label"))
+    o.append(_label(8, P[1] - 5, "light", size=14, weight="700", anchor="start", data_part="white-label"))
+    # the second prism, upside down
+    tl, tr, qa = (196.0, 40.0), (300.0, 40.0), (248.0, 150.0)
+    o.append(_path("M %s,%s L %s,%s L %s,%s Z" % (_n(tl[0]), _n(tl[1]), _n(tr[0]), _n(tr[1]),
+                                                   _n(qa[0]), _n(qa[1])),
+                   fill=_SVG_INSET, stroke=_SVG_INK, w=2.5, data_part="prism-2"))
+    fx, fy = _p7c_unit(qa[0] - tl[0], qa[1] - tl[1])
+    n_in = (fy, -fx)                                   # into prism 2, through its left face
+    white = _p7c_unit(P[0] - W0[0], P[1] - W0[1])      # the direction the white light came in
+    turned, outs = [], []
+    for k, name in enumerate(cols):
+        t = 0.46 + 0.03 * k
+        e2 = (tl[0] + (qa[0] - tl[0]) * t, tl[1] + (qa[1] - tl[1]) * t)
+        din = _p7c_unit(e2[0] - exits[k][0], e2[1] - exits[k][1])
+        dg = _p7c_snell(din, n_in, 1.0 / (1.45 + 0.08 * k))   # violet slowed (and bent) most
+        before = _p7c_math.acos(din[0] * n_in[0] + din[1] * n_in[1])
+        after = _p7c_math.acos(dg[0] * n_in[0] + dg[1] * n_in[1])
+        if not (after < before and (din[0] * n_in[1] - din[1] * n_in[0]) *
+                (dg[0] * n_in[1] - dg[1] * n_in[0]) >= 0):
+            raise ValueError("figure %r: %s does not bend towards the normal" % (fig.get("id"), name))
+        turned.append(before - after)
+        x2 = _p7c_hit(e2, dg, qa, tr)
+        o.append(_line(exits[k][0], exits[k][1], e2[0], e2[1], stroke=_P7C_HUE[name], w=2.4,
+                       data_part="colour", data_key=name))
+        o.append(_line(e2[0], e2[1], x2[0], x2[1], stroke=_P7C_HUE[name], w=1.8, data_part="inside-2",
+                       data_key=name))
+        stub = (x2[0] + white[0] * 14, x2[1] + white[1] * 14)
+        o.append(_line(x2[0], x2[1], stub[0], stub[1], stroke=_P7C_HUE[name], w=1.8, data_part="out-2",
+                       data_key=name))
+        outs.append(stub)
+    if turned != sorted(turned):
+        raise ValueError("figure %r: violet must turn the most" % fig.get("id"))
+    cx = sum(p[0] for p in outs) / len(outs)
+    cy = sum(p[1] for p in outs) / len(outs)
+    ex = 332.0
+    o.append(_p7c_ray(cx, cy, ex, cy + white[1] / white[0] * (ex - cx), w=4, at=0.5, part="white-out"))
+    o.append(_label(332, cy + 30, "white", size=14, weight="700", anchor="end", data_part="white-out-label"))
+    o.append(_label(332, cy + 46, "light", size=14, weight="700", anchor="end", data_part="white-out-label"))
+    o.append(_label(150, 76, "red", size=13, weight="700", data_part="fan-label", data_key="red"))
+    o.append(_label(156, 130, "violet", size=13, weight="700", data_part="fan-label", data_key="violet"))
+    o.append(_label(78, 170, "prism 1", size=14, weight="700", data_part="prism-label"))
+    o.append(_label(248, 170, "prism 2, upside down", size=14, weight="700", data_part="prism-label"))
+    return _p7c_open(fig, 180, o)
+
+
+# ── p7-coloured-object ─────────────────────────────────────────────────────
+def _p7c_coloured_object(fig):
+    """Coloured light landing on an object. Each ray is named. The colours the object
+    reflects go on to the eye; the others stop at the surface, and the words under the
+    object say which colours it absorbs."""
+    d = fig.get("data") or {}
+    for k in ("lamp", "rays", "object", "object_hue", "seen", "absorbed"):
+        if k not in d:
+            raise ValueError("figure %r: p7-coloured-object needs %r" % (fig.get("id"), k))
+    rays = d["rays"]
+    refl = [c for c in rays if c in (d.get("reflects") or [])]
+    o = []
+    OX0, OX1, OY, OH = 120.0, 236.0, 176.0, 30.0
+    o.append(_label(8, 20, d["lamp"], size=15, weight="700", anchor="start", data_part="lamp-label"))
+    for k, name in enumerate(rays):
+        hue = _p7c_hue(name, fig)
+        sy = 46.0 + k * 26.0
+        hx = 150.0 + (len(rays) - 1 - k) * 24.0    # the top ray lands furthest right: no crossings
+        o.append(_p7c_ray(62, sy, hx, OY, hue=hue, w=2.4, at=0.5, part="ray-in", key=name))
+        o.append(_label(54, sy + 5, name, size=14, weight="700", anchor="end", data_part="ray-name",
+                        data_key=name))
+        if name in refl:
+            o.append(_p7c_ray(hx, OY, 292, 70, hue=hue, w=2.4, at=0.55, part="ray-out", key=name))
+    o.append(_rect(OX0, OY, OX1 - OX0, OH, rx=4, fill=d["object_hue"], stroke=_SVG_INK, w=2,
+                   data_part="object"))
+    o.append(_label((OX0 + OX1) / 2.0, OY + OH + 22, d["object"], size=14, weight="700",
+                    data_part="object-label"))
+    o.append(_label((OX0 + OX1) / 2.0, OY + OH + 42, d["absorbed"], size=14, weight="600",
+                    fill=_SVG_INK_BODY, data_part="absorbed-label"))
+    o.append(_p7c_eye(304, 58, facing=-1))
+    o.append(_label(304, 92, "eye", size=14, weight="700", data_part="eye-label"))
+    o.append(_label(332, 116, d["seen"], size=15, weight="700", anchor="end", fill=_SVG_ACCENT_TEXT,
+                    data_part="seen"))
+    return _p7c_open(fig, OY + OH + 52, o)
+
+
+# ── p7-filters ─────────────────────────────────────────────────────────────
+def _p7c_filters(fig):
+    """Named rays going into one or two coloured filters. A filter lets its own colour
+    through and absorbs the rest, so the rays that stop end at its face."""
+    d = fig.get("data") or {}
+    rays, filters = d.get("rays") or [], d.get("filters") or []
+    if not rays or not 1 <= len(filters) <= 2 or not d.get("result"):
+        raise ValueError("figure %r: p7-filters needs rays, one or two filters and a result" % fig.get("id"))
+    o = [_label(8, 20, d.get("lamp") or "White light", size=15, weight="700", anchor="start",
+                data_part="lamp-label")]
+    FX = [128.0, 216.0][:len(filters)]
+    FW, FT, FB = 12.0, 36.0, 136.0
+    alive = list(rays)
+    ys = {name: 56.0 + k * 30.0 for k, name in enumerate(rays)}
+    x = 62.0
+    for name in rays:
+        o.append(_label(54, ys[name] + 5, name, size=14, weight="700", anchor="end",
+                        data_part="ray-name", data_key=name))
+    for fx, fname in zip(FX, filters):
+        for name in alive:
+            o.append(_p7c_ray(x, ys[name], fx, ys[name], hue=_p7c_hue(name, fig), w=2.4, at=0.55,
+                              part="ray", key=name))
+        o.append(_rect(fx, FT, FW, FB - FT, rx=2, fill=_p7c_hue(fname, fig), stroke=_SVG_INK, w=2,
+                       data_part="filter", data_key=fname))
+        o.append(_label(fx + FW / 2.0, FB + 20, "%s filter" % fname, size=14, weight="700",
+                        data_part="filter-label", data_key=fname))
+        alive = [c for c in alive if c == fname]
+        x = fx + FW
+    if alive:
+        for name in alive:
+            o.append(_p7c_ray(x, ys[name], 326, ys[name], hue=_p7c_hue(name, fig), w=2.4, at=0.5,
+                              part="ray", key=name))
+        rx, ry = 326.0, ys[alive[0]] - 14
+        anchor = "end"
+    else:
+        rx, ry = x + 14, 74.0
+        anchor = "start"
+    for k, line in enumerate(d["result"]):
+        o.append(_label(rx, ry + k * 20, line, size=14, weight="700", anchor=anchor,
+                        fill=_SVG_ACCENT_TEXT, data_part="result"))
+    return _p7c_open(fig, FB + 30, o)
+
+
+ART.update({
+    "p7-shadow": _p7c_shadow,
+    "p7-light-trip": _p7c_light_trip,
+    "p7-reflection": _p7c_reflection,
+    "p7-surfaces": _p7c_surfaces,
+    "p7-glass-block": _p7c_glass_block,
+    "p7-straw": _p7c_straw,
+    "p7-prism": _p7c_prism,
+    "p7-coloured-object": _p7c_coloured_object,
+    "p7-filters": _p7c_filters,
+})

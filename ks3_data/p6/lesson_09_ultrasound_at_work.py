@@ -362,22 +362,16 @@ LESSON = {
                  "returns 0.060 ms after it left. Sound travels at about "
                  "5000 m/s in steel. How deep is the reflector?",
             "options": [
-                "About 300 mm — speed times time gives the depth",
-                "About 75 mm — halve the time and then halve the distance",
-                "About 150 mm",
-                "About 150 mm/s",
+                "About 300 mm, because speed × time gives the depth",
+                "About 75 mm, because you halve the time and then halve the distance",
+                "About 150 mm, because you halve the down and back distance",
+                "About 150 mm/s, because a depth is measured in mm/s",
             ],
             "answer": 2,
             "feedback": {
-                0: "Speed times time gives the whole journey, down and back "
-                   "again. The reflector is halfway along it, so halve the "
-                   "300 mm.",
-                1: "Halving twice takes a quarter. Halve once: either use "
-                   "half the time for the downward trip, or work out the "
-                   "full 300 mm path and take half of that.",
-                3: "The number is right and the unit is wrong. The question "
-                   "asked how deep, which is a distance, and metres per "
-                   "second is a speed.",
+                0: "Speed × time is down and back. Halve the 300 mm to get the depth.",
+                1: "That halves twice. Halve the time, or halve the 300 mm path, but not both.",
+                3: "The number is right, but a depth is a distance. It is in mm.",
             },
             "title": "Rung 1 · Calculate"},
         "apply": {
@@ -385,32 +379,16 @@ LESSON = {
                  "bodies because ordinary sound cannot travel through "
                  "solids. Which statement is right?",
             "options": [
-                "Ultrasound is used because it travels faster than audible "
-                "sound and so returns sooner.",
-                "Ordinary sound travels through solids very well; "
-                "ultrasound is used because its short wavelength reflects "
-                "off small features, giving detail a low frequency could "
-                "not.",
-                "Ultrasound is used because it is much louder, so more of "
-                "it survives the journey.",
-                "The student is right — audible sound is stopped by solid "
-                "material, which is why walls keep noise out, so only a "
-                "frequency above our hearing can get into something solid "
-                "at all",
+                "Ultrasound is used because it travels faster than the sound we hear.",
+                "Sound travels well in solids, but ultrasound shows much finer detail.",
+                "Ultrasound is used because it is much louder, so more of it gets through.",
+                "The student is right, because walls stop sound, so only ultrasound gets in.",
             ],
             "answer": 1,
             "feedback": {
-                0: "Every frequency travels at the same speed through the "
-                   "same material. The pulse would come back at exactly the "
-                   "same moment at any frequency — it just would not tell "
-                   "you as much.",
-                2: "Loudness is amplitude and it is not what changes here. "
-                   "Scanners run at very low power on purpose; the useful "
-                   "property is the short wavelength.",
-                3: "Walls reduce noise rather than stop it, and sound "
-                   "actually travels faster in a solid than in air. "
-                   "Ultrasound is chosen for the detail it gives, not for "
-                   "getting in at all.",
+                0: "All sound travels at the same speed in the same material.",
+                2: "Scans use very low power. The short wavelength is what gives the detail.",
+                3: "Sound travels well through solids, even faster than through air.",
             },
             "title": "Rung 2 · The one that catches people"},
         "explain": {

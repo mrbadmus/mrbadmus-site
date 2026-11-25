@@ -1095,7 +1095,10 @@ DRAFTS = [
     # rebuild (Wave 1) took off the page. The echo bench's distance slider is the same shape
     # (a G gate, then free sliders that save nothing; tools/ks3_instrument_shapes.json); it
     # starts at 170 m (min 10, max 500, step 10).
-    dict(name="a slider", page="/ks3/physics/waves-and-sound/echoes-reflection-and-absorption.html",
+    # ⊕ 25 Nov 2026 (Mide, 14 Nov: checks do not depend on real lessons): echoes-reflection-and-
+    # absorption went lean (Wave 2, P6) and lost the echo bench, so this case presses the hidden
+    # frozen classic copy (ks3_fixtures/). Was /ks3/physics/waves-and-sound/echoes-reflection-and-absorption.html.
+    dict(name="a slider", page="/ks3/_fixtures/fixture-echoes-reflection-and-absorption.html",
          type="""var r = document.querySelector('[data-echo-slider="dist"]'); r.value = '300'; r.dispatchEvent(new Event('input', {bubbles: true}));""",
          back="""document.querySelector('[data-echo-slider="dist"]').value === '300'""",
          blank="""document.querySelector('[data-echo-slider="dist"]').value === '170'"""),

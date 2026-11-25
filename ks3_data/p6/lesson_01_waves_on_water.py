@@ -345,7 +345,7 @@ LESSON = {
     "ladder": {
         "recall": {
             "q": "A wave on a tank has crests 0.60 m apart. A float on it "
-                 "rises 0.05 m above the still level and drops 0.05 m below "
+                 "rises 0.05 m above the rest line and drops 0.05 m below "
                  "it. Give the wavelength and the amplitude.",
             # ⊕ MRB-297 · 1 Sep 2026 — SAME INVERSION AS THE HOOK ABOVE,
             # and worse. On origin/main these ran [84, 79, 35, 85]: the
@@ -358,26 +358,16 @@ LESSON = {
             # misconception each carries. Now [98, 91, 89, 85] — correct is
             # third longest. Answer index 2 is unchanged.
             "options": [
-                "Wavelength 0.60 m, amplitude 0.10 m — amplitude runs the "
-                "whole way from the trough up to the crest",
-                "Wavelength 0.05 m, amplitude 0.60 m — the bigger of the "
-                "two numbers is the size of the wave",
-                "Wavelength 0.60 m, amplitude 0.05 m — crest to crest, "
-                "and the still level up to the crest",
-                "Wavelength 0.30 m, amplitude 0.05 m — wavelength runs from "
-                "a crest to the next trough",
+                "Wavelength 0.60 m, amplitude 0.10 m, because amplitude runs from trough to crest",
+                "Wavelength 0.05 m, amplitude 0.60 m, because the bigger number is the height",
+                "Wavelength 0.60 m, amplitude 0.05 m, because amplitude starts at the rest line",
+                "Wavelength 0.30 m, amplitude 0.05 m, because wavelength runs from a crest to a trough",
             ],
             "answer": 2,
             "feedback": {
-                0: "Amplitude is measured from the still level, not from "
-                   "trough to crest. Trough to crest is 0.10 m here, which "
-                   "is twice the amplitude.",
-                1: "The two measurements are in fixed places, not in order "
-                   "of size. Wavelength is along the water; amplitude is up "
-                   "from the still level.",
-                3: "Crest to trough is half a wave. Wavelength is one whole "
-                   "wave: crest to the next crest, which is the 0.60 m you "
-                   "were given.",
+                0: "Amplitude starts at the rest line. Trough to crest is 0.10 m, twice the amplitude.",
+                1: "Each length has its own place. Wavelength runs along the water, and amplitude runs up.",
+                3: "Crest to trough is half a wave. Wavelength is crest to the next crest, 0.60 m.",
             },
             "title": "Rung 1 · Read the wave"},
         "apply": {
@@ -385,30 +375,16 @@ LESSON = {
                  "finishes exactly where it started. Which statement is "
                  "right?",
             "options": [
-                "The water travelled along with the wave, but a gull is too "
-                "light to be dragged with it.",
-                "Each patch of water lifted and dropped on the spot and "
-                "passed the disturbance on, so energy crossed the water and "
-                "the water did not.",
-                "Each wave carried the gull forward and the next one "
-                "carried it back the same distance, so the two cancelled "
-                "out, and the gull finished where a floating thing always "
-                "finishes: at the place the water left it",
-                "The waves cannot have been moving, because a moving wave "
-                "would have moved the gull.",
+                "The water travelled with the wave, but the gull was too light to be carried.",
+                "Each patch of water moved up and down on the spot, so only energy crossed.",
+                "Each wave carried the gull forward, then the next carried it back the same distance.",
+                "The waves were not moving, because a moving wave would have moved the gull along.",
             ],
             "answer": 1,
             "feedback": {
-                0: "A heavier object would have finished in the same place. "
-                   "Nothing floating is dragged along, because the water "
-                   "underneath is not going anywhere.",
-                2: "The verdict is right and the rule underneath it is "
-                   "wrong. There is no forward carry to cancel: the water "
-                   "lifts and drops, and the gull rides up and down with "
-                   "it.",
-                3: "The waves moved and the water did not go with them. A "
-                   "wave is a travelling disturbance in the water, not a "
-                   "lump of water in transit.",
+                0: "A heavy log would stay put too. The water underneath is not going anywhere.",
+                2: "Waves do not take turns pushing it. The water lifts and drops, and the gull rides it.",
+                3: "The waves did travel. The water stayed behind, moving up and down on the spot.",
             },
             "title": "Rung 2 · The one that catches people"},
         "explain": {
