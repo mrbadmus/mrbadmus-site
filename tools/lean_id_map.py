@@ -196,6 +196,11 @@ REPLACED = {
         "practice item (how stem cells treat leukaemia) is replaced: leukaemia is not in 4.1.2.3",
     "ks4q:transport-in-cells:959412b1ac":
         "practice item (which process requires ATP energy) is replaced by the same item asked as energy from respiration: ATP is not in the spec",
+    # ⊕ 26 Nov 2026 (Atomic structure): a practice-set stem swapped by a logic_edit in the lean record
+    # (the page's own bankSrc). The two subtopic-quiz lessons (atoms-elements-compounds, mixtures) only
+    # ADD items in the quiz data, so nothing of theirs retires.
+    "ks4q:development-periodic-table:a395029012":
+        "practice item (why Newlands' table was rejected) is replaced by why early tables put some elements in the wrong groups: Newlands is not in 5.1.2.2 / 4.1.2.2",
 }
 
 # ⊕ 17 Nov 2026 (Waves): a classic quiz id the lesson still asks on SOME routes but took off the

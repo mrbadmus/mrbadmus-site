@@ -481,6 +481,8 @@ CASES = [
          back="(function(){ var s = H.rootState(); return Object.keys(s.picks).length === 2 && s.checked === true; })()"),
     # Builders: steppers read at their Check.
     dict(name="ks4-builder-balance", page="/triple/higher/chemistry/atomic-structure/atoms-elements-compounds.html", forms=True,
+         retired="the lean rebuild (Wave 1, Atomic structure) took the equation-balancing builder off the page",
+         absent=['"e": "balTerms"'],
          act="""await H.call(function (v) { return v.balTerms.filter(function (t) { return t.isSpecies; })[0].onUp || v.balTerms.filter(function (t) { return t.isSpecies; })[0].up; }); await H.call('onBalCheck'); await H.sleep(200);""",
          want=["ks4:atoms-elements-compounds:th#bv-1"],
          back="(function(){ var s = H.rootState(); return !!s.bc[0] && s.bc[0][0] === 2 && !!s.bv[0]; })()"),
@@ -500,6 +502,8 @@ CASES = [
          back="(function(){ var s = H.rootState(); return s.built === true && s.p === 6 && s.e === 6; })()"),
     # Choices the classifier could not tie to one place.
     dict(name="ks4-choice-verdict", page="/triple/higher/chemistry/atomic-structure/metals-non-metals.html", forms=True,
+         retired="the lean rebuild (Wave 1, Atomic structure) took the test-the-element bench off the page",
+         absent=['"e": "verdicts"'],
          act="await H.call(function (v) { return v.verdicts[1].onClick; }); await H.sleep(200);",
          want=["ks4:metals-non-metals:th#verdict-1"],
          check=lambda b: isinstance(b[-1]["is_correct"], bool),
@@ -804,6 +808,8 @@ CASES = [
          back="(function(){ var s = H.rootState(); return !!s.pick && s.pick.ok === false; })()"),
     # ── ⊕ 10 Nov 2026: a fourth blind run ──
     dict(name="ks4-group1-predict", page="/combined/higher/chemistry/atomic-structure/group-1.html",
+         retired="the lean rebuild (Wave 1, Atomic structure) took the alkali-metals-in-water bench off the page",
+         absent=['"e": "predBtns"', '"e": "metals"'],
          act="""H.click(H.exact('Drop it in')); await H.sleep(300); await H.call(function (v) { return v.metals[1].onClick; }); await H.sleep(200);
                 H.click(H.exact('More gently')); await H.sleep(400);""",
          want=["ks4:group-1:ch#preds-2"],
@@ -949,6 +955,8 @@ CASES = [
          want=["ks4:types-of-em-waves:th#preds-1-1"],
          back="""(function(){ return H.rootState().shown[0] === true; })()"""),
     dict(name="ks4-control-label", page="/combined/higher/chemistry/atomic-structure/group-1.html",
+         retired="the lean rebuild (Wave 1, Atomic structure) took the Drop it in control (alkali-metals bench) off the page",
+         absent=['"e": "predBtns"'],
          act="H.click(H.exact('Drop it in')); await H.sleep(400);",
          want=[],
          check=lambda b: not any(x.get("answer") == "Drop it in" for x in b),

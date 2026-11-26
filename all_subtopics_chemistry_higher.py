@@ -37,51 +37,61 @@ CHEMISTRY_SUBTOPICS_ALL = {
                          ('Mixture', 'Crude oil — many different hydrocarbons mixed together'),
                          ('Element', 'Gold (Au) — one type of atom, listed on the periodic table')],
                'title': 'Element, Compound or Mixture?'},
-  'quiz': [{'opts': [('In a compound, elements are chemically bonded in fixed proportions — a mixture is not bonded '
-                      'and can be separated physically.',
+  'quiz': [{'opts': [('In a compound, elements are chemically combined in fixed proportions — A mixture is not combined '
+                      'and can be separated by physical processes.',
                       True),
                      ('A compound contains only one type of atom. A mixture contains two or more types.', False),
                      ('A mixture is always a liquid. A compound is always a solid.', False),
                      ('They are the same — both describe combinations of different substances.', False)],
             'q': 'What is the key difference between a compound and a mixture?',
-            'wrong_explanations': {1: 'One type of atom = ELEMENT. Compounds contain two or more elements chemically '
-                                      'bonded.',
-                                   2: 'Mixtures and compounds can be solids, liquids or gases — state does not define '
-                                      'them.',
-                                   3: 'Compounds and mixtures are fundamentally different — chemical bonding is the '
-                                      'key distinction.'}},
-           {'opts': [('A compound — iron sulfide — formed by chemical bonding between iron and sulfur', True),
+            'wrong_explanations': {1: 'A substance with only one type of atom is an element. A compound contains two or '
+                                      'more elements chemically combined.',
+                                   2: 'Mixtures and compounds can be solids, liquids or gases. State does not decide '
+                                      'which it is.',
+                                   3: 'They are different. A compound is chemically combined in fixed proportions, and a '
+                                      'mixture is not.'}},
+           {'opts': [('A compound — Iron sulfide, made by a chemical reaction between iron and sulfur', True),
                      ('A mixture — the iron and sulfur have blended more thoroughly', False),
                      ('An element — the sulfur has been destroyed leaving only iron', False),
                      ('A solution — the sulfur has dissolved into the iron', False)],
             'q': 'A student heats a mixture of iron filings and sulfur. A grey solid forms that cannot be separated '
                  'using a magnet. What has formed?',
-            'wrong_explanations': {1: 'If it were still a mixture, the iron could be separated magnetically. Since it '
-                                      'cannot, a chemical reaction has occurred.',
-                                   2: 'Elements cannot be destroyed by chemical reactions — only rearranged into '
-                                      'compounds.',
-                                   3: 'Sulfur melts when it is heated, but it does not dissolve into the iron. The '
-                                      'two have reacted to make a new substance, iron sulfide, which is why a magnet '
-                                      'can no longer separate them.'}},
+            'wrong_explanations': {1: 'In a mixture the iron could still be pulled out with a magnet. It cannot, so a '
+                                      'chemical reaction has happened.',
+                                   2: 'Atoms are not destroyed in a reaction. The iron and sulfur atoms are now combined '
+                                      'in a new substance.',
+                                   3: 'Sulfur melts when it is heated, but it does not dissolve into the iron. The two '
+                                      'have reacted to make a new substance, iron sulfide, which is why a magnet can no '
+                                      'longer separate them.'}},
            {'opts': [('2H₂ + O₂ → 2H₂O', True),
                      ('H₂ + O₂ → H₂O', False),
                      ('H₂ + O₂ → H₂O₂', False),
                      ('2H₂ + 2O₂ → 2H₂O', False)],
             'q': 'Hydrogen reacts with oxygen to form water. Which equation for this reaction is correctly balanced?',
-            'wrong_explanations': {1: 'H₂ + O₂ → H₂O: left has 2 O atoms, right has only 1 O atom — not balanced.',
-                                   2: 'H₂ + O₂ → H₂O₂: this equation is balanced (2H and 2O each side) but produces '
-                                      'hydrogen peroxide (H₂O₂), not water. The question asks about water formation.',
-                                   3: '2H₂ + 2O₂ → 2H₂O: left has 4 O atoms, right has only 2 O atoms — not '
+            'wrong_explanations': {1: 'H₂ + O₂ → H₂O has 2 O atoms on the left and only 1 on the right, so it is not '
+                                      'balanced.',
+                                   2: 'H₂O₂ is hydrogen peroxide, not water. Balance by changing the numbers in front, '
+                                      'never the formula.',
+                                   3: '2H₂ + 2O₂ → 2H₂O has 4 O atoms on the left and only 2 on the right, so it is not '
                                       'balanced.'}},
-           {'opts': [('Bronze — copper and tin metals mixed together, not chemically bonded', True),
+           {'opts': [('Bronze — Copper and tin mixed together, not chemically combined', True),
                      ('Water — hydrogen and oxygen in a fixed 2:1 ratio', False),
                      ('Sodium chloride — sodium and chlorine in ionic bonds', False),
                      ('Carbon dioxide — carbon and oxygen in covalent bonds', False)],
             'q': 'Which of these is a mixture?',
-            'wrong_explanations': {1: 'Water is a COMPOUND — hydrogen and oxygen are chemically bonded. Electrolysis '
-                                      'is needed to separate them.',
-                                   2: 'Sodium chloride is a COMPOUND — ionic bonds between Na⁺ and Cl⁻ ions.',
-                                   3: 'Carbon dioxide is a COMPOUND — covalent bonds between C and O atoms.'}}],
+            'wrong_explanations': {1: 'Water is a compound. Hydrogen and oxygen are chemically combined in a fixed '
+                                      'ratio.',
+                                   2: 'Sodium chloride is a compound of sodium and chlorine, chemically combined.',
+                                   3: 'Carbon dioxide is a compound of carbon and oxygen, chemically combined.'}},
+           {'opts': [('calcium chloride', True),
+                     ('calcium chlorine', False),
+                     ('calcium chlorate', False),
+                     ('calcium chlorite', False)],
+            'q': 'What is the name of the compound with the formula CaCl₂?',
+            'wrong_explanations': {1: 'In a compound of a metal with chlorine, the ending changes to -ide: chloride.',
+                                   2: 'A name ending in -ate means oxygen is in the compound too. CaCl₂ has no oxygen.',
+                                   3: 'A name ending in -ite also means oxygen is in the compound. CaCl₂ has no '
+                                      'oxygen.'}}],
   'rp': None,
   'spec': '5.1.1.1',
   'summary': 'Define atoms, elements and compounds and explain the differences between them.',
@@ -176,44 +186,59 @@ CHEMISTRY_SUBTOPICS_ALL = {
                          ('Fractional distillation', 'Crude oil — separate into fractions by different boiling points'),
                          ('Chromatography', 'Ink dyes — different dyes travel different distances in the solvent')],
                'title': 'Match the Separation Technique'},
-  'quiz': [{'opts': [('Simple distillation — heat the seawater and condense the steam', True),
+  'quiz': [{'opts': [('Simple distillation — Heat the seawater and condense the steam', True),
                      ('Filtration — filter through paper to remove the salt', False),
-                     ('Chromatography — water travels faster than dissolved salts', False),
+                     ('Fractional distillation — it separates the salt and the water as two liquids', False),
                      ('Crystallisation — cool the seawater to crystallise the water', False)],
             'q': 'A student wants to obtain pure water from seawater. Which technique should they use?',
-            'wrong_explanations': {1: 'Filtration only removes INSOLUBLE solids — salt is dissolved in seawater so '
-                                      'passes straight through filter paper.',
-                                   2: 'Chromatography separates dissolved substances by their travel speed — it does '
-                                      'not separate water from dissolved salts.',
-                                   3: 'Crystallisation removes water to leave the SALT — the opposite of what is '
-                                      'needed here.'}},
+            'wrong_explanations': {1: 'The salt is dissolved, so it passes through the filter paper with the water.',
+                                   2: 'Fractional distillation separates liquids that mix. Seawater has only one liquid, '
+                                      'so simple distillation is enough.',
+                                   3: 'Crystallisation keeps the salt and lets the water escape into the air. You want '
+                                      'the water.'}},
            {'opts': [('0.50 — Rf = 4.5 ÷ 9.0', True),
                      ('2.0 — Rf = 9.0 ÷ 4.5', False),
                      ('13.5 — adding the two distances', False),
                      ('4.5 — using just the distance the spot moved', False)],
             'q': 'In a chromatography experiment, a spot travels 4.5 cm and the solvent front travels 9.0 cm. What is '
                  'the Rf value?',
-            'wrong_explanations': {1: 'Rf = 9.0 ÷ 4.5 = 2.0 — this is dividing the WRONG WAY. Rf is always substance ÷ '
-                                      'solvent, and must be between 0 and 1.',
-                                   2: 'Adding distances has no meaning. Rf = substance distance ÷ solvent distance = '
-                                      '4.5 ÷ 9.0 = 0.50.',
-                                   3: 'Just the distance alone gives no useful information — Rf is a ratio, which is '
-                                      'why it has no units.'}},
-           {'opts': [('Crude oil contains many liquids with different boiling points — fractional distillation '
-                      'separates them into different fractions',
+            'wrong_explanations': {1: 'That divides the wrong way. Rf = distance moved by the substance ÷ distance moved '
+                                      'by the solvent = 4.5 ÷ 9.0 = 0.50.',
+                                   2: 'Adding the distances does not give Rf. Rf = 4.5 ÷ 9.0 = 0.50.',
+                                   3: 'Rf compares two distances, so you need both. Rf = 4.5 ÷ 9.0 = 0.50.'}},
+           {'opts': [('It is a mixture of many liquids with different boiling points — Fractional distillation separates '
+                      'them into fractions',
                       True),
                      ('Crude oil is a solid — simple distillation cannot be used on solids', False),
                      ('The fractions in crude oil are insoluble in each other — filtration would work just as well',
                       False),
-                     ('Simple distillation uses too much energy for industrial use', False)],
+                     ('Simple distillation uses far too much energy to be used in industry', False)],
             'q': 'Why is fractional distillation used to separate crude oil rather than simple distillation?',
-            'wrong_explanations': {1: 'Crude oil is a LIQUID mixture — simple distillation collects one fraction at a '
-                                      'time but cannot separate all components simultaneously.',
-                                   2: 'The fractions IN crude oil mix readily — filtration only works for insoluble '
-                                      'particles, not dissolved or miscible liquids.',
-                                   3: 'Energy cost is relevant industrially, but the primary reason is that crude oil '
-                                      'has many components with DIFFERENT boiling points that need to be separated '
-                                      'simultaneously.'}}],
+            'wrong_explanations': {1: 'Crude oil is a liquid mixture of many compounds.',
+                                   2: 'The liquids in crude oil mix together, so filtration cannot separate them.',
+                                   3: 'Energy is not the reason. Crude oil has many liquids with different boiling '
+                                      'points, and fractional distillation separates them all.'}},
+           {'opts': [('The salt and the water each keep their own chemical properties', True),
+                     ('The salt and the water react to make a new compound with new properties', False),
+                     ('The salt can only be separated from the water by a chemical reaction', False),
+                     ('The salt water has a fixed formula, in the same way as a compound', False)],
+            'q': 'Salt is stirred into water until it dissolves. Which statement is correct?',
+            'wrong_explanations': {1: 'Dissolving makes no new substance. Evaporate the water and the salt comes back '
+                                      'unchanged.',
+                                   2: 'Salt water is a mixture, so a physical process such as crystallisation separates '
+                                      'it.',
+                                   3: 'A mixture has no fixed formula. You can dissolve more salt or less salt.'}},
+           {'opts': [('Crystallisation — Heat to evaporate some water, then leave it to cool', True),
+                     ('Filtration — the copper sulfate is caught in the filter paper', False),
+                     ('Simple distillation — the copper sulfate is collected from the condenser', False),
+                     ('Chromatography — the copper sulfate moves up the paper', False)],
+            'q': 'A student wants dry crystals of copper sulfate from copper sulfate solution. Which technique should '
+                 'they use?',
+            'wrong_explanations': {1: 'The copper sulfate is dissolved, so it passes through the filter paper with the '
+                                      'water.',
+                                   2: 'Simple distillation collects the water. The copper sulfate stays in the flask.',
+                                   3: 'Chromatography separates dissolved substances to identify them. It does not make '
+                                      'crystals.'}}],
   'rp': 'RP1 — Investigate paper chromatography to separate and identify colours in inks or food dyes. Measure Rf '
         'values and compare to known standards.',
   'spec': '5.1.1.2',

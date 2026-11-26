@@ -38,7 +38,8 @@ SLUGS = ["efficiency", "changes-in-energy", "power", "thermal-conductivity",
 # and 6; see BIO_EYEBROW below), then Chemistry Chemical analysis (six old-format lessons and
 # two legacy batch-2 lessons), then Physics Particle model of matter (two old-format lessons and
 # four legacy lessons from batches 2 and 3), then Biology Cell biology (eight legacy lessons from
-# batches 2, 3, 4 and 6; see BIO_EYEBROW below).
+# batches 2, 3, 4 and 6; see BIO_EYEBROW below), then Chemistry Atomic structure and the periodic
+# table (thirteen legacy lessons from batches 2, 3, 4, 5, 6 and 11; see CHEM_EYEBROW below).
 
 # Lessons that have no legacy page: identity comes from here (the subtopic data's own
 # title and spec, 6.1.1.1 / 6.1.1.3 / 6.1.2.1). The three Energy ones are written out so
@@ -62,6 +63,7 @@ _UNITS = {
     ("chemistry", "analysis"): "Chemical analysis",
     ("physics", "particle-model"): "Particle model of matter",
     ("biology", "cell-biology"): "Cell biology",
+    ("chemistry", "atomic-structure"): "Atomic structure and the periodic table",
 }
 # The family label (the eyebrow's last word) is a ruled choice per lesson, drawn from the
 # labels the existing batches use: Model, Quantitative, Process, Classify, Contrast,
@@ -210,6 +212,24 @@ CHEM_EYEBROW = {
     "instrumental-methods": (None, "4.8.3.6\u20134.8.3.7"),
     "metal-hydroxides": (None, "4.8.3.2"),
     "carbonates-halides-sulfates": (None, "4.8.3.3\u20134.8.3.5"),
+    # Atomic structure and the periodic table (8464 5.1 / 8462 4.1), all thirteen legacy pages.
+    # The batch-11 and batch-4/5/6 headers write "AQA Chemistry 5.1.x.y" (subatomic-particles a
+    # range, "5.1.1.4\u20135.1.1.5"), which lean_ks4 rebuilds per route from this table; atoms-elements-
+    # compounds and mixtures (batches 2, 3) bind specRef per route themselves. transition-metals is
+    # 8462 only (4.1.3, "chemistry only"), TF/TH, so its Combined slot is None.
+    "atoms-elements-compounds": ("5.1.1.1", "4.1.1.1"),
+    "mixtures": ("5.1.1.2", "4.1.1.2"),
+    "model-of-the-atom": ("5.1.1.3", "4.1.1.3"),
+    "subatomic-particles": ("5.1.1.4\u20135.1.1.5", "4.1.1.4\u20134.1.1.5"),
+    "relative-atomic-mass": ("5.1.1.6", "4.1.1.6"),
+    "electronic-structure": ("5.1.1.7", "4.1.1.7"),
+    "periodic-table": ("5.1.2.1", "4.1.2.1"),
+    "development-periodic-table": ("5.1.2.2", "4.1.2.2"),
+    "metals-non-metals": ("5.1.2.3", "4.1.2.3"),
+    "group-0": ("5.1.2.4", "4.1.2.4"),
+    "group-1": ("5.1.2.5", "4.1.2.5"),
+    "group-7": ("5.1.2.6", "4.1.2.6"),
+    "transition-metals": (None, "4.1.3.1\u20134.1.3.2"),
 }
 # Words kept capitalised by sentence_case() beyond the first word.
 _KEEP_CAPS = {"Fleming's"}

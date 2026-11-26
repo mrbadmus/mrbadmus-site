@@ -287,7 +287,9 @@ _EYEBROW_LITERAL = re.compile(r'<p class="ks3-eyebrow">AQA Physics (6\.[\d.]+|4\
 # single spec on routes of the other: the spec numbers are kept, the rest is rebuilt per route.
 # Chemistry (8464 5.3.x.y / 8462 4.3.x.y): a batch-11 header writes "AQA Chemistry 5.3.x.y \u00b7 <tag>"
 # for every route. The numbers come from batch_lean.CHEM_EYEBROW (lesson["eyebrow_spec"]).
-_EYEBROW_LITERAL_CHEM = re.compile(r'<p class="ks3-eyebrow">AQA Chemistry (5\.3\.\d+\.\d+)(?: \u00b7 [^<]*)?</p>')
+_EYEBROW_LITERAL_CHEM = re.compile(r'<p class="ks3-eyebrow">AQA Chemistry (5\.3\.\d+\.\d+'
+                                   r'|5\.1\.\d+\.\d+(?:\u20135\.1\.\d+\.\d+)?'
+                                   r'|4\.1\.3\.\d+\u20134\.1\.3\.\d+)(?: \u00b7 [^<]*)?</p>')
 _EYEBROW_LITERAL_BIO = re.compile(r'<p class="ks3-eyebrow">AQA (?:Biology|\{\{ specName \}\} \(\{\{ specCode \}\}\)) '
                                   r'(4\.7\.\d+\.\d+(?: and 4\.7\.\d+\.\d+)?'
                                   r'|4\.[12]\.\d+(?:\.\d+)?(?:\u20134\.[12]\.\d+(?:\.\d+)?)?)'
@@ -302,6 +304,12 @@ _EYEBROW_LITERAL_BIO = re.compile(r'<p class="ks3-eyebrow">AQA (?:Biology|\{\{ s
 # · Quantitative"; that form is read as the literal, so the page gets the same per-route eyebrow as
 # every other lean biology page. No existing lean page matched either addition (all 92 page sources
 # compared byte for byte in memory).
+# ⊕ 26 Nov 2026 (Atomic structure): the Atomic structure headers (batches 4, 5, 6 and 11) write
+# "AQA Chemistry 5.1.x.y" (subatomic-particles a range, "5.1.1.4–5.1.1.5") and the Triple-only
+# transition-metals "AQA Chemistry 4.1.3.1–4.1.3.2 · Triple only" (8462's own number), so the
+# chemistry literal also reads 5.1 numbers, with an optional en-dash range, and that one 8462 range.
+# The numbers must be the ones in batch_lean.CHEM_EYEBROW (a Triple-only page: (None, the 8462 number)).
+# All 100 existing lean page sources compared byte for byte in memory before and after: identical.
 
 
 def _eyebrow_js(lesson, spec):
