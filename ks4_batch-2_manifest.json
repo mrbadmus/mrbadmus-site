@@ -14,7 +14,7 @@
   "shared/ks4-lib.js": "0e3e816f989090f7e04659ae960d14c2523caecf67f93d4bde11b3dd138b2535",
   "shared/ks4-nav.js": "19c07afef73904641211064e09cd8537847d6bd1def6ac60df5860f563b02511",
   "shared/ks4-runtime.js": "129c0301f9fe843660540f2f9657f0aec8383d6de7ff6ee59c71800f13001645",
-  "shared/ks4-source-batch-2.js": "f3e5bd55a400709408789933edee6c01e68df7569802fd14cfff373abf2eeb7d",
+  "shared/ks4-source-batch-2.js": "37899c75d57edff32f88142070c1fba8d59daebac2d5194ed7cbc1908567ae07",
   "shared/ks4-source.js": "28b778fe65750dfb38bda00a56162fa11ecf0cc39a06127eb1d9989949c7a61c",
   "shared/ks4-theme.css": "931957c2a106c48a2779ad46d9ef6c5fb11ebbf2548d607ff9bb07580ec28065",
   "shared/mrbadmus.v2.js": "43edfcf30f17be9a2f6938ab2dc0f341770091fecabbc0fb8e46b9a4ef78e9db",
@@ -28,19 +28,11 @@
   "shared/tutor-panel.css": "64c3ef2e4205417d70a21edb2bff78159bc549e61657286f308e780ae3ef98f9"
  },
  "pages": {
-  "mrbadmus_site/combined/foundation/biology/cell-biology/chromosomes-mitosis.html": "d5d764e1f878486d6f39d93184bcbd58a68583a038c60219f17c23a35240ea4c",
-  "mrbadmus_site/combined/foundation/biology/cell-biology/eukaryotes-prokaryotes.html": "3d490878f1f4f9b2d8a2085eb6c082d61f0e68e26110dbe85c4710aa56d34f47",
-  "mrbadmus_site/combined/foundation/chemistry/atomic-structure/atoms-elements-compounds.html": "6340d587ede29f56d1f66cf9a4a94cc9c965443da9b5e18e924e4469f8d124f4",
-  "mrbadmus_site/combined/higher/biology/cell-biology/chromosomes-mitosis.html": "b48c858ab2486fd7d369971b630c28dc96535b5fc0e699433032ef062c8a2fdf",
-  "mrbadmus_site/combined/higher/biology/cell-biology/eukaryotes-prokaryotes.html": "c453bda51ad06d6996135ac7d4d9a3d2e28b949545e6cfb21db04b4eceed7e55",
-  "mrbadmus_site/combined/higher/chemistry/atomic-structure/atoms-elements-compounds.html": "ad163ee2ddd4803c8d3a000352e94a9fd5e942a8d937638d9f0957bc38b9aed4",
-  "mrbadmus_site/triple/foundation/biology/cell-biology/chromosomes-mitosis.html": "42afda5c01aee826097988c1d8d5843a236d7e413b9399fcb2475b37b0a5f153",
-  "mrbadmus_site/triple/foundation/biology/cell-biology/eukaryotes-prokaryotes.html": "c6fd354e4258b1c984e53a3b9eddddd92c32e8d86911d425d0e30860602d46e8",
-  "mrbadmus_site/triple/foundation/chemistry/atomic-structure/atoms-elements-compounds.html": "cda561560926ec0f7d0b3ecd40f10da4714d4f997cab97a5b4a15cdb92e96625",
-  "mrbadmus_site/triple/foundation/chemistry/chemical-changes/titrations.html": "8a82d2a05b4389f5ff1051c15588887012698e5168f5f54af7130a78c12a01ba",
-  "mrbadmus_site/triple/higher/biology/cell-biology/chromosomes-mitosis.html": "2140fdf526e52a68d305a41da27e045c31981f4d7879fd4037dc0691824ee634",
-  "mrbadmus_site/triple/higher/biology/cell-biology/eukaryotes-prokaryotes.html": "2f5281ee93056c376b9a096c8eedfcd5197441b10f9f0788c72ad7a4fa928c8c",
-  "mrbadmus_site/triple/higher/chemistry/atomic-structure/atoms-elements-compounds.html": "85366c2e77972ee78b7d558263f8b921e37c6aa8701001c2b6bef68df0b097ea",
-  "mrbadmus_site/triple/higher/chemistry/chemical-changes/titrations.html": "ec1c45ddeb65371df980615a9cde8cc597e24187882ecafb4c1fa10195515f6d"
+  "mrbadmus_site/combined/foundation/chemistry/atomic-structure/atoms-elements-compounds.html": "c78ee135550b921bceeee68f059e28c91212d8a035cf9b60c82612461f3130e1",
+  "mrbadmus_site/combined/higher/chemistry/atomic-structure/atoms-elements-compounds.html": "74f6db0ad68ff4a642feb748033495d92929e81145ecc0a307f3faa4e8f9fa2e",
+  "mrbadmus_site/triple/foundation/chemistry/atomic-structure/atoms-elements-compounds.html": "cd9ed18392a7ae30afeaa8e7944925d7ba24031b7962ae37136305e07a1a7166",
+  "mrbadmus_site/triple/foundation/chemistry/chemical-changes/titrations.html": "d0da7d4f3a70ba39eee670d1483315736885d9b4ceb95f6ad316c393d0430d11",
+  "mrbadmus_site/triple/higher/chemistry/atomic-structure/atoms-elements-compounds.html": "23ee470d114f92364d1c2c65fb791000693c1268a408f2c1b6994658971b3e17",
+  "mrbadmus_site/triple/higher/chemistry/chemical-changes/titrations.html": "fdc238f684ce778c03680dd46560998c1df5c74d4549cc63e40f80d77b493a85"
  }
 }

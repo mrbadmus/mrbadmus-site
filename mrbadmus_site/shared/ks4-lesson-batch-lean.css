@@ -21,6 +21,37 @@ html, body { margin: 0; padding: 0; background: #FBF3E6; }
   @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
   button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
 
+/* from chromosomes-mitosis.dc.html */
+html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+  @keyframes cm-grow { from { transform: scale(.86); } to { transform: scale(1); } }
+  @keyframes cm-in { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes cm-slide { from { transform: translate(var(--cm-dx, 0px), var(--cm-dy, 0px)); } to { transform: translate(0px, 0px); } }
+  @keyframes cm-draw { from { stroke-dashoffset: var(--cm-len, 400); } to { stroke-dashoffset: 0; } }
+  .cm-grow { transform-box: fill-box; transform-origin: center; animation: cm-grow .9s ease-out both; }
+  .cm-in { animation: cm-in .7s ease-out .55s both; }
+  .cm-slide { animation: cm-slide 1.2s ease-in-out .2s both; }
+  .cm-draw { stroke-dasharray: var(--cm-len, 400); animation: cm-draw 1s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { .cm-grow, .cm-in, .cm-slide, .cm-draw { animation: none !important; } }
+
+/* from eukaryotes-prokaryotes.dc.html */
+html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+  @keyframes ep-in { from { opacity: 0; transform: scale(.7); } to { opacity: 1; transform: scale(1); } }
+  .ep-in { transform-box: fill-box; transform-origin: center; animation: ep-in .6s ease-out both; }
+  .ep-pop { transform-box: fill-box; transform-origin: center; animation: ep-in .3s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { .ep-in, .ep-pop { animation: none !important; } }
+
 /* from lenses.dc.html */
 html, body { margin: 0; padding: 0; background: #FBF3E6; }
   a { color: var(--ks3-accent-text); }
@@ -34,6 +65,16 @@ html, body { margin: 0; padding: 0; background: #FBF3E6; }
   .ln-tap[data-bad="1"] span { border-color: var(--ks3-alert-border); }
   @media (max-width: 480px) { .ln-tap span { width: 22px; height: 22px; border-width: 2px; } }
   button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+
+/* from microscopy.dc.html */
+/* microscopy · the view in Resolve it fades in after the bet; the bench view zooms when the objective changes and slides when the field changes. */
+  .mic-in { transform-box: view-box; transform-origin: 280px 170px; animation: mic-in .8s ease-out backwards; }
+  @keyframes mic-in { from { opacity: 0; transform: scale(.7); } }
+  .mic-zoom { transform-box: view-box; transform-origin: 220px 210px; animation: mic-zoom .8s cubic-bezier(.3, .7, .3, 1) backwards; }
+  @keyframes mic-zoom { from { transform: scale(.4); opacity: .35; } }
+  .mic-pan { animation: mic-pan .6s ease-out backwards; }
+  @keyframes mic-pan { from { transform: translateX(60px); opacity: .2; } }
+  @media (prefers-reduced-motion: reduce) { .mic-in, .mic-zoom, .mic-pan { animation: none !important; } }
 
 /* from relative-formula-mass.dc.html */
 /* relative-formula-mass · unpacker and pan motion. Every element's resting (un-animated) state is the END state. */

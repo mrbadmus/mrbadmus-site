@@ -26,6 +26,13 @@ LOGIC_EDITS = [
     ("so each new cell has half. Copying doubles the DNA, not the number of chromosomes.'", "so each new cell has half the DNA. Each new cell still gets the full set of 46 chromosomes.'"),
     ("'At Q a human cell still has 46 chromosomes, each now two identical copies.']",
      "'At S each new cell has the full set of 46 chromosomes.']"),
+    # Phone walk, 26 Nov 2026: the Rung 2 graph's smallest labels (20 in a 640 viewBox) set its
+    # readable-text floor at 352 px, wider than a 390 px phone's rung, so it scrolled sideways.
+    # At 28 the floor is 251 px and the graph fits.
+    ("D.T(345, 286, 'time', 20, { weight: 'normal' }) + D.T(x0 - 4, 52, 'mass of DNA per cell', 20, { anchor: 'start', weight: 'normal' });",
+     "D.T(345, 288, 'time', 28, { weight: 'normal' }) + D.T(x0 - 4, 52, 'mass of DNA per cell', 28, { anchor: 'start', weight: 'normal' });"),
+    ("D.circ(m[1], m[2], 6, D.C.stroke) + D.T(m[1], m[2] + (m[2] === lo ? 32 : -16), m[0], 22);",
+     "D.circ(m[1], m[2], 6, D.C.stroke) + D.T(m[1], m[2] + (m[2] === lo ? 36 : -16), m[0], 28);"),
 ]
 
 LESSON = {

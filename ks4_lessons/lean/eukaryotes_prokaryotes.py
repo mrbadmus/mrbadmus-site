@@ -25,6 +25,11 @@ LOGIC_EDITS = [
     # Examiner, 26 Nov 2026 (ep-q1, Higher): plant cells are not all 40-80 µm; the check gives the usual range.
     ("close: 'Check: 60 µm sits inside the 40–80 µm typical of a plant cell.'",
      "close: 'Check: 60 µm is a sensible size for a plant cell, which is usually 10–100 µm long.'"),
+    # Phone walk, 26 Nov 2026: the Your-turn line boxes show about 25 characters at 390 px, and these
+    # three hints were cut off mid-word ("the magnification equatio").
+    ("placeholder: 'the magnification equation'", "placeholder: 'the equation'"),
+    ("placeholder: 'rearranged for actual size'", "placeholder: 'rearranged for size'"),
+    ("placeholder: 'anything to convert first?'", "placeholder: 'anything to convert?'"),
 ]
 
 LESSON = {

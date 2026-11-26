@@ -136,7 +136,7 @@ LESSON = {
               "Needed"),
          ]},
         {"kind": "card", "title": "Surface area to volume ratio",
-         "body": ["SA:V = surface area ÷ volume, written as n : 1. A single-celled organism has a "
+         "body": ["SA:V = surface area ÷ volume, written as n\u00a0:\u00a01. A single-celled organism has a "
                   "relatively large SA:V, so diffusion across its surface meets its needs.",
                   {"slot": "steps-worked"},
                   {"slot": "steps-attempt"}]},
@@ -208,7 +208,7 @@ LESSON = {
              "energy is needed.",
              "<strong>Explain</strong> an osmosis result: say which solution is more concentrated, "
              "which way water moves, and what happens to the mass.",
-             "<strong>Calculate</strong>: keep the minus sign for a loss, and write SA:V as n : 1.",
+             "<strong>Calculate</strong>: keep the minus sign for a loss, and write SA:V as n\u00a0:\u00a01.",
          ]}]},
     ],
     "try": None,

@@ -22,7 +22,7 @@ import math
 from .ks4lean_eco import (INK, RUST, BLUE, GREEN, BG, GREY, FS, f, svg, line, poly_line, txt,
                           lines, circ, rect, pathel, leader, arrow, poly)
 from .ks4lean_org import num, vtxt, grid, ellipse, cross
-from .style import STYLE
+from .style import STYLE, text_width_wide
 
 LS = 27
 CYTO = "#F6E7D3"        # cytoplasm
@@ -267,8 +267,8 @@ def root_hair_cell():
     for p in [(93, 250), (174, 146), (174, 274)]:
         b.append(_mito(p[0], p[1], 11, 6))
     b.append(_mito(420, 210, 11, 4))
-    b.append(lines(460, 120, ["root hair: a large", "surface area"], FS, "middle", INK, 600, 32))
-    b.append(leader(460, 150, 470, 192))
+    b.append(lines(460, 104, ["root hair: a large", "surface area"], FS, "middle", INK, 600, 32))
+    b.append(leader(462, 150, 470, 192))          # starts clear below "surface area" (baseline 136)
     b.append(txt(124, 90, "cell wall", FS, "middle"))
     b.append(leader(124, 100, 124, 124))
     b.append(txt(93, 352, "nucleus", FS, "middle"))
@@ -420,7 +420,8 @@ def osmosis_mass_graph():
     b = []
     for v in range(-30, 31, 10):
         b.append(grid(x0, Y(v), x1, Y(v)))
-        b.append(num(x0 - 12, Y(v) + 9, ("+%d" % v) if v > 0 else ("−%d" % -v if v < 0 else "0"), "end"))
+        # 24 units left of the axis: the cross on the axis at (0, +20) reaches 13 units left of it
+        b.append(num(x0 - 24, Y(v) + 9, ("+%d" % v) if v > 0 else ("−%d" % -v if v < 0 else "0"), "end"))
     for i in range(6):
         c = i * 0.2
         b.append(line(X(c), Y(0), X(c), Y(0) + 10, INK, 3, "butt"))
@@ -430,12 +431,15 @@ def osmosis_mass_graph():
         c = i * 0.2
         b.append(num(X(c), yb + 36, "0" if i == 0 else ("1.0" if i == 5 else "%.1f" % c)))
     b.append(txt((x0 + x1) / 2, yb + 78, "sugar concentration in mol/dm³", LS))
-    b.append(vtxt(40, (yt + yb) / 2, "% change in mass"))
+    b.append(vtxt(34, (yt + yb) / 2, "% change in mass"))   # 34: clears the moved tick numerals
     b.append(poly_line([(X(c), Y(v)) for c, v in _catmull(OSMO_PTS)], RUST, 4.5))
     for c, v in OSMO_PTS:
         b.append(cross(X(c), Y(v)))
     # where the line crosses 0 %
     b.append(circ(X(cross0), Y(0), 8, BG, INK, 3.5))
+    # a plate in the paper colour under the label, so the +10 gridline does not strike through it
+    lw = max(text_width_wide(t, LS, True) for t in ("no net movement", "of water"))
+    b.append(rect(X(cross0) + 18, Y(0) - 92, lw + 18, 72, BG, "none", 0))
     b.append(lines(X(cross0) + 26, Y(0) - 62, ["no net movement", "of water"], LS, "start", INK, 600, 32))
     b.append(leader(X(cross0) + 22, Y(0) - 44, X(cross0) + 6, Y(0) - 6))
     return svg(W, H, "A graph of percentage change in mass of potato against sugar concentration, "
@@ -481,8 +485,15 @@ def agar_plate_zones():
         b.append(circ(cx + dx, cy + dy, disc_r, "#FFFFFF", INK, 2.6))
         b.append(txt(cx + dx, cy + dy + 10, name, LS, "middle", INK, 700))
     RX = 522
-    b.append(lines(RX, 112, ["clear zone", "18 mm across"], LS, "start", INK, 600, 32))
-    b.append(leader(RX - 6, 108, cx - 90 + 30, cy - 90 - 30))
+    ax, ay = cx - 90, cy - 90
+    end = (ax + 35 * math.cos(math.radians(-75)), ay + 35 * math.sin(math.radians(-75)))
+    b.append(lines(430, 44, ["clear zone", "18 mm across"], LS, "start", INK, 600, 32))
+    b.append(leader(422, 36, end[0], end[1]))
+    # the leader ends in A's zone, outside disc A, and clears B's zone by more than 30 units
+    bx, by = cx + 90, cy - 90
+    dx, dy = end[0] - 422, end[1] - 36
+    gap = abs(dx * (by - 36) - dy * (bx - 422)) / math.hypot(dx, dy) - zr["B"]
+    assert disc_r < 35 < zr["A"] and gap > 30, gap
     b.append(lines(RX, 214, ["clear zone", "28 mm across"], LS, "start", INK, 600, 32))
     b.append(leader(RX - 6, 210, cx + 90 + 50, cy - 90 + 20))
     b.append(lines(RX, 316, ["lawn of", "bacteria"], LS, "start", INK, 600, 32))

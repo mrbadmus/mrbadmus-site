@@ -25,9 +25,9 @@ LOGIC_EDITS = \
      '      endConnects: []\n    });'),
     # Practice Q1 (25 °C), stem kept: credited the longest (+55), dash.
     ("opts: [['Safety \\u2014 bacteria that grow optimally at 37\\u00b0C are more likely to be harmful human pathogens', true], ['Bacteria grow faster at 25\\u00b0C', false], ['37\\u00b0C would melt the agar', false], ['Antibiotics only work at 25\\u00b0C', false]],",
-     "opts: [['To reduce the chance of growing human pathogens', true], ['Bacteria grow faster at 25 \\u00b0C than at 37 \\u00b0C', false], ['The agar jelly would melt at 37 \\u00b0C in the incubator', false], ['Antibiotics only work at temperatures up to 25 \\u00b0C', false]],"),
+     "opts: [['To reduce the chance of growing human pathogens', true], ['Bacteria grow faster at 25\\u00a0\\u00b0C than at 37\\u00a0\\u00b0C', false], ['The agar jelly would melt at 37\\u00a0\\u00b0C in the incubator', false], ['Antibiotics only work at temperatures up to 25\\u00a0\\u00b0C', false]],"),
     ("wrong_explanations: { 1: 'Bacteria generally grow FASTER at higher temperatures \\u2014 37\\u00b0C would give quicker results, but the safety risk outweighs this.', 2: 'Agar melts at much higher temperatures (around 85\\u00b0C) \\u2014 37\\u00b0C would not melt it.', 3: 'Antibiotic effectiveness is not temperature-dependent in this way \\u2014 the safety concern is the primary reason.' } },",
-     "wrong_explanations: { 1: 'Bacteria generally grow faster when it is warmer. 25 \\u00b0C is for safety.', 2: 'Agar stays solid well above 37 \\u00b0C.', 3: 'The lower temperature is for safety, not for the antibiotics.' } },"),
+     "wrong_explanations: { 1: 'Bacteria generally grow faster when it is warmer. 25\\u00a0\\u00b0C is for safety.', 2: 'Agar stays solid well above 37\\u00a0\\u00b0C.', 3: 'The lower temperature is for safety, not for the antibiotics.' } },"),
     # Practice Q2 (large clear zone), stem kept: credited the longest (+50), dash.
     ("opts: [['The antibiotic is highly effective against that bacterium \\u2014 it diffuses outward and kills bacteria in a wide area', true], ['The bacteria are resistant \\u2014 they moved away from the antibiotic', false], ['The disc absorbed the bacteria, leaving a clear area', false], ['The agar failed to set properly in that area', false]],",
      "opts: [['The antibiotic works well against these bacteria', true], ['The bacteria are resistant and moved away from it', false], ['The paper disc soaked up the bacteria around it', false], ['The agar did not set properly around the disc', false]],"),
@@ -169,9 +169,10 @@ LESSON = {
                 "antiseptic.",
     "deeper": [
         {"kind": "card", "title": "Why the control disc matters",
-         "body": ["The control disc has no antibiotic on it. If there is no clear zone around it, the "
-                  "paper disc itself does not stop growth, so any clear zone round the other discs "
-                  "is caused by the antibiotic."]},
+         "body": ["The control disc is the same paper, soaked in sterile water, with only the "
+                  "antibiotic left out. If the bacteria grow right up to its edge, the paper and "
+                  "the water are ruled out, so a clear zone round another disc is down to the "
+                  "antibiotic on it."]},
         {"kind": "card", "title": "Where this goes next",
          "body": ["Antibiotics, and bacteria that are resistant to them, are in Antibiotics and "
                   "painkillers."]},
