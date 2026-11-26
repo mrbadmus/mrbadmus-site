@@ -552,57 +552,32 @@ LESSON = {
                  "Sound travels at about 340 m/s in air. How far away is "
                  "the cliff?",
             "options": [
-                "About 113 m — divide the speed by the time",
-                # ⊕ MRB-297 · 1 Sep 2026 — the third option was widened so
-                # the correct answer stops being resolvable as the
-                # second-longest.
-                "About 255 m — halve the time first, then halve the "
-                "distance as well",
-                "About 1020 m — multiply the speed by the time and that is "
-                "the distance to the cliff",
-                "About 510 m — 340 m/s for 3.0 s is the there-and-back "
-                "path, so halve it",
+                "About 113 m, because you divide the speed by the time",
+                "About 255 m, because you halve the time and then halve the distance",
+                "About 1020 m, because you multiply the speed by the time",
+                "About 510 m, because you multiply speed by time, then halve it",
             ],
             "answer": 3,
             "feedback": {
-                0: "That is the calculation upside down, and it gives "
-                   "metres per second squared rather than metres. Distance "
-                   "is speed multiplied by time.",
-                1: "Halving twice takes a quarter. Do one or the other: "
-                   "either halve the time to get 1.5 s each way, or work "
-                   "out the whole 1020 m path and halve that.",
-                2: "That is the whole journey, out and back. The sound "
-                   "reached the cliff halfway through, so the distance to "
-                   "it is half of the 1020 m.",
+                0: "Distance travelled is speed × time, not speed ÷ time.",
+                1: "That halves twice. Halve the time, or halve the total distance, but not both.",
+                2: "1020 m is there and back. The cliff is half of that, 510 m.",
             },
             "title": "Rung 1 · Calculate"},
         "apply": {
             "q": "A bedroom with a carpet, curtains and a bed gives no echo "
                  "at all. Which statement is right?",
             "options": [
-                "The soft surfaces absorb most of the sound instead of "
-                "reflecting it, and the room is also too small for a "
-                "reflection to arrive late enough to be heard separately.",
-                "Sound cannot travel through a room full of soft things.",
-                "There is no echo because the room is warm, and warm air "
-                "absorbs sound.",
-                "The sound is reflected just as strongly as in a sports "
-                "hall, but the walls are too close for you to notice it, "
-                "because how much comes back off a surface is the same "
-                "whatever the surface is made of",
+                "Soft things absorb most of the sound, and the walls are too close.",
+                "Sound cannot travel through a room that is full of soft things.",
+                "The warm air in the room absorbs the sound, so none comes back.",
+                "Every surface reflects the same amount, but the walls are too close.",
             ],
             "answer": 0,
             "feedback": {
-                1: "Sound crosses the room perfectly well — you can hear "
-                   "someone talking in it. What the soft surfaces change is "
-                   "how much comes back off them.",
-                2: "Temperature changes the speed of sound slightly and "
-                   "does not absorb it. The absorbing is done by the "
-                   "carpet, curtains and bedding.",
-                3: "Half right, and the half that is missing matters. The "
-                   "distance really is too short, but soft furnishings also "
-                   "send far less back — an empty room the same size sounds "
-                   "noticeably live.",
+                1: "Sound crosses the room easily. The soft things absorb it, so little comes back.",
+                2: "Warm air does not absorb the sound. The carpet, curtains and bed do.",
+                3: "Soft surfaces reflect much less than hard walls do. They absorb most of it.",
             },
             "title": "Rung 2 · The one that catches people"},
         "explain": {

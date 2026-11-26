@@ -2644,3 +2644,417 @@ KIND_FN = {
     'type-sorter': r_type_sorter,
     'rule-write': r_rule_write,
 }
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# LEAN WAVE 2 (C5 lessons 1 to 3) · four drawn figures
+# ═══════════════════════════════════════════════════════════════════════════
+#
+#   "c5-fire-triangle"     data {"labels": {"fuel", "oxygen", "heat", "fire"}}
+#   "c5-heating-carbonate" data {"colours": {"powder", "oxide", "milky"},
+#                                "labels": {"bung", "delivery", "powder" (lines), "heat",
+#                                           "limewater" (lines), "result", "before" (lines),
+#                                           "after" (lines)}}
+#   "c5-gas-tests"         data {"colours": {"milky"}, "rows": [{"title", "lines", "label"}] x3}
+#                          oxygen, hydrogen, carbon dioxide, in that order
+#   "c5-rust-tubes"        data {"colours": {"water", "oil", "rust", "salt"},
+#                                "tubes": [{"label" (lines), "result" (lines)}] x4}
+#
+# All 340 wide, so they sit in a phone card without scrolling; every label is 13px or
+# more. Liquids, powders and rust are FIXED colours from the record (they are data), and
+# every colour also carries its name in text.
+import math
+
+from ks3_art.kit import _SVG_BLUE_TEXT, _SVG_INK_FAINT, _ellipse, _n as _c5n
+
+_C5L_W = 340
+
+
+def _c5l_open(fig, h, body):
+    return (_svg_open(fig, _C5L_W, int(math.ceil(h)))
+            + '<g stroke-linecap="round" stroke-linejoin="round">' + "".join(body) + "</g></svg>")
+
+
+def _c5l_need(fig, keys):
+    d = fig.get("data") or {}
+    for k in keys:
+        if not d.get(k):
+            raise ValueError("figure %r: data has no %r" % (fig.get("id"), k))
+    return d
+
+
+def _c5l_tube_d(x, top, w, bottom, up=False):
+    """A test tube outline: open at `top` and rounded at `bottom`, or the other way up."""
+    r = w / 2.0
+    k = r * 4.0 / 3.0
+    if not up:
+        return ("M %s,%s L %s,%s C %s,%s %s,%s %s,%s L %s,%s"
+                % (_c5n(x), _c5n(top), _c5n(x), _c5n(bottom - r), _c5n(x), _c5n(bottom - r + k),
+                   _c5n(x + w), _c5n(bottom - r + k), _c5n(x + w), _c5n(bottom - r),
+                   _c5n(x + w), _c5n(top)))
+    return ("M %s,%s L %s,%s C %s,%s %s,%s %s,%s L %s,%s"
+            % (_c5n(x), _c5n(bottom), _c5n(x), _c5n(top + r), _c5n(x), _c5n(top + r - k),
+               _c5n(x + w), _c5n(top + r - k), _c5n(x + w), _c5n(top + r), _c5n(x + w),
+               _c5n(bottom)))
+
+
+def _c5l_fill_d(x, w, level, bottom, inset=2.5):
+    """What fills an upright tube from `level` down to its rounded bottom."""
+    xi, wi = x + inset, w - 2 * inset
+    r = wi / 2.0
+    k = r * 4.0 / 3.0
+    b = bottom - inset
+    return ("M %s,%s L %s,%s C %s,%s %s,%s %s,%s L %s,%s Z"
+            % (_c5n(xi), _c5n(level), _c5n(xi), _c5n(b - r), _c5n(xi), _c5n(b - r + k),
+               _c5n(xi + wi), _c5n(b - r + k), _c5n(xi + wi), _c5n(b - r), _c5n(xi + wi),
+               _c5n(level)))
+
+
+def _c5l_speckle(x0, y0, x1, y1, step=7):
+    """Small dots on a grid: milky limewater is drawn cloudy, not only coloured."""
+    out, j, y = [], 0, y0 + step / 2.0
+    while y < y1:
+        x = x0 + (step / 2.0 if j % 2 else step / 4.0 + 1)
+        while x < x1:
+            out.append(_circle(x, y, 1.3, fill=_SVG_INK_MUTED, data_part="speck"))
+            x += step
+        y += step * 0.8
+        j += 1
+    return "".join(out)
+
+
+def _c5l_arrow(x1, y1, x2, y2, paint=_SVG_INK, w=2.5, head=7.0, **data):
+    ang = math.atan2(y2 - y1, x2 - x1)
+    a1, a2 = ang + math.radians(150), ang - math.radians(150)
+    return (_line(x1, y1, x2, y2, stroke=paint, w=w, **data)
+            + _path("M %s,%s L %s,%s L %s,%s"
+                    % (_c5n(x2 + head * math.cos(a1)), _c5n(y2 + head * math.sin(a1)),
+                       _c5n(x2), _c5n(y2),
+                       _c5n(x2 + head * math.cos(a2)), _c5n(y2 + head * math.sin(a2))),
+                    stroke=paint, w=w))
+
+
+def _c5l_leader(x1, y1, x2, y2):
+    return (_line(x1, y1, x2, y2, stroke=_SVG_INK_MUTED, w=1.5, data_part="leader")
+            + _circle(x2, y2, 2.5, fill=_SVG_INK, data_part="leader-end"))
+
+
+def _c5l_flame(cx, base, h, w):
+    """A two-layer flame standing on (cx, base), `h` tall and `w` wide."""
+    def f(hh, ww):
+        return ("M %s,%s C %s,%s %s,%s %s,%s C %s,%s %s,%s %s,%s Z"
+                % (_c5n(cx), _c5n(base), _c5n(cx - ww), _c5n(base - hh * 0.15),
+                   _c5n(cx - ww * 0.55), _c5n(base - hh * 0.7), _c5n(cx), _c5n(base - hh),
+                   _c5n(cx + ww * 0.55), _c5n(base - hh * 0.7), _c5n(cx + ww),
+                   _c5n(base - hh * 0.15), _c5n(cx), _c5n(base)))
+    return (_path(f(h, w), fill=_SVG_ACCENT, stroke=_SVG_ACCENT_TEXT, w=1.5, data_part="flame")
+            + _path(f(h * 0.5, w * 0.45), fill=_SVG_ACCENT_TINT, data_part="flame-core"))
+
+
+def _c5l_delivery(o, x0, y_from, x1, y_to, top):
+    """A delivery tube: up from (x0, y_from), across at `top`, down to (x1, y_to)."""
+    d = ("M %s,%s L %s,%s C %s,%s %s,%s %s,%s L %s,%s C %s,%s %s,%s %s,%s L %s,%s"
+         % (_c5n(x0), _c5n(y_from), _c5n(x0), _c5n(top + 14), _c5n(x0), _c5n(top + 4),
+            _c5n(x0 + 6), _c5n(top), _c5n(x0 + 16), _c5n(top), _c5n(x1 - 16), _c5n(top),
+            _c5n(x1 - 6), _c5n(top), _c5n(x1), _c5n(top + 4), _c5n(x1), _c5n(top + 14),
+            _c5n(x1), _c5n(y_to)))
+    o.append(_path(d, stroke=_SVG_INK, w=8, data_part="delivery-tube"))
+    o.append(_path(d, stroke=_SVG_CARD, w=3.5))
+
+
+def _c5l_bung(o, x, w, y):
+    """A bung in the mouth of a tube whose mouth is at height `y`."""
+    o.append(_path("M %s,%s L %s,%s L %s,%s L %s,%s Z"
+                   % (_c5n(x - 4), _c5n(y - 12), _c5n(x + w + 4), _c5n(y - 12),
+                      _c5n(x + w), _c5n(y + 14), _c5n(x), _c5n(y + 14)),
+                   fill=_SVG_RULE_STRONG, stroke=_SVG_INK, w=2, data_part="bung"))
+
+
+# ── c5-fire-triangle ─────────────────────────────────────────────────────
+
+def _c5l_fire_triangle(fig):
+    """A triangle with a flame in the middle. Heat is written along the left side,
+    oxygen along the right side and fuel under the base.
+
+    data: labels {"fuel", "oxygen", "heat", "fire"}.
+    """
+    d = _c5l_need(fig, ("labels",))
+    lab = d["labels"]
+    for k in ("fuel", "oxygen", "heat", "fire"):
+        if not lab.get(k):
+            raise ValueError("figure %r: no label %r" % (fig.get("id"), k))
+    o = []
+    top, bl, br = (170, 18), (50, 226), (290, 226)
+    o.append(_path("M %s,%s L %s,%s L %s,%s Z" % (top[0], top[1], bl[0], bl[1], br[0], br[1]),
+                   fill=_SVG_ACCENT_TINT, stroke=_SVG_ACCENT_TEXT, w=6, data_part="triangle"))
+    o.append(_c5l_flame(170, 196, 92, 34))
+    o.append(_label(170, 216, lab["fire"], size=14, weight="700", data_part="label"))
+    # the side names: left and right sit beside the middle of their side, the base below it
+    o.append(_label(98, 128, lab["heat"].upper(), size=18, weight="800", anchor="end",
+                    fill=_SVG_ACCENT_TEXT, data_part="side", data_key="heat"))
+    o.append(_label(242, 128, lab["oxygen"].upper(), size=18, weight="800", anchor="start",
+                    fill=_SVG_ACCENT_TEXT, data_part="side", data_key="oxygen"))
+    o.append(_label(170, 258, lab["fuel"].upper(), size=18, weight="800",
+                    fill=_SVG_ACCENT_TEXT, data_part="side", data_key="fuel"))
+    return _c5l_open(fig, 270, o)
+
+
+# ── c5-heating-carbonate ─────────────────────────────────────────────────
+
+def _c5l_heating_carbonate(fig):
+    """Left: a boiling tube of green copper carbonate, closed with a bung, heated by a
+    Bunsen flame underneath. A delivery tube runs from the bung, over and down into a
+    tube of limewater on the right, its end under the surface; bubbles rise and the
+    limewater is milky. Below: the result, green powder before and black powder after.
+    """
+    d = _c5l_need(fig, ("colours", "labels"))
+    col, lab = d["colours"], d["labels"]
+    for k in ("powder", "oxide", "milky"):
+        if not col.get(k):
+            raise ValueError("figure %r: no colour %r" % (fig.get("id"), k))
+    for k in ("bung", "delivery", "powder", "heat", "limewater", "result", "before", "after"):
+        if not lab.get(k):
+            raise ValueError("figure %r: no label %r" % (fig.get("id"), k))
+    o = []
+    # boiling tube with powder at the bottom
+    bx, bw, btop, bbot = 30, 40, 110, 262
+    o.append(_path(_c5l_fill_d(bx, bw, 234, bbot), fill=col["powder"], stroke=_SVG_INK, w=1,
+                   data_part="powder"))
+    o.append(_path(_c5l_tube_d(bx, btop, bw, bbot), stroke=_SVG_INK, w=3,
+                   data_part="boiling-tube"))
+    # the Bunsen burner and its flame under the tube
+    cx = bx + bw / 2.0
+    o.append(_c5l_flame(cx, 316, 50, 14))
+    o.append(_rect(cx - 8, 316, 16, 56, fill=_SVG_CARD, stroke=_SVG_INK, w=2.5,
+                   data_part="bunsen-barrel"))
+    o.append(_rect(cx - 30, 372, 60, 10, rx=3, fill=_SVG_RULE_STRONG, stroke=_SVG_INK, w=2.5,
+                   data_part="bunsen-base"))
+    # the limewater tube, milky, speckled
+    lx, lw, ltop, lbot = 262, 42, 170, 372
+    o.append(_path(_c5l_fill_d(lx, lw, 246, lbot), fill=col["milky"], data_part="limewater"))
+    o.append(_c5l_speckle(lx + 5, 250, lx + lw - 5, lbot - 14))
+    o.append(_line(lx, 246, lx + lw, 246, stroke=_SVG_BLUE_TEXT, w=2, data_part="surface"))
+    dx0, dx1, dtop, dend = cx, lx + lw / 2.0, 46, 336
+    _c5l_delivery(o, dx0, btop - 6, dx1, dend, dtop)
+    for (x, y) in ((dx1 - 3, 326), (dx1 + 4, 312), (dx1 - 4, 296), (dx1 + 5, 280),
+                   (dx1 - 2, 262)):
+        o.append(_circle(x, y, 2.8, fill=_SVG_CARD, stroke=_SVG_INK, w=1.3, data_part="bubble"))
+    o.append(_path(_c5l_tube_d(lx, ltop, lw, lbot), stroke=_SVG_INK, w=3,
+                   data_part="limewater-tube"))
+    _c5l_bung(o, bx, bw, btop)
+    o.append(_line(dx0, btop - 12, dx0, btop + 14, stroke=_SVG_INK, w=8))
+    o.append(_line(dx0, btop - 12, dx0, btop + 14, stroke=_SVG_CARD, w=3.5))
+    o.append(_label((dx0 + dx1) / 2.0, dtop - 14, lab["delivery"], size=13, data_part="label"))
+
+    def left(lines, y, tx, ty):       # text in the middle column, leader to the left
+        for k, s in enumerate(lines):
+            o.append(_label(100, y + 16 * k, s, size=13, anchor="start", data_part="label"))
+        o.append(_c5l_leader(96, y - 4, tx, ty))
+
+    def right(lines, y, tx, ty):      # text in the middle column, leader to the right
+        for k, s in enumerate(lines):
+            o.append(_label(246, y + 16 * k, s, size=13, anchor="end", data_part="label"))
+        o.append(_c5l_leader(250, y - 4, tx, ty))
+
+    left([lab["bung"]], 108, bx + bw + 2, btop)
+    left(lab["powder"], 222, bx + bw - 6, 246)
+    left([lab["heat"]], 300, cx + 10, 292)
+    right(lab["limewater"], 210, lx + 9, 262)
+    # the result: green before, black after
+    o.append(_line(8, 396, 332, 396, stroke=_SVG_RULE, w=1.5, data_part="rule"))
+    o.append(_mono(10, 418, lab["result"].upper(), size=13, fill=_SVG_ACCENT_TEXT, weight="700",
+                   spacing="1", data_part="heading"))
+    for (x, names, paint, state) in ((76, lab["before"], col["powder"], "before"),
+                                     (226, lab["after"], col["oxide"], "after")):
+        # a light rim and grains on each powder: the black oxide stays visible on a dark page
+        o.append(_path(_c5l_fill_d(x, 36, 480, 508), fill=paint, stroke=_SVG_INK, w=2,
+                       data_part="powder", data_state=state))
+        for (gx, gy) in ((8, 486), (17, 489), (26, 485), (12, 495), (22, 497), (18, 503)):
+            o.append(_circle(x + gx + 1, gy, 1.4, fill=_SVG_INK_FAINT, data_part="grain"))
+        o.append(_path(_c5l_tube_d(x, 430, 36, 508), stroke=_SVG_INK, w=2.5, data_part="tube"))
+        for k, s in enumerate(names):
+            o.append(_label(x + 18, 532 + 16 * k, s, size=13, data_part="label"))
+    o.append(_c5l_arrow(130, 474, 202, 474, paint=_SVG_ACCENT_TEXT, w=3, head=8,
+                        data_part="arrow"))
+    return _c5l_open(fig, 562, o)
+
+
+# ── c5-gas-tests ─────────────────────────────────────────────────────────
+
+def _c5l_gas_tests(fig):
+    """Three rows, one per gas, each with its words on the right.
+
+    1  Oxygen: an upright tube with a splint pushed into it; its tip has burst back into
+       flame inside the tube.
+    2  Hydrogen: a tube held upside down, a lit splint at its open mouth, short lines
+       bursting from the mouth for the pop.
+    3  Carbon dioxide: a delivery tube bubbling gas into a tube of milky limewater.
+
+    data: colours {"milky"}; rows, three {"title", "lines", "label"}.
+    """
+    d = _c5l_need(fig, ("colours", "rows"))
+    milky = d["colours"].get("milky")
+    rows = d["rows"]
+    if not milky:
+        raise ValueError("figure %r: no colour for milky limewater" % fig.get("id"))
+    if len(rows) != 3:
+        raise ValueError("figure %r: needs exactly three rows" % fig.get("id"))
+    for r in rows:
+        if not r.get("title") or not r.get("lines") or not r.get("label"):
+            raise ValueError("figure %r: every row needs a title, lines and a label"
+                             % fig.get("id"))
+        for ln in r["lines"]:
+            if len(ln) > 21:
+                raise ValueError("figure %r: line %r is over 21 characters, so it would run "
+                                 "off a 390 px phone" % (fig.get("id"), ln))
+    o = []
+    RH = 150.0
+    TX = 176
+    for i, r in enumerate(rows):
+        y0 = 6 + i * RH
+        if i:
+            o.append(_line(8, y0 - 4, 332, y0 - 4, stroke=_SVG_RULE, w=1.5, data_part="rule"))
+        o.append(_mono(TX, y0 + 30, r["title"].upper(), size=13, fill=_SVG_ACCENT_TEXT,
+                       weight="700", spacing="1", data_part="row-title"))
+        for k, s in enumerate(r["lines"]):
+            o.append(_label(TX, y0 + 54 + 18 * k, s, size=14, anchor="start", weight="600",
+                            data_part="row-text"))
+        tx, tw = 84, 36
+        cx = tx + tw / 2.0
+
+        def left(text, y, px, py):
+            o.append(_label(4, y, text, size=13, anchor="start", data_part="label"))
+            o.append(_c5l_leader(4 + len(text) * 7.4 + 4, y - 4, px, py))
+
+        if i == 0:
+            # oxygen: upright tube, the splint in through the mouth, relit at its tip
+            o.append(_path(_c5l_tube_d(tx, y0 + 40, tw, y0 + 140), fill=_SVG_CARD,
+                           stroke=_SVG_INK, w=2.5, data_part="tube"))
+            sx0, sy0, sx1, sy1 = cx + 14, y0 + 2, cx + 2, y0 + 104
+            o.append(_line(sx0, sy0, sx1, sy1, stroke=_SVG_INK_MUTED, w=5, data_part="splint"))
+            o.append(_c5l_flame(sx1, sy1 + 10, 26, 9))
+            left(r["label"], y0 + 96, tx + 4, y0 + 92)
+        elif i == 1:
+            # hydrogen: upside-down tube, a lit splint at the mouth, the pop
+            o.append(_path(_c5l_tube_d(tx, y0 + 12, tw, y0 + 92, up=True), fill=_SVG_CARD,
+                           stroke=_SVG_INK, w=2.5, data_part="tube"))
+            sx0, sy0, sx1, sy1 = 160, y0 + 140, cx + 6, y0 + 110
+            o.append(_line(sx0, sy0, sx1, sy1, stroke=_SVG_INK_MUTED, w=5, data_part="splint"))
+            o.append(_c5l_flame(sx1, sy1 + 6, 22, 8))
+            px, py = cx, y0 + 96
+            for ang in (115, 140, 165, 190):
+                a = math.radians(ang)
+                o.append(_line(px + 26 * math.cos(a), py + 26 * math.sin(a),
+                               px + 38 * math.cos(a), py + 38 * math.sin(a),
+                               stroke=_SVG_ACCENT_TEXT, w=2.5, data_part="pop"))
+            left(r["label"], y0 + 44, tx + 6, y0 + 40)
+        else:
+            # carbon dioxide: gas bubbled into milky limewater
+            o.append(_path(_c5l_fill_d(tx, tw, y0 + 76, y0 + 142), fill=milky,
+                           data_part="limewater"))
+            o.append(_c5l_speckle(tx + 5, y0 + 80, tx + tw - 5, y0 + 130))
+            o.append(_line(tx, y0 + 76, tx + tw, y0 + 76, stroke=_SVG_BLUE_TEXT, w=2,
+                           data_part="surface"))
+            dd = "M %s,%s L %s,%s" % (_c5n(cx), _c5n(y0 + 14), _c5n(cx), _c5n(y0 + 128))
+            o.append(_path(dd, stroke=_SVG_INK, w=8, data_part="delivery-tube"))
+            o.append(_path(dd, stroke=_SVG_CARD, w=3.5))
+            for (bx_, by_) in ((cx - 7, y0 + 120), (cx + 8, y0 + 108), (cx - 8, y0 + 96),
+                               (cx + 7, y0 + 86)):
+                o.append(_circle(bx_, by_, 2.6, fill=_SVG_CARD, stroke=_SVG_INK, w=1.3,
+                                 data_part="bubble"))
+            o.append(_path(_c5l_tube_d(tx, y0 + 40, tw, y0 + 142), stroke=_SVG_INK, w=2.5,
+                           data_part="tube"))
+            left(r["label"], y0 + 112, tx + 5, y0 + 108)
+    return _c5l_open(fig, 6 + 3 * RH + 4, o)
+
+
+# ── c5-rust-tubes ────────────────────────────────────────────────────────
+
+def _c5l_nail(o, cx, top, bottom):
+    o.append(_rect(cx - 2.5, top + 4, 5, bottom - top - 4, fill=_SVG_INK_MUTED, stroke=_SVG_INK,
+                   w=1, data_part="nail"))
+    o.append(_rect(cx - 8, top, 16, 5, rx=1.5, fill=_SVG_INK_MUTED, stroke=_SVG_INK, w=1,
+                   data_part="nail-head"))
+
+
+def _c5l_rust(o, cx, ys, paint):
+    for y in ys:
+        o.append(_ellipse(cx + (2 if int(y) % 2 else -2), y, 5, 4, fill=paint, stroke=_SVG_INK,
+                          w=0.8, data_part="rust"))
+
+
+def _c5l_rust_tubes(fig):
+    """Four test tubes in a row, numbered 1 to 4, each with an iron nail in it.
+
+    1  water in the bottom half, open to the air: rust at and below the water line
+    2  a bung, a drying agent at the bottom, the nail above it in dry air: no rust
+    3  a bung, boiled water to near the top and a layer of oil on it: no rust
+    4  salt water in the bottom half, open to the air: more rust than tube 1
+
+    data: colours {"water", "oil", "rust", "salt"}; tubes, four {"label" (lines),
+    "result" (lines)}.
+    """
+    d = _c5l_need(fig, ("colours", "tubes"))
+    col, tubes = d["colours"], d["tubes"]
+    for k in ("water", "oil", "rust", "salt"):
+        if not col.get(k):
+            raise ValueError("figure %r: no colour %r" % (fig.get("id"), k))
+    if len(tubes) != 4:
+        raise ValueError("figure %r: needs exactly four tubes" % fig.get("id"))
+    for tb in tubes:
+        for ln in list(tb.get("label") or []) + list(tb.get("result") or []):
+            if len(ln) > 11:
+                raise ValueError("figure %r: %r is over 11 characters, so it would run into "
+                                 "the next tube's words" % (fig.get("id"), ln))
+        if not tb.get("label") or not tb.get("result"):
+            raise ValueError("figure %r: every tube needs a label and a result" % fig.get("id"))
+    o = []
+    tw, top, bot = 34, 52, 236
+    for i, tb in enumerate(tubes):
+        cx = 42.5 + 85 * i
+        x = cx - tw / 2.0
+        o.append(_circle(cx, 20, 12, fill=_SVG_ACCENT_TINT, stroke=_SVG_INK, w=2,
+                         data_part="tube-badge"))
+        o.append(_label(cx, 25, str(i + 1), size=14, weight="800", data_part="tube-number"))
+        if i == 0:
+            o.append(_path(_c5l_fill_d(x, tw, 150, bot), fill=col["water"], data_part="water"))
+            o.append(_line(x, 150, x + tw, 150, stroke=_SVG_BLUE_TEXT, w=2, data_part="surface"))
+            _c5l_nail(o, cx, 88, 228)
+            _c5l_rust(o, cx, (146, 156, 168), col["rust"])
+        elif i == 1:
+            for (gx, gy) in ((cx - 9, 226), (cx, 228), (cx + 9, 226), (cx - 5, 218), (cx + 5, 218),
+                             (cx - 10, 212), (cx + 10, 212), (cx, 210)):
+                o.append(_circle(gx, gy, 4, fill=_SVG_CARD, stroke=_SVG_INK, w=1.2,
+                                 data_part="drying-agent"))
+            o.append(_line(cx, 66, cx, 74, stroke=_SVG_INK, w=1.5, data_part="thread"))
+            _c5l_nail(o, cx, 74, 196)
+        elif i == 2:
+            o.append(_path(_c5l_fill_d(x, tw, 90, bot), fill=col["water"], data_part="water"))
+            o.append(_rect(x + 2.5, 80, tw - 5, 10, fill=col["oil"], stroke=_SVG_INK, w=1,
+                           data_part="oil"))
+            _c5l_nail(o, cx, 104, 228)
+        else:
+            o.append(_path(_c5l_fill_d(x, tw, 150, bot), fill=col["salt"], data_part="salt-water"))
+            o.append(_line(x, 150, x + tw, 150, stroke=_SVG_BLUE_TEXT, w=2, data_part="surface"))
+            _c5l_nail(o, cx, 88, 228)
+            _c5l_rust(o, cx, (130, 142, 154, 166, 178, 190, 202), col["rust"])
+        o.append(_path(_c5l_tube_d(x, top, tw, bot), stroke=_SVG_INK, w=2.5, data_part="tube"))
+        if i in (1, 2):
+            _c5l_bung(o, x, tw, top)
+        for k, s in enumerate(tb["label"]):
+            o.append(_label(cx, 262 + 16 * k, s, size=13, data_part="label"))
+        y = 262 + 16 * len(tb["label"]) + 8
+        for k, s in enumerate(tb["result"]):
+            o.append(_label(cx, y + 16 * k, s, size=13, weight="800", fill=_SVG_ACCENT_TEXT,
+                            data_part="result"))
+    o.append(_line(8, 246, 332, 246, stroke=_SVG_RULE, w=1.5, data_part="rule"))
+    n = max(len(tb["label"]) + len(tb["result"]) for tb in tubes)
+    return _c5l_open(fig, 262 + 16 * n + 8, o)
+
+
+ART.update({
+    "c5-fire-triangle": _c5l_fire_triangle,
+    "c5-heating-carbonate": _c5l_heating_carbonate,
+    "c5-gas-tests": _c5l_gas_tests,
+    "c5-rust-tubes": _c5l_rust_tubes,
+})

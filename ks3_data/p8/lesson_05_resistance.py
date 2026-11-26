@@ -564,21 +564,16 @@ LESSON = {
             "q": "A voltmeter across a wire reads 4.5 V and the ammeter in "
                  "the loop reads 0.90 A. What is the resistance of the wire?",
             "options": [
-                "4.05 Ω — multiply the two readings",
-                "0.2 Ω — divide the current by the p.d.",
-                "5.0 Ω",
-                "5.0 V — the number is the p.d. needed for one amp",
+                "4.05 Ω, because you multiply the two readings",
+                "0.2 Ω, because you divide the current by the p.d.",
+                "5.0 Ω, because you divide the p.d. by the current",
+                "5.0 V, because that is the p.d. needed for one amp",
             ],
             "answer": 2,
             "feedback": {
-                0: "Multiplying V by I gives you the power in watts, not the "
-                   "resistance. Cover R on the triangle and V sits over I, so "
-                   "you divide.",
-                1: "That is the division the wrong way up. Resistance is "
-                   "volts per amp, so the volts go on top.",
-                3: "The number is right and the unit is wrong. Volts divided "
-                   "by amps leaves ohms, and the question asked for a "
-                   "resistance.",
+                0: "Multiplying is the wrong step. R = V ÷ I, so divide 4.5 by 0.90.",
+                1: "That divides the wrong way up. Put the p.d. on top: 4.5 ÷ 0.90.",
+                3: "The number is right but the unit is wrong. Resistance is in ohms, Ω.",
             },
             "title": "Rung 1 · Calculate"},
         "apply": {
@@ -590,30 +585,16 @@ LESSON = {
             # her correction are untouched; the clause after the comma states
             # the rule the wrong idea depends on. See DEPARTURES-P8.md row 1.
             "options": [
-                "Both are right. The filament is hotter at 10 V, and hot "
-                "metal resists more — so the lamp genuinely has a different "
-                "resistance in each state.",
-                "The 6.4 Ω reading is the real resistance, and the 16.0 Ω "
-                "reading is wrong because the meters are affected by the heat "
-                "coming off the filament, so a reading taken while a lamp is "
-                "glowing is never the component's own value.",
-                "The student is right — R = V ÷ I is a law, so a component "
-                "can only have one resistance.",
-                "Both are right, because the resistance of any component "
-                "always goes up when you turn the supply up.",
+                "Both are right, because the hot filament at 10 V has a higher resistance.",
+                "The 16.0 Ω reading is wrong, because heat from the glowing lamp upsets the meters.",
+                "The student is right, because a component can only ever have one resistance.",
+                "Both are right, because every component's resistance goes up when the supply goes up.",
             ],
             "answer": 0,
             "feedback": {
-                1: "The meters are fine. What changed is the filament: its "
-                   "resistance really is different when it is white-hot.",
-                2: "R = V ÷ I is a definition and always applies. What is not "
-                   "always true is that R stays the same, and a filament lamp "
-                   "is the standard example of a component where it does "
-                   "not.",
-                3: "The verdict is right and the reason is not. A resistor "
-                   "tested at 2 V and at 10 V gives the same answer both "
-                   "times; it is the lamp’s changing temperature that does "
-                   "this.",
+                1: "The meters are fine. The filament really does resist more when it is hot.",
+                2: "R = V ÷ I always works. But a lamp's resistance changes as it heats up.",
+                3: "A resistor gives the same answer at any p.d. Only the hot lamp changes.",
             },
             "title": "Rung 2 · The one that catches people"},
         "explain": {

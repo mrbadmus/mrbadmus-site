@@ -4162,7 +4162,10 @@ _LEAN_CTX = {}
 # a number, the space after the operator joins, so a line never ends on an
 # operator. The space before it stays ordinary, so the line breaks before it.
 _LEAN_JOIN_MAX = 6
-_LEAN_UNITS = ("N m", "N/kg", "kJ/g", "km/h", "m/s²", "m/s", "kWh", "kcal", "°C",
+# ⊕ Lean Wave 2 KS3 Units 4–6 (25 Nov 2026): Hz, kHz, V, A, mA, Ω and dB added. Without them
+# "20 000 Hz" split inside the number ("above 20" / "000 Hz") in a table, a Key fact and a
+# Rung 1 option, so a pupil could read ultrasound as "above 20 Hz".
+_LEAN_UNITS = ("kHz", "Hz", "mA", "dB", "Ω", "V", "A", "N m", "N/kg", "kJ/g", "km/h", "m/s²", "m/s", "kWh", "kcal", "°C",
                "cm³", "cm3", "cm²", "m²", "m³", "kJ", "kW", "kN", "kg", "mg", "cm",
                "mm", "km", "ml", "MJ", "J", "W", "N", "g", "m", "s", "h", "%")
 _LEAN_NUM = r"(\d{1,3}(?:[ ,]\d{3})+(?:\.\d+)?|\d+(?:\.\d+)?)"
@@ -4186,9 +4189,19 @@ def _keep_ratio(m):
     return m.group(1) + "\u00a0in\u00a0" + m.group(2)
 
 
+# ⊕ Lean Wave 2 KS3 Units 4–6 (25 Nov 2026): a grouped number with no unit after it
+# ("= 144 000 000 000", "55 000 000 000 m" past the cap) split inside the number at 390 px.
+# Its group spaces now join on their own, in prose (U+00A0) and on ladders (a span).
+_LEAN_GROUPED_RE = re.compile(r"(?<![\w.,#&>\u00a0])\d{1,3}(?: \d{3})+(?![\d\u00a0])")
+_LEAN_GROUPED_MAX = 18   # an option line holds about 18 digit-width characters at 320 px
+# ⊕ 26 Nov 2026: was 27 (sized at 390 px). verify_ks3's 320 px sideways-scroll check caught
+# "115 000 000 000 000 000" (23) held on one line in a light-travels option: 363 px wide.
+
+
 def _keep_text(t):
     t = _LEAN_UNIT_RE.sub(_keep_unit, t)
     t = _LEAN_RATIO_RE.sub(_keep_ratio, t)
+    t = _LEAN_GROUPED_RE.sub(lambda m: m.group(0).replace(" ", "\u00a0"), t)
     return _LEAN_OP_RE.sub("\\1\u00a0", t)
 
 
@@ -4224,6 +4237,8 @@ def _keep_span(m):
 def _keep_together_text(t):
     t = _LEAN_UNIT_RE.sub(_keep_span, t)
     t = _LEAN_RATIO_RE.sub(_keep_span, t)
+    t = _LEAN_GROUPED_RE.sub(lambda m: m.group(0) if len(m.group(0)) > _LEAN_GROUPED_MAX
+                             else '<span class="lean-nw">%s</span>' % m.group(0), t)
     return _LEAN_GENUS_RE.sub(_keep_span, t)
 
 

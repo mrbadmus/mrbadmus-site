@@ -1811,3 +1811,768 @@ KIND_FN = {
     'circ-think':            r_circ_think,
     'p8-attempt':            r_p8_attempt,
 }
+
+
+# ═══ ⊕ Lean Wave 2 KS3 · lane A drawers (lessons 1 to 4) ══════════════════
+#
+# Circuit diagrams for the lean pages, drawn from one set of symbols so every
+# lamp, cell and meter on lessons 1 to 4 is the same shape:
+#
+#   "p8-symbols"   data {symbols: [ids]}                 a labelled symbol table, two columns
+#   "p8-loop"      data {top, bottom, left, right, volts} one series loop
+#   "p8-branches"  data {branches: [{parts, volts}], main} parallel branches on one battery
+#
+# A part is {"k": kind, "name": "...", "reading": "...", "side": "below"|"above"|"left"|"right"}.
+# Kinds: cell, battery, lamp, resistor, variable-resistor, switch-open, switch-closed,
+# ammeter, voltmeter. `volts` puts a voltmeter across one part: {"i": index, "reading": "..."}
+# (in "p8-loop" the index is into `top`; in "p8-branches" it is into that branch's parts).
+# Every figure is 340 wide; every label is 13px or more. Wires and symbols are ink, meter
+# readings are accent text, so nothing relies on a pale fill to carry meaning.
+from ks3_art.kit import (_SVG_ACCENT_TEXT as _P8A_READ, _SVG_CARD as _P8A_CARD,
+                         _SVG_INK as _P8A_INK, _SVG_INK_MUTED as _P8A_MUTED,
+                         _circle as _p8a_circle, _label as _p8a_label, _line as _p8a_line,
+                         _n as _p8a_n, _path as _p8a_path, _rect as _p8a_rect,
+                         _svg_open as _p8a_svg_open)
+
+_P8A_W = 340
+_P8A_WIRE = 2.5
+_P8A_HALF = {"cell": 5, "battery": 15, "lamp": 13, "resistor": 18, "variable-resistor": 18,
+             "switch-open": 14, "switch-closed": 14, "ammeter": 13, "voltmeter": 13}
+_P8A_NAMES = {"cell": "Cell", "battery": "Battery", "switch-open": "Switch (open)",
+              "switch-closed": "Switch (closed)", "lamp": "Lamp", "resistor": "Resistor",
+              "variable-resistor": "Variable resistor", "ammeter": "Ammeter",
+              "voltmeter": "Voltmeter", "wire": "Wire", "junction": "Junction"}
+_P8A_NOTES = {"cell": "long line is +", "battery": "two or more cells",
+              "switch-open": "a gap: no current", "switch-closed": "no gap: current flows",
+              "lamp": "lights up", "resistor": "resists the current",
+              "variable-resistor": "resistance can change", "ammeter": "measures current",
+              "voltmeter": "measures p.d.", "wire": "joins the parts",
+              "junction": "wires join at a dot"}
+_P8A_ARCH = 44          # height of a voltmeter's loop above the part it is across
+
+
+def _p8a_open(fig, h, body):
+    return (_p8a_svg_open(fig, _P8A_W, int(math.ceil(h)))
+            + '<g stroke-linecap="round" stroke-linejoin="round">' + "".join(body) + "</g></svg>")
+
+
+def _p8a_kind(k, fig):
+    if k not in _P8A_HALF:
+        raise ValueError("figure %r: unknown circuit part %r" % (fig.get("id"), k))
+    return _P8A_HALF[k]
+
+
+def _p8a_symbol(k, cx, cy, vertical=False):
+    """One circuit symbol centred on (cx, cy), lying along the wire (sideways when
+    `vertical`). Local u runs along the wire and v across it."""
+    def P(u, v):
+        return (cx + v, cy + u) if vertical else (cx + u, cy + v)
+
+    def L(u1, v1, u2, v2, w=_P8A_WIRE, part="symbol"):
+        (x1, y1), (x2, y2) = P(u1, v1), P(u2, v2)
+        return _p8a_line(x1, y1, x2, y2, stroke=_P8A_INK, w=w, data_part=part)
+
+    o = []
+    if k == "cell":
+        o += [L(-5, -15, -5, 15, w=3, part="cell-long"), L(5, -8, 5, 8, w=5, part="cell-short")]
+    elif k == "battery":
+        o += [L(-15, -15, -15, 15, w=3, part="cell-long"), L(-7, -8, -7, 8, w=5, part="cell-short"),
+              L(-7, 0, 7, 0, part="wire"),
+              L(7, -15, 7, 15, w=3, part="cell-long"), L(15, -8, 15, 8, w=5, part="cell-short")]
+    elif k == "lamp":
+        o.append(_p8a_circle(cx, cy, 13, fill=_P8A_CARD, stroke=_P8A_INK, w=_P8A_WIRE,
+                             data_part="lamp"))
+        o += [L(-9.2, -9.2, 9.2, 9.2, w=2.2), L(-9.2, 9.2, 9.2, -9.2, w=2.2)]
+    elif k in ("resistor", "variable-resistor"):
+        w_, h_ = (14, 36) if vertical else (36, 14)
+        o.append(_p8a_rect(cx - w_ / 2.0, cy - h_ / 2.0, w_, h_, fill=_P8A_CARD, stroke=_P8A_INK,
+                           w=_P8A_WIRE, data_part=k))
+        if k == "variable-resistor":
+            o.append(L(-20, 13, 18, -11, w=2.2, part="arrow"))
+            (tx, ty) = P(21, -13)
+            (ax, ay) = P(11, -12)
+            (bx, by) = P(19, -4)
+            o.append(_p8a_path("M %s,%s L %s,%s L %s,%s Z"
+                               % (_p8a_n(tx), _p8a_n(ty), _p8a_n(ax), _p8a_n(ay), _p8a_n(bx), _p8a_n(by)),
+                               fill=_P8A_INK, stroke=_P8A_INK, w=1, data_part="arrowhead"))
+    elif k in ("switch-open", "switch-closed"):
+        for u in (-14, 14):
+            x, y = P(u, 0)
+            o.append(_p8a_circle(x, y, 3.5, fill=_P8A_CARD, stroke=_P8A_INK, w=2,
+                                 data_part="contact"))
+        o.append(L(-14, 0, 12, -14, part="lever") if k == "switch-open"
+                 else L(-14, 0, 14, 0, part="lever"))
+    elif k in ("ammeter", "voltmeter"):
+        o.append(_p8a_circle(cx, cy, 13, fill=_P8A_CARD, stroke=_P8A_INK, w=_P8A_WIRE,
+                             data_part=k))
+        o.append(_p8a_label(cx, cy + 5.5, "A" if k == "ammeter" else "V", size=15, weight="700",
+                            data_part=k + "-letter"))
+    return "".join(o)
+
+
+def _p8a_run(x1, y1, x2, y2, parts, fig):
+    """A straight wire from (x1, y1) to (x2, y2) with parts on it: [(pos, kind)], pos
+    measured along the run's own axis. Wire is drawn up to each part and never under it."""
+    vertical = x1 == x2
+    if not vertical and y1 != y2:
+        raise ValueError("figure %r: a run must be straight" % fig.get("id"))
+    a0, a1 = (y1, y2) if vertical else (x1, x2)
+    gaps = []
+    for pos, k in sorted(parts):
+        h = _p8a_kind(k, fig)
+        gaps.append((pos - h, pos + h))
+    for (lo0, hi0), (lo1, hi1) in zip(gaps, gaps[1:]):
+        if lo1 - hi0 < 8:
+            raise ValueError("figure %r: two parts overlap on one wire" % fig.get("id"))
+    o, at = [], a0
+    for lo, hi in gaps:
+        if lo < a0 or hi > a1:
+            raise ValueError("figure %r: a part runs off the end of its wire" % fig.get("id"))
+        if lo > at:
+            o.append(_p8a_line(x1, at, x1, lo, stroke=_P8A_INK, w=_P8A_WIRE, data_part="wire")
+                     if vertical else
+                     _p8a_line(at, y1, lo, y1, stroke=_P8A_INK, w=_P8A_WIRE, data_part="wire"))
+        at = hi
+    if a1 > at:
+        o.append(_p8a_line(x1, at, x1, a1, stroke=_P8A_INK, w=_P8A_WIRE, data_part="wire")
+                 if vertical else
+                 _p8a_line(at, y1, a1, y1, stroke=_P8A_INK, w=_P8A_WIRE, data_part="wire"))
+    for pos, k in parts:
+        o.append(_p8a_symbol(k, x1 if vertical else pos, pos if vertical else y1, vertical))
+    return "".join(o)
+
+
+def _p8a_words(p, x, y, side, half):
+    """The name (muted) and the reading (accent text) beside a part."""
+    lines = []
+    if p.get("name"):
+        lines.append((p["name"], 13, _P8A_MUTED, "600", "name"))
+    if p.get("reading"):
+        lines.append((p["reading"], 15, _P8A_READ, "700", "reading"))
+    if not lines:
+        return ""
+    o = []
+    if side == "below":
+        for i, (s, sz, fill, wt, part) in enumerate(lines):
+            o.append(_p8a_label(x, y + half + 18 + 18 * i, s, size=sz, fill=fill, weight=wt,
+                                data_part=part))
+    elif side == "above":
+        n = len(lines)
+        for i, (s, sz, fill, wt, part) in enumerate(lines):
+            o.append(_p8a_label(x, y - half - 9 - 18 * (n - 1 - i), s, size=sz, fill=fill,
+                                weight=wt, data_part=part))
+    elif side in ("left", "right"):
+        anchor = "start" if side == "right" else "end"
+        tx = x + half + 8 if side == "right" else x - half - 8
+        y0 = y + 5 - 9 * (len(lines) - 1)
+        for i, (s, sz, fill, wt, part) in enumerate(lines):
+            o.append(_p8a_label(tx, y0 + 18 * i, s, size=sz, fill=fill, weight=wt,
+                                anchor=anchor, data_part=part))
+    else:
+        raise ValueError("unknown label side %r" % side)
+    return "".join(o)
+
+
+def _p8a_spread(lo, hi, n):
+    return [lo + (hi - lo) * (i + 1) / float(n + 1) for i in range(n)]
+
+
+def _p8a_volt(cx, y, half, v, fig):
+    """A voltmeter across the part centred at (cx, y) on a level wire: two leads, one each
+    side of the part, joined at dots, up to a meter above it. Reading above the meter."""
+    d = half + 14
+    top = y - _P8A_ARCH
+    o = [_p8a_path("M %s,%s V %s H %s" % (_p8a_n(cx - d), _p8a_n(y), _p8a_n(top), _p8a_n(cx - 13)),
+                   stroke=_P8A_INK, w=_P8A_WIRE, data_part="voltmeter-lead"),
+         _p8a_path("M %s,%s V %s H %s" % (_p8a_n(cx + d), _p8a_n(y), _p8a_n(top), _p8a_n(cx + 13)),
+                   stroke=_P8A_INK, w=_P8A_WIRE, data_part="voltmeter-lead"),
+         _p8a_circle(cx - d, y, 4.5, fill=_P8A_INK, data_part="junction"),
+         _p8a_circle(cx + d, y, 4.5, fill=_P8A_INK, data_part="junction"),
+         _p8a_symbol("voltmeter", cx, top)]
+    o.append(_p8a_words(v, cx, top, "above", 13))
+    return "".join(o), d
+
+
+def _p8a_above(v):
+    """Space a voltmeter needs above the wire it sits on."""
+    n = (1 if v.get("reading") else 0) + (1 if v.get("name") else 0)
+    return _P8A_ARCH + 13 + 9 + 18 * max(n - 1, 0) + 16
+
+
+def _p8a_below(parts):
+    n = max([(1 if p.get("name") else 0) + (1 if p.get("reading") else 0) for p in parts] or [0])
+    return 13 + 18 * n + 8 if n else 26
+
+
+# ── p8-symbols ─────────────────────────────────────────────────────────────
+def _p8a_symbols(fig):
+    """A table of circuit symbols, two to a row: each drawn on a short wire, named
+    underneath, with a short note under the name."""
+    ids = (fig.get("data") or {}).get("symbols") or []
+    if not ids:
+        raise ValueError("figure %r: p8-symbols needs symbols" % fig.get("id"))
+    for s in ids:
+        if s not in _P8A_NAMES:
+            raise ValueError("figure %r: unknown symbol %r" % (fig.get("id"), s))
+    CW, RH, TOP = 170.0, 96.0, 6.0
+    o = []
+    rows = (len(ids) + 1) // 2
+    for r in range(rows - 1):
+        y = TOP + RH * (r + 1) - 4
+        o.append(_p8a_line(12, y, _P8A_W - 12, y, stroke=_P8A_MUTED, w=1, opacity=0.5,
+                           data_part="rule"))
+    full = len(ids) // 2          # rows with a symbol in both columns
+    if full:
+        o.append(_p8a_line(CW, TOP + 6, CW, TOP + RH * full - (10 if full == rows else 4),
+                           stroke=_P8A_MUTED, w=1, opacity=0.5, data_part="rule"))
+    for i, s in enumerate(ids):
+        r, c = divmod(i, 2)
+        cx = CW * c + CW / 2.0
+        y0 = TOP + RH * r
+        wy = y0 + 30
+        if s == "wire":
+            o.append(_p8a_line(cx - 52, wy, cx + 52, wy, stroke=_P8A_INK, w=_P8A_WIRE,
+                               data_part="wire"))
+        elif s == "junction":
+            o.append(_p8a_line(cx - 52, wy, cx + 52, wy, stroke=_P8A_INK, w=_P8A_WIRE,
+                               data_part="wire"))
+            o.append(_p8a_line(cx, wy, cx, wy + 17, stroke=_P8A_INK, w=_P8A_WIRE,
+                               data_part="wire"))
+            o.append(_p8a_circle(cx, wy, 4.5, fill=_P8A_INK, data_part="junction"))
+        else:
+            o.append(_p8a_run(cx - 52, wy, cx + 52, wy, [(cx, s)], fig))
+        o.append(_p8a_label(cx, y0 + 70, _P8A_NAMES[s], size=15, weight="700",
+                            data_part="symbol-name", data_symbol=s))
+        o.append(_p8a_label(cx, y0 + 87, _P8A_NOTES[s], size=13, fill=_P8A_MUTED,
+                            weight="500", data_part="symbol-note"))
+    return _p8a_open(fig, TOP + RH * rows, o)
+
+
+# ── p8-loop ────────────────────────────────────────────────────────────────
+def _p8a_loop(fig):
+    """One series loop. Parts sit evenly spaced along each side of a rectangle; a
+    voltmeter can sit across any part on the top side."""
+    d = fig.get("data") or {}
+    sides = {k: list(d.get(k) or []) for k in ("top", "bottom", "left", "right")}
+    volts = list(d.get("volts") or [])
+    if not any(sides.values()):
+        raise ValueError("figure %r: p8-loop draws nothing" % fig.get("id"))
+    X0, X1 = 40.0, 300.0
+    YT = (max(_p8a_above(v) for v in volts) + 8) if volts else 30.0
+    YB = YT + float(d.get("height") or 130)
+    o = []
+    tx = _p8a_spread(X0, X1, len(sides["top"]))
+    bx = _p8a_spread(X0, X1, len(sides["bottom"]))
+    ly = _p8a_spread(YT, YB, len(sides["left"]))
+    ry = _p8a_spread(YT, YB, len(sides["right"]))
+    o.append(_p8a_run(X0, YT, X1, YT, [(x, p["k"]) for x, p in zip(tx, sides["top"])], fig))
+    o.append(_p8a_run(X0, YB, X1, YB, [(x, p["k"]) for x, p in zip(bx, sides["bottom"])], fig))
+    o.append(_p8a_run(X0, YT, X0, YB, [(y, p["k"]) for y, p in zip(ly, sides["left"])], fig))
+    o.append(_p8a_run(X1, YT, X1, YB, [(y, p["k"]) for y, p in zip(ry, sides["right"])], fig))
+    for v in volts:
+        i = v.get("i", 0)
+        if not 0 <= i < len(sides["top"]):
+            raise ValueError("figure %r: a voltmeter names top part %r" % (fig.get("id"), i))
+        s, dd = _p8a_volt(tx[i], YT, _P8A_HALF[sides["top"][i]["k"]], v, fig)
+        o.append(s)
+    for x, p in zip(tx, sides["top"]):
+        o.append(_p8a_words(p, x, YT, p.get("side", "below"), _P8A_HALF[p["k"]] if p["k"] not in ("cell", "battery") else 15))
+    for x, p in zip(bx, sides["bottom"]):
+        o.append(_p8a_words(p, x, YB, p.get("side", "below"), 15 if p["k"] in ("cell", "battery") else _P8A_HALF[p["k"]]))
+    for y, p in zip(ly, sides["left"]):
+        o.append(_p8a_words(p, X0, y, p.get("side", "right"), 15 if p["k"] in ("cell", "battery") else _P8A_HALF[p["k"]]))
+    for y, p in zip(ry, sides["right"]):
+        o.append(_p8a_words(p, X1, y, p.get("side", "left"), 15 if p["k"] in ("cell", "battery") else _P8A_HALF[p["k"]]))
+    return _p8a_open(fig, YB + _p8a_below(sides["bottom"]), o)
+
+
+# ── p8-branches ────────────────────────────────────────────────────────────
+def _p8a_branches(fig):
+    """Parallel branches between two rails, with the battery on the main wire along the
+    bottom. Where a lower branch meets a rail there is a junction, drawn as a dot."""
+    d = fig.get("data") or {}
+    branches = list(d.get("branches") or [])
+    main = list(d.get("main") or [])
+    if len(branches) < 2:
+        raise ValueError("figure %r: p8-branches needs two branches or more" % fig.get("id"))
+    X0, X1 = 40.0, 300.0
+    o, ys, y = [], [], 12.0
+    for n, b in enumerate(branches):
+        v = b.get("volts")
+        y += (_p8a_above(v) if v else 18.0)
+        ys.append(y)
+        y += _p8a_below(b["parts"])
+    yb = y + 34.0
+    o.append(_p8a_run(X0, ys[0], X0, yb, [], fig))
+    o.append(_p8a_run(X1, ys[0], X1, yb, [], fig))
+    for y, b in zip(ys, branches):
+        xs = _p8a_spread(X0, X1, len(b["parts"]))
+        o.append(_p8a_run(X0, y, X1, y, [(x, p["k"]) for x, p in zip(xs, b["parts"])], fig))
+        v = b.get("volts")
+        if v:
+            i = v.get("i", 0)
+            s, dd = _p8a_volt(xs[i], y, _P8A_HALF[b["parts"][i]["k"]], v, fig)
+            o.append(s)
+        for x, p in zip(xs, b["parts"]):
+            o.append(_p8a_words(p, x, y, p.get("side", "below"),
+                                15 if p["k"] in ("cell", "battery") else _P8A_HALF[p["k"]]))
+    for y in ys[1:]:
+        o.append(_p8a_circle(X0, y, 4.5, fill=_P8A_INK, data_part="junction"))
+        o.append(_p8a_circle(X1, y, 4.5, fill=_P8A_INK, data_part="junction"))
+    mx = _p8a_spread(X0, X1, len(main))
+    o.append(_p8a_run(X0, yb, X1, yb, [(x, p["k"]) for x, p in zip(mx, main)], fig))
+    for x, p in zip(mx, main):
+        o.append(_p8a_words(p, x, yb, p.get("side", "below"),
+                            15 if p["k"] in ("cell", "battery") else _P8A_HALF[p["k"]]))
+    return _p8a_open(fig, yb + _p8a_below(main), o)
+
+
+ART.update({
+    "p8-symbols": _p8a_symbols,
+    "p8-loop": _p8a_loop,
+    "p8-branches": _p8a_branches,
+})
+
+
+# ─── LEAN WAVE 2 (P8 lane B: lessons 5-7), pasted from ~/tmp/lean-ks3-w2/elec/drawers-laneB.py ───
+import math
+from ks3_art.kit import (
+    _SVG_ACCENT,
+    _SVG_ACCENT_TEXT,
+    _SVG_CARD,
+    _SVG_INK,
+    _SVG_INK_MUTED,
+    _SVG_INSET,
+    _SVG_RULE,
+    _SVG_RULE_STRONG,
+    _circle,
+    _label,
+    _line,
+    _n,
+    _path,
+    _rect,
+    _svg_open,
+)
+
+_P8B_W = 340
+
+
+def _p8b_open(fig, h, body):
+    return (_svg_open(fig, _P8B_W, int(math.ceil(h)))
+            + '<g stroke-linecap="round" stroke-linejoin="round">'
+            + "".join(body) + "</g></svg>")
+
+
+def _p8b_need(fig, keys):
+    d = fig.get("data") or {}
+    for k in keys:
+        if d.get(k) in (None, "", [], {}):
+            raise ValueError("figure %r: data has no %r" % (fig.get("id"), k))
+    return d
+
+
+def _p8b_leader(x1, y1, x2, y2):
+    return (_line(x1, y1, x2, y2, stroke=_SVG_INK_MUTED, w=1.5, data_part="leader")
+            + _circle(x2, y2, 2.5, fill=_SVG_INK, data_part="leader-end"))
+
+
+def _p8b_arrow(x1, y1, x2, y2, paint=_SVG_INK, w=2.5, head=8.0, **data):
+    """A straight arrow from (x1, y1) to (x2, y2), its head at the far end."""
+    ang = math.atan2(y2 - y1, x2 - x1)
+    a1, a2 = ang + math.radians(150), ang - math.radians(150)
+    hx1, hy1 = x2 + head * math.cos(a1), y2 + head * math.sin(a1)
+    hx2, hy2 = x2 + head * math.cos(a2), y2 + head * math.sin(a2)
+    return (_line(x1, y1, x2, y2, stroke=paint, w=w, **data)
+            + _path("M %s,%s L %s,%s L %s,%s" % (_n(hx1), _n(hy1), _n(x2), _n(y2), _n(hx2), _n(hy2)),
+                    stroke=paint, w=w))
+
+
+# ── shared symbol pieces (a cell, a lamp, a meter, a resistor) ───────────
+
+def _p8b_cell(o, x, y, w=3):
+    """One cell, centred on (x, y) on a horizontal wire: the long thin line is the +
+    side (left), the short thick line the - side (right). Spans x-6 .. x+6."""
+    o.append(_line(x - 5, y - 15, x - 5, y + 15, stroke=_SVG_INK, w=w, data_part="cell-plus"))
+    o.append(_line(x + 5, y - 8, x + 5, y + 8, stroke=_SVG_INK, w=w + 3, data_part="cell-minus"))
+
+
+def _p8b_battery(o, x1, x2, y):
+    """Two cells joined, filling the gap x1..x2 in a horizontal wire at height y."""
+    mid = (x1 + x2) / 2.0
+    o.append(_line(x1, y, mid - 18, y, stroke=_SVG_INK, w=3, data_part="wire"))
+    _p8b_cell(o, mid - 13, y)
+    o.append(_line(mid - 8, y, mid + 8, y, stroke=_SVG_INK, w=3, data_part="wire"))
+    _p8b_cell(o, mid + 13, y)
+    o.append(_line(mid + 18, y, x2, y, stroke=_SVG_INK, w=3, data_part="wire"))
+
+
+def _p8b_lamp(o, cx, cy, r=14, lit=False):
+    o.append(_circle(cx, cy, r, fill=_SVG_CARD, stroke=_SVG_INK, w=3, data_part="lamp"))
+    k = r * 0.707
+    o.append(_path("M %s,%s L %s,%s M %s,%s L %s,%s"
+                   % (_n(cx - k), _n(cy - k), _n(cx + k), _n(cy + k),
+                      _n(cx + k), _n(cy - k), _n(cx - k), _n(cy + k)),
+                   stroke=_SVG_INK, w=2.5, data_part="lamp-cross"))
+    if lit:
+        for deg in (-160, -125, -90, -55, -20):
+            a = math.radians(deg)
+            o.append(_line(cx + (r + 4) * math.cos(a), cy + (r + 4) * math.sin(a),
+                           cx + (r + 11) * math.cos(a), cy + (r + 11) * math.sin(a),
+                           stroke=_SVG_ACCENT, w=3, data_part="lamp-ray"))
+
+
+def _p8b_meter(o, cx, cy, letter, r=16):
+    o.append(_circle(cx, cy, r, fill=_SVG_CARD, stroke=_SVG_INK, w=3, data_part="meter",
+                     data_key=letter))
+    o.append(_label(cx, cy + 6.5, letter, size=18, weight="700", data_part="meter-letter",
+                    data_key=letter))
+
+
+def _p8b_resistor(o, cx, cy, w=48, h=18):
+    o.append(_rect(cx - w / 2.0, cy - h / 2.0, w, h, fill=_SVG_CARD, stroke=_SVG_INK, w=3,
+                   data_part="resistor"))
+
+
+# ── p8-res-circuit: a battery, one component, its meters, their readings ──
+
+def _p8b_circuit(fig):
+    """One loop. The battery sits on the top wire, the component on the bottom wire.
+    A meter can sit in the loop on the left side or the right side, or across the
+    component on a branch underneath it. Each meter's reading is written beside it.
+
+    data: supply (label over the battery); component: "resistor" | "lamp" | "specimen";
+          label (the name over the component); lit (lamp only, draws rays);
+          meters: [{"kind": "A" | "V", "slot": "left" | "right" | "across", "reading": str}].
+    """
+    d = _p8b_need(fig, ("supply", "component", "label", "meters"))
+    comp = d["component"]
+    if comp not in ("resistor", "lamp", "specimen"):
+        raise ValueError("figure %r: unknown component %r" % (fig.get("id"), comp))
+    slots = {}
+    for m in d["meters"]:
+        if m.get("kind") not in ("A", "V") or m.get("slot") not in ("left", "right", "across"):
+            raise ValueError("figure %r: bad meter %r" % (fig.get("id"), m))
+        if not m.get("reading"):
+            raise ValueError("figure %r: a meter has no reading" % fig.get("id"))
+        if m["slot"] in slots:
+            raise ValueError("figure %r: two meters in slot %r" % (fig.get("id"), m["slot"]))
+        slots[m["slot"]] = m
+    L, R, T, B, CX = 96, 244, 52, 142, 170
+    o = []
+    # the top wire, with the battery in it
+    o.append(_label(CX, 22, d["supply"], size=14, weight="700", data_part="supply"))
+    o.append(_line(L, T, 140, T, stroke=_SVG_INK, w=3, data_part="wire"))
+    _p8b_battery(o, 140, 200, T)
+    o.append(_line(200, T, R, T, stroke=_SVG_INK, w=3, data_part="wire"))
+    # the two sides: a plain wire, or a meter in the loop
+    for side, x in (("left", L), ("right", R)):
+        m = slots.get(side)
+        if m is None:
+            o.append(_line(x, T, x, B, stroke=_SVG_INK, w=3, data_part="wire"))
+            continue
+        my = (T + B) / 2.0
+        o.append(_line(x, T, x, my - 16, stroke=_SVG_INK, w=3, data_part="wire"))
+        o.append(_line(x, my + 16, x, B, stroke=_SVG_INK, w=3, data_part="wire"))
+        _p8b_meter(o, x, my, m["kind"])
+        if side == "left":
+            o.append(_label(x - 24, my + 5, m["reading"], size=15, weight="700", anchor="end",
+                            fill=_SVG_ACCENT_TEXT, data_part="reading", data_key=m["kind"]))
+        else:
+            o.append(_label(x + 24, my + 5, m["reading"], size=15, weight="700", anchor="start",
+                            fill=_SVG_ACCENT_TEXT, data_part="reading", data_key=m["kind"]))
+    # the bottom wire, with the component in it
+    half = {"resistor": 24, "lamp": 14, "specimen": 34}[comp]
+    o.append(_line(L, B, CX - half, B, stroke=_SVG_INK, w=3, data_part="wire"))
+    o.append(_line(CX + half, B, R, B, stroke=_SVG_INK, w=3, data_part="wire"))
+    if comp == "resistor":
+        _p8b_resistor(o, CX, B)
+    elif comp == "lamp":
+        _p8b_lamp(o, CX, B, lit=bool(d.get("lit")))
+    else:
+        # a strip of the material, held at each end by a crocodile clip
+        o.append(_rect(CX - 26, B - 6, 52, 12, rx=2, fill=_SVG_RULE_STRONG, stroke=_SVG_INK, w=2,
+                       data_part="specimen"))
+        for sx, sgn in ((CX - half, 1), (CX + half, -1)):
+            o.append(_path("M %s,%s L %s,%s L %s,%s Z"
+                           % (_n(sx), B, _n(sx + sgn * 12), B - 9, _n(sx + sgn * 12), B + 9),
+                           fill=_SVG_INK_MUTED, stroke=_SVG_INK, w=2, data_part="clip"))
+    o.append(_label(CX, B - 34, d["label"], size=14, weight="700", data_part="component-label"))
+    h = B + 16
+    # a meter across the component, on a branch underneath it
+    m = slots.get("across")
+    if m is not None:
+        x1, x2, yb = CX - 50, CX + 50, B + 52
+        for x in (x1, x2):
+            o.append(_circle(x, B, 4, fill=_SVG_INK, data_part="junction"))
+            o.append(_line(x, B, x, yb, stroke=_SVG_INK, w=3, data_part="wire"))
+        o.append(_line(x1, yb, CX - 16, yb, stroke=_SVG_INK, w=3, data_part="wire"))
+        o.append(_line(CX + 16, yb, x2, yb, stroke=_SVG_INK, w=3, data_part="wire"))
+        _p8b_meter(o, CX, yb, m["kind"])
+        o.append(_label(CX, yb + 38, m["reading"], size=15, weight="700",
+                        fill=_SVG_ACCENT_TEXT, data_part="reading", data_key=m["kind"]))
+        h = yb + 48
+    return _p8b_open(fig, h, o)
+
+
+# ── p8-res-wires: what makes a wire resist more ──────────────────────────
+
+def _p8b_wires(fig):
+    """Two rows of two wires. Left column: less resistance. Right column: more.
+    Row 1 compares a short and a long wire of the same thickness. Row 2 compares a
+    thick and a thin wire of the same length.
+
+    data: rows, two {"title", "left", "right"} (the words under each wire).
+    """
+    d = _p8b_need(fig, ("rows",))
+    rows = d["rows"]
+    if len(rows) != 2:
+        raise ValueError("figure %r: needs exactly two rows" % fig.get("id"))
+    o = []
+    o.append(_label(88, 22, "Less resistance", size=14, weight="700", data_part="column",
+                    data_key="less"))
+    o.append(_label(252, 22, "More resistance", size=14, weight="700", fill=_SVG_ACCENT_TEXT,
+                    data_part="column", data_key="more"))
+    # (left half-length, right half-length, left width, right width) per row
+    shapes = [(30, 70, 6, 6), (60, 60, 14, 4)]
+    for i, (row, (hl, hr, wl, wr)) in enumerate(zip(rows, shapes)):
+        for k in ("title", "left", "right"):
+            if not row.get(k):
+                raise ValueError("figure %r: row %d has no %r" % (fig.get("id"), i, k))
+        y0 = 58 + 92 * i
+        o.append(_rect(8, y0 - 15, 324, 22, rx=4, fill=_SVG_INSET, data_part="row-band"))
+        o.append(_label(170, y0, row["title"], size=14, weight="700", data_part="row-title",
+                        data_key=str(i)))
+        wy = y0 + 32
+        o.append(_line(170, y0 + 14, 170, y0 + 64, stroke=_SVG_RULE, w=1.5, data_part="divider"))
+        for cx, hw, sw, side in ((88, hl, wl, "left"), (252, hr, wr, "right")):
+            o.append(_line(cx - hw, wy, cx + hw, wy, stroke=_SVG_ACCENT, w=sw, data_part="wire",
+                           data_key=side))
+            for ex in (cx - hw, cx + hw):
+                o.append(_circle(ex, wy, 4, fill=_SVG_INK, data_part="wire-end"))
+            o.append(_label(cx, wy + 30, row[side], size=14, weight="600", data_part="wire-label",
+                            data_key=side))
+    return _p8b_open(fig, 224, o)
+
+
+# ── p8-res-collisions: electrons bumping into the atoms of a wire ────────
+
+def _p8b_collisions(fig):
+    """A length of metal wire, cut open. Metal atoms sit in rows. Small electrons move
+    between them, left to right. One electron's zigzag path shows it bumping into atoms.
+
+    data: flow (label over the arrow), atom, electron, bump (three leader labels).
+    """
+    d = _p8b_need(fig, ("flow", "atom", "electron", "bump"))
+    o = []
+    o.append(_p8b_arrow(60, 25, 280, 25, paint=_SVG_ACCENT_TEXT, w=3, data_part="flow-arrow"))
+    o.append(_label(170, 14, d["flow"], size=14, weight="700", data_part="flow-label"))
+    o.append(_rect(10, 34, 320, 112, rx=10, fill=_SVG_INSET, stroke=_SVG_INK, w=2.5,
+                   data_part="wire"))
+    atoms = []
+    for row, y in enumerate((60, 90, 120)):
+        for x in range(40 + (row % 2) * 30, 320, 60):
+            atoms.append((x, y))
+            o.append(_circle(x, y, 10, fill=_SVG_RULE_STRONG, stroke=_SVG_INK, w=1.5,
+                             data_part="atom"))
+    # free electrons between the atoms
+    for x, y in ((85, 75), (205, 75), (295, 75), (265, 105), (25, 105), (190, 135),
+                 (130, 45), (250, 45)):
+        o.append(_circle(x, y, 4.5, fill=_SVG_ACCENT, data_part="electron"))
+    # one electron's path: it hits an atom, bounces, and hits another
+    o.append(_path("M 22,86 L 58,90 L 66,75 L 93,70 L 123,81 L 150,72",
+                   stroke=_SVG_ACCENT_TEXT, w=2, dash="4,4", data_part="path"))
+    o.append(_circle(150, 72, 4.5, fill=_SVG_ACCENT, data_part="electron"))
+    o.append(_label(12, 172, d["bump"], size=14, weight="600", anchor="start", data_part="bump-label"))
+    o.append(_p8b_leader(59, 160, 58, 94))
+    o.append(_label(328, 172, d["electron"], size=14, weight="600", anchor="end",
+                    data_part="electron-label"))
+    o.append(_p8b_leader(250, 160, 193, 139))
+    o.append(_label(170, 194, d["atom"], size=14, weight="600", data_part="atom-label"))
+    o.append(_p8b_leader(170, 182, 161, 131))
+    return _p8b_open(fig, 202, o)
+
+
+# ── p8-cond-cable: copper inside, plastic outside ────────────────────────
+
+def _p8b_cable(fig):
+    """A cable with its plastic coating stripped back at one end, so the copper strands
+    show. The coating and the copper are each labelled.
+
+    data: plastic, copper (each a list of one or two label lines).
+    """
+    d = _p8b_need(fig, ("plastic", "copper"))
+    o = []
+    # the copper core, running the whole length, and its bare strands at the right
+    o.append(_rect(20, 60, 290, 16, rx=3, fill=_SVG_ACCENT, stroke=_SVG_INK, w=2, data_part="copper"))
+    for k in range(3):
+        y = 64 + 4 * k
+        o.append(_line(212, y, 306, y, stroke=_SVG_INK, w=1, data_part="strand"))
+    # the plastic coating over the left part
+    o.append(_rect(10, 48, 200, 40, rx=14, fill=_SVG_RULE_STRONG, stroke=_SVG_INK, w=2.5,
+                   data_part="plastic"))
+    for i, ln in enumerate(d["plastic"]):
+        o.append(_label(110, 20 + 17 * i, ln, size=14, weight="700" if i == 0 else "600",
+                        data_part="plastic-label", data_key=str(i)))
+    o.append(_p8b_leader(110, 20 + 17 * (len(d["plastic"]) - 1) + 6, 110, 52))
+    for i, ln in enumerate(d["copper"]):
+        o.append(_label(262, 112 + 17 * i, ln, size=14, weight="700" if i == 0 else "600",
+                        data_part="copper-label", data_key=str(i)))
+    o.append(_p8b_leader(262, 98, 262, 74))
+    return _p8b_open(fig, 112 + 17 * (len(d["copper"]) - 1) + 8, o)
+
+
+# ── p8-cond-tester: is it a conductor? ───────────────────────────────────
+
+def _p8b_tester(fig):
+    """Two panels side by side. Each: a battery, a lamp and a gap held by two crocodile
+    clips, with a material clipped into the gap. A conductor lights the lamp (rays);
+    an insulator leaves it dark (no rays).
+
+    data: panels, two {"material", "result", "verdict", "lit": bool}.
+    """
+    d = _p8b_need(fig, ("panels",))
+    panels = d["panels"]
+    if len(panels) != 2:
+        raise ValueError("figure %r: needs exactly two panels" % fig.get("id"))
+    o = []
+    o.append(_line(170, 8, 170, 226, stroke=_SVG_RULE, w=1.5, data_part="divider"))
+    for i, p in enumerate(panels):
+        for k in ("material", "result", "verdict"):
+            if not p.get(k):
+                raise ValueError("figure %r: panel %d has no %r" % (fig.get("id"), i, k))
+        ox = 170 * i
+        L, R, T, B = ox + 28, ox + 142, 40, 140
+        cx = ox + 85
+        o.append(_line(L, T, cx - 18, T, stroke=_SVG_INK, w=3, data_part="wire"))
+        _p8b_battery(o, cx - 18, cx + 18, T)
+        o.append(_line(cx + 18, T, R, T, stroke=_SVG_INK, w=3, data_part="wire"))
+        o.append(_line(L, T, L, B, stroke=_SVG_INK, w=3, data_part="wire"))
+        # the lamp on the right side
+        o.append(_line(R, T, R, 76, stroke=_SVG_INK, w=3, data_part="wire"))
+        o.append(_line(R, 104, R, B, stroke=_SVG_INK, w=3, data_part="wire"))
+        _p8b_lamp(o, R, 90, lit=bool(p.get("lit")))
+        # the gap on the bottom wire, with the material clipped in
+        o.append(_line(L, B, cx - 36, B, stroke=_SVG_INK, w=3, data_part="wire"))
+        o.append(_line(cx + 36, B, R, B, stroke=_SVG_INK, w=3, data_part="wire"))
+        o.append(_rect(cx - 30, B - 6, 60, 12, rx=2,
+                       fill=_SVG_INK_MUTED if p.get("lit") else _SVG_CARD,
+                       stroke=_SVG_INK, w=2, data_part="material", data_key=str(i)))
+        for sx, sgn in ((cx - 36, 1), (cx + 36, -1)):
+            o.append(_path("M %s,%s L %s,%s L %s,%s Z"
+                           % (_n(sx), B, _n(sx + sgn * 12), B - 9, _n(sx + sgn * 12), B + 9),
+                           fill=_SVG_INK_MUTED, stroke=_SVG_INK, w=2, data_part="clip"))
+        o.append(_label(cx, 176, p["material"], size=14, weight="700", data_part="material-label",
+                        data_key=str(i)))
+        o.append(_label(cx, 196, p["result"], size=14, weight="600", data_part="result",
+                        data_key=str(i)))
+        o.append(_label(cx, 216, p["verdict"], size=14, weight="700",
+                        fill=_SVG_ACCENT_TEXT if p.get("lit") else _SVG_INK,
+                        data_part="verdict", data_key=str(i)))
+    return _p8b_open(fig, 228, o)
+
+
+# ── p8-cond-electrons: free electrons in a metal, held ones in plastic ───
+
+def _p8b_electrons(fig):
+    """Two panels, one above the other. Top: a metal, its atoms in rows, with free
+    electrons scattered between them and arrows showing they can move. Bottom: plastic,
+    its atoms in rows, each with its own electrons held tight beside it and no free ones.
+
+    data: panels, two {"title", "note"}; the first is the metal, the second the plastic.
+    """
+    d = _p8b_need(fig, ("panels",))
+    panels = d["panels"]
+    if len(panels) != 2:
+        raise ValueError("figure %r: needs exactly two panels" % fig.get("id"))
+    o = []
+    for i, p in enumerate(panels):
+        for k in ("title", "note"):
+            if not p.get(k):
+                raise ValueError("figure %r: panel %d has no %r" % (fig.get("id"), i, k))
+        y0 = 4 + 134 * i
+        o.append(_label(170, y0 + 16, p["title"], size=14, weight="700", data_part="panel-title",
+                        data_key=str(i)))
+        o.append(_rect(10, y0 + 26, 320, 76, rx=8, fill=_SVG_INSET, stroke=_SVG_INK, w=2,
+                       data_part="material", data_key=str(i)))
+        for row, y in enumerate((y0 + 46, y0 + 82)):
+            for x in range(40 + (row % 2) * 30, 320, 60):
+                o.append(_circle(x, y, 10, fill=_SVG_RULE_STRONG, stroke=_SVG_INK, w=1.5,
+                                 data_part="atom"))
+                if i == 1:
+                    # this atom's own electrons, held close on either side
+                    for ex in (x - 15, x + 15):
+                        o.append(_circle(ex, y, 4, fill=_SVG_ACCENT, data_part="held-electron"))
+        if i == 0:
+            for x, y in ((70, 64), (130, 64), (190, 64), (250, 64), (300, 64), (40, 64)):
+                o.append(_circle(x, y0 + y, 4.5, fill=_SVG_ACCENT, data_part="free-electron"))
+                o.append(_p8b_arrow(x + 8, y0 + y, x + 22, y0 + y, paint=_SVG_ACCENT_TEXT, w=2,
+                                    head=5, data_part="drift"))
+        o.append(_label(170, y0 + 122, p["note"], size=14, weight="600", data_part="panel-note",
+                        data_key=str(i)))
+    return _p8b_open(fig, 266, o)
+
+
+# ── p8-build-symbols: the circuit symbols the practical uses ─────────────
+
+def _p8b_symbols(fig):
+    """Eight symbols in a grid of three columns: cell, battery, lamp, open switch,
+    closed switch, resistor, ammeter, voltmeter. Each is named underneath.
+
+    data: names, a dict of the eight names (keys cell, battery, lamp, open, closed,
+          resistor, ammeter, voltmeter).
+    """
+    d = _p8b_need(fig, ("names",))
+    order = ("cell", "battery", "lamp", "open", "closed", "resistor", "ammeter", "voltmeter")
+    names = d["names"]
+    for k in order:
+        if not names.get(k):
+            raise ValueError("figure %r: no name for %r" % (fig.get("id"), k))
+    o = []
+    cw, rh = 340 / 3.0, 86
+    for n, key in enumerate(order):
+        col, row = n % 3, n // 3
+        cx = cw * col + cw / 2.0
+        cy = 30 + rh * row
+        o.append(_rect(cw * col + 4, rh * row + 4, cw - 8, rh - 8, rx=6, fill=_SVG_INSET,
+                       data_part="symbol-card", data_key=key))
+        if key == "cell":
+            o.append(_line(cx - 36, cy, cx - 5, cy, stroke=_SVG_INK, w=3, data_part="wire"))
+            _p8b_cell(o, cx, cy)
+            o.append(_line(cx + 5, cy, cx + 36, cy, stroke=_SVG_INK, w=3, data_part="wire"))
+        elif key == "battery":
+            _p8b_battery(o, cx - 36, cx + 36, cy)
+        elif key == "lamp":
+            o.append(_line(cx - 36, cy, cx - 14, cy, stroke=_SVG_INK, w=3, data_part="wire"))
+            _p8b_lamp(o, cx, cy)
+            o.append(_line(cx + 14, cy, cx + 36, cy, stroke=_SVG_INK, w=3, data_part="wire"))
+        elif key in ("open", "closed"):
+            o.append(_line(cx - 36, cy, cx - 16, cy, stroke=_SVG_INK, w=3, data_part="wire"))
+            o.append(_line(cx + 16, cy, cx + 36, cy, stroke=_SVG_INK, w=3, data_part="wire"))
+            for x in (cx - 16, cx + 16):
+                o.append(_circle(x, cy, 3.5, fill=_SVG_CARD, stroke=_SVG_INK, w=2.5, data_part="contact"))
+            if key == "open":
+                o.append(_line(cx - 14, cy - 2, cx + 14, cy - 16, stroke=_SVG_INK, w=3, data_part="lever"))
+            else:
+                o.append(_line(cx - 14, cy, cx + 14, cy, stroke=_SVG_INK, w=3, data_part="lever"))
+        elif key == "resistor":
+            o.append(_line(cx - 36, cy, cx - 22, cy, stroke=_SVG_INK, w=3, data_part="wire"))
+            _p8b_resistor(o, cx, cy, w=44, h=16)
+            o.append(_line(cx + 22, cy, cx + 36, cy, stroke=_SVG_INK, w=3, data_part="wire"))
+        else:
+            o.append(_line(cx - 36, cy, cx - 16, cy, stroke=_SVG_INK, w=3, data_part="wire"))
+            _p8b_meter(o, cx, cy, "A" if key == "ammeter" else "V")
+            o.append(_line(cx + 16, cy, cx + 36, cy, stroke=_SVG_INK, w=3, data_part="wire"))
+        o.append(_label(cx, cy + 44, names[key], size=14, weight="600", data_part="symbol-name",
+                        data_key=key))
+    return _p8b_open(fig, rh * 3, o)
+
+
+ART.update({
+    "p8-res-circuit": _p8b_circuit,
+    "p8-res-wires": _p8b_wires,
+    "p8-res-collisions": _p8b_collisions,
+    "p8-cond-cable": _p8b_cable,
+    "p8-cond-tester": _p8b_tester,
+    "p8-cond-electrons": _p8b_electrons,
+    "p8-build-symbols": _p8b_symbols,
+})

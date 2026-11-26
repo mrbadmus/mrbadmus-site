@@ -497,30 +497,19 @@ LESSON = {
     # verbatim and only the ORDER moves.
     "ladder": {
         "recall": {
-            "q": "You hold a bar magnet near an unlabelled steel bar and it "
-                 "is pulled towards you. You turn the magnet end for end and "
-                 "try again, and it is pulled towards you again. What do you "
-                 "now know about the bar?",
+            "q": "You hold one pole of a bar magnet near one end of an unlabelled steel bar. It is pulled in. You turn the magnet round and hold its other pole near the same end. It is pulled in again. What do you now know about the bar?",
             "options": [
                 "It is a magnet, because it was attracted both times",
-                "It is a magnetic material, but whether it is a magnet is "
-                "still open",
-                "It is not a magnet, because a magnet would have been "
-                "attracted only once",
+                "It is a magnetic material, and nothing here shows it is a magnet",
+                "It is not a magnet, because two magnets can never attract each other",
                 "It is not a magnetic material, because nothing was pushed "
                 "away",
             ],
             "answer": 1,
             "feedback": {
-                0: "Being attracted both times is exactly what a plain piece "
-                   "of steel does. A magnet would have been pushed away one "
-                   "of those two times.",
-                2: "A magnet would indeed have been repelled once — but it "
-                   "was not repelled, and it was not tested at every angle "
-                   "either. Attraction both ways is what unmagnetised steel "
-                   "does; it does not rule a weak magnet out on its own.",
-                3: "It moved, so it is certainly a magnetic material. A "
-                   "non-magnetic bar would have sat there.",
+                0: "Plain steel is attracted both ways too. Attraction never proves it is a magnet.",
+                2: "Two magnets do attract when unlike poles face. That reason is wrong.",
+                3: "It moved towards the magnet, so it is a magnetic material.",
             },
             "title": "Rung 1 · Read the result"},
         "apply": {
@@ -530,20 +519,15 @@ LESSON = {
             "options": [
                 "It doubles, because the gap halved",
                 "It stays the same, because neither magnet has changed",
-                "It grows a great deal — far more than doubling",
+                "It grows a great deal, far more than doubling",
                 "It falls, because they are being forced closer against the "
                 "push",
             ],
             "answer": 2,
             "feedback": {
-                0: "The force does not simply track the gap. Halving the gap "
-                   "between two bar magnets multiplies the push several times "
-                   "over, which is why the last centimetre is the one you "
-                   "feel.",
-                1: "Neither magnet changed, but the force between two magnets "
-                   "depends on the gap as well as on the magnets.",
-                3: "Pushing them closer takes effort precisely because the "
-                   "force is getting bigger, not smaller.",
+                0: "The force does not just follow the gap. Halving it gives far more than double.",
+                1: "The magnets are the same, but the force depends on the gap too.",
+                3: "Pushing them closer is harder because the force is getting bigger.",
             },
             "title": "Rung 2 · Apply the rule"},
         "explain": {

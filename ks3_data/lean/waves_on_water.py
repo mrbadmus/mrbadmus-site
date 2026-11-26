@@ -1,0 +1,141 @@
+# -*- coding: utf-8 -*-
+"""Waves on water, in the lean shape. Spec table: docs/lessons/wave2/ks3-waves-on-water.md."""
+
+LESSON = {
+    "slug": "waves-on-water",
+    "start": {
+        "setup": "Waves cross a pond for a whole minute. A gull sitting on the water ends up where it started.",
+        "question": "If you had to guess, what crossed the pond: the water "
+                    "itself, or only its up-and-down movement?",
+        "options": [
+            ("The water itself",
+             "The water stays put, just like the gull. Each patch only lifts and drops on the spot."),
+            ("Only its movement",
+             "Yes. Each patch of water lifts and drops, then hands the movement on to the next."),
+        ],
+        "answer": 1,
+    },
+    "words": ["amplitude", "wavelength", "frequency", "transverse"],
+    "word_defs": {
+        "amplitude": "The height of a crest above the rest line.",
+        "wavelength": "The distance from one crest to the next crest.",
+        "frequency": "The number of waves passing a point each second, measured in hertz (Hz).",
+        "transverse": "A wave where the material moves at right angles to the direction of travel.",
+    },
+    "knowledge": [
+        {"kind": "card", "title": "What a wave is",
+         "body": [{"figure": "p6-01-motion"},
+                  "A wave is a disturbance that travels.",
+                  "It carries energy from one place to another.",
+                  "It does not carry the material with it.",
+                  "On a pond, each patch of water moves up and down on the spot.",
+                  "It passes the movement on to the next patch.",
+                  "So the wave crosses the pond, and the water stays where it is."]},
+        {"kind": "card", "title": "Water waves are transverse",
+         "body": ["The water moves up and down. The wave travels across the surface.",
+                  "These two directions are at right angles.",
+                  "A wave like this is called a transverse wave."]},
+        {"kind": "card", "title": "The parts of a wave",
+         "body": [{"figure": "p6-01-parts"},
+                  {"points": ["Crest: the highest point of the wave.",
+                              "Trough: the lowest point of the wave.",
+                              "Rest line: where the surface sits when the water is still."]},
+                  "The amplitude is the height of a crest above the rest line.",
+                  "A trough is the same distance below the rest line.",
+                  "So crest to trough is twice the amplitude.",
+                  "The wavelength is the distance from one crest to the next crest.",
+                  "Trough to trough gives the same wavelength."]},
+        {"kind": "card", "title": "Frequency",
+         "body": ["Frequency is the number of waves passing a point each second.",
+                  "It is measured in hertz, Hz.",
+                  "1 Hz means one wave passes each second.",
+                  "A float bobbing up and down 3 times a second rides a 3 Hz wave."]},
+        {"kind": "reveal", "title": "Describing a wave",
+         "cols": ["What it is", "Unit"],
+         "rows": [
+             ("Amplitude", "Rest line to the top of a crest", "metres (m)"),
+             ("Wavelength", "One crest to the next crest", "metres (m)"),
+             ("Frequency", "Waves passing a point each second", "hertz (Hz)"),
+         ]},
+        {"kind": "card", "title": "Height and length are separate",
+         "body": ["A wave can be tall, with its crests close together.",
+                  "A wave can be low, with its crests far apart.",
+                  "Changing the amplitude does not change the wavelength.",
+                  "Changing the wavelength does not change the amplitude."]},
+        {"kind": "reveal", "title": "Two types of wave",
+         "cols": ["Which way it vibrates", "Examples"],
+         "rows": [
+             ("Transverse", "Across the direction of travel", "Water waves, a shaken rope, light"),
+             ("Longitudinal", "Along the direction of travel", "Sound, a pushed slinky"),
+         ]},
+        {"kind": "card", "title": "Easy mistakes",
+         "body": [{"mistakes": [
+             ("The water travels along with the wave.",
+              "The water moves up and down on the spot. Only the energy travels across.", "WAVE-01"),
+             ("A bigger wave is a longer wave.",
+              "Height is the amplitude and length is the wavelength. They change separately.", "WAVE-02"),
+             ("The amplitude runs from the trough up to the crest.",
+              "The amplitude runs from the rest line up to the crest. That is half as far.", "WAVE-03"),
+             ("If the water only goes up and down, the wave is standing still.",
+              "The wave travels across the pond while each patch of water moves up and down.", "WAVE-04"),
+             ("The wavelength runs from a crest to the next trough.",
+              "The wavelength runs from a crest to the next crest."),
+         ]}]},
+    ],
+    "key_fact": "A wave transfers energy from place to place without moving the material along. "
+                "Water waves are transverse: the water moves at right angles to the direction of travel.",
+    "deeper": [
+        {"kind": "card", "title": "Tsunamis",
+         "body": ["Out at sea, a tsunami can have an amplitude of under a metre.",
+                  "Its wavelength can be around 200 km.",
+                  "Ships ride over it and hardly notice.",
+                  "Near the coast the water gets shallow and the wave slows down.",
+                  "The same energy then piles up into a very tall wave."]},
+        {"kind": "card", "title": "Small circles",
+         "body": ["Water in a wave does not move exactly straight up and down.",
+                  "Each patch moves round a small circle, then ends up where it started.",
+                  "Up and down is close enough to show what transverse means."]},
+    ],
+    "try": {"label": "Wave Motion Lab", "href": "/simulations/physics/wave-motion-lab/"},
+    "tutor_body": "Got a wave of your own to describe, such as a rope, a pond or the sea?",
+    "connects_heading": None,
+    "ks4_becomes": "Period, the wave equation, and measuring the speed of waves in a ripple tank.",
+    "before_this": "Nothing. This is where the unit starts.",
+    "figures": [
+        {"id": "p6-01-motion", "kind": "diagram", "status": "drawn", "art": "p6-transverse-wave",
+         "title": "The water moves up and down as the wave travels across",
+         "desc": "A wave drawn on a dashed rest line, with an arrow along the top showing the direction "
+                 "of travel, to the right. One patch of water is marked with a dot on the wave. A "
+                 "double arrow through the dot points up and down. Words under the wave say the water "
+                 "moves up and down, and the wave travels across, at right angles to this.",
+         "caption": "Follow the dot. It only goes up and down while the wave passes.",
+         "data": {"show": "motion", "motion_label": "The water moves up and down."}},
+        {"id": "p6-01-parts", "kind": "diagram", "status": "drawn", "art": "p6-transverse-wave",
+         "title": "The parts of a wave",
+         "desc": "A wave two wavelengths long on a dashed rest line, travelling to the right. A crest, "
+                 "the highest point, and a trough, the lowest point, are labelled. A double arrow from "
+                 "one crest to the next is labelled wavelength. A double arrow from the rest line up to "
+                 "the height of a crest is labelled amplitude.",
+         "caption": "The parts of a wave.",
+         "data": {"show": "parts"}},
+    ],
+    "figure_caption": {"p6-01-motion": None, "p6-01-parts": None},     # the card text says it
+    "ladder_ticks": [
+        ["Names the amplitude as how far each person rises — how far out of the seat they stand.",
+         "Names the amplitude as how far each person rises out of their seat."],
+        ["Gives one real difference, such as: people decide when to stand, whereas water is pushed by its neighbours; or the crowd wave only goes one way round.",
+         "Gives one real difference, such as people choosing when to stand."],
+    ],
+    "ladder_feedback": {
+        "recall": {
+            0: "Amplitude starts at the rest line. Trough to crest is 0.10 m, twice the amplitude.",
+            1: "Each length has its own place. Wavelength runs along the water, and amplitude runs up.",
+            3: "Crest to trough is half a wave. Wavelength is crest to the next crest, 0.60 m.",
+        },
+        "apply": {
+            0: "A heavy log would stay put too. The water underneath is not going anywhere.",
+            2: "Waves do not take turns pushing it. The water lifts and drops, and the gull rides it.",
+            3: "The waves did travel. The water stayed behind, moving up and down on the spot.",
+        },
+    },
+}

@@ -2519,7 +2519,254 @@ def r_forbidden_move(a, act_id):
 # REGISTER SEGMENT: 'forbidden-move': "misconception",
 
 
-ART = {}
+# ═══════════════════════════════════════════════════════════════════════════
+# LEAN WAVE 2 (C4 lessons 1 to 3) · three drawn figures
+# ═══════════════════════════════════════════════════════════════════════════
+#
+#   "c4-change-particles"  data {"rows": [{"label", "left": box, "right": box, "note"}] x2,
+#                                "legend": [[sym, name], ...]}
+#                          box = {"label", "layout": "rows" | "jumble", "mols": ["H2O" | "H2" | "O2", ...]}
+#                          each row: a box, a drawn arrow, a box; small atoms with a colour key
+#   "c4-rearrange-steps"   data {"stages": [{"label", "groups": [[sym, ...], ...], "shape" or
+#                                "shapes" (one per group), "count"}],
+#                                "arrows": [label, ...]}
+#                          stages stacked top to bottom, one drawn arrow (with its label) between
+#                          each pair; atoms reuse C2's particle-box atoms (fill + symbol)
+#   "c4-word-row"          data {"left": [names], "right": [names], "over": str or None}
+#                          a word equation written left to right: reactants, a drawn arrow
+#                          (a condition, if any, above it), products
+#
+# All 326 wide, so they sit in a phone card without scrolling; every label is 13px or more.
+from ks3_art.kit import _SVG_ACCENT_TEXT, _SVG_INK_FAINT, _n
+
+_C4L_W = 326
+# small atoms for the side-by-side boxes, drawn without symbols (the colour key names them)
+_C4L_R = {"H": 6, "O": 9}
+# atom offsets for one molecule, centred on (0, 0), upright
+_C4L_MOL = {
+    "H2O": [("H", -11.8, 5.2), ("O", 0.0, -4.0), ("H", 11.8, 5.2)],
+    "H2": [("H", -6.0, 0.0), ("H", 6.0, 0.0)],
+    "O2": [("O", -9.0, 0.0), ("O", 9.0, 0.0)],
+}
+# (x fraction, y fraction, turn in degrees) for a jumbled box, by number of molecules
+_C4L_JUMBLE = {
+    2: [(0.30, 0.36, 20), (0.70, 0.66, -50)],
+    3: [(0.24, 0.30, 25), (0.74, 0.34, -60), (0.48, 0.74, 80)],
+    6: [(0.20, 0.27, 30), (0.55, 0.22, -70), (0.82, 0.36, 110),
+        (0.22, 0.72, -120), (0.53, 0.64, 15), (0.82, 0.78, -40)],
+}
+
+
+def _c4l_open(fig, h, body):
+    return (_svg_open(fig, _C4L_W, int(round(h)))
+            + '<g stroke-linecap="round" stroke-linejoin="round">' + "".join(body) + "</g></svg>")
+
+
+def _c4l_small_atom(sym, cx, cy):
+    from ks3_art.c2 import _PB_COL
+    return _circle(cx, cy, _C4L_R[sym], fill=_PB_COL[sym][0], stroke=_SVG_INK, w=1.5,
+                   data_part="atom", data_key=sym)
+
+
+def _c4l_mol(kind, cx, cy, turn):
+    import math
+    if kind not in _C4L_MOL:
+        raise ValueError("c4-change-particles: no drawing for molecule %r" % kind)
+    a = math.radians(turn)
+    out = []
+    for sym, dx, dy in _C4L_MOL[kind]:
+        x = cx + dx * math.cos(a) - dy * math.sin(a)
+        y = cy + dx * math.sin(a) + dy * math.cos(a)
+        out.append(_c4l_small_atom(sym, x, y))
+    return "".join(out)
+
+
+def _c4l_box(box, x, y, w, h):
+    mols = box.get("mols") or []
+    lay = box.get("layout")
+    out = [_rect(x, y, w, h, rx=10, fill=_SVG_INSET, stroke=_SVG_INK, w=2,
+                 data_part="box", data_key=box["label"])]
+    if lay == "rows":
+        cols = 3
+        nrows = -(-len(mols) // cols)
+        for i, m in enumerate(mols):
+            r, c = divmod(i, cols)
+            cx = x + w / 2.0 + (c - (cols - 1) / 2.0) * 42
+            cy = y + h / 2.0 + (r - (nrows - 1) / 2.0) * 38
+            out.append(_c4l_mol(m, cx, cy, 0))
+    elif lay == "jumble":
+        slots = _C4L_JUMBLE.get(len(mols))
+        if not slots:
+            raise ValueError("c4-change-particles: no jumble for %d molecules" % len(mols))
+        for m, (fx, fy, turn) in zip(mols, slots):
+            out.append(_c4l_mol(m, x + fx * w, y + fy * h, turn))
+    else:
+        raise ValueError("c4-change-particles: layout %r" % lay)
+    return "".join(out)
+
+
+def _c4l_change_particles(fig):
+    """Two rows. Each: a label, then a box, a drawn arrow and a box, then a note.
+    Row one is a physical change (the same particles rearranged); row two a chemical
+    change (the atoms joined up in new particles). A colour key names the atoms."""
+    from ks3_art.b4 import _b4_arrow
+    d = fig.get("data") or {}
+    rows = d.get("rows") or []
+    if not rows:
+        raise ValueError("figure %r: c4-change-particles needs data.rows" % fig.get("id"))
+    BW, BH = 142, 96
+    LX, RX = 4, _C4L_W - 4 - BW
+    out, y = [], 0
+    for ri, row in enumerate(rows):
+        out.append(_label(LX, y + 18, row["label"], size=15, weight="700", anchor="start",
+                          data_part="row-label", data_key=row["label"]))
+        for bx, side in ((LX, "left"), (RX, "right")):
+            box = row[side]
+            out.append(_label(bx + BW / 2.0, y + 42, box["label"], size=14, weight="600",
+                              data_part="box-label", data_key=box["label"]))
+            out.append(_c4l_box(box, bx, y + 50, BW, BH))
+        mid = y + 50 + BH / 2.0
+        out.append(_b4_arrow(LX + BW + 6, mid, RX - 6, mid, w=3, head=10, data_part="arrow"))
+        out.append(_mono(_C4L_W / 2.0, y + 50 + BH + 22, row["note"], size=13, fill=_SVG_ACCENT_TEXT,
+                         weight="600", anchor="middle", data_part="note", data_key=row["note"]))
+        y += 50 + BH + 22 + (24 if ri < len(rows) - 1 else 0)
+    legend = d.get("legend") or []
+    if legend:
+        y += 30
+        x = LX + 10
+        for sym, name in legend:
+            out.append(_c4l_small_atom(sym, x, y - 5))
+            out.append(_label(x + 14, y, name, size=14, weight="600", anchor="start",
+                              data_part="key", data_key=sym))
+            x += 150
+    return _c4l_open(fig, y + 10, out)
+
+
+def _c4l_group(syms, shape):
+    """[(sym, dx, dy)], w, h for one joined particle. "cross" puts the first atom in the
+    middle and the other four touching it, above, right, below and left (methane)."""
+    from ks3_art.c2 import _PB_R, _pb_group
+    if shape == "cross" and len(syms) == 5:
+        r0 = _PB_R[syms[0]]
+        pos = [(syms[0], 0.0, 0.0)]
+        for sym, (ux, uy) in zip(syms[1:], ((0, -1), (1, 0), (0, 1), (-1, 0))):
+            dd = r0 + _PB_R[sym]
+            pos.append((sym, ux * dd, uy * dd))
+        x0 = min(p[1] - _PB_R[p[0]] for p in pos)
+        x1 = max(p[1] + _PB_R[p[0]] for p in pos)
+        y0 = min(p[2] - _PB_R[p[0]] for p in pos)
+        y1 = max(p[2] + _PB_R[p[0]] for p in pos)
+        return [(s, dx - x0, dy - y0) for s, dx, dy in pos], x1 - x0, y1 - y0
+    return _pb_group(syms, "straight" if shape == "cross" else shape)
+
+
+def _c4l_rearrange_steps(fig):
+    """Stages stacked top to bottom. Each stage: a bold label, a box holding its particles
+    (atoms in one particle touch), and a mono count line. A drawn arrow joins each stage
+    to the next, its label beside it."""
+    from ks3_art.b4 import _b4_arrow
+    from ks3_art.c2 import _pb_atom, _pb_flow
+    d = fig.get("data") or {}
+    stages, arrows = d.get("stages") or [], d.get("arrows") or []
+    if len(stages) < 2 or len(arrows) != len(stages) - 1:
+        raise ValueError("figure %r: c4-rearrange-steps needs 2+ stages and one arrow label "
+                         "between each pair" % fig.get("id"))
+    BX, BW, PAD = 8, 310, 14
+    cx = _C4L_W / 2.0
+    out, y = [], 4
+    for si, st in enumerate(stages):
+        out.append(_label(BX, y + 16, st["label"], size=15, weight="700", anchor="start",
+                          data_part="stage-label", data_key=st["label"]))
+        top = y + 26
+        shapes = st.get("shapes") or [st.get("shape", "straight")] * len(st["groups"])
+        if len(shapes) != len(st["groups"]):
+            raise ValueError("figure %r: stage %r has %d shapes for %d groups"
+                             % (fig.get("id"), st["label"], len(shapes), len(st["groups"])))
+        groups = [_c4l_group(g, sh if len(g) > 1 else "straight")
+                  for g, sh in zip(st["groups"], shapes)]
+        rows = _pb_flow(groups, BW - 2 * PAD)
+        rh = [max(g[2] for g in r) for r in rows]
+        h = sum(rh) + 12 * (len(rows) - 1) + 2 * PAD
+        body, yy = [], top + PAD
+        for r, hh in zip(rows, rh):
+            rw = sum(g[1] for g in r) + 16 * (len(r) - 1)
+            xx = BX + BW / 2.0 - rw / 2.0
+            for pos, gw, gh in r:
+                oy = yy + (hh - gh) / 2.0
+                for s, dx, dy in pos:
+                    body.append(_pb_atom(s, xx + dx, oy + dy))
+                xx += gw + 16
+            yy += hh + 12
+        out.append(_rect(BX, top, BW, h, rx=10, fill=_SVG_INSET, stroke=_SVG_INK, w=2.5,
+                         data_part="box", data_key=st["label"]))
+        out.extend(body)
+        y = top + h
+        if st.get("count"):
+            out.append(_mono(BX, y + 20, st["count"], size=13, fill=_SVG_INK_FAINT, weight="600",
+                             anchor="start", data_part="count", data_key=st["label"]))
+            y += 28
+        if si < len(stages) - 1:
+            out.append(_b4_arrow(cx, y + 4, cx, y + 44, w=3, head=12, data_part="arrow"))
+            out.append(_label(cx + 16, y + 29, arrows[si], size=14, fill=_SVG_ACCENT_TEXT,
+                              weight="600", anchor="start", data_part="arrow-label",
+                              data_key=arrows[si]))
+            y += 52
+    return _c4l_open(fig, y + 8, out)
+
+
+def _c4l_word_row(fig):
+    """A word equation written left to right. Reactants in a column on the left, products
+    on the right, each substance on its own line with a plus sign between. A drawn arrow
+    between the columns, at their middle, with a condition (if any) written above it."""
+    from ks3_art.b4 import _b4_arrow
+    d = fig.get("data") or {}
+    left, right = list(d.get("left") or []), list(d.get("right") or [])
+    if not left or not right:
+        raise ValueError("figure %r: c4-word-row needs data.left and data.right" % fig.get("id"))
+    LC, RC, AX0, AX1 = 76, 254, 154, 186
+    NAME, PLUS = 22, 20
+
+    def col(names, cx, y0):
+        parts, y = [], y0
+        for i, nm in enumerate(names):
+            if i:
+                parts.append(_label(cx, y + 14, "+", size=16, weight="700", data_part="plus",
+                                    data_key="%s-%d" % (nm, i)))
+                y += PLUS
+            parts.append(_label(cx, y + 15, nm, size=14, weight="700", data_part="substance",
+                                data_key=nm))
+            y += NAME
+        return parts, y
+
+    TOP = 34
+    out = [_mono(LC, 18, "REACTANTS" if len(left) > 1 else "REACTANT", size=13, fill=_SVG_INK_FAINT,
+                 weight="600", anchor="middle", spacing="1.5", data_part="tag", data_key="reactants"),
+           _mono(RC, 18, "PRODUCTS" if len(right) > 1 else "PRODUCT", size=13, fill=_SVG_INK_FAINT,
+                 weight="600", anchor="middle", spacing="1.5", data_part="tag", data_key="products")]
+    lp, ly = col(left, LC, TOP)
+    rp, ry = col(right, RC, TOP)
+    hl, hr = ly - TOP, ry - TOP
+    tall = max(hl, hr)
+    # centre the shorter column against the taller one
+    if hl < tall:
+        lp, ly = col(left, LC, TOP + (tall - hl) / 2.0)
+    if hr < tall:
+        rp, ry = col(right, RC, TOP + (tall - hr) / 2.0)
+    out += lp + rp
+    mid = TOP + tall / 2.0 + 4
+    out.append(_b4_arrow(AX0, mid, AX1, mid, w=3, head=10, data_part="arrow"))
+    if d.get("over"):
+        out.append(_label((AX0 + AX1) / 2.0, mid - 12, d["over"], size=13, fill=_SVG_ACCENT_TEXT,
+                          weight="600", data_part="condition", data_key=d["over"]))
+    return _c4l_open(fig, TOP + tall + 10, out)
+
+
+ART = {
+    "c4-change-particles": _c4l_change_particles,
+    "c4-rearrange-steps": _c4l_rearrange_steps,
+    "c4-word-row": _c4l_word_row,
+}
+
 
 KIND_SHELL = {
     'change-pairs': ("ks3-cpair-block", ' data-instrument data-cpairblock data-stage-done="0"'),

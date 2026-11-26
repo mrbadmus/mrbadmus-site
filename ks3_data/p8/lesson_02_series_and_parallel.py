@@ -354,26 +354,16 @@ LESSON = {
                  "current leaves the battery, and what happens if the middle "
                  "lamp is unscrewed?",
             "options": [
-                "0.20 A shared between the three, so about 0.07 A each, and "
-                "the other two get brighter",
-                "0.60 A, and the other two stay at full brightness",
-                "0.60 A, and all three go out",
-                # ⊕ MRB-297 · 1 Sep 2026 — the third option was widened so
-                # the correct answer stops being resolvable as the
-                # second-longest.
-                "0.20 A altogether, and the other two stay lit",
+                "0.20 A shared out, so about 0.07 A each, and the other two get brighter",
+                "0.60 A, and the other two lamps stay at full brightness",
+                "0.60 A, and all three lamps go out because the circuit is broken",
+                "0.20 A altogether, and the other two lamps stay lit at full brightness",
             ],
             "answer": 1,
             "feedback": {
-                0: "Nothing is shared. Each branch has the full 6 V across it "
-                   "and draws its own 0.20 A, so the battery supplies 0.60 A. "
-                   "Removing one lamp does not change the other two at all.",
-                2: "The total is right. But three parallel branches are three "
-                   "separate paths, and breaking one leaves the other two "
-                   "complete — that is the point of wiring in parallel.",
-                3: "The verdict on the other lamps is right and the current "
-                   "is not. Three branches each drawing 0.20 A add up at the "
-                   "battery to 0.60 A.",
+                0: "The battery's current is not fixed. Each branch takes its own 0.20 A, so 0.60 A in all.",
+                2: "The total is right. But in parallel, the other two branches are still complete.",
+                3: "Each branch takes 0.20 A, and the branch currents add up to 0.60 A.",
             },
             "title": "Rung 1 · Read the circuit"},
         "apply": {
@@ -385,32 +375,16 @@ LESSON = {
             # her correction are untouched; the clause after the comma states
             # the rule the wrong idea depends on. See DEPARTURES-P8.md row 1.
             "options": [
-                "Nothing is wrong — in series the current is the same "
-                "everywhere, so both bulbs must be as bright as the single "
-                "bulb was, because a bulb's brightness is set by the current "
-                "passing through it and that current has not changed anywhere "
-                "in the loop.",
-                "The first bulb will be as bright as before and the second "
-                "will be dim, because the current reaches the first bulb "
-                "first.",
-                "The bulbs will be dimmer because the battery has to divide "
-                "its charge between two bulbs and each gets half as much.",
-                "A second bulb in series makes it harder for the charge to "
-                "get round the one loop, so the current everywhere falls — "
-                "here from 0.30 A to 0.15 A — and both bulbs are dim.",
+                "Nothing is wrong, because the current is the same everywhere, so it has not changed.",
+                "The first bulb gets the current first, so it stays bright and the other dims.",
+                "Both are dimmer, because each bulb uses up half of the battery's charge.",
+                "Two bulbs resist more than one, so the current falls and both bulbs are dim.",
             ],
             "answer": 3,
             "feedback": {
-                0: "The current is the same at every point of the loop, but "
-                   "that shared value is smaller than it was with one bulb. "
-                   "Same everywhere does not mean unchanged.",
-                1: "There is no first. One loop means one current at every "
-                   "point at the same instant, so two identical bulbs are "
-                   "equally dim.",
-                2: "The verdict is right and the reason is not. Charge is not "
-                   "divided up in series — all of it goes through both bulbs. "
-                   "What has changed is how hard it is to push, so the flow "
-                   "slows down.",
+                0: "The current is the same everywhere. But that one current is smaller than before.",
+                1: "There is no first lamp. The current is the same everywhere in the loop.",
+                2: "No charge is used up. The current is smaller because two lamps are harder to push through.",
             },
             "title": "Rung 2 · The one that catches people"},
         "explain": {

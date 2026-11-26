@@ -720,24 +720,19 @@ LESSON = {
     "ladder": {
         "recall": {
             "q": "A specimen is clipped across a 6.0 V supply and the ammeter "
-                 "reads 0.15 A. What is its resistance, and how would you "
-                 "classify it?",
+                 "reads 0.15 A. Below 100 Ω counts as a conductor. What is its "
+                 "resistance, and how would you classify it?",
             "options": [
-                "0.9 Ω — a conductor",
-                "40 Ω — a conductor",
-                "40 Ω — an insulator",
-                "0.025 Ω — a very good conductor",
+                "0.9 Ω, so it is a conductor",
+                "40 Ω, so it is a conductor",
+                "40 Ω, so it is an insulator",
+                "0.025 Ω, so it is a very good conductor",
             ],
             "answer": 1,
             "feedback": {
-                0: "The classification is right but the arithmetic is a "
-                   "multiplication. Resistance is volts divided by amps: "
-                   "6.0 ÷ 0.15.",
-                2: "The resistance is right. Forty ohms lets 0.15 A through "
-                   "on six volts, which is enough to light a lamp — nothing "
-                   "like the millions of ohms of an insulator.",
-                3: "That is amps divided by volts, which is the division "
-                   "upside down. Volts on top gives 40 Ω.",
+                0: "That multiplies. R = V ÷ I, so divide 6.0 by 0.15.",
+                2: "40 Ω is right. It is below 100 Ω, so it counts as a conductor.",
+                3: "That divides the wrong way up. Put the p.d. on top: 6.0 ÷ 0.15.",
             },
             "title": "Rung 1 · Calculate and classify"},
         "apply": {
@@ -749,29 +744,16 @@ LESSON = {
             # her correction are untouched; the clause after the comma states
             # the rule the wrong idea depends on. See DEPARTURES-P8.md row 1.
             "options": [
-                "The student is right: an insulator has infinite resistance, "
-                "which is why the reading is exactly zero — a material either "
-                "has free charges in it and conducts, or has none at all and "
-                "stops the current dead.",
-                "The resistance cannot be worked out at all, because dividing "
-                "by a zero reading is impossible.",
-                "The resistance is enormous, because plastic has no atoms "
-                "that can carry charge.",
-                "The resistance is enormous but finite — around 2 TΩ for that "
-                "ruler, which passes a current of a few millionths of a "
-                "millionth of an amp, far below what the meter can show.",
+                "The student is right, because an insulator lets no current through at all.",
+                "It is zero, because zero current means nothing is resisting.",
+                "It is enormous, because plastic has no charged particles in it at all.",
+                "It is huge but not infinite, so a tiny current flows, too small to show.",
             ],
             "answer": 3,
             "feedback": {
-                0: "The reading is zero because the meter cannot resolve a "
-                   "current that small, not because there is none. Nothing "
-                   "has an infinite resistance.",
-                1: "The reading is not really zero — it is below the meter’s "
-                   "resolution. With a sensitive enough instrument you get a "
-                   "current, and a division.",
-                2: "The verdict is right and the reason is not. Plastic is "
-                   "full of electrons; the point is that they are all locked "
-                   "into bonds rather than free to drift.",
+                0: "A tiny current does flow. It is too small for the meter to show.",
+                1: "Zero current means a huge resistance, not zero. For the same p.d., less current means more resistance.",
+                2: "Plastic is full of electrons. Almost all are held in place, so they cannot move.",
             },
             "title": "Rung 2 · The one that catches people"},
         "explain": {

@@ -456,22 +456,16 @@ LESSON = {
                  "4.0 seconds. How many complete vibrations does it make in "
                  "that time?",
             "options": [
-                "64 vibrations — divide the frequency by the time",
-                "1024 vibrations",
-                "1024 Hz",
-                "260 vibrations — add the four seconds on to the 256",
+                "64 vibrations, because you divide the frequency by the time taken",
+                "1024 vibrations, because you multiply the frequency by the time",
+                "1024 Hz, because you multiply the frequency by the time",
+                "260 vibrations, because you add the 4 seconds on to the 256",
             ],
             "answer": 1,
             "feedback": {
-                0: "Dividing is how you get a frequency when you already "
-                   "have a count. Here the frequency is given, so each "
-                   "second brings another 256 vibrations and you multiply.",
-                2: "The arithmetic is right and the unit is wrong. Hertz "
-                   "counts vibrations per second; this answer is a plain "
-                   "count of vibrations, over a stated four seconds.",
-                3: "Adding a time to a frequency is adding two different "
-                   "quantities. The 256 is a rate: it happens again every "
-                   "second, so four seconds means four helpings of it.",
+                0: "Dividing finds a frequency. Here the frequency is given, so multiply by the time.",
+                2: "The number is right, but it is a count of vibrations. Hertz is per second.",
+                3: "The 256 happens every second. Four seconds means 256 × 4, so multiply.",
             },
             "title": "Rung 1 · Calculate"},
         "apply": {
@@ -479,30 +473,16 @@ LESSON = {
                  "the piccolo reaches you before the tuba, because higher "
                  "notes travel faster. Which statement is right?",
             "options": [
-                "The tuba arrives first, because a louder, lower note "
-                "carries more energy and pushes through the air more "
-                "quickly, so the more energy a note is given the sooner it "
-                "reaches you",
-                "They arrive together, because the band members are all the "
-                "same distance away.",
-                "Both notes travel at about 340 m/s in the same air, so "
-                "they arrive together — which is why the band sounds like a "
-                "band and not a mess.",
-                "The student is right: higher frequency means the wave gets "
-                "along faster, so the piccolo arrives first.",
+                "The tuba arrives first, because a louder note pushes through the air faster.",
+                "The tuba arrives first, because its longer wavelength makes it travel faster.",
+                "They arrive together, because all sounds travel at the same speed in air.",
+                "The piccolo arrives first, because a higher frequency sound travels faster.",
             ],
             "answer": 2,
             "feedback": {
-                0: "The verdict is reversed and the rule is still wrong. "
-                   "Loudness is amplitude, and amplitude does not change "
-                   "the speed either.",
-                1: "The verdict is right and the reason does not do the "
-                   "work. Even from exactly the same spot the two notes "
-                   "would only arrive together if they travelled at the "
-                   "same speed, and that is the fact being tested.",
-                3: "Frequency is how often the air is squeezed as the sound "
-                   "goes past, not how fast the squeezing travels. If the "
-                   "two differed, distant music would arrive scrambled.",
+                0: "Loudness does not change the speed. All sounds travel at the same speed in air.",
+                1: "Wavelength does not set the speed. All sounds travel at the same speed in air.",
+                3: "Frequency is how often the air is squashed. It does not change the speed.",
             },
             "title": "Rung 2 · The one that catches people"},
         "explain": {

@@ -481,21 +481,16 @@ LESSON = {
                  "hold more, and you may change one thing. Which of these "
                  "will not help at all?",
             "options": [
-                "Swapping the soft iron core for a plastic one of the same "
-                "size",
+                "Swapping the iron core for a plastic one",
                 "Winding twice as many turns onto the coil",
                 "Turning the supply up so twice as much current flows",
-                "Putting a soft iron core in where there was only air",
+                "Using a bigger soft iron core in the coil",
             ],
             "answer": 0,
             "feedback": {
-                1: "That does help. Every extra turn adds its own field in "
-                   "the same place, so doubling the turns roughly doubles the "
-                   "field.",
-                2: "That does help. The field a coil makes goes up with the "
-                   "current through it.",
-                3: "That helps enormously — it is the single biggest change "
-                   "available on the bench.",
+                1: "That does help. With the same current, more turns give a stronger field.",
+                2: "That does help. More current through the coil makes a stronger field.",
+                3: "That does help. A bigger iron core makes the field stronger.",
             },
             "title": "Rung 1 · Choose the change"},
         "apply": {
@@ -512,16 +507,9 @@ LESSON = {
             ],
             "answer": 3,
             "feedback": {
-                0: "Soft iron is chosen precisely because it does not stay "
-                   "magnetised. Wrap the coil round hardened steel instead "
-                   "and you would have a point.",
-                1: "There is nothing stored to drain. The field is made by "
-                   "the current, and when the current stops there is no field "
-                   "to run down.",
-                2: "The clips do fall, but not for that reason. There are no "
-                   "poles at all once the current stops — and in any case a "
-                   "south pole would attract them just as well as a north "
-                   "one.",
+                0: "Soft iron is chosen because it does not stay magnetised.",
+                1: "Nothing is stored to drain away. The field goes when the current stops.",
+                2: "There are no poles once the current stops. And a south pole attracts clips too.",
             },
             "title": "Rung 2 · Predict the switch"},
         "explain": {

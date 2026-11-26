@@ -396,59 +396,32 @@ LESSON = {
             "q": "A tone of 30 000 Hz is sounded in a room holding a young "
                  "person, a dog and an elephant. Who can hear it?",
             "options": [
-                "The dog only — 30 000 Hz is above the top of the human "
-                "range and above the top of the elephant’s.",
-                "Nobody — 30 000 Hz is ultrasound, and ultrasound is not "
-                "really sound, so nothing in the room can respond to it "
-                "however good its ears are",
-                "The dog and the elephant — animals hear better than people "
-                "do.",
-                "All three — the tone is very high, and high sounds carry "
-                "best.",
+                "The dog only, because 30 000 Hz is too high for the others",
+                "Nobody, because 30 000 Hz is ultrasound, and ultrasound is not real sound",
+                "The dog and the elephant, because animals hear higher than people do",
+                "All three, because a high sound like 30 000 Hz carries the furthest",
             ],
             "answer": 0,
             "feedback": {
-                1: "Ultrasound is ordinary sound in every respect; the name "
-                   "only means it is above the human range. The dog’s range "
-                   "reaches about 45 000 Hz, so the dog hears it.",
-                2: "Not all animals, and not in the same direction. The "
-                   "elephant’s strength is at the bottom of the scale, "
-                   "reaching down to about 16 Hz; its top is around 12 000 "
-                   "Hz, lower than a young person’s.",
-                3: "How well a sound carries is a different question from "
-                   "whether an ear can respond to it. Above the top of a "
-                   "range, nothing is heard at all, however well the sound "
-                   "has travelled.",
+                1: "Ultrasound is real sound. A dog hears up to about 45 000 Hz, so it hears this.",
+                2: "An elephant hears up to only about 12 000 Hz. It cannot hear 30 000 Hz.",
+                3: "How far a sound carries does not matter. Above an ear's range, it hears nothing.",
             },
             "title": "Rung 1 · Read the ranges"},
         "apply": {
             "q": "A dog whistle is blown and no person in the room hears "
                  "anything. Which statement is right?",
             "options": [
-                "The whistle produces a very quiet sound that only a dog’s "
-                "more sensitive ears can pick up.",
-                "The sound is there, but it travels too fast for human ears "
-                "to catch it.",
-                "The whistle produces no sound at all, and dogs are "
-                "responding to the air being blown rather than to a sound, "
-                "which is why a dog reacts and a microphone in the same "
-                "room registers nothing",
-                "The whistle is producing a loud tone at about 30 000 Hz, "
-                "and human ears cannot respond to a vibration that fast — a "
-                "microphone in the same room records it easily.",
+                "It makes a very quiet tone that only a dog’s sensitive ears can pick up.",
+                "Its tone travels too fast for human ears to catch, but not for a dog’s.",
+                "It makes no sound at all, and the dog reacts to the puff of air.",
+                "It makes a loud tone, with too high a frequency for human ears to hear.",
             ],
             "answer": 3,
             "feedback": {
-                0: "Loudness is not the issue. The tone is loud, and "
-                   "turning it up would still not make a person hear it — "
-                   "it is above the top of the human range.",
-                1: "The verdict is right and the rule is wrong. Every "
-                   "frequency travels through the same air at the same "
-                   "speed; what changes is how many times a second the ear "
-                   "is asked to respond.",
-                2: "A microphone placed in front of it registers a strong "
-                   "steady tone. There is a sound; there are no ears in the "
-                   "room able to respond to it.",
+                0: "The tone is loud. Turning it up would not help, because it is too high.",
+                1: "All sounds travel at the same speed in air. The frequency is what matters.",
+                2: "A microphone picks up a loud tone. The whistle does make a sound.",
             },
             "title": "Rung 2 · The one that catches people"},
         "explain": {

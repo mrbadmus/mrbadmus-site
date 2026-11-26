@@ -496,26 +496,16 @@ LESSON = {
                  "mm, the other 4 mm. What is the amplitude of the water "
                  "where they overlap?",
             "options": [
-                "5 mm — take the average, because the surface can only be "
-                "in one place at a time",
-                "10 mm — add the two, because both waves lift the surface "
-                "at the same moment",
-                "24 mm — multiply the two amplitudes, because both waves "
-                "are acting at once",
-                "2 mm — take the smaller from the bigger, because one wave "
-                "always cancels part of the other",
+                "5 mm, because the surface takes the average of the two heights",
+                "10 mm, because both waves lift the surface at the same time",
+                "24 mm, because the two heights are multiplied when waves act together",
+                "2 mm, because the smaller wave always cancels part of the bigger one",
             ],
             "answer": 1,
             "feedback": {
-                0: "The surface being in one place is exactly why you add: "
-                   "it goes to the total of what both waves ask for, not to "
-                   "a compromise between them.",
-                2: "Two things acting at once are added, not multiplied. "
-                   "Multiplying millimetres by millimetres would give "
-                   "square millimetres, which is an area, not a height.",
-                3: "Subtracting is the crest-on-trough case. Crest on crest "
-                   "means both are lifting the surface at once, so the two "
-                   "displacements add.",
+                0: "Waves do not average. Both lift the surface at once, so add the heights.",
+                2: "Two waves acting at once are added. Multiplying them is never right.",
+                3: "Subtract only for crest on trough. Crest on crest, the heights add.",
             },
             "title": "Rung 1 · Calculate"},
         "apply": {
@@ -523,30 +513,16 @@ LESSON = {
                  "trough. A student says the two waves have destroyed each "
                  "other. Which statement is right?",
             "options": [
-                "The two waves have destroyed each other, so nothing "
-                "carries on past the overlap.",
-                "The whole tank goes flat, because the two waves cancel "
-                "everywhere they are present.",
-                "The surface is flat where they overlap, and both waves "
-                "carry on past unchanged — the cancelling lasts only while "
-                "they are on top of each other.",
-                "The bigger wave absorbs the smaller one, so a single 7 mm "
-                "wave carries on — a wave that meets a larger one is always "
-                "swallowed by it, and only the larger one comes out the far "
-                "side",
+                "The waves have destroyed each other, so nothing carries on past the overlap.",
+                "The whole tank goes flat, because the waves cancel everywhere they travel.",
+                "The water is flat where they overlap, and both waves carry on unchanged.",
+                "One wave absorbs the other, so a single 7 mm wave carries on past.",
             ],
             "answer": 2,
             "feedback": {
-                0: "Waves are not objects that can be broken. Each one is "
-                   "still travelling through, and both come out the far "
-                   "side at 7 mm.",
-                1: "The verdict is right in one place and wrong everywhere "
-                   "else. Cancelling happens where a crest lands on a "
-                   "trough; half a wavelength along, the same two waves are "
-                   "adding.",
-                3: "Neither is bigger here, and absorption is not what "
-                   "superposition does. Both waves carry on, and the flat "
-                   "patch exists only where they overlap.",
+                0: "Waves are not destroyed. Both carry on past the overlap at 7 mm.",
+                1: "The water is flat only where they overlap. Elsewhere each wave is still 7 mm.",
+                3: "Waves do not absorb each other. Both carry on past the overlap at 7 mm.",
             },
             "title": "Rung 2 · The one that catches people"},
         "explain": {
@@ -570,26 +546,18 @@ LESSON = {
             ],
             "title": "Rung 3 · Explain"},
         "produce": {
-            "q": "A harbour wall has two gaps in it. Inside the harbour, "
-                 "boats moored at some spots rock hard on a swell while "
-                 "boats a few metres away barely move, and the pattern is "
-                 "the same every time that swell runs. Explain what is "
-                 "going on, then say what would change if one gap were "
-                 "blocked up.",
+            "q": "Two people send pulses along a rope from opposite ends. One "
+                 "sends a crest 3 cm high. The other sends a trough 3 cm deep. "
+                 "Explain what the rope looks like as they meet, and just after. "
+                 "Then say what changes if both send crests.",
             "field_label": "Your answer",
-            "placeholder": "Each gap lets a set of waves into the harbour, "
-                           "so…",
+            "placeholder": "Where the crest and the trough overlap…",
             "success": [
-                "Says each gap lets its own set of waves spread into the "
-                "harbour.",
-                "Says the two sets overlap inside and superpose.",
-                "Says the hard-rocking spots are where crests arrive "
-                "together and add.",
-                "Says the calm spots are where a crest from one gap arrives "
-                "with a trough from the other and they cancel.",
-                "Says blocking one gap leaves a single set of waves, so the "
-                "pattern of calm and rough spots disappears and every boat "
-                "rocks about the same amount.",
+                "Says the crest and the trough add where they overlap.",
+                "Says 3 cm up and 3 cm down add to 0, so the rope is flat there.",
+                "Says the rope is flat only for a moment, while they overlap.",
+                "Says each pulse carries on past the other, unchanged.",
+                "Says two crests would add to make a crest 6 cm high.",
             ],
             "title": "Rung 4 · Take it somewhere new"},
     },

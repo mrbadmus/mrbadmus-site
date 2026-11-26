@@ -1781,3 +1781,425 @@ KIND_FN = {
     'motor-coil':      r_motor_coil,
     'mag-band':        r_mag_band,
 }
+
+
+# ═══ ⊕ Lean Wave 2 (Unit 6, lane C) · drawn figures for the lean pages ═════
+#
+#   "p10-pole-pairs"   data {}   N–N and S–S repel, N–S attract (two bar magnets a row)
+#   "p10-steel-test"   data {}   a magnet pulls plain steel either way round; only a
+#                                magnet can be pushed away
+#   "p10-bar-field"    data {}   field lines round a bar magnet, N to S, with compasses
+#   "p10-earth-field"  data {}   the Earth's field, the buried-magnet model and a compass
+#   "p10-electromagnet" data {turns}   a coil on an iron core, a cell, a switch, clips
+#
+# All 340 wide, labels 13px or more. The N half of a magnet is the accent tint and
+# the S half the inset fill, and each half is ALSO lettered N or S, so no meaning
+# rides on a pale fill alone. Field lines are COMPUTED, never hand-drawn: a bar
+# magnet is two point poles; the Earth is a dipole, r = L cos²(latitude).
+import math as _p10c_math
+
+from ks3_art.kit import (_SVG_ACCENT_TEXT, _SVG_ACCENT_TINT, _SVG_CARD, _SVG_INK,
+                         _SVG_INK_BODY, _SVG_INK_MUTED, _SVG_INSET, _SVG_RULE_STRONG,
+                         _circle, _line, _n, _path, _svg_open)
+from ks3_art.kit import _label as _p10c_label
+from ks3_art.kit import _rect as _p10c_rect
+
+_P10C_W = 340
+
+
+def _p10c_open(fig, h, body, w=_P10C_W):
+    return (_svg_open(fig, w, int(_p10c_math.ceil(h)))
+            + '<g stroke-linecap="round" stroke-linejoin="round">' + "".join(body) + "</g></svg>")
+
+
+def _p10c_head(x, y, ang, size=10.0, fill=_SVG_INK):
+    dx, dy = _p10c_math.cos(ang), _p10c_math.sin(ang)
+    px, py = -dy, dx
+    return _path("M %s,%s L %s,%s L %s,%s Z"
+                 % (_n(x), _n(y),
+                    _n(x - dx * size + px * size * 0.5), _n(y - dy * size + py * size * 0.5),
+                    _n(x - dx * size - px * size * 0.5), _n(y - dy * size - py * size * 0.5)),
+                 fill=fill, data_part="arrowhead")
+
+
+def _p10c_arrow(x1, y1, x2, y2, w=3.0, paint=_SVG_INK, part="force"):
+    ang = _p10c_math.atan2(y2 - y1, x2 - x1)
+    bx, by = x2 - _p10c_math.cos(ang) * 8, y2 - _p10c_math.sin(ang) * 8
+    return (_line(x1, y1, bx, by, stroke=paint, w=w, data_part=part)
+            + _p10c_head(x2, y2, ang, size=11, fill=paint))
+
+
+def _p10c_magnet(x, y, w, h, left, part="magnet"):
+    """A bar magnet, its left half lettered `left` ("N" or "S") and the right half the other."""
+    if left not in ("N", "S"):
+        raise ValueError("p10 magnet: left pole must be N or S, not %r" % (left,))
+    right = "S" if left == "N" else "N"
+    out = []
+    for i, pole in enumerate((left, right)):
+        hx = x + i * w / 2.0
+        out.append(_p10c_rect(hx, y, w / 2.0, h, fill=_SVG_ACCENT_TINT if pole == "N" else _SVG_INSET,
+                              stroke=_SVG_INK, w=2, data_part=part + "-" + pole.lower()))
+        out.append(_p10c_label(hx + w / 4.0, y + h / 2.0 + 6, pole, size=17, weight="800",
+                               fill=_SVG_ACCENT_TEXT if pole == "N" else _SVG_INK,
+                               data_part=part + "-letter"))
+    return "".join(out)
+
+
+# ── p10-pole-pairs ──────────────────────────────────────────────────────────
+def _p10c_pole_pairs(fig):
+    rows = (("S", "N"), ("N", "S"), ("S", "S"))        # the left pole of each magnet
+    o = []
+    y = 0.0
+    LX, RX, MW, MH = 16.0, 214.0, 110.0, 28.0
+    for left_a, left_b in rows:
+        # magnet a: its RIGHT end faces the gap; magnet b: its LEFT end faces the gap.
+        # The words are worked out from the poles drawn, so they cannot disagree.
+        face_a = "S" if left_a == "N" else "N"
+        face_b = left_b
+        attract = face_a != face_b
+        words = "%s and %s %s" % (face_a, face_b, "attract" if attract else "repel")
+        o.append(_p10c_magnet(LX, y + 24, MW, MH, left_a, part="magnet-a"))
+        o.append(_p10c_magnet(RX, y + 24, MW, MH, left_b, part="magnet-b"))
+        ay = y + 13
+        ca, cb = LX + MW / 2.0, RX + MW / 2.0
+        if attract:
+            o.append(_p10c_arrow(ca - 22, ay, ca + 22, ay, w=2.6))
+            o.append(_p10c_arrow(cb + 22, ay, cb - 22, ay, w=2.6))
+        else:
+            o.append(_p10c_arrow(ca + 22, ay, ca - 22, ay, w=2.6))
+            o.append(_p10c_arrow(cb - 22, ay, cb + 22, ay, w=2.6))
+        o.append(_p10c_label(170, y + 74, words, size=14, weight="700", data_part="verdict"))
+        y += 92
+    return _p10c_open(fig, y - 8, o)
+
+
+# ── p10-steel-test ──────────────────────────────────────────────────────────
+def _p10c_steel_bar(x, y, w, h, near, part="steel"):
+    """A plain steel bar. `near` is the pole the magnet makes at its near (left) end,
+    lettered small and muted: it is a magnet only while the magnet is there."""
+    far = "S" if near == "N" else "N"
+    return (_p10c_rect(x, y, w, h, fill=_SVG_CARD, stroke=_SVG_INK_BODY, w=2, dash="6,4",
+                       data_part=part)
+            + _p10c_label(x + w / 2.0, y + h / 2.0 + 5, "steel", size=14, weight="700",
+                          fill=_SVG_INK_BODY, data_part="steel-name")
+            + _p10c_label(x + 11, y + h / 2.0 + 5, near, size=13, fill=_SVG_INK_MUTED,
+                          data_part="induced-pole")
+            + _p10c_label(x + w - 11, y + h / 2.0 + 5, far, size=13, fill=_SVG_INK_MUTED,
+                          data_part="induced-pole"))
+
+
+def _p10c_steel_test(fig):
+    o = []
+    LX, RX, MW, MH = 16.0, 214.0, 110.0, 28.0
+    rows = (("S", "steel", "Steel is pulled in"),
+            ("N", "steel", "Turn the magnet: pulled in again"),
+            ("S", "magnet", "Only a magnet can be pushed away"))
+    y = 0.0
+    for left_a, other, words in rows:
+        face = "S" if left_a == "N" else "N"
+        o.append(_p10c_magnet(LX, y + 24, MW, MH, left_a, part="magnet"))
+        ay = y + 13
+        ca, cb = LX + MW / 2.0, RX + MW / 2.0
+        if other == "steel":
+            o.append(_p10c_steel_bar(RX, y + 24, MW, MH, "S" if face == "N" else "N"))
+            o.append(_p10c_arrow(cb + 22, ay, cb - 22, ay, w=2.6))
+        else:
+            o.append(_p10c_magnet(RX, y + 24, MW, MH, face, part="magnet-b"))
+            o.append(_p10c_arrow(cb - 22, ay, cb + 22, ay, w=2.6))
+        o.append(_p10c_label(170, y + 74, words, size=14, weight="700", data_part="verdict"))
+        y += 92
+    return _p10c_open(fig, y - 8, o)
+
+
+# ── field-line tracing for two point poles ──────────────────────────────────
+def _p10c_trace(start, poles, box, inside, step=1.5, limit=1400):
+    """Points along a field line from `start`, following the field from + to −.
+    Stops on reaching within 3 of a − pole, leaving the box, or after `limit` steps."""
+    pts = [start]
+    x, y = start
+    for _ in range(limit):
+        bx = by = 0.0
+        for (px, py, q) in poles:
+            dx, dy = x - px, y - py
+            r2 = dx * dx + dy * dy
+            if q < 0 and r2 < 9:
+                return pts
+            r3 = r2 ** 1.5
+            bx += q * dx / r3
+            by += q * dy / r3
+        m = _p10c_math.hypot(bx, by)
+        if m == 0:
+            return pts
+        x, y = x + step * bx / m, y + step * by / m
+        if not (box[0] <= x <= box[2] and box[1] <= y <= box[3]):
+            return pts
+        pts.append((x, y))
+    return pts
+
+
+def _p10c_runs(pts, keep):
+    """Split a point list into runs of consecutive points that `keep` accepts."""
+    runs, cur = [], []
+    for p in pts:
+        if keep(p):
+            cur.append(p)
+        elif cur:
+            runs.append(cur)
+            cur = []
+    if cur:
+        runs.append(cur)
+    return [r for r in runs if len(r) > 3]
+
+
+def _p10c_poly(run, w=2.0, paint=_SVG_INK_BODY, part="field-line"):
+    d = "M " + " L ".join("%s,%s" % (_n(round(x, 1)), _n(round(y, 1))) for x, y in run[::2] + [run[-1]])
+    return _path(d, stroke=paint, w=w, data_part=part)
+
+
+def _p10c_run_head(run, at=0.5, paint=_SVG_INK):
+    """An arrowhead part way along a run, by arc length, pointing along it."""
+    seg = [_p10c_math.hypot(run[i + 1][0] - run[i][0], run[i + 1][1] - run[i][1])
+           for i in range(len(run) - 1)]
+    goal, acc = sum(seg) * at, 0.0
+    for i, s in enumerate(seg):
+        if acc + s >= goal:
+            (x0, y0), (x1, y1) = run[i], run[i + 1]
+            return _p10c_head(x1, y1, _p10c_math.atan2(y1 - y0, x1 - x0), size=10, fill=paint)
+        acc += s
+    return ""
+
+
+def _p10c_compass(x, y, ang, r=11.0, part="compass"):
+    """A plotting compass whose needle's N end points along `ang` (radians)."""
+    dx, dy = _p10c_math.cos(ang), _p10c_math.sin(ang)
+    px, py = -dy * 3.2, dx * 3.2
+    tip = (x + dx * (r - 2), y + dy * (r - 2))
+    tail = (x - dx * (r - 2), y - dy * (r - 2))
+    return (_circle(x, y, r, fill=_SVG_CARD, stroke=_SVG_INK, w=1.8, data_part=part)
+            + _path("M %s,%s L %s,%s L %s,%s Z" % (_n(tip[0]), _n(tip[1]), _n(x + px), _n(y + py),
+                                                    _n(x - px), _n(y - py)),
+                    fill=_SVG_ACCENT_TEXT, data_part="needle-n")
+            + _path("M %s,%s L %s,%s L %s,%s Z" % (_n(tail[0]), _n(tail[1]), _n(x + px), _n(y + py),
+                                                    _n(x - px), _n(y - py)),
+                    fill=_SVG_INK, data_part="needle-s"))
+
+
+def _p10c_field_at(x, y, poles):
+    bx = by = 0.0
+    for (px, py, q) in poles:
+        dx, dy = x - px, y - py
+        r3 = (dx * dx + dy * dy) ** 1.5
+        bx += q * dx / r3
+        by += q * dy / r3
+    return _p10c_math.atan2(by, bx)
+
+
+# ── p10-bar-field ───────────────────────────────────────────────────────────
+def _p10c_bar_field(fig):
+    """Field lines round one bar magnet, N on the left. They leave the N pole and
+    enter the S pole, crowd at the poles and never cross. Three compasses sit on the
+    lines, each needle's N end along the line's arrow."""
+    W, H = 340.0, 236.0
+    CY = 118.0
+    MX0, MX1, MH = 112.0, 228.0, 26.0
+    poles = [(MX0 + 10, CY, 1.0), (MX1 - 10, CY, -1.0)]
+    box = (6.0, 6.0, W - 6.0, H - 6.0)
+
+    def outside(p):
+        return not (MX0 - 1 <= p[0] <= MX1 + 1 and CY - MH / 2 - 1 <= p[1] <= CY + MH / 2 + 1)
+
+    o = []
+    mid_x = (MX0 + MX1) / 2.0
+    for deg in (0, 30, 58, 88, 118, 146):
+        for sgn in ((1,) if deg == 0 else (1, -1)):
+            a = _p10c_math.radians(180 - deg * sgn)     # measured from pointing left
+            sx, sy = poles[0][0] + 2.5 * _p10c_math.cos(a), poles[0][1] + 2.5 * _p10c_math.sin(a)
+            pts = _p10c_trace((sx, sy), poles, box, outside)
+            for run in _p10c_runs(pts, outside):
+                o.append(_p10c_poly(run))
+                o.append(_p10c_run_head(run))
+            if pts and not (abs(pts[-1][0] - poles[1][0]) < 4 and abs(pts[-1][1] - poles[1][1]) < 4):
+                # it left the box without reaching S. By symmetry, its mirror image is
+                # the line that comes in from the far side to the S pole: reversed.
+                mirror = [(2 * mid_x - x, y) for (x, y) in reversed(pts)]
+                for run in _p10c_runs(mirror, outside):
+                    o.append(_p10c_poly(run))
+                    o.append(_p10c_run_head(run))
+    o.append(_p10c_magnet(MX0, CY - MH / 2.0, MX1 - MX0, MH, "N", part="magnet"))
+    for (cx, cy) in ((60.0, 44.0), (170.0, 26.0), (280.0, 44.0)):
+        o.append(_p10c_compass(cx, cy, _p10c_field_at(cx, cy, poles), r=13))
+    return _p10c_open(fig, H, o, w=int(W))
+
+
+# ── p10-two-magnets ─────────────────────────────────────────────────────────
+def _p10c_two_magnets(fig):
+    """Two bar magnets end to end with their N poles facing. The lines from each N pole
+    turn away from the gap, and half way between them the two fields cancel: a drawn
+    cross marks the neutral point."""
+    W, H = 340.0, 224.0
+    CY = 104.0
+    MW, MH = 92.0, 24.0
+    AX0, BX0 = 8.0, W - 8.0 - MW            # magnet A on the left, magnet B on the right
+    poles = [(AX0 + 8, CY, -1.0), (AX0 + MW - 8, CY, 1.0),
+             (BX0 + 8, CY, 1.0), (BX0 + MW - 8, CY, -1.0)]
+    box = (4.0, 6.0, W - 4.0, 186.0)
+
+    def outside(p):
+        for x0 in (AX0, BX0):
+            if x0 - 1 <= p[0] <= x0 + MW + 1 and CY - MH / 2 - 1 <= p[1] <= CY + MH / 2 + 1:
+                return False
+        return True
+
+    o = []
+    for (px, py, q), facing in ((poles[1], 0.0), (poles[2], _p10c_math.pi)):
+        for deg in (20, 45, 75, 110, 145):
+            for sgn in (1, -1):
+                a = facing + _p10c_math.radians(deg) * sgn
+                start = (px + 2.5 * _p10c_math.cos(a), py + 2.5 * _p10c_math.sin(a))
+                pts = _p10c_trace(start, poles, box, outside)
+                for run in _p10c_runs(pts, outside):
+                    o.append(_p10c_poly(run))
+                    o.append(_p10c_run_head(run, at=0.35))
+    o.append(_p10c_magnet(AX0, CY - MH / 2.0, MW, MH, "S", part="magnet-a"))
+    o.append(_p10c_magnet(BX0, CY - MH / 2.0, MW, MH, "N", part="magnet-b"))
+    X = W / 2.0
+    o.append(_line(X - 7, CY - 7, X + 7, CY + 7, stroke=_SVG_ACCENT_TEXT, w=3.4, data_part="neutral-point"))
+    o.append(_line(X - 7, CY + 7, X + 7, CY - 7, stroke=_SVG_ACCENT_TEXT, w=3.4, data_part="neutral-point"))
+    o.append(_p10c_label(X, H - 18, "neutral point: the two fields cancel", size=14, weight="700",
+                         fill=_SVG_ACCENT_TEXT, data_part="neutral-label"))
+    return _p10c_open(fig, H, o, w=int(W))
+
+
+# ── p10-earth-field ─────────────────────────────────────────────────────────
+def _p10c_earth_field(fig):
+    """The Earth with its spin axis, and the field of a bar magnet buried inside it,
+    tilted 11° from the axis. The magnet is two point poles at its ends, as in
+    p10-bar-field, so the lines leave the ground near the South Pole, loop round the
+    sides and go back in near the North Pole. The buried magnet's S end is under the
+    Arctic, so a compass needle's N end points north."""
+    W, H = 340.0, 240.0
+    CX, CY, R = 170.0, 126.0, 46.0
+    HL = 41.0                          # half the buried magnet's length: its poles sit here
+    tilt = _p10c_math.radians(11)
+    o = []
+
+    def rot(x, y):
+        # (x, y) in magnetic axes: x east, y up along the magnet's S end. To screen.
+        c, s = _p10c_math.cos(tilt), _p10c_math.sin(tilt)
+        return CX + x * c + y * s, CY - (y * c - x * s)
+
+    nx, ny = rot(0, -HL)
+    sx, sy = rot(0, HL)
+    poles = [(nx, ny, 1.0), (sx, sy, -1.0)]   # field lines run from N (+) to S (−)
+
+    def outside(p):
+        return (_p10c_math.hypot(p[0] - CX, p[1] - CY) > R + 0.5
+                and 6 <= p[0] <= W - 6 and 6 <= p[1] <= H - 6)
+
+    compass_at = None
+    for ang in (60.0, 72.0, 88.0):     # launch angle at the N pole, from the magnet's axis
+        for side in (1, -1):
+            a = _p10c_math.radians(ang) * side
+            start = rot(3 * _p10c_math.sin(a), -HL - 3 * _p10c_math.cos(a))
+            pts = _p10c_trace(start, poles, (0, 0, W, H), None, step=1.0, limit=4000)
+            for run in _p10c_runs(pts, outside):
+                o.append(_p10c_poly(run, w=2.0))
+                if ang == 60.0 and side == 1:
+                    # the compass sits on the outer line, up and to the right
+                    seg = [_p10c_math.hypot(run[i + 1][0] - run[i][0], run[i + 1][1] - run[i][1])
+                           for i in range(len(run) - 1)]
+                    goal, acc = sum(seg) * 0.64, 0.0
+                    for i, sl in enumerate(seg):
+                        acc += sl
+                        if acc >= goal:
+                            compass_at = run[i]
+                            break
+                o.append(_p10c_run_head(run, at=0.5))
+    # the Earth
+    o.append(_circle(CX, CY, R, fill=_SVG_CARD, stroke=_SVG_INK, w=2.2, data_part="earth"))
+    # the spin axis, dashed, through the geographic poles
+    o.append(_line(CX, CY - R - 30, CX, CY + R + 30, stroke=_SVG_INK_MUTED, w=1.6, dash="5,4",
+                   data_part="spin-axis"))
+    o.append(_p10c_label(CX, CY - R - 44, "North Pole", size=14, weight="700",
+                         data_part="north-pole"))
+    o.append(_p10c_label(CX, CY + R + 52, "South Pole", size=14, weight="700",
+                         data_part="south-pole"))
+    # the buried magnet, along the tilted axis: S end up, N end down
+    hw, hl = 9.0, HL
+    for (y0, y1, pole) in ((0.0, hl, "S"), (-hl, 0.0, "N")):
+        corners = [rot(-hw, y0), rot(hw, y0), rot(hw, y1), rot(-hw, y1)]
+        o.append(_path("M " + " L ".join("%s,%s" % (_n(round(a, 1)), _n(round(b, 1)))
+                                         for a, b in corners) + " Z",
+                       fill=_SVG_ACCENT_TINT if pole == "N" else _SVG_INSET,
+                       stroke=_SVG_INK, w=1.8, data_part="buried-magnet-" + pole.lower()))
+        lx, ly = rot(0, (y0 + y1) / 2.0)
+        o.append(_p10c_label(round(lx, 1), round(ly + 6, 1), pole, size=16, weight="800",
+                             fill=_SVG_ACCENT_TEXT if pole == "N" else _SVG_INK,
+                             data_part="buried-letter"))
+    # a compass sitting on a field line: its needle lies along the line, N end north
+    cx, cy = round(compass_at[0], 1), round(compass_at[1], 1)
+    o.append(_p10c_compass(cx, cy, _p10c_field_at(cx, cy, poles), r=13))
+    o.append(_line(cx, cy - 15, cx, cy - 36, stroke=_SVG_INK_MUTED, w=1.4,
+                   data_part="compass-leader"))
+    o.append(_p10c_label(min(cx, W - 36), cy - 42, "compass", size=13, fill=_SVG_INK_MUTED,
+                         data_part="compass-label"))
+    return _p10c_open(fig, H, o, w=int(W))
+
+
+# ── p10-electromagnet ───────────────────────────────────────────────────────
+def _p10c_electromagnet(fig):
+    """A coil of insulated wire wound on an iron core, in a circuit with a cell and a
+    closed switch. Paper clips hang from the end of the core."""
+    d = fig.get("data") or {}
+    turns = int(d.get("turns", 9))
+    o = []
+    CX0, CX1, CY0, CY1 = 60.0, 252.0, 66.0, 88.0          # the iron core
+    KX0, KX1 = 92.0, 212.0                                 # the coil
+    o.append(_p10c_rect(CX0, CY0, CX1 - CX0, CY1 - CY0, rx=3, fill=_SVG_INSET, stroke=_SVG_INK, w=2,
+                        data_part="core"))
+    step = (KX1 - KX0) / float(turns)
+    for i in range(turns):
+        x = KX0 + i * step
+        o.append(_path("M %s,%s Q %s,%s %s,%s" % (_n(x), _n(CY1 + 6), _n(x + step * 0.5), _n((CY0 + CY1) / 2),
+                                                  _n(x + step), _n(CY0 - 6)),
+                       stroke=_SVG_ACCENT_TEXT, w=3, data_part="turn"))
+    # wires down from each end of the coil to the circuit
+    BOT = 196.0
+    o.append(_path("M %s,%s L %s,%s L %s,%s" % (_n(KX0), _n(CY1 + 6), _n(KX0), _n(BOT), _n(140), _n(BOT)),
+                   stroke=_SVG_INK, w=2.2, data_part="wire"))
+    # the cell: long thin plate, short thick plate
+    o.append(_line(140, BOT - 16, 140, BOT + 16, stroke=_SVG_INK, w=2.2, data_part="cell-long"))
+    o.append(_line(150, BOT - 9, 150, BOT + 9, stroke=_SVG_INK, w=5, data_part="cell-short"))
+    o.append(_line(150, BOT, 176, BOT, stroke=_SVG_INK, w=2.2, data_part="wire"))
+    # the switch, closed
+    o.append(_circle(178, BOT, 3, fill=_SVG_INK, data_part="switch-pivot"))
+    o.append(_line(178, BOT, 202, BOT - 3, stroke=_SVG_INK, w=2.4, data_part="switch-arm"))
+    o.append(_circle(204, BOT, 3, fill=_SVG_INK, data_part="switch-contact"))
+    o.append(_path("M %s,%s L %s,%s L %s,%s" % (_n(204), _n(BOT), _n(KX1), _n(BOT), _n(KX1), _n(CY0 - 6)),
+                   stroke=_SVG_INK, w=2.2, data_part="wire"))
+    # paper clips hanging from the right end of the core
+    for k in range(3):
+        y = CY1 + 4 + k * 24
+        o.append(_p10c_rect(236, y, 12, 26, rx=6, fill="none", stroke=_SVG_INK_BODY, w=2,
+                            data_part="clip"))
+        o.append(_p10c_rect(239, y + 5, 6, 15, rx=3, fill="none", stroke=_SVG_INK_BODY, w=1.6,
+                            data_part="clip-inner"))
+    o.append(_p10c_label(CX0 + 2, CY0 - 14, "iron core", size=14, weight="700", anchor="start",
+                         data_part="core-label"))
+    o.append(_p10c_label((KX0 + KX1) / 2 + 48, CY0 - 30, "coil of wire", size=14, weight="700",
+                         fill=_SVG_ACCENT_TEXT, data_part="coil-label"))
+    o.append(_p10c_label(145, BOT + 36, "cell", size=14, weight="700", data_part="cell-label"))
+    o.append(_p10c_label(191, BOT - 14, "switch", size=14, weight="700", data_part="switch-label"))
+    o.append(_p10c_label(286, CY1 + 46, "paper", size=14, weight="700", data_part="clips-label"))
+    o.append(_p10c_label(286, CY1 + 64, "clips", size=14, weight="700", data_part="clips-label"))
+    return _p10c_open(fig, BOT + 46, o)
+
+
+ART.update({
+    "p10-pole-pairs": _p10c_pole_pairs,
+    "p10-steel-test": _p10c_steel_test,
+    "p10-bar-field": _p10c_bar_field,
+    "p10-two-magnets": _p10c_two_magnets,
+    "p10-earth-field": _p10c_earth_field,
+    "p10-electromagnet": _p10c_electromagnet,
+})

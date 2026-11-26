@@ -60,7 +60,11 @@ def pre(session):
             % "".join(("localStorage.setItem(%s,%s);" % (json.dumps(k), json.dumps(json.dumps(session))) if session else "localStorage.removeItem(%s);" % json.dumps(k)) for k in KEYS))
 
 
-KS3 = "ks3/chemistry/energy-changes-in-reactions/measuring-a-temperature-change.html"
+# ⊕ 25 Nov 2026 (Mide, 14 Nov: checks do not depend on real lessons): the hidden frozen classic
+# copy of measuring-a-temperature-change. The real lesson went lean with C7 (Wave 2) and lost
+# its benches and predict blocks, the option groups this case walks. Page swap only.
+# Was ks3/chemistry/energy-changes-in-reactions/measuring-a-temperature-change.html.
+KS3 = "ks3/_fixtures/fixture-measuring-a-temperature-change.html"
 KS4 = "combined/higher/biology/organisation/heart-blood-vessels.html"
 PRACTICE = "student/assignment-fixture.html"
 # The states the blind runs failed in. Every option in a state, every button and link

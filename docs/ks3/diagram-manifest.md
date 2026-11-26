@@ -19,11 +19,11 @@ MRB-103 also flagged an **anatomical/structural diagram gap** (cells, organs) an
 | Status | Figures |
 |---|---|
 | `drafted` | 1 |
-| `drawn` | 121 |
+| `drawn` | 220 |
 | `final` | 1 |
 | `needed` | 3 |
 | `retired` | 6 |
-| **Total** | **132** |
+| **Total** | **231** |
 
 `needed` = declared by a lesson, not yet drawn. A lesson may ship with figures at `needed` — it is not a build blocker — but the need is then counted here rather than invisible.
 
@@ -123,7 +123,22 @@ MRB-103 also flagged an **anatomical/structural diagram gap** (cells, organs) an
 | C2 | `the-atom-daltons-model` | `c2-lead-gold-atoms` | diagram | `drawn` | Lead is only lead atoms. Gold is only gold atoms. |
 | C3 | `distillation` | `c3-distillation-apparatus` | diagram | `needed` | Distillation apparatus: round-bottomed flask over a Bunsen with anti-bumping granules, thermometer bulb level with the side arm, Liebig condenser with cold water entering at the bottom and leaving at the top, and a beaker collecting the distillate. The apparatus is open to the air at the collecting end. |
 | C3 | `filtration` | `particle-panels` | diagram | `drawn` | A grain of sand is a lump of many millions of particles stuck together, thousands of times wider than the gaps between the paper's fibres. A dissolved salt particle is on its own, and it is smaller than the gap by more than the gap is smaller than the grain. There is no filter paper that stops one and passes the other. |
+| C4 | `chemical-vs-physical-change` | `c4-change-particles` | diagram | `drawn` | Melting moves the same particles. A reaction joins the atoms up in new particles. |
+| C4 | `reactions-rearrange-atoms` | `c4-methane-steps` | diagram | `drawn` | Every atom in the products was in the methane or the oxygen. |
+| C4 | `reactions-rearrange-atoms` | `c4-water-steps` | diagram | `drawn` | The same 6 atoms all the way through. Only the joins change. |
+| C4 | `word-equations` | `c4-word-magnesium` | diagram | `drawn` | Oxygen from the air is a reactant, so it goes on the left. |
+| C4 | `word-equations` | `c4-word-marble` | diagram | `drawn` | Two reactants on the left, three products on the right. |
+| C5 | `combustion` | `c5-fire-triangle` | diagram | `drawn` | The fire triangle: fuel, oxygen and heat. |
+| C5 | `combustion` | `c5-word-complete` | diagram | `drawn` | With plenty of oxygen, methane gives carbon dioxide and water. |
+| C5 | `combustion` | `c5-word-incomplete` | diagram | `drawn` | With too little oxygen, some carbon becomes carbon monoxide and some is left as soot. |
 | C5 | `displacement` | `reactivity-series` | diagram | `drawn` | Nobody was told this order. It was assembled by doing what you are about to do — putting metals into each other's solutions and recording which way the swap went. The bench below covers four of these twelve; the same method extended down the list produces the rest of it. |
+| C5 | `oxidation` | `c5-rust-tubes` | diagram | `drawn` | Only the tubes with both air and water rust. |
+| C5 | `oxidation` | `c5-word-magnesium` | diagram | `drawn` | Magnesium gains oxygen from the air. |
+| C5 | `oxidation` | `c5-word-metal-oxygen` | diagram | `drawn` | A metal gains oxygen and becomes a metal oxide. |
+| C5 | `oxidation` | `c5-word-rust` | diagram | `drawn` | Rust is hydrated iron oxide. |
+| C5 | `thermal-decomposition` | `c5-gas-tests` | diagram | `drawn` | Oxygen relights a glowing splint. Hydrogen pops. Carbon dioxide turns limewater milky. |
+| C5 | `thermal-decomposition` | `c5-heating-carbonate` | diagram | `drawn` | The gas turns limewater milky, so it is carbon dioxide. |
+| C5 | `thermal-decomposition` | `c5-word-carbonate-heat` | diagram | `drawn` | One reactant breaks down into two products. Heating goes on all the time. |
 | C6 | `acid-plus-metal` | `c6-squeaky-pop` | diagram | `drawn` | Collect the gas, close the tube, then test it away from the reaction. |
 | C6 | `acid-plus-metal` | `c6-word-metal-acid` | diagram | `drawn` | Every reactive metal gives a salt and hydrogen with an acid. |
 | C6 | `acids-and-alkalis` | `c6-ph-scale-acids` | diagram | `drawn` | Below 7 is acidic, 7 is neutral and above 7 is alkaline. |
@@ -137,12 +152,25 @@ MRB-103 also flagged an **anatomical/structural diagram gap** (cells, organs) an
 | C6 | `the-ph-scale-and-indicators` | `c6-cabbage-colours` | diagram | `drawn` | Red cabbage indicator in acid, neutral and alkaline solutions. |
 | C6 | `the-ph-scale-and-indicators` | `c6-ph-scale-colours` | diagram | `drawn` | Match the colour to the chart, then read the pH number. |
 | C6 | `the-ph-scale-and-indicators` | `ph-scale` | diagram | `drawn` | Fifteen whole numbers, one colour each. The reds and oranges are acid, green is neutral, and the blues and purples are alkali. The numbers matter more than the colours: colour-blind chemists use a pH meter and get the same answer. |
+| C7 | `endothermic-reactions` | `c7-endo-thermometers` | diagram | `drawn` | The temperature of the mixture falls, so the reaction is endothermic. |
+| C7 | `endothermic-reactions` | `c7-exo-endo-arrows` | diagram | `drawn` | The arrows show which way the energy moves. |
+| C7 | `exothermic-reactions` | `c7-exo-arrows` | diagram | `drawn` | In an exothermic reaction, energy goes out of the chemicals. |
+| C7 | `exothermic-reactions` | `c7-exo-thermometers` | diagram | `drawn` | The temperature of the mixture rises, so the reaction is exothermic. |
+| C7 | `measuring-a-temperature-change` | `c7-cup-rig` | diagram | `drawn` | The cup and lid cut down the heat that escapes. |
+| C7 | `measuring-a-temperature-change` | `c7-tc-table` | diagram | `drawn` | Final means the highest or lowest temperature reached. |
+| C7 | `measuring-a-temperature-change` | `c7-tc-thermometers` | diagram | `drawn` | Read the start temperature, then the highest temperature reached. |
 | P1 | `conservation-of-energy` | `p1-pendulum-stores` | diagram | `drawn` | The bars change. The total stays at 120 J. |
 | P1 | `energy-transfers-before-and-after` | `p1-sankey-winch` | diagram | `drawn` | The width of each arrow shows the energy. 100 J in = 70 J + 30 J out. |
 | P1 | `simple-machines` | `p1-lever-trade` | diagram | `drawn` | Small force, big distance. Big force, small distance. |
 | P1 | `simple-machines` | `p1-triangle-wfd` | diagram | `drawn` | Cover the one you want to find. |
+| P10 | `electromagnets` | `p10-electromagnet-nail` | diagram | `drawn` | Close the switch, and the iron core picks up the clips. |
 | P10 | `how-a-motor-works` | `p10-motor-arrows-marked` | diagram | `drawn` | The coil from this lesson's bench, with its two force arrows marked. |
+| P10 | `magnetic-fields` | `p10-bar-field-lines` | diagram | `drawn` | Each small circle is a plotting compass. Its needle points along the field line. |
 | P10 | `magnetic-fields` | `p10-horseshoe-field-gap` | diagram | `drawn` | The gap between a horseshoe magnet's two poles. |
+| P10 | `magnetic-fields` | `p10-two-magnets-nn` | diagram | `drawn` | No field lines pass through the neutral point. |
+| P10 | `magnets-and-poles` | `p10-pole-pairs-three` | diagram | `drawn` | The arrows show which way each magnet is pushed or pulled. |
+| P10 | `magnets-and-poles` | `p10-steel-test-three` | diagram | `drawn` | The small letters show the poles the magnet makes in the steel. |
+| P10 | `the-earth-is-a-magnet` | `p10-earth-field-model` | diagram | `drawn` | The magnet's S end is under the Arctic, so the compass N end points north. |
 | P12 | `mass-vs-weight` | `p12-weight-triangle` | diagram | `drawn` | Cover the one you want. Side by side means multiply. One over the other means divide. |
 | P2 | `calculating-energy-transferred` | `p2-energy-triangle` | diagram | `drawn` | Cover the one you want. Side by side means multiply. One over the other means divide. |
 | P2 | `energy-in-food` | `p2-food-triangle` | diagram | `drawn` | Cover the one you want. Side by side means multiply. One over the other means divide. |
@@ -159,7 +187,78 @@ MRB-103 also flagged an **anatomical/structural diagram gap** (cells, organs) an
 | P4 | `moments` | `p4-moments-seesaw-find` | diagram | `drawn` | Find the distance marked with a question mark. |
 | P4 | `what-a-force-is` | `p4-force-pair-wall` | diagram | `drawn` | The skater and the wall push on each other. |
 | P4 | `what-a-force-is` | `p4-newtonmeter-reading` | diagram | `drawn` | The pointer reads 3 N, so the shoe pulls down with 3 N. |
+| P6 | `echoes-reflection-and-absorption` | `p6-echo-boundary` | diagram | `drawn` | Reflected, absorbed and transmitted: usually some of each. |
+| P6 | `echoes-reflection-and-absorption` | `p6-echo-cliff` | diagram | `drawn` | The shout travels to the cliff and back again. |
+| P6 | `frequency-pitch-and-loudness` | `p6-05-count` | diagram | `drawn` | Each second holds 200 vibrations. Three seconds hold 600. |
+| P6 | `frequency-pitch-and-loudness` | `p6-05-rate` | diagram | `drawn` | Share the vibrations out over 30 seconds. Each second gets 500. |
+| P6 | `frequency-pitch-and-loudness` | `p6-05-traces` | diagram | `drawn` | Taller waves sound louder. More waves across the screen sound higher. |
+| P6 | `frequency-pitch-and-loudness` | `p6-05-triangle` | diagram | `drawn` | Cover the one you want. Side by side means multiply. One over the other means divide. |
+| P6 | `hearing-and-auditory-range` | `p6-ear-parts` | diagram | `drawn` | Sound goes in through the ear canal. The auditory nerve carries impulses to the brain. |
+| P6 | `hearing-and-auditory-range` | `p6-ear-range-animals` | diagram | `drawn` | Each animal hears a different range of frequencies. |
+| P6 | `hearing-and-auditory-range` | `p6-ear-range-human` | diagram | `drawn` | Each mark on the scale is ten times the one before. |
+| P6 | `how-sound-is-made` | `p6-03-chain` | diagram | `drawn` | Every sound follows these four steps. |
+| P6 | `sound-is-longitudinal` | `p6-04-graph` | diagram | `drawn` | Each peak sits under a compression. Each dip sits under a rarefaction. |
+| P6 | `sound-is-longitudinal` | `p6-04-sound` | diagram | `drawn` | Longitudinal: each layer of air moves back and forth along the direction of travel. |
+| P6 | `sound-is-longitudinal` | `p6-04-transverse` | diagram | `drawn` | Transverse: each coil moves across the direction of travel. |
+| P6 | `sound-needs-a-medium` | `p6-medium-bell-jar` | diagram | `drawn` | The hammer beats in both jars. Only the jar with air in it lets the sound out. |
+| P6 | `sound-needs-a-medium` | `p6-medium-rail` | diagram | `drawn` | The same blow reaches the listener through the steel and through the air. |
+| P6 | `sound-needs-a-medium` | `p6-medium-speed-triangle` | diagram | `drawn` | Cover the one you want. Side by side means multiply. One over the other means divide. |
+| P6 | `transverse-waves-and-superposition` | `p6-02-superpose` | diagram | `drawn` | Crest on crest adds. Crest on trough of the same size cancels. |
+| P6 | `transverse-waves-and-superposition` | `p6-02-transverse` | diagram | `drawn` | The surface moves up and down. The wave travels across. |
+| P6 | `ultrasound-at-work` | `p6-ultra-probe` | diagram | `drawn` | The pulse goes down to the crack and back up to the probe. |
+| P6 | `waves-on-water` | `p6-01-motion` | diagram | `drawn` | Follow the dot. It only goes up and down while the wave passes. |
+| P6 | `waves-on-water` | `p6-01-parts` | diagram | `drawn` | The parts of a wave. |
+| P7 | `colour-and-the-spectrum` | `p7-prism` | diagram | `drawn` | Red is bent the least. Violet is bent the most. |
+| P7 | `colour-and-the-spectrum` | `p7-prism-two` | diagram | `drawn` | The second prism puts the colours back into white light. |
+| P7 | `light-travels` | `p7-light-triangle` | diagram | `drawn` | Cover the one you want. Side by side means multiply. One over the other means divide. |
+| P7 | `light-travels` | `p7-shadow` | diagram | `drawn` | Straight rays leave a sharp-edged shadow behind the card. |
+| P7 | `light-travels` | `p7-trip-sat` | diagram | `drawn` | Find the time marked with a question mark. |
+| P7 | `light-travels` | `p7-trip-sun` | diagram | `drawn` | Find the distance marked with a question mark. |
+| P7 | `reflection-mirrors-and-scattering` | `p7-reflect-find` | diagram | `drawn` | Find i and r. Both are measured from the normal. |
+| P7 | `reflection-mirrors-and-scattering` | `p7-reflect-law` | diagram | `drawn` | Both angles are measured from the normal, and they are equal. |
+| P7 | `reflection-mirrors-and-scattering` | `p7-surfaces` | diagram | `drawn` | Each ray obeys the law of reflection on both surfaces. |
+| P7 | `refraction` | `p7-block-angle` | diagram | `drawn` | Towards the normal going in. Away from the normal coming out. |
+| P7 | `refraction` | `p7-block-straight` | diagram | `drawn` | Along the normal: a change of speed, but no change of direction. |
+| P7 | `refraction` | `p7-straw` | diagram | `drawn` | The eye traces the light back in a straight line. |
+| P7 | `why-things-look-coloured` | `p7-colour-green` | diagram | `drawn` | No light is reflected to the eye. |
+| P7 | `why-things-look-coloured` | `p7-colour-white` | diagram | `drawn` | Only the reflected red light reaches the eye. |
+| P7 | `why-things-look-coloured` | `p7-filter-red` | diagram | `drawn` | The filter absorbs green and blue. Only red gets through. |
+| P7 | `why-things-look-coloured` | `p7-filter-two` | diagram | `drawn` | The red filter lets through only red. The green filter absorbs red. |
+| P8 | `building-and-measuring-a-circuit` | `p8-build-ammeter-across` | diagram | `drawn` | The ammeter bridges the lamp, so the lamp goes out. |
+| P8 | `building-and-measuring-a-circuit` | `p8-build-correct` | diagram | `drawn` | The ammeter is in the loop. The voltmeter is across the lamp. |
+| P8 | `building-and-measuring-a-circuit` | `p8-build-symbols` | diagram | `drawn` | Each component has one standard symbol. |
+| P8 | `building-and-measuring-a-circuit` | `p8-build-voltmeter-loop` | diagram | `drawn` | The voltmeter reads 3.00 V, but no current flows. |
+| P8 | `conductors-and-insulators` | `p8-cond-cable` | diagram | `drawn` | Copper inside to carry the current. Plastic outside to keep it in. |
+| P8 | `conductors-and-insulators` | `p8-cond-circuit` | diagram | `drawn` | The ammeter is in the loop. The voltmeter is across the pencil lead. |
+| P8 | `conductors-and-insulators` | `p8-cond-electrons` | diagram | `drawn` | Free electrons can carry charge through a metal. Plastic has none. |
+| P8 | `conductors-and-insulators` | `p8-cond-tester` | diagram | `drawn` | The lamp lights only when the material conducts. |
+| P8 | `conductors-and-insulators` | `p8-cond-triangle` | diagram | `drawn` | Cover R. V sits over I, so you divide. |
 | P8 | `conductors-and-insulators` | `p8-resistance-chart-recap` | diagram | `drawn` | The same chart as earlier in this lesson. |
+| P8 | `current-and-circuits` | `p8-l1-drawn` | diagram | `drawn` | Straight lines, square corners and the right symbols. |
+| P8 | `current-and-circuits` | `p8-l1-open` | diagram | `drawn` | An open switch leaves a gap, so no current flows. |
+| P8 | `current-and-circuits` | `p8-l1-symbols-supply` | diagram | `drawn` | The symbols for parts that supply, join and switch. |
+| P8 | `current-and-circuits` | `p8-l1-symbols-use` | diagram | `drawn` | The symbols for parts that use and measure. |
+| P8 | `current-and-circuits` | `p8-l1-two-ammeters` | diagram | `drawn` | Before the lamp and after it, the current is the same. |
 | P8 | `current-and-circuits` | `p8-lamp-symbol` | diagram | `drawn` | One of the eight symbols from this lesson's key, shown on its own. |
+| P8 | `current-at-a-junction` | `p8-l3-find` | diagram | `drawn` | Find the reading marked with a question mark. |
+| P8 | `current-at-a-junction` | `p8-l3-find-ma` | diagram | `drawn` | Change milliamps to amps before you subtract. |
+| P8 | `current-at-a-junction` | `p8-l3-junction` | diagram | `drawn` | 0.30 A + 0.20 A = 0.50 A in the main wire, on both sides. |
+| P8 | `potential-difference` | `p8-l4-find` | diagram | `drawn` | Find the reading marked with a question mark. |
+| P8 | `potential-difference` | `p8-l4-find-mv` | diagram | `drawn` | Change millivolts to volts before you subtract. |
+| P8 | `potential-difference` | `p8-l4-meters` | diagram | `drawn` | The ammeter is in the loop. The voltmeter is across the lamp. |
+| P8 | `potential-difference` | `p8-l4-parallel` | diagram | `drawn` | Each branch gets the battery's full p.d. |
+| P8 | `potential-difference` | `p8-l4-series` | diagram | `drawn` | 2.0 V + 4.0 V = 6.0 V. |
+| P8 | `resistance` | `p8-res-circuit-lamp` | diagram | `drawn` | The ammeter reads in milliamps, so convert first. |
+| P8 | `resistance` | `p8-res-circuit-resistor` | diagram | `drawn` | The ammeter is in the loop. The voltmeter is across the resistor. |
+| P8 | `resistance` | `p8-res-collisions` | diagram | `drawn` | Every bump makes it harder for the electrons to flow, and heats the wire. |
+| P8 | `resistance` | `p8-res-triangle` | diagram | `drawn` | Cover the one you want. Side by side means multiply. One over the other means divide. |
+| P8 | `resistance` | `p8-res-wires` | diagram | `drawn` | A longer wire or a thinner wire has more resistance. |
+| P8 | `series-and-parallel` | `p8-l2-parallel` | diagram | `drawn` | Two paths. The full p.d. on each branch, and the currents add up. |
+| P8 | `series-and-parallel` | `p8-l2-series` | diagram | `drawn` | One path. The same current everywhere, and the p.d. shared. |
+| P9 | `charging-by-rubbing` | `p9-rub-rod-duster` | diagram | `drawn` | Two electrons move from the duster to the rod. The protons stay where they are. |
+| P9 | `electric-fields` | `p9-field-arrows-two` | diagram | `drawn` | Each arrow shows the push on a small positive charge at that point. |
+| P9 | `electric-fields` | `p9-field-cancel-mid` | diagram | `drawn` | Each big charge pushes the test charge away from itself. |
 | P9 | `electric-fields` | `p9-field-point-marked` | diagram | `drawn` | One point on a field map, marked. |
 | P9 | `forces-between-charges` | `p9-charge-matrix-grid` | diagram | `drawn` | The same grid as earlier in this lesson. |
+| P9 | `forces-between-charges` | `p9-induction-wall` | diagram | `drawn` | The wall's electrons move a little way back. The surface is left slightly positive. |
+| P9 | `forces-between-charges` | `p9-pairs-three` | diagram | `drawn` | The arrows show the force on each ball. |

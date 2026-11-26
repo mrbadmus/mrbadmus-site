@@ -598,20 +598,13 @@ LESSON = {
                 "A magnetic north pole, because like poles attract over long "
                 "distances",
                 "A magnetic south pole, because unlike poles attract",
-                "Neither — the Earth attracts the needle the way it attracts "
-                "a falling ball",
+                "Neither, because the Earth pulls the needle the way it pulls a falling ball",
             ],
             "answer": 2,
             "feedback": {
-                0: "Where it is on the map does not decide what kind of pole "
-                   "it is. Two north poles would repel, and the needle is "
-                   "clearly attracted, so it must be a south pole "
-                   "magnetically.",
-                1: "Like poles repel at every distance. There is no range at "
-                   "which the rule reverses.",
-                3: "Gravity pulls everything downwards, not northwards, and "
-                   "it does not care which end of a needle it is pulling. "
-                   "This is a magnetic effect on a magnet.",
+                0: "Its place on the map does not decide its type. Two N poles would repel.",
+                1: "Like poles repel at every distance. The needle is attracted, so that pole is S.",
+                3: "Gravity pulls things down, and it pulls on any object. This is a magnet lining up.",
             },
             "title": "Rung 1 · Name the pole"},
         "apply": {
@@ -621,30 +614,23 @@ LESSON = {
             "options": [
                 "The Earth’s field has become weaker, so the needle points "
                 "less accurately",
-                "The magnetic pole has moved since the map was printed, so "
-                "the declination on it is out of date",
+                "The magnetic pole has moved since then, so the map’s declination is out of date",
                 # ⚠️ MRB-177 — Design's distractor, FINISHED. Her rung 2's
                 # correct option is 19 words against a longest distractor of
                 # 13, which is a tell at the ≥4-word threshold. The added
                 # clause states the wrong rule completely rather than padding
                 # it, and her correction below answers it word for word.
-                "Compasses made today are calibrated to a different north "
-                "from the ones that were made forty years ago",
+                "Compasses made today are set to point at a different north from older ones",
                 # ⊕ MRB-297 · 1 Sep 2026 — the third option was widened so
                 # the correct answer stops being resolvable as the
                 # second-longest.
-                "The map’s grid north has moved, because the grid squares "
-                "are redrawn for each new edition",
+                "The map’s grid north has moved, because the grid squares are redrawn each edition",
             ],
             "answer": 1,
             "feedback": {
-                0: "The field does change strength slowly, but a weaker field "
-                   "still points the same way. What has changed is the "
-                   "direction, not the reliability.",
-                2: "A compass is not calibrated at all — it is a magnet on a "
-                   "pivot. Any compass in the same place points the same way.",
-                3: "Grid north is fixed by how the map projection is drawn "
-                   "and does not wander. It is magnetic north that moves.",
+                0: "A weaker field still points the same way. The direction is what has changed.",
+                2: "A compass is a magnet on a pivot. Every compass points the same way.",
+                3: "Grid north is fixed by how the map is drawn. It is magnetic north that moves.",
             },
             "title": "Rung 2 · Use the model"},
         "explain": {

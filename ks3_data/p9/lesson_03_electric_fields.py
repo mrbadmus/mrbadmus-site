@@ -521,26 +521,16 @@ LESSON = {
                  "say about the object, and about a small negative charge "
                  "released nearby?",
             "options": [
-                "The object is negatively charged, and a negative charge "
-                "would be pushed outwards along the field.",
-                "The object is positively charged, and a negative charge "
-                "would be pushed outwards along the field.",
-                "The object is positively charged, and a negative charge "
-                "would be pulled inwards, against the field.",
-                "You cannot tell the sign from the field's direction, only "
-                "its strength.",
+                "It is negative, and a negative charge would be pushed outwards, along the field.",
+                "It is positive, and a negative charge would be pushed outwards along the field.",
+                "It is positive, and a negative charge would be pulled inwards against the field.",
+                "You cannot tell its sign from the field, because the arrows only show its strength.",
             ],
             "answer": 2,
             "feedback": {
-                0: "The field points away from a positive charge, because it "
-                   "shows the push on a small positive charge. And a "
-                   "negative charge always goes against the field.",
-                1: "The first half is right. But the field shows the force "
-                   "on a positive charge; a negative one feels a force in "
-                   "the opposite direction, so it moves inwards.",
-                3: "The direction of the field is exactly what tells you "
-                   "the sign: outwards means positive, inwards means "
-                   "negative.",
+                0: "Arrows point away from a positive charge. So the object is positive.",
+                1: "The object is positive. But a negative charge is pushed against the arrows.",
+                3: "The direction tells you the sign. Away means positive, towards means negative.",
             },
             "title": "Rung 1 · Read the field"},
         "apply": {
@@ -548,27 +538,16 @@ LESSON = {
                  "charges must be at its strongest half-way between them, "
                  "because that point is close to both. What is right?",
             "options": [
-                "The student is right — being close to two charges instead "
-                "of one makes it the strongest point on the map.",
-                "It is zero there. The two charges push a positive test "
-                "charge in exactly opposite directions with equal strength, "
-                "so the pushes cancel.",
-                "It is zero there, because the two charges cancel each other "
-                "out everywhere between them.",
-                "It is half the strength of a single charge at the same "
-                "distance, because the two contributions are averaged.",
+                "The student is right, because being close to both charges gives the strongest field.",
+                "It is zero there, because the two equal pushes on a test charge are opposite.",
+                "It is zero there, because the two charges cancel out everywhere between them.",
+                "It is half as strong, because the fields of the two charges are averaged there.",
             ],
             "answer": 1,
             "feedback": {
-                0: "Closeness matters, but direction matters too. The two "
-                   "pushes are equal and exactly opposite at the mid-point, "
-                   "so they cancel to nothing.",
-                2: "The verdict is right and the reason is too broad. It "
-                   "cancels only at that one point; move a millimetre either "
-                   "way and the nearer charge wins.",
-                3: "Fields are not averaged, they are added as arrows — and "
-                   "two equal arrows pointing opposite ways add to nothing, "
-                   "not to half.",
+                0: "Closeness matters, but so does direction. The two pushes cancel there.",
+                2: "It is zero only at the middle point. Move a little and the nearer charge wins.",
+                3: "The pushes add as arrows. Two equal pushes the opposite way add to zero.",
             },
             "title": "Rung 2 · The one that catches people"},
         "explain": {

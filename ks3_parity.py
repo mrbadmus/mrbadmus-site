@@ -762,6 +762,7 @@ B4_CROSS = "biology/breathing-and-gas-exchange/alveoli-built-for-exchange.html"
 B4_FAULT = "biology/breathing-and-gas-exchange/exercise-asthma-and-smoking.html"
 B4_LEAF = "biology/breathing-and-gas-exchange/stomata-and-gas-exchange-in-plants.html"
 # ═══ END B4 ═══
+LEAN_TRY_PAGE = "physics/waves-and-sound/waves-on-water.html"   # the first KS3 lean page with a Try it link
 
 # ═══ BEGIN B6 ═══
 B6_DOSE = "biology/health-and-drugs/what-drugs-do-to-the-body.html"
@@ -926,14 +927,18 @@ C3_CRYST = "chemistry/mixtures-and-separation/evaporation-and-crystallisation.ht
 C3_STILL = "chemistry/mixtures-and-separation/distillation.html"
 C3_CHROM = "chemistry/mixtures-and-separation/chromatography.html"
 C3_PURITY = "chemistry/mixtures-and-separation/proving-something-is-pure.html"
-C4_CHANGE = "chemistry/chemical-reactions/chemical-vs-physical-change.html"
-C4_REARR = "chemistry/chemical-reactions/reactions-rearrange-atoms.html"
-C4_WORDS = "chemistry/chemical-reactions/word-equations.html"
+# ⊕ 25 Nov 2026 (Mide, 14 Nov: checks do not depend on real lessons): C4 lessons 1-3, C5
+# lessons 1-3 and C7 lessons 2-4 went lean (Wave 2, Y7 Chem 2) and lost their benches, so
+# these nine constants name the hidden frozen classic copies (ks3_fixtures/), as LESSON does.
+# Only the page moved. C4_MASS, C4_SYMBOL, C5_DISP, C5_WHICH and C7_STATE stay: classic.
+C4_CHANGE = "_fixtures/fixture-chemical-vs-physical-change.html"   # was chemistry/chemical-reactions/chemical-vs-physical-change.html (fixture, see LESSON)
+C4_REARR = "_fixtures/fixture-reactions-rearrange-atoms.html"   # was chemistry/chemical-reactions/reactions-rearrange-atoms.html (fixture, see LESSON)
+C4_WORDS = "_fixtures/fixture-word-equations.html"   # was chemistry/chemical-reactions/word-equations.html (fixture, see LESSON)
 C4_MASS = "chemistry/chemical-reactions/mass-in-a-reaction.html"
 C4_SYMBOL = "chemistry/chemical-reactions/symbol-equations-and-balancing.html"
-C5_BURN = "chemistry/types-of-reaction/combustion.html"
-C5_DECOMP = "chemistry/types-of-reaction/thermal-decomposition.html"
-C5_OXID = "chemistry/types-of-reaction/oxidation.html"
+C5_BURN = "_fixtures/fixture-combustion.html"   # was chemistry/types-of-reaction/combustion.html (fixture, see LESSON)
+C5_DECOMP = "_fixtures/fixture-thermal-decomposition.html"   # was chemistry/types-of-reaction/thermal-decomposition.html (fixture, see LESSON)
+C5_OXID = "_fixtures/fixture-oxidation.html"   # was chemistry/types-of-reaction/oxidation.html (fixture, see LESSON)
 C5_DISP = "chemistry/types-of-reaction/displacement.html"
 C5_WHICH = "chemistry/types-of-reaction/which-reaction-is-this.html"
 # ⊕ 23 Nov 2026 (Mide, 14 Nov: checks do not depend on real lessons): C6 lessons 1-6 went
@@ -946,10 +951,9 @@ C6_METAL = "_fixtures/fixture-acid-plus-metal.html"   # was chemistry/acids-and-
 C6_SALT = "_fixtures/fixture-making-a-pure-dry-salt.html"   # was chemistry/acids-and-alkalis/making-a-pure-dry-salt.html (fixture, see LESSON)
 C6_CAT = "chemistry/acids-and-alkalis/catalysts.html"
 C7_STATE = "chemistry/energy-changes-in-reactions/energy-and-changes-of-state.html"
-C7_EXO = "chemistry/energy-changes-in-reactions/exothermic-reactions.html"
-C7_ENDO = "chemistry/energy-changes-in-reactions/endothermic-reactions.html"
-C7_MEASURE = ("chemistry/energy-changes-in-reactions/"
-              "measuring-a-temperature-change.html")
+C7_EXO = "_fixtures/fixture-exothermic-reactions.html"   # was chemistry/energy-changes-in-reactions/exothermic-reactions.html (fixture, see LESSON)
+C7_ENDO = "_fixtures/fixture-endothermic-reactions.html"   # was chemistry/energy-changes-in-reactions/endothermic-reactions.html (fixture, see LESSON)
+C7_MEASURE = "_fixtures/fixture-measuring-a-temperature-change.html"   # was chemistry/energy-changes-in-reactions/measuring-a-temperature-change.html (fixture, see LESSON)
 C8_MNM = "chemistry/the-periodic-table/metals-and-non-metals.html"
 C8_MEND = "chemistry/the-periodic-table/mendeleev.html"
 C8_GP = "chemistry/the-periodic-table/groups-and-periods.html"
@@ -6514,10 +6518,9 @@ COMPONENTS = [
 
     # ⊕ lean pilot — the lean block types (docs/ks3/architecture.md §5.1.1, 10 Nov 2026).
     # Measured on the one lean page that carries every one of them. Light theme, the harness's.
-    # `lean-try` has NO component here on purpose: no pilot lesson names a simulation, so the
-    # link is drawn on no page, and a component registered against a page that does not draw it
-    # fails "C · every registered component is still ON its page". It gets its component with
-    # the first record that has a `try`.
+    # `lean-try` had no component in the pilot because no pilot lesson named a simulation. It
+    # gets its component with the first records that do: Lean Wave 2 KS3 (26 Nov 2026), on the
+    # P6 water-waves page, which links the Wave Motion Lab.
     dict(name="lean Start here is the ink hook with the accent shadow", on=B4_JAR,
          sel=".ks3-keyed-block.ks3-hook",
          props={"background-color": "#221E1B", "border-top-left-radius": "30px",
@@ -6548,6 +6551,11 @@ COMPONENTS = [
          sel=".lean-deeper",
          props={"border-top-style": "dashed", "border-top-width": "2px",
                 "border-top-left-radius": "20px"}),
+    dict(name="lean Try it link is a 2px ink control on the card ground", on=LEAN_TRY_PAGE,
+         sel=".lean-try-link",
+         props={"background-color": "#FFFCF5", "border-top-width": "2px",
+                "border-top-color": "#221E1B", "font-size": "17px", "font-weight": "700",
+                "min-height": "44px"}),
     dict(name="lean Dive deeper button is display 800", on=B4_JAR,
          sel=".lean-deeper-btn",
          props={"font-family": "Bricolage Grotesque", "font-size": "22px", "font-weight": "800"}),

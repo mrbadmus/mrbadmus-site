@@ -2,7 +2,7 @@
 
 ONE UNIT, ONE FILE. Nothing here is read by any other unit; nothing here may
 be added to any other unit's module. C7 is *Energy changes in reactions*: four
-lessons, SIX instrument families and NO drawn figure, all DOM, no canvas
+lessons, SIX instrument families, no canvas
 anywhere in the unit.
 
 ═══════════════════════════════════════════════════════════════════════════
@@ -1017,10 +1017,10 @@ def r_rig_builder(a, act_id):
 
 # ═══ registrations ═══════════════════════════════════════════════════════
 #
-# ⊖ NO `ART`. NOTES-C7 §6 declares no drawn figure anywhere in the unit and
-# every lesson record carries `figures: []`. An empty table is the same as no
-# table to `ks3_art.load()`, and an ART entry with no `core[]` figure block
-# behind it would fail registry gate 2 (registered but never placed).
+# ⊕ `ART` IS AT THE FOOT OF THIS FILE (lean Wave 2). NOTES-C7 §6 declared no
+# drawn figure in the unit, and the authored lessons still carry `figures: []`.
+# The lean records for lessons 2 to 4 add drawn figures, and each ART entry is
+# placed by one of those records, so registry gate 2 still holds.
 #
 # ⚠️ SIX FAMILIES, SIX DISTINCT SHELL CLASSES. MRB-279's assertion compares the
 # CLASS each family renders into, not just the family name, because two
@@ -1057,4 +1057,280 @@ KIND_FN = {
     'energy-uses': r_energy_uses,
     'rig-plan-critique': r_rig_plan_critique,
     'rig-builder': r_rig_builder,
+}
+
+
+# ═══ lean Wave 2 (C7 lessons 2 to 4): drawn figures ══════════════════════
+#
+# The lean records replace the benches with drawn figures. Four drawers, all 340 wide so
+# they sit in a phone card without scrolling, every label 13px or more:
+#
+#   "c7-thermometers"    data {"start", "end", "lo", "hi", "labels": [left, right],
+#                              "change": text or None}
+#                        two thermometers side by side, the start and the final reading
+#   "c7-energy-arrows"   data {"panels": ["exo"] or ["exo", "endo"]}
+#                        reacting chemicals in a beaker, arrows out (exo) or in (endo)
+#   "c7-results-table"   data {"rows": [{"name": [line, line], "start", "final"}]}
+#                        a drawn results table: reaction, start and final temperature
+#   "c7-cup-apparatus"   data {"labels": {part: [line, ...]}}
+#                        a polystyrene cup with a lid and a thermometer, in a beaker
+import math as _c7l_math
+from ks3_art.kit import (
+    _SVG_ACCENT,
+    _SVG_ACCENT_TEXT,
+    _SVG_ACCENT_TINT,
+    _SVG_CARD,
+    _SVG_INK,
+    _SVG_INK_BODY,
+    _SVG_INK_MUTED,
+    _SVG_INSET,
+    _SVG_RULE,
+    _SVG_RULE_STRONG,
+    _circle,
+    _label,
+    _line,
+    _n,
+    _path,
+    _rect,
+    _svg_open,
+)
+
+_C7L_W = 340
+
+
+def _c7l_open(fig, h, body):
+    return (_svg_open(fig, _C7L_W, int(_c7l_math.ceil(h)))
+            + '<g stroke-linecap="round" stroke-linejoin="round">'
+            + "".join(body) + "</g></svg>")
+
+
+def _c7l_need(fig, keys):
+    d = fig.get("data") or {}
+    for k in keys:
+        if d.get(k) is None:
+            raise ValueError("figure %r: data has no %r" % (fig.get("id"), k))
+    return d
+
+
+def _c7l_arrow(x1, y1, x2, y2, paint=_SVG_INK, w=2.5, head=8.0, **data):
+    """A straight arrow from (x1, y1) to (x2, y2), a filled head at the far end."""
+    ang = _c7l_math.atan2(y2 - y1, x2 - x1)
+    a1, a2 = ang + _c7l_math.radians(152), ang - _c7l_math.radians(152)
+    hx1, hy1 = x2 + head * _c7l_math.cos(a1), y2 + head * _c7l_math.sin(a1)
+    hx2, hy2 = x2 + head * _c7l_math.cos(a2), y2 + head * _c7l_math.sin(a2)
+    bx, by = x2 + head * 0.7 * _c7l_math.cos(ang + _c7l_math.pi), y2 + head * 0.7 * _c7l_math.sin(ang + _c7l_math.pi)
+    return (_line(x1, y1, bx, by, stroke=paint, w=w, **data)
+            + _path("M %s,%s L %s,%s L %s,%s Z" % (_n(hx1), _n(hy1), _n(x2), _n(y2), _n(hx2), _n(hy2)),
+                    fill=paint, stroke=paint, w=1, data_part="arrowhead"))
+
+
+def _c7l_leader(x1, y1, x2, y2):
+    return (_line(x1, y1, x2, y2, stroke=_SVG_INK_MUTED, w=1.5, data_part="leader")
+            + _circle(x1, y1, 2.5, fill=_SVG_INK, data_part="leader-end"))
+
+
+# ── c7-thermometers: a start reading and a final reading ─────────────────
+
+def _c7l_one_thermometer(o, cx, value, lo, hi, Y, side):
+    """One thermometer: a tube, a bulb, the scale on its left, the liquid up to `value`."""
+    top, bottom = 48, 228
+    o.append(_rect(cx - 8, top, 16, bottom - top + 6, rx=8, fill=_SVG_CARD, stroke=_SVG_INK, w=2,
+                   data_part="tube", data_side=side))
+    o.append(_circle(cx, 244, 14, fill=_SVG_ACCENT, stroke=_SVG_INK, w=2, data_part="bulb",
+                     data_side=side))
+    o.append(_rect(cx - 3.5, Y(value), 7, 240 - Y(value), fill=_SVG_ACCENT, data_part="liquid",
+                   data_side=side, data_value=str(value)))
+    for v in range(lo, hi + 1, 2):
+        big = v % 10 == 0
+        o.append(_line(cx - 8, Y(v), cx - (18 if big else 13), Y(v), stroke=_SVG_INK, w=2 if big else 1.2,
+                       data_part="tick"))
+        if big:
+            o.append(_label(cx - 22, round(Y(v) + 4.5, 2), str(v), size=13, weight="600",
+                            fill=_SVG_INK_MUTED, anchor="end", data_part="scale"))
+    o.append(_line(cx + 6, Y(value), cx + 16, Y(value), stroke=_SVG_ACCENT_TEXT, w=2.5,
+                   data_part="reading-mark", data_side=side))
+
+
+def _c7l_thermometers(fig):
+    """Two thermometers side by side: the start reading on the left, the final reading on
+    the right, an arrow between them, the two readings written under the bulbs, and (if
+    data.change is given) the change written underneath."""
+    d = _c7l_need(fig, ("start", "end", "labels"))
+    lo, hi = int(d.get("lo", 0)), int(d.get("hi", 40))
+    start, end = d["start"], d["end"]
+    if hi - lo != 40 or lo % 10:
+        raise ValueError("figure %r: the scale must span 40 degrees from a multiple of 10" % fig.get("id"))
+    if not (lo < start < hi and lo < end < hi) or start == end:
+        raise ValueError("figure %r: both readings must be on the scale and differ" % fig.get("id"))
+    change = d.get("change")
+    if change:
+        word = "rises" if end > start else "falls"
+        if word not in change or ("%g" % abs(end - start)) not in change:
+            raise ValueError("figure %r: change text %r does not match %g to %g"
+                             % (fig.get("id"), change, start, end))
+
+    def Y(v):
+        return 220 - (v - lo) * 4.0
+
+    left, right = d["labels"]
+    o = []
+    for cx, val, lab, side in ((104, start, left, "start"), (250, end, right, "final")):
+        o.append(_label(cx, 26, lab, size=15, weight="700", data_part="title", data_side=side))
+        _c7l_one_thermometer(o, cx, val, lo, hi, Y, side)
+        o.append(_label(cx, 286, "%g °C" % val, size=16, weight="700", data_part="reading",
+                        data_side=side))
+    o.append(_c7l_arrow(132, 150, 194, 150, paint=_SVG_INK_MUTED, w=2.5, data_part="arrow"))
+    h = 300
+    if change:
+        o.append(_label(_C7L_W / 2.0, 322, change, size=15, weight="700", fill=_SVG_ACCENT_TEXT,
+                        data_part="change"))
+        h = 334
+    return _c7l_open(fig, h, o)
+
+
+# ── c7-energy-arrows: which way the energy goes ──────────────────────────
+
+_C7L_PANEL = {
+    "exo": ("Exothermic", ["energy out to", "the surroundings"], "temperature rises"),
+    "endo": ("Endothermic", ["energy in from", "the surroundings"], "temperature falls"),
+}
+
+
+def _c7l_panel(o, cx, kind):
+    title, lines, temp = _C7L_PANEL[kind]
+    o.append(_label(cx, 24, title, size=15, weight="700", data_part="title", data_key=kind))
+    # the beaker: open at the top, liquid in the lower part
+    o.append(_rect(cx - 34, 98, 68, 44, fill=_SVG_ACCENT_TINT, data_part="liquid", data_key=kind))
+    o.append(_path("M %s,70 L %s,142 L %s,142 L %s,70" % (_n(cx - 34), _n(cx - 34), _n(cx + 34), _n(cx + 34)),
+                   stroke=_SVG_INK, w=2.5, data_part="beaker", data_key=kind))
+    o.append(_label(cx, 126, "chemicals", size=13, weight="700", data_part="chemicals", data_key=kind))
+    out = kind == "exo"
+    for (xa, ya, xb, yb) in ((cx - 42, 112, cx - 72, 112), (cx + 42, 112, cx + 72, 112),
+                             (cx, 62, cx, 36)):
+        if out:
+            o.append(_c7l_arrow(xa, ya, xb, yb, paint=_SVG_ACCENT_TEXT, w=3, data_part="energy-arrow",
+                                data_key=kind))
+        else:
+            o.append(_c7l_arrow(xb, yb, xa, ya, paint=_SVG_ACCENT_TEXT, w=3, data_part="energy-arrow",
+                                data_key=kind))
+    o.append(_label(cx, 170, lines[0], size=13, weight="600", fill=_SVG_INK_BODY, data_part="direction",
+                    data_key=kind))
+    o.append(_label(cx, 188, lines[1], size=13, weight="600", fill=_SVG_INK_BODY, data_part="direction",
+                    data_key=kind))
+    o.append(_label(cx, 214, temp, size=14, weight="700", fill=_SVG_ACCENT_TEXT, data_part="temperature",
+                    data_key=kind))
+
+
+def _c7l_energy_arrows(fig):
+    """Reacting chemicals in a beaker with three energy arrows. Exothermic: the arrows point
+    out, to the surroundings, and the temperature rises. Endothermic: the arrows point in,
+    from the surroundings, and the temperature falls. One panel, or the two side by side."""
+    d = _c7l_need(fig, ("panels",))
+    panels = d["panels"]
+    if panels not in (["exo"], ["endo"], ["exo", "endo"]):
+        raise ValueError("figure %r: panels must be ['exo'], ['endo'] or ['exo', 'endo']" % fig.get("id"))
+    o = []
+    if len(panels) == 1:
+        _c7l_panel(o, _C7L_W / 2.0, panels[0])
+    else:
+        _c7l_panel(o, 85, "exo")
+        o.append(_line(170, 14, 170, 214, stroke=_SVG_RULE, w=1.5, data_part="divider"))
+        _c7l_panel(o, 255, "endo")
+    return _c7l_open(fig, 226, o)
+
+
+# ── c7-results-table: start and final temperatures ───────────────────────
+
+def _c7l_results_table(fig):
+    """A drawn results table: one row per reaction, its start temperature and its final
+    (highest or lowest) temperature, in °C. No change column: the pupil works it out."""
+    d = _c7l_need(fig, ("rows",))
+    rows = d["rows"]
+    if not 2 <= len(rows) <= 5:
+        raise ValueError("figure %r: draws two to five rows" % fig.get("id"))
+    X0, C1, C2, C3 = 5, 195, 265, 335      # column edges
+    HH, RH = 46, 46                        # header and row heights
+    o = [_rect(X0, 4, C3 - X0, HH, fill=_SVG_INSET, data_part="header")]
+    o.append(_label(X0 + 10, 32, "Reaction", size=14, weight="700", anchor="start", data_part="col-head"))
+    for cx, word in (((C1 + C2) / 2.0, "Start"), ((C2 + C3) / 2.0, "Final")):
+        o.append(_label(cx, 23, word, size=14, weight="700", data_part="col-head"))
+        o.append(_label(cx, 41, "(°C)", size=13, weight="600", fill=_SVG_INK_MUTED, data_part="col-unit"))
+    y = 4 + HH
+    for r in rows:
+        name = r.get("name") or []
+        if not 1 <= len(name) <= 2 or any(len(s) > 25 for s in name):
+            raise ValueError("figure %r: a reaction name is one or two lines of 25 characters or fewer"
+                             % fig.get("id"))
+        if r.get("start") is None or r.get("final") is None:
+            raise ValueError("figure %r: every row needs start and final" % fig.get("id"))
+        o.append(_line(X0, y, C3, y, stroke=_SVG_RULE_STRONG, w=1.5, data_part="row-rule"))
+        if len(name) == 1:
+            o.append(_label(X0 + 10, y + 28, name[0], size=13, weight="600", anchor="start",
+                            data_part="reaction"))
+        else:
+            o.append(_label(X0 + 10, y + 20, name[0], size=13, weight="600", anchor="start",
+                            data_part="reaction"))
+            o.append(_label(X0 + 10, y + 37, name[1], size=13, weight="600", anchor="start",
+                            data_part="reaction"))
+        o.append(_label((C1 + C2) / 2.0, y + 29, "%g" % r["start"], size=15, weight="700",
+                        data_part="start", data_value=str(r["start"])))
+        o.append(_label((C2 + C3) / 2.0, y + 29, "%g" % r["final"], size=15, weight="700",
+                        data_part="final", data_value=str(r["final"])))
+        y += RH
+    o.append(_rect(X0, 4, C3 - X0, y - 4, stroke=_SVG_INK, w=2, data_part="frame"))
+    for x in (C1, C2):
+        o.append(_line(x, 4, x, y, stroke=_SVG_INK, w=1.5, data_part="col-rule"))
+    return _c7l_open(fig, y + 6, o)
+
+
+# ── c7-cup-apparatus: measuring a temperature change ─────────────────────
+
+def _c7l_cup_apparatus(fig):
+    """A polystyrene cup standing in a glass beaker, a lid on the cup, a thermometer
+    through a hole in the lid with its bulb in the reaction mixture. Labels on the right,
+    each joined to its part by a leader line."""
+    d = _c7l_need(fig, ("labels",))
+    lab = d["labels"]
+    for k in ("thermometer", "lid", "cup", "mixture", "beaker"):
+        if not lab.get(k):
+            raise ValueError("figure %r: labels needs %r" % (fig.get("id"), k))
+        if any(len(s) > 22 for s in lab[k]):
+            raise ValueError("figure %r: label line over 22 characters would run off a phone"
+                             % fig.get("id"))
+    o = []
+    # the glass beaker
+    o.append(_path("M 30,128 L 30,262 L 150,262 L 150,128", stroke=_SVG_INK_MUTED, w=2.5,
+                   data_part="beaker"))
+    # the cup, wider at the top
+    cup = "M 44,108 L 56,252 L 124,252 L 136,108 Z"
+    o.append(_path(cup, fill=_SVG_CARD, stroke=_SVG_INK, w=2.5, data_part="cup"))
+    o.append(_path("M 50.2,182 L 54.9,240 L 125.1,240 L 129.8,182 Z", fill=_SVG_ACCENT_TINT,
+                   data_part="mixture"))
+    o.append(_line(50.2, 182, 129.8, 182, stroke=_SVG_INK_MUTED, w=1.5, data_part="surface"))
+    # the lid, with a hole for the thermometer
+    o.append(_rect(38, 98, 46, 10, rx=2, fill=_SVG_INSET, stroke=_SVG_INK, w=2, data_part="lid"))
+    o.append(_rect(96, 98, 46, 10, rx=2, fill=_SVG_INSET, stroke=_SVG_INK, w=2, data_part="lid"))
+    # the thermometer, through the hole, bulb in the mixture
+    o.append(_rect(84, 30, 12, 196, rx=6, fill=_SVG_CARD, stroke=_SVG_INK, w=2, data_part="thermometer"))
+    o.append(_circle(90, 228, 9, fill=_SVG_ACCENT, stroke=_SVG_INK, w=2, data_part="thermometer-bulb"))
+    o.append(_rect(87.5, 150, 5, 74, fill=_SVG_ACCENT, data_part="thermometer-liquid"))
+    for v in range(0, 7):
+        yy = 46 + v * 16
+        o.append(_line(84, yy, 89, yy, stroke=_SVG_INK, w=1.2, data_part="tick"))
+    TX = 190
+    spots = (("thermometer", (96, 52), 52), ("lid", (138, 103), 103), ("cup", (132, 140), 144),
+             ("mixture", (118, 205), 205), ("beaker", (150, 250), 248))
+    for key, (px, py), ty in spots:
+        o.append(_c7l_leader(px, py, TX - 6, ty - 5))
+        for i, s in enumerate(lab[key]):
+            o.append(_label(TX, ty + 18 * i, s, size=14, weight="600", anchor="start",
+                            data_part="label", data_key=key))
+    return _c7l_open(fig, 276, o)
+
+
+ART = {
+    "c7-thermometers": _c7l_thermometers,
+    "c7-energy-arrows": _c7l_energy_arrows,
+    "c7-results-table": _c7l_results_table,
+    "c7-cup-apparatus": _c7l_cup_apparatus,
 }

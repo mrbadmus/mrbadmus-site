@@ -2139,16 +2139,16 @@ START_HERE = {
         question="If you had to guess, would the two gases, mixed in one "
                  "balloon and left alone, turn into water on their own?",
         options=[
-            ("Yes, on their own",
-             "Mixing sounds like enough for a reaction. But the atoms in each "
-             "gas are joined in pairs, and those joins must be broken first. "
-             "Without a flame or spark, the mixture just sits there."),
             ("No, they need starting",
              "A mix of hydrogen and oxygen can sit in a balloon for a very "
              "long time. A flame or spark is needed to break the first joins "
              "between its atoms."),
+            ("Yes, on their own",
+             "Mixing sounds like enough for a reaction. But the atoms in each "
+             "gas are joined in pairs, and those joins must be broken first. "
+             "Without a flame or spark, the mixture just sits there."),
         ],
-        answer=1,
+        answer=0,
         bridge="Once started, the atoms that were in the balloons join up in a"
                " new way, as water. Next: take three reactions apart and count"
                " the atoms.",
@@ -2274,15 +2274,15 @@ START_HERE = {
         question="If you had to guess, once the heating is over, does what is "
                  "left in the tube weigh more than before, or less?",
         options=[
+            ("Less than before",
+             "Part of the powder left the tube as that gas. The black solid "
+             "that stays behind weighs less than the green powder did."),
             ("More than before",
              "When a metal burns it does get heavier, because oxygen from the "
              "air joins it. Here nothing joins in: part of the powder leaves "
              "as a gas, so the tube gets lighter."),
-            ("Less than before",
-             "Part of the powder left the tube as that gas. The black solid "
-             "that stays behind weighs less than the green powder did."),
         ],
-        answer=1,
+        answer=0,
         bridge="The green powder has split into two new substances, and one of"
                " them escaped. Next: what this kind of reaction is called, "
                "then three powders to heat.",
@@ -4239,15 +4239,15 @@ START_HERE = {
         question="If you had to guess, what happened to the heat that left the"
                  " water?",
         options=[
-            ("It simply disappeared for good",
-             "It looks that way, since the thermometer only reads what is left"
-             " in the water. But energy is never destroyed, only moved."),
             ("The chemicals took it in",
              "The reaction needed energy to go ahead, and it took it from the "
              "water, the beaker and the air. They lost energy, so they got "
              "colder."),
+            ("It simply disappeared for good",
+             "It looks that way, since the thermometer only reads what is left"
+             " in the water. But energy is never destroyed, only moved."),
         ],
-        answer=1,
+        answer=0,
         bridge="A change that takes energy in from its surroundings like this "
                "is called <strong>endothermic</strong>: last lesson run in "
                "reverse.",

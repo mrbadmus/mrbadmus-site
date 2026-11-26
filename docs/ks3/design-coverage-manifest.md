@@ -1064,6 +1064,7 @@ Every block type the generator can emit must map to at least one component regis
 | lean-knowledge | `lean card is a 2px ink card on the card ground`, `lean card title is display 800` |
 | lean-fact | `lean key fact box is the card on an ACCENT shadow`, `lean key fact label is mono accent-text`, `lean key fact statement is display 700` |
 | lean-deeper | `lean Dive deeper is a dashed box with a display 800 button`, `lean Dive deeper button is display 800` |
+| lean-try | `lean Try it link is a 2px ink control on the card ground` |
 
 ⊕ **The five `lean-*` rows (lean pilot, 10 Nov 2026).** The lean lesson shape (see §5.1.1) has six
 block types. Five are registered here, each against components measured on the one lean page that
@@ -1071,6 +1072,9 @@ draws them. **`lean-try` has no row yet, deliberately**: it renders nothing unle
 names a matching simulation, so it is not in a lesson's `core` and no page draws it. A component
 registered against a page that does not draw it fails "C · every registered component is still ON
 its page", so the row and its component arrive with the first record that has a `try` link.
+⊕ **`lean-try` row added (Lean Wave 2 KS3, 26 Nov 2026).** The first KS3 records with a `try` link
+(the four P6 wave pages, P7 refraction, six circuit pages) arrived, so the row and its component
+arrived with them, measured on `physics/waves-and-sound/waves-on-water.html`.
 
 ⊕ **The four rows above are B1 round two's (13 Aug 2026).** Each block type is a
 distinct SHELL, and every component registered against it pins the property that

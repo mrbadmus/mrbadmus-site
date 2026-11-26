@@ -530,21 +530,16 @@ LESSON = {
                  "300 000 000 m/s. How long does light from the Moon take to "
                  "reach us?",
             "options": [
-                "About 0.8 s — divide the speed by the distance",
-                "About 115 000 000 000 000 000 s — multiply the distance by "
-                "the speed",
-                "About 1.3 s",
-                "About 1.3 m/s",
+                "About 0.8 s, from dividing the speed by the distance",
+                "About 115 000 000 000 000 000 s, from multiplying distance by speed",
+                "About 1.3 s, from dividing the distance by the speed",
+                "About 1.3 m/s, from dividing the distance by the speed",
             ],
             "answer": 2,
             "feedback": {
-                0: "That is the calculation upside down. Cover t on the triangle and s sits over c, so the distance is the one being divided.",
-                1: "Multiplying gives a distance back when you already have "
-                   "one. To find a time you share the distance out at so "
-                   "many metres per second, so you divide.",
-                3: "The number is right and the unit is wrong. Metres "
-                   "divided by metres per second leaves seconds, and the "
-                   "question asked how long.",
+                0: "That is upside down. Time = distance ÷ speed of light.",
+                1: "Multiplying does not give a time. Divide the distance by the speed of light.",
+                3: "The number is right, but m/s is a unit of speed. A time is in seconds.",
             },
             "title": "Rung 1 · Calculate"},
         "apply": {
@@ -552,28 +547,16 @@ LESSON = {
                  "because space is empty and there is nothing to carry it. "
                  "Which statement is right?",
             "options": [
-                "The student is right: a wave needs something to travel in, "
-                "so light struggles in a vacuum and speeds up in air — the "
-                "more material there is, the better it carries.",
-                "The speed of light is the same everywhere, because it is a "
-                "constant of nature.",
-                "Light is faster in space, because there is no gravity there "
-                "to hold it back.",
-                "Light is fastest in a vacuum and slower in air, water or "
-                "glass — it needs no material, and a material only gets in "
-                "its way.",
+                "Light is slower in space, because a wave needs particles to carry it.",
+                "Light has the same speed everywhere, because nothing can slow light down.",
+                "Light is faster in air, because air particles help to pass it along.",
+                "Light is fastest in space, because a material slows light down.",
             ],
             "answer": 3,
             "feedback": {
-                0: "That is true of sound, which is particles shoving their "
-                   "neighbours. Light is not, and it crosses empty space at "
-                   "its full speed.",
-                1: "The speed of light in a vacuum is a constant, and light "
-                   "genuinely does travel more slowly through glass and "
-                   "water. That slowing is what makes refraction happen.",
-                2: "The verdict is right and the reason is not. What slows "
-                   "light is passing through a material, and space has "
-                   "almost none of it.",
+                0: "That is true of sound. Light needs no particles, and it is fastest in a vacuum.",
+                1: "Light does slow down in water and glass. It is fastest in a vacuum.",
+                2: "Light is slower in air than in space. A material slows light down, and space has almost none.",
             },
             "title": "Rung 2 · The one that catches people"},
         "explain": {

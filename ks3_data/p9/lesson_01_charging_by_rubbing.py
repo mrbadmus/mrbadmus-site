@@ -458,8 +458,7 @@ LESSON = {
     # and only the ORDER of rung 2 moves.
     "ladder": {
         "recall": {
-            "q": "A glass rod is rubbed with a wool duster. Glass sits above "
-                 "wool on the list, so which statement is right?",
+            "q": "A glass rod is rubbed with a wool duster. Glass holds its electrons less tightly than wool. Which statement is right?",
             "options": [
                 "The glass loses electrons and becomes positive; the wool "
                 "gains them and becomes negative.",
@@ -472,15 +471,9 @@ LESSON = {
             ],
             "answer": 0,
             "feedback": {
-                1: "That is the transfer the wrong way. Material higher on "
-                   "the list holds its electrons less tightly, so glass "
-                   "gives them up and ends positive.",
-                2: "The sign is right and the mechanism is not. Protons are "
-                   "locked in nuclei; the glass is positive because "
-                   "electrons have left it.",
-                3: "Both surfaces take part. Every electron that leaves the "
-                   "glass arrives on the wool, so the wool must end up "
-                   "negatively charged by the same amount.",
+                1: "That is the wrong way round. Glass holds electrons less tightly, so glass loses them.",
+                2: "Protons never move. The glass is positive because electrons have left it.",
+                3: "Both objects become charged. The electrons the glass loses land on the wool.",
             },
             "title": "Rung 1 · Predict the signs"},
         "apply": {
@@ -488,34 +481,22 @@ LESSON = {
                  "negative, and says the friction created the negative "
                  "charge. What is right?",
             "options": [
-                "The student is right — friction turns movement into "
-                "electric charge, which is why you have to rub hard.",
-                "No charge was created, because the balloon and the jumper "
-                "end up with the same charge as each other.",
-                "No charge was created. Electrons moved from the jumper to "
-                "the balloon, so the jumper is now positive by exactly as "
-                "much as the balloon is negative.",
+                "The student is right, because friction turns movement into new electric charge.",
+                "No charge was created, because the balloon and jumper end up with the same charge.",
+                "No charge was created, because electrons moved from the jumper onto the balloon.",
                 # ⚠️ MRB-177 — this distractor is Design's, FINISHED. It
                 # ended at "so it balances" (22 words) against a 27-word
                 # correct answer, which is a length tell at the ≥4-word
                 # threshold. The remedy is always at the distractor, and the
                 # added clause is the wrong rule stated completely rather
                 # than padding.
-                "Charge was created, but an equal amount of positive charge "
-                "was created on the jumper at the same time, so the two new "
-                "charges balance and the total stays zero.",
+                "Charge was created, because the jumper made new positive charge to balance it.",
             ],
             "answer": 2,
             "feedback": {
-                0: "Rubbing hard makes more contact, not more charge from "
-                   "nothing. The electrons on the balloon all came off the "
-                   "jumper.",
-                1: "The verdict is right and the detail is wrong. They end "
-                   "up with opposite charges of the same size — that is what "
-                   "makes the total still zero.",
-                3: "Nothing was created on either side. The positive charge "
-                   "on the jumper is protons that were always there, left "
-                   "unbalanced by the electrons that walked off.",
+                0: "Friction does not make charge. The balloon's extra electrons came off the jumper.",
+                1: "No charge was made, but the two charges are opposite. The jumper is positive.",
+                3: "Nothing was made. The jumper is positive because it lost electrons to the balloon.",
             },
             "title": "Rung 2 · The one that catches people"},
         "explain": {

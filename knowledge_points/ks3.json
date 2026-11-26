@@ -3023,7 +3023,7 @@
  "building-and-measuring-a-circuit": {
   "key_stage": "KS3",
   "keys": {
-   "building-and-measuring-a-circuit#apply": "The reading is correct and the circuit is not. The voltmeter’s huge resistance is now the only thing in the loop that matters, so it takes almost all the p.d. and almost no current flows.",
+   "building-and-measuring-a-circuit#apply": "The reading is true, but the voltmeter's huge resistance stops almost all current.",
    "building-and-measuring-a-circuit#recall": "Wired the voltmeter into the loop instead of across the lamp",
    "building-and-measuring-a-circuit#start": "A loose connection"
   },
@@ -3923,7 +3923,7 @@
  "charging-by-rubbing": {
   "key_stage": "KS3",
   "keys": {
-   "charging-by-rubbing#apply": "No charge was created. Electrons moved from the jumper to the balloon, so the jumper is now positive by exactly as much as the balloon is negative.",
+   "charging-by-rubbing#apply": "No charge was created, because electrons moved from the jumper onto the balloon.",
    "charging-by-rubbing#recall": "The glass loses electrons and becomes positive; the wool gains them and becomes negative.",
    "charging-by-rubbing#start": "Positive"
   },
@@ -4214,14 +4214,14 @@
  "chemical-vs-physical-change": {
   "key_stage": "KS3",
   "keys": {
-   "chemical-vs-physical-change#apply": "Salt: physical. Marble: chemical.",
+   "chemical-vs-physical-change#apply": "Salt physical, marble chemical, as only the marble makes a new substance",
    "chemical-vs-physical-change#pairs-three-1": "Physical",
    "chemical-vs-physical-change#pairs-three-2": "Chemical",
    "chemical-vs-physical-change#pairs-three-3": "Physical",
    "chemical-vs-physical-change#pairs-three-4": "Chemical",
    "chemical-vs-physical-change#pairs-three-5": "Physical",
    "chemical-vs-physical-change#pairs-three-6": "Chemical",
-   "chemical-vs-physical-change#recall": "At least one new substance has been made",
+   "chemical-vs-physical-change#recall": "A new substance has been made from the starting ones",
    "chemical-vs-physical-change#start": "Something new is made"
   },
   "points": [
@@ -4667,8 +4667,8 @@
  "colour-and-the-spectrum": {
   "key_stage": "KS3",
   "keys": {
-   "colour-and-the-spectrum#apply": "A second prism the other way up in the fanned beam recombines the colours into white, which shows they were in the white light all along.",
-   "colour-and-the-spectrum#recall": "Red, because it has the lowest frequency of the visible colours and is refracted the least.",
+   "colour-and-the-spectrum#apply": "A second prism the other way up mixes the colours back into white.",
+   "colour-and-the-spectrum#recall": "Red, because it has the lowest frequency and is refracted least.",
    "colour-and-the-spectrum#start": "Already in the sunlight"
   },
   "points": [
@@ -4808,7 +4808,7 @@
  "combustion": {
   "key_stage": "KS3",
   "keys": {
-   "combustion#apply": "Not enough air is getting in, so combustion is incomplete",
+   "combustion#apply": "Too little air is getting in, so the combustion is incomplete",
    "combustion#recall": "Carbon dioxide and water",
    "combustion#start": "More air",
    "combustion#three-fuels-1": "Carbon dioxide + water",
@@ -5252,8 +5252,8 @@
  "conductors-and-insulators": {
   "key_stage": "KS3",
   "keys": {
-   "conductors-and-insulators#apply": "The resistance is enormous but finite — around 2 TΩ for that ruler, which passes a current of a few millionths of a millionth of an amp, far below what the meter can show.",
-   "conductors-and-insulators#recall": "40 Ω — a conductor",
+   "conductors-and-insulators#apply": "It is huge but not infinite, so a tiny current flows, too small to show.",
+   "conductors-and-insulators#recall": "40 Ω, so it is a conductor",
    "conductors-and-insulators#start": "Over a million million times"
   },
   "points": [
@@ -5683,8 +5683,8 @@
  "current-and-circuits": {
   "key_stage": "KS3",
   "keys": {
-   "current-and-circuits#apply": "The wire is already full of free electrons, so closing the switch pushes on all of them at once and the far end starts moving almost immediately.",
-   "current-and-circuits#recall": "0.24 A — the current is the same everywhere in a single loop",
+   "current-and-circuits#apply": "The wire is already full of electrons, so they all start moving at once.",
+   "current-and-circuits#recall": "0.24 A, because the current is the same everywhere in one loop",
    "current-and-circuits#start": "The bulb goes dark"
   },
   "points": [
@@ -5824,8 +5824,8 @@
  "current-at-a-junction": {
   "key_stage": "KS3",
   "keys": {
-   "current-at-a-junction#apply": "It still draws 0.30 A. Its branch has the same battery across it as before, and the main wire now carries 0.30 A instead of 0.60 A.",
-   "current-at-a-junction#recall": "0.15 A",
+   "current-at-a-junction#apply": "It still draws 0.30 A, because its branch has the same battery across it.",
+   "current-at-a-junction#recall": "0.15 A, because the three branches add up to the main current",
    "current-at-a-junction#start": "The same amount"
   },
   "points": [
@@ -7171,8 +7171,8 @@
  "echoes-reflection-and-absorption": {
   "key_stage": "KS3",
   "keys": {
-   "echoes-reflection-and-absorption#apply": "The soft surfaces absorb most of the sound instead of reflecting it, and the room is also too small for a reflection to arrive late enough to be heard separately.",
-   "echoes-reflection-and-absorption#recall": "About 510 m — 340 m/s for 3.0 s is the there-and-back path, so halve it",
+   "echoes-reflection-and-absorption#apply": "Soft things absorb most of the sound, and the walls are too close.",
+   "echoes-reflection-and-absorption#recall": "About 510 m, because you multiply speed by time, then halve it",
    "echoes-reflection-and-absorption#start": "No, not a separate one"
   },
   "points": [
@@ -7314,8 +7314,8 @@
  "electric-fields": {
   "key_stage": "KS3",
   "keys": {
-   "electric-fields#apply": "It is zero there. The two charges push a positive test charge in exactly opposite directions with equal strength, so the pushes cancel.",
-   "electric-fields#recall": "The object is positively charged, and a negative charge would be pulled inwards, against the field.",
+   "electric-fields#apply": "It is zero there, because the two equal pushes on a test charge are opposite.",
+   "electric-fields#recall": "It is positive, and a negative charge would be pulled inwards against the field.",
    "electric-fields#start": "No, it does not"
   },
   "points": [
@@ -7468,7 +7468,7 @@
   "key_stage": "KS3",
   "keys": {
    "electromagnets#apply": "The clips fall, because the field goes when the current does",
-   "electromagnets#recall": "Swapping the soft iron core for a plastic one of the same size",
+   "electromagnets#recall": "Swapping the iron core for a plastic one",
    "electromagnets#start": "The whole time"
   },
   "points": [
@@ -7765,8 +7765,8 @@
  "endothermic-reactions": {
   "key_stage": "KS3",
   "keys": {
-   "endothermic-reactions#apply": "It is exothermic — the same energy comes back out",
-   "endothermic-reactions#recall": "It falls, because energy is taken in by the reaction",
+   "endothermic-reactions#apply": "It is exothermic, because freezing gives out the energy melting took in",
+   "endothermic-reactions#recall": "It falls, because the reaction takes in energy from the surroundings",
    "endothermic-reactions#sort-eight-1": "Exothermic",
    "endothermic-reactions#sort-eight-2": "Endothermic",
    "endothermic-reactions#sort-eight-3": "Exothermic",
@@ -9126,8 +9126,8 @@
  "exothermic-reactions": {
   "key_stage": "KS3",
   "keys": {
-   "exothermic-reactions#apply": "No — far more energy comes out than the spark put in",
-   "exothermic-reactions#recall": "It rises, because energy is transferred out of the reaction",
+   "exothermic-reactions#apply": "No, because far more energy comes out than the spark put in",
+   "exothermic-reactions#recall": "It rises, because the reaction transfers energy to the surroundings",
    "exothermic-reactions#start": "Inside the pouch",
    "exothermic-reactions#uses-exo-1": "The iron rusting",
    "exothermic-reactions#uses-exo-2": "Because energy given out can be used to do something",
@@ -10171,8 +10171,8 @@
  "forces-between-charges": {
   "key_stage": "KS3",
   "keys": {
-   "forces-between-charges#apply": "It falls to about a quarter of what it was",
-   "forces-between-charges#recall": "Nothing certain — it could be positively charged, or it could be neutral",
+   "forces-between-charges#apply": "It falls to about a quarter, because the force weakens fast with distance",
+   "forces-between-charges#recall": "Nothing certain, because a positive ball and a neutral ball are both pulled in",
    "forces-between-charges#start": "No, it has none"
   },
   "points": [
@@ -10456,8 +10456,8 @@
  "frequency-pitch-and-loudness": {
   "key_stage": "KS3",
   "keys": {
-   "frequency-pitch-and-loudness#apply": "Both notes travel at about 340 m/s in the same air, so they arrive together — which is why the band sounds like a band and not a mess.",
-   "frequency-pitch-and-loudness#recall": "1024 vibrations",
+   "frequency-pitch-and-loudness#apply": "They arrive together, because all sounds travel at the same speed in air.",
+   "frequency-pitch-and-loudness#recall": "1024 vibrations, because you multiply the frequency by the time",
    "frequency-pitch-and-loudness#start": "No, only louder"
   },
   "points": [
@@ -12405,8 +12405,8 @@
  "hearing-and-auditory-range": {
   "key_stage": "KS3",
   "keys": {
-   "hearing-and-auditory-range#apply": "The whistle is producing a loud tone at about 30 000 Hz, and human ears cannot respond to a vibration that fast — a microphone in the same room records it easily.",
-   "hearing-and-auditory-range#recall": "The dog only — 30 000 Hz is above the top of the human range and above the top of the elephant’s.",
+   "hearing-and-auditory-range#apply": "It makes a loud tone, with too high a frequency for human ears to hear.",
+   "hearing-and-auditory-range#recall": "The dog only, because 30 000 Hz is too high for the others",
    "hearing-and-auditory-range#start": "Too high"
   },
   "points": [
@@ -13124,8 +13124,8 @@
  "how-sound-is-made": {
   "key_stage": "KS3",
   "keys": {
-   "how-sound-is-made#apply": "A loudspeaker turns an electrical signal into a vibrating cone, and a microphone lets a vibrating diaphragm make an electrical signal — the same chain, run in opposite directions.",
-   "how-sound-is-made#recall": "The grip stops the glass vibrating, and with nothing vibrating there is nothing left to disturb the air.",
+   "how-sound-is-made#apply": "A loudspeaker turns a signal into vibrations, and a microphone does the reverse.",
+   "how-sound-is-made#recall": "The grip stops the glass vibrating, so nothing pushes on the air.",
    "how-sound-is-made#start": "Something shaking"
   },
   "points": [
@@ -14770,8 +14770,8 @@
  "light-travels": {
   "key_stage": "KS3",
   "keys": {
-   "light-travels#apply": "Light is fastest in a vacuum and slower in air, water or glass — it needs no material, and a material only gets in its way.",
-   "light-travels#recall": "About 1.3 s",
+   "light-travels#apply": "Light is fastest in space, because a material slows light down.",
+   "light-travels#recall": "About 1.3 s, from dividing the distance by the speed",
    "light-travels#start": "A tiny amount of time"
   },
   "points": [
@@ -14914,7 +14914,7 @@
   "key_stage": "KS3",
   "keys": {
    "magnetic-fields#apply": "A compass at that point would have to settle in two directions at once",
-   "magnetic-fields#recall": "The field is stronger near the ends than out at the sides",
+   "magnetic-fields#recall": "The field is stronger near the ends, because the lines are closest there",
    "magnetic-fields#start": "It is already there"
   },
   "points": [
@@ -15058,8 +15058,8 @@
  "magnets-and-poles": {
   "key_stage": "KS3",
   "keys": {
-   "magnets-and-poles#apply": "It grows a great deal — far more than doubling",
-   "magnets-and-poles#recall": "It is a magnetic material, but whether it is a magnet is still open",
+   "magnets-and-poles#apply": "It grows a great deal, far more than doubling",
+   "magnets-and-poles#recall": "It is a magnetic material, and nothing here shows it is a magnet",
    "magnets-and-poles#start": "Which end faces the other"
   },
   "points": [
@@ -15646,13 +15646,13 @@
  "measuring-a-temperature-change": {
   "key_stage": "KS3",
   "keys": {
-   "measuring-a-temperature-change#apply": "A systematic error — heat loss makes every reading low in the same direction",
+   "measuring-a-temperature-change#apply": "A systematic error, because heat loss makes every reading too low",
    "measuring-a-temperature-change#plan-judge-1": "Flawed",
    "measuring-a-temperature-change#plan-judge-2": "Sound",
    "measuring-a-temperature-change#plan-judge-3": "Flawed",
    "measuring-a-temperature-change#plan-judge-4": "Flawed",
    "measuring-a-temperature-change#plan-judge-5": "Sound",
-   "measuring-a-temperature-change#recall": "The starting temperature and the highest (or lowest) temperature reached",
+   "measuring-a-temperature-change#recall": "The start temperature, and the highest or lowest temperature reached",
    "measuring-a-temperature-change#start": "Heat escaping to the room"
   },
   "points": [
@@ -16870,8 +16870,8 @@
  "oxidation": {
   "key_stage": "KS3",
   "keys": {
-   "oxidation#apply": "Only that water alone is not enough — you need the other tubes to conclude anything more",
-   "oxidation#recall": "It gains oxygen",
+   "oxidation#apply": "That water alone is not enough, because this nail had water and no air",
+   "oxidation#recall": "It gains oxygen, so the product weighs more",
    "oxidation#rust-methods-1": "Keeps oxygen and water out",
    "oxidation#rust-methods-2": "Keeps oxygen and water out",
    "oxidation#rust-methods-3": "Keeps oxygen and water out",
@@ -17465,8 +17465,8 @@
  "potential-difference": {
   "key_stage": "KS3",
   "keys": {
-   "potential-difference#apply": "Both readings are correct. With one component in the loop it takes the whole share, so the p.d. across it equals the p.d. across the battery.",
-   "potential-difference#recall": "1.5 V",
+   "potential-difference#apply": "Both readings are right, because a lone lamp gets all of the battery's p.d.",
+   "potential-difference#recall": "1.5 V, because the three shares add up to the battery's 6.0 V",
    "potential-difference#start": "The voltage it is built for"
   },
   "points": [
@@ -18818,7 +18818,7 @@
  "reactions-rearrange-atoms": {
   "key_stage": "KS3",
   "keys": {
-   "reactions-rearrange-atoms#apply": "Four — the same four, now in two water particles",
+   "reactions-rearrange-atoms#apply": "Four, as the same atoms are now in two water particles",
    "reactions-rearrange-atoms#recall": "The joins between them are broken and new joins are made",
    "reactions-rearrange-atoms#start": "No, they need starting"
   },
@@ -19112,8 +19112,8 @@
  "reflection-mirrors-and-scattering": {
   "key_stage": "KS3",
   "keys": {
-   "reflection-mirrors-and-scattering#apply": "Its rough surface gives every facet a different normal, so rays that arrive parallel leave in all directions — each one still obeying the law of reflection.",
-   "reflection-mirrors-and-scattering#recall": "65°",
+   "reflection-mirrors-and-scattering#apply": "Each bit of its rough surface has its own normal, so the rays scatter.",
+   "reflection-mirrors-and-scattering#recall": "65°, because the normal is at 90° to the mirror",
    "reflection-mirrors-and-scattering#start": "No, about the same"
   },
   "points": [
@@ -19255,7 +19255,7 @@
   "key_stage": "KS3",
   "keys": {
    "refraction#apply": "It slows down inside the glass and carries straight on without bending.",
-   "refraction#recall": "It slows down and bends towards the normal, so the angle inside the glass is less than 40°.",
+   "refraction#recall": "It slows down and bends towards the normal, to less than 40°.",
    "refraction#start": "The light from it"
   },
   "points": [
@@ -19545,8 +19545,8 @@
  "resistance": {
   "key_stage": "KS3",
   "keys": {
-   "resistance#apply": "Both are right. The filament is hotter at 10 V, and hot metal resists more — so the lamp genuinely has a different resistance in each state.",
-   "resistance#recall": "5.0 Ω",
+   "resistance#apply": "Both are right, because the hot filament at 10 V has a higher resistance.",
+   "resistance#recall": "5.0 Ω, because you divide the p.d. by the current",
    "resistance#start": "All the way round"
   },
   "points": [
@@ -20137,8 +20137,8 @@
  "series-and-parallel": {
   "key_stage": "KS3",
   "keys": {
-   "series-and-parallel#apply": "A second bulb in series makes it harder for the charge to get round the one loop, so the current everywhere falls — here from 0.30 A to 0.15 A — and both bulbs are dim.",
-   "series-and-parallel#recall": "0.60 A, and the other two stay at full brightness",
+   "series-and-parallel#apply": "Two bulbs resist more than one, so the current falls and both bulbs are dim.",
+   "series-and-parallel#recall": "0.60 A, and the other two lamps stay at full brightness",
    "series-and-parallel#start": "Each light has its own path"
   },
   "points": [
@@ -20567,8 +20567,8 @@
  "sound-is-longitudinal": {
   "key_stage": "KS3",
   "keys": {
-   "sound-is-longitudinal#apply": "The wavy line is a graph of how squeezed the air is against distance, so its ups and downs are amounts, not directions — the air moves along the line of travel.",
-   "sound-is-longitudinal#recall": "The material moves backwards and forwards along the same line the wave is travelling, giving compressions and rarefactions.",
+   "sound-is-longitudinal#apply": "It graphs how squashed the air is, and the air vibrates along the wave.",
+   "sound-is-longitudinal#recall": "The material vibrates along the direction of travel, giving compressions and rarefactions.",
    "sound-is-longitudinal#start": "Shuffle along and back"
   },
   "points": [
@@ -20712,8 +20712,8 @@
  "sound-needs-a-medium": {
   "key_stage": "KS3",
   "keys": {
-   "sound-needs-a-medium#apply": "The astronaut sees it and hears nothing at all, because there are no particles between them to pass the disturbance on.",
-   "sound-needs-a-medium#recall": "About 2.0 s",
+   "sound-needs-a-medium#apply": "The astronaut hears nothing, because there are no particles to pass sound on.",
+   "sound-needs-a-medium#recall": "About 2.0 s, because you divide the distance by the speed",
    "sound-needs-a-medium#start": "Yes, it keeps beating"
   },
   "points": [
@@ -22472,7 +22472,7 @@
  "the-earth-is-a-magnet": {
   "key_stage": "KS3",
   "keys": {
-   "the-earth-is-a-magnet#apply": "The magnetic pole has moved since the map was printed, so the declination on it is out of date",
+   "the-earth-is-a-magnet#apply": "The magnetic pole has moved since then, so the map’s declination is out of date",
    "the-earth-is-a-magnet#recall": "A magnetic south pole, because unlike poles attract",
    "the-earth-is-a-magnet#start": "Deep inside the Earth"
   },
@@ -24280,8 +24280,8 @@
  "transverse-waves-and-superposition": {
   "key_stage": "KS3",
   "keys": {
-   "transverse-waves-and-superposition#apply": "The surface is flat where they overlap, and both waves carry on past unchanged — the cancelling lasts only while they are on top of each other.",
-   "transverse-waves-and-superposition#recall": "10 mm — add the two, because both waves lift the surface at the same moment",
+   "transverse-waves-and-superposition#apply": "The water is flat where they overlap, and both waves carry on unchanged.",
+   "transverse-waves-and-superposition#recall": "10 mm, because both waves lift the surface at the same time",
    "transverse-waves-and-superposition#start": "Add together"
   },
   "points": [
@@ -24423,8 +24423,8 @@
  "ultrasound-at-work": {
   "key_stage": "KS3",
   "keys": {
-   "ultrasound-at-work#apply": "Ordinary sound travels through solids very well; ultrasound is used because its short wavelength reflects off small features, giving detail a low frequency could not.",
-   "ultrasound-at-work#recall": "About 150 mm",
+   "ultrasound-at-work#apply": "Sound travels well in solids, but ultrasound shows much finer detail.",
+   "ultrasound-at-work#recall": "About 150 mm, because you halve the down and back distance",
    "ultrasound-at-work#start": "Yes, some of it would"
   },
   "points": [
@@ -25310,8 +25310,8 @@
  "waves-on-water": {
   "key_stage": "KS3",
   "keys": {
-   "waves-on-water#apply": "Each patch of water lifted and dropped on the spot and passed the disturbance on, so energy crossed the water and the water did not.",
-   "waves-on-water#recall": "Wavelength 0.60 m, amplitude 0.05 m — crest to crest, and the still level up to the crest",
+   "waves-on-water#apply": "Each patch of water moved up and down on the spot, so only energy crossed.",
+   "waves-on-water#recall": "Wavelength 0.60 m, amplitude 0.05 m, because amplitude starts at the rest line",
    "waves-on-water#start": "Only its movement"
   },
   "points": [
@@ -27233,8 +27233,8 @@
  "why-things-look-coloured": {
   "key_stage": "KS3",
   "keys": {
-   "why-things-look-coloured#apply": "A white surface reflects all frequencies about equally, so it sends back whatever arrives — and only green is arriving.",
-   "why-things-look-coloured#recall": "Almost black, because the only light arriving is red and the book absorbs red.",
+   "why-things-look-coloured#apply": "The shirt reflects every colour, and only green light is arriving.",
+   "why-things-look-coloured#recall": "Almost black, because it absorbs red and no blue light arrives.",
    "why-things-look-coloured#start": "Almost black"
   },
   "points": [
@@ -27374,11 +27374,11 @@
  "word-equations": {
   "key_stage": "KS3",
   "keys": {
-   "word-equations#apply": "Heat is not a substance, so it does not belong in the equation",
+   "word-equations#apply": "Heat should not be a reactant, as heat is not a substance",
    "word-equations#read-back-1": "Zinc and copper sulfate react to make zinc sulfate and copper",
    "word-equations#read-back-2": "One substance has broken down into two",
    "word-equations#read-back-3": "A compound has been made, and the iron is no longer magnetic",
-   "word-equations#recall": "Makes, or turns into",
+   "word-equations#recall": "Makes, so the reactants turn into the products",
    "word-equations#start": "What the powder is"
   },
   "points": [

@@ -500,24 +500,16 @@ LESSON = {
                  "metal-coated ball on a thread. The ball swings towards the "
                  "rod. What can you conclude about the ball?",
             "options": [
-                "It must be positively charged, because unlike charges "
-                "attract",
-                "Nothing certain — it could be positively charged, or it "
-                "could be neutral",
-                "It must be neutral, because a charged ball would have been "
-                "pushed away",
+                "It must be positively charged, because unlike charges always attract each other",
+                "Nothing certain, because a positive ball and a neutral ball are both pulled in",
+                "It must be neutral, because any charged ball would have been pushed away from it",
                 "It must be negatively charged, because the rod is negative",
             ],
             "answer": 1,
             "feedback": {
-                0: "A positive ball would be attracted, but so would a "
-                   "neutral one — by induction. Attraction cannot tell the "
-                   "two apart; only repulsion is proof.",
-                2: "A ball with a like charge would be pushed away. A ball "
-                   "with the opposite charge would be pulled in just as a "
-                   "neutral one is.",
-                3: "Two negatives repel, so a negative ball is the one thing "
-                   "this observation rules out.",
+                0: "A neutral ball is attracted too, by induction. So it could be either.",
+                2: "An oppositely charged ball is pulled in too. So it could be either.",
+                3: "Two negatives repel. A negative ball is the one thing this rules out.",
             },
             "title": "Rung 1 · Predict"},
         "apply": {
@@ -525,23 +517,16 @@ LESSON = {
                  "a certain force at 5 cm. They are moved to 10 cm apart. "
                  "What happens to the force?",
             "options": [
-                "It falls to about half, because the distance doubled",
+                "It falls to about half, because doubling the distance always halves the force",
                 "It stays the same, because neither charge has changed",
-                "It falls to about a quarter on the nearer sphere and stays "
-                "the same on the further one",
-                "It falls to about a quarter of what it was",
+                "It falls to a quarter on one sphere and is unchanged on the other",
+                "It falls to about a quarter, because the force weakens fast with distance",
             ],
             "answer": 3,
             "feedback": {
-                0: "The force does not simply track the distance. Doubling "
-                   "the separation cuts it to about a quarter, which is why "
-                   "static effects vanish so quickly.",
-                1: "The charges have not changed, but the force between "
-                   "charges depends on how far apart they are as well as how "
-                   "big they are.",
-                2: "The quarter is right, but it applies to both. The two "
-                   "forces are always equal in size and opposite in "
-                   "direction, however different the spheres are.",
+                0: "The force falls faster than that. Double the distance gives about a quarter.",
+                1: "The charges are the same, but the force also depends on the distance.",
+                2: "The forces on the two spheres are always equal. Both fall to about a quarter.",
             },
             "title": "Rung 2 · The one that catches people"},
         "explain": {

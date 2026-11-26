@@ -187,6 +187,28 @@
    "A field with two species of grass"
   ]
  },
+ "building-and-measuring-a-circuit#apply": {
+  "0": [
+   "The student is right — 3.00 V out of 3.0 V is the whole supply, so the circuit is fine, because a voltmeter that reads the whole supply is showing that the whole supply is reaching the component it is measuring."
+  ],
+  "1": [
+   "The reading is wrong — a voltmeter in the loop cannot measure anything."
+  ],
+  "2": [
+   "The reading is correct and the circuit is not. The voltmeter’s huge resistance is now the only thing in the loop that matters, so it takes almost all the p.d. and almost no current flows."
+  ],
+  "3": [
+   "The reading is correct and the circuit is not, because a voltmeter has no resistance and short-circuits the lamp."
+  ]
+ },
+ "building-and-measuring-a-circuit#recall": {
+  "2": [
+   "Left the switch open"
+  ],
+  "3": [
+   "Put the cells in the holder the wrong way round"
+  ]
+ },
  "calculating-energy-transferred#apply": {
   "0": [
    "Nothing is wrong — that working is correct"
@@ -197,12 +219,54 @@
    "Nothing — it is being lost to the room"
   ]
  },
+ "charging-by-rubbing#apply": {
+  "0": [
+   "The student is right — friction turns movement into electric charge, which is why you have to rub hard."
+  ],
+  "1": [
+   "No charge was created, because the balloon and the jumper end up with the same charge as each other."
+  ],
+  "2": [
+   "No charge was created. Electrons moved from the jumper to the balloon, so the jumper is now positive by exactly as much as the balloon is negative."
+  ],
+  "3": [
+   "Charge was created, but an equal amount of positive charge was created on the jumper at the same time, so the two new charges balance and the total stays zero."
+  ]
+ },
  "chemical-symbols#apply": {
   "0": [
    "Cobalt — one element, and a metal"
   ],
   "3": [
    "Nothing — Co is not an element"
+  ]
+ },
+ "chemical-vs-physical-change#apply": {
+  "0": [
+   "Both physical — in both cases the solid disappears into the liquid"
+  ],
+  "1": [
+   "Both chemical — the solid is destroyed in both"
+  ],
+  "2": [
+   "Salt: physical. Marble: chemical."
+  ],
+  "3": [
+   "Salt: chemical. Marble: physical."
+  ]
+ },
+ "chemical-vs-physical-change#recall": {
+  "0": [
+   "The change cannot be reversed by any means"
+  ],
+  "1": [
+   "The colour of the substance has changed"
+  ],
+  "2": [
+   "At least one new substance has been made"
+  ],
+  "3": [
+   "Heat was needed to make it happen"
   ]
  },
  "chromosomes-genes-and-dna#apply": {
@@ -219,9 +283,87 @@
    "No — genes move to the organs that need them, so a gene ends up in whichever cells are using it"
   ]
  },
+ "colour-and-the-spectrum#apply": {
+  "0": [
+   "The student is right — the glass is what makes the colours, which is why plain glass is used and not coloured glass."
+  ],
+  "1": [
+   "A second prism the other way up in the fanned beam recombines the colours into white, which shows they were in the white light all along."
+  ],
+  "2": [
+   "The prism does not add colour, but it does turn some of the white light into red and violet as it passes through."
+  ],
+  "3": [
+   "The colours come from the surface of the glass, which is why only the edges of the beam are coloured."
+  ]
+ },
+ "colour-and-the-spectrum#recall": {
+  "0": [
+   "Red, because it has the lowest frequency of the visible colours and is refracted the least."
+  ],
+  "1": [
+   "Violet, because it has the highest frequency and high-frequency light is bent least."
+  ],
+  "2": [
+   "Green, because it is in the middle of the spectrum and so is deflected least."
+  ],
+  "3": [
+   "They all land in the same place, because refraction is the same for every colour."
+  ]
+ },
+ "combustion#apply": {
+  "0": [
+   "Turning the gas up makes the flame taller, so the colour follows the amount of fuel"
+  ],
+  "1": [
+   "A bigger, brighter flame is a hotter flame, so the yellow one is burning more fiercely"
+  ],
+  "2": [
+   "Not enough air is getting in, so combustion is incomplete"
+  ],
+  "3": [
+   "Yellow means the gas supply is contaminated, so the colour comes from the impurity"
+  ]
+ },
+ "combustion#recall": {
+  "1": [
+   "Carbon dioxide only"
+  ],
+  "2": [
+   "Soot and water vapour"
+  ]
+ },
  "compounds#apply": {
   "2": [
    "A mixture, because the amounts were wrong"
+  ]
+ },
+ "conductors-and-insulators#apply": {
+  "0": [
+   "The student is right: an insulator has infinite resistance, which is why the reading is exactly zero — a material either has free charges in it and conducts, or has none at all and stops the current dead."
+  ],
+  "1": [
+   "The resistance cannot be worked out at all, because dividing by a zero reading is impossible."
+  ],
+  "2": [
+   "The resistance is enormous, because plastic has no atoms that can carry charge."
+  ],
+  "3": [
+   "The resistance is enormous but finite — around 2 TΩ for that ruler, which passes a current of a few millionths of a millionth of an amp, far below what the meter can show."
+  ]
+ },
+ "conductors-and-insulators#recall": {
+  "0": [
+   "0.9 Ω — a conductor"
+  ],
+  "1": [
+   "40 Ω — a conductor"
+  ],
+  "2": [
+   "40 Ω — an insulator"
+  ],
+  "3": [
+   "0.025 Ω — a very good conductor"
   ]
  },
  "conservation-of-energy#apply": {
@@ -234,6 +376,59 @@
    "Water has been absorbed into the metal"
   ]
  },
+ "current-and-circuits#apply": {
+  "0": [
+   "The wire is already full of free electrons, so closing the switch pushes on all of them at once and the far end starts moving almost immediately."
+  ],
+  "1": [
+   "Nothing is wrong — there is a delay, but it is too small to notice because electricity travels at the speed of light."
+  ],
+  "2": [
+   "The student is right, and on a cable a few kilometres long you would see the lamp light up noticeably late."
+  ],
+  "3": [
+   "There is no delay because a cell does not send electrons out — it makes new ones in the wire as they are needed."
+  ]
+ },
+ "current-and-circuits#recall": {
+  "0": [
+   "0.12 A — the bulb uses up about half of it"
+  ],
+  "1": [
+   "0 A — the current has already been spent on the bulb"
+  ],
+  "2": [
+   "0.24 A — the current is the same everywhere in a single loop"
+  ],
+  "3": [
+   "0.48 A — the bulb pushes the current on and it speeds up"
+  ]
+ },
+ "current-at-a-junction#apply": {
+  "0": [
+   "The student is right — the total from the battery is fixed at 0.60 A, so the remaining lamp must take all of it."
+  ],
+  "2": [
+   "It still draws 0.30 A. Its branch has the same battery across it as before, and the main wire now carries 0.30 A instead of 0.60 A."
+  ],
+  "3": [
+   "It still draws 0.30 A, because a battery always gives out the same current whatever is connected to it."
+  ]
+ },
+ "current-at-a-junction#recall": {
+  "0": [
+   "0.15 A"
+  ],
+  "1": [
+   "1.55 A — add all three readings together"
+  ],
+  "2": [
+   "0.28 A — share the main current equally between the three branches"
+  ],
+  "3": [
+   "0.10 A — take the smaller branch away from the larger one"
+  ]
+ },
  "distance-time-graphs#recall": {
   "2": [
    "The object was stopped"
@@ -242,6 +437,98 @@
  "drawing-and-adding-forces#apply": {
   "3": [
    "The two forces are equal in size, so the resultant force is 0 N."
+  ]
+ },
+ "echoes-reflection-and-absorption#apply": {
+  "0": [
+   "The soft surfaces absorb most of the sound instead of reflecting it, and the room is also too small for a reflection to arrive late enough to be heard separately."
+  ],
+  "1": [
+   "Sound cannot travel through a room full of soft things."
+  ],
+  "2": [
+   "There is no echo because the room is warm, and warm air absorbs sound."
+  ],
+  "3": [
+   "The sound is reflected just as strongly as in a sports hall, but the walls are too close for you to notice it, because how much comes back off a surface is the same whatever the surface is made of"
+  ]
+ },
+ "echoes-reflection-and-absorption#recall": {
+  "0": [
+   "About 113 m — divide the speed by the time"
+  ],
+  "1": [
+   "About 255 m — halve the time first, then halve the distance as well"
+  ],
+  "2": [
+   "About 1020 m — multiply the speed by the time and that is the distance to the cliff"
+  ],
+  "3": [
+   "About 510 m — 340 m/s for 3.0 s is the there-and-back path, so halve it"
+  ]
+ },
+ "electric-fields#apply": {
+  "0": [
+   "The student is right — being close to two charges instead of one makes it the strongest point on the map."
+  ],
+  "1": [
+   "It is zero there. The two charges push a positive test charge in exactly opposite directions with equal strength, so the pushes cancel."
+  ],
+  "2": [
+   "It is zero there, because the two charges cancel each other out everywhere between them."
+  ],
+  "3": [
+   "It is half the strength of a single charge at the same distance, because the two contributions are averaged."
+  ]
+ },
+ "electric-fields#recall": {
+  "0": [
+   "The object is negatively charged, and a negative charge would be pushed outwards along the field."
+  ],
+  "1": [
+   "The object is positively charged, and a negative charge would be pushed outwards along the field."
+  ],
+  "2": [
+   "The object is positively charged, and a negative charge would be pulled inwards, against the field."
+  ],
+  "3": [
+   "You cannot tell the sign from the field's direction, only its strength."
+  ]
+ },
+ "electromagnets#recall": {
+  "0": [
+   "Swapping the soft iron core for a plastic one of the same size"
+  ],
+  "3": [
+   "Putting a soft iron core in where there was only air"
+  ]
+ },
+ "endothermic-reactions#apply": {
+  "0": [
+   "It is exothermic — the same energy comes back out"
+  ],
+  "1": [
+   "It is also endothermic, because both involve ice"
+  ],
+  "2": [
+   "It involves no energy change at all"
+  ],
+  "3": [
+   "It depends on how cold the freezer is"
+  ]
+ },
+ "endothermic-reactions#recall": {
+  "0": [
+   "It rises, because energy is released"
+  ],
+  "1": [
+   "It falls, because energy is taken in by the reaction"
+  ],
+  "2": [
+   "It stays the same"
+  ],
+  "3": [
+   "It falls, because cold is produced by the reaction"
   ]
  },
  "energy-in-food#apply": {
@@ -328,6 +615,34 @@
    "All of it — an enzyme is not used up by the reaction it catalyses"
   ]
  },
+ "exothermic-reactions#apply": {
+  "0": [
+   "Yes, because energy has to be supplied before it will start"
+  ],
+  "1": [
+   "It is endothermic at first and exothermic once the flame catches"
+  ],
+  "2": [
+   "It depends how big the spark is compared with the fuel"
+  ],
+  "3": [
+   "No — far more energy comes out than the spark put in"
+  ]
+ },
+ "exothermic-reactions#recall": {
+  "0": [
+   "It falls, because the reaction takes energy in"
+  ],
+  "1": [
+   "It stays the same, because energy is conserved"
+  ],
+  "2": [
+   "It rises, because energy is transferred out of the reaction"
+  ],
+  "3": [
+   "It rises only if the reaction is lit with a flame"
+  ]
+ },
  "fermentation#apply": {
   "0": [
    "It evaporates in the oven — ethanol boils well below the temperature of baking"
@@ -352,6 +667,28 @@
    "The cream is unhealthy"
   ]
  },
+ "forces-between-charges#apply": {
+  "0": [
+   "It falls to about half, because the distance doubled"
+  ],
+  "2": [
+   "It falls to about a quarter on the nearer sphere and stays the same on the further one"
+  ],
+  "3": [
+   "It falls to about a quarter of what it was"
+  ]
+ },
+ "forces-between-charges#recall": {
+  "0": [
+   "It must be positively charged, because unlike charges attract"
+  ],
+  "1": [
+   "Nothing certain — it could be positively charged, or it could be neutral"
+  ],
+  "2": [
+   "It must be neutral, because a charged ball would have been pushed away"
+  ]
+ },
  "formulae#apply": {
   "0": [
    "The same atoms in the same numbers make the same substance, however the formula is written"
@@ -364,6 +701,34 @@
   ],
   "3": [
    "A number written in front makes a mixture, and a number written below makes a compound"
+  ]
+ },
+ "frequency-pitch-and-loudness#apply": {
+  "0": [
+   "The tuba arrives first, because a louder, lower note carries more energy and pushes through the air more quickly, so the more energy a note is given the sooner it reaches you"
+  ],
+  "1": [
+   "They arrive together, because the band members are all the same distance away."
+  ],
+  "2": [
+   "Both notes travel at about 340 m/s in the same air, so they arrive together — which is why the band sounds like a band and not a mess."
+  ],
+  "3": [
+   "The student is right: higher frequency means the wave gets along faster, so the piccolo arrives first."
+  ]
+ },
+ "frequency-pitch-and-loudness#recall": {
+  "0": [
+   "64 vibrations — divide the frequency by the time"
+  ],
+  "1": [
+   "1024 vibrations"
+  ],
+  "2": [
+   "1024 Hz"
+  ],
+  "3": [
+   "260 vibrations — add the four seconds on to the 256"
   ]
  },
  "friction#apply": {
@@ -382,6 +747,62 @@
  "fuels-and-energy-resources#recall": {
   "0": [
    "The store refills on a human timescale, so it will not run out"
+  ]
+ },
+ "hearing-and-auditory-range#apply": {
+  "0": [
+   "The whistle produces a very quiet sound that only a dog’s more sensitive ears can pick up."
+  ],
+  "1": [
+   "The sound is there, but it travels too fast for human ears to catch it."
+  ],
+  "2": [
+   "The whistle produces no sound at all, and dogs are responding to the air being blown rather than to a sound, which is why a dog reacts and a microphone in the same room registers nothing"
+  ],
+  "3": [
+   "The whistle is producing a loud tone at about 30 000 Hz, and human ears cannot respond to a vibration that fast — a microphone in the same room records it easily."
+  ]
+ },
+ "hearing-and-auditory-range#recall": {
+  "0": [
+   "The dog only — 30 000 Hz is above the top of the human range and above the top of the elephant’s."
+  ],
+  "1": [
+   "Nobody — 30 000 Hz is ultrasound, and ultrasound is not really sound, so nothing in the room can respond to it however good its ears are"
+  ],
+  "2": [
+   "The dog and the elephant — animals hear better than people do."
+  ],
+  "3": [
+   "All three — the tone is very high, and high sounds carry best."
+  ]
+ },
+ "how-sound-is-made#apply": {
+  "0": [
+   "A microphone stores the sound and a loudspeaker plays it back, so the parts inside must be different: one is built to hold a sound until it is wanted and the other to let one out again"
+  ],
+  "1": [
+   "A microphone makes the sound and a loudspeaker detects it."
+  ],
+  "2": [
+   "Both turn electricity into sound, and a microphone simply does it much more quietly."
+  ],
+  "3": [
+   "A loudspeaker turns an electrical signal into a vibrating cone, and a microphone lets a vibrating diaphragm make an electrical signal — the same chain, run in opposite directions."
+  ]
+ },
+ "how-sound-is-made#recall": {
+  "0": [
+   "The grip stops the glass vibrating, and with nothing vibrating there is nothing left to disturb the air."
+  ],
+  "1": [
+   "The hand absorbs the sound as it comes off the rim."
+  ],
+  "2": [
+   "The hand blocks the sound and stops it getting out of the glass."
+  ],
+  "3": [
+   "The hand takes the energy out of the air around the glass, so the air can no longer carry the sound."
   ]
  },
  "how-we-worked-out-dna#apply": {
@@ -447,6 +868,60 @@
    "It is not alive — it is not made of cells"
   ]
  },
+ "light-travels#apply": {
+  "0": [
+   "The student is right: a wave needs something to travel in, so light struggles in a vacuum and speeds up in air — the more material there is, the better it carries."
+  ],
+  "1": [
+   "The speed of light is the same everywhere, because it is a constant of nature."
+  ],
+  "2": [
+   "Light is faster in space, because there is no gravity there to hold it back."
+  ],
+  "3": [
+   "Light is fastest in a vacuum and slower in air, water or glass — it needs no material, and a material only gets in its way."
+  ]
+ },
+ "light-travels#recall": {
+  "0": [
+   "About 0.8 s — divide the speed by the distance"
+  ],
+  "1": [
+   "About 115 000 000 000 000 000 s — multiply the distance by the speed"
+  ],
+  "2": [
+   "About 1.3 s"
+  ],
+  "3": [
+   "About 1.3 m/s"
+  ]
+ },
+ "magnetic-fields#apply": {
+  "1": [
+   "Lines are not allowed to cross because the field is too strong at a crossing point"
+  ]
+ },
+ "magnetic-fields#recall": {
+  "0": [
+   "There are more field lines near the ends than out at the sides"
+  ],
+  "3": [
+   "The field is stronger near the ends than out at the sides"
+  ]
+ },
+ "magnets-and-poles#apply": {
+  "2": [
+   "It grows a great deal — far more than doubling"
+  ]
+ },
+ "magnets-and-poles#recall": {
+  "2": [
+   "It is not a magnet, because a magnet would have been attracted only once"
+  ],
+  "1": [
+   "It is a magnetic material, but whether it is a magnet is still open"
+  ]
+ },
  "making-a-pure-dry-salt#apply": {
   "0": [
    "Because more copper oxide makes more salt, so the yield goes up with it"
@@ -492,6 +967,34 @@
   ],
   "3": [
    "4.5 N — the answer is still a force"
+  ]
+ },
+ "measuring-a-temperature-change#apply": {
+  "0": [
+   "A random error, which more repeats and a better average would fix"
+  ],
+  "1": [
+   "No error — close agreement between five readings means the results are correct"
+  ],
+  "2": [
+   "A systematic error — heat loss makes every reading low in the same direction"
+  ],
+  "3": [
+   "A mistake in the calculation, repeated the same way in all five runs"
+  ]
+ },
+ "measuring-a-temperature-change#recall": {
+  "0": [
+   "The room temperature and the final temperature"
+  ],
+  "1": [
+   "The temperature at the start and the temperature ten minutes later"
+  ],
+  "2": [
+   "Only the highest temperature reached"
+  ],
+  "3": [
+   "The starting temperature and the highest (or lowest) temperature reached"
   ]
  },
  "moments#apply": {
@@ -565,6 +1068,34 @@
    "a weaker acid"
   ]
  },
+ "oxidation#apply": {
+  "0": [
+   "Only that water alone is not enough — you need the other tubes to conclude anything more"
+  ],
+  "1": [
+   "That water is not involved in rusting, so the other tubes are not needed"
+  ],
+  "2": [
+   "That oil is what prevents rusting — you can conclude that from this tube alone"
+  ],
+  "3": [
+   "That rusting needs salt as well, because this tube had none in it"
+  ]
+ },
+ "oxidation#recall": {
+  "0": [
+   "It gains oxygen"
+  ],
+  "1": [
+   "It loses oxygen"
+  ],
+  "2": [
+   "It is broken down by heat"
+  ],
+  "3": [
+   "It reacts with water"
+  ]
+ },
  "particle-model#apply": {
   "0": [
    "No knife is thin enough to fit"
@@ -601,9 +1132,196 @@
    "23 — one from each pair, so the fertilised egg has 46 again"
   ]
  },
+ "potential-difference#apply": {
+  "0": [
+   "The student is right — the reading across the lamp should be smaller, because the lamp uses some of the voltage up on its way round, so what is left over is what the voltmeter across the battery is showing."
+  ],
+  "1": [
+   "Both readings are correct. With one component in the loop it takes the whole share, so the p.d. across it equals the p.d. across the battery."
+  ],
+  "2": [
+   "The reading across the lamp should be 1.5 V, because half the p.d. is lost in the connecting wires."
+  ],
+  "3": [
+   "Both readings are correct, because a voltmeter always reads the battery’s value wherever you put it."
+  ]
+ },
+ "potential-difference#recall": {
+  "0": [
+   "10.5 V — add all three readings together"
+  ],
+  "1": [
+   "2.0 V — share the 6.0 V equally between the three"
+  ],
+  "2": [
+   "6.0 V — every component in a loop gets the battery’s full p.d."
+  ],
+  "3": [
+   "1.5 V"
+  ]
+ },
+ "reactions-rearrange-atoms#apply": {
+  "0": [
+   "Two, because water only has two hydrogens"
+  ],
+  "1": [
+   "Four — the same four, now in two water particles"
+  ],
+  "2": [
+   "None — they are burnt up"
+  ],
+  "3": [
+   "It depends on how much oxygen there is"
+  ]
+ },
+ "reflection-mirrors-and-scattering#apply": {
+  "0": [
+   "Paper does not obey the law of reflection, which is why the rays come off in random directions rather than at the angle they arrived at."
+  ],
+  "1": [
+   "Its rough surface gives every facet a different normal, so rays that arrive parallel leave in all directions — each one still obeying the law of reflection."
+  ],
+  "2": [
+   "Paper absorbs almost all the light, so there is too little left to form an image."
+  ]
+ },
+ "reflection-mirrors-and-scattering#recall": {
+  "0": [
+   "65°"
+  ],
+  "1": [
+   "25° — the angle of reflection equals the angle given"
+  ],
+  "2": [
+   "50° — double the angle, because the ray turns through both angles"
+  ],
+  "3": [
+   "115° — add the 25° on to the 90° of the normal"
+  ]
+ },
+ "refraction#recall": {
+  "0": [
+   "It slows down and bends away from the normal, so the angle inside the glass is more than 40°."
+  ],
+  "2": [
+   "It carries straight on and only slows down, because the block has flat parallel sides."
+  ],
+  "3": [
+   "It slows down and bends towards the normal, so the angle inside the glass is less than 40°."
+  ]
+ },
+ "resistance#apply": {
+  "0": [
+   "Both are right. The filament is hotter at 10 V, and hot metal resists more — so the lamp genuinely has a different resistance in each state."
+  ],
+  "1": [
+   "The 6.4 Ω reading is the real resistance, and the 16.0 Ω reading is wrong because the meters are affected by the heat coming off the filament, so a reading taken while a lamp is glowing is never the component's own value."
+  ],
+  "2": [
+   "The student is right — R = V ÷ I is a law, so a component can only have one resistance."
+  ],
+  "3": [
+   "Both are right, because the resistance of any component always goes up when you turn the supply up."
+  ]
+ },
+ "resistance#recall": {
+  "0": [
+   "4.05 Ω — multiply the two readings"
+  ],
+  "1": [
+   "0.2 Ω — divide the current by the p.d."
+  ],
+  "2": [
+   "5.0 Ω"
+  ],
+  "3": [
+   "5.0 V — the number is the p.d. needed for one amp"
+  ]
+ },
+ "series-and-parallel#apply": {
+  "0": [
+   "Nothing is wrong — in series the current is the same everywhere, so both bulbs must be as bright as the single bulb was, because a bulb's brightness is set by the current passing through it and that current has not changed anywhere in the loop."
+  ],
+  "1": [
+   "The first bulb will be as bright as before and the second will be dim, because the current reaches the first bulb first."
+  ],
+  "2": [
+   "The bulbs will be dimmer because the battery has to divide its charge between two bulbs and each gets half as much."
+  ],
+  "3": [
+   "A second bulb in series makes it harder for the charge to get round the one loop, so the current everywhere falls — here from 0.30 A to 0.15 A — and both bulbs are dim."
+  ]
+ },
+ "series-and-parallel#recall": {
+  "0": [
+   "0.20 A shared between the three, so about 0.07 A each, and the other two get brighter"
+  ],
+  "1": [
+   "0.60 A, and the other two stay at full brightness"
+  ],
+  "2": [
+   "0.60 A, and all three go out"
+  ],
+  "3": [
+   "0.20 A altogether, and the other two stay lit"
+  ]
+ },
  "solids-liquids-and-gases#apply": {
   "3": [
    "A liquid’s particles are already touching, so there is no space to squash out"
+  ]
+ },
+ "sound-is-longitudinal#apply": {
+  "0": [
+   "The wavy line is a graph of how squeezed the air is against distance, so its ups and downs are amounts, not directions — the air moves along the line of travel."
+  ],
+  "1": [
+   "The drawing is simply wrong, and a sound wave should never be drawn as a wavy line."
+  ],
+  "2": [
+   "The student is right: air really does move up and down as a sound goes past, which is why a sound wave looks like a wave on water and is drawn with crests and troughs in exactly the same way"
+  ],
+  "3": [
+   "The air moves up and down near a loudspeaker and along the line of travel further away."
+  ]
+ },
+ "sound-is-longitudinal#recall": {
+  "0": [
+   "The wave is longer than it is tall, so the wavelength is bigger than the amplitude."
+  ],
+  "1": [
+   "The material moves at right angles to the direction of travel, giving compressions and rarefactions."
+  ],
+  "3": [
+   "The material moves backwards and forwards along the same line the wave is travelling, giving compressions and rarefactions."
+  ]
+ },
+ "sound-needs-a-medium#apply": {
+  "0": [
+   "The astronaut hears a faint, delayed bang, because space is very thin rather than completely empty, and a thin material carries a weakened sound rather than none at all"
+  ],
+  "1": [
+   "The astronaut sees it and hears nothing at all, because there are no particles between them to pass the disturbance on."
+  ],
+  "2": [
+   "The astronaut hears it immediately, because with nothing in the way sound is not slowed down."
+  ],
+  "3": [
+   "The astronaut hears nothing, because the explosion is too far away for sound to carry."
+  ]
+ },
+ "sound-needs-a-medium#recall": {
+  "0": [
+   "About 0.50 s — divide the speed by the distance"
+  ],
+  "1": [
+   "About 2.0 m"
+  ],
+  "2": [
+   "About 2.0 s"
+  ],
+  "3": [
+   "About 231 000 s — multiply the distance by the speed"
   ]
  },
  "specialised-cells#apply": {
@@ -666,6 +1384,22 @@
    "No, the bits are too big"
   ]
  },
+ "the-earth-is-a-magnet#apply": {
+  "1": [
+   "The magnetic pole has moved since the map was printed, so the declination on it is out of date"
+  ],
+  "2": [
+   "Compasses made today are calibrated to a different north from the ones that were made forty years ago"
+  ],
+  "3": [
+   "The map’s grid north has moved, because the grid squares are redrawn for each new edition"
+  ]
+ },
+ "the-earth-is-a-magnet#recall": {
+  "3": [
+   "Neither — the Earth attracts the needle the way it attracts a falling ball"
+  ]
+ },
  "the-ph-scale-and-indicators#apply": {
   "0": [
    "It has become more neutral — the deeper green is a stronger 7"
@@ -700,6 +1434,67 @@
   ],
   "2": [
    "The water it was given, taken up by the roots and turned into new plant tissue"
+  ]
+ },
+ "thermal-decomposition#apply": {
+  "0": [
+   "It has risen, because oxygen joined the copper"
+  ]
+ },
+ "transverse-waves-and-superposition#apply": {
+  "0": [
+   "The two waves have destroyed each other, so nothing carries on past the overlap."
+  ],
+  "1": [
+   "The whole tank goes flat, because the two waves cancel everywhere they are present."
+  ],
+  "2": [
+   "The surface is flat where they overlap, and both waves carry on past unchanged — the cancelling lasts only while they are on top of each other."
+  ],
+  "3": [
+   "The bigger wave absorbs the smaller one, so a single 7 mm wave carries on — a wave that meets a larger one is always swallowed by it, and only the larger one comes out the far side"
+  ]
+ },
+ "transverse-waves-and-superposition#recall": {
+  "0": [
+   "5 mm — take the average, because the surface can only be in one place at a time"
+  ],
+  "1": [
+   "10 mm — add the two, because both waves lift the surface at the same moment"
+  ],
+  "2": [
+   "24 mm — multiply the two amplitudes, because both waves are acting at once"
+  ],
+  "3": [
+   "2 mm — take the smaller from the bigger, because one wave always cancels part of the other"
+  ]
+ },
+ "ultrasound-at-work#apply": {
+  "0": [
+   "Ultrasound is used because it travels faster than audible sound and so returns sooner."
+  ],
+  "1": [
+   "Ordinary sound travels through solids very well; ultrasound is used because its short wavelength reflects off small features, giving detail a low frequency could not."
+  ],
+  "2": [
+   "Ultrasound is used because it is much louder, so more of it survives the journey."
+  ],
+  "3": [
+   "The student is right — audible sound is stopped by solid material, which is why walls keep noise out, so only a frequency above our hearing can get into something solid at all"
+  ]
+ },
+ "ultrasound-at-work#recall": {
+  "0": [
+   "About 300 mm — speed times time gives the depth"
+  ],
+  "1": [
+   "About 75 mm — halve the time and then halve the distance"
+  ],
+  "2": [
+   "About 150 mm"
+  ],
+  "3": [
+   "About 150 mm/s"
   ]
  },
  "unicellular-organisms#apply": {
@@ -768,6 +1563,34 @@
  "variation-continuous-and-discontinuous#recall": {
   "2": [
    "Number of brothers and sisters"
+  ]
+ },
+ "waves-on-water#apply": {
+  "0": [
+   "The water travelled along with the wave, but a gull is too light to be dragged with it."
+  ],
+  "1": [
+   "Each patch of water lifted and dropped on the spot and passed the disturbance on, so energy crossed the water and the water did not."
+  ],
+  "2": [
+   "Each wave carried the gull forward and the next one carried it back the same distance, so the two cancelled out, and the gull finished where a floating thing always finishes: at the place the water left it"
+  ],
+  "3": [
+   "The waves cannot have been moving, because a moving wave would have moved the gull."
+  ]
+ },
+ "waves-on-water#recall": {
+  "0": [
+   "Wavelength 0.60 m, amplitude 0.10 m — amplitude runs the whole way from the trough up to the crest"
+  ],
+  "1": [
+   "Wavelength 0.05 m, amplitude 0.60 m — the bigger of the two numbers is the size of the wave"
+  ],
+  "2": [
+   "Wavelength 0.60 m, amplitude 0.05 m — crest to crest, and the still level up to the crest"
+  ],
+  "3": [
+   "Wavelength 0.30 m, amplitude 0.05 m — wavelength runs from a crest to the next trough"
   ]
  },
  "what-a-force-is#recall": {
@@ -880,6 +1703,56 @@
   ],
   "2": [
    "Respiration continues in every cell, using oxygen and releasing carbon dioxide"
+  ]
+ },
+ "why-things-look-coloured#apply": {
+  "0": [
+   "The green light has dyed the shirt green for as long as the lamp is on."
+  ],
+  "1": [
+   "White light contains green, so the shirt was already partly green."
+  ],
+  "2": [
+   "A white surface reflects all frequencies about equally, so it sends back whatever arrives — and only green is arriving."
+  ],
+  "3": [
+   "The shirt looks green because green is the only colour the human eye can see in dim light."
+  ]
+ },
+ "why-things-look-coloured#recall": {
+  "2": [
+   "Red, because objects take on the colour of the light that shines on them."
+  ],
+  "3": [
+   "Almost black, because the only light arriving is red and the book absorbs red."
+  ]
+ },
+ "word-equations#apply": {
+  "0": [
+   "Heat is not a substance, so it does not belong in the equation"
+  ],
+  "1": [
+   "Nothing — heat is needed, so it should be included"
+  ],
+  "2": [
+   "Heat should be on the right, because burning gives out heat"
+  ],
+  "3": [
+   "The reactants and products are the wrong way round"
+  ]
+ },
+ "word-equations#recall": {
+  "0": [
+   "Equals"
+  ],
+  "1": [
+   "And"
+  ],
+  "2": [
+   "Makes, or turns into"
+  ],
+  "3": [
+   "Is heated to give"
   ]
  }
 }

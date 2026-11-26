@@ -485,25 +485,16 @@ LESSON = {
             "q": "A ray strikes a plane mirror at 25° to the mirror surface. "
                  "What is the angle of reflection?",
             "options": [
-                "65°",
-                "25° — the angle of reflection equals the angle given",
-                "50° — double the angle, because the ray turns through both "
-                "angles",
-                "115° — add the 25° on to the 90° of the normal",
+                "65°, because the normal is at 90° to the mirror",
+                "25°, because the angle of reflection equals the angle given",
+                "50°, because the ray turns through the angle twice",
+                "115°, because you add the 25° to the 90° of the normal",
             ],
             "answer": 0,
             "feedback": {
-                1: "The rule is right and the angle given is the wrong one. "
-                   "The 25° is measured from the mirror; angles of incidence "
-                   "and reflection are measured from the normal, which makes "
-                   "it 65°.",
-                2: "Fifty degrees is the angle between the incoming and "
-                   "outgoing rays when each is 25° from the normal. It is "
-                   "not the angle of reflection, which is measured from the "
-                   "normal to one ray.",
-                3: "The normal is at 90° to the mirror, so a ray 25° from "
-                   "the mirror is 25° short of the normal, not 25° past it. "
-                   "Take it away rather than adding it.",
+                1: "The 25° is measured from the mirror. From the normal it is 90° − 25° = 65°.",
+                2: "There is no doubling. The angle of reflection equals the angle of incidence, 65°.",
+                3: "Take the 25° away from 90°. The angle of incidence is 65°.",
             },
             "title": "Rung 1 · Calculate"},
         "apply": {
@@ -511,29 +502,17 @@ LESSON = {
                  "room but cannot see your face in it. Which statement is "
                  "right?",
             "options": [
-                "Paper does not obey the law of reflection, which is why the "
-                "rays come off in random directions rather than at the "
-                "angle they arrived at.",
-                "Its rough surface gives every facet a different normal, so "
-                "rays that arrive parallel leave in all directions — each "
-                "one still obeying the law of reflection.",
-                "Paper absorbs almost all the light, so there is too little "
-                "left to form an image.",
-                "Paper is not shiny enough, and only shiny surfaces can "
-                "reflect light.",
+                "Paper does not obey the law of reflection, so rays come off at random.",
+                "Each bit of its rough surface has its own normal, so the rays scatter.",
+                "Paper absorbs almost all the light, so too little is left to form an "
+                "image.",
+                "Paper is not shiny enough, and only shiny surfaces can reflect light.",
             ],
             "answer": 1,
             "feedback": {
-                0: "Every single ray obeys it exactly. What varies is the "
-                   "direction each facet faces, and therefore the direction "
-                   "of each normal.",
-                2: "White paper sends back most of what lands on it, which "
-                   "is why it looks bright. Absorption is what makes black "
-                   "card dark, not what stops paper showing a face.",
-                3: "Crumpled kitchen foil is thoroughly shiny and still "
-                   "shows no image. Shiny is about how much comes back; "
-                   "smooth is about whether the pattern survives, and those "
-                   "are different things.",
+                0: "Every ray obeys the law of reflection. Each part of the paper has its own normal.",
+                2: "White paper reflects most of the light. That is why it looks so bright.",
+                3: "All surfaces reflect some light. Crumpled foil is shiny but shows no image.",
             },
             "title": "Rung 2 · The one that catches people"},
         "explain": {

@@ -486,18 +486,16 @@ LESSON = {
             "q": "What happens to the temperature of the surroundings during "
                  "an exothermic change?",
             "options": [
-                "It falls, because the reaction takes energy in",
-                "It stays the same, because energy is conserved",
-                "It rises, because energy is transferred out of the reaction",
-                "It rises only if the reaction is lit with a flame",
+                "It falls, because the reaction takes in energy from the surroundings",
+                "It falls, because energy is used up and destroyed by the reaction",
+                "It rises, because the reaction transfers energy to the surroundings",
+                "It rises, because the reaction creates new energy as it goes along",
             ],
             "answer": 2,
             "feedback": {
-                0: "That describes an endothermic change — the next lesson.",
-                1: "Energy is conserved, but it moves. Conservation does not "
-                   "mean nothing happens.",
-                3: "A hand warmer needs no flame and still warms its "
-                   "surroundings.",
+                0: "A temperature fall shows an endothermic reaction. Exothermic reactions warm their surroundings.",
+                1: "Energy is never destroyed. It moves into the surroundings, so they warm up.",
+                3: "No energy is created. It was stored in the chemicals before the reaction.",
             }},
         # ⚑ MRB-177 — THE THREE DISTRACTORS ARE RE-AUTHORED AND THE CORRECT
         # OPTION IS UNTOUCHED. Design's set ran 12 words against 8, 6 and 6:
@@ -510,21 +508,16 @@ LESSON = {
             "q": "Burning methane needs a spark to start. Does that make it "
                  "endothermic?",
             "options": [
-                "Yes, because energy has to be supplied before it will start",
-                "It is endothermic at first and exothermic once the flame "
-                "catches",
-                "It depends how big the spark is compared with the fuel",
-                "No — far more energy comes out than the spark put in",
+                "Yes, because energy from the spark must go in before it starts",
+                "No, because burning methane needs no energy at all to get started",
+                "Yes, because all of the heat you feel comes from the spark",
+                "No, because far more energy comes out than the spark put in",
             ],
             "answer": 3,
             "feedback": {
-                0: "Supplying a start is not the same as the reaction taking "
-                   "energy in overall. The flame keeps burning after the "
-                   "spark is gone.",
-                1: "The reaction is exothermic throughout. The spark only "
-                   "gets the first molecules going.",
-                2: "The size of the spark changes nothing about the energy "
-                   "the reaction releases.",
+                0: "The spark only starts it. Far more energy comes out than the spark put in.",
+                1: "It does need a spark to start. It is still exothermic overall.",
+                2: "The spark is tiny. The heat you feel comes from the burning methane.",
             }},
         "explain": {
             "q": "A student mixes an acid and an alkali and the thermometer "

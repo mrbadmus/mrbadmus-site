@@ -2752,7 +2752,7 @@ GATES = [
                   "student_rulings.py", "build_student_port.py",
                   "build_leaderboard_port.py", "shared/set-work.js",
                   "shared/set-work.css", "generate_site_v5.py",
-                  "ks3/physics/electric-circuits/current-and-circuits.html",
+                  "ks3/_fixtures/fixture-current-and-circuits.html",   # ⊕ 25 Nov 2026: was the real P8 page (fixture)
                   "ks3/biology/health-and-drugs/"
                   "substance-misuse-and-decisions.html",
                   "ks3/biology/health-and-drugs/alcohol-and-smoking.html",
