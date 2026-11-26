@@ -19,6 +19,10 @@
   "hash": "3ea16b6fd25da676a1e12051b389e59f4a73eabc67f19116bd9fd83f0c64afe9",
   "review_state": "examiner-reviewed"
  },
+ "atoms-elements-compounds": {
+  "hash": "ea9d64c9ef9b2ff33461c5dfc2b1e95a6ebaa2fc5dfce0fe2b1d2209b2ca1ea9",
+  "review_state": "examiner-reviewed"
+ },
  "biodiversity": {
   "hash": "d534b615be40a09b61b4f9541a137fa5997701aa828fb8607735ca950cf348a6",
   "review_state": "examiner-reviewed"
@@ -91,6 +95,10 @@
   "hash": "7e63f877ef8709fd3e61b9397731fe7ebe59ab85de3a4279e6bb974e9f58145e",
   "review_state": "examiner-reviewed"
  },
+ "development-periodic-table": {
+  "hash": "36b65e4e083f5520e2ed5fd9dd843e75c5424757417dde669eba4c1be8b4b86d",
+  "review_state": "examiner-reviewed"
+ },
  "digestive-system": {
   "hash": "c142cba54131d5b839f07899d29aebed32e22f949938d0a6aed6a41451eeed49",
   "review_state": "examiner-reviewed"
@@ -109,6 +117,10 @@
  },
  "electromagnetism": {
   "hash": "2ea71366d8a865a01ab2d36e9934f6071b4425b0aa3920b42fd2e29782d10956",
+  "review_state": "examiner-reviewed"
+ },
+ "electronic-structure": {
+  "hash": "ec94f4ef0ce9b64d7d229c5a05f154d3c45a8cf98b8208437534651656a0fd70",
   "review_state": "examiner-reviewed"
  },
  "energy-changes-in-systems": {
@@ -171,6 +183,18 @@
   "hash": "88a654490ab81153ab26a2faef197ef22606265109f78a67c55b44789f5d8973",
   "review_state": "examiner-reviewed"
  },
+ "group-0": {
+  "hash": "2937a8710febf096576cdd59bf71f4dc65d1cde2addd4343c506b041092226e9",
+  "review_state": "examiner-reviewed"
+ },
+ "group-1": {
+  "hash": "fbdd5948e2bc24bdf23b3022503a9a55bcffdf8756ab859548d83a5ba6bde320",
+  "review_state": "examiner-reviewed"
+ },
+ "group-7": {
+  "hash": "d3af1e5e9298b4f1a0ed6badb5ae3900c7c52b510ceaf6607a7711b3b38d0f6a",
+  "review_state": "examiner-reviewed"
+ },
  "health-disease": {
   "hash": "5a5e73765b5c70f90c7cb06795dac2ae7d96c588bb6db2d6d6f5989ceedc6282",
   "review_state": "examiner-reviewed"
@@ -223,12 +247,24 @@
   "hash": "a77c70cb939ff29ba2a263d45e7331efc0decb3e56371c77aa2d066e2c7832ff",
   "review_state": "examiner-reviewed"
  },
+ "metals-non-metals": {
+  "hash": "b1b51447d871378bef68613a2de3f1fcef8051b2f8fb57130a965f55b61e279e",
+  "review_state": "examiner-reviewed"
+ },
  "microphones": {
   "hash": "e5edf42b841d9fe13ee705a0694c35b09b8a79ba26ed466edb0b3420c6ee4104",
   "review_state": "examiner-reviewed"
  },
  "microscopy": {
   "hash": "de0a5fbfeed0e227864cf5228a46b366374333c3e224d62eab1640062e39e9fe",
+  "review_state": "examiner-reviewed"
+ },
+ "mixtures": {
+  "hash": "5bb5bc1059ca320d52501de362d25e72f2213d2f4bdcf12e5a383de0fc6dc407",
+  "review_state": "examiner-reviewed"
+ },
+ "model-of-the-atom": {
+  "hash": "861c7f5596936e6c5288bfc2a89c28e57671ae261c4964da5c30419e1d01b766",
   "review_state": "examiner-reviewed"
  },
  "moles": {
@@ -241,6 +277,10 @@
  },
  "percentage-yield": {
   "hash": "80fe2b88cb6c6f8be07f53cfcd061deadf831424843d5cc51068bd340a92d3dd",
+  "review_state": "examiner-reviewed"
+ },
+ "periodic-table": {
+  "hash": "ade054e69e9a23f9244edbedbe9c040e65dae49bae2fe633fd8b73b2fba20560",
   "review_state": "examiner-reviewed"
  },
  "plant-tissues": {
@@ -291,6 +331,10 @@
   "hash": "173781b4280c869a9f3d49d4a080c8c06a02b12e0339f2fc78e7c8584944f8e0",
   "review_state": "examiner-reviewed"
  },
+ "relative-atomic-mass": {
+  "hash": "dfb8827abb3921c11a49a84eec0775c7ad2fbf1efb3b151b950a64ffcdc872be",
+  "review_state": "examiner-reviewed"
+ },
  "relative-formula-mass": {
   "hash": "5584890bdd72f08f9745a109b6fcd20f6a8e83426a043ea69bb844dbca9c5139",
   "review_state": "examiner-reviewed"
@@ -319,6 +363,10 @@
   "hash": "330443a0518a8e491bcca2d67e04d802c7a210d43c13f68d435fad9e958d3739",
   "review_state": "examiner-reviewed"
  },
+ "subatomic-particles": {
+  "hash": "ad8c58ace2f5ac08a039fe288159c3c79671672164a6dcb37cff7311a99137f3",
+  "review_state": "examiner-reviewed"
+ },
  "sustainable-fisheries": {
   "hash": "fb700f1ff700eb957d6ed75c4b1bc32bef9db3d4464f3921669131103f04f1f6",
   "review_state": "examiner-reviewed"
@@ -341,6 +389,10 @@
  },
  "transformers": {
   "hash": "0982b232072d3804609b809c4e8d6d08a6504936005b941f7fbbb2b5d9584c34",
+  "review_state": "examiner-reviewed"
+ },
+ "transition-metals": {
+  "hash": "b21cd09872badfa1dc963711e747ec8b03d4386bd87a370888c8a3ac2e46994c",
   "review_state": "examiner-reviewed"
  },
  "translocation": {

@@ -83,10 +83,10 @@ LESSON = {
                       "2K + 2H₂O → 2KOH + H₂",
                   ]}]},
         {"kind": "reveal", "title": "What you see in water",
-         "cols": ["Lithium", "Sodium", "Potassium"],
+         "cols": ["Lithium", "Sodium", "Potas\u00adsium"],
          "rows": [
              ("Floats", "Yes", "Yes", "Yes"),
-             ("Fizzing", "Gentle", "Vigorous", "Very vigorous"),
+             ("Fizzing", "Gentle", "Vig\u00ador\u00adous", "Very vigorous"),
              ("Also", "Moves around on the surface", "Melts into a ball and moves quickly",
               "The hydrogen ignites, with a lilac flame"),
          ]},
@@ -105,8 +105,8 @@ LESSON = {
                   "further from the nucleus. It is less strongly attracted, so it is lost more "
                   "easily. The further down the group, the more reactive the metal."]},
         {"kind": "card", "title": "Predicting from a trend",
-         "body": ["Melting points: lithium 181 °C, sodium 98 °C, potassium 63 °C. The values fall "
-                  "down the group, so predict that rubidium melts below 63 °C. It melts at 39 °C.",
+         "body": ["Melting points: lithium 181 °C, sodium 98 °C, potassium 63 °C. The values fall "
+                  "down the group, so predict that rubidium melts below 63 °C. It melts at 39 °C.",
                   "Rubidium and caesium react with water even more vigorously than potassium."]},
         {"kind": "card", "title": "Easy mistakes",
          "body": [{"mistakes": [

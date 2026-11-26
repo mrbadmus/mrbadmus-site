@@ -66,7 +66,7 @@ LESSON = {
         {"kind": "reveal", "title": "Transition metals and Group 1 compared",
          "cols": ["Transition metals", "Group 1 metals"],
          "rows": [
-             ("Melting point", "High: iron melts at 1538 °C", "Low: sodium melts at 98 °C"),
+             ("Melting point", "High: iron melts at 1538 °C", "Low: sodium melts at 98 °C"),
              ("Density", "High: iron is 7.9 g/cm³", "Low: sodium is 0.97 g/cm³ and floats on water"),
              ("Strength and hardness", "Strong and hard", "Soft: they can be cut with a knife"),
              ("Reaction with oxygen", "Slow", "Fast: they tarnish in air within seconds"),

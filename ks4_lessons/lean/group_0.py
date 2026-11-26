@@ -68,8 +68,8 @@ LESSON = {
                   "Heavier atoms have stronger forces between them, so more energy is needed to "
                   "separate them. Density also increases down the group."]},
         {"kind": "card", "title": "Predicting from a trend",
-         "body": ["Krypton boils at −153 °C and xenon at −108 °C. Radon is next down the group, so "
-                  "predict a boiling point higher than −108 °C. Radon's is −62 °C."]},
+         "body": ["Krypton boils at −153 °C and xenon at −108 °C. Radon is next down the group, so "
+                  "predict a boiling point higher than −108 °C. Radon's is −62 °C."]},
         {"kind": "card", "title": "Easy mistakes",
          "body": [{"mistakes": [
              ("Noble gases do not react because they are gases.",

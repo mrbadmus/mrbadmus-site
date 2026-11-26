@@ -30,16 +30,8 @@
  },
  "pages": {
   "mrbadmus_site/combined/foundation/chemistry/atmosphere/atmospheric-pollutants.html": "f7a53e02f7426f6283c8a20d68f4fd936aaf988cd4530f9626d542a3d65f71b5",
-  "mrbadmus_site/combined/foundation/chemistry/atomic-structure/development-periodic-table.html": "7e9a3618c43394e2a58b1071e2971ea85c0fd9031d1a6741e888e1004cc284ef",
-  "mrbadmus_site/combined/foundation/chemistry/atomic-structure/periodic-table.html": "646b0b253dd73ac930ab658c7d06c66777389516cd62d34d7fecdb46c9103133",
   "mrbadmus_site/combined/higher/chemistry/atmosphere/atmospheric-pollutants.html": "260e4cfcecfb71358dc105d6e6409ac3c509b4a19d618fcccbcd285c34aa1e44",
-  "mrbadmus_site/combined/higher/chemistry/atomic-structure/development-periodic-table.html": "3c20431313e532eb1fcd7a87a012f88ea17901b432a95510d69c4fffa99d4f8d",
-  "mrbadmus_site/combined/higher/chemistry/atomic-structure/periodic-table.html": "7c124d0eb66d29e6b1bbaa907fd70a12193ec8fd8cdf1c0c080563a06545a5f6",
   "mrbadmus_site/triple/foundation/chemistry/atmosphere/atmospheric-pollutants.html": "78d80bf5bcf506fa164f23e257e88733c4f7d74e21efd60a528b7cf7127f92ba",
-  "mrbadmus_site/triple/foundation/chemistry/atomic-structure/development-periodic-table.html": "8d4b604743ca181a89a3fd8de08e8ad97d406992f5003171c8d4f4cb3dfb808b",
-  "mrbadmus_site/triple/foundation/chemistry/atomic-structure/periodic-table.html": "8a401b312c28cdaf5d2aeb269046319ba33f1d79f3a5270ee8c8ae6a4363fc91",
-  "mrbadmus_site/triple/higher/chemistry/atmosphere/atmospheric-pollutants.html": "8a63c7c7fd471444a8ee463cc1094532f73da69f322c38952734c7a3a9246c02",
-  "mrbadmus_site/triple/higher/chemistry/atomic-structure/development-periodic-table.html": "e0bdbd6212bdbaea5ef0009b4df8aa2dad0aa9daae5137e6d9cb6c2f2317bd35",
-  "mrbadmus_site/triple/higher/chemistry/atomic-structure/periodic-table.html": "3495ec60971b13abb0537dbe6aff5c04c6d09836a3dc382410bc198c8df86b80"
+  "mrbadmus_site/triple/higher/chemistry/atmosphere/atmospheric-pollutants.html": "8a63c7c7fd471444a8ee463cc1094532f73da69f322c38952734c7a3a9246c02"
  }
 }

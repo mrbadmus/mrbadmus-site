@@ -94,7 +94,7 @@ LESSON = {
                   "A less reactive halogen cannot displace a more reactive one, so iodine added to "
                   "potassium chloride gives no reaction."]},
         {"kind": "reveal", "title": "Halogen added to a potassium halide solution",
-         "cols": ["Potassium chloride", "Potassium bromide", "Potassium iodide"],
+         "cols": ["Potas\u00adsium chloride", "Potas\u00adsium bromide", "Potas\u00adsium iodide"],
          "rows": [
              ("Chlorine water", "No reaction", "Orange: bromine forms", "Brown: iodine forms"),
              ("Bromine water", "No reaction", "No reaction", "Brown: iodine forms"),

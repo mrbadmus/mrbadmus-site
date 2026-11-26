@@ -98,7 +98,7 @@ LESSON = {
          "cols": ["Plum pudding", "Nuclear model"],
          "rows": [
              ("Positive charge", "Spread through the whole atom", "In a tiny nucleus at the centre"),
-             ("Mass", "Spread through the whole atom", "Concentrated in the nucleus"),
+             ("Mass", "Spread through the whole atom", "Con\u00adcen\u00adtrat\u00aded in the nucleus"),
              ("Electrons", "Embedded in the positive charge", "Around the nucleus"),
              ("Empty space", "None", "Most of the atom"),
          ]},

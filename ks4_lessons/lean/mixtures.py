@@ -55,12 +55,12 @@ LESSON = {
          "cols": ["What it separates", "Example"],
          "rows": [
              ("Filtration", "An insoluble solid from a liquid", "Sand from water"),
-             ("Crystallisation", "A dissolved solid from its solution",
+             ("Crys\u00adtal\u00adli\u00adsa\u00adtion", "A dissolved solid from its solution",
               "Copper sulfate crystals from copper sulfate solution"),
              ("Simple distillation", "A liquid from a solution", "Pure water from salt water"),
              ("Fractional distillation", "Liquids that mix, with different boiling points",
               "Ethanol from water"),
-             ("Chromatography", "Dissolved substances from each other", "The dyes in ink"),
+             ("Chro\u00adma\u00adtog\u00adra\u00adphy", "Dissolved substances from each other", "The dyes in ink"),
          ]},
         {"kind": "card", "title": "Filtration",
          "body": [{"slot": "fig:mix-filtration"},
@@ -79,8 +79,8 @@ LESSON = {
          "body": [{"slot": "fig:mix-fractional-distillation"},
                   "This separates liquids that mix and have different boiling points.",
                   "The vapour rises up the fractionating column. The liquid with the lowest boiling "
-                  "point reaches the top first and is collected first. Ethanol boils at 78 °C and "
-                  "water at 100 °C, so ethanol is collected first."]},
+                  "point reaches the top first and is collected first. Ethanol boils at 78 °C and "
+                  "water at 100 °C, so ethanol is collected first."]},
         {"kind": "card", "title": "Chromatography",
          "body": [{"slot": "fig:chromatogram"},
                   "Chromatography separates dissolved substances, such as the dyes in ink. Each "

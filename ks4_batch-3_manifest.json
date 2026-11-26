@@ -14,7 +14,7 @@
   "shared/ks4-lib.js": "0e3e816f989090f7e04659ae960d14c2523caecf67f93d4bde11b3dd138b2535",
   "shared/ks4-nav.js": "19c07afef73904641211064e09cd8537847d6bd1def6ac60df5860f563b02511",
   "shared/ks4-runtime.js": "129c0301f9fe843660540f2f9657f0aec8383d6de7ff6ee59c71800f13001645",
-  "shared/ks4-source-batch-3.js": "6d409c09dc656523274e298c2f5f73b5790fd182d490bc0d7c1ed02367464cb4",
+  "shared/ks4-source-batch-3.js": "327c15351286e73bd0f55bd12afa99e987425bce5f91d99e3f5a388fae4fb12b",
   "shared/ks4-source.js": "28b778fe65750dfb38bda00a56162fa11ecf0cc39a06127eb1d9989949c7a61c",
   "shared/ks4-theme.css": "931957c2a106c48a2779ad46d9ef6c5fb11ebbf2548d607ff9bb07580ec28065",
   "shared/mrbadmus.v2.js": "43edfcf30f17be9a2f6938ab2dc0f341770091fecabbc0fb8e46b9a4ef78e9db",
@@ -28,17 +28,13 @@
   "shared/tutor-panel.css": "64c3ef2e4205417d70a21edb2bff78159bc549e61657286f308e780ae3ef98f9"
  },
  "pages": {
-  "mrbadmus_site/combined/foundation/chemistry/atmosphere/early-atmosphere.html": "f74c77b2f1b55ca1a64264c77dd468812608b9d3ff6174fd03f3a02e4db27fa3",
-  "mrbadmus_site/combined/foundation/chemistry/atmosphere/greenhouse-gases.html": "6d562dc9412605029cbcee9294deb0a53815cfb31ed5f71d4529922d19c383da",
-  "mrbadmus_site/combined/foundation/chemistry/atomic-structure/mixtures.html": "77639773c8e804c09e745b67e0726f1802a3f95ff8936f9d86e210c506fee615",
-  "mrbadmus_site/combined/higher/chemistry/atmosphere/early-atmosphere.html": "a72d58f0edf18ca18d1541ecc534f8af99fc6f5a0487ca5b0c128ec99259f2f5",
-  "mrbadmus_site/combined/higher/chemistry/atmosphere/greenhouse-gases.html": "b55989924d2960fd438e27803bfc1747248c6b0b1448a6e97b93860575a9210e",
-  "mrbadmus_site/combined/higher/chemistry/atomic-structure/mixtures.html": "34d35b338a9e40b6730386e35d8f73690dbd066e7b2377bd64d227bb48e584b3",
-  "mrbadmus_site/triple/foundation/chemistry/atmosphere/early-atmosphere.html": "8e5dad2fae842e332d2007783243ae40a63877f473ad232f39d9fe67d900b462",
-  "mrbadmus_site/triple/foundation/chemistry/atmosphere/greenhouse-gases.html": "28c7415856ef148718067d4683508bf0eaf553d73a826a668ef89519eef1389a",
-  "mrbadmus_site/triple/foundation/chemistry/atomic-structure/mixtures.html": "ae5c7acfc0f2134baaacdb1b2a9e06fbe1b013eb3a0c0e106b7bb80b54470a81",
-  "mrbadmus_site/triple/higher/chemistry/atmosphere/early-atmosphere.html": "ebb916ac5a6e23e4f49d47a562116b2f65da98758b6c4694a37c5ff497f9854e",
-  "mrbadmus_site/triple/higher/chemistry/atmosphere/greenhouse-gases.html": "d97afca58e75df2b35cbb52b90bf9d2fda72b8dfdbc3da37fabc4f3b267c8111",
-  "mrbadmus_site/triple/higher/chemistry/atomic-structure/mixtures.html": "802222c6d0d34c0efa5741ea0cb016ea2394e9d3a39fd02ee431dd7b3bddcf1a"
+  "mrbadmus_site/combined/foundation/chemistry/atmosphere/early-atmosphere.html": "42acc5f50a45c373d85122169e43d5749fa3e97a5c450bea77bbf672c9c2a95b",
+  "mrbadmus_site/combined/foundation/chemistry/atmosphere/greenhouse-gases.html": "5a50386fd36a97ac547a27cb75d09eea8d37353afda0a8a6e42a4366a41b2a43",
+  "mrbadmus_site/combined/higher/chemistry/atmosphere/early-atmosphere.html": "1b4d65a0ba9d89c1391888f6e032eb7e87fc13bdde981185c1d1e35d666a69cd",
+  "mrbadmus_site/combined/higher/chemistry/atmosphere/greenhouse-gases.html": "0e3f30be04b5c6a04bd3cf852ff908c3bc87c19bc10f8d4f874e10414610555a",
+  "mrbadmus_site/triple/foundation/chemistry/atmosphere/early-atmosphere.html": "7875115dd6831be1b3b434f4d8e99b880bb761ccb7c4ba01977a004a7424fbc7",
+  "mrbadmus_site/triple/foundation/chemistry/atmosphere/greenhouse-gases.html": "fa73c021f8b048862df318b5874a50f4e039a25a4d6c2d15c37157a914840efc",
+  "mrbadmus_site/triple/higher/chemistry/atmosphere/early-atmosphere.html": "035460cba462953b9685b8e6c556c66dec1304f892649eabf5b3f210e291f70b",
+  "mrbadmus_site/triple/higher/chemistry/atmosphere/greenhouse-gases.html": "3fe3789f82f1b77c7151fa393fe3e1ad26febb009dad7ee082d8b75eb03225b3"
  }
 }

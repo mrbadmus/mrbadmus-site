@@ -100,7 +100,7 @@ LESSON = {
         {"kind": "card", "title": "Size and mass of atoms",
          "body": [{"slot": "fig:atom-scale"},
                   "Atoms are very small, with a radius of about 0.1 nm (1 × 10⁻¹⁰ m).",
-                  "The radius of a nucleus is less than 1/10 000 of that of the atom (about "
+                  "The radius of a nucleus is less than 1/10 000 of that of the atom (about "
                   "1 × 10⁻¹⁴ m). Almost all of the mass of an atom is in the "
                   "nucleus.",
                   "If an atom were 100 m across, like a football pitch, its nucleus would be less "

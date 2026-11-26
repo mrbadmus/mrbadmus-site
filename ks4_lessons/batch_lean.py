@@ -329,6 +329,15 @@ def _extra_css():
     table = ("\n/* KS4 lean reveal tables: hyphenate long words (Organisation walk, 18 Nov 2026) */"
              "\nhtml .lean-table thead th, html .lean-table tbody th, html .lean-table .lean-cell "
              "{ overflow-wrap: break-word; -webkit-hyphens: auto; hyphens: auto; }\n")
+    # ⊕ 26 Nov 2026 (Atomic structure walk): the answer cells hyphenate too ("bromin|e"). Chrome
+    # never auto-hyphenates a Capitalised word, so a long one in a table carries soft hyphens in
+    # its record (Potas­sium). And an Easy mistakes line was a flex row, so a <sub> in it
+    # became its own flex item and the line fell apart ("O 2 is a compound"); it is now plain
+    # text with the mark pinned at its left, which draws the same for a line with no <sub>.
+    table += ("\n/* KS4 lean: answer cells hyphenate; Easy mistakes lines flow as text (Atomic structure walk, 26 Nov 2026) */"
+              "\nhtml .lean-table td, html .lean-table td * { overflow-wrap: break-word; -webkit-hyphens: auto; hyphens: auto; }"
+              "\nhtml .lean-wrong, html .lean-right { display: block; position: relative; padding-left: calc(1em + 10px); }"
+              "\nhtml .lean-wrong .lean-mark, html .lean-right .lean-mark { position: absolute; left: 0; top: .3em; margin-top: 0; }\n")
     return batch_4.EXTRA_CSS + table   # + the line-input placeholder rule the Steps and Cfifa blocks need
 
 

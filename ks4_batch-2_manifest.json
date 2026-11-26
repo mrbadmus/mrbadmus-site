@@ -14,7 +14,7 @@
   "shared/ks4-lib.js": "0e3e816f989090f7e04659ae960d14c2523caecf67f93d4bde11b3dd138b2535",
   "shared/ks4-nav.js": "19c07afef73904641211064e09cd8537847d6bd1def6ac60df5860f563b02511",
   "shared/ks4-runtime.js": "129c0301f9fe843660540f2f9657f0aec8383d6de7ff6ee59c71800f13001645",
-  "shared/ks4-source-batch-2.js": "37899c75d57edff32f88142070c1fba8d59daebac2d5194ed7cbc1908567ae07",
+  "shared/ks4-source-batch-2.js": "2316681651d34be4fb34b91b0c78c9f0d42b53b6aa629c92333214d9276456f2",
   "shared/ks4-source.js": "28b778fe65750dfb38bda00a56162fa11ecf0cc39a06127eb1d9989949c7a61c",
   "shared/ks4-theme.css": "931957c2a106c48a2779ad46d9ef6c5fb11ebbf2548d607ff9bb07580ec28065",
   "shared/mrbadmus.v2.js": "43edfcf30f17be9a2f6938ab2dc0f341770091fecabbc0fb8e46b9a4ef78e9db",
@@ -28,11 +28,7 @@
   "shared/tutor-panel.css": "64c3ef2e4205417d70a21edb2bff78159bc549e61657286f308e780ae3ef98f9"
  },
  "pages": {
-  "mrbadmus_site/combined/foundation/chemistry/atomic-structure/atoms-elements-compounds.html": "c78ee135550b921bceeee68f059e28c91212d8a035cf9b60c82612461f3130e1",
-  "mrbadmus_site/combined/higher/chemistry/atomic-structure/atoms-elements-compounds.html": "74f6db0ad68ff4a642feb748033495d92929e81145ecc0a307f3faa4e8f9fa2e",
-  "mrbadmus_site/triple/foundation/chemistry/atomic-structure/atoms-elements-compounds.html": "cd9ed18392a7ae30afeaa8e7944925d7ba24031b7962ae37136305e07a1a7166",
-  "mrbadmus_site/triple/foundation/chemistry/chemical-changes/titrations.html": "d0da7d4f3a70ba39eee670d1483315736885d9b4ceb95f6ad316c393d0430d11",
-  "mrbadmus_site/triple/higher/chemistry/atomic-structure/atoms-elements-compounds.html": "23ee470d114f92364d1c2c65fb791000693c1268a408f2c1b6994658971b3e17",
-  "mrbadmus_site/triple/higher/chemistry/chemical-changes/titrations.html": "fdc238f684ce778c03680dd46560998c1df5c74d4549cc63e40f80d77b493a85"
+  "mrbadmus_site/triple/foundation/chemistry/chemical-changes/titrations.html": "b770d0b39d61931f703bfd501cea14c4ead94b4d666dcedf9301317cd818bb06",
+  "mrbadmus_site/triple/higher/chemistry/chemical-changes/titrations.html": "44e478d638153d6778894a606037c08c4e16736c337bbe04d2a94c6de336ce2e"
  }
 }
