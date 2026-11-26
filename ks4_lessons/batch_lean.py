@@ -37,7 +37,8 @@ SLUGS = ["efficiency", "changes-in-energy", "power", "thermal-conductivity",
 # from batches 2, 3 and 4), then Biology Organisation (eleven legacy lessons from batches 2, 4, 5
 # and 6; see BIO_EYEBROW below), then Chemistry Chemical analysis (six old-format lessons and
 # two legacy batch-2 lessons), then Physics Particle model of matter (two old-format lessons and
-# four legacy lessons from batches 2 and 3).
+# four legacy lessons from batches 2 and 3), then Biology Cell biology (eight legacy lessons from
+# batches 2, 3, 4 and 6; see BIO_EYEBROW below).
 
 # Lessons that have no legacy page: identity comes from here (the subtopic data's own
 # title and spec, 6.1.1.1 / 6.1.1.3 / 6.1.2.1). The three Energy ones are written out so
@@ -60,6 +61,7 @@ _UNITS = {
     ("biology", "organisation"): "Organisation",
     ("chemistry", "analysis"): "Chemical analysis",
     ("physics", "particle-model"): "Particle model of matter",
+    ("biology", "cell-biology"): "Cell biology",
 }
 # The family label (the eyebrow's last word) is a ruled choice per lesson, drawn from the
 # labels the existing batches use: Model, Quantitative, Process, Classify, Contrast,
@@ -155,6 +157,17 @@ BIO_EYEBROW = {
     "plant-tissues": "4.2.3.1",
     "transpiration": "4.2.3.2",
     "translocation": "4.2.3.2",
+    # Cell biology (8464 and 8461 number section 4.1 the same; 4.1.1.6 is 8461 only, Triple
+    # routes only). All eight are legacy Design pages. The subtopic data says "4.1.2" for
+    # culturing-microorganisms and "4.1.3" / "4.1.2.1" for two others; this table is what is checked.
+    "eukaryotes-prokaryotes": "4.1.1.1",
+    "animal-plant-cells": "4.1.1.2",
+    "cell-specialisation": "4.1.1.3\u20134.1.1.4",
+    "microscopy": "4.1.1.5",
+    "culturing-microorganisms": "4.1.1.6",
+    "chromosomes-mitosis": "4.1.2.1\u20134.1.2.2",
+    "stem-cells": "4.1.2.3",
+    "transport-in-cells": "4.1.3.1\u20134.1.3.3",
 }
 # The 8464 section number of an old-format PHYSICS lesson whose subtopic data has it wrong, so
 # the eyebrow is not derived from that data (docs/lessons/wave1/ks4-<slug>.md, its Sources line).

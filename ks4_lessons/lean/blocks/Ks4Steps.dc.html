@@ -127,9 +127,12 @@ class Component extends DCLogic {
     });
     const allFilled = filled >= total;
     const workedDone = s.shown >= total;
+    // two steps keep their original wording (Step 1 feeds Step 2). Any other count does not
+    // name its number (the progress line already shows it) and claims no chain it may not have.
+    const two = steps.length === 2;
     return {
-      eyebrow: attempt ? 'Your turn \u00b7 two steps, CFIFA on each' : 'Worked example \u00b7 two equations \u00b7 one line at a time',
-      head: p.head || '', hasLead: !!(attempt || p.lead), lead: attempt ? 'Write every line yourself. Step 1\u2019s answer is what you put into Step 2. Then check your working and tick the lines you had.' : (p.lead || ''),
+      eyebrow: attempt ? (two ? 'Your turn \u00b7 two steps, CFIFA on each' : 'Your turn \u00b7 the same steps') : (two ? 'Worked example \u00b7 two equations \u00b7 one line at a time' : 'Worked example \u00b7 one line at a time'),
+      head: p.head || '', hasLead: !!(attempt || p.lead), lead: attempt ? (two ? 'Write every line yourself. Step 1\u2019s answer is what you put into Step 2. Then check your working and tick the lines you had.' : 'Write every line yourself. The last step uses your earlier answers. Then check your working and tick the lines you had.') : (p.lead || ''),
       shellStyle: 'padding:26px 24px;border-radius:var(--ks3-r-card);border:2px solid var(--ks3-ink);background:' + (attempt ? 'var(--ks3-inset)' : 'var(--ks3-card)') + ';',
       progress: attempt ? (s.checked ? tickN + ' of ' + total + ' lines ticked' : filled + ' of ' + total + ' lines written') : (s.shown === 0 ? steps.length + ' steps \u00b7 ' + total + ' lines' : 'Step ' + (curStep + 1) + ' \u00b7 line ' + curLine + ' of ' + ((steps[curStep] || {}).lines || []).length),
       steps: out,

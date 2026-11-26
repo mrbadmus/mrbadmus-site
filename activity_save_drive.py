@@ -286,6 +286,8 @@ CASES = [
                          and [x for x in b if x["question_id"] == "ks4:abiotic-biotic-factors:ch#bq"][1]["is_correct"] is True,
          back="H.rootState().bq === 0 && H.rootState().bqOk === true"),
     dict(name="ks4-words-pick", page="/combined/higher/biology/cell-biology/animal-plant-cells.html",
+         retired="the lean rebuild (Wave 1, Cell biology) took the vacuole estimate off the page",
+         absent=['"e": "estBtns"'],
          act="H.click(H.rootBtn('Most of it, about three quarters')); await H.sleep(400);",
          want=["ks4:animal-plant-cells:ch#est"],
          check=lambda b: [x for x in b if x["question_id"].endswith("#est")][0]["is_correct"] is True,
@@ -298,6 +300,8 @@ CASES = [
          check=lambda b: [x["is_correct"] for x in b if x["question_id"] == "ks4:ecosystems:ch#lv-1"] == [False, True],
          back="H.rootState().lv === 1"),
     dict(name="ks4-prediction-map", page="/combined/higher/biology/cell-biology/chromosomes-mitosis.html",
+         retired="the lean rebuild (Wave 1, Cell biology) took the run-the-cell-cycle bench off the page",
+         absent=['"e": "cyQs"'],
          act="""H.click(H.rootBtn('It grows, makes more ribosomes')); await H.sleep(300);
                 var q = H.v().cyQs; for (var i = 1; i < q.length; i += 1) { H.click(H.rootBtn(H.v().cyQs[i].opts[0].label, 0)); await H.sleep(200); }
                 await H.call('onCyRun'); await H.sleep(300);""",
@@ -324,8 +328,11 @@ CASES = [
                 await H.sleep(200); H.click(H.btnIn(cf.host, 'button', 'Check your working')); await H.sleep(800);""",
          want=["ks4:eukaryotes-prokaryotes:ch#cfifa-1-1"],
          back="(function(){ var cf = H.block('Ks4Cfifa'); var s = cf.logic.state; return s.qEx === 1 && !!s.q[0] && s.q[0].open === true; })()"),
-    dict(name="ks4-quizbank-fold", page="/combined/higher/biology/cell-biology/eukaryotes-prokaryotes.html",
-         act="""var qb = H.block('Ks4QuizBank'); H.click(H.btnIn(qb.host, 'button', 'Show 1 more')); await H.sleep(500);
+    # ⊕ 26 Nov 2026: moved from eukaryotes-prokaryotes, whose lean rebuild (Wave 1, Cell biology)
+    # shows all five practice questions at once, so it has no "Show 1 more" fold to press. States of
+    # matter still folds at four, the case this checks; its fold reads "Show N more" for its own count.
+    dict(name="ks4-quizbank-fold", page="/combined/higher/chemistry/bonding/states-of-matter.html",
+         act="""var qb = H.block('Ks4QuizBank'); H.click(Array.prototype.filter.call(qb.host.querySelectorAll('button'), function (b) { return /^Show \\d+ more$/.test(b.textContent.trim()); })[0]); await H.sleep(500);
                 var lis = qb.host.querySelectorAll('li'); H.click(lis[4].querySelector('button')); await H.sleep(300);
                 H.click(qb.host.querySelectorAll('li')[0].querySelector('button')); await H.sleep(500);""",
          want=[],
@@ -612,6 +619,8 @@ CASES = [
          check=lambda b: isinstance(b[-1]["is_correct"], bool) and b[-1]["answer"],
          back="""(function(){ return H.rootState().step > 0; })()"""),
     dict(name="ks4-read-microscope", page="/triple/higher/biology/cell-biology/microscopy.html", forms=True,
+         retired="the lean rebuild (Wave 1, Cell biology) took the onion-cell microscope bench off the page",
+         absent=['"e": "gateOpts"'],
          act="""await H.set({ pending: 0 }); H.click(H.exact(H.v().gateOpts[0].label)); await H.sleep(300);""",
          want=["ks4:microscopy:th#gate-1"],
          check=lambda b: isinstance(b[-1]["is_correct"], bool) and b[-1]["answer"] and b[-1]["question_text"],
@@ -648,6 +657,8 @@ CASES = [
          check=lambda b: isinstance(b[-1]["is_correct"], bool) and b[-1]["answer"],
          back="(function(){ return H.rootState().step.sun === 3; })()"),
     dict(name="ks4-list-features", page="/triple/higher/biology/cell-biology/cell-specialisation.html", forms=True,
+         retired="the lean rebuild (Wave 1, Cell biology) took the design-the-cell bench off the page",
+         absent=['"e": "featBtns"'],
          act="await H.call(function (v) { return v.featBtns[0].onClick; }); await H.call(function (v) { return v.featBtns[1].onClick; }); await H.call('onCompare'); await H.sleep(200);",
          want=["ks4:cell-specialisation:th#compared-1"],
          check=lambda b: b[-1]["answer"].count("\n") == 1,
@@ -1036,7 +1047,11 @@ CASES = [
 # ⊕ 14 Nov 2026: ks4-words-pick stands in for ks4-flag-pick (the same one-press root option pick,
 # posted and restored), because the lean rebuild (Wave 1, Ecology) took the 'which factor'
 # question off abiotic-biotic-factors.
-PUPIL = ["ks4-words-pick", "ks4-level-pick", "ks4-form-internal", "ks4-list-features", "ks3-commit-run", "ks3-parts-check", "ks3-typed"]
+# ⊕ 26 Nov 2026: ks4-reveal-circuit stands in for ks4-words-pick (a one-press root option pick,
+# posted and restored), and ks4-list-of-picks for ks4-list-features (a form whose answer is a list
+# of picks), because the lean rebuild (Wave 1, Cell biology) took the vacuole estimate off
+# animal-plant-cells and the design-the-cell bench off cell-specialisation.
+PUPIL = ["ks4-reveal-circuit", "ks4-level-pick", "ks4-form-internal", "ks4-list-of-picks", "ks3-commit-run", "ks3-parts-check", "ks3-typed"]
 
 
 def retired_proof(c):
