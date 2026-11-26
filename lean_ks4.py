@@ -288,13 +288,20 @@ _EYEBROW_LITERAL = re.compile(r'<p class="ks3-eyebrow">AQA Physics (6\.[\d.]+|4\
 # Chemistry (8464 5.3.x.y / 8462 4.3.x.y): a batch-11 header writes "AQA Chemistry 5.3.x.y \u00b7 <tag>"
 # for every route. The numbers come from batch_lean.CHEM_EYEBROW (lesson["eyebrow_spec"]).
 _EYEBROW_LITERAL_CHEM = re.compile(r'<p class="ks3-eyebrow">AQA Chemistry (5\.3\.\d+\.\d+)(?: \u00b7 [^<]*)?</p>')
-_EYEBROW_LITERAL_BIO = re.compile(r'<p class="ks3-eyebrow">AQA Biology (4\.7\.\d+\.\d+(?: and 4\.7\.\d+\.\d+)?'
-                                  r'|4\.2\.\d+(?:\.\d+)?(?:\u20134\.2\.\d+(?:\.\d+)?)?)'
+_EYEBROW_LITERAL_BIO = re.compile(r'<p class="ks3-eyebrow">AQA (?:Biology|\{\{ specName \}\} \(\{\{ specCode \}\}\)) '
+                                  r'(4\.7\.\d+\.\d+(?: and 4\.7\.\d+\.\d+)?'
+                                  r'|4\.[12]\.\d+(?:\.\d+)?(?:\u20134\.[12]\.\d+(?:\.\d+)?)?)'
                                   r'(?: \u00b7 [^<]*)?</p>')
 # ⊕ 18 Nov 2026 (Organisation): the Organisation headers (batches 4, 5 and 6) write
 # "AQA Biology 4.2.x" with no spec code and no family, and health-disease a range with an en dash,
 # "4.2.2.5–4.2.2.6". 4.2 is numbered the same in 8464 and 8461, so they are rebuilt per route like
 # Ecology's 4.7.x; the number must be the one in batch_lean.BIO_EYEBROW (lesson["bio_spec"]).
+# ⊕ 25 Nov 2026 (Cell biology): 4.1 is numbered the same in 8464 and 8461 too (4.1.1.6 is 8461 only,
+# on the Triple routes only), so "AQA Biology 4.1.x" headers are rebuilt the same way. Microscopy
+# (batch 3) binds its spec per route in the header itself, "AQA {{ specName }} ({{ specCode }}) 4.1.1.5
+# · Quantitative"; that form is read as the literal, so the page gets the same per-route eyebrow as
+# every other lean biology page. No existing lean page matched either addition (all 92 page sources
+# compared byte for byte in memory).
 
 
 def _eyebrow_js(lesson, spec):
@@ -313,8 +320,8 @@ def _eyebrow_js(lesson, spec):
     elif lesson["subject"] == "biology":
         # the same number in both specs; a lesson may carry a different one per spec family
         # (batch_lean `spec_c`: the Combined number when it differs from the Triple one)
-        if not spec.startswith(("4.7.", "4.2.")):
-            raise SystemExit("lean_ks4: %s: a biology eyebrow spec must be 4.7.x or 4.2.x, got %r"
+        if not spec.startswith(("4.7.", "4.2.", "4.1.")):
+            raise SystemExit("lean_ks4: %s: a biology eyebrow spec must be 4.7.x, 4.2.x or 4.1.x, got %r"
                              % (lesson["slug"], spec))
         if lesson.get("bio_spec") and spec != lesson["bio_spec"]:
             raise SystemExit("lean_ks4: %s: biology eyebrow: the literal %r is not the number in "
@@ -615,6 +622,16 @@ def source(lesson, legacy=None):
         lean_blocks.route_flag(it.get("routes"))          # rejects any route set we cannot gate
     if legacy is not None:
         tpl, logic, report = legacy
+        # ⊕ 26 Nov 2026 (Cell biology): `template_edits` are exact-match edits to the legacy
+        # template before any part of it is read, for a word in the header that the record keeps
+        # (microscopy's chip "Required practical · observing cells" gains its number). Each `old`
+        # must be in the template exactly once; a record with none is untouched, so every other
+        # lean page keeps its bytes.
+        for old, new in (rec.get("legacy") or {}).get("template_edits") or []:
+            if tpl.count(old) != 1:
+                raise SystemExit("lean_ks4: %s: template_edits target %r is in the legacy template "
+                                 "%d times, not once" % (lesson["slug"], old[:70], tpl.count(old)))
+            tpl = tpl.replace(old, new)
         template, slots = _legacy_template(lesson, rec, tpl)
         logic = _legacy_logic(lesson, rec, logic, slots.spec)
         # ⊕ 17 Nov 2026 (Waves): a route-gated card on a legacy page is wrapped in a flag the

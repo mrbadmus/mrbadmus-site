@@ -36,50 +36,41 @@ BIOLOGY_SUBTOPICS_ALL = {
                          ('Both', 'Has a cell membrane and cytoplasm'),
                          ('Both', 'Contains ribosomes for protein synthesis')],
                'title': 'Eukaryote or Prokaryote?'},
-  'quiz': [{'opts': [('Eukaryotes have a membrane-bound nucleus; prokaryotes do not', True),
-                     ('Prokaryotes are larger and more complex than eukaryotes', False),
-                     ('Eukaryotes have no cell membrane', False),
-                     ('Prokaryotes have mitochondria but eukaryotes do not', False)],
+  'quiz': [{'opts': [('Eukaryotic cells have a nucleus; prokaryotic cells do not', True),
+                     ('Prokaryotic cells are larger than eukaryotic cells', False),
+                     ('Eukaryotic cells have no cell membrane at all', False),
+                     ('Prokaryotic cells have mitochondria; eukaryotic cells do not', False)],
             'q': 'What is the key structural difference between eukaryotic and prokaryotic cells?',
-            'wrong_explanations': {1: 'Prokaryotes are SMALLER and SIMPLER — roughly 10× smaller than a typical animal '
-                                      'cell.',
-                                   2: 'ALL cells have a cell membrane — it is the universal feature of all living '
-                                      'cells.',
-                                   3: 'It is the OPPOSITE — eukaryotes have mitochondria. Prokaryotes have NO '
-                                      'membrane-bound organelles at all.'}},
-           {'opts': [('The animal cell is roughly 10× larger — approximately 20 µm', True),
-                     ('They are about the same size', False),
-                     ('The bacterium is larger — bacteria are bigger than animal cells', False),
-                     ('The animal cell is 1000× larger than the bacterium', False)],
+            'wrong_explanations': {1: 'Prokaryotic cells are much smaller, about 10 times smaller than an animal cell.',
+                                   2: 'Every cell has a cell membrane.',
+                                   3: 'It is the other way round. Animal and plant cells have mitochondria; bacteria '
+                                      'do not.'}},
+           {'opts': [('The animal cell is about 10 times larger', True),
+                     ('The two cells are about the same size', False),
+                     ('The bacterium is about 10 times larger', False),
+                     ('The animal cell is about 1000 times larger', False)],
             'q': 'A bacterium is approximately 2 µm in length. How does this compare to a typical animal cell?',
-            'wrong_explanations': {1: 'They are definitely not the same size — a bacterium at 2 µm vs an animal cell '
-                                      'at ~20 µm is a clear 10× size difference.',
-                                   2: 'Bacteria are SMALLER — roughly 10× smaller than animal cells, not larger.',
-                                   3: '1000× larger would make the animal cell 2000 µm — about 2 mm! Animal cells are '
-                                      'only ~10× larger, not 1000×.'}},
+            'wrong_explanations': {1: 'An animal cell is about 20 µm across: 10 times the length of the bacterium.',
+                                   2: 'Bacteria are smaller than animal cells, not larger.',
+                                   3: '1000 times 2 µm is 2000 µm, which is 2 mm. An animal cell is about 20 µm.'}},
            {'opts': [('Plasmids', True), ('Mitochondria', False), ('A nucleus', False), ('A cell membrane', False)],
             'q': 'Which of the following is found in a bacterial cell but NOT in a typical animal cell?',
-            'wrong_explanations': {1: 'Animal cells have mitochondria for aerobic respiration — bacteria do not have '
-                                      'mitochondria.',
-                                   2: 'Animal cells HAVE a nucleus — bacteria do not. The question asks what bacteria '
-                                      "have that animal cells don't.",
-                                   3: 'Both animal cells AND bacteria have a cell membrane — it is a universal '
-                                      'feature.'}},
+            'wrong_explanations': {1: 'Animal cells have mitochondria. Bacteria do not.',
+                                   2: 'Animal cells have a nucleus. Bacteria do not.',
+                                   3: 'Both animal cells and bacteria have a cell membrane.'}},
            {'opts': [('1,000 µm', True), ('100 µm', False), ('1,000,000 µm', False), ('10 µm', False)],
             'q': '1 mm is equal to how many micrometres (µm)?',
-            'wrong_explanations': {1: '100 µm = 0.1 mm. The conversion is 1 mm = 1000 µm.',
-                                   2: '1,000,000 µm = 1 metre. The conversion you need is: 1 mm = 1000 µm.',
-                                   3: '10 µm = 0.01 mm. Remember: milli means one thousandth, so 1 mm = 1000 µm.'}},
-           {'opts': [('A rotating tail-like structure used for movement', True),
-                     ('A small ring of extra DNA used for genetic transfer', False),
-                     ('A thick outer layer that protects the bacterium', False),
-                     ('The region of cytoplasm where the DNA is stored', False)],
-            'q': 'What is a flagellum in a bacterial cell?',
-            'wrong_explanations': {1: 'A small ring of extra DNA = a PLASMID, not a flagellum.',
-                                   2: 'A thick outer protective layer = the CAPSULE (or cell wall). The flagellum is '
-                                      'the structure for movement.',
-                                   3: 'The region where DNA sits loosely in the cytoplasm is called the nucleoid '
-                                      'region — the flagellum is an external motor structure.'}}],
+            'wrong_explanations': {1: '100 µm is 0.1 mm. Milli means a thousandth, so 1 mm = 1000 µm.',
+                                   2: '1,000,000 µm is 1 metre. 1 mm = 1000 µm.',
+                                   3: '10 µm is 0.01 mm. 1 mm = 1000 µm.'}},
+           {'opts': [('A small ring of DNA found in some bacteria', True),
+                     ('The single loop of DNA that holds most genes', False),
+                     ('A structure where aerobic respiration happens', False),
+                     ('The layer that surrounds the cell membrane', False)],
+            'q': 'What is a plasmid?',
+            'wrong_explanations': {1: 'That is the main DNA loop. Plasmids are extra, small rings of DNA.',
+                                   2: 'Aerobic respiration happens in mitochondria, which bacteria do not have.',
+                                   3: 'That is the cell wall.'}}],
   'rp': None,
   'spec': '4.1.1.1',
   'summary': 'Compare the key features of eukaryotic and prokaryotic cells, including scale and size.',
@@ -490,54 +481,40 @@ BIOLOGY_SUBTOPICS_ALL = {
                      ('Approximately ×200', False),
                      ('Approximately ×20,000', False)],
             'q': 'What is the maximum magnification of a light microscope?',
-            'wrong_explanations': {1: '×2,000,000 is the maximum for an ELECTRON microscope — far more powerful than a '
-                                      'light microscope.',
-                                   2: '×200 is far below the limit. A school microscope with a ×10 eyepiece and a ×40 '
-                                      'objective already reaches ×400, and the maximum for a light microscope is '
+            'wrong_explanations': {1: 'About ×2,000,000 is an electron microscope.',
+                                   2: 'A school microscope already reaches ×400. The limit for a light microscope is '
                                       'about ×2,000.',
-                                   3: "×20,000 doesn't correspond to either type — light microscopes reach ~×2,000 and "
-                                      'electron microscopes ~×2,000,000.'}},
+                                   3: 'About ×20,000 is too high for a light microscope.'}},
            {'opts': [('×5,000', True), ('×500', False), ('×50,000', False), ('×4,500', False)],
             'q': 'An image is 45 mm wide. The actual size is 0.009 mm. What is the magnification?',
-            'wrong_explanations': {1: 'Check: 45 ÷ 0.09 = 500, but actual size is 0.009 (not 0.09). 45 ÷ 0.009 = 5000.',
-                                   2: '45 ÷ 0.009 = 5000 not 50,000. Check you moved the decimal correctly.',
-                                   3: 'You rounded 0.009 mm to 0.01 mm: 45 ÷ 0.01 = 4500. Use the exact value: M = I '
-                                      '÷ A = 45 ÷ 0.009 = 5000.'}},
-           {'opts': [('Ribosomes (~20 nm) are far below the resolution limit of light microscopes (~200 nm)', True),
-                     ('Ribosomes are only visible in living cells and electron microscopes can see living cells',
-                      False),
-                     ('Ribosomes are colourless and no stain existed until recently', False),
-                     ('Ribosomes only appear in plant cells which were studied less', False)],
+            'wrong_explanations': {1: '45 ÷ 0.09 = 500. The real size is 0.009 mm, so 45 ÷ 0.009 = 5000.',
+                                   2: '45 ÷ 0.009 = 5000, not 50,000. Check the decimal point.',
+                                   3: 'That uses 0.01 mm instead of 0.009 mm. 45 ÷ 0.009 = 5000.'}},
+           {'opts': [('Ribosomes are too small for a light microscope to resolve', True),
+                     ('Ribosomes are colourless, and no stain could show them', False),
+                     ('Ribosomes are only found in plant cells, not animal cells', False),
+                     ('Ribosomes are only there while the cell is dividing', False)],
             'q': 'Why were ribosomes not discovered until electron microscopes became available?',
-            'wrong_explanations': {1: 'Electron microscopes cannot view LIVING specimens — they require dead specimens '
-                                      'in a vacuum. The key advantage is RESOLUTION, not viewing live cells.',
-                                   2: 'Staining could make ribosomes coloured — but even stained, they are too small '
-                                      'to be resolved by a light microscope.',
-                                   3: 'Ribosomes are found in ALL cells — animal, plant and bacterial. They were not '
-                                      'limited to plant cells.'}},
-           {'opts': [('Magnification = how much bigger the image appears; resolution = how clearly fine detail can be '
-                      'distinguished',
+            'wrong_explanations': {1: 'Stained or not, ribosomes are too small for a light microscope to resolve.',
+                                   2: 'Ribosomes are found in all cells.',
+                                   3: 'Ribosomes are in the cell all the time.'}},
+           {'opts': [('Magnification is how much bigger the image is; resolution is how well close points are told '
+                      'apart',
                       True),
-                     ('They are the same thing — both refer to how large the image looks', False),
-                     ('Magnification refers to electron microscopes only; resolution applies to light microscopes',
+                     ('They mean the same thing: both describe how much bigger the image is than the object', False),
+                     ('Magnification describes electron microscopes; resolution describes light microscopes only',
                       False),
-                     ('Resolution is measured in × and magnification is measured in nm', False)],
+                     ('Magnification is measured in nanometres; resolution has no unit, like a ratio', False)],
             'q': 'What is the difference between magnification and resolution?',
-            'wrong_explanations': {1: 'They are NOT the same. You can have a highly magnified but blurry image — that '
-                                      'is high magnification but low resolution.',
-                                   2: 'Both types of microscope have both magnification and resolution — the terms '
-                                      'apply to all microscopes.',
-                                   3: 'Magnification has no unit (×) — it is a ratio. Resolution is measured in nm '
-                                      '(nanometres). You have these exactly the wrong way around.'}},
+            'wrong_explanations': {1: 'They are different. An image can be very magnified but still blurred.',
+                                   2: 'Every microscope has a magnification and a resolution.',
+                                   3: 'It is the other way round: magnification has no unit.'}},
            {'opts': [('20,000 µm', True), ('0.125 µm', False), ('450 µm', False), ('2,000 µm', False)],
             'q': 'A cell has an actual diameter of 50 µm. At ×400 magnification, how large will the image appear in '
                  'µm?',
-            'wrong_explanations': {1: 'You divided instead of multiplying. Image = Actual × Magnification = 50 × 400 = '
-                                      '20,000 µm.',
-                                   2: 'You added the magnification to the actual size. Image = Actual × Magnification '
-                                      '= 50 × 400 = 20,000 µm.',
-                                   3: 'You used the wrong magnification value. Image = 50 × 400 = 20,000 µm — not 2000 '
-                                      'µm.'}}],
+            'wrong_explanations': {1: 'That divides. Image size = real size × magnification = 50 × 400 = 20,000 µm.',
+                                   2: 'That adds. Multiply: 50 × 400 = 20,000 µm.',
+                                   3: '50 × 40 = 2000. The magnification is ×400, so 50 × 400 = 20,000 µm.'}}],
   'rp': 'RP1 — Use a light microscope to observe, draw and label plant and animal cells. Include a scale bar. '
         'Calculate the magnification of your drawing.',
   'spec': '4.1.1.5',
@@ -634,60 +611,42 @@ BIOLOGY_SUBTOPICS_ALL = {
   'quiz': [{'opts': [('46', True), ('23', False), ('92', False), ('12', False)],
             'q': 'A human body cell has 46 chromosomes. How many chromosomes will each daughter cell have after '
                  'mitosis?',
-            'wrong_explanations': {1: '23 chromosomes = the haploid number found in GAMETES after meiosis. Mitosis '
-                                      'maintains the FULL chromosome number.',
-                                   2: '92 is the number of chromatids DURING DNA replication — before the cell '
-                                      'divides. After mitosis, each daughter cell has 46.',
-                                   3: '12 has no biological relevance here. The answer is always the same as the '
-                                      'parent cell — mitosis maintains chromosome number.'}},
-           {'opts': [('It must be replicated — each chromosome is copied so the cell has double the DNA', True),
-                     ('The DNA must be destroyed and completely rebuilt from scratch', False),
-                     ('The chromosome number must be halved by meiosis first', False),
-                     ('Nothing — the DNA divides automatically with no prior preparation', False)],
+            'wrong_explanations': {1: '23 is the number in a sperm or egg cell. Mitosis keeps all 46.',
+                                   2: '92 would be double the full set. Mitosis gives each new cell the full set: 46.',
+                                   3: 'Mitosis keeps the same number as the parent cell: 46.'}},
+           {'opts': [('It replicates, making two copies of each chromosome', True),
+                     ('It is broken down and then rebuilt from scratch', False),
+                     ('It is halved by meiosis before mitosis starts', False),
+                     ('Nothing happens to it until the cell divides', False)],
             'q': 'What must happen to DNA before a cell can divide by mitosis?',
-            'wrong_explanations': {1: 'DNA is never destroyed during the cell cycle — it is carefully replicated and '
-                                      'preserved. Destroying it would kill the cell.',
-                                   2: 'Halving chromosomes = MEIOSIS. Mitosis MAINTAINS chromosome number. You cannot '
-                                      'prepare for mitosis by halving DNA.',
-                                   3: 'DNA replication MUST occur before division. Each daughter cell needs a complete '
-                                      "set of chromosomes — if DNA wasn't replicated, one cell would get half and the "
-                                      'other cell would get the other half.'}},
-           {'opts': [('Benign stays in one place; malignant spreads to other parts of the body (metastasis)', True),
-                     ('Benign is caused by genetics; malignant is caused by lifestyle only', False),
-                     ('Malignant tumours are always fatal; benign tumours always disappear on their own', False),
-                     ('Benign tumours are larger than malignant tumours', False)],
-            'q': 'What is the difference between a benign and a malignant tumour?',
-            'wrong_explanations': {1: 'Both benign and malignant tumours can have genetic causes and both can be '
-                                      'influenced by lifestyle. The defining difference is whether the tumour SPREADS.',
-                                   2: 'Malignant tumours vary hugely in outlook — many can be treated successfully. '
-                                      "And benign tumours don't always disappear — they may need surgical removal.",
-                                   3: 'Tumour size does not define whether it is benign or malignant. Malignant '
-                                      'tumours are defined by their ability to invade and spread.'}},
-           {'opts': [('Growth, repair and replacement of body cells — producing genetically identical daughter cells',
-                      True),
-                     ('Producing gametes (sperm and eggs) with half the chromosome number', False),
-                     ('Creating genetic variation in the offspring of an organism', False),
-                     ('Repairing damaged DNA before it can be copied', False)],
+            'wrong_explanations': {1: 'The DNA is never broken down. It is copied.',
+                                   2: 'Halving the chromosome number happens in meiosis, which makes gametes.',
+                                   3: 'The DNA must replicate first, or each new cell would get only part of it.'}},
+           {'opts': [('In pairs', True),
+                     ('On their own, one of each', False),
+                     ('In groups of four', False),
+                     ('Loose in the cytoplasm', False)],
+            'q': 'How are chromosomes normally found in body cells?',
+            'wrong_explanations': {1: 'In body cells the chromosomes are found in pairs. Sperm and egg cells have one '
+                                      'of each pair.',
+                                   2: 'In body cells the chromosomes are found in pairs, not in fours.',
+                                   3: 'Chromosomes are in the nucleus.'}},
+           {'opts': [('To make identical cells for growth and repair', True),
+                     ('To make gametes with half the chromosomes', False),
+                     ('To make offspring that vary from each other', False),
+                     ('To repair damaged DNA before it is copied', False)],
             'q': 'Which of the following best describes the purpose of mitosis?',
-            'wrong_explanations': {1: 'Producing gametes = MEIOSIS. Gametes need half the chromosome number — mitosis '
-                                      'would give them the full 46.',
-                                   2: 'Mitosis produces IDENTICAL cells — there is no genetic variation. Genetic '
-                                      'variation comes from meiosis and mutation.',
-                                   3: 'DNA repair mechanisms exist but are separate from mitosis. Mitosis is the '
-                                      'division process, not the repair process.'}},
-           {'opts': [('Mutations in genes that control the cell cycle — causing uncontrolled cell division', True),
-                     ('Too many mitochondria in a cell causing overproduction of ATP', False),
-                     ('Cells reversing their differentiation and becoming stem cells again', False),
-                     ('The immune system attacking healthy body cells', False)],
-            'q': 'Cancer is caused by...',
-            'wrong_explanations': {1: 'Mitochondria number has nothing to do with cancer. Cancer is caused by loss of '
-                                      'cell cycle regulation due to gene mutation.',
-                                   2: 'Some cancer cells do share characteristics with stem cells (undifferentiation), '
-                                      'but cancer is specifically caused by mutations in regulatory genes — not by a '
-                                      'deliberate reversal of differentiation.',
-                                   3: 'The immune system attacking healthy cells = autoimmune disease (e.g. Type 1 '
-                                      'diabetes, rheumatoid arthritis). Cancer is caused by mutated regulatory '
-                                      'genes.'}}],
+            'wrong_explanations': {1: 'Gametes are made by meiosis.',
+                                   2: 'Mitosis makes genetically identical cells.',
+                                   3: 'Mitosis is cell division. It does not repair DNA.'}},
+           {'opts': [('A cut in the skin is being repaired', True),
+                     ('Sperm cells are being made in the testes', False),
+                     ('An egg is being fertilised by a sperm', False),
+                     ('Water is entering a root hair cell', False)],
+            'q': 'In which of these is mitosis happening?',
+            'wrong_explanations': {1: 'Sperm cells are gametes, made by meiosis.',
+                                   2: 'Fertilisation joins two cells. It is not cell division.',
+                                   3: 'Water enters by osmosis. That is not cell division.'}}],
   'rp': None,
   'spec': '4.1.2.1',
   'summary': 'Describe chromosomes, the stages of the cell cycle and the process and purpose of mitosis.',

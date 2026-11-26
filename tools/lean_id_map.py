@@ -167,6 +167,13 @@ REPLACED = {
         "practice item (how UV radiation causes skin cancer) is replaced: the mutation mechanism is beyond the spec",
     "ks4q:plant-tissues:54931bb3db":
         "practice item (why xylem cells are dead) is replaced: the spec says only hollow tubes strengthened by lignin",
+    # ⊕ 25 Nov 2026 (Cell biology): practice-set stems swapped by logic_edits in the lean record. The
+    # two subtopic-quiz replacements (eukaryotes-prokaryotes, chromosomes-mitosis) are in the quiz data
+    # itself, so the inventory already sees them gone.
+    "ks4q:stem-cells:c3e32f751b":
+        "practice item (how stem cells treat leukaemia) is replaced: leukaemia is not in 4.1.2.3",
+    "ks4q:transport-in-cells:959412b1ac":
+        "practice item (which process requires ATP energy) is replaced by the same item asked as energy from respiration: ATP is not in the spec",
 }
 
 # ⊕ 17 Nov 2026 (Waves): a classic quiz id the lesson still asks on SOME routes but took off the
