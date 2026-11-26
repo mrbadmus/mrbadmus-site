@@ -328,8 +328,11 @@ CASES = [
                 await H.sleep(200); H.click(H.btnIn(cf.host, 'button', 'Check your working')); await H.sleep(800);""",
          want=["ks4:eukaryotes-prokaryotes:ch#cfifa-1-1"],
          back="(function(){ var cf = H.block('Ks4Cfifa'); var s = cf.logic.state; return s.qEx === 1 && !!s.q[0] && s.q[0].open === true; })()"),
-    dict(name="ks4-quizbank-fold", page="/combined/higher/biology/cell-biology/eukaryotes-prokaryotes.html",
-         act="""var qb = H.block('Ks4QuizBank'); H.click(H.btnIn(qb.host, 'button', 'Show 1 more')); await H.sleep(500);
+    # ⊕ 26 Nov 2026: moved from eukaryotes-prokaryotes, whose lean rebuild (Wave 1, Cell biology)
+    # shows all five practice questions at once, so it has no "Show 1 more" fold to press. States of
+    # matter still folds at four, the case this checks; its fold reads "Show N more" for its own count.
+    dict(name="ks4-quizbank-fold", page="/combined/higher/chemistry/bonding/states-of-matter.html",
+         act="""var qb = H.block('Ks4QuizBank'); H.click(Array.prototype.filter.call(qb.host.querySelectorAll('button'), function (b) { return /^Show \\d+ more$/.test(b.textContent.trim()); })[0]); await H.sleep(500);
                 var lis = qb.host.querySelectorAll('li'); H.click(lis[4].querySelector('button')); await H.sleep(300);
                 H.click(qb.host.querySelectorAll('li')[0].querySelector('button')); await H.sleep(500);""",
          want=[],
@@ -1044,7 +1047,11 @@ CASES = [
 # ⊕ 14 Nov 2026: ks4-words-pick stands in for ks4-flag-pick (the same one-press root option pick,
 # posted and restored), because the lean rebuild (Wave 1, Ecology) took the 'which factor'
 # question off abiotic-biotic-factors.
-PUPIL = ["ks4-words-pick", "ks4-level-pick", "ks4-form-internal", "ks4-list-features", "ks3-commit-run", "ks3-parts-check", "ks3-typed"]
+# ⊕ 26 Nov 2026: ks4-reveal-circuit stands in for ks4-words-pick (a one-press root option pick,
+# posted and restored), and ks4-list-of-picks for ks4-list-features (a form whose answer is a list
+# of picks), because the lean rebuild (Wave 1, Cell biology) took the vacuole estimate off
+# animal-plant-cells and the design-the-cell bench off cell-specialisation.
+PUPIL = ["ks4-reveal-circuit", "ks4-level-pick", "ks4-form-internal", "ks4-list-of-picks", "ks3-commit-run", "ks3-parts-check", "ks3-typed"]
 
 
 def retired_proof(c):
