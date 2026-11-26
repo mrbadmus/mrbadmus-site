@@ -4193,7 +4193,9 @@ def _keep_ratio(m):
 # ("= 144 000 000 000", "55 000 000 000 m" past the cap) split inside the number at 390 px.
 # Its group spaces now join on their own, in prose (U+00A0) and on ladders (a span).
 _LEAN_GROUPED_RE = re.compile(r"(?<![\w.,#&>\u00a0])\d{1,3}(?: \d{3})+(?![\d\u00a0])")
-_LEAN_GROUPED_MAX = 27   # a ladder line holds about 40 characters at 390 px
+_LEAN_GROUPED_MAX = 18   # an option line holds about 18 digit-width characters at 320 px
+# ⊕ 26 Nov 2026: was 27 (sized at 390 px). verify_ks3's 320 px sideways-scroll check caught
+# "115 000 000 000 000 000" (23) held on one line in a light-travels option: 363 px wide.
 
 
 def _keep_text(t):

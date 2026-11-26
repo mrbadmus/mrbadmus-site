@@ -762,6 +762,7 @@ B4_CROSS = "biology/breathing-and-gas-exchange/alveoli-built-for-exchange.html"
 B4_FAULT = "biology/breathing-and-gas-exchange/exercise-asthma-and-smoking.html"
 B4_LEAF = "biology/breathing-and-gas-exchange/stomata-and-gas-exchange-in-plants.html"
 # ═══ END B4 ═══
+LEAN_TRY_PAGE = "physics/waves-and-sound/waves-on-water.html"   # the first KS3 lean page with a Try it link
 
 # ═══ BEGIN B6 ═══
 B6_DOSE = "biology/health-and-drugs/what-drugs-do-to-the-body.html"
@@ -6517,10 +6518,9 @@ COMPONENTS = [
 
     # ⊕ lean pilot — the lean block types (docs/ks3/architecture.md §5.1.1, 10 Nov 2026).
     # Measured on the one lean page that carries every one of them. Light theme, the harness's.
-    # `lean-try` has NO component here on purpose: no pilot lesson names a simulation, so the
-    # link is drawn on no page, and a component registered against a page that does not draw it
-    # fails "C · every registered component is still ON its page". It gets its component with
-    # the first record that has a `try`.
+    # `lean-try` had no component in the pilot because no pilot lesson named a simulation. It
+    # gets its component with the first records that do: Lean Wave 2 KS3 (26 Nov 2026), on the
+    # P6 water-waves page, which links the Wave Motion Lab.
     dict(name="lean Start here is the ink hook with the accent shadow", on=B4_JAR,
          sel=".ks3-keyed-block.ks3-hook",
          props={"background-color": "#221E1B", "border-top-left-radius": "30px",
@@ -6551,6 +6551,11 @@ COMPONENTS = [
          sel=".lean-deeper",
          props={"border-top-style": "dashed", "border-top-width": "2px",
                 "border-top-left-radius": "20px"}),
+    dict(name="lean Try it link is a 2px ink control on the card ground", on=LEAN_TRY_PAGE,
+         sel=".lean-try-link",
+         props={"background-color": "#FFFCF5", "border-top-width": "2px",
+                "border-top-color": "#221E1B", "font-size": "17px", "font-weight": "700",
+                "min-height": "44px"}),
     dict(name="lean Dive deeper button is display 800", on=B4_JAR,
          sel=".lean-deeper-btn",
          props={"font-family": "Bricolage Grotesque", "font-size": "22px", "font-weight": "800"}),
