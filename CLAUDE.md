@@ -196,6 +196,36 @@ written up in `docs/experience/PHONE-REPORT.md`.
 
 ---
 
+## The production sandbox class ⊕ (moved 16 Nov 2026; guarded 27 Nov 2026)
+
+> **8r/Sc1 (`d9740ab8-…`) is NOT a sandbox. It is Mide's real Year 8 class,
+> with real pupils and a co-teacher. Nothing — no script, drive, fixture or
+> check — ever writes to it.** Test homework set there lands in front of real
+> children. That is a safeguarding-grade mistake, and it is made impossible,
+> not unlikely.
+
+The production sandbox is **"Test class (Mr Badmus)"** — Rainford, Year 8,
+KS3, teacher Mr Badmus only, pupils the two test accounts only
+(midebolabadmus@gmail.com, anifabalo@gmail.com). On 16 Nov 2026 the test pupils
+and all their history (11 assignments, 14 submissions, flashcard sessions,
+events, reviews, pupil cards, the shoutout, notifications) moved there from
+8r/Sc1.
+
+| what | where |
+|---|---|
+| the sandbox id and name | **`sandbox_class.py`** — `SANDBOX_CLASS_ID`, and nowhere else. Import it; never copy the id |
+| the guard | `sandbox_class.assert_writable(class_id, supabase_url, service_key)` before ANY write that names a class. `guard_request()` does it for a whole request; the shared live client `tools/mrb351_acceptance.py` `Client._req` calls it on every write |
+| what it refuses | the retired 8r/Sc1 id on EVERY project; on production, any class that cannot PROVE from the database that it has ≥1 pupil, only test pupils, and no teacher but Mr Badmus — an empty class (a real class waiting for its pupils) is refused; no key or an unreadable read is refused |
+| the gate | `sandbox_class` (fast) — the decision table, no tracked script spelling the retired id or copying the sandbox id, every `MRB_DRIVE_CLASS` reader calling the guard, the shared client guarding |
+
+On TEST the membership check is off by default (TEST drives mint throwaway
+pupils); `MRB_SANDBOX_ENFORCE=1` turns it on, which is how it was proven. The
+sandbox id is production's — a TEST run still sets `MRB_DRIVE_CLASS` to a TEST
+class. Fixtures that only DISPLAY "8r/Sc1" as a label (Design's class name,
+fixture ids `cccccccc-…`) never touch a database and are fine.
+
+---
+
 ## Key Files and Folders
 
 ```

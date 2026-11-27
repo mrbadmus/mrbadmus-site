@@ -1,8 +1,13 @@
 # MRB-335 — Mide's five-minute live check (production, your login)
 
+> ⚠️ **Sandbox moved, 27 Nov 2026.** 8r/Sc1 is Mide's REAL Year 8 class since
+> 16 Nov 2026 — never set test work in it. Every step below that used to say
+> 8r/Sc1 now says **Test class (Mr Badmus)**, where the two test pupils and all
+> their history now live. See `docs/sandbox/REPORT.md`.
+
 Do this on your phone at 390px first, then once on the laptop. One line per
 step: what to do, then what you should see. Nothing here writes to any real
-class except the last block, which uses 8r/Sc1 only.
+class except the last block, which uses Test class (Mr Badmus) only.
 
 ## A. A separate-science class (any `…/Bi1`, `…/Ch1`, `…/Ph1` you teach or administer)
 
@@ -33,16 +38,16 @@ class except the last block, which uses 8r/Sc1 only.
 19. Open it → **Set work** → **Next**. Tier chips read **Easy | Medium | Hard**, **Medium** selected; Subject chips present; no Paper chips.
 20. Every unit shows a number ≥ 50 at every tier. **Cancel**.
 
-## D. Set real work on 8r/Sc1 only
+## D. Set real work on Test class (Mr Badmus) only
 
-21. Open **8r/Sc1** → **Set work** → **Next** → tap a unit (whole unit) → **Next**.
+21. Open **Test class (Mr Badmus)** → **Set work** → **Next** → tap a unit (whole unit) → **Next**.
 22. Tap **15**. Fifteen questions; if a chip is greyed, the number on the topic row is smaller than that chip.
 23. Change the title to `Live check`.
 24. **Release → Later**: a date (tomorrow) and **07:00** appear; set the time to a few minutes from now, today.
 25. **Due**: set the date to two days out and the time to **16:30**.
 26. If the release date is before 14 Sep 2026, one line appears: `Assignments open 14 Sep 2026`, nothing else.
-27. **Set work**. The sheet closes; one toast: `Live check · 8r/Sc1`; the class card updates.
-28. Admin → Classes: every KS4 row shows a Tier and a Pathway selector; 8r/Sc1 (KS3) shows neither.
+27. **Set work**. The sheet closes; one toast: `Live check · Test class (Mr Badmus)`; the class card updates.
+28. Admin → Classes: every KS4 row shows a Tier and a Pathway selector; Test class (Mr Badmus) (KS3) shows neither.
 
 ## E. As your student test identity, before and after release
 
@@ -50,4 +55,4 @@ class except the last block, which uses 8r/Sc1 only.
 30. After the release time (past the hold if it applied): `Live check` appears with fifteen questions and the due time you set, shown in UK time.
 31. Answer two questions; the teacher's class page shows the attempt.
 
-Delete or leave the 8r/Sc1 set as you prefer; it is your sandbox.
+Delete or leave the Test class (Mr Badmus) set as you prefer; it is your sandbox.

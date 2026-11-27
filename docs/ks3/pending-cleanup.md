@@ -1,5 +1,10 @@
 # Pending demo-assignment / test-enrolment cleanup
 
+> ⊕ **27 Nov 2026 — historical.** Where this says 8r/Sc1 is the sandbox, that
+> stopped being true on 16 Nov 2026: 8r/Sc1 is a real class, and the test
+> pupils and their history moved to **Test class (Mr Badmus)**
+> (`sandbox_class.SANDBOX_CLASS_ID`). See `docs/sandbox/REPORT.md`.
+
 **Destroyed before Sil's rosters are imported. Not before Mide says so.**
 
 This list existed only as scattered notes (MORNING-2026-08-22 "say the word

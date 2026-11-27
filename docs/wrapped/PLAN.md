@@ -1,5 +1,10 @@
 # MrBadmus Wrapped — build plan (commander, 14 Oct 2026)
 
+> ⊕ **27 Nov 2026 — historical.** Where this says 8r/Sc1 is the sandbox, that
+> stopped being true on 16 Nov 2026: 8r/Sc1 is a real class, and the test
+> pupils and their history moved to **Test class (Mr Badmus)**
+> (`sandbox_class.SANDBOX_CLASS_ID`). See `docs/sandbox/REPORT.md`.
+
 Source: Mide's prompt of 14 Oct (wins) + `wrapped-spec.md` (rulings of 8 Oct).
 Branch `feat/wrapped` (site), migration parked on `feat/wrapped-migrations`.
 
@@ -39,10 +44,11 @@ Branch `feat/wrapped` (site), migration parked on `feat/wrapped-migrations`.
 - No term dates exist anywhere in the repo or DB. Rainford Oct half term:
   last day Fri 23 Oct 2026, back Mon 2 Nov (St Helens dates). Christmas: last
   day Fri 18 Dec 2026 — CONFIRMED by Mide 15 Oct 2026 (card keeps "by Christmas"); a setting.
-- Prod preview ids: AY `b0308282-5429-4050-827f-4707286a88aa` (pupil, 8r/Sc1
-  `d9740ab8-c4e3-4c22-bce9-629b650782c5`, username WolfBeam); Mide
-  `74db2bf7-7c0d-47e6-9479-5cee3cda610e` (teacher of 8r/Sc1). The other
-  8r/Sc1 teacher must NOT get the preview.
+- Prod preview ids: AY `b0308282-5429-4050-827f-4707286a88aa` (pupil, username
+  WolfBeam, now in **Test class (Mr Badmus)** — `sandbox_class.SANDBOX_CLASS_ID`;
+  moved out of 8r/Sc1 on 16 Nov 2026); Mide
+  `74db2bf7-7c0d-47e6-9479-5cee3cda610e` (its only teacher). 8r/Sc1 is a real
+  class: none of its pupils or teachers may get the preview.
 - The class pages load supabase-js from jsDelivr already (pre-existing).
   Wrapped itself adds NOTHING from a CDN.
 

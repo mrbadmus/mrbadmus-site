@@ -1,5 +1,10 @@
 # Monday 14 September 2026 — 07:30 checklist
 
+> ⚠️ **Sandbox moved, 27 Nov 2026.** 8r/Sc1 is Mide's REAL Year 8 class since
+> 16 Nov 2026 — never set test work in it. Every step below that used to say
+> 8r/Sc1 now says **Test class (Mr Badmus)**, where the two test pupils and all
+> their history now live. See `docs/sandbox/REPORT.md`.
+
 Rainford's automatic weekly work starts today. Nothing runs on a timer.
 **Each class's week-3 work is composed the first time one of its pupils opens
 their class page today** (from 01:00 UK, see the note under 1), and it stays for
@@ -22,11 +27,11 @@ ONE reversible action. None of the actions needs Code.
 - **Should show (before any pupil has opened):** no automatic card yet; the table has no week-3 row. Normal.
 - **Wrong looks like:** a pupil has opened their page and the class still shows nothing; or the pupil's page says `This week's work isn't live yet`.
 - **Action:** check line 1 first (the hold). If the hold reads correctly, that class's own dial: class page → **Automatic weekly work: on** — if it is off, switch it on (the next pupil read composes). The reverse also holds: to STOP a class getting automatic work, switch it off; work already composed stays (the switch never retracts).
-- **Optional positive check using only dials:** on **8r/Sc1** switch **Automatic weekly work** ON, open the class page as your test pupil — the week-3 card appears within a second — then switch it OFF again. The row stays for the week; nothing else is affected.
+- **Optional positive check using only dials:** on **Test class (Mr Badmus)** switch **Automatic weekly work** ON, open the class page as your test pupil — the week-3 card appears within a second — then switch it OFF again. The row stays for the week; nothing else is affected.
 
-## 3. Your test pupil — 8r/Sc1 pupil class page
+## 3. Your test pupil — Test class (Mr Badmus) pupil class page
 
-- **Should show:** the teacher-set work you left there (auto is OFF on 8r/Sc1, so no automatic card). No "isn't live yet" line beside live work.
+- **Should show:** the teacher-set work you left there (auto is OFF on Test class (Mr Badmus), so no automatic card). No "isn't live yet" line beside live work.
 - **Wrong looks like:** `This week's work isn't live yet` with nothing else, or an empty bench with live sets only in the list below.
 - **Action:** nothing here is Monday-critical; it is the sandbox. Note it and carry on.
 
