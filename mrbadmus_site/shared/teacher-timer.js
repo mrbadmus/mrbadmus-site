@@ -846,8 +846,10 @@
     view = tv;
     var wantMini = !pipWin && !pipPending && pv !== 'board' && tv !== 'full' &&
                    (tv === 'mini' || pv === 'away');
-    /* A pop-out with nothing left in it has nothing to show. */
-    if (pipWin && !(tv === 'pip' || pv === 'away')) { pipBack(); return; }
+    /* A pop-out with nothing left in it has nothing to show. A timer HIDDEN
+       with B/"." is still in it: B hides and nothing else changes, so the
+       window stays open and the next B shows the timer there again. */
+    if (pipWin && !(tv === 'pip' || tv === 'hidden' || pv === 'away')) { pipBack(); return; }
 
     if (pipWin) { drawPip(tv, pv); }
     if (wantMini || (pipPending && (tv || pv === 'away'))) { drawMini(tv, pv); }
@@ -866,6 +868,10 @@
       }
       render();
     }
+    /* Placed again now the timer row has its real height: `drawMini`
+       measured it before `render()` filled it (or while it still carried the
+       pop-out's sizing), which left a dragged Mini hanging off the edge. */
+    if (mini) { placeMini(); }
   }
 
   function sync(focusMarker) {

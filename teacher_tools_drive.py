@@ -589,6 +589,76 @@ def no_api(R):
         R.bad("no API: Pick in the Mini did nothing (%r)" % c1)
 
 
+def close_pip_window(R):
+    """The teacher's own X on the pop-out window — its target closed."""
+    ts = R.page.send("Target.getTargets", {"filter": [{}]})["targetInfos"]
+    pid = [t["targetId"] for t in ts if t["type"] == "page" and t.get("openerId")]
+    if pid:
+        R.page.send("Target.closeTarget", {"targetId": pid[0]})
+    time.sleep(0.9)
+
+
+def hide_in_pip(R):
+    """⊕ Mac check, 27 Nov 2026 — B in a TIMER-ONLY pop-out hides the timer
+    and changes nothing else: the window stays open, and B again shows the
+    timer there, still running. It used to close the pop-out and leave the
+    timer hidden on the page with nothing visible."""
+    import teacher_picker_drive as D
+    R.pclick("timer-open", label="the class page's Timer")
+    if (R.j(TM) or {}).get("s") not in ("running", "warn"):
+        R.pclick("tm-toggle")
+    R.pclick("tm-popout")
+    time.sleep(0.8)
+    pp = R.pip_page()
+    if not R.pip_open() or not pp:
+        R.bad("hide in pop-out: the timer's pop-out did not open")
+        return
+
+    def press_b():
+        try:
+            D._kd(pp, "b"); time.sleep(0.02); D._ku(pp, "b")
+        except R.cdp.CDPError:
+            pass  # the window closing under the key is the bug this checks
+        time.sleep(0.6)
+
+    press_b()
+    if not R.pip_open():
+        R.bad("B in a timer-only pop-out closed the pop-out (%r)" % R.j(VIS))
+        return
+    v = R.sample("B in the pop-out")
+    if v["pageTools"]:
+        R.bad("B in the pop-out put tools back on the page: %r" % v)
+    press_b()
+    v = R.sample("B again in the pop-out")
+    t = R.j(TM) or {}
+    if not R.pip_open() or not v["pip"]:
+        R.bad("B again did not show the timer in the pop-out: %r" % v)
+    if t.get("s") not in ("running", "warn"):
+        R.bad("after B, B in the pop-out the timer is %r, wanted running" % t)
+    close_pip_window(R)
+
+
+def mini_after_popin(R):
+    """⊕ Mac check, 27 Nov 2026 — a Mini dragged to the bottom edge, popped
+    out, then the pop-out closed by its own X: the Mini comes back wholly on
+    screen. It was placed before its timer row had its real height and hung
+    32px off the bottom at 1440x900."""
+    open_board(R)
+    R.pclick("pick-min")
+    R.drag('[data-mrb-added="tools-head"]', -300, 400)
+    R.pclick("tools-popout")
+    time.sleep(0.8)
+    if not R.pip_open():
+        R.bad("Mini after pop-in: the pop-out did not open")
+        return
+    close_pip_window(R)
+    m = R.rect('[data-mrb-tools="mini"]')
+    if not m:
+        R.bad("Mini after pop-in: no Mini came back")
+    elif m["x"] < 0 or m["y"] < 0 or m["x"] + m["w"] > m["vw"] + 0.5 or m["y"] + m["h"] > m["vh"] + 0.5:
+        R.bad("Mini after pop-in is not wholly on screen: %r" % m)
+
+
 def main(argv):
     import ks3_browser as cdp
     if not os.path.exists(os.path.join(REPO, FIXTURE)):
@@ -609,6 +679,15 @@ def main(argv):
                     page = fresh(cdp, br, port, w, h)
                     R.page = page
                     survive_and_pip(R)
+                    for check in (hide_in_pip, mini_after_popin):
+                        # each check gets a fresh page; the run's own page is
+                        # held to zero requests here, before it is replaced
+                        reqs0 = json.loads(R.page.eval("JSON.stringify(window.__REQ__||[])"))
+                        if reqs0:
+                            R.bad("%d request(s) before %s: %r" % (len(reqs0), check.__name__, reqs0[:4]))
+                        page = fresh(cdp, br, port, w, h)
+                        R.page = page
+                        check(R)
                 reqs = json.loads(R.page.eval("JSON.stringify(window.__REQ__ || [])"))
                 ls1 = R.page.eval("Object.keys(localStorage).length + ':' + Object.keys(sessionStorage).length")
                 if reqs:
