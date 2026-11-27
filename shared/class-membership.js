@@ -479,7 +479,9 @@
 
       var rs = el("div", "cm-sec");
       var rh = el("div", "cm-head");
-      rh.appendChild(el("span", "cm-label", state.roster.length + (state.roster.length === 1 ? " pupil" : " pupils")));
+      if (state.roster.length) {
+        rh.appendChild(el("span", "cm-label", state.roster.length + (state.roster.length === 1 ? " pupil" : " pupils")));
+      }
       if (state.roster.length > 1) {
         var allLab = el("label", "cm-sub");
         var all = el("input");
