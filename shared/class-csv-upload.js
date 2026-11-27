@@ -114,7 +114,15 @@
     wrongYear: "That class belongs to a different academic year.",
     notFound: "We couldn't find that class.",
     generic: "That didn't go through. Try again in a moment.",
-    issues: "Rows we skipped or changed"
+    issues: "Rows we skipped or changed",
+    /* ⊕ Class membership (Nov 2026) — "make the class match this file". */
+    match: "Make the class match this file",
+    matchConfirm: "Make it match",
+    willAdd: "Add",
+    willMove: "Move in",
+    willRemove: "Remove",
+    nothing: "The class already matches this file.",
+    matched: "Done. The class now matches the file."
   };
 
   var state = {
@@ -127,7 +135,8 @@
     map: null,
     hash: "",
     busy: false,
-    stage: "pick"            // pick | preview | done
+    stage: "pick",           // pick | preview | done
+    match: false
   };
   var els = null;
   var papaPromise = null;
@@ -346,8 +355,21 @@
     var issues = el("ul", "ccu-issues");
     issues.hidden = true;
     body.appendChild(file);
+    /* ⊕ Class membership — optional "match" mode. Off by default: a plain
+       upload never removes anyone. */
+    var matchLab = el("label", "ccu-note");
+    matchLab.style.cssText = "display:flex;gap:8px;align-items:center;margin:12px 0 0;cursor:pointer";
+    var matchBox = el("input");
+    matchBox.type = "checkbox";
+    matchBox.style.cssText = "width:18px;height:18px;margin:0";
+    matchLab.appendChild(matchBox);
+    matchLab.appendChild(document.createTextNode(SAY.match));
+    body.appendChild(matchLab);
+    var plan = el("div");
+    plan.style.marginTop = "10px";
     body.appendChild(note);
     body.appendChild(summary);
+    body.appendChild(plan);
     body.appendChild(issues);
 
     var foot = el("div", "ccu-foot");
@@ -369,7 +391,12 @@
 
     els = { scrim: scrim, sheet: sheet, code: code, file: file, note: note,
             summary: summary, issues: issues, cancel: cancel,
-            primary: primary };
+            primary: primary, matchBox: matchBox, plan: plan };
+    matchBox.addEventListener("change", function () {
+      if (state.busy) { matchBox.checked = state.match; return; }
+      state.match = matchBox.checked;
+      resetResult();
+    });
 
     cancel.addEventListener("click", close);
     scrim.addEventListener("click", function (e) {
@@ -418,6 +445,7 @@
   function resetResult() {
     state.stage = "pick";
     els.summary.textContent = "";
+    if (els.plan) { els.plan.textContent = ""; }
     els.issues.textContent = "";
     els.issues.hidden = true;
     els.primary.textContent = SAY.preview;
@@ -506,7 +534,8 @@
       /* The id is what makes this the EXISTING-class path; the name rides
          along because every student row is matched to it. */
       classes: [{ id: state.classId, name: state.className }],
-      students: students
+      students: students,
+      mode: state.match ? "match" : "add"
     };
   }
 
@@ -581,6 +610,33 @@
             : " already in this class and will be skipped.");
   }
 
+  /* The match plan, by name: who is added, moved in, removed. Nothing has
+     happened until the admin presses "Make it match". */
+  function showPlan(plan, dry) {
+    var box = els.plan;
+    box.textContent = "";
+    var p = plan || {};
+    var groups = [
+      [SAY.willAdd, p.add || [], function (r) { return r.name; }],
+      [SAY.willMove, p.moveIn || [], function (r) { return r.name + (r.fromClass ? " (from " + r.fromClass + ")" : ""); }],
+      [SAY.willRemove, p.remove || [], function (r) { return r.name; }]
+    ];
+    var any = false;
+    groups.forEach(function (g) {
+      if (!g[1].length) { return; }
+      any = true;
+      var h = el("p", null, g[0] + " · " + g[1].length);
+      h.style.cssText = "margin:10px 0 4px;font-weight:600";
+      box.appendChild(h);
+      var ul = el("ul", "ccu-issues");
+      ul.style.marginTop = "0";
+      g[1].forEach(function (r) { ul.appendChild(el("li", null, g[2](r))); });
+      box.appendChild(ul);
+    });
+    if (!any) { box.appendChild(el("p", null, SAY.nothing)); }
+    else if (!dry) { box.insertBefore(el("p", null, SAY.matched), box.firstChild); }
+  }
+
   function send(dry) {
     var sb = client();
     if (!sb) { return note(SAY.generic, true); }
@@ -601,11 +657,16 @@
         state.busy = false;
         els.cancel.disabled = false;
         note("");
-        els.summary.textContent = line(d.counts, !dry);
+        if (state.match) {
+          els.summary.textContent = "";
+          showPlan(d.plan, dry);
+        } else {
+          els.summary.textContent = line(d.counts, !dry);
+        }
         showIssues(d.issues);
         if (dry) {
           state.stage = "preview";
-          els.primary.textContent = SAY.confirm;
+          els.primary.textContent = state.match ? SAY.matchConfirm : SAY.confirm;
           els.primary.disabled = false;
           return;
         }
@@ -677,6 +738,8 @@
     state.hash = "";
     state.busy = false;
     els.file.value = "";
+    state.match = false;
+    els.matchBox.checked = false;
     els.cancel.disabled = false;
     els.code.textContent = state.className;
     note("");

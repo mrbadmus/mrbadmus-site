@@ -200,6 +200,15 @@ FLASHCARD_BREAKDOWN_JS_NAME = "flashcard-breakdown.js"
 # `shared/teacher-admin-nav.js`, which is scope-gated the same way.
 CSV_JS_NAME = "class-csv-upload.js"
 
+# ⊕ Class membership (Nov 2026) — "Pupils" on the class page and "Classes"
+# on the pupil page: add, move and remove pupils, for school admins. Same
+# shape as the CSV entry (an injected, scope-gated trigger and an overlay on
+# <body>), and LIVE PAGE ONLY like Wrapped: on a fixture there is no client,
+# so the tag would do nothing, and leaving it off keeps the fixtures
+# byte-identical to what the gates measured. Every write it makes is a call
+# to a SECURITY DEFINER function (migration 20261127120000).
+MEMBERSHIP_JS_NAME = "class-membership.js"
+
 # ── pages this build REFUSES to write ────────────────────────────────────
 #
 # ⚠️ NOT A CONVENTION — A GUARD, and it is the same one `build_student_port`
@@ -319,7 +328,7 @@ _REFUSED = {"import.html"}
 STAMPED_DEPS = ("config.js", "account.js", "class-entry.js", "teacher-guard.js",
                 "teacher-data.js", "shoutouts.js", "teacher-admin-nav.js",
                 "teacher-picker.js", TIMER_JS_NAME, "rum.js",
-                SETWORK_CSS_NAME, SETWORK_JS_NAME, CSV_JS_NAME,
+                SETWORK_CSS_NAME, SETWORK_JS_NAME, CSV_JS_NAME, MEMBERSHIP_JS_NAME,
                 WRAPPED_CSS_NAME, WRAPPED_JS_NAME,
                 "figures-ks3.js", "figures-ks4.js",
                 BREAKDOWN_CSS_NAME, BREAKDOWN_JS_NAME, "theme.js",
@@ -422,6 +431,7 @@ PAGES = [
          # prunes — so the other five carry neither the button nor a reason
          # to load its script.
          csv_upload=True,
+         membership=True,
          # ⊕ Wrapped — `wrapped=True` ON THIS ONE ONLY: its button joins the
          # same action row (node 213) as the CSV trigger.
          wrapped=True,
@@ -446,6 +456,7 @@ PAGES = [
          # needs the sheet's CSS/JS \u2014 same reasoning as `setwork`/`picker`
          # above.
          breakdown=True,
+         membership=True,
          overlays=("searchOpen", "bulkOpen", "hasToast"),
          retire="student-detail.html"),
     dict(screen="marking", node=258, out="assignment.html", admin_nav=True,
@@ -5555,6 +5566,8 @@ def page_html(spec, roots, table, logic, imports, fixture, versions, regions):
                         % WRAPPED_CSS_NAME)
         csv_js += ("<script src=\"/shared/%s\" data-wrapped=\"teacher\">"
                    "</script>\n" % WRAPPED_JS_NAME)
+    if spec.get("membership") and not fixture:
+        csv_js += ("<script src=\"/shared/%s\"></script>\n" % MEMBERSHIP_JS_NAME)
     # ⚠️ EMITTED ON BOTH PAGES, including the fixture, which never reads it.
     # The gates document the fixture as "the same bytes apart from its banner
     # and its last two script tags", and that sentence is what lets them
