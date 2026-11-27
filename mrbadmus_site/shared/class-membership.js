@@ -168,6 +168,9 @@
     ".cm-scrim{position:fixed;inset:0;z-index:9000;display:flex;",
     "align-items:flex-end;justify-content:center;background:rgba(20,18,16,.44)}",
     "@media(min-width:600px){.cm-scrim{align-items:center}}",
+    /* `display:flex` above outranks the browser's own [hidden] rule; without
+       this a closed sheet leaves an invisible layer over the page. */
+    ".cm-scrim[hidden]{display:none}",
     ".cm-sheet{width:min(560px,calc(100vw - 24px));max-height:88vh;overflow:auto;",
     "box-sizing:border-box;margin:12px;padding:18px;border-radius:14px;",
     "background:var(--st-paper,#fff);border:1px solid var(--st-rule-soft,#e6e1d9);",
@@ -334,7 +337,29 @@
   function afterWrite(text, auditIds) {
     state.picked = {};
     state.view = "list";
-    reloadSheet(true).then(function () { toast(text, auditIds); });
+    state.lastToast = { text: text, ids: auditIds };
+    reloadSheet(true).then(function (navigated) {
+      if (!navigated) { toast(text, auditIds); }
+    });
+  }
+
+  /* The pupil page must re-open on a class the pupil is still in. The page
+     keeps its class in memory, so that is a navigation, not a repaint — and
+     the Undo travels with it for the rest of its window. */
+  var CARRY = "mrb-membership-undo";
+  function carryToast(t) {
+    try {
+      sessionStorage.setItem(CARRY, JSON.stringify({ text: t.text, ids: t.ids || [],
+                                                     until: Date.now() + UNDO_MS }));
+    } catch (e) { /* the undo is simply not carried */ }
+  }
+  function resumeToast() {
+    try {
+      var raw = sessionStorage.getItem(CARRY);
+      sessionStorage.removeItem(CARRY);
+      var t = raw ? JSON.parse(raw) : null;
+      if (t && t.until > Date.now()) { state.mode = "pupil"; toast(t.text, t.ids); }
+    } catch (e) { /* nothing to resume */ }
   }
 
   /* Re-read the sheet, then repaint the page behind it. On the pupil page the
@@ -352,12 +377,12 @@
       var q = qs();
       var here = q.get("class");
       var still = rows.some(function (r) { return String(r.class_id) === String(here); });
-      if (!still && rows.length) {
-        q.set("class", rows[0].class_id);
-        try { window.history.replaceState(null, "", window.location.pathname + "?" + q.toString()); }
-        catch (e) { /* not fatal */ }
-      }
-      if (still || rows.length) { refreshPage(); }
+      if (still) { refreshPage(); return false; }
+      if (!rows.length) { return false; }   // in no class now: nothing to re-open on
+      q.set("class", rows[0].class_id);
+      if (state.lastToast) { carryToast(state.lastToast); }
+      window.location.replace(window.location.pathname + "?" + q.toString());
+      return true;
     });
   }
 
@@ -372,6 +397,7 @@
       t.appendChild(btn(SAY.undo, "", function () {
         t.remove(); els.toast = null;
         rpc("undo_membership_change", { p_audit_ids: auditIds }).then(function () {
+          state.lastToast = null;
           reloadSheet();
         }, function (e) { toast(friendly(e), null); });
       }));
@@ -827,6 +853,7 @@
         }
         state.studentId = q.get("student") || "";
         if (!state.studentId) { return; }
+        resumeToast();
         return rpc("pupil_current_classes", { p_student_id: state.studentId }).then(function (rows) {
           if ((rows || []).length) { watch(injectPupil); }
         }, function () { /* no button */ });

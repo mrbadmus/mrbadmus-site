@@ -293,6 +293,9 @@
     "align-items:flex-end;justify-content:center;",
     "background:rgba(20,18,16,.44)}",
     "@media(min-width:600px){.ccu-scrim{align-items:center}}",
+    /* `display:flex` above outranks the browser's [hidden] rule: without this
+       a closed sheet left a dimmed layer over the page that ate every click. */
+    ".ccu-scrim[hidden]{display:none}",
     ".ccu-sheet{width:min(520px,calc(100vw - 24px));max-height:88vh;",
     "overflow:auto;box-sizing:border-box;margin:12px;padding:18px;",
     "border-radius:14px;background:var(--st-paper,#fff);",
