@@ -213,10 +213,14 @@
     ".cm-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}",
     "@media(max-width:420px){.cm-grid{grid-template-columns:1fr}}",
     ".cm-toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:9100;",
-    "display:flex;gap:14px;align-items:center;max-width:calc(100vw - 32px);box-sizing:border-box;",
+    "display:flex;gap:14px;align-items:center;width:max-content;max-width:calc(100vw - 32px);box-sizing:border-box;",
     "padding:10px 12px 10px 16px;border-radius:12px;background:var(--st-ink,#1a1714);",
     "color:var(--st-paper,#fff);font:500 15px/1.35 var(--st-ui,system-ui);",
     "box-shadow:0 10px 30px rgba(20,18,16,.3)}",
+    ".cm-toast span{flex:1 1 auto;min-width:0}",
+    /* On a phone the sheet is a bottom sheet with its own action bar: the
+       toast sits above it rather than on top of it. */
+    "@media(max-width:599px){.cm-toast{bottom:96px}}",
     ".cm-toast .cm-btn{background:transparent;color:inherit;border-color:currentColor;height:34px}"
   ].join("");
 
@@ -329,13 +333,31 @@
   function afterWrite(text, auditIds) {
     state.picked = {};
     state.view = "list";
-    refreshPage();
-    reloadSheet().then(function () { toast(text, auditIds); });
+    reloadSheet(true).then(function () { toast(text, auditIds); });
   }
 
+  /* Re-read the sheet, then repaint the page behind it. On the pupil page the
+     address names ONE class; once the pupil has left it, the page must be
+     re-pointed at a class they are still in before it re-reads, or it asks
+     for a pupil who is no longer on that roster. With no class left there is
+     nothing for staff to show, so the page is left as it is. */
   function reloadSheet() {
-    if (state.mode === "pupil") { return openPupil(state.studentId, true); }
-    return Promise.all([loadRoster(), loadPast()]).then(draw);
+    if (state.mode !== "pupil") {
+      refreshPage();
+      return Promise.all([loadRoster(), loadPast()]).then(draw);
+    }
+    return openPupil(state.studentId, true).then(function (rows) {
+      rows = rows || [];
+      var q = qs();
+      var here = q.get("class");
+      var still = rows.some(function (r) { return String(r.class_id) === String(here); });
+      if (!still && rows.length) {
+        q.set("class", rows[0].class_id);
+        try { window.history.replaceState(null, "", window.location.pathname + "?" + q.toString()); }
+        catch (e) { /* not fatal */ }
+      }
+      if (still || rows.length) { refreshPage(); }
+    });
   }
 
   function toast(text, auditIds) {
@@ -349,8 +371,7 @@
       t.appendChild(btn(SAY.undo, "", function () {
         t.remove(); els.toast = null;
         rpc("undo_membership_change", { p_audit_ids: auditIds }).then(function () {
-          refreshPage();
-          if (!els.scrim.hidden) { reloadSheet(); }
+          reloadSheet();
         }, function (e) { toast(friendly(e), null); });
       }));
     }
@@ -722,7 +743,8 @@
         els.scrim.hidden = false;
         els.sheet.focus({ preventScroll: true });
       }
-    }, function (e) { console.error("[class-membership]", e); });
+      return rows;
+    }, function (e) { console.error("[class-membership]", e); return []; });
   }
 
   /* In the pupil sheet, Escape from move/confirm goes back to the list. */

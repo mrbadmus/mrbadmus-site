@@ -80,7 +80,7 @@ const trigger = (page, kind) => page.locator(`[data-mrb-added="${kind}"]`);
 
     // add by search, then undo
     await page.fill("#cm-find", "Newc");
-    await page.locator(".cm-list .cm-row:has-text('Zara Newcomb') button:has-text('Add')").click();
+    await page.locator(".cm-list .cm-row:has-text('Zara Newcomb') button:text-is('Add')").click();
     await page.locator(".cm-toast").waitFor();
     await shot(page, "03-admin-added-toast-390");
     ok(/Zara Newcomb/.test(await page.locator(".cm-sheet").innerText()), "admin: Zara added by search");
@@ -89,10 +89,10 @@ const trigger = (page, kind) => page.locator(`[data-mrb-added="${kind}"]`);
     ok(!/Zara Newcomb/.test(await page.locator(".cm-sheet .cm-sec").nth(1).innerText()), "admin: undo removes Zara again");
 
     // remove one, plain confirm, undo
-    await page.locator(".cm-row:has-text('Leo Stayer') button:has-text('Remove')").click();
+    await page.locator(".cm-row:has-text('Leo Stayer') button:text-is('Remove')").click();
     await shot(page, "04-admin-remove-confirm-390");
     ok(/Remove Leo Stayer from CB 8q\/Sc1\?/.test(await page.locator(".cm-title").innerText()), "admin: plain remove confirm");
-    await page.locator(".cm-foot button:has-text('Remove')").click();
+    await page.locator(".cm-foot button:text-is('Remove')").click();
     await page.locator(".cm-toast").waitFor();
     ok(/Leo Stayer/.test(await page.locator(".cm-sheet").innerText()) &&
        /Left the class on/.test(await page.locator(".cm-sheet").innerText()), "admin: Leo listed as left");
@@ -101,18 +101,18 @@ const trigger = (page, kind) => page.locator(`[data-mrb-added="${kind}"]`);
 
     // batch: add Zara back, tick both, move to Sc2
     await page.fill("#cm-find", "Newc");
-    await page.locator(".cm-list .cm-row:has-text('Zara Newcomb') button:has-text('Add')").click();
+    await page.locator(".cm-list .cm-row:has-text('Zara Newcomb') button:text-is('Add')").click();
     await page.locator(".cm-toast").waitFor();
     await page.waitForTimeout(800);
     await page.locator(".cm-row:has-text('Leo Stayer') input[type=checkbox]").check();
     await page.locator(".cm-row:has-text('Zara Newcomb') input[type=checkbox]").check();
     await shot(page, "05-admin-batch-selected-390");
-    await page.locator(".cm-bar button:has-text('Move')").click();
-    await page.locator(".cm-grid").waitFor();
+    await page.locator(".cm-bar button:text-is('Move')").click();
+    await page.locator(".cm-grid").first().waitFor();
     await shot(page, "06-admin-move-targets-390");
     await page.locator(".cm-grid button:has-text('CB 8q/Sc2')").click();
     ok(/Move 2 pupils to CB 8q\/Sc2\?/.test(await page.locator(".cm-title").innerText()), "admin: batch move confirm");
-    await page.locator(".cm-foot button:has-text('Move')").click();
+    await page.locator(".cm-foot button:text-is('Move')").click();
     await page.locator(".cm-toast").waitFor();
     await shot(page, "07-admin-batch-moved-390");
     ok(/2 pupils moved to CB 8q\/Sc2/.test(await page.locator(".cm-toast").innerText()), "admin: batch moved");
@@ -151,9 +151,9 @@ const trigger = (page, kind) => page.locator(`[data-mrb-added="${kind}"]`);
     await page.locator(".cm-sheet").waitFor();
     await shot(page, "11-admin-pupil-classes-390");
     ok(/CB 8q\/Sc2/.test(await page.locator(".cm-sheet").innerText()), "pupil page: shows current class");
-    await page.locator(".cm-row:has-text('CB 8q/Sc2') button:has-text('Move')").click();
+    await page.locator(".cm-row:has-text('CB 8q/Sc2') button:text-is('Move')").click();
     await page.locator(".cm-grid button:has-text('CB 8q/Sc1')").click();
-    await page.locator(".cm-foot button:has-text('Move')").click();
+    await page.locator(".cm-foot button:text-is('Move')").click();
     await page.locator(".cm-toast").waitFor();
     await page.waitForTimeout(1200);
     const t = await page.locator(".cm-sheet").innerText();
@@ -182,7 +182,7 @@ const trigger = (page, kind) => page.locator(`[data-mrb-added="${kind}"]`);
       await trigger(page, "members-open").click();
       await page.locator(".cm-sheet").waitFor();
       await shot(page, `14-teacher-${tag}-left-list-1280`);
-      ok(await page.locator(".cm-sheet button:has-text('Remove')").count() === 0, `${tag}: left list is read-only`);
+      ok(await page.locator(".cm-sheet button:text-is('Remove')").count() === 0, `${tag}: left list is read-only`);
     }
     await ctx.close();
   }
