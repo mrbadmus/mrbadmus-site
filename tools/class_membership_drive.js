@@ -124,8 +124,14 @@ const trigger = (page, kind) => page.locator(`[data-mrb-added="${kind}"]`);
     await page.fill("#cm-email", "cb_esme@throwaway.test");
     await shot(page, "08-admin-add-by-email-390");
     await page.locator(".cm-foot button:has-text('Add pupil')").click();
-    await page.locator(".cm-toast").waitFor({ timeout: 30000 });
+    await page.locator(".cm-toast:has-text('Esme')").waitFor({ timeout: 30000 });
     ok(/Esme Email/.test(await page.locator(".cm-sheet").innerText()), "admin: Esme added by email");
+    await page.locator(".cm-foot button:text-is('Close')").click();
+    ok(await page.evaluate(() => {
+      const r = document.querySelector('[data-mrb-added="members-open"]').getBoundingClientRect();
+      const hit = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+      return !!(hit && hit.closest('[data-mrb-added="members-open"]'));
+    }), "admin: closed sheet leaves the page clickable");
     await ctx.close();
   }
 
@@ -154,11 +160,18 @@ const trigger = (page, kind) => page.locator(`[data-mrb-added="${kind}"]`);
     await page.locator(".cm-row:has-text('CB 8q/Sc2') button:text-is('Move')").click();
     await page.locator(".cm-grid button:has-text('CB 8q/Sc1')").click();
     await page.locator(".cm-foot button:text-is('Move')").click();
-    await page.locator(".cm-toast").waitFor();
-    await page.waitForTimeout(1200);
-    const t = await page.locator(".cm-sheet").innerText();
-    ok(/CB 8q\/Sc1/.test(t) && !/CB 8q\/Sc2/.test(t), "pupil page: Maya moved back to Sc1");
+    // She has left the class this page was showing: it re-opens on her new
+    // class, and the Undo comes with it.
+    await page.waitForURL(new RegExp("class=" + C1), { timeout: 30000 });
+    await page.locator(".cm-toast:has-text('Maya Mover moved to CB 8q/Sc1')").waitFor({ timeout: 30000 });
+    await trigger(page, "pupil-classes").waitFor({ timeout: 30000 });
+    await page.waitForTimeout(1500);
     await shot(page, "12-admin-pupil-moved-back-390");
+    await trigger(page, "pupil-classes").click();
+    await page.locator(".cm-sheet").waitFor();
+    await page.waitForTimeout(800);
+    const t = await page.locator(".cm-sheet").innerText();
+    ok(/CB 8q\/Sc1/.test(t) && !/CB 8q\/Sc2/.test(t), "pupil page: Maya moved back to Sc1, page re-opened on Sc1");
     await ctx.close();
   }
 
