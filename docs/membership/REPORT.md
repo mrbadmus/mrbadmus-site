@@ -74,6 +74,27 @@ Reviewer findings fixed:
 4. "Add by email" with another school's pupil is now refused.
 5. In "match" mode, a skipped row now holds all removals.
 
+Found by the second walk and fixed:
+
+6. After a move on a pupil's page, the page re-opens on a class the pupil is
+   still in, and the Undo stays on screen for the rest of its window.
+7. A closed sheet left an invisible layer over the page that blocked every
+   click. The existing "Add pupils (CSV)" sheet had the same bug, so it's
+   fixed in both.
+
+## Gates (cloud session, on the clean tree)
+
+- **Pass:** ks4_pilot_check, ks4_batch_check, knowledge_points_check,
+  contrast_audit, teacher_tells, gate_coverage, week_scope_check,
+  test_isolation, theme_wiring_check, brand_one_mark, lean_check, plus 21
+  other fast gates.
+- **Could not run here:** pool_ownership, set_work_unit, seating_tells,
+  figures_mirror, curriculum_tree_mirror and knowledge_points_mirror need
+  the backend repo. frozen_window_guard and export_ks3_questions_verify need
+  production credentials. 3d_isolation needs the 3D Studio build. The slow
+  drives need `MRB_THROWAWAY_PASSWORD` and the local backend. The pre-push
+  hook runs all of these on Mide's Mac.
+
 ## Deviations
 
 - The CSV import's name-based path (`teacher/import.html`, which creates
@@ -85,6 +106,11 @@ Reviewer findings fixed:
   rules. → Not changed: the brief said RLS stays exactly as strict as it is,
   and tightening it might break joining by class code. Flagged here for a
   later decision.
-- Several gates can't run in a cloud session: they need the backend repo,
-  production credentials or a 3D build. → Listed in the session report; the
-  pre-push hook on Mide's Mac runs them.
+- Several gates can't run in a cloud session. → Listed above.
+- One of my commits (9fbbff29) swept in 825 KS4 lesson pages that a gate
+  was rewriting at that moment. → Restored to the starting commit two commits
+  later; the branch's KS4 pages are byte-identical to `b0b005d0`. Nothing
+  reached `main` or production.
+- The edge function deployed to TEST is a bundled copy of the committed
+  `index.ts` (same code, comments stripped). → Production should deploy the
+  committed file itself.
