@@ -1,0 +1,20 @@
+ALLOWED  guard-proof sandbox (5a4d0000-0000-4000-8000-00000000000a)
+exit 0
+REFUSED
+!!!! SANDBOX GUARD: refusing to write to class guard-proof real (5a4d0000-0000-4000-8000-00000000000b)
+!!!! it has 1 pupil(s) who are not test accounts.
+!!!! Live drives write only to 'Test class (Mr Badmus)' (e8eb5833-fa52-4d01-9ff6-678145ee48c7).
+
+exit 3
+REFUSED
+!!!! SANDBOX GUARD: refusing to write to class guard-proof empty (5a4d0000-0000-4000-8000-00000000000c)
+!!!! it has no pupils, so it cannot prove it is a sandbox (a real class waiting for its pupils looks like this).
+!!!! Live drives write only to 'Test class (Mr Badmus)' (e8eb5833-fa52-4d01-9ff6-678145ee48c7).
+
+exit 3
+REFUSED
+!!!! SANDBOX GUARD: refusing to write to class d9740ab8-c4e3-4c22-bce9-629b650782c5
+!!!! it is a RETIRED sandbox: 8r/Sc1 — Mide's real Year 8 class since 16 Nov 2026
+!!!! Live drives write only to 'Test class (Mr Badmus)' (e8eb5833-fa52-4d01-9ff6-678145ee48c7).
+
+exit 3

@@ -1,17 +1,22 @@
-# Go-live dry run — production, 8r/Sc1 only, on your phone
+# Go-live dry run — production, Test class (Mr Badmus) only, on your phone
+
+> ⚠️ **Sandbox moved, 27 Nov 2026.** 8r/Sc1 is Mide's REAL Year 8 class since
+> 16 Nov 2026 — never set test work in it. Every step below that used to say
+> 8r/Sc1 now says **Test class (Mr Badmus)**, where the two test pupils and all
+> their history now live. See `docs/sandbox/REPORT.md`.
 
 One line per step: what you do, then what you should see. Nothing here touches
-any class except **8r/Sc1**, your sandbox (automatic work is OFF on it, on purpose).
-Two sign-ins: your teacher account, and your test pupil in 8r/Sc1. If a step does
+any class except **Test class (Mr Badmus)**, your sandbox (automatic work is OFF on it, on purpose).
+Two sign-ins: your teacher account, and your test pupil in Test class (Mr Badmus). If a step does
 not match, stop and note the number.
 
 ## A. Teacher — set work, release now
 
-1. Teacher → My classes → **8r/Sc1** → **Set work**. Sheet opens on Classes with 8r/Sc1 ticked.
+1. Teacher → My classes → **Test class (Mr Badmus)** → **Set work**. Sheet opens on Classes with Test class (Mr Badmus) ticked.
 2. **Next**. Tier chips read **Easy | Medium | Hard**, Medium selected; Subject chips present; no Paper chips.
 3. Tap any unit row → **Next**. Count chips **5 · 10 · 15 · 20**, 10 selected, ten questions listed.
 4. Change the title to `Dry run`. **Release** shows **Now** selected; **Due** shows seven days out, 18:00.
-5. **Set work**. Sheet closes; one toast `Dry run · 8r/Sc1`; the class page shows a **Dry run** card with `0 of 2 in` and its own **Remind all 2**.
+5. **Set work**. Sheet closes; one toast `Dry run · Test class (Mr Badmus)`; the class page shows a **Dry run** card with `0 of 2 in` and its own **Remind all 2**.
 6. Assignments table: the **Dry run** row reads **Open**, and the Set column shows today's time in UK time.
 
 ## B. Pupil — open, answer, submit
@@ -23,7 +28,7 @@ not match, stop and note the number.
 
 ## C. Teacher — mark, feedback, remind, shoutout
 
-11. Teacher → 8r/Sc1. The **Dry run** card reads `1 of 2 in`; the pupil's name shows a score; the other pupil sits in the chase chips.
+11. Teacher → Test class (Mr Badmus). The **Dry run** card reads `1 of 2 in`; the pupil's name shows a score; the other pupil sits in the chase chips.
 12. Open the pupil's submission (tap their name or **Mark**). Every answer shows the option chosen and the key; the status reads **Marked**.
 13. Write one line of feedback on the submission and save it. A "sent" confirmation appears; nothing else on the page changes.
 14. Back on the card, tap **Remind all 1**. The button reads **Reminded today · 1** and greys out.
@@ -31,15 +36,15 @@ not match, stop and note the number.
 
 ## D. Pupil — bell and banner
 
-16. Reload the pupil's class page. The top banner reads `<your name>: this week's work for 8r/Sc1 is waiting` — only if that pupil was reminded; the pupil who handed in sees no reminder line.
+16. Reload the pupil's class page. The top banner reads `<your name>: this week's work for Test class (Mr Badmus) is waiting` — only if that pupil was reminded; the pupil who handed in sees no reminder line.
 17. The **bell** shows **2**: **Feedback** on Dry run, and **Shoutout**. Tap each; the badge falls to 0.
 18. Open the marked Dry run: your feedback line is visible under the score.
 
 ## E. Teacher — delete, and it is gone
 
-19. Teacher → 8r/Sc1 → Assignments → **Dry run** row → **Delete**. The controls become **Delete · Cancel**. Tap **Delete** again.
+19. Teacher → Test class (Mr Badmus) → Assignments → **Dry run** row → **Delete**. The controls become **Delete · Cancel**. Tap **Delete** again.
 20. Row goes; toast `Dry run · Deleted`; the card is gone from the class page.
 21. Pupil: reload. No Dry run on the bench, not in the work list, not in the bell, not in the banner. The score is kept on their record (marks are never retracted).
-22. Teacher → Admin → Assignments: the start date still reads **14 Sep 2026** — nothing you did in A–E moved it, and no automatic work appeared on 8r/Sc1.
+22. Teacher → Admin → Assignments: the start date still reads **14 Sep 2026** — nothing you did in A–E moved it, and no automatic work appeared on Test class (Mr Badmus).
 
-Leave 8r/Sc1's existing four sets alone unless you want them gone; they are your sandbox.
+Leave Test class (Mr Badmus)'s existing four sets alone unless you want them gone; they are your sandbox.
