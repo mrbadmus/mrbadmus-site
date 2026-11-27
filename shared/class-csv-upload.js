@@ -303,7 +303,7 @@
     ".ccu-title{font:600 20px/1.25 var(--st-ui,system-ui);",
     "color:var(--st-ink,#1a1714);margin:0}",
     ".ccu-code{font:500 13px/1.2 var(--st-mono,ui-monospace);",
-    "letter-spacing:.1em;text-transform:uppercase;",
+    "letter-spacing:.04em;",
     "color:var(--st-caption,#8a8178)}",
     ".ccu-body{margin-top:16px;font:400 15.5px/1.45 var(--st-ui,system-ui);",
     "color:var(--st-ink,#1a1714)}",
@@ -574,6 +574,8 @@
       case "email_belongs_to_staff": return where + "that email is a staff account — left untouched.";
       case "name_updated": return where + "name updated" + (d ? " (" + d + ")" : "") + ".";
       case "auth_create_failed": return where + "we couldn't create that account — skipped.";
+      case "pupil_in_other_school": return where + "that pupil belongs to another school — skipped.";
+      case "removals_held": return "Nobody removed: some rows were skipped.";
       default: return where + (iss.reason || "needs a look") + ".";
     }
   }
@@ -620,6 +622,8 @@
       [SAY.willAdd, p.add || [], function (r) { return r.name; }],
       [SAY.willMove, p.moveIn || [], function (r) { return r.name + (r.fromClass ? " (from " + r.fromClass + ")" : ""); }],
       [SAY.willRemove, p.remove || [], function (r) { return r.name; }]
+      /* `remove` is empty when the server held removals (a skipped row);
+         the issue list says so. */
     ];
     var any = false;
     groups.forEach(function (g) {

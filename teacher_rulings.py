@@ -10154,7 +10154,8 @@ componentDidUpdate() {
      "          ? (lateState === true ? 'Complete · late' : 'Complete')\n"
      "          : (hasRow ? 'In progress'\n"
      "            : (pState === 'scheduled' ? 'Scheduled'\n"
-     "              : (pState === 'closed' ? 'Missing' : 'Not started'))),",
+     "              : (pState === 'closed' ? 'Missing'\n"
+     "                : (pState === 'before' ? 'Before joining' : 'Not started')))),",
      "the status chip on a row of the student's assignment history. It read "
      "\"On time\" for every submission whose timing is not recorded, which is "
      "every submission older than 22 Aug 2026. ⊕ Mide's 23 Sep 2026 ruling, "
@@ -12099,14 +12100,20 @@ componentDidUpdate() {
     # before the complete-cell guard, and the one fact "In progress" needs
     # that a complete cell alone cannot supply.
     (dict(builder="stHistory", key="const open"),
-     "      const pState = p.state;\n"
+     "      const pState = (p.state === 'closed' && st && window.MrBadmusTeacherLive\n"
+     "        && MrBadmusTeacherLive.setBeforeJoin\n"
+     "        && MrBadmusTeacherLive.setBeforeJoin(p.setAt, st.joined_at)) ? 'before' : p.state;\n"
      "      const hasRow = !!(stRow && stRow.subId[i] != null);",
      "the two facts every field below now reads instead of the old "
      "`open`/`!open` binary: the paper's own state, and whether the pupil "
      "has started a submission at all. Design's `i === 0` is her one-open-"
      "paper fiction; `shared/teacher-live.js` warns about it by name above "
      "`buildMatrix`. See the block comment above for why `open` itself "
-     "could not simply be corrected in place a second time."),
+     "could not simply be corrected in place a second time. ⊕ Class "
+     "membership (Nov 2026): a closed paper that reached the class BEFORE "
+     "this pupil joined it is `'before'`, not `'closed'` — so it is never "
+     "Missing, never a warning and never counted in \"not submitted\" "
+     "(the same `setBeforeJoin` test the roster and the SQL rollup use)."),
 
     # ── 3. AND THE DENOMINATOR THAT ASSUMED THE SAME THING ──────────────
     #

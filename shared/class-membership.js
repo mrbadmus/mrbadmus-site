@@ -175,8 +175,8 @@
     "font:400 15.5px/1.45 var(--st-ui,system-ui)}",
     ".cm-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}",
     ".cm-title{font:600 20px/1.25 var(--st-ui,system-ui);margin:0}",
-    ".cm-code{font:500 13px/1.2 var(--st-mono,ui-monospace);letter-spacing:.1em;",
-    "text-transform:uppercase;color:var(--st-caption,#8a8178)}",
+    ".cm-code{font:500 13px/1.2 var(--st-mono,ui-monospace);letter-spacing:.04em;",
+    "color:var(--st-caption,#8a8178)}",
     ".cm-sec{margin-top:16px}",
     ".cm-label{display:block;font:600 13px/1.3 var(--st-ui,system-ui);",
     "color:var(--st-muted,#6b635a);margin:0 0 6px}",
@@ -198,6 +198,7 @@
     ".cm-btn[disabled]{opacity:.45;cursor:default}",
     ".cm-primary{background:var(--st-ink,#1a1714);border-color:var(--st-ink,#1a1714);color:var(--st-paper,#fff)}",
     ".cm-danger{color:var(--danger,#c0392b)}",
+    ".cm-primary.cm-danger{background:var(--danger,#c0392b);border-color:var(--danger,#c0392b);color:#fff}",
     ".cm-link{background:none;border:0;padding:6px 0;font:600 14.5px/1.3 var(--st-ui,system-ui);",
     "color:var(--st-ink,#1a1714);text-decoration:underline;cursor:pointer}",
     ".cm-bar{position:sticky;bottom:-18px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;",
@@ -602,7 +603,7 @@
     var foot = el("div", "cm-foot");
     foot.appendChild(btn(SAY.cancel, "", function () { state.view = "list"; draw(); }));
     var go = btn(pending.kind === "move" ? SAY.move : SAY.remove,
-                 pending.kind === "move" ? "cm-primary" : "cm-primary", function () {
+                 pending.kind === "move" ? "cm-primary" : "cm-primary cm-danger", function () {
       go.disabled = true;
       var fromId = pending.fromId || state.classId;
       var ops = ids.map(function (id) {
@@ -664,7 +665,15 @@
         if (iss && iss.reason === "email_belongs_to_staff") {
           return msg("That email is a staff account.", true);
         }
-        var nm = fullName(f.value.trim(), l.value.trim());
+        if (iss && iss.reason === "pupil_in_other_school") {
+          return msg("That pupil belongs to another school.", true);
+        }
+        if (d.plan && d.plan.already && !(d.plan.add || []).length) {
+          return msg(SAY.inClass + ".", false);
+        }
+        var added = d.plan && ((d.plan.add || [])[0] || (d.plan.moveIn || [])[0]);
+        var nm = (added && added.name && added.name !== email) ? added.name
+          : fullName(f.value.trim(), l.value.trim());
         afterWrite((nm === "Pupil" ? email : nm) + " added",
                    (d.plan && d.plan.auditIds) || []);
       }).catch(function (err) {

@@ -360,6 +360,9 @@ Deno.serve(async (req) => {
 
   // ── 5. process students (dedupe by email; flag messy rows) ──
   const fileStudents: Array<{ studentId: string | null; email: string; name: string; classId: string }> = [];
+  // "match" removes everyone NOT in the file. If any row could not be read as
+  // a pupil, we cannot know who that row was, so removals are held.
+  let unreadable = false;
   const seenEmail = new Set<string>();
   const seenExternalId = new Set<string>(); // in-file duplicate detection for the external MIS id
   for (const s of students) {
@@ -414,6 +417,15 @@ Deno.serve(async (req) => {
         .maybeSingle();
       existingProfile = p as typeof existingProfile;
       // never downgrade or hijack a staff account via a student roster
+      // The by-class path (one class's own page) never moves a pupil between
+      // SCHOOLS: their profile would be rewritten to this school before the
+      // membership check could refuse it.
+      if (byIdPath && existingProfile && existingProfile.school_id && existingProfile.school_id !== schoolId) {
+        counts.studentsSkipped++;
+        issues.push({ rowIndex: s.rowIndex, email, reason: "pupil_in_other_school" });
+        if (matchMode) unreadable = true;
+        continue;
+      }
       if (existingProfile && ["teacher", "hod", "admin"].includes(existingProfile.role)) {
         counts.studentsSkipped++;
         issues.push({ rowIndex: s.rowIndex, email, reason: "email_belongs_to_staff" });
@@ -631,7 +643,9 @@ Deno.serve(async (req) => {
       }
       counts.studentsAttached++;
     }
-    if (matchMode) {
+    if (matchMode && (unreadable || counts.studentsSkipped > 0)) {
+      issues.push({ reason: "removals_held" });
+    } else if (matchMode) {
       for (const m of current) {
         if (inFile.has(m.student_id as string)) continue;
         const st = m.student as { first_name?: string; last_name?: string } | null;

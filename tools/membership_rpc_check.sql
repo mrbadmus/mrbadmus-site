@@ -114,6 +114,15 @@ begin
   rep := rep || format(E'%s   back in c1 → not listed as past\n', case when n = 0 then 'ok' else 'FAIL' end);
   if n <> 0 then fails := fails + 1; end if;
 
+  -- undo the move back: the REOPENED c1 row returns to its old stint exactly,
+  -- so c1's history still says "moved to c2" (reviewer finding, 27 Nov)
+  select array_agg(x::uuid) into aud from jsonb_array_elements_text(r->'audit_ids') x;
+  perform public.undo_membership_change(aud, null);
+  select count(*) into n from public.class_past_members(c1) p where p.student_id = pupil_a and p.moved_to_class_id = c2;
+  rep := rep || format(E'%s   undo of a move back keeps "moved to" history\n', case when n = 1 then 'ok' else 'FAIL' end);
+  if n <> 1 then fails := fails + 1; end if;
+  perform public.move_pupil(pupil_a, c2, c1, null);
+
   -- add when already a member: no-op, no audit
   r := public.add_pupil_to_class(c1, pupil_a, null);
   rep := rep || format(E'%s   add existing member → already\n',

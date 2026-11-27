@@ -146,11 +146,13 @@ $$;
 
 -- ── the two primitive writes ─────────────────────────────────────────
 -- Join: reopen the most recent row for (class, pupil) if there is one,
--- else insert. Returns (row id, previous joined_at or null, 'added' |
--- 'rejoined' | 'already').
+-- else insert. Returns the row id, 'added' | 'rejoined' | 'already', and —
+-- for a reopened row — the dates of the stint it ended, so an undo can put
+-- them back exactly rather than inventing a new leaving date.
+drop function if exists public._membership_join(uuid, uuid, text, timestamptz);
 create or replace function public._membership_join(
   p_class uuid, p_student uuid, p_via text, p_joined_at timestamptz default null)
-returns table (member_id uuid, outcome text, prev_left_at timestamptz)
+returns table (member_id uuid, outcome text, prev_left_at timestamptz, prev_joined_at timestamptz)
 language plpgsql
 security definer
 set search_path = public, pg_temp
@@ -159,16 +161,17 @@ as $$
 declare
   v_id uuid;
   v_left timestamptz;
+  v_joined timestamptz;
 begin
   select cm.id into v_id from public.class_members cm
    where cm.class_id = p_class and cm.student_id = p_student
      and cm.left_at is null and cm.deleted_at is null
    for update;
   if found then
-    return query select v_id, 'already'::text, null::timestamptz; return;
+    return query select v_id, 'already'::text, null::timestamptz, null::timestamptz; return;
   end if;
 
-  select cm.id, cm.left_at into v_id, v_left from public.class_members cm
+  select cm.id, cm.left_at, cm.joined_at into v_id, v_left, v_joined from public.class_members cm
    where cm.class_id = p_class and cm.student_id = p_student
    order by coalesce(cm.left_at, cm.deleted_at, cm.joined_at) desc nulls last, cm.created_at desc
    limit 1
@@ -179,13 +182,13 @@ begin
            joined_at = coalesce(p_joined_at, now()),
            updated_at = now()
      where id = v_id;
-    return query select v_id, 'rejoined'::text, v_left; return;
+    return query select v_id, 'rejoined'::text, v_left, v_joined; return;
   end if;
 
   insert into public.class_members (class_id, student_id, joined_via, joined_at)
   values (p_class, p_student, p_via, coalesce(p_joined_at, now()))
   returning id into v_id;
-  return query select v_id, 'added'::text, null::timestamptz;
+  return query select v_id, 'added'::text, null::timestamptz, null::timestamptz;
 end;
 $$;
 
@@ -252,7 +255,8 @@ begin
     v_payload := jsonb_build_object(
       'student_id', v_pupil, 'student_name', public._membership_name(pp),
       'to_class', jsonb_build_object('id', c_to.id, 'name', c_to.name),
-      'outcome', j.outcome, 'member_id', j.member_id);
+      'outcome', j.outcome, 'member_id', j.member_id,
+      'to_prev_joined_at', j.prev_joined_at, 'to_prev_left_at', j.prev_left_at);
 
   elsif v_op = 'remove' then
     c_from := public._membership_class(p_actor, v_from);
@@ -291,7 +295,8 @@ begin
       'from_class', jsonb_build_object('id', c_from.id, 'name', c_from.name),
       'to_class',   jsonb_build_object('id', c_to.id,   'name', c_to.name),
       'member_id', l.member_id, 'prev_joined_at', l.joined_at, 'left_at', v_now,
-      'to_member_id', j.member_id, 'to_outcome', j.outcome);
+      'to_member_id', j.member_id, 'to_outcome', j.outcome,
+      'to_prev_joined_at', j.prev_joined_at, 'to_prev_left_at', j.prev_left_at);
   else
     raise exception 'unknown_op' using errcode = '22023';
   end if;
@@ -408,7 +413,19 @@ begin
     if v_from is not null then perform public._membership_class(v_actor, v_from); end if;
     if v_to   is not null then perform public._membership_class(v_actor, v_to);   end if;
 
-    if a.action = 'class_member.add'
+    -- Leaving the destination: a row the change CREATED is ended now; a row
+    -- it REOPENED goes back to exactly the stint it had before, so the
+    -- class's history still reads as it did ("Moved to … on …").
+    if (a.action = 'class_member.add' and a.payload->>'outcome' = 'rejoined')
+       or (a.action = 'class_member.move' and a.payload->>'to_outcome' = 'rejoined') then
+      update public.class_members
+         set joined_at  = (a.payload->>'to_prev_joined_at')::timestamptz,
+             left_at    = (a.payload->>'to_prev_left_at')::timestamptz,
+             deleted_at = (a.payload->>'to_prev_left_at')::timestamptz,
+             updated_at = now()
+       where id = coalesce(a.payload->>'to_member_id', a.payload->>'member_id')::uuid
+         and left_at is null and deleted_at is null;
+    elsif a.action = 'class_member.add'
        or (a.action = 'class_member.move' and a.payload->>'to_outcome' is distinct from 'already') then
       perform public._membership_leave(v_to, v_pupil, v_at);
     end if;
