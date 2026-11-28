@@ -1,5 +1,10 @@
 # The experience run — 24–25 September 2026
 
+> ⊕ **27 Nov 2026 — historical.** Where this says 8r/Sc1 is the sandbox, that
+> stopped being true on 16 Nov 2026: 8r/Sc1 is a real class, and the test
+> pupils and their history moved to **Test class (Mr Badmus)**
+> (`sandbox_class.SANDBOX_CLASS_ID`). See `docs/sandbox/REPORT.md`.
+
 Unattended. Mide's acceptance test: "everything works the way it should, no
 glitches, teachers and students and every user have a fabulous experience."
 Worktree `mrbadmus-worktrees/experience`, branch `feat/experience`, seven build

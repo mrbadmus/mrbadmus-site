@@ -23,6 +23,7 @@ import urllib.request
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import config_env  # noqa: E402
+import sandbox_class  # noqa: E402
 
 SUPABASE_URL = config_env.TEST["SUPABASE_URL"]
 API = config_env.backend()
@@ -30,7 +31,11 @@ API = config_env.backend()
 # that must not touch Mide's own account can point it at a throwaway.
 # The default is unchanged.
 EMAIL = os.environ.get("MRB_DRIVE_EMAIL", "midebolabadmus@gmail.com")
-CLASS_8R_SC1 = os.environ.get("MRB_DRIVE_CLASS", "d9740ab8-c4e3-4c22-bce9-629b650782c5")
+# ⊕ 27 Nov 2026 — the sandbox moved. 8r/Sc1 is a REAL class now; the class a
+# live drive writes to comes from sandbox_class.py, the one place it is named,
+# and main() runs sandbox_class.assert_writable() on it before any write.
+# (SANDBOX_CLASS_ID is production's; on TEST set MRB_DRIVE_CLASS to a TEST class.)
+DRIVE_CLASS = os.environ.get("MRB_DRIVE_CLASS", sandbox_class.SANDBOX_CLASS_ID)
 REPO = os.path.dirname(os.path.abspath(__file__))
 
 CTX = ssl.create_default_context(cafile="/etc/ssl/cert.pem")
@@ -58,6 +63,8 @@ def call(url, headers, body=None):
 
 
 def main():
+    sandbox_class.assert_writable(DRIVE_CLASS, SUPABASE_URL,
+                                  os.environ.get("SUPABASE_SERVICE_ROLE_KEY"))
     pw = (os.environ.get("MRB_DRIVE_PASSWORD")
           or os.environ.get("MRB_TEST_STUDENT_PASSWORD"))
     if not pw:
@@ -73,7 +80,7 @@ def main():
     print("\n📮  drive_submit — the route that was dropping six columns\n")
     print("     signed in (token %s…)" % jwt[:8])
 
-    st, body = call(API + "/api/class/current-assignment?class_id=" + CLASS_8R_SC1, auth)
+    st, body = call(API + "/api/class/current-assignment?class_id=" + DRIVE_CLASS, auth)
     a, qs = body.get("assignment"), body.get("questions") or []
     if not a:
         raise SystemExit("no assignment to submit against: %r" % body.get("reason"))

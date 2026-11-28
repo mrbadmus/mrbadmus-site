@@ -260,6 +260,29 @@ GATES = [
              "script reads either world through config_env.py, which parses "
              "config.js."),
 
+    dict(name="sandbox_class",
+         cmd=["python3", "sandbox_class_check.py"],
+         speed="fast",
+         watches=["sandbox_class.py", "sandbox_class_check.py", "config_env.py",
+                  "shared/config.js", "tools/mrb351_acceptance.py",
+                  # rule 4 scans every tracked script for the two class ids
+                  "*.py", "*.sh", "*.js", "*.mjs", "*.cjs", "*.ts", "*.html",
+                  "*.json", "tools/**", "shared/**", "teacher/**", "student/**",
+                  "teacher_fixtures/**", "consumer/**", "parents/**", "go/**",
+                  "org/**", "ks3_fixtures/**"],
+         why="27 Nov 2026: 8r/Sc1 became Mide's REAL Year 8 class on 16 Nov; the "
+             "production sandbox is now 'Test class (Mr Badmus)', named once in "
+             "sandbox_class.py. Fails if the guard would let a write through to "
+             "a class with a non-test pupil, a non-sandbox teacher or no pupils "
+             "(8r/Sc1's shape while it waits for its pupils), or to the retired "
+             "8r/Sc1 id on any project; if production is written with no key "
+             "to prove membership; if any tracked script spells the retired id "
+             "or copies the sandbox id; if a drive reads MRB_DRIVE_CLASS "
+             "without assert_writable(); or if the shared live client stops "
+             "guarding its writes. A test homework set in a real class is a "
+             "safeguarding-grade mistake, so it is made impossible, not "
+             "unlikely."),
+
     dict(name="test_isolation_drive",
          cmd=["python3", "test_isolation_drive.py"],
          speed="slow",
@@ -1059,6 +1082,42 @@ GATES = [
              "covered by today_drive instead, which is the only gate that "
              "stubs loadClassMatrices and therefore the only one that can "
              "reveal that page's button at all."),
+
+    # ── ⊕ 16 Nov 2026 · the teacher tools' four views, one at a time ────
+
+    dict(name="teacher_tools_drive",
+         cmd=["python3", "teacher_tools_drive.py"],
+         speed="slow",
+         watches=["teacher_tools_drive.py", "teacher_picker_drive.py",
+                  "ks3_browser.py", "build_teacher_port.py",
+                  "teacher_rulings.py",
+                  "teacher_fixtures/class-detail-fixture.html",
+                  "teacher_fixtures/teacher-fixture-class-detail.js",
+                  "shared/teacher-picker.js", "shared/teacher-timer.js",
+                  "shared/student-runtime.js", "shared/teacher-ds.css",
+                  "shared/brand/brand.js", "shared/brand/brand.css"],
+         needs="teacher_fixtures/class-detail-fixture.html",
+         why="16 Nov 2026 (Mide: the minimised timer sat on top of the "
+             "picker, could not be closed without going full screen, and "
+             "the flow was all over the place). The picker and the timer "
+             "have ONE state and four views — Board, Timer full, Mini, "
+             "Pop-out — and only one shows at a time. teacher_picker_drive "
+             "proves what they DO; this proves WHERE they show: a running "
+             "timer on the board is a <=56px strip inside the board's header "
+             "(elementFromPoint), never over it; the Mini never shows with "
+             "the board or the full timer and keeps Mide's footprint (<=320px "
+             "wide at 1440, <=30% of the viewport tall); close and minimise "
+             "are one real click on a >=44px in-viewport button in every "
+             "view at 390, 1440 and 1920; a running timer survives minimise, "
+             "drag, expand, pop-out, picks, pop-in and the teacher closing "
+             "the Document Picture-in-Picture window with its reading only "
+             "falling by the elapsed time; a whole No-repeats cycle and a "
+             "Skip run from the pop-out; the pop-out mirrors light/dark live "
+             "and takes clicker keys on its own CDP target; with the API "
+             "removed there is no pop-out button and the Mini still drags; "
+             "zero requests, zero storage keys. Every press is a real CDP "
+             "mouse or key event, because requestWindow needs the click's "
+             "activation."),
 
     # ── ⊕ MRB-288 · one bank per surface ────────────────────────────────
 
@@ -3264,6 +3323,11 @@ EXCLUDED = {
         "the three 3D gates (3d_parity, 3d_render_check, 3d_isolation) when it "
         "is missing or stale. Asserts nothing itself; all three import it and "
         "all three watch it.",
+    "sandbox_class.py":
+        "Import-only library (27 Nov 2026): the ONE place the production "
+        "sandbox class is named, and the guard every live drive and the shared "
+        "live client run before writing to a class. Asserts nothing itself; "
+        "`sandbox_class` is the gate that proves it.",
     "config_env.py":
         "Import-only library (B2C unit 6, 5 Oct 2026): shared/config.js's two "
         "worlds for Python scripts, parsed out of config.js so that no script "

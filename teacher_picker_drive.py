@@ -267,6 +267,19 @@ DRIVE = r"""
   rolls.forEach(n => { if (seenR[n]) { repeated = true; } seenR[n] = 1; });
   if (!repeated) { fail('Random never repeated over ' + rolls.length + ' presses of ' + M + ' — it is behaving as the cycle'); }
   if (rolls.indexOf(away) !== -1) { fail('Random picked a student marked absent'); }
+  /* ⊕ 16 Nov 2026 — Skip in Random: another draw, never the skipped child,
+     and the count line does not move. */
+  let skips = 0;
+  for (let i = 0; i < 12; i++) {
+    const was = nameNow(), c0 = countNow();
+    if (!await press('pick-skip')) { fail('no Skip after a pick in Random'); break; }
+    const now = await settle();
+    skips += 1;
+    if (now === was) { fail('Skip in Random landed on the skipped pupil ' + JSON.stringify(was)); }
+    if (now === away) { fail('Skip in Random picked a student marked absent'); }
+    if (countNow() !== c0) { fail('Skip in Random moved the count line ' + c0 + ' -> ' + countNow()); }
+  }
+  out.skips = skips;
 
   // back to no-repeats, and close
   await press('pick-mode-cycle');
@@ -313,10 +326,13 @@ MOTION = r"""
 
   q('pick-open').click();
   await frame();
+  /* ⊕ 16 Nov 2026 — Skip is not offered before anything has been picked
+     (this is the first press of the run, on a fresh page). */
+  const skipBefore = !!q('pick-skip');
   q('pick-go').click();
   await frame();
 
-  const out = {busySeen: false, moved: 0, ms: 0};
+  const out = {busySeen: false, moved: 0, ms: 0, skipBefore: skipBefore};
   let seen = {}, t0 = Date.now(), last = null;
   for (let i = 0; i < 60; i++) {
     const el = nm();
@@ -404,7 +420,7 @@ const countNow = () => {
   }
   return '';
 };
-const click = async (m) => { const e = q(m); if (!e || e.getAttribute('aria-disabled') === 'true') { return false; } e.click(); await frame(); return true; };
+const click = async (m) => { const e = q(m) || document.querySelector('[data-mrb-tools] [data-mrb-added="' + m + '"]'); if (!e || e.getAttribute('aria-disabled') === 'true') { return false; } e.click(); await frame(); return true; };
 const openPicker = async () => { q('pick-open').click(); await frame(); };
 const rows = () => all('pick-set-row');
 const rowName = (r) => (q('pick-set-name', r).firstChild.textContent || '').trim();
@@ -750,19 +766,22 @@ TIMER_MAIN = wrap(TIMER_PRE, r"""
   await tclick('tm-mode-down');
   await tclick('tm-preset-300');                                 // 5 min: out of the warn band
 
-  // ── float: corner, above the page, and Space only with focus inside ──
-  await tclick('tm-view');
+  // ── minimised with no board: the Mini, a corner panel above the page ──
+  //    (⊕ 16 Nov 2026: the old floating card is now the Mini, on body)
+  await tclick('tm-min');
   out.view1 = view();
-  const fr = tm().getBoundingClientRect(), fcs = getComputedStyle(tm());
+  const mb = document.querySelector('[data-mrb-tools="mini"]');
+  const fr = mb.getBoundingClientRect(), fcs = getComputedStyle(mb);
   out.float = {pos: fcs.position, z: Number(fcs.zIndex), right: Math.round(innerWidth - fr.right),
                bottom: Math.round(innerHeight - fr.bottom), w: Math.round(fr.width), h: Math.round(fr.height),
-               vw: innerWidth, vh: innerHeight};
-  out.floatMinH = Math.round(Math.min.apply(null, Array.prototype.slice.call(tm().querySelectorAll('button')).map(b => b.getBoundingClientRect().height)));
+               vw: innerWidth, vh: innerHeight, holdsTimer: mb.contains(tm())};
+  out.floatMinH = Math.round(Math.min.apply(null, Array.prototype.slice.call(mb.querySelectorAll('button')).map(b => b.getBoundingClientRect().height)));
   await tclick('tm-toggle');                                     // pause again
   await tclick('tm-reset');
 
-  // ── the picker on top: the timer button floats it, Escape order ──────
-  await tclick('tm-close');
+  // ── the picker on top: the timer button DOCKS it, Escape order ───────
+  await click('tools-close');                 // the Mini's X takes the timer
+  await frame();
   out.closedGone = !tm();
   await openPicker();
   const pt = q('pick-timer');
@@ -776,16 +795,21 @@ TIMER_MAIN = wrap(TIMER_PRE, r"""
     const r = q(m).getBoundingClientRect();
     return !(r.right <= fr2.left || r.left >= fr2.right || r.bottom <= fr2.top || r.top >= fr2.bottom);
   });
-  const pz = Number(getComputedStyle(host.querySelector('[data-mrb-picker]')).zIndex);
-  out.zAbovePicker = Number(getComputedStyle(tm()).zIndex) > pz;
-  out.floatCoversNothingTop = tm().getBoundingClientRect().top > innerHeight * 0.3;
-  // a running float survives the picker closing
+  /* Docked IN the board's header, not over the board. */
+  const pk = host.querySelector('[data-mrb-picker]');
+  out.stripInPicker = pk.contains(tm()) &&
+    !!tm().closest('[data-mrb-tm-slot]');
+  out.stripH = Math.round(tm().getBoundingClientRect().height);
+  out.timerBtnHidden = getComputedStyle(q('pick-timer')).display === 'none';
+  // a running strip survives the picker closing, as the Mini
   await tclick('tm-toggle');
   await click('pick-close');
-  out.survivesPickerClose = !!tm() && state() === 'running';
-  // reopen the picker, promote to full from its button, then Escape order
+  out.survivesPickerClose = !!tm() && state() === 'running' && view() === 'mini';
+  // reopen the picker (the timer docks again), promote to full from the
+  // strip's expand, then Escape order
   await openPicker();
-  q('pick-timer').click(); await frame();
+  out.redocked = view();
+  await tclick('tm-expand');
   out.promoted = view();
   const prevented = key(document, 'Escape');
   await frame();
@@ -794,8 +818,8 @@ TIMER_MAIN = wrap(TIMER_PRE, r"""
   out.escPrevented = prevented;
   key(document, 'Escape'); await frame();                        // now the picker's own
   out.escSecondPicker = !!host.querySelector('[data-mrb-picker]');
-  out.escSecondTimer = !!tm();
-  await tclick('tm-close');
+  out.escSecondTimer = !!tm() && view() === 'mini';
+  await click('tools-close');
   out.storage = {local: lsKeys().length, session: Object.keys(window.sessionStorage || {}).length};
   out.requests = (window.__REQ__ || []).length;
   return JSON.stringify(out);
@@ -1115,43 +1139,52 @@ def features(cdp, port, width, height):
                 bad("the stopwatch did not hold when paused")
             if g.get("swReset") != "0:00":
                 bad("stopwatch Reset read %r" % g.get("swReset"))
-            if g.get("view1") != "float":
-                bad("the shrink control left the view %r" % g.get("view1"))
+            if g.get("view1") != "mini":
+                bad("the minimise control left the view %r, wanted the Mini"
+                    % g.get("view1"))
             fl = g.get("float") or {}
             if fl.get("pos") != "fixed" or fl.get("right", 99) > 24 or \
-                    fl.get("bottom", 99) > 24 or fl.get("w", 999) > 360 or \
-                    fl.get("z", 0) <= 90:
-                bad("the floating timer is not a small fixed corner card "
-                    "above the picker: %r" % fl)
-            if g.get("floatMinH", 0) < 40:
-                bad("a floating-timer control is %spx tall (floor 40)"
+                    fl.get("bottom", 99) > 24 or \
+                    fl.get("w", 999) > max(320, fl.get("vw", 0) - 16) or \
+                    fl.get("z", 0) <= 100 or not fl.get("holdsTimer"):
+                bad("the Mini is not a small fixed corner panel above the "
+                    "page holding the timer: %r" % fl)
+            if g.get("floatMinH", 0) < 44:
+                bad("a Mini control is %spx tall (floor 44)"
                     % g.get("floatMinH"))
             if not g.get("closedGone"):
                 bad("the timer's close control left it on the page")
-            if g.get("pickView") != "float" or g.get("pickPressed1") != "true" \
+            if g.get("pickView") != "strip" or g.get("pickPressed1") != "true" \
                     or g.get("pickTimerPressed0") != "false":
                 bad("the picker's Timer button: view %r, aria-pressed %r -> %r "
-                    "(wanted float, false -> true)"
+                    "(wanted strip, false -> true)"
                     % (g.get("pickView"), g.get("pickTimerPressed0"),
                        g.get("pickPressed1")))
             if g.get("footerCovered"):
-                bad("the floating timer covers the picker's own control(s) %r"
+                bad("the docked timer covers the picker's own control(s) %r"
                     % g.get("footerCovered"))
-            if not g.get("pickerStillOpen") or not g.get("zAbovePicker"):
-                bad("the floating timer is not over a still-open picker")
+            if not g.get("pickerStillOpen") or not g.get("stripInPicker"):
+                bad("the docked timer is not inside the board's header slot")
+            if g.get("stripH", 99) > 56:
+                bad("the docked strip is %spx tall (limit 56)" % g.get("stripH"))
+            if not g.get("timerBtnHidden"):
+                bad("the picker's Timer button still shows beside a docked timer")
             if not g.get("survivesPickerClose"):
-                bad("a running timer did not survive the picker closing")
+                bad("a running timer did not survive the picker closing as the Mini")
+            if g.get("redocked") != "strip":
+                bad("reopening the picker did not dock the running timer "
+                    "again (%r)" % g.get("redocked"))
             if g.get("promoted") != "full":
-                bad("the picker's Timer button did not bring the open timer "
-                    "to full (%r)" % g.get("promoted"))
+                bad("the strip's expand did not bring the timer to full (%r)"
+                    % g.get("promoted"))
             if g.get("escPrevented") is not True or not g.get("escPickerOpen") \
-                    or g.get("escView") != "float":
+                    or g.get("escView") != "strip":
                 bad("Escape over a running full timer: view %r, picker open "
                     "%r — it must shrink the timer and leave the picker alone"
                     % (g.get("escView"), g.get("escPickerOpen")))
             if g.get("escSecondPicker") or not g.get("escSecondTimer"):
                 bad("the next Escape should close the picker and leave the "
-                    "floating timer (%r / %r)"
+                    "running timer, as the Mini (%r / %r)"
                     % (g.get("escSecondPicker"), g.get("escSecondTimer")))
             st = g.get("storage") or {}
             if st.get("local") or st.get("session"):
@@ -1341,8 +1374,8 @@ def clicker(cdp, port, width, height):
         b1 = snap(page)
         _tap(page, "ArrowLeft")
         b2 = snap(page)
-        if not b1["tm"] or b1["tm"]["state"] not in ("running", "warn") or b1["tm"]["view"] != "float":
-            bad("Back did not open the floating timer running: %r" % (b1["tm"],))
+        if not b1["tm"] or b1["tm"]["state"] not in ("running", "warn") or b1["tm"]["view"] != "strip":
+            bad("Back did not open the timer running, docked in the board: %r" % (b1["tm"],))
         if not b2["tm"] or b2["tm"]["state"] != "paused":
             bad("a second Back did not pause it: %r" % (b2["tm"],))
         _hold_repeat(page, "PageUp")
@@ -1463,20 +1496,121 @@ def clicker(cdp, port, width, height):
         if (p2["tm"] or {}).get("state") == (p1["tm"] or {}).get("state"):
             bad("Back no longer drives the timer with a page button focused")
 
-        # ── 9. the float over the picker is reachable by a screen reader:
-        #       the picker stops claiming aria-modal while it shows ───────
+        # ── 9. a timer opened over the picker is reachable by a screen
+        #       reader: ⊕ 16 Nov 2026 it is DOCKED INSIDE the picker's dialog
+        #       (it used to float outside it, and the picker had to drop
+        #       aria-modal while it showed). So the dialog stays modal and
+        #       the timer is inside it; the full view is its own dialog. ────
         page = _fresh(br, port, width, height)
         m = _J(page, """await openPicker();
           const pk = document.querySelector('[data-mrb-picker]');
           out.a = pk.getAttribute('aria-modal');
           window.MrBadmusTimer.open({view: 'float'}); await frame();
           out.b = pk.getAttribute('aria-modal');
+          out.inside = pk.contains(tm()) && view() === 'strip';
           window.MrBadmusTimer.open({view: 'full'}); await frame();
           out.c = pk.getAttribute('aria-modal');
+          out.fullModal = tm().getAttribute('aria-modal');
           window.MrBadmusTimer.close(); await frame();
           out.d = pk.getAttribute('aria-modal');""")
-        if (m.get("a"), m.get("b"), m.get("c"), m.get("d")) != ("true", "false", "true", "true"):
-            bad("picker aria-modal with the float: %r" % (m,))
+        if (m.get("a"), m.get("b"), m.get("c"), m.get("d")) != ("true", "true", "true", "true") \
+                or not m.get("inside") or m.get("fullModal") != "true":
+            bad("a timer over the picker is not inside its modal dialog: %r" % (m,))
+
+        # ── 10. settings has a Back button: it is the way out, it keeps
+        #        every change, and the X is not the first thing seen ──────
+        page = _fresh(br, port, width, height)
+        page.eval(INSTRUMENT)
+        bk = _J(page, """await openPicker(); await click('pick-settings');
+          q('pick-set-plus', rows()[0]).click(); await frame();
+          q('pick-set-name', rows()[1]).click(); await frame();
+          q('pick-set-save').click(); await frame();
+          const b = q('pick-set-back'), x = q('pick-close');
+          out.back = !!b; out.backText = b ? b.textContent.trim() : null;
+          out.backLeftOfX = !!(b && x) &&
+            b.getBoundingClientRect().left < x.getBoundingClientRect().left;
+          out.timerBtnInSettings = !!q('pick-timer');
+          if (b) { b.click(); } else { await click('pick-settings'); }
+          await frame();
+          out.board = !!q('pick-go') && !q('pick-set-panel') && !q('pick-set-back');
+          out.focus = document.activeElement === q('pick-go');
+          out.timerBtnOnBoard = !!q('pick-timer');
+          await click('pick-settings');
+          out.w = q('pick-set-count', rows()[0]).textContent.trim();
+          out.next = !!q('pick-set-next', rows()[1]);
+          out.save = q('pick-set-save').getAttribute('aria-checked');
+          out.timer = window.MrBadmusTimer.isOpen();""")
+        if not bk.get("back") or bk.get("backText") != "Back":
+            bad("settings has no Back button (%r)" % (bk.get("backText"),))
+        if not bk.get("backLeftOfX"):
+            bad("Back does not come before the X in settings")
+        if bk.get("timerBtnInSettings") or not bk.get("timerBtnOnBoard"):
+            bad("timer button in settings %r / on the board %r"
+                % (bk.get("timerBtnInSettings"), bk.get("timerBtnOnBoard")))
+        if not bk.get("board") or not bk.get("focus"):
+            bad("Back did not return to the board with Pick focused: %r" % (bk,))
+        if (bk.get("w"), bk.get("next"), bk.get("save")) != ("2", True, "true"):
+            bad("Back lost a change: weight %r, pick next %r, save %r"
+                % (bk.get("w"), bk.get("next"), bk.get("save")))
+        if bk.get("timer"):
+            bad("the settings round-trip opened the timer")
+
+        # ── 11. the timer appears only when the teacher opens it: real
+        #        mouse clicks on the cog and Back, many times, never open
+        #        it; an open timer stays shown, a hidden one stays hidden ─
+        def real_click(marker):
+            r = json.loads(page.eval(
+                "(function(){var e=document.querySelector('[data-mrb-added=\"%s\"]');"
+                "if(!e){return 'null';}var b=e.getBoundingClientRect();"
+                "return JSON.stringify([b.left+b.width/2,b.top+b.height/2]);})()" % marker))
+            if not r:
+                bad("no %s to press" % marker)
+                return
+            for t in ("mousePressed", "mouseReleased"):
+                page.send("Input.dispatchMouseEvent", {"type": t, "x": r[0], "y": r[1],
+                                                       "button": "left", "clickCount": 1})
+            _time.sleep(0.15)
+
+        def tstate():
+            return json.loads(page.eval(
+                "JSON.stringify({open: window.MrBadmusTimer.isOpen(),"
+                " shown: window.MrBadmusTimer.isShown()})"))
+
+        page = _fresh(br, port, width, height)
+        page.eval(INSTRUMENT)
+        _J(page, "await openPicker();")
+        seen = []
+        for _ in range(3):
+            real_click("pick-settings"); real_click("pick-settings"); seen.append(tstate())
+            real_click("pick-settings")
+            real_click("pick-set-back" if page.eval(
+                "!!document.querySelector('[data-mrb-added=\"pick-set-back\"]')")
+                else "pick-settings")
+            seen.append(tstate())
+        real_click("pick-settings"); real_click("pick-set-sound"); real_click("pick-set-sound")
+        real_click("pick-set-reset"); real_click("pick-settings"); seen.append(tstate())
+        if any(x["open"] for x in seen):
+            bad("opening/closing settings opened the timer: %r" % (seen,))
+        # the teacher opens it: it shows, and stays shown through settings
+        real_click("pick-timer")
+        a = tstate()
+        real_click("pick-settings"); b1 = tstate()
+        real_click("pick-set-back"); b2 = tstate()
+        real_click("pick-settings"); real_click("pick-settings"); b3 = tstate()
+        if not (a["shown"] and b1["shown"] and b2["shown"] and b3["shown"]):
+            bad("an open timer did not stay shown through settings: %r"
+                % ([a, b1, b2, b3],))
+        # hidden with the clicker's B: stays hidden through settings
+        _tap(page, "b", settle=0.2)
+        h0 = tstate()
+        real_click("pick-settings"); real_click("pick-set-back"); h1 = tstate()
+        real_click("pick-settings"); real_click("pick-settings"); h2 = tstate()
+        if not (h0["open"] and not h0["shown"]) or h1 != h0 or h2 != h0:
+            bad("a hidden timer did not stay hidden through settings: %r"
+                % ([h0, h1, h2],))
+        print("     %-6s settings: Back keeps weight/next/save and returns to the "
+              "board; %d settings round-trips, timer never opened; open stays "
+              "shown, hidden stays hidden" % ("%dpx" % width, 7))
     return P
 
 
@@ -1551,6 +1685,10 @@ def main(argv):
                         "%dpx: the reveal took %dms. \"Brief\" is the brief; "
                         "a teacher is waiting in front of a class."
                         % (width, mo.get("ms")))
+
+                if mo.get("skipBefore"):
+                    problems.append("%dpx: Skip is offered before anything "
+                                    "has been picked" % width)
 
                 # ⚠️ AND NOW THE MOTION GOES AWAY — see the note on `MOTION`.
                 # `ks3_browser`'s socket gives up at 60s and the cycle below
@@ -1674,6 +1812,9 @@ def main(argv):
           "pairs), Back only drives the\n        timer, B and . hide and show it "
           "without stopping it, mute silences the\n        cheer, typing in the "
           "time fields is left alone, F5 is not prevented.\n"
+          "        Settings: Back returns to the board keeping every change, the X\n"
+          "        is not first, and opening or closing settings never opens the\n"
+          "        timer; an open timer stays shown and a hidden one stays hidden.\n"
           % len(WIDTHS))
     return 0
 

@@ -59,6 +59,7 @@ sys.path.insert(0, REPO)
 
 TEST_REF = "qeppkiswvclkkwbxmlok"
 import config_env  # noqa: E402 — shared/config.js's worlds (B2C unit 6)
+import sandbox_class  # noqa: E402 — the sandbox guard (27 Nov 2026)
 PROD_REF = config_env.PROD_REF
 CTX = ssl.create_default_context(cafile="/etc/ssl/cert.pem")
 BACKEND_ENV_DEFAULT = "/Users/midebadmus/Documents/GitHub/mrbadmus---backend/.env"
@@ -104,6 +105,10 @@ class Client:
         self.service = service
 
     def _req(self, method, url, headers, body=None):
+        # ⊕ 27 Nov 2026 — every write any live tool makes through this client
+        # names its classes to the sandbox guard first. 8r/Sc1 is refused on
+        # every project; on production only the sandbox class passes.
+        sandbox_class.guard_request(method, url, body, self.url, self.service)
         data = json.dumps(body).encode() if body is not None else None
         req = urllib.request.Request(url, data=data, method=method, headers=headers)
         try:

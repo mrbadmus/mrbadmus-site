@@ -44,6 +44,7 @@ CTX = _ssl_context()
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import config_env  # noqa: E402
+import sandbox_class  # noqa: E402
 
 SUPABASE_URL = config_env.TEST["SUPABASE_URL"]
 API = config_env.backend()
@@ -51,7 +52,11 @@ API = config_env.backend()
 # that must not touch Mide's own account can point it at a throwaway.
 # The default is unchanged.
 EMAIL = os.environ.get("MRB_DRIVE_EMAIL", "midebolabadmus@gmail.com")
-CLASS_8R_SC1 = os.environ.get("MRB_DRIVE_CLASS", "d9740ab8-c4e3-4c22-bce9-629b650782c5")
+# ⊕ 27 Nov 2026 — the sandbox moved. 8r/Sc1 is a REAL class now; the class a
+# live drive writes to comes from sandbox_class.py, the one place it is named,
+# and main() runs sandbox_class.assert_writable() on it before any write.
+# (SANDBOX_CLASS_ID is production's; on TEST set MRB_DRIVE_CLASS to a TEST class.)
+DRIVE_CLASS = os.environ.get("MRB_DRIVE_CLASS", sandbox_class.SANDBOX_CLASS_ID)
 
 REPO = os.path.dirname(os.path.abspath(__file__))
 
@@ -90,6 +95,8 @@ def get(url, headers):
 
 
 def main():
+    sandbox_class.assert_writable(DRIVE_CLASS, SUPABASE_URL,
+                                  os.environ.get("SUPABASE_SERVICE_ROLE_KEY"))
     pw = (os.environ.get("MRB_DRIVE_PASSWORD")
           or os.environ.get("MRB_TEST_STUDENT_PASSWORD"))
     if not pw:
@@ -122,7 +129,7 @@ def main():
 
     # ── 1. the producer ──────────────────────────────────────────────
     print("\n  1. GET /api/class/current-assignment")
-    status, body = get(API + "/api/class/current-assignment?class_id=" + CLASS_8R_SC1, auth)
+    status, body = get(API + "/api/class/current-assignment?class_id=" + DRIVE_CLASS, auth)
     print("     HTTP %s  keys=%s" % (status, sorted(body.keys())))
     check(status == 200, "producer returns 200", "got %s: %s" % (status, body.get("error")))
     week = body.get("week")
@@ -164,7 +171,7 @@ def main():
 
     # ── 2. idempotence: a second call must not create a second one ───
     print("\n  2. second call — must serve the SAME row, not create another")
-    status2, body2 = get(API + "/api/class/current-assignment?class_id=" + CLASS_8R_SC1, auth)
+    status2, body2 = get(API + "/api/class/current-assignment?class_id=" + DRIVE_CLASS, auth)
     check(status2 == 200, "second call returns 200")
     check(body2.get("created") is False, "second call did NOT create",
           "created=%r" % body2.get("created"))
@@ -180,13 +187,13 @@ def main():
                          "9168f292-e542-40ba-bb9b-c82b707cfe0f", auth)   # 7h/Sc4, not mine
     check(status3 == 403, "a class the student is NOT in returns 403",
           "got %s" % status3)
-    status4, _ = get(API + "/api/class/current-assignment?class_id=" + CLASS_8R_SC1,
+    status4, _ = get(API + "/api/class/current-assignment?class_id=" + DRIVE_CLASS,
                      {"apikey": key})
     check(status4 == 401, "no bearer token returns 401", "got %s" % status4)
 
     # ── 4. the recall round ──────────────────────────────────────────
     print("\n  4. GET /api/class/practice")
-    status5, body5 = get(API + "/api/class/practice?class_id=" + CLASS_8R_SC1, auth)
+    status5, body5 = get(API + "/api/class/practice?class_id=" + DRIVE_CLASS, auth)
     rq = body5.get("questions") or []
     check(status5 == 200, "recall returns 200", "got %s" % status5)
     check(len(rq) > 0, "recall has questions", "%d" % len(rq))

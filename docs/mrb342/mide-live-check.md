@@ -1,10 +1,15 @@
 # MRB-342 — the five-minute check, for Mide
 
+> ⚠️ **Sandbox moved, 27 Nov 2026.** 8r/Sc1 is Mide's REAL Year 8 class since
+> 16 Nov 2026 — never set test work in it. Every step below that used to say
+> 8r/Sc1 now says **Test class (Mr Badmus)**, where the two test pupils and all
+> their history now live. See `docs/sandbox/REPORT.md`.
+
 ⚠️ **Do this only after the site half is merged and live.** The backend is
 already on production; the sheet is not. Until then the `Download` control does
 not exist on the page.
 
-Sign in as yourself. Open **teacher → Classes → 8r/Sc1 → Set work**.
+Sign in as yourself. Open **teacher → Classes → Test class (Mr Badmus) → Set work**.
 
 ---
 
@@ -31,7 +36,7 @@ Tap **`Download`**, choose **`PDF`**.
 
 **Look for:**
 - a PDF in your Downloads;
-- the header: title, **8r/Sc1**, the tier, today's date;
+- the header: title, **Test class (Mr Badmus)**, the tier, today's date;
 - questions numbered, options **A–D**;
 - **no question split across a page break**;
 - a final **`Answers`** page — number and letter, plus the answer text, and
