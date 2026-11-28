@@ -898,6 +898,10 @@
         // handful of consumers that mean "missing" or "late" and must not
         // be fooled by `when === 'marked'` now meaning "results are live".
         closed: state === "closed",
+        /* When the work reached the class: its release instant, else when the
+           row was written. A pupil who joined the class AFTER this is never
+           "missing" it (class membership, Nov 2026). */
+        setAt: a.release_at || a.created_at || null,
         statusLabel: state === "scheduled" ? "Scheduled"
                    : (state === "open" ? "Open" : "Closed"),
         created_at: a.created_at,
@@ -1093,6 +1097,7 @@
                        .map(function (p) { return p.idx; }),
       closedIdx: papers.filter(function (p) { return p.closed; })
                        .map(function (p) { return p.idx; }),
+      setAt: papers.map(function (p) { return p.setAt || null; }),
       // ⊕ 1 Oct 2026 (sweep fix B5) — see `computeInWeekPaper`, above
       // `finishMatrix`. Without this the digest's week-scoped tiles read
       // `mxc.inWeekPaper` as `undefined` on every class the rollup path
@@ -1472,6 +1477,7 @@
       colMarkedN: colMarkedN,
       markedIdx: markedIdx,
       closedIdx: closedIdx,
+      setAt: papers.map(function (p) { return p.setAt || null; }),
       // ⊕ Stream L, 25 Sep 2026 (experience run, item 1) — exposed so a
       // reader outside this closure (Today) can ask "is there any in-week
       // paper at all" without re-deriving the OR-of-open-or-due-in-window
@@ -1523,6 +1529,15 @@
       }
     });
     return out.length ? out : ["—"];
+  }
+
+  /* True when a paper reached the class strictly before the pupil joined it.
+     Compared as instants, never as strings: `joined_at` and `created_at`
+     arrive in PostgREST's `+00:00` form, a release instant may not. */
+  function setBeforeJoin(setAt, joinedAt) {
+    if (!setAt || !joinedAt) { return false; }
+    var s = Date.parse(setAt), j = Date.parse(joinedAt);
+    return isFinite(s) && isFinite(j) && j > s;
   }
 
   function buildRoster(pack, mx, now) {
@@ -1591,6 +1606,10 @@
       var missingMarked = (row && row.partial)
         ? row.missingMarked
         : mx.closedIdx.some(function (i) {
+            // Work set before this pupil joined the class is not theirs to
+            // miss — the SQL twin's `missing_marked` applies the same test
+            // (migration 20261127120100).
+            if (setBeforeJoin(mx.setAt && mx.setAt[i], m.joined_at)) { return false; }
             return !(row && row.submitted[i]);
           });
       return {
@@ -4758,6 +4777,7 @@
     buildPapers: buildPapers,
     buildMatrix: buildMatrix,
     buildRoster: buildRoster,
+    setBeforeJoin: setBeforeJoin,
     /* ⊕ Sharpen C5 — the "revised after marking" predicate, exposed so a
        drive can run the real code rather than a copy of it. */
     isRevised: isRevisedSub

@@ -746,7 +746,7 @@
      its exports and stop — never to call `run()`, which mounts a WHOLE
      second dashboard against a `__MRB_TPL__` this page does not have. -->
 <script>window.MRB_TEACHER_LIVE_NO_AUTORUN = true;</script>
-<script src="/shared/teacher-live.js?v=977ceff1"></script>
+<script src="/shared/teacher-live.js?v=748394aa"></script>
 <script src="/shared/teacher-admin-nav.js?v=d48cc15e"></script>
 <!-- ⊕ MRB-323 — the name picker. Defines `window.MrBadmusPicker` and does
      nothing until a lesson row's picker button is pressed. It makes no
@@ -1520,10 +1520,12 @@ MrBadmusTeacherGuard.requireTeacherRole({
        computed (`mx.closedIdx`, `row.submitted[]`), counted instead of
        `.some()`-stopped at the first one: not a second rule, the same rule
        read to completion. */
-    function missedCount(mx, sid) {
+    function missedCount(mx, sid, joinedAt) {
       const row = mx.byId[sid];
       let n = 0;
       mx.closedIdx.forEach(function (i) {
+        // Work set before the pupil joined this class is not theirs to miss.
+        if (TL.setBeforeJoin && TL.setBeforeJoin(mx.setAt && mx.setAt[i], joinedAt)) { return; }
         if (!(row && row.submitted[i])) { n += 1; }
       });
       return n;
@@ -1757,7 +1759,7 @@ MrBadmusTeacherGuard.requireTeacherRole({
           first: r.first_name, last: r.last_name,
           classId: cid,
           code: codeOf[cid] || '',
-          missed: missedCount(d.mx, r.id),
+          missed: missedCount(d.mx, r.id, r.joined_at),
           avg: r.avg,
           // `startedInWeek` lives on the MATRIX row (`buildMatrix`), not the
           // roster row `buildRoster` returns — the matrix walks the cells,

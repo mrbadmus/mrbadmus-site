@@ -138,6 +138,10 @@ Deno.serve(async (req) => {
     academicYearName?: string | null;
     classes?: ClassSpec[];
     students?: StudentRow[];
+    // "match": make the (one, existing-by-id) class match this file exactly —
+    // add who is missing, move in anyone in a sibling class, remove who is not
+    // in the file. Plain "add" (the default) never removes anyone.
+    mode?: "add" | "match";
   };
   try {
     body = await req.json();
@@ -148,6 +152,11 @@ Deno.serve(async (req) => {
   const classes = Array.isArray(body.classes) ? body.classes : [];
   const students = Array.isArray(body.students) ? body.students : [];
   if (classes.length === 0) return json(400, { ok: false, error: "no_classes" });
+  const byIdPath = classes.some((c) => c?.id);
+  const matchMode = body.mode === "match";
+  if (matchMode && !(byIdPath && classes.length === 1)) {
+    return json(400, { ok: false, error: "match_needs_one_class" });
+  }
 
   // The existing-class-by-id path (Add students (CSV) on a class's own page)
   // is school_admin-only. The staff gate above (teacher/hod/admin) is
@@ -350,6 +359,10 @@ Deno.serve(async (req) => {
   }
 
   // ── 5. process students (dedupe by email; flag messy rows) ──
+  const fileStudents: Array<{ studentId: string | null; email: string; name: string; classId: string }> = [];
+  // "match" removes everyone NOT in the file. If any row could not be read as
+  // a pupil, we cannot know who that row was, so removals are held.
+  let unreadable = false;
   const seenEmail = new Set<string>();
   const seenExternalId = new Set<string>(); // in-file duplicate detection for the external MIS id
   for (const s of students) {
@@ -404,6 +417,15 @@ Deno.serve(async (req) => {
         .maybeSingle();
       existingProfile = p as typeof existingProfile;
       // never downgrade or hijack a staff account via a student roster
+      // The by-class path (one class's own page) never moves a pupil between
+      // SCHOOLS: their profile would be rewritten to this school before the
+      // membership check could refuse it.
+      if (byIdPath && existingProfile && existingProfile.school_id && existingProfile.school_id !== schoolId) {
+        counts.studentsSkipped++;
+        issues.push({ rowIndex: s.rowIndex, email, reason: "pupil_in_other_school" });
+        if (matchMode) unreadable = true;
+        continue;
+      }
       if (existingProfile && ["teacher", "hod", "admin"].includes(existingProfile.role)) {
         counts.studentsSkipped++;
         issues.push({ rowIndex: s.rowIndex, email, reason: "email_belongs_to_staff" });
@@ -501,6 +523,19 @@ Deno.serve(async (req) => {
       }
     }
 
+    // ── existing-class (by id) path: membership goes through the database's
+    // class_membership_batch, never a direct write. Collected here, applied
+    // once after the loop so the whole file is one transaction.
+    if (byIdPath) {
+      fileStudents.push({
+        studentId,
+        email,
+        name: [desired.first_name, desired.last_name].filter(Boolean).join(" ") || email,
+        classId: classId as string,
+      });
+      continue;
+    }
+
     // ── attach class_members non-destructively (idempotent) ──
     if (dryRun || !classId || !studentId) {
       // dry-run (or class would-be-created): treat as a fresh attach
@@ -531,6 +566,110 @@ Deno.serve(async (req) => {
     }
   }
 
+  // ── 5b. existing-class path: plan, then apply through the database ──
+  type PlanRow = { studentId: string | null; name: string; email?: string; fromClass?: string };
+  const plan: { add: PlanRow[]; moveIn: PlanRow[]; remove: PlanRow[]; already: number } =
+    { add: [], moveIn: [], remove: [], already: 0 };
+  if (byIdPath) {
+    const targetId = classMap.get(Array.from(classMap.keys())[0]) as string;
+    const { data: target } = await admin
+      .from("classes")
+      .select("id, year_group, science_subject, academic_year_id")
+      .eq("id", targetId)
+      .single();
+    const allIds = Array.from(new Set(fileStudents.map((f) => f.classId).concat([targetId])));
+    const { data: currentAll } = await admin
+      .from("class_members")
+      .select("class_id, student_id, student:student_id ( first_name, last_name )")
+      .in("class_id", allIds)
+      .is("left_at", null)
+      .is("deleted_at", null);
+    const current = (currentAll ?? []).filter((m) => m.class_id === targetId);
+    const isMember = new Set((currentAll ?? []).map((m) => `${m.class_id}:${m.student_id}`));
+
+    // Sibling classes a "match" may move a pupil in from: same school, same
+    // working year, same year group and same science (so a triple pupil's
+    // Chemistry class is never raided to fill their Biology class).
+    const siblingOf = new Map<string, string>(); // student → sibling class name
+    const siblingIdOf = new Map<string, string>();
+    if (matchMode) {
+      let q = admin
+        .from("classes")
+        .select("id, name")
+        .eq("school_id", schoolId)
+        .eq("academic_year_id", target!.academic_year_id)
+        .eq("year_group", target!.year_group)
+        .is("deleted_at", null)
+        .is("consumer_kind", null)
+        .neq("id", targetId);
+      q = target!.science_subject
+        ? q.eq("science_subject", target!.science_subject)
+        : q.is("science_subject", null);
+      const { data: sibs } = await q;
+      const sibName = new Map((sibs ?? []).map((c) => [c.id as string, c.name as string]));
+      const wanted = fileStudents.map((f) => f.studentId).filter(Boolean) as string[];
+      if (sibName.size && wanted.length) {
+        const { data: sm } = await admin
+          .from("class_members")
+          .select("student_id, class_id")
+          .in("class_id", Array.from(sibName.keys()))
+          .in("student_id", wanted)
+          .is("left_at", null)
+          .is("deleted_at", null);
+        for (const r of sm ?? []) {
+          if (!siblingOf.has(r.student_id)) {
+            siblingOf.set(r.student_id, sibName.get(r.class_id) as string);
+            siblingIdOf.set(r.student_id, r.class_id);
+          }
+        }
+      }
+    }
+
+    const inFile = new Set<string>();
+    const ops: Array<Record<string, string>> = [];
+    for (const f of fileStudents) {
+      if (f.studentId) inFile.add(f.studentId);
+      if (f.studentId && isMember.has(`${f.classId}:${f.studentId}`)) {
+        plan.already++;
+        counts.studentsAlreadyAttached++;
+        continue;
+      }
+      if (matchMode && f.studentId && siblingIdOf.has(f.studentId)) {
+        plan.moveIn.push({ studentId: f.studentId, name: f.name, email: f.email, fromClass: siblingOf.get(f.studentId) });
+        ops.push({ op: "move", student_id: f.studentId, class_id: siblingIdOf.get(f.studentId)!, to_class_id: targetId, via: "csv_import" });
+      } else {
+        plan.add.push({ studentId: f.studentId, name: f.name, email: f.email });
+        if (f.studentId) ops.push({ op: "add", student_id: f.studentId, class_id: f.classId, via: "csv_import" });
+      }
+      counts.studentsAttached++;
+    }
+    if (matchMode && (unreadable || counts.studentsSkipped > 0)) {
+      issues.push({ reason: "removals_held" });
+    } else if (matchMode) {
+      for (const m of current) {
+        if (inFile.has(m.student_id as string)) continue;
+        const st = m.student as { first_name?: string; last_name?: string } | null;
+        plan.remove.push({
+          studentId: m.student_id as string,
+          name: [st?.first_name, st?.last_name].filter(Boolean).join(" ") || "Pupil",
+        });
+        ops.push({ op: "remove", student_id: m.student_id as string, class_id: targetId });
+      }
+    }
+
+    if (!dryRun && ops.length) {
+      const { data: res, error: bErr } = await admin.rpc("class_membership_batch", {
+        p_ops: ops,
+        p_actor: callerId,
+        p_source: matchMode ? "csv_match" : "csv",
+      });
+      if (bErr) {
+        return json(400, { ok: false, error: "membership_failed", detail: bErr.message, counts, issues });
+      }
+      (plan as Record<string, unknown>).auditIds = (res as { audit_ids?: unknown })?.audit_ids ?? [];
+    }
+  }
+
   // ── 6. audit (real runs only) ──
   let auditId: string | null = null;
   if (!dryRun) {
@@ -548,6 +687,10 @@ Deno.serve(async (req) => {
         // exactly the place a silent lie must not land. See MRB-307.
         classes: Array.from(classSpecByName.keys()),
         counts,
+        mode: matchMode ? "match" : "add",
+        plan: byIdPath
+          ? { add: plan.add.length, move_in: plan.moveIn.length, remove: plan.remove.length }
+          : null,
         issue_count: issues.length,
       },
       p_actor_id: callerId,
@@ -572,5 +715,7 @@ Deno.serve(async (req) => {
     auditId,
     academicYear: year.name,
     classes: importedClasses,
+    mode: matchMode ? "match" : "add",
+    plan: byIdPath ? plan : null,
   });
 });

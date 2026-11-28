@@ -2584,7 +2584,9 @@ class Component extends DCLogic {
     /* ── Student ── */
     const stRow = st ? kMx.byId[st.id] : null;
     const stHistory = st && kPapers.length ? kPapers.map((p, i) => {
-      const pState = p.state;
+      const pState = (p.state === 'closed' && st && window.MrBadmusTeacherLive
+        && MrBadmusTeacherLive.setBeforeJoin
+        && MrBadmusTeacherLive.setBeforeJoin(p.setAt, st.joined_at)) ? 'before' : p.state;
       const isDeck = p.kind === 'flashcards';
       const fcSit = isDeck && stRow && stRow.fcSittings ? stRow.fcSittings[i] : null;
       const hasRow = !!(stRow && (stRow.subId[i] != null
@@ -2621,7 +2623,8 @@ class Component extends DCLogic {
           ? (lateState === true ? 'Complete · late' : 'Complete')
           : (hasRow ? 'In progress'
             : (pState === 'scheduled' ? 'Scheduled'
-              : (pState === 'closed' ? 'Missing' : 'Not started'))),
+              : (pState === 'closed' ? 'Missing'
+                : (pState === 'before' ? 'Before joining' : 'Not started')))),
         stFg: tone === 'neutral' ? 'var(--st-caption)' : (tone === 'warn' ? 'var(--st-accent-text)' : 'var(--ks3-ok-text)'),
         stBg: tone === 'neutral' ? 'var(--st-num-well)' : (tone === 'warn' ? 'var(--st-chip-tint)' : 'var(--ks3-ok-tint)'),
         stBc: tone === 'neutral' ? 'var(--st-rule-soft)' : (tone === 'warn' ? 'var(--st-chip-tint-border)' : 'var(--ks3-ok-tint)'),
@@ -3538,13 +3541,14 @@ window.__MRB_MOUNT__ = function () {
   }));
 };
 </script>
-<script>window.__MRB_ASSET_V__={"account.js":"e64f3c2a","brand/brand.css":"9c818614","brand/brand.js":"a4ee216b","brand/mrbadmus-favicon.svg":"414f7a61","brand/mrbadmus-icon-light-512.png":"cffd3cc4","breakdown.css":"87c6fa1b","breakdown.js":"0bea6ba7","class-csv-upload.js":"513ee889","class-entry.js":"8c087f18","config.js":"fc11de5b","figures-ks3.js":"efe2cfd6","figures-ks4.js":"2bae91ff","flashcard-breakdown.js":"baf47828","flashcard-decks.css":"3da3c46d","flashcard-decks.js":"2610cf68","formulae.js":"e4bfb091","rum.js":"66210c21","set-work.css":"c41ff568","set-work.js":"0bbb3e12","shoutouts.js":"23393220","teacher-admin-nav.js":"d48cc15e","teacher-data.js":"107e2c3a","teacher-guard.js":"207daf14","teacher-live.js":"977ceff1","teacher-picker.js":"18bc71fe","teacher-timer.js":"bf613dae","teacher-topbar.css":"e4a3d0a7","teacher-topbar.js":"70c076e1","theme.js":"f04be205","wrapped.css":"ae26c56e","wrapped.js":"a31d709c"};</script>
+<script>window.__MRB_ASSET_V__={"account.js":"e64f3c2a","brand/brand.css":"9c818614","brand/brand.js":"a4ee216b","brand/mrbadmus-favicon.svg":"414f7a61","brand/mrbadmus-icon-light-512.png":"cffd3cc4","breakdown.css":"87c6fa1b","breakdown.js":"0bea6ba7","class-csv-upload.js":"8789d454","class-entry.js":"8c087f18","class-membership.js":"0fa1071e","config.js":"fc11de5b","figures-ks3.js":"efe2cfd6","figures-ks4.js":"2bae91ff","flashcard-breakdown.js":"baf47828","flashcard-decks.css":"3da3c46d","flashcard-decks.js":"2610cf68","formulae.js":"e4bfb091","rum.js":"66210c21","set-work.css":"c41ff568","set-work.js":"0bbb3e12","shoutouts.js":"23393220","teacher-admin-nav.js":"d48cc15e","teacher-data.js":"107e2c3a","teacher-guard.js":"207daf14","teacher-live.js":"748394aa","teacher-picker.js":"18bc71fe","teacher-timer.js":"bf613dae","teacher-topbar.css":"e4a3d0a7","teacher-topbar.js":"70c076e1","theme.js":"f04be205","wrapped.css":"ae26c56e","wrapped.js":"a31d709c"};</script>
 <script src="/shared/teacher-admin-nav.js?v=d48cc15e"></script>
 <link rel="stylesheet" href="/shared/teacher-topbar.css?v=e4a3d0a7">
 <script src="/shared/teacher-topbar.js?v=70c076e1"></script>
 <script src="/shared/breakdown.js?v=0bea6ba7"></script>
 <script src="/shared/formulae.js?v=e4bfb091"></script>
 <script src="/shared/flashcard-breakdown.js?v=baf47828"></script>
-<script src="/shared/teacher-live.js?v=977ceff1"></script>
+<script src="/shared/class-membership.js?v=0fa1071e"></script>
+<script src="/shared/teacher-live.js?v=748394aa"></script>
 </body>
 </html>
